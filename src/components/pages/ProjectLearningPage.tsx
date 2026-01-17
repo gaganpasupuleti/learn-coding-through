@@ -18,6 +18,12 @@ import {
 import { Project, Step } from '@/lib/projects'
 import { DigitalClockPreview } from '@/components/previews/DigitalClockPreview'
 import { CalculatorPreview } from '@/components/previews/CalculatorPreview'
+import { TemperatureConverterPreview } from '@/components/previews/TemperatureConverterPreview'
+import { PasswordGeneratorPreview } from '@/components/previews/PasswordGeneratorPreview'
+import { StudentDatabasePreview } from '@/components/previews/StudentDatabasePreview'
+import { SalesAnalyticsPreview } from '@/components/previews/SalesAnalyticsPreview'
+import { GradeCalculatorPreview } from '@/components/previews/GradeCalculatorPreview'
+import { NumberGuesserPreview } from '@/components/previews/NumberGuesserPreview'
 import { CodeEditor } from '@/components/CodeEditor'
 
 interface ProjectLearningPageProps {
@@ -200,6 +206,12 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
                   <div className="space-y-3">
                     {project.id === 'digital-clock' && <DigitalClockPreview />}
                     {project.id === 'calculator' && <CalculatorPreview />}
+                    {project.id === 'temperature-converter' && <TemperatureConverterPreview />}
+                    {project.id === 'password-generator' && <PasswordGeneratorPreview />}
+                    {project.id === 'student-database' && <StudentDatabasePreview />}
+                    {project.id === 'sales-analytics' && <SalesAnalyticsPreview />}
+                    {project.id === 'grade-calculator' && <GradeCalculatorPreview />}
+                    {project.id === 'number-guesser' && <NumberGuesserPreview />}
                   </div>
                 )}
 

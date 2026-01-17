@@ -135,6 +135,10 @@ code, pre {
   display: none;
 }
 
+.line-numbers-column::-webkit-scrollbar {
+  display: none;
+}
+
 code[class*="language-"],
 pre[class*="language-"] {
   text-shadow: none;

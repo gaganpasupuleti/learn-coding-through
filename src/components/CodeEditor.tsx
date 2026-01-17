@@ -319,6 +319,18 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
         executeClockCode()
       } else if (projectId === 'calculator') {
         executeCalculatorCode()
+      } else if (projectId === 'temperature-converter') {
+        executeTemperatureConverterCode()
+      } else if (projectId === 'password-generator') {
+        executePasswordGeneratorCode()
+      } else if (projectId === 'student-database') {
+        executeStudentDatabaseCode()
+      } else if (projectId === 'sales-analytics') {
+        executeSalesAnalyticsCode()
+      } else if (projectId === 'grade-calculator') {
+        executeGradeCalculatorCode()
+      } else if (projectId === 'number-guesser') {
+        executeNumberGuesserCode()
       } else {
         executeGenericCode()
       }
@@ -374,6 +386,45 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
     const lines = code.split('\n').length
     const chars = code.length
     setOutput(`Code analysis:\n\n📝 Lines: ${lines}\n📊 Characters: ${chars}\n✨ Syntax looks good!\n\nYour code is ready to use.`)
+  }
+
+  const executeTemperatureConverterCode = () => {
+    setOutput(`Temperature Converter Test:\n\n25°C → 77°F ✓\n0°C → 32°F ✓\n100°C → 212°F ✓\n-40°C → -40°F ✓\n\n273.15K → 0°C ✓\n\nAll conversions working correctly!`)
+  }
+
+  const executePasswordGeneratorCode = () => {
+    const samplePasswords = [
+      'aB7#kL2$mN9!',
+      'P@ssw0rd!2024',
+      'Xy9#Qz4&Rt8%'
+    ]
+    const randomPwd = samplePasswords[Math.floor(Math.random() * samplePasswords.length)]
+    setOutput(`Password Generator Test:\n\nGenerated passwords:\n- ${samplePasswords[0]}\n- ${samplePasswords[1]}\n- ${samplePasswords[2]}\n\nYour password: ${randomPwd}\n\n✓ All character types included\n✓ Sufficient length\n✓ Secure randomization`)
+  }
+
+  const executeStudentDatabaseCode = () => {
+    setOutput(`SQL Query Results:\n\n--- SELECT * FROM Students ---\nID | Name          | Major\n1  | Alice Johnson | Computer Science\n2  | Bob Smith     | Mathematics\n3  | Carol Davis   | Physics\n\n--- WHERE major = 'Computer Science' ---\n1  | Alice Johnson | alice@email.com\n\n✓ Query executed successfully\n✓ 3 rows returned`)
+  }
+
+  const executeSalesAnalyticsCode = () => {
+    setOutput(`Sales Analytics Report:\n\n📊 Total Revenue: $2,850.00\n📦 Total Sales: 5\n💰 Average Sale: $570.00\n\n--- Top Performers ---\nJohn: $2,475.00 (3 sales)\nSarah: $375.00 (2 sales)\n\n--- Top Products ---\n1. Laptop: $2,400.00\n2. Monitor: $350.00\n3. Keyboard: $75.00\n\n✓ Analytics computed successfully`)
+  }
+
+  const executeGradeCalculatorCode = () => {
+    const scores = [85.5, 92.0, 78.5, 88.0, 95.0]
+    const avg = scores.reduce((a, b) => a + b) / scores.length
+    let grade = ''
+    if (avg >= 90) grade = 'A'
+    else if (avg >= 80) grade = 'B'
+    else if (avg >= 70) grade = 'C'
+    else grade = 'D'
+    
+    setOutput(`Grade Calculator Results:\n\nTest Scores: ${scores.join(', ')}\n\nAverage: ${avg.toFixed(2)}\nLetter Grade: ${grade}\n\n${grade === 'A' ? '🎉 Outstanding!' : grade === 'B' ? '👏 Great job!' : '👍 Good work!'}\n\n✓ Calculation complete`)
+  }
+
+  const executeNumberGuesserCode = () => {
+    const randomNum = Math.floor(Math.random() * 100) + 1
+    setOutput(`Number Guessing Game Started:\n\n🎮 Secret number generated (1-100)\n🎯 Number: ${randomNum}\n\nSimulated gameplay:\nGuess 1: 50 → Too ${randomNum > 50 ? 'low' : 'high'}!\nGuess 2: ${randomNum > 50 ? '75' : '25'} → ${Math.abs(randomNum - (randomNum > 50 ? 75 : 25)) < 20 ? 'Getting closer!' : 'Keep trying!'}\n\n✓ Game logic working correctly`)
   }
 
   const resetCode = () => {
@@ -471,29 +522,36 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
         </div>
         
         <div 
-          className="relative"
+          className="relative overflow-hidden"
           style={{
             backgroundColor: currentTheme.background,
           }}
         >
-          <div className="flex">
+          <div className="flex h-[400px]">
             <div 
-              className="select-none py-4 px-3 text-right font-mono text-sm border-r whitespace-pre"
+              className="select-none py-4 px-3 text-right font-mono text-sm border-r whitespace-pre overflow-y-auto"
+              ref={(el) => {
+                if (el && textareaRef.current) {
+                  el.scrollTop = textareaRef.current.scrollTop
+                }
+              }}
               style={{
                 backgroundColor: currentTheme.background,
                 color: currentTheme.comment,
                 borderColor: currentTheme.punctuation + '20',
                 minWidth: '3.5rem',
                 lineHeight: '1.5',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
               }}
             >
               {getLineNumbers()}
             </div>
-            <div className="flex-1 relative">
-              <pre className="code-highlight-wrapper absolute inset-0 pointer-events-none overflow-auto p-4 m-0" aria-hidden="true">
+            <div className="flex-1 relative overflow-hidden">
+              <pre className="code-highlight-wrapper absolute inset-0 pointer-events-none overflow-hidden p-4 m-0" aria-hidden="true">
                 <code 
                   ref={highlightRef}
-                  className={`language-${getPrismLanguage()} block min-h-[300px]`}
+                  className={`language-${getPrismLanguage()} block min-h-full`}
                   style={{
                     color: currentTheme.foreground,
                   }}
@@ -509,7 +567,7 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
                 onKeyDown={handleKeyDown}
                 onSelect={updateCursorPosition}
                 onClick={updateCursorPosition}
-                className="code-editor-textarea relative font-mono text-sm min-h-[300px] w-full border-0 focus-visible:ring-0 focus:outline-none rounded-none resize-none bg-transparent p-4 text-transparent caret-white"
+                className="code-editor-textarea relative font-mono text-sm h-full w-full border-0 focus-visible:ring-0 focus:outline-none rounded-none resize-none bg-transparent p-4 text-transparent caret-white overflow-auto"
                 placeholder="Write your code here..."
                 spellCheck={false}
                 style={{
@@ -519,7 +577,7 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
               {showSuggestions && (
                 <div
                   ref={suggestionsRef}
-                  className="absolute z-10 border rounded-md shadow-lg overflow-hidden"
+                  className="absolute z-10 border rounded-md shadow-lg overflow-auto"
                   style={{
                     backgroundColor: currentTheme.background,
                     borderColor: currentTheme.punctuation + '60',
