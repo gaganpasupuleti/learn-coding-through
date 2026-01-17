@@ -325,7 +325,7 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
     try {
       const result = await sandbox.execute(code, language)
       
-      setExecutionTime(result.executionTime)
+      setExecutionTime(result.executionTime || 0)
       
       if (result.error) {
         setHasError(true)
