@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -12,11 +12,13 @@ import {
   Code as CodeIcon,
   Play,
   ListChecks,
-  Brain
+  Brain,
+  Eye
 } from '@phosphor-icons/react'
 import { Project, Step } from '@/lib/projects'
 import { DigitalClockPreview } from '@/components/previews/DigitalClockPreview'
 import { CalculatorPreview } from '@/components/previews/CalculatorPreview'
+import { CodeEditor } from '@/components/CodeEditor'
 
 interface ProjectLearningPageProps {
   project: Project
@@ -149,15 +151,48 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
 
                 {currentStep.content.code && (
                   <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                      <CodeIcon size={18} />
-                      <span>{currentStep.content.language?.toUpperCase() || 'CODE'}</span>
-                    </div>
-                    <ScrollArea className="h-[400px] w-full rounded-lg border-2 border-border bg-muted/30">
-                      <pre className="p-4 text-sm font-mono leading-relaxed">
-                        <code>{currentStep.content.code}</code>
-                      </pre>
-                    </ScrollArea>
+                    <Tabs defaultValue="editor" className="w-full">
+                      <TabsList className="grid w-full max-w-[400px] grid-cols-2">
+                        <TabsTrigger value="editor" className="gap-2">
+                          <CodeIcon size={16} />
+                          Write Code
+                        </TabsTrigger>
+                        <TabsTrigger value="reference" className="gap-2">
+                          <Eye size={16} />
+                          View Reference
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="editor" className="mt-4">
+                        <CodeEditor
+                          initialCode={currentStep.content.code}
+                          language={currentStep.content.language || 'typescript'}
+                          projectId={project.id}
+                        />
+                      </TabsContent>
+                      
+                      <TabsContent value="reference" className="mt-4">
+                        <Card className="border-2 overflow-hidden">
+                          <div className="bg-muted/50 px-4 py-3 border-b">
+                            <div className="flex items-center gap-2">
+                              <div className="flex gap-1.5">
+                                <div className="w-3 h-3 rounded-full bg-destructive/60"></div>
+                                <div className="w-3 h-3 rounded-full bg-accent/60"></div>
+                                <div className="w-3 h-3 rounded-full bg-primary/60"></div>
+                              </div>
+                              <span className="text-sm font-medium text-muted-foreground ml-2">
+                                Reference Code
+                              </span>
+                            </div>
+                          </div>
+                          <div className="bg-background p-4 max-h-[400px] overflow-auto">
+                            <pre className="text-sm font-mono leading-relaxed">
+                              <code>{currentStep.content.code}</code>
+                            </pre>
+                          </div>
+                        </Card>
+                      </TabsContent>
+                    </Tabs>
                   </div>
                 )}
 

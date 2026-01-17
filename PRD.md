@@ -40,12 +40,12 @@ This is a multi-page educational platform with project cards, step-by-step navig
 - **Progression**: View preview container → See live digital clock updating every second OR interact with working calculator buttons → Understand cause and effect
 - **Success criteria**: Digital clock displays current time and updates automatically, calculator performs operations correctly with button clicks
 
-### Feature 5: Code Display & Explanation
-- **Functionality**: Show project code with syntax highlighting and line-by-line explanations
-- **Purpose**: Help learners connect concepts to actual code implementation
+### Feature 5: Interactive Code Editor
+- **Functionality**: Editable code editor where students can write, modify, and execute code with live feedback
+- **Purpose**: Enable hands-on practice by letting learners experiment with code and see immediate results
 - **Trigger**: User reaches Step 3 in any project
-- **Progression**: View code editor → Read inline comments → Understand key concepts → Proceed to preview
-- **Success criteria**: Code is readable, properly formatted, syntax highlighted, and includes helpful comments
+- **Progression**: View tabbed interface → Switch between "Write Code" (editor) and "View Reference" (read-only) → Edit code in textarea → Click "Run Code" → See execution output with success/error feedback → Modify and re-run or reset to original
+- **Success criteria**: Code is editable in textarea, "Run Code" executes logic and shows output, "Reset" restores original code, reference tab shows syntax-highlighted read-only version, appropriate test feedback for each project type
 
 ## Edge Case Handling
 - **Empty State**: If projects array is empty, show "No projects available yet" message
@@ -104,7 +104,7 @@ Animations should guide attention and celebrate progress without creating delays
 ### Customizations
 - **Project Card Component**: Custom component combining Card with image placeholder, title, description, and CTA button
 - **Step Container Component**: Custom wrapper that handles step navigation, progress display, and content rendering
-- **Code Editor Component**: Custom syntax-highlighted code display using ScrollArea with line numbers
+- **Code Editor Component**: Custom interactive code editor with editable textarea, syntax highlighting, "Run Code" and "Reset" buttons, and output display panel showing execution results or errors
 - **Preview Frame Component**: Custom container for live project outputs (clock, calculator)
 
 ### States
