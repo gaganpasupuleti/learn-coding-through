@@ -27,11 +27,11 @@ A browser-based coding sandbox where students can learn SQL, Python, and Java by
 - **Success criteria**: Correct project loads with appropriate starter code and instructions
 
 ### Code Editor
-- **Functionality**: Write and edit code with colorful syntax highlighting
-- **Purpose**: Core learning interface where students practice coding with visual feedback
+- **Functionality**: Write and edit code with colorful syntax highlighting, line numbers, autocomplete suggestions, and multiple color themes
+- **Purpose**: Core learning interface where students practice coding with visual feedback and professional IDE-like features
 - **Trigger**: Project selected
-- **Progression**: Project loads → Editor displays starter code → Student types code → Real-time syntax highlighting with colorful tokens for keywords, functions, strings, numbers, operators, comments
-- **Success criteria**: Code editing feels smooth, syntax highlighting works in real-time with distinct colors for different code elements, code persists between sessions
+- **Progression**: Project loads → Editor displays starter code with line numbers → Student types code → Real-time syntax highlighting with colorful tokens for keywords, functions, strings, numbers, operators, comments → Autocomplete suggestions appear as student types → Student can switch between 5 color themes (Monokai, Dracula, Nord, GitHub Light, Synthwave) → Current line and column position displayed in header
+- **Success criteria**: Code editing feels smooth, syntax highlighting works in real-time with distinct colors for different code elements, line numbers visible on left, autocomplete works and can be navigated with arrow keys and applied with Enter/Tab, theme persists between sessions, code persists between sessions
 
 ### Code Execution & Validation
 - **Functionality**: Run code and see results or errors
@@ -112,6 +112,12 @@ Animations should reinforce the technical nature while maintaining smoothness - 
 - **Customizations**:
   - Custom code editor with Prism.js syntax highlighting featuring language-specific tokenization
   - Colorful syntax highlighting with distinct colors for keywords, functions, strings, numbers, operators, and comments
+  - Line numbers displayed in left gutter with theme-aware styling
+  - Autocomplete suggestion dropdown with keyboard navigation (Up/Down arrows, Enter/Tab to apply, Escape to dismiss)
+  - Language-specific autocomplete suggestions (JavaScript, Python, Java, SQL keywords and common patterns)
+  - Five professional color themes: Monokai (warm dark), Dracula (purple dark), Nord (cool arctic), GitHub Light (clean white), Synthwave (neon retro)
+  - Theme switcher in editor header with dropdown menu
+  - Line and column indicator in editor header
   - Overlay technique for transparent textarea with colored syntax highlighting behind it
   - Language-specific accent colors on project cards (border gradients)
   - Animated progress indicator for completed projects
