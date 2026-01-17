@@ -471,36 +471,36 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
             <span className="text-xs text-muted-foreground">
               Ln {cursorPosition.line}, Col {cursorPosition.col}
             </span>
-          className="relative overflow-hidden"
+            <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   size="sm"
                   variant="ghost"
-          <div className="flex h-[400px]">
+                  className="h-8 text-xs"
                 >
-              className="select-none py-4 px-3 text-right font-mono text-sm border-r whitespace-pre overflow-y-auto"
-              ref={(el) => {
-                if (el && textareaRef.current) {
-                  el.scrollTop = textareaRef.current.scrollTop
-                }
-              }}
+                  <Palette className="mr-1.5" size={14} />
+                  Theme
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setTheme('monokai')}>
                   <span className={theme === 'monokai' ? 'font-semibold' : ''}>Monokai</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme('dracula')}>
                   <span className={theme === 'dracula' ? 'font-semibold' : ''}>Dracula</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme('nord')}>
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
+                  <span className={theme === 'nord' ? 'font-semibold' : ''}>Nord</span>
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme('github')}>
                   <span className={theme === 'github' ? 'font-semibold' : ''}>GitHub Light</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme('synthwave')}>
-            <div className="flex-1 relative overflow-hidden">
-              <pre className="code-highlight-wrapper absolute inset-0 pointer-events-none overflow-hidden p-4 m-0" aria-hidden="true">
+                  <span className={theme === 'synthwave' ? 'font-semibold' : ''}>Synthwave</span>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-                  className={`language-${getPrismLanguage()} block min-h-full`}
+            <Button
               size="sm"
               variant="ghost"
               onClick={resetCode}
@@ -516,7 +516,7 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
               className="h-8 bg-primary hover:bg-primary/90 text-xs"
             >
               <Play className="mr-1.5" size={14} weight="fill" />
-                className="code-editor-textarea relative font-mono text-sm h-full w-full border-0 focus-visible:ring-0 focus:outline-none rounded-none resize-none bg-transparent p-4 text-transparent caret-white overflow-auto"
+              Run
             </Button>
           </div>
         </div>
@@ -526,7 +526,7 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
           style={{
             backgroundColor: currentTheme.background,
           }}
-                  className="absolute z-10 border rounded-md shadow-lg overflow-auto"
+        >
           <div className="flex h-[400px]">
             <div 
               className="select-none py-4 px-3 text-right font-mono text-sm border-r whitespace-pre overflow-y-auto"
