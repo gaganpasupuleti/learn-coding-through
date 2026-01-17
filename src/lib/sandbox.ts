@@ -1,151 +1,151 @@
 export interface ExecutionResult {
   output: string
-  error?: string
+  executionTime:
   executionTime: number
-}
+e
 
 export class CodeSandbox {
   private timeout: number
-  private maxOutputLength: number
+    const startTime = performance
 
-  constructor(options: { timeout?: number; maxOutputLength?: number } = {}) {
-    this.timeout = options.timeout || 5000
-    this.maxOutputLength = options.maxOutputLength || 10000
-  }
 
-  async executeJavaScript(code: string): Promise<ExecutionResult> {
-    const startTime = performance.now()
-    let output = ''
-    let error: string | undefined = undefined
-    const consoleLog: string[] = []
 
-    const originalLog = console.log
-
-    try {
       console.log = (...args: unknown[]) => {
-        consoleLog.push(args.map(arg => String(arg)).join(' '))
-      }
+   
 
-      try {
-        const result = eval(code)
         if (result !== undefined) {
-          consoleLog.push(String(result))
         }
-      } finally {
-        console.log = originalLog
-      }
+        console.log
 
-      output = consoleLog.join('\n')
 
-      if (output.length > this.maxOutputLength) {
-        output = output.substring(0, this.maxOutputLength) + '\n... (output truncated)'
-      }
+
     } catch (err) {
-      error = err instanceof Error ? err.message : 'JavaScript execution error'
-    } finally {
-      console.log = originalLog
+
     }
-
-    const executionTime = performance.now() - startTime
-    return { output, error, executionTime }
+    const executionTime = performance.now() -
   }
+  async
 
-  async executePython(code: string): Promise<ExecutionResult> {
-    const startTime = performance.now()
-    let output = ''
-    let error: string | undefined = undefined
 
-    try {
-      const lines = code.split('\n')
-      const outputLines: string[] = []
-      const variables: Record<string, unknown> = {}
-
+      const lines = code.split('\
+      const variables: Record<strin
       for (const line of lines) {
-        if (line.trim().startsWith('#') || line.trim() === '') {
-          continue
-        }
+         
 
-        const printMatch = line.match(/print\((.*?)\)/)
         if (printMatch) {
-          let content = printMatch[1].trim()
-          
+       
+
+          } else if (content.startsW
+
+            outputLines.push(String(variables[con
+            const expr = this.evaluateExpression(content, variables)
+       
+          }
+        }
+        const v
+          const varName = varMa
+     
+
+            variables[varName] = value.slice(1, -1)
+            variables[varName] = Number(val
+   
+
+      }
+      output = outputLines.length > 0 
+        : 'Python c
+    } catch (err) {
+
+    const
+  }
+  async executeJava(code: string): Pro
+    let output = ''
+
+      const lines = code.split('\
+      const variables: Record<string, unknown> = {}
+          continue
+        }
+
+
+          inMain = false
+        }
+        if
           if (content.startsWith('"') && content.endsWith('"')) {
             content = content.slice(1, -1)
+          if (content.startsWith('"')
+              .replace(/\\n/g, '\n')
             outputLines.push(content)
-          } else if (content.startsWith("'") && content.endsWith("'")) {
-            content = content.slice(1, -1)
-            outputLines.push(content)
-          } else if (content in variables) {
-            outputLines.push(String(variables[content]))
-          } else {
-            const expr = this.evaluateExpression(content, variables)
-            if (expr !== undefined) {
+            outputLines.push(String(v
+            const expr = this.evaluateExpres
               outputLines.push(String(expr))
-            }
           }
-          continue
         }
-
-        const varMatch = line.match(/(\w+)\s*=\s*(.+)/)
-        if (varMatch) {
+        const varMatch = line.match(/
           const varName = varMatch[1]
-          const value = varMatch[2].trim()
           
-          if (value.startsWith('"') && value.endsWith('"')) {
-            variables[varName] = value.slice(1, -1)
-          } else if (value.startsWith("'") && value.endsWith("'")) {
-            variables[varName] = value.slice(1, -1)
-          } else if (!isNaN(Number(value))) {
-            variables[varName] = Number(value)
-          } else if (value === 'True' || value === 'False') {
-            variables[varName] = value === 'True'
-          }
-          continue
-        }
-      }
+           
+            variab
+         
 
-      output = outputLines.length > 0 
-        ? outputLines.join('\n')
-        : 'Python code executed successfully'
 
-    } catch (err) {
-      error = err instanceof Error ? err.message : 'Python execution error'
-    }
+        ? outputLines.j
 
-    const executionTime = performance.now() - startTime
+      error = err instanceof Error ? err.m
+
     return { output, error, executionTime }
-  }
 
-  async executeJava(code: string): Promise<ExecutionResult> {
     const startTime = performance.now()
-    let output = ''
     let error: string | undefined = undefined
+    try {
+      const results: string[] = []
+      for (const statement of statements) {
+        
+          r
+          const ma
+         
+       
+
+        } else if (trimmed.startsWith(
+        }
+
+
+      error = err i
+
+    r
 
     try {
-      const lines = code.split('\n')
-      const outputLines: string[] = []
-      const variables: Record<string, unknown> = {}
-      let inMain = false
+        return match in variables ? JSON.st
+   
 
-      for (const line of lines) {
-        if (line.includes('public static void main')) {
-          inMain = true
-          continue
-        }
+  }
+  async execute(code: string, language:
 
-        if (line.trim() === '}' && inMain) {
-          inMain = false
-          continue
-        }
+      case 'javascript':
 
-        if (!inMain) continue
+        r
+      case 'python':
+        return this.executePython(code
+      case 'java':
 
-        const printlnMatch = line.match(/System\.out\.println\((.*?)\);/)
-        if (printlnMatch) {
-          let content = printlnMatch[1].trim()
-          
-          if (content.startsWith('"') && content.endsWith('"')) {
-            content = content.slice(1, -1)
+
+      default:
+          output: '',
+          executionTime
+    }
+}
+
+  maxOutputLength: 10000
+
+
+
+
+
+
+
+
+
+
+
+
               .replace(/\\n/g, '\n')
               .replace(/\\t/g, '\t')
             outputLines.push(content)
@@ -157,8 +157,8 @@ export class CodeSandbox {
               outputLines.push(String(expr))
             }
           }
-          continue
-        }
+
+
 
         const varMatch = line.match(/(?:int|double|String|boolean)\s+(\w+)\s*=\s*(.+?);/)
         if (varMatch) {
@@ -179,18 +179,18 @@ export class CodeSandbox {
         ? outputLines.join('\n')
         : 'Java code executed successfully'
 
-    } catch (err) {
+
       error = err instanceof Error ? err.message : 'Java execution error'
-    }
+
 
     const executionTime = performance.now() - startTime
-    return { output, error, executionTime }
-  }
+
+
 
   async executeSQL(code: string): Promise<ExecutionResult> {
     const startTime = performance.now()
     let output = ''
-    let error: string | undefined = undefined
+
 
     try {
       const statements = code.split(';').filter(s => s.trim())
@@ -212,48 +212,48 @@ export class CodeSandbox {
           results.push('✓ Row(s) updated successfully')
         } else if (trimmed.startsWith('DELETE')) {
           results.push('✓ Row(s) deleted successfully')
-        }
+
       }
 
       output = results.join('\n')
 
-    } catch (err) {
+
       error = err instanceof Error ? err.message : 'SQL execution error'
-    }
+
 
     const executionTime = performance.now() - startTime
-    return { output, error, executionTime }
-  }
+
+
 
   private evaluateExpression(expr: string, variables: Record<string, unknown>): unknown {
-    try {
-      const safeExpr = expr.replace(/(\w+)/g, (match) => {
-        return match in variables ? JSON.stringify(variables[match]) : match
-      })
+
+
+
+
       return eval(safeExpr)
-    } catch {
+
       return undefined
-    }
+
   }
 
   async execute(code: string, language: string): Promise<ExecutionResult> {
     const normalizedLanguage = language.toLowerCase()
 
-    switch (normalizedLanguage) {
+
       case 'javascript':
       case 'js':
-      case 'typescript':
+
       case 'ts':
         return this.executeJavaScript(code)
 
       case 'python':
-      case 'py':
+
         return this.executePython(code)
 
       case 'java':
         return this.executeJava(code)
 
-      case 'sql':
+
         return this.executeSQL(code)
 
       default:
@@ -261,12 +261,12 @@ export class CodeSandbox {
           output: '',
           error: `Language '${language}' is not supported`,
           executionTime: 0
-        }
+
     }
   }
 }
 
 export const sandbox = new CodeSandbox({
-  timeout: 5000,
+
   maxOutputLength: 10000
-})
+
