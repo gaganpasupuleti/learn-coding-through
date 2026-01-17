@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import { Play, ArrowsClockwise, CheckCircle, Warning } from '@phosphor-icons/react'
 import { toast } from 'sonner'
+import Prism from 'prismjs'
+import 'prismjs/components/prism-python'
+import 'prismjs/components/prism-java'
+import 'prismjs/components/prism-sql'
 
 interface CodeEditorProps {
   initialCode: string
@@ -17,10 +20,18 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
   const [output, setOutput] = useState<string>('')
   const [isRunning, setIsRunning] = useState(false)
   const [hasError, setHasError] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const highlightRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     setCode(initialCode)
   }, [initialCode])
+
+  useEffect(() => {
+    if (highlightRef.current) {
+      Prism.highlightElement(highlightRef.current)
+    }
+  }, [code, language])
 
   const executeCode = () => {
     setIsRunning(true)
@@ -96,6 +107,23 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
     toast.success('Code reset to original!')
   }
 
+  const handleScroll = () => {
+    if (textareaRef.current && highlightRef.current) {
+      highlightRef.current.scrollTop = textareaRef.current.scrollTop
+      highlightRef.current.scrollLeft = textareaRef.current.scrollLeft
+    }
+  }
+
+  const getPrismLanguage = () => {
+    const langMap: Record<string, string> = {
+      javascript: 'javascript',
+      python: 'python',
+      java: 'java',
+      sql: 'sql'
+    }
+    return langMap[language.toLowerCase()] || 'javascript'
+  }
+
   return (
     <div className="space-y-4">
       <Card className="border-2 overflow-hidden">
@@ -132,12 +160,25 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
           </div>
         </div>
         
-        <Textarea
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          className="font-mono text-sm min-h-[300px] border-0 focus-visible:ring-0 rounded-none resize-none bg-background"
-          placeholder="Write your code here..."
-        />
+        <div className="relative">
+          <pre className="code-highlight-wrapper absolute inset-0 pointer-events-none overflow-auto p-4 m-0" aria-hidden="true">
+            <code 
+              ref={highlightRef}
+              className={`language-${getPrismLanguage()} block min-h-[300px]`}
+            >
+              {code}
+            </code>
+          </pre>
+          <textarea
+            ref={textareaRef}
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            onScroll={handleScroll}
+            className="code-editor-textarea relative font-mono text-sm min-h-[300px] w-full border-0 focus-visible:ring-0 focus:outline-none rounded-none resize-none bg-transparent p-4 text-transparent caret-foreground"
+            placeholder="Write your code here..."
+            spellCheck={false}
+          />
+        </div>
       </Card>
 
       {output && (
