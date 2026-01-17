@@ -34,11 +34,11 @@ A browser-based coding sandbox where students can learn SQL, Python, and Java by
 - **Success criteria**: Code editing feels smooth, syntax highlighting works in real-time with distinct colors for different code elements, line numbers visible on left, autocomplete works and can be navigated with arrow keys and applied with Enter/Tab, theme persists between sessions, code persists between sessions
 
 ### Code Execution & Validation
-- **Functionality**: Run code and see results or errors
-- **Purpose**: Immediate feedback helps students learn from mistakes
+- **Functionality**: Real-time code execution in sandboxed environments with support for JavaScript, Python, Java, and SQL
+- **Purpose**: Immediate feedback helps students learn from mistakes with actual code execution
 - **Trigger**: Clicking "Run Code" button
-- **Progression**: Click run → Code validates → Display output/results or errors → Student iterates
-- **Success criteria**: Clear success/error messages, simulated execution results display correctly
+- **Progression**: Click run → Code executes in isolated sandbox → Display output/results with execution time → Errors shown with clear messages → Student iterates
+- **Success criteria**: Safe code execution, clear success/error messages, execution time displayed, proper sandboxing prevents malicious code, supports multiple languages
 
 ### Progress Tracking
 - **Functionality**: Track which projects have been completed

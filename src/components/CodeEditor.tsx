@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Play, ArrowsClockwise, CheckCircle, Warning, Palette } from '@phosphor-icons/react'
+import { Play, ArrowsClockwise, CheckCircle, Warning, Palette, Timer } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-python'
@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useKV } from '@github/spark/hooks'
+import { sandbox } from '@/lib/sandbox'
 
 interface CodeEditorProps {
   initialCode: string
@@ -148,6 +149,7 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
   const [output, setOutput] = useState<string>('')
   const [isRunning, setIsRunning] = useState(false)
   const [hasError, setHasError] = useState(false)
+  const [executionTime, setExecutionTime] = useState<number>(0)
   const [theme, setTheme] = useKV<Theme>('editor-theme', 'monokai')
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
@@ -309,36 +311,34 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
     }
   }
 
-  const executeCode = () => {
+  const executeCode = async () => {
+    if (!code.trim()) {
+      toast.error('Please write some code first!')
+      return
+    }
+
     setIsRunning(true)
     setHasError(false)
     setOutput('')
+    setExecutionTime(0)
 
     try {
-      if (projectId === 'digital-clock') {
-        executeClockCode()
-      } else if (projectId === 'calculator') {
-        executeCalculatorCode()
-      } else if (projectId === 'temperature-converter') {
-        executeTemperatureConverterCode()
-      } else if (projectId === 'password-generator') {
-        executePasswordGeneratorCode()
-      } else if (projectId === 'student-database') {
-        executeStudentDatabaseCode()
-      } else if (projectId === 'sales-analytics') {
-        executeSalesAnalyticsCode()
-      } else if (projectId === 'grade-calculator') {
-        executeGradeCalculatorCode()
-      } else if (projectId === 'number-guesser') {
-        executeNumberGuesserCode()
+      const result = await sandbox.execute(code, language)
+      
+      setExecutionTime(result.executionTime)
+      
+      if (result.error) {
+        setHasError(true)
+        setOutput(result.error)
+        toast.error('Oops! There was an error in your code.')
       } else {
-        executeGenericCode()
+        setOutput(result.output || 'Code executed successfully (no output)')
+        toast.success('Code executed successfully!')
       }
-      toast.success('Code executed successfully!')
     } catch (error) {
       setHasError(true)
-      setOutput(`Error: ${error instanceof Error ? error.message : 'Something went wrong'}`)
-      toast.error('Oops! There was an error in your code.')
+      setOutput(`Execution Error: ${error instanceof Error ? error.message : 'Something went wrong'}`)
+      toast.error('Failed to execute code')
     } finally {
       setIsRunning(false)
     }
@@ -348,84 +348,7 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
     }
   }
 
-  const executeClockCode = () => {
-    const now = new Date()
-    const hours = now.getHours().toString().padStart(2, '0')
-    const minutes = now.getMinutes().toString().padStart(2, '0')
-    const seconds = now.getSeconds().toString().padStart(2, '0')
-    
-    setOutput(`Current time: ${hours}:${minutes}:${seconds}\n\nYour clock is working! It would update every second in the live version.`)
-  }
 
-  const executeCalculatorCode = () => {
-    const testCases = [
-      { a: 10, b: 5, op: '+', expected: 15 },
-      { a: 20, b: 8, op: '-', expected: 12 },
-      { a: 6, b: 7, op: '×', expected: 42 },
-      { a: 100, b: 4, op: '÷', expected: 25 },
-    ]
-
-    let results = 'Testing your calculator:\n\n'
-    testCases.forEach(test => {
-      let result
-      switch (test.op) {
-        case '+': result = test.a + test.b; break
-        case '-': result = test.a - test.b; break
-        case '×': result = test.a * test.b; break
-        case '÷': result = test.a / test.b; break
-        default: result = 0
-      }
-      const pass = result === test.expected
-      results += `${test.a} ${test.op} ${test.b} = ${result} ${pass ? '✓' : '✗'}\n`
-    })
-
-    setOutput(results + '\nAll tests passed! Your calculator logic is correct.')
-  }
-
-  const executeGenericCode = () => {
-    const lines = code.split('\n').length
-    const chars = code.length
-    setOutput(`Code analysis:\n\n📝 Lines: ${lines}\n📊 Characters: ${chars}\n✨ Syntax looks good!\n\nYour code is ready to use.`)
-  }
-
-  const executeTemperatureConverterCode = () => {
-    setOutput(`Temperature Converter Test:\n\n25°C → 77°F ✓\n0°C → 32°F ✓\n100°C → 212°F ✓\n-40°C → -40°F ✓\n\n273.15K → 0°C ✓\n\nAll conversions working correctly!`)
-  }
-
-  const executePasswordGeneratorCode = () => {
-    const samplePasswords = [
-      'aB7#kL2$mN9!',
-      'P@ssw0rd!2024',
-      'Xy9#Qz4&Rt8%'
-    ]
-    const randomPwd = samplePasswords[Math.floor(Math.random() * samplePasswords.length)]
-    setOutput(`Password Generator Test:\n\nGenerated passwords:\n- ${samplePasswords[0]}\n- ${samplePasswords[1]}\n- ${samplePasswords[2]}\n\nYour password: ${randomPwd}\n\n✓ All character types included\n✓ Sufficient length\n✓ Secure randomization`)
-  }
-
-  const executeStudentDatabaseCode = () => {
-    setOutput(`SQL Query Results:\n\n--- SELECT * FROM Students ---\nID | Name          | Major\n1  | Alice Johnson | Computer Science\n2  | Bob Smith     | Mathematics\n3  | Carol Davis   | Physics\n\n--- WHERE major = 'Computer Science' ---\n1  | Alice Johnson | alice@email.com\n\n✓ Query executed successfully\n✓ 3 rows returned`)
-  }
-
-  const executeSalesAnalyticsCode = () => {
-    setOutput(`Sales Analytics Report:\n\n📊 Total Revenue: $2,850.00\n📦 Total Sales: 5\n💰 Average Sale: $570.00\n\n--- Top Performers ---\nJohn: $2,475.00 (3 sales)\nSarah: $375.00 (2 sales)\n\n--- Top Products ---\n1. Laptop: $2,400.00\n2. Monitor: $350.00\n3. Keyboard: $75.00\n\n✓ Analytics computed successfully`)
-  }
-
-  const executeGradeCalculatorCode = () => {
-    const scores = [85.5, 92.0, 78.5, 88.0, 95.0]
-    const avg = scores.reduce((a, b) => a + b) / scores.length
-    let grade = ''
-    if (avg >= 90) grade = 'A'
-    else if (avg >= 80) grade = 'B'
-    else if (avg >= 70) grade = 'C'
-    else grade = 'D'
-    
-    setOutput(`Grade Calculator Results:\n\nTest Scores: ${scores.join(', ')}\n\nAverage: ${avg.toFixed(2)}\nLetter Grade: ${grade}\n\n${grade === 'A' ? '🎉 Outstanding!' : grade === 'B' ? '👏 Great job!' : '👍 Good work!'}\n\n✓ Calculation complete`)
-  }
-
-  const executeNumberGuesserCode = () => {
-    const randomNum = Math.floor(Math.random() * 100) + 1
-    setOutput(`Number Guessing Game Started:\n\n🎮 Secret number generated (1-100)\n🎯 Number: ${randomNum}\n\nSimulated gameplay:\nGuess 1: 50 → Too ${randomNum > 50 ? 'low' : 'high'}!\nGuess 2: ${randomNum > 50 ? '75' : '25'} → ${Math.abs(randomNum - (randomNum > 50 ? 75 : 25)) < 20 ? 'Getting closer!' : 'Keep trying!'}\n\n✓ Game logic working correctly`)
-  }
 
   const resetCode = () => {
     setCode(initialCode)
@@ -616,17 +539,25 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
       {output && (
         <Card className={`border-2 ${hasError ? 'border-destructive/50 bg-destructive/5' : 'border-primary/30 bg-primary/5'}`}>
           <div className="p-4">
-            <div className="flex items-center gap-2 mb-3">
-              {hasError ? (
-                <>
-                  <Warning size={20} weight="fill" className="text-destructive" />
-                  <span className="font-semibold text-destructive">Error Output</span>
-                </>
-              ) : (
-                <>
-                  <CheckCircle size={20} weight="fill" className="text-primary" />
-                  <span className="font-semibold text-primary">Output</span>
-                </>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                {hasError ? (
+                  <>
+                    <Warning size={20} weight="fill" className="text-destructive" />
+                    <span className="font-semibold text-destructive">Error Output</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle size={20} weight="fill" className="text-primary" />
+                    <span className="font-semibold text-primary">Output</span>
+                  </>
+                )}
+              </div>
+              {executionTime > 0 && (
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Timer size={14} />
+                  <span>{executionTime.toFixed(2)}ms</span>
+                </div>
               )}
             </div>
             <pre className="font-mono text-sm whitespace-pre-wrap leading-relaxed text-foreground">

@@ -25,6 +25,7 @@ import { SalesAnalyticsPreview } from '@/components/previews/SalesAnalyticsPrevi
 import { GradeCalculatorPreview } from '@/components/previews/GradeCalculatorPreview'
 import { NumberGuesserPreview } from '@/components/previews/NumberGuesserPreview'
 import { CodeEditor } from '@/components/CodeEditor'
+import { SandboxInfo } from '@/components/SandboxInfo'
 
 interface ProjectLearningPageProps {
   project: Project
@@ -85,6 +86,7 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
               <ArrowLeft className="mr-2" size={18} />
               Back to Projects
             </Button>
+            <SandboxInfo />
           </div>
 
           <div className="space-y-2">
