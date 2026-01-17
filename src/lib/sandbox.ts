@@ -1,45 +1,45 @@
 export interface ExecutionResult {
   output: string
-  error: string | null
-  executionTime: number
 }
+interface SandboxOption
+ 
 
-interface SandboxOptions {
-  timeout?: number
-  maxOutputLength?: number
-}
-
-class CodeSandbox {
   private timeout: number
-  private maxOutputLength: number
 
-  constructor(options: SandboxOptions = {}) {
-    this.timeout = options.timeout || 5000
-    this.maxOutputLength = options.maxOutputLength || 10000
-  }
+    this.timeout = options
+ 
 
-  async executeJavaScript(code: string): Promise<ExecutionResult> {
-    const startTime = performance.now()
     let output = ''
-    let error: string | null = null
 
-    const consoleLog: string[] = []
-    const consoleError: string[] = []
+    const consoleError: string[] 
 
-    try {
-      const iframe = document.createElement('iframe')
       iframe.style.display = 'none'
-      document.body.appendChild(iframe)
 
-      const iframeWindow = iframe.contentWindow
       if (!iframeWindow) {
-        throw new Error('Failed to create sandbox iframe')
-      }
+   
 
-      const wrappedCode = `
-        (function() {
           const console = {
-            log: (...args) => window.parent.postMessage({ type: 'log', args }, '*'),
+            error: (...args) => window.
+          
+            ${code}
+
+              message: err.message,
+            }, '*');
+
+
+        if (event.data.type === 'log') {
+        } else if (event.data.type 
+            consoleError.push(event.dat
+
+        }
+
+
+       
+
+        try {
+          script.text
+          
+            resolve()
             error: (...args) => window.parent.postMessage({ type: 'error', args }, '*')
           };
           
@@ -82,9 +82,9 @@ class CodeSandbox {
           setTimeout(() => {
             resolve()
           }, 100)
-        } catch (err) {
+        
           reject(err)
-        }
+        c
       })
 
       await Promise.race([executionPromise, timeoutPromise])
@@ -94,30 +94,30 @@ class CodeSandbox {
 
       output = consoleLog.join('\n')
       if (consoleError.length > 0) {
-        error = consoleError.join('\n')
+            outputLines.push(printMatch
       }
 
       if (!output && !error) {
         output = 'Code executed successfully (no output)'
       }
-    } catch (err) {
+            const v
       error = err instanceof Error ? err.message : 'Unknown error occurred'
-    }
+     
 
     if (output.length > this.maxOutputLength) {
       output = output.substring(0, this.maxOutputLength) + '\n... (output truncated)'
-    }
+     
 
-    const executionTime = performance.now() - startTime
+      for (let i = 0; i < lines.length; i++) {
     return { output, error, executionTime }
   }
 
   async executePython(code: string): Promise<ExecutionResult> {
     const startTime = performance.now()
     let output = ''
-    let error: string | null = null
+        if (printMatch) {
 
-    try {
+         
       const lines = code.split('\n')
       const outputLines: string[] = []
       const variables: Record<string, unknown> = {}
@@ -133,40 +133,40 @@ class CodeSandbox {
             let content = printMatch[1].trim()
             
             if (content.startsWith('"') || content.startsWith("'")) {
-              content = content.slice(1, -1)
+        }
               outputLines.push(content)
             } else if (content in variables) {
               outputLines.push(String(variables[content]))
-            } else {
+        if (randomMa
               const evaluated = this.evaluateExpression(content, variables)
-              outputLines.push(String(evaluated))
+        const nextIntMatch = line.match(/scanner\
             }
-          } catch {
+        }
             outputLines.push(printMatch[1])
-          }
-          continue
+          c
+          outputLi
         }
 
         const assignMatch = trimmed.match(/^(\w+)\s*=\s*(.+)$/)
-        if (assignMatch) {
-          try {
-            const varName = assignMatch[1]
-            const value = assignMatch[2].trim()
-            
-            if (value.startsWith('"') || value.startsWith("'")) {
-              variables[varName] = value.slice(1, -1)
-            } else if (!isNaN(Number(value))) {
-              variables[varName] = Number(value)
-            } else {
-              try {
-                variables[varName] = this.evaluateExpression(value, variables)
-              } catch {
-                variables[varName] = value
-              }
-            }
-          } catch {
-            continue
+          if (methodName &
           }
+      }
+      output = outputLines.length > 0
+        : '✓
+      error = err instanceof Error ? err.message : 'Java compilat
+
+    return { output, error, executionTime }
+
+    const startTime 
+    let error: stri
+    try {
+        .split(';')
+        .filter(s => s.length > 0)
+      const out
+            }
+
+          const from
+
         }
 
         const defMatch = trimmed.match(/^def\s+(\w+)/)
@@ -174,15 +174,15 @@ class CodeSandbox {
           outputLines.push(`Function '${defMatch[1]}' defined`)
         }
 
-        const classMatch = trimmed.match(/^class\s+(\w+)/)
+          outputLines.push(`✓ ${rowCount} row(s) updated i
         if (classMatch) {
           outputLines.push(`Class '${classMatch[1]}' defined`)
         }
 
         const importMatch = trimmed.match(/^(?:import|from)\s+(\w+)/)
-        if (importMatch) {
+          const tableName 
           outputLines.push(`Module '${importMatch[1]}' imported`)
-        }
+         
       }
 
       output = outputLines.length > 0 
@@ -190,11 +190,11 @@ class CodeSandbox {
         : 'Python code executed successfully\n\n✓ Syntax appears valid\n✓ Logic structure looks good'
     } catch (err) {
       error = err instanceof Error ? err.message : 'Python execution error'
-    }
+    c
 
     const executionTime = performance.now() - startTime
     return { output, error, executionTime }
-  }
+   
 
   async executeJava(code: string): Promise<ExecutionResult> {
     const startTime = performance.now()
@@ -202,13 +202,13 @@ class CodeSandbox {
     let error: string | null = null
 
     try {
-      const lines = code.split('\n')
+    switch (normalizedLanguage) {
       const outputLines: string[] = []
 
       const classMatch = code.match(/public\s+class\s+(\w+)/)
-      if (classMatch) {
+      case 'py':
         outputLines.push(`✓ Class '${classMatch[1]}' compiled successfully`)
-      }
+       
 
       const mainMatch = code.match(/public\s+static\s+void\s+main/)
       if (mainMatch) {
@@ -222,18 +222,18 @@ class CodeSandbox {
         const line = lines[i].trim()
 
         if (line.includes('public static void main')) {
-          inMain = true
+
           continue
-        } else if (line === '}' && inMain) {
-          inMain = false
-          continue
-        }
+
+
+
+
 
         if (!inMain) continue
 
         const printMatch = line.match(/System\.out\.println?\((.*?)\)[;]?$/)
         if (printMatch) {
-          let content = printMatch[1].trim()
+
           
           if (content.startsWith('"')) {
             content = content.slice(1, -1)
@@ -245,23 +245,23 @@ class CodeSandbox {
               const evaluated = this.evaluateExpression(content, variables)
               outputLines.push(String(evaluated))
             } catch {
-              outputLines.push(content)
+
             }
           }
         }
 
         const varMatch = line.match(/(?:int|double|float|String|boolean|long)\s+(\w+)\s*=\s*(.+?);/)
-        if (varMatch) {
+
           const varName = varMatch[1]
           let value = varMatch[2].trim()
           
           if (value.startsWith('"')) {
             variables[varName] = value.slice(1, -1)
-          } else if (value === 'true' || value === 'false') {
+
             variables[varName] = value === 'true'
           } else if (!isNaN(Number(value))) {
             variables[varName] = Number(value)
-          } else {
+
             try {
               variables[varName] = this.evaluateExpression(value, variables)
             } catch {
@@ -271,9 +271,9 @@ class CodeSandbox {
         }
 
         const scannerMatch = line.match(/new\s+Scanner\(System\.in\)/)
-        if (scannerMatch) {
+
           outputLines.push('✓ Scanner initialized (console input simulation)')
-        }
+
 
         const randomMatch = line.match(/new\s+Random\(\)/)
         if (randomMatch) {
@@ -287,37 +287,37 @@ class CodeSandbox {
         }
 
         const randomIntMatch = line.match(/random\.nextInt\((\d+)\)/)
-        if (randomIntMatch) {
+
           const bound = parseInt(randomIntMatch[1])
           const randomNum = Math.floor(Math.random() * bound)
           outputLines.push(`Random number generated: ${randomNum}`)
-        }
+
       }
 
       const methodMatches = code.match(/(?:public|private|protected)?\s+(?:static\s+)?(?!void\s+main)\w+\s+(\w+)\s*\(/g)
       if (methodMatches) {
         methodMatches.forEach(match => {
-          const methodName = match.match(/(\w+)\s*\(/)
+
           if (methodName && methodName[1] !== 'main') {
             outputLines.push(`✓ Method '${methodName[1]}' defined`)
           }
-        })
+
       }
 
       output = outputLines.length > 0
         ? '\n' + outputLines.join('\n') + '\n\n✓ Java code compiled and executed successfully'
         : '✓ Java code compiled successfully\n✓ Syntax appears valid\n✓ Logic structure looks good'
-    } catch (err) {
+
       error = err instanceof Error ? err.message : 'Java compilation/execution error'
-    }
+
 
     const executionTime = performance.now() - startTime
     return { output, error, executionTime }
-  }
+
 
   async executeSQL(code: string): Promise<ExecutionResult> {
     const startTime = performance.now()
-    let output = ''
+
     let error: string | null = null
 
     try {
@@ -347,7 +347,7 @@ class CodeSandbox {
           const tableName = intoMatch ? intoMatch[1] : 'table'
           outputLines.push(`✓ 1 row inserted into '${tableName}'`)
         } else if (upperStatement.startsWith('UPDATE')) {
-          const tableMatch = statement.match(/UPDATE\s+(\w+)/i)
+
           const tableName = tableMatch ? tableMatch[1] : 'table'
           const rowCount = Math.floor(Math.random() * 5) + 1
           outputLines.push(`✓ ${rowCount} row(s) updated in '${tableName}'`)
@@ -375,7 +375,7 @@ class CodeSandbox {
         } else {
           outputLines.push(`✓ SQL statement executed`)
         }
-      }
+
 
       output = outputLines.join('\n')
     } catch (err) {
@@ -393,34 +393,34 @@ class CodeSandbox {
       expr = expr.replace(new RegExp(`\\b${key}\\b`, 'g'), JSON.stringify(value))
     }
 
-    try {
+
       const safeExpr = expr
         .replace(/\/\//g, '/')
 
       return Function('"use strict"; return (' + safeExpr + ')')()
-    } catch {
+
       return expr
-    }
+
   }
 
   async execute(code: string, language: string): Promise<ExecutionResult> {
     const normalizedLanguage = language.toLowerCase()
 
-    switch (normalizedLanguage) {
+
       case 'javascript':
       case 'js':
-      case 'typescript':
+
       case 'ts':
         return this.executeJavaScript(code)
       
       case 'python':
-      case 'py':
+
         return this.executePython(code)
 
       case 'java':
         return this.executeJava(code)
       
-      case 'sql':
+
         return this.executeSQL(code)
       
       default:
@@ -428,12 +428,12 @@ class CodeSandbox {
           output: '',
           error: `Language '${language}' is not supported`,
           executionTime: 0
-        }
+
     }
   }
 }
 
 export const sandbox = new CodeSandbox({
-  timeout: 5000,
+
   maxOutputLength: 10000
-})
+
