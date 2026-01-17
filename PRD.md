@@ -1,147 +1,145 @@
-# Product Requirements Document: CodeQuest - Learn Coding Through Projects
+# Planning Guide
+
+A browser-based coding sandbox where students can learn SQL, Python, and Java by completing hands-on projects with instant feedback and syntax validation.
 
 **Experience Qualities**:
+1. **Empowering** - Students feel capable and in control as they write real code and see immediate results
+2. **Exploratory** - The sandbox encourages experimentation without fear of breaking things
+3. **Progressive** - Clear learning paths guide students from basic to advanced concepts
 
-**Experience Qualities**:
-This is a multi-page educational platform with project cards, step-by-step navigation, live previews, and interactive learning flows. I
-## Essential Features
-### Feature 1: Landing Page
-
-- **Progression**: View hero section with title/description → Click "Start L
-
+**Complexity Level**: Light Application (multiple features with basic state)
+- Features include code editing, project selection, language switching, and validation/execution feedback, but doesn't require complex backend systems or multi-view navigation
 
 ## Essential Features
 
-### Feature 1: Landing Page
-- **Purpose**: Break down complex concepts into digestible, sequential lea
-- **Progression**: View Step 1 (Problem Understanding) → Click "Next" → View St
+### Language Selection
+- **Functionality**: Toggle between SQL, Python, and Java languages
+- **Purpose**: Allows students to focus on their chosen language or explore multiple languages
+- **Trigger**: Clicking language tabs on the home page
+- **Progression**: Home page → Language tab clicked → Projects filtered by language → Display 2 projects per language
+- **Success criteria**: Projects display correctly for selected language, visual feedback shows active language
 
-- **Progression**: View hero section with title/description → Click "Start Learning" or "View Projects" → Navigate to Projects Page
-- **Success criteria**: Clear value proposition visible, both CTAs functional and lead to projects page
+### Project Selection
+- **Functionality**: Choose from 2 projects per language (6 total projects)
+- **Purpose**: Provides structured learning paths with varying difficulty
+- **Trigger**: Clicking a project card
+- **Progression**: View project list → Click project card → Navigate to code editor → Display project description and starter code
+- **Success criteria**: Correct project loads with appropriate starter code and instructions
 
-### Feature 2: Projects Gallery
-- **Functionality**: Display available projects as cards with descriptions
-- **Purpose**: Let learners browse and choose projects that interest them
-- **Trigger**: User clicks navigation to projects or CTA from landing
-- **Progression**: View project cards → Read descriptions → Click "Start Project" → Navigate to Project Learning Page
-- **Success criteria**: All projects displayed with clear descriptions, cards clickable and navigate correctly
+### Code Editor
+- **Functionality**: Write and edit code with syntax highlighting
+- **Purpose**: Core learning interface where students practice coding
+- **Trigger**: Project selected
+- **Progression**: Project loads → Editor displays starter code → Student types code → Syntax highlighting updates in real-time
+- **Success criteria**: Code editing feels smooth, syntax highlighting works, code persists between sessions
 
-### Feature 3: Step-by-Step Project Learning
-- **Functionality**: Guide learners through 5 structured steps for each project
-- **Purpose**: Break down complex concepts into digestible, sequential learning moments
-- **Trigger**: User clicks "Start Project" on any project card
-- **Progression**: View Step 1 (Problem Understanding) → Click "Next" → View Step 2 (Logic Breakdown) → Next → View Step 3 (Code Section) → Next → View Step 4 (Live Preview) → Next → View Step 5 (Try Yourself) → Complete or return to projects
-- **Success criteria**: Steps display in order, navigation works (Next/Previous), progress indicator shows current step, code is syntax highlighted, previews are functional and live
+### Code Execution & Validation
+- **Functionality**: Run code and see results or errors
+- **Purpose**: Immediate feedback helps students learn from mistakes
+- **Trigger**: Clicking "Run Code" button
+- **Progression**: Click run → Code validates → Display output/results or errors → Student iterates
+- **Success criteria**: Clear success/error messages, simulated execution results display correctly
 
-### Feature 4: Live Project Previews
+### Progress Tracking
+- **Functionality**: Track which projects have been completed
+- **Purpose**: Motivates students and shows learning progress
+- **Trigger**: Successfully completing a project
+- **Progression**: Complete project → Mark as complete → Visual indicator on project card → Count updates
+- **Success criteria**: Completion status persists, visual badges/checkmarks appear
 
-Typography should feel modern and approachable while maintaining excellent readability
-**Primary Font**: Space Grotesk - A geometric san
-**Body Font**: Inter - Clean, highly legible, and optimized for screens at all sizes. Neutral enough to not distract from learning content.
-- **Typographic Hierarchy**:
+## Edge Case Handling
 
-  - Body Text (Explanations): Inter Regul
-  - Code Blocks: JetBrains Mono Regular/14px/normal line-height (1.6)
-## Animations
+- **Empty Code Submission** - Display friendly message asking student to write code first
+- **Syntax Errors** - Highlight the problematic line and provide helpful error messages
+- **Browser Refresh** - Persist code and progress using useKV to prevent work loss
+- **No Project Selected** - Show welcome message with instructions to select a project
+- **Rapid Language Switching** - Debounce to prevent UI flashing
 
+## Design Direction
 
-- **Card**: Project cards on gallery page with hover effects - add `hover:shadow-lg transition-shadow duration-
+The design should evoke a **modern developer workspace** that feels professional yet approachable for students. Think terminal aesthetics meets friendly learning platform - clean monospace fonts, subtle tech-inspired patterns, and a color palette that suggests both coding sophistication and educational warmth.
 
-- **ScrollArea**: For
-- **Progress**: Circular or linear progress for step completion tracking
+## Color Selection
 
-- **Project Card Component**: Custom component combining Card with image placeholder, title, descr
-- **Code Editor Component**: Custom interactive code editor with editable texta
+A tech-forward palette combining deep coding-inspired backgrounds with vibrant accent colors for each language.
 
-
-  - Hover: Slightly
-  - Disabled: Muted with reduced opacity (0.5) and no cursor
-
-  - Active: Border
-  - Current step: Accent coral badge with higher contrast
-
-### Icon Selection
-- **Projects**: Cube or 
-- **Complete**: Check or CheckCircle (for completed steps)
-- **Play/Preview**: Play or Eye (for live previews)
-- **ArrowRight**: For primary CTAs to indicate forward progress
-### Spacing
-- **Card Padding**: 6 (1.5rem) internally
-- **Button Padding**: px-6 py-3 for primary, px-4 py-2 for secondary
-
-- **Navigation**: Fixed bottom navigation bar on mobile with icons only, expanding to full nav bar o
+- **Primary Color**: Deep Indigo `oklch(0.35 0.08 265)` - Represents professionalism and focus, reminiscent of IDE themes
+- **Secondary Colors**: 
+  - SQL Blue `oklch(0.65 0.15 230)` - Cool, database-like precision
+  - Python Green `oklch(0.70 0.12 150)` - Natural, growth-oriented learning
+  - Java Orange `oklch(0.68 0.15 45)` - Energetic, powerful execution
+- **Accent Color**: Electric Cyan `oklch(0.75 0.18 195)` - Attention-grabbing for CTAs, success states, and interactive elements
+- **Foreground/Background Pairings**:
+  - Background (Dark Navy `oklch(0.18 0.04 265)`): Light text `oklch(0.95 0.01 265)` - Ratio 11.2:1 ✓
+  - Primary (Deep Indigo `oklch(0.35 0.08 265)`): White text `oklch(0.98 0 0)` - Ratio 7.8:1 ✓
+  - Accent (Electric Cyan `oklch(0.75 0.18 195)`): Dark text `oklch(0.18 0.04 265)` - Ratio 8.5:1 ✓
+  - SQL Blue `oklch(0.65 0.15 230)`: Dark text `oklch(0.18 0.04 265)` - Ratio 6.2:1 ✓
 
 ## Font Selection
-Typography should feel modern and approachable while maintaining excellent readability for code snippets - a combination that welcomes learners while respecting the technical content.
 
-**Primary Font**: Space Grotesk - A geometric sans-serif with friendly, open letterforms that feels modern and accessible without being overly casual. Perfect for headings and UI elements.
-**Code Font**: JetBrains Mono - A monospace font specifically designed for developers, with excellent character distinction and ligature support for readable code.
-**Body Font**: Inter - Clean, highly legible, and optimized for screens at all sizes. Neutral enough to not distract from learning content.
+Typography should blend technical precision with educational clarity - monospace for code, clean sans-serif for UI.
 
 - **Typographic Hierarchy**:
-  - H1 (Page Titles): Space Grotesk Bold/36px/tight letter-spacing (-0.02em)
-  - H2 (Section Titles): Space Grotesk SemiBold/28px/normal letter-spacing
-  - H3 (Step Titles): Space Grotesk Medium/22px/normal letter-spacing
-  - Body Text (Explanations): Inter Regular/16px/relaxed line-height (1.7)
-  - Small Text (Hints): Inter Regular/14px/normal line-height (1.5)
-  - Code Blocks: JetBrains Mono Regular/14px/normal line-height (1.6)
+  - H1 (Page Title): Space Grotesk Bold / 36px / tight letter spacing - Technical yet friendly
+  - H2 (Project Titles): Space Grotesk Semibold / 24px / normal spacing
+  - H3 (Section Headers): Space Grotesk Medium / 18px / normal spacing
+  - Body Text: Inter Regular / 16px / line-height 1.6 - Maximum readability
+  - Code Editor: JetBrains Mono Regular / 14px / line-height 1.5 - Professional code display
+  - Button Labels: Inter Semibold / 14px / uppercase / tracking-wide
 
 ## Animations
-Animations should guide attention and celebrate progress without creating delays. Use motion to reinforce the feeling of forward momentum in the learning journey - smooth page transitions (300ms ease-out), gentle card hover lifts with subtle shadows, and satisfying button presses. Step transitions should slide horizontally (400ms) to create spatial understanding. Success moments (completing steps) deserve a brief, joyful scale animation (200ms bounce).
+
+Animations should reinforce the technical nature while maintaining smoothness - code-like transitions with purposeful motion.
+
+- **Language Tab Switching**: Slide indicator with 200ms ease for smooth transitions
+- **Project Card Hover**: Subtle lift (4px) with 150ms ease and shadow expansion
+- **Code Execution**: Pulsing button → Brief loading state → Results fade in (300ms)
+- **Success Completion**: Checkmark scale-in with bounce effect (400ms spring animation)
+- **Editor Focus**: Soft glow transition on the editor border (200ms)
 
 ## Component Selection
 
-### Components
-- **Card**: Project cards on gallery page with hover effects - add `hover:shadow-lg transition-shadow duration-300` and subtle `hover:-translate-y-1` transform
-- **Button**: Primary CTAs use filled style, secondary use outline variant - customize with rounded corners matching `--radius`
-- **Badge**: For step indicators (Step 1/5) with custom teal background
-- **Separator**: Between step sections for visual breathing room
-- **ScrollArea**: For code blocks to contain long snippets without breaking layout
-- **Tabs**: For toggling between code/explanation views if needed
-- **Progress**: Circular or linear progress for step completion tracking
-- **Dialog**: For "Try Yourself" challenge hints or additional explanations (optional)
-
-### Customizations
-- **Project Card Component**: Custom component combining Card with image placeholder, title, description, and CTA button
-- **Step Container Component**: Custom wrapper that handles step navigation, progress display, and content rendering
-- **Code Editor Component**: Custom syntax-highlighted code display using ScrollArea with line numbers
-- **Preview Frame Component**: Custom container for live project outputs (clock, calculator)
-
-### States
-- **Buttons**: 
-  - Default: Solid background with primary color
-  - Hover: Slightly lighter shade with subtle lift (translate-y)
-  - Active: Pressed state with deeper color
-  - Disabled: Muted with reduced opacity (0.5) and no cursor
-- **Cards**: 
-  - Default: Subtle border on sand background
-  - Hover: Elevated shadow and slight upward translation
-  - Active: Border color changes to accent coral
-- **Step Navigation**:
-  - Current step: Accent coral badge with higher contrast
-  - Completed steps: Checkmark icon in primary teal
-  - Upcoming steps: Muted gray with dashed outline
-
-### Icon Selection
-- **Home/Landing**: House (for nav)
-- **Projects**: Cube or SquaresFour (representing building blocks)
-- **Next/Previous**: CaretRight/CaretLeft (for step navigation)
-- **Complete**: Check or CheckCircle (for completed steps)
-- **Code**: Code or FileCode (for code sections)
-- **Play/Preview**: Play or Eye (for live previews)
-- **Lightbulb**: For "Try Yourself" challenges
-- **ArrowRight**: For primary CTAs to indicate forward progress
-
-### Spacing
-- **Container Padding**: 6 (1.5rem) on mobile, 8 (2rem) on tablet+
-- **Card Padding**: 6 (1.5rem) internally
-- **Section Gaps**: 8 (2rem) between major sections, 4 (1rem) between related elements
-- **Button Padding**: px-6 py-3 for primary, px-4 py-2 for secondary
-- **Step Content**: Generous vertical rhythm with space-y-6 for paragraphs
-
-### Mobile
-- **Navigation**: Fixed bottom navigation bar on mobile with icons only, expanding to full nav bar on desktop
-- **Project Cards**: Single column stack on mobile (<768px), 2 columns on tablet (768-1024px), 3 columns on desktop (1024px+)
-- **Step Layout**: Full-width single column on mobile with collapsible code sections; side-by-side code/preview on desktop (60/40 split)
-- **Typography Scale**: Reduce heading sizes by 20% on mobile (H1: 28px, H2: 22px, H3: 18px)
-
+- **Components**:
+  - `Tabs` - Language selection (SQL/Python/Java) with custom styling
+  - `Card` - Project cards with hover states, gradient borders for language identification
+  - `Button` - Run code, navigation, project selection with loading states
+  - `Badge` - Difficulty levels (Beginner/Intermediate) and completion status
+  - `Textarea` - Code editor area (will be customized with monospace styling)
+  - `ScrollArea` - Project list and code output display
+  - `Separator` - Divide editor from output
+  - `Alert` - Error messages and validation feedback
+  
+- **Customizations**:
+  - Custom code editor wrapper with line numbers and syntax highlighting simulation
+  - Language-specific accent colors on project cards (border gradients)
+  - Animated progress indicator for completed projects
+  - Custom terminal-style output display for code results
+  
+- **States**:
+  - Buttons: Default (primary/secondary colors), Hover (brightness +10%), Active (scale 0.98), Loading (spinner icon), Disabled (opacity 50%)
+  - Tabs: Active (underline + accent color), Inactive (muted), Hover (slight accent tint)
+  - Cards: Default (subtle border), Hover (elevated shadow + scale 1.02), Selected (accent border)
+  - Editor: Default (border), Focus (accent glow), Error (destructive border pulse)
+  
+- **Icon Selection**:
+  - `Code` - Editor/sandbox indicator
+  - `Play` - Run code button
+  - `Check` - Completed projects
+  - `FileCode` - Project cards
+  - `Lightning` - Quick start actions
+  - `ArrowLeft` - Back navigation
+  - `Terminal` - Output display
+  
+- **Spacing**:
+  - Page padding: `p-6` (24px) on mobile, `p-8` (32px) on desktop
+  - Card gaps: `gap-6` (24px) in grid layouts
+  - Section spacing: `space-y-8` (32px) between major sections
+  - Component internal padding: `p-4` (16px) for cards, `p-6` (24px) for editor areas
+  - Button padding: `px-6 py-3` (24px horizontal, 12px vertical)
+  
+- **Mobile**:
+  - Language tabs: Scrollable horizontal tabs with snap points
+  - Project grid: Single column stack on mobile, 2 columns on tablet, 3 columns on desktop
+  - Editor: Full-width with fixed bottom toolbar for run button
+  - Output: Collapsible drawer that slides up from bottom on mobile
+  - Navigation: Sticky header with hamburger menu for additional options
