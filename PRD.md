@@ -1,21 +1,21 @@
 # Product Requirements Document: CodeQuest - Learn Coding Through Projects
 
-A welcoming educational platform that teaches absolute beginners how to code by building real projects step-by-step, with zero jargon and maximum clarity.
+**Experience Qualities**:
 
 **Experience Qualities**:
-1. **Approachable** - Every element should feel inviting and non-intimidating, removing the fear often associated with learning to code
-2. **Clear** - Information hierarchy must be crystal clear, with obvious next steps and progress indicators throughout the learning journey
-3. **Empowering** - Each completed step should feel like an achievement, building confidence through immediate visual feedback
+This is a multi-page educational platform with project cards, step-by-step navigation, live previews, and interactive learning flows. I
+## Essential Features
+### Feature 1: Landing Page
 
-**Complexity Level**: Light Application (multiple features with basic state)
-This is a multi-page educational platform with project cards, step-by-step navigation, live previews, and interactive learning flows. It requires state management for tracking progress through steps but doesn't need complex data persistence or user accounts.
+- **Progression**: View hero section with title/description → Click "Start L
+
 
 ## Essential Features
 
 ### Feature 1: Landing Page
-- **Functionality**: Welcome screen that introduces the platform's purpose
-- **Purpose**: Set expectations and provide clear entry points for new learners
-- **Trigger**: User visits the site
+- **Purpose**: Break down complex concepts into digestible, sequential lea
+- **Progression**: View Step 1 (Problem Understanding) → Click "Next" → View St
+
 - **Progression**: View hero section with title/description → Click "Start Learning" or "View Projects" → Navigate to Projects Page
 - **Success criteria**: Clear value proposition visible, both CTAs functional and lead to projects page
 
@@ -34,42 +34,42 @@ This is a multi-page educational platform with project cards, step-by-step navig
 - **Success criteria**: Steps display in order, navigation works (Next/Previous), progress indicator shows current step, code is syntax highlighted, previews are functional and live
 
 ### Feature 4: Live Project Previews
-- **Functionality**: Interactive output windows that show the working project
-- **Purpose**: Provide immediate visual feedback and demonstrate what the code creates
-- **Trigger**: User reaches Step 4 in any project
-- **Progression**: View preview container → See live digital clock updating every second OR interact with working calculator buttons → Understand cause and effect
-- **Success criteria**: Digital clock displays current time and updates automatically, calculator performs operations correctly with button clicks
 
-### Feature 5: Interactive Code Editor
-- **Functionality**: Editable code editor where students can write, modify, and execute code with live feedback
-- **Purpose**: Enable hands-on practice by letting learners experiment with code and see immediate results
-- **Trigger**: User reaches Step 3 in any project
-- **Progression**: View tabbed interface → Switch between "Write Code" (editor) and "View Reference" (read-only) → Edit code in textarea → Click "Run Code" → See execution output with success/error feedback → Modify and re-run or reset to original
-- **Success criteria**: Code is editable in textarea, "Run Code" executes logic and shows output, "Reset" restores original code, reference tab shows syntax-highlighted read-only version, appropriate test feedback for each project type
+Typography should feel modern and approachable while maintaining excellent readability
+**Primary Font**: Space Grotesk - A geometric san
+**Body Font**: Inter - Clean, highly legible, and optimized for screens at all sizes. Neutral enough to not distract from learning content.
+- **Typographic Hierarchy**:
 
-## Edge Case Handling
-- **Empty State**: If projects array is empty, show "No projects available yet" message
-- **Step Navigation Boundaries**: Disable "Previous" on first step, show "Complete" instead of "Next" on final step
-- **Preview Errors**: If preview fails to load/render, show friendly "Preview unavailable" message
-- **Mobile Navigation**: Collapse navigation to hamburger menu on small screens
-- **Long Code Blocks**: Make code sections scrollable with fixed height to prevent page overflow
+  - Body Text (Explanations): Inter Regul
+  - Code Blocks: JetBrains Mono Regular/14px/normal line-height (1.6)
+## Animations
 
-## Design Direction
-The design should feel like a warm, encouraging teacher - patient, organized, and celebratory of small wins. The interface should remove all intimidation through soft colors, generous spacing, and playful but professional typography. Every interaction should feel like progress, with smooth transitions and clear visual feedback that says "you're doing great, keep going!"
 
-## Color Selection
-A calming, confidence-building palette that balances professionalism with approachability, using nature-inspired tones to reduce anxiety.
+- **Card**: Project cards on gallery page with hover effects - add `hover:shadow-lg transition-shadow duration-
 
-- **Primary Color**: Deep Teal (oklch(0.45 0.12 200)) - Represents trust, learning, and stability. Used for main CTAs and primary navigation to guide users confidently through the experience.
-- **Secondary Colors**: 
-  - Soft Lavender (oklch(0.75 0.08 290)) - For secondary actions and backgrounds, providing gentle contrast
-  - Warm Sand (oklch(0.92 0.02 80)) - For cards and content containers, creating warmth without distraction
-- **Accent Color**: Bright Coral (oklch(0.68 0.18 25)) - For success moments, highlights, and interactive elements that deserve attention. Creates energy and excitement for achievements.
-- **Foreground/Background Pairings**:
-  - Primary Teal (oklch(0.45 0.12 200)): White text (oklch(0.98 0 0)) - Ratio 7.2:1 ✓
-  - Accent Coral (oklch(0.68 0.18 25)): White text (oklch(0.98 0 0)) - Ratio 4.9:1 ✓
-  - Background Sand (oklch(0.92 0.02 80)): Dark Gray text (oklch(0.25 0.01 260)) - Ratio 11.8:1 ✓
-  - Secondary Lavender (oklch(0.75 0.08 290)): Dark Gray text (oklch(0.25 0.01 260)) - Ratio 6.1:1 ✓
+- **ScrollArea**: For
+- **Progress**: Circular or linear progress for step completion tracking
+
+- **Project Card Component**: Custom component combining Card with image placeholder, title, descr
+- **Code Editor Component**: Custom interactive code editor with editable texta
+
+
+  - Hover: Slightly
+  - Disabled: Muted with reduced opacity (0.5) and no cursor
+
+  - Active: Border
+  - Current step: Accent coral badge with higher contrast
+
+### Icon Selection
+- **Projects**: Cube or 
+- **Complete**: Check or CheckCircle (for completed steps)
+- **Play/Preview**: Play or Eye (for live previews)
+- **ArrowRight**: For primary CTAs to indicate forward progress
+### Spacing
+- **Card Padding**: 6 (1.5rem) internally
+- **Button Padding**: px-6 py-3 for primary, px-4 py-2 for secondary
+
+- **Navigation**: Fixed bottom navigation bar on mobile with icons only, expanding to full nav bar o
 
 ## Font Selection
 Typography should feel modern and approachable while maintaining excellent readability for code snippets - a combination that welcomes learners while respecting the technical content.
@@ -104,7 +104,7 @@ Animations should guide attention and celebrate progress without creating delays
 ### Customizations
 - **Project Card Component**: Custom component combining Card with image placeholder, title, description, and CTA button
 - **Step Container Component**: Custom wrapper that handles step navigation, progress display, and content rendering
-- **Code Editor Component**: Custom interactive code editor with editable textarea, syntax highlighting, "Run Code" and "Reset" buttons, and output display panel showing execution results or errors
+- **Code Editor Component**: Custom syntax-highlighted code display using ScrollArea with line numbers
 - **Preview Frame Component**: Custom container for live project outputs (clock, calculator)
 
 ### States
@@ -144,4 +144,4 @@ Animations should guide attention and celebrate progress without creating delays
 - **Project Cards**: Single column stack on mobile (<768px), 2 columns on tablet (768-1024px), 3 columns on desktop (1024px+)
 - **Step Layout**: Full-width single column on mobile with collapsible code sections; side-by-side code/preview on desktop (60/40 split)
 - **Typography Scale**: Reduce heading sizes by 20% on mobile (H1: 28px, H2: 22px, H3: 18px)
-- **Touch Targets**: Minimum 44px height for all interactive elements on mobile
+
