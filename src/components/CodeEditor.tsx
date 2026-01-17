@@ -478,12 +478,13 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
         >
           <div className="flex">
             <div 
-              className="select-none py-4 px-3 text-right font-mono text-sm border-r"
+              className="select-none py-4 px-3 text-right font-mono text-sm border-r whitespace-pre"
               style={{
                 backgroundColor: currentTheme.background,
                 color: currentTheme.comment,
                 borderColor: currentTheme.punctuation + '20',
                 minWidth: '3.5rem',
+                lineHeight: '1.5',
               }}
             >
               {getLineNumbers()}
