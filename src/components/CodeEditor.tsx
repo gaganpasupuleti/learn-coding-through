@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useKV } from '@github/spark/hooks'
-import { sandbox } from '@/lib/sandbox'
+import { sandbox } from '@/lib/sandboxInstance'
 
 interface CodeEditorProps {
   initialCode: string
