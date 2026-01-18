@@ -23,35 +23,25 @@ export class CodeExecutor {
     return output.slice(0, this.maxOutputLength) + '\n...output truncated'
   }
 
+  /* =======================
+     JavaScript Executor
+     ======================= */
   async executeJavaScript(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-    let output = ''
+    const logs: string[] = []
     let error: string | undefined
 
-    const logs: string[] = []
     const originalLog = console.log
     console.log = (...args: unknown[]) => {
-      try {
-        logs.push(args.map(a => String(a)).join(' '))
-      } catch {
-        logs.push('[unserializable log]')
-      }
+      logs.push(args.map(String).join(' '))
     }
 
     try {
-      const run = () =>
-        new Function(
-          `"use strict";\n${code}`
-        )()
+      const run = () => new Function(`"use strict";\n${code}`)()
 
       const runPromise = Promise.resolve().then(() => {
-        try {
-          const result = run()
-          if (typeof result !== 'undefined') logs.push(String(result))
-          return result
-        } catch (err: any) {
-          throw err
-        }
+        const result = run()
+        if (result !== undefined) logs.push(String(result))
       })
 
       const timeoutPromise = new Promise((_, reject) =>
@@ -59,181 +49,140 @@ export class CodeExecutor {
       )
 
       await Promise.race([runPromise, timeoutPromise])
-      output = logs.length > 0 ? logs.join('\n') : 'JavaScript code executed successfully'
-      output = this.truncate(output)
     } catch (err: any) {
-      error = err instanceof Error ? err.message : String(err)
-      output = logs.length > 0 ? logs.join('\n') : ''
-      output = this.truncate(output)
+      error = err?.message ?? String(err)
     } finally {
       console.log = originalLog
     }
 
-    const executionTime = performance.now() - start
-    return { output, executionTime, error }
+    const output =
+      this.truncate(logs.join('\n') || 'JavaScript code executed successfully')
+
+    return {
+      output,
+      executionTime: performance.now() - start,
+      error
+    }
   }
 
-  private evaluateExpression(expr: string, variables: Record<string, unknown>) {
+  /* =======================
+     Expression Evaluator
+     ======================= */
+  private evaluateExpression(expr: string, vars: Record<string, unknown>) {
     try {
-      const safeExpr = expr.replace(/\b([A-Za-z_]\w*)\b/g, (m) => {
-        if (Object.prototype.hasOwnProperty.call(variables, m)) {
-          return JSON.stringify(variables[m])
-        }
-        return m
-      })
+      const safeExpr = expr.replace(/\b([A-Za-z_]\w*)\b/g, m =>
+        Object.prototype.hasOwnProperty.call(vars, m)
+          ? JSON.stringify(vars[m])
+          : m
+      )
       return new Function(`return (${safeExpr});`)()
     } catch {
       return undefined
     }
   }
 
+  /* =======================
+     Python (Simulated)
+     ======================= */
   async executePython(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-    let output = ''
+    const variables: Record<string, unknown> = {}
+    const outputLines: string[] = []
     let error: string | undefined
 
     try {
-      const lines = code.split(/\r?\n/)
-      const variables: Record<string, unknown> = {}
-      const outputLines: string[] = []
-
-      for (let rawLine of lines) {
-        const line = rawLine.trim()
+      for (const raw of code.split(/\r?\n/)) {
+        const line = raw.trim()
         if (!line || line.startsWith('#')) continue
 
-        const printMatch = line.match(/^print\((.*)\)\s*$/)
+        const printMatch = line.match(/^print\((.*)\)$/)
         if (printMatch) {
-          let content = printMatch[1].trim()
-          if ((content.startsWith('"') && content.endsWith('"')) || (content.startsWith("'") && content.endsWith("'"))) {
-            const unquoted = content.slice(1, -1).replace(/\\n/g, '\n').replace(/\\t/g, '\t')
-            outputLines.push(unquoted)
-          } else if (Object.prototype.hasOwnProperty.call(variables, content)) {
-            outputLines.push(String(variables[content]))
-          } else {
-            const val = this.evaluateExpression(content, variables)
-            if (typeof val !== 'undefined') outputLines.push(String(val))
-            else outputLines.push('')
-          }
+          const value = this.evaluateExpression(printMatch[1], variables)
+          if (value !== undefined) outputLines.push(String(value))
           continue
         }
 
         const assignMatch = line.match(/^([A-Za-z_]\w*)\s*=\s*(.+)$/)
         if (assignMatch) {
-          const name = assignMatch[1]
-          let value = assignMatch[2].trim()
-          if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-            variables[name] = value.slice(1, -1).replace(/\\n/g, '\n').replace(/\\t/g, '\t')
-          } else if (!Number.isNaN(Number(value))) {
-            variables[name] = Number(value)
-          } else {
-            const evaluated = this.evaluateExpression(value, variables)
-            if (typeof evaluated !== 'undefined') variables[name] = evaluated
-            else variables[name] = value
-          }
+          const val = this.evaluateExpression(assignMatch[2], variables)
+          variables[assignMatch[1]] = val ?? assignMatch[2]
           continue
         }
 
         const exprVal = this.evaluateExpression(line, variables)
-        if (typeof exprVal !== 'undefined') outputLines.push(String(exprVal))
+        if (exprVal !== undefined) outputLines.push(String(exprVal))
       }
-
-      output = outputLines.join('\n') || 'Python code executed (simulated)'
-      output = this.truncate(output)
     } catch (err: any) {
-      error = err instanceof Error ? err.message : String(err)
+      error = err?.message ?? String(err)
     }
 
-    const executionTime = performance.now() - start
-    return { output, executionTime, error }
+    return {
+      output: this.truncate(outputLines.join('\n') || 'Python code executed (simulated)'),
+      executionTime: performance.now() - start,
+      error
+    }
   }
 
+  /* =======================
+     Java (Simulated)
+     ======================= */
   async executeJava(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-    let output = ''
+    const variables: Record<string, unknown> = {}
+    const outputLines: string[] = []
     let error: string | undefined
+    let inMain = false
 
     try {
-      const lines = code.split(/\r?\n/)
-      const variables: Record<string, unknown> = {}
-      const outputLines: string[] = []
-      let inMain = false
-
-      for (let rawLine of lines) {
-        const line = rawLine.trim()
+      for (const raw of code.split(/\r?\n/)) {
+        const line = raw.trim()
         if (!line || line.startsWith('//')) continue
 
-        if (line.includes('public static void main') || line.includes('public static void main(String')) {
+        if (line.includes('public static void main')) {
           inMain = true
           continue
         }
-         
+
         if (inMain && line === '}') {
           inMain = false
           continue
         }
 
-        if (inMain) {
-          const printMatch = line.match(/System\.out\.println\((.*)\);?/)
-          if (printMatch) {
-            let content = printMatch[1].trim()
-            if ((content.startsWith('"') && content.endsWith('"')) || (content.startsWith("'") && content.endsWith("'"))) {
-              const unquoted = content.slice(1, -1)
-              outputLines.push(unquoted)
-            } else if (Object.prototype.hasOwnProperty.call(variables, content)) {
-              outputLines.push(String(variables[content]))
-            } else {
-              const evaluated = this.evaluateExpression(content, variables)
-              if (typeof evaluated !== 'undefined') outputLines.push(String(evaluated))
-              else outputLines.push('')
-            }
-            continue
-          }
+        if (!inMain) continue
 
-          const declMatch = line.match(/(?:int|double|String|var|long|float|boolean)\s+([A-Za-z_]\w*)\s*=\s*(.+);?/)
-          if (declMatch) {
-            const name = declMatch[1]
-            let value = declMatch[2].trim().replace(/;$/, '')
-            if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-              variables[name] = value.slice(1, -1)
-            } else if (!Number.isNaN(Number(value))) {
-              variables[name] = Number(value)
-            } else {
-              const evaluated = this.evaluateExpression(value, variables)
-              if (typeof evaluated !== 'undefined') variables[name] = evaluated
-              else variables[name] = value
-            }
-            continue
-          }
+        const printMatch = line.match(/System\.out\.println\((.*)\);?/)
+        if (printMatch) {
+          const value = this.evaluateExpression(printMatch[1], variables)
+          if (value !== undefined) outputLines.push(String(value))
+          continue
+        }
 
-          const assignMatch = line.match(/^([A-Za-z_]\w*)\s*=\s*(.+);?/)
-          if (assignMatch) {
-            const name = assignMatch[1]
-            let value = assignMatch[2].trim().replace(/;$/, '')
-            if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-              variables[name] = value.slice(1, -1)
-            } else if (!Number.isNaN(Number(value))) {
-              variables[name] = Number(value)
-            } else {
-              const evaluated = this.evaluateExpression(value, variables)
-              if (typeof evaluated !== 'undefined') variables[name] = evaluated
-              else variables[name] = value
-            }
-            continue
-          }
+        const declMatch = line.match(
+          /(int|double|String|long|float|boolean)\s+([A-Za-z_]\w*)\s*=\s*(.+);?/
+        )
+        if (declMatch) {
+          variables[declMatch[2]] =
+            this.evaluateExpression(declMatch[3], variables) ?? declMatch[3]
         }
       }
-
-      output = outputLines.join('\n') || 'Java code executed (simulated)'
-      output = this.truncate(output)
     } catch (err: any) {
-      error = err instanceof Error ? err.message : String(err)
+      error = err?.message ?? String(err)
     }
 
-    const executionTime = performance.now() - start
-    return { output, executionTime, error }
+    return {
+      output: this.truncate(outputLines.join('\n') || 'Java code executed (simulated)'),
+      executionTime: performance.now() - start,
+      error
+    }
   }
 
-  async execute(code: string, lang: 'javascript' | 'python' | 'java'): Promise<ExecutionResult> {
+  /* =======================
+     Dispatcher
+     ======================= */
+  async execute(
+    code: string,
+    lang: 'javascript' | 'python' | 'java'
+  ): Promise<ExecutionResult> {
     switch (lang) {
       case 'javascript':
         return this.executeJavaScript(code)
@@ -250,5 +199,3 @@ export class CodeExecutor {
     }
   }
 }
-
-export const sandbox = new CodeExecutor()
