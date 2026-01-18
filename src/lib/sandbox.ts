@@ -15,198 +15,98 @@ export class CodeSandbox {
 
   constructor(config?: ExecutorConfig) {
     this.timeout = config?.timeout ?? 5000
-    this.maxOutputLength = config?.maxOutputLength ?? 1000
+    this.maxOutputLength = config?.maxOutputLength ?? 10000
   }
 
-  private truncate(output: string): string {
-    return output.slice(0, this.maxOutputLength)
+  private truncate(output: string) {
+    if (output.length <= this.maxOutputLength) return output
+    return output.slice(0, this.maxOutputLength) + '\n...output truncated'
   }
 
-  private evaluateExpression(expr: string): string {
-    try {
-      const safeExpr = expr.replace(/^['"`](.*)['"`]$/, '$1')
-      return String(eval(safeExpr))
-    } catch {
-      return expr
-    }
-  }
-
+  /* ---------- JavaScript ---------- */
   async executeJavaScript(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-    const outputLines: string[] = []
+    const logs: string[] = []
     let error: string | undefined
 
+    const originalLog = console.log
+    console.log = (...args: unknown[]) => {
+      logs.push(args.map(String).join(' '))
+    }
+
     try {
-      const consoleLogMatches = code.matchAll(/console\.log\((.*?)\)/g)
-      for (const match of consoleLogMatches) {
-        const value = this.evaluateExpression(match[1])
-        outputLines.push(value)
-      }
+      new Function(`"use strict";\n${code}`)()
     } catch (err: any) {
       error = err?.message ?? String(err)
+    } finally {
+      console.log = originalLog
     }
 
     return {
-      output: this.truncate(outputLines.join('\n') || 'JavaScript code executed'),
+      output: this.truncate(logs.join('\n') || 'JavaScript executed'),
       executionTime: performance.now() - start,
       error
     }
   }
 
+  /* ---------- Python (simulated) ---------- */
   async executePython(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-    const outputLines: string[] = []
+    const output: string[] = []
     let error: string | undefined
-    const variables: Record<string, any> = {}
 
     try {
-      for (const raw of code.split(/\r?\n/)) {
-        const line = raw.trim()
-        if (!line || line.startsWith('#')) continue
-
-        const printMatch = line.match(/^print\((.*)\)$/)
-        if (printMatch) {
-          const value = this.evaluateExpression(printMatch[1])
-          outputLines.push(value)
-          continue
-        }
-
-        const assignMatch = line.match(/^(\w+)\s*=\s*(.*)$/)
-        if (assignMatch) {
-          const [, varName, value] = assignMatch
-          try {
-            variables[varName] = eval(value)
-          } catch {
-            variables[varName] = value
-          }
-        }
+      for (const line of code.split('\n')) {
+        const match = line.match(/^print\((.*)\)$/)
+        if (match) output.push(match[1].replace(/['"]/g, ''))
       }
     } catch (err: any) {
       error = err?.message ?? String(err)
     }
 
     return {
-      output: this.truncate(outputLines.join('\n') || 'Python code executed (simulated)'),
+      output: this.truncate(output.join('\n') || 'Python executed (simulated)'),
       executionTime: performance.now() - start,
       error
     }
   }
 
+  /* ---------- Java (simulated) ---------- */
   async executeJava(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-    const outputLines: string[] = []
+    const output: string[] = []
     let error: string | undefined
 
     try {
-      const printMatches = code.matchAll(/System\.out\.println\((.*?)\)/g)
-      for (const match of printMatches) {
-        const value = this.evaluateExpression(match[1])
-        outputLines.push(value)
+      const matches = code.matchAll(/System\.out\.println\((.*)\);/g)
+      for (const m of matches) {
+        output.push(m[1].replace(/['"]/g, ''))
       }
     } catch (err: any) {
       error = err?.message ?? String(err)
     }
 
     return {
-      output: this.truncate(outputLines.join('\n') || 'Java code executed (simulated)'),
+      output: this.truncate(output.join('\n') || 'Java executed (simulated)'),
       executionTime: performance.now() - start,
       error
     }
   }
 
+  /* ---------- SQL (simulated) ---------- */
   async executeSQL(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-    const outputLines: string[] = []
-    let error: string | undefined
-    const tables: Record<string, Array<Record<string, unknown>>> = {}
-
-    try {
-      const statements = code
-        .split(';')
-        .map(s => s.trim())
-        .filter(s => s && !s.startsWith('--'))
-
-      for (const statement of statements) {
-        const createMatch = statement.match(/CREATE\s+TABLE\s+(\w+)\s*\((.*)\)/i)
-        if (createMatch) {
-          const tableName = createMatch[1]
-          tables[tableName] = []
-          outputLines.push(`Table '${tableName}' created`)
-          continue
-        }
-
-        const insertMatch = statement.match(/INSERT\s+INTO\s+(\w+)\s+VALUES\s*\((.*)\)/i)
-        if (insertMatch) {
-          const tableName = insertMatch[1]
-          const values = insertMatch[2].split(',').map(v => v.trim().replace(/^['"]|['"]$/g, ''))
-
-          if (tables[tableName]) {
-            const row: Record<string, unknown> = {}
-            values.forEach((val, idx) => {
-              row[`col${idx}`] = isNaN(Number(val)) ? val : Number(val)
-            })
-            tables[tableName].push(row)
-            outputLines.push(`1 row inserted into '${tableName}'`)
-          }
-          continue
-        }
-
-        const selectMatch = statement.match(/SELECT\s+(.*?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*))?/i)
-        if (selectMatch) {
-          const tableName = selectMatch[2]
-
-          if (tables[tableName]) {
-            outputLines.push(`\nResults from '${tableName}':`)
-            outputLines.push('-'.repeat(50))
-
-            if (tables[tableName].length === 0) {
-              outputLines.push('(no rows)')
-            } else {
-              tables[tableName].forEach((row, idx) => {
-                outputLines.push(`Row ${idx + 1}: ${JSON.stringify(row)}`)
-              })
-            }
-            outputLines.push(`\n${tables[tableName].length} row(s) returned`)
-          } else {
-            outputLines.push(`Table '${tableName}' does not exist`)
-          }
-          continue
-        }
-
-        const updateMatch = statement.match(/UPDATE\s+(\w+)\s+SET\s+(.*?)(?:\s+WHERE\s+(.*))?/i)
-        if (updateMatch) {
-          const tableName = updateMatch[1]
-          if (tables[tableName]) {
-            outputLines.push(`Table '${tableName}' updated`)
-          }
-          continue
-        }
-
-        const deleteMatch = statement.match(/DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*))?/i)
-        if (deleteMatch) {
-          const tableName = deleteMatch[1]
-          if (tables[tableName]) {
-            tables[tableName] = []
-            outputLines.push(`Rows deleted from '${tableName}'`)
-          }
-          continue
-        }
-      }
-    } catch (err: any) {
-      error = err?.message ?? String(err)
-    }
-
     return {
-      output: this.truncate(outputLines.join('\n') || 'SQL executed (simulated)'),
-      executionTime: performance.now() - start,
-      error
+      output: this.truncate('SQL executed (simulated)'),
+      executionTime: performance.now() - start
     }
   }
 
+  /* ---------- Dispatcher ---------- */
   async execute(code: string, language: string): Promise<ExecutionResult> {
     switch (language.toLowerCase()) {
-      case 'js':
       case 'javascript':
+      case 'js':
         return this.executeJavaScript(code)
       case 'python':
       case 'py':
