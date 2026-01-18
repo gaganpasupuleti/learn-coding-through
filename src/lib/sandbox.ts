@@ -127,10 +127,10 @@ export class CodeExecutor {
      Java (Simulated)
      ======================= */
   async executeJava(code: string): Promise<ExecutionResult> {
-    const start = performance.now()
-    const variables: Record<string, unknown> = {}
-    const outputLines: string[] = []
-    let error: string | undefined
+    let inMain = false
+    try {
+        const line = raw.trim()
+
     let inMain = false
 
     try {
@@ -140,8 +140,8 @@ export class CodeExecutor {
 
         if (line.includes('public static void main')) {
           inMain = true
-          continue
-        }
+        if (printM
+        c
 
         if (inMain && line === '}') {
           inMain = false
@@ -159,33 +159,33 @@ export class CodeExecutor {
 
         const declMatch = line.match(
           /(int|double|String|long|float|boolean)\s+([A-Za-z_]\w*)\s*=\s*(.+);?/
-        )
+     SQL 
         if (declMatch) {
           variables[declMatch[2]] =
             this.evaluateExpression(declMatch[3], variables) ?? declMatch[3]
-        }
+    const
       }
-    } catch (err: any) {
+      const statements =
       error = err?.message ?? String(err)
-    }
+     
 
     return {
       output: this.truncate(outputLines.join('\n') || 'Java code executed (simulated)'),
       executionTime: performance.now() - start,
       error
-    }
+     
   }
 
   /* =======================
-     SQL (Simulated)
+          
      ======================= */
   async executeSQL(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-    const outputLines: string[] = []
+            tables[tableName].push(r
     let error: string | undefined
     const tables: Record<string, Array<Record<string, unknown>>> = {}
 
-    try {
+        c
       const statements = code
         .split(';')
         .map(s => s.trim())
@@ -193,15 +193,15 @@ export class CodeExecutor {
 
       for (const statement of statements) {
         const createMatch = statement.match(/CREATE\s+TABLE\s+(\w+)\s*\((.*)\)/i)
-        if (createMatch) {
+                outputLine
           const tableName = createMatch[1]
           tables[tableName] = []
           outputLines.push(`Table '${tableName}' created`)
-          continue
+          }
         }
 
         const insertMatch = statement.match(/INSERT\s+INTO\s+(\w+)\s+VALUES\s*\((.*)\)/i)
-        if (insertMatch) {
+          const tableName 
           const tableName = insertMatch[1]
           const values = insertMatch[2].split(',').map(v => v.trim().replace(/^['"]|['"]$/g, ''))
           
@@ -209,7 +209,7 @@ export class CodeExecutor {
             const row: Record<string, unknown> = {}
             values.forEach((val, idx) => {
               row[`col${idx}`] = isNaN(Number(val)) ? val : Number(val)
-            })
+            ou
             tables[tableName].push(row)
             outputLines.push(`1 row inserted into '${tableName}'`)
           }
@@ -217,9 +217,9 @@ export class CodeExecutor {
         }
 
         const selectMatch = statement.match(/SELECT\s+(.*?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*))?/i)
-        if (selectMatch) {
+      error
           const tableName = selectMatch[2]
-          
+
           if (tables[tableName]) {
             outputLines.push(`\nResults from '${tableName}':`)
             outputLines.push('-'.repeat(50))
@@ -229,21 +229,21 @@ export class CodeExecutor {
             } else {
               tables[tableName].forEach((row, idx) => {
                 outputLines.push(`Row ${idx + 1}: ${JSON.stringify(row)}`)
-              })
+      case 'sql'
             }
             outputLines.push(`\n${tables[tableName].length} row(s) returned`)
           } else {
             outputLines.push(`Table '${tableName}' does not exist`)
           }
-          continue
+  }
         }
 
         const updateMatch = statement.match(/UPDATE\s+(\w+)\s+SET\s+(.*?)(?:\s+WHERE\s+(.*))?/i)
-        if (updateMatch) {
+  code: string,
           const tableName = updateMatch[1]
           if (tables[tableName]) {
             outputLines.push(`Table '${tableName}' updated`)
-          }
+    if (res
           continue
         }
 
@@ -253,71 +253,66 @@ export class CodeExecutor {
           if (tables[tableName]) {
             tables[tableName] = []
             outputLines.push(`Rows deleted from '${tableName}'`)
-          }
+    }
           continue
-        }
+
       }
     } catch (err: any) {
       error = err?.message ?? String(err)
-    }
 
-    return {
+
+
       output: this.truncate(outputLines.join('\n') || 'SQL executed (simulated)'),
       executionTime: performance.now() - start,
       error
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
 
-  /* =======================
-     Dispatcher
-     ======================= */
-  async execute(
-    code: string,
-    lang: 'javascript' | 'python' | 'java' | 'sql'
-  ): Promise<ExecutionResult> {
-    switch (lang) {
-      case 'javascript':
-        return this.executeJavaScript(code)
-      case 'python':
-        return this.executePython(code)
-      case 'java':
-        return this.executeJava(code)
-      case 'sql':
-        return this.executeSQL(code)
-      default:
-        return {
-          output: '',
-          executionTime: 0,
-          error: 'Unsupported language'
-        }
-    }
-  }
-}
 
-const defaultExecutor = new CodeExecutor()
 
-export async function executeSandboxCode(
-  code: string,
-  language: 'python' | 'sql' | 'java' | 'javascript'
-): Promise<{ success: boolean; output?: string; error?: string }> {
-  try {
-    const result = await defaultExecutor.execute(code, language)
-    
-    if (result.error) {
-      return {
-        success: false,
-        error: result.error
-      }
-    }
-    
-    return {
-      success: true,
-      output: result.output
-    }
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error?.message || String(error)
-    }
-  }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
