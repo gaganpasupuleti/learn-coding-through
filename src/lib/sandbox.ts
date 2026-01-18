@@ -2,7 +2,7 @@ export interface ExecutionResult {
   output: string
   executionTime: number
   error?: string
-e
+}
 
 export interface ExecutorConfig {
   timeout?: number
@@ -10,13 +10,13 @@ export interface ExecutorConfig {
 }
 
 export class CodeSandbox {
-  }
+  private timeout: number
   private maxOutputLength: number
 
   constructor(config?: ExecutorConfig) {
     this.timeout = config?.timeout ?? 5000
     this.maxOutputLength = config?.maxOutputLength ?? 1000
-   
+  }
 
   private truncate(output: string): string {
     return output.slice(0, this.maxOutputLength)
@@ -28,42 +28,38 @@ export class CodeSandbox {
       return String(eval(safeExpr))
     } catch {
       return expr
-     
+    }
   }
 
-      for (const raw of code.split(/\r?\n/)) {
-        if (!line || line.startsWit
-        const printMatch = li
-          const value = this.eval
-
-
-        if (assignMatch) {
-          try {
-          } catch {
-       
-
-      error = er
-
-      output: this.trunc
-      error
-  }
-
+  async executeJavaScript(code: string): Promise<ExecutionResult> {
+    const start = performance.now()
     const outputLines: string[] = []
+    let error: string | undefined
 
-      const 
-        const
-      }
-      error
-
-   
-
-  }
-  async executeSQL(code: string): P
-    const outputLines: string[] = []
-    const tables: Record<string, Arr
     try {
+      const consoleLogMatches = code.matchAll(/console\.log\((.*?)\)/g)
+      for (const match of consoleLogMatches) {
+        const value = this.evaluateExpression(match[1])
+        outputLines.push(value)
+      }
+    } catch (err: any) {
+      error = err?.message ?? String(err)
+    }
 
-        .
+    return {
+      output: this.truncate(outputLines.join('\n') || 'JavaScript code executed'),
+      executionTime: performance.now() - start,
+      error
+    }
+  }
+
+  async executePython(code: string): Promise<ExecutionResult> {
+    const start = performance.now()
+    const outputLines: string[] = []
+    let error: string | undefined
+    const variables: Record<string, any> = {}
+
+    try {
       for (const raw of code.split(/\r?\n/)) {
         const line = raw.trim()
         if (!line || line.startsWith('#')) continue
@@ -130,13 +126,13 @@ export class CodeSandbox {
         .map(s => s.trim())
         .filter(s => s && !s.startsWith('--'))
 
-    } catch (err: any) {
+      for (const statement of statements) {
         const createMatch = statement.match(/CREATE\s+TABLE\s+(\w+)\s*\((.*)\)/i)
-
+        if (createMatch) {
           const tableName = createMatch[1]
-      executionTime: performance
+          tables[tableName] = []
           outputLines.push(`Table '${tableName}' created`)
-        return thi
+          continue
         }
 
         const insertMatch = statement.match(/INSERT\s+INTO\s+(\w+)\s+VALUES\s*\((.*)\)/i)
@@ -156,7 +152,7 @@ export class CodeSandbox {
         }
 
         const selectMatch = statement.match(/SELECT\s+(.*?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*))?/i)
-
+        if (selectMatch) {
           const tableName = selectMatch[2]
 
           if (tables[tableName]) {
@@ -174,7 +170,7 @@ export class CodeSandbox {
           } else {
             outputLines.push(`Table '${tableName}' does not exist`)
           }
-
+          continue
         }
 
         const updateMatch = statement.match(/UPDATE\s+(\w+)\s+SET\s+(.*?)(?:\s+WHERE\s+(.*))?/i)
@@ -182,9 +178,9 @@ export class CodeSandbox {
           const tableName = updateMatch[1]
           if (tables[tableName]) {
             outputLines.push(`Table '${tableName}' updated`)
-
+          }
           continue
-
+        }
 
         const deleteMatch = statement.match(/DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*))?/i)
         if (deleteMatch) {
@@ -194,31 +190,29 @@ export class CodeSandbox {
             outputLines.push(`Rows deleted from '${tableName}'`)
           }
           continue
-
+        }
       }
-
+    } catch (err: any) {
       error = err?.message ?? String(err)
+    }
 
-
-
+    return {
       output: this.truncate(outputLines.join('\n') || 'SQL executed (simulated)'),
       executionTime: performance.now() - start,
       error
-
+    }
   }
 
   async execute(code: string, language: string): Promise<ExecutionResult> {
-
-
-
+    switch (language.toLowerCase()) {
+      case 'js':
       case 'javascript':
-
         return this.executeJavaScript(code)
       case 'python':
       case 'py':
         return this.executePython(code)
       case 'java':
-
+        return this.executeJava(code)
       case 'sql':
         return this.executeSQL(code)
       default:
@@ -226,7 +220,7 @@ export class CodeSandbox {
           output: '',
           executionTime: 0,
           error: `Unsupported language: ${language}`
-
+        }
     }
-
+  }
 }

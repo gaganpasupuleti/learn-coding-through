@@ -1,6 +1,6 @@
-import { CodeExecutor } from './sandbox'
+import { CodeSandbox } from './sandbox'
 
-export const sandbox = new CodeExecutor({
+export const sandbox = new CodeSandbox({
   timeout: 5000,
   maxOutputLength: 1000
 })

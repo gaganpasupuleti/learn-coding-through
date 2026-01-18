@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { CodeExecutor } from './sandbox'
+import { CodeSandbox } from './sandbox'
 
-describe('CodeExecutor', () => {
-  const executor = new CodeExecutor()
+describe('CodeSandbox', () => {
+  const executor = new CodeSandbox()
 
   it('should execute JavaScript code', async () => {
     const code = 'console.log("Hello, World!")'
