@@ -52,11 +52,11 @@ export function PracticePage() {
   const [output, setOutput] = useState<string>('')
   const [isRunning, setIsRunning] = useState(false)
 
-  const getCurrentCode = () => {
+  const getCurrentCode = (): string => {
     switch (selectedLanguage) {
-      case 'python': return pythonCode
-      case 'sql': return sqlCode
-      case 'java': return javaCode
+      case 'python': return pythonCode || ''
+      case 'sql': return sqlCode || ''
+      case 'java': return javaCode || ''
     }
   }
 

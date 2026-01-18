@@ -17,9 +17,11 @@ import { useKV } from '@github/spark/hooks'
 import { sandbox } from '@/lib/sandboxInstance'
 
 interface CodeEditorProps {
-  initialCode: string
+  initialCode?: string
+  code?: string
+  onChange?: (code: string) => void
   language: string
-  projectId: string
+  projectId?: string
   onRun?: (code: string) => void
 }
 
@@ -144,8 +146,8 @@ const languageSuggestions: Record<string, Suggestion[]> = {
   ],
 }
 
-export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEditorProps) {
-  const [code, setCode] = useState(initialCode)
+export function CodeEditor({ initialCode, code: externalCode, onChange, language, projectId, onRun }: CodeEditorProps) {
+  const [internalCode, setInternalCode] = useState(externalCode || initialCode || '')
   const [output, setOutput] = useState<string>('')
   const [isRunning, setIsRunning] = useState(false)
   const [hasError, setHasError] = useState(false)
@@ -159,9 +161,13 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
   const highlightRef = useRef<HTMLElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
+  const code = externalCode !== undefined ? externalCode : internalCode
+
   useEffect(() => {
-    setCode(initialCode)
-  }, [initialCode])
+    if (initialCode && externalCode === undefined) {
+      setInternalCode(initialCode)
+    }
+  }, [initialCode, externalCode])
 
   useEffect(() => {
     if (highlightRef.current) {
@@ -218,7 +224,11 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
   }
 
   const handleCodeChange = (newCode: string) => {
-    setCode(newCode)
+    if (onChange) {
+      onChange(newCode)
+    } else {
+      setInternalCode(newCode)
+    }
     checkForSuggestions(newCode)
   }
 
@@ -260,7 +270,11 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
     const beforeWord = textBefore.substring(0, textBefore.length - currentWord.length)
     
     const newCode = beforeWord + suggestion.text + textAfter
-    setCode(newCode)
+    if (onChange) {
+      onChange(newCode)
+    } else {
+      setInternalCode(newCode)
+    }
     setShowSuggestions(false)
     
     setTimeout(() => {
@@ -280,7 +294,11 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
         const start = e.currentTarget.selectionStart
         const end = e.currentTarget.selectionEnd
         const newCode = code.substring(0, start) + '  ' + code.substring(end)
-        setCode(newCode)
+        if (onChange) {
+          onChange(newCode)
+        } else {
+          setInternalCode(newCode)
+        }
         setTimeout(() => {
           if (textareaRef.current) {
             textareaRef.current.selectionStart = start + 2
@@ -357,7 +375,12 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
 
 
   const resetCode = () => {
-    setCode(initialCode)
+    const resetValue = initialCode || ''
+    if (onChange) {
+      onChange(resetValue)
+    } else {
+      setInternalCode(resetValue)
+    }
     setOutput('')
     setHasError(false)
     toast.success('Code reset to original!')

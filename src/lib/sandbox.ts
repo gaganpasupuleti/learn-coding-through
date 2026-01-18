@@ -177,6 +177,98 @@ export class CodeExecutor {
   }
 
   /* =======================
+     SQL (Simulated)
+     ======================= */
+  async executeSQL(code: string): Promise<ExecutionResult> {
+    const start = performance.now()
+    const outputLines: string[] = []
+    let error: string | undefined
+    const tables: Record<string, Array<Record<string, unknown>>> = {}
+
+    try {
+      const statements = code
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s && !s.startsWith('--'))
+
+      for (const statement of statements) {
+        const createMatch = statement.match(/CREATE\s+TABLE\s+(\w+)\s*\((.*)\)/i)
+        if (createMatch) {
+          const tableName = createMatch[1]
+          tables[tableName] = []
+          outputLines.push(`Table '${tableName}' created`)
+          continue
+        }
+
+        const insertMatch = statement.match(/INSERT\s+INTO\s+(\w+)\s+VALUES\s*\((.*)\)/i)
+        if (insertMatch) {
+          const tableName = insertMatch[1]
+          const values = insertMatch[2].split(',').map(v => v.trim().replace(/^['"]|['"]$/g, ''))
+          
+          if (tables[tableName]) {
+            const row: Record<string, unknown> = {}
+            values.forEach((val, idx) => {
+              row[`col${idx}`] = isNaN(Number(val)) ? val : Number(val)
+            })
+            tables[tableName].push(row)
+            outputLines.push(`1 row inserted into '${tableName}'`)
+          }
+          continue
+        }
+
+        const selectMatch = statement.match(/SELECT\s+(.*?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*))?/i)
+        if (selectMatch) {
+          const tableName = selectMatch[2]
+          
+          if (tables[tableName]) {
+            outputLines.push(`\nResults from '${tableName}':`)
+            outputLines.push('-'.repeat(50))
+            
+            if (tables[tableName].length === 0) {
+              outputLines.push('(no rows)')
+            } else {
+              tables[tableName].forEach((row, idx) => {
+                outputLines.push(`Row ${idx + 1}: ${JSON.stringify(row)}`)
+              })
+            }
+            outputLines.push(`\n${tables[tableName].length} row(s) returned`)
+          } else {
+            outputLines.push(`Table '${tableName}' does not exist`)
+          }
+          continue
+        }
+
+        const updateMatch = statement.match(/UPDATE\s+(\w+)\s+SET\s+(.*?)(?:\s+WHERE\s+(.*))?/i)
+        if (updateMatch) {
+          const tableName = updateMatch[1]
+          if (tables[tableName]) {
+            outputLines.push(`Table '${tableName}' updated`)
+          }
+          continue
+        }
+
+        const deleteMatch = statement.match(/DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*))?/i)
+        if (deleteMatch) {
+          const tableName = deleteMatch[1]
+          if (tables[tableName]) {
+            tables[tableName] = []
+            outputLines.push(`Rows deleted from '${tableName}'`)
+          }
+          continue
+        }
+      }
+    } catch (err: any) {
+      error = err?.message ?? String(err)
+    }
+
+    return {
+      output: this.truncate(outputLines.join('\n') || 'SQL executed (simulated)'),
+      executionTime: performance.now() - start,
+      error
+    }
+  }
+
+  /* =======================
      Dispatcher
      ======================= */
   async execute(
