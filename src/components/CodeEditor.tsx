@@ -323,7 +323,13 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
     setExecutionTime(0)
 
     try {
-      const result = await sandbox.execute(code, language)
+      const langMap: Record<string, 'javascript' | 'python' | 'java'> = {
+        'javascript': 'javascript',
+        'python': 'python',
+        'java': 'java'
+      }
+      const execLang = langMap[language.toLowerCase()] || 'javascript'
+      const result = await sandbox.execute(code, execLang)
       
       setExecutionTime(result.executionTime || 0)
       
