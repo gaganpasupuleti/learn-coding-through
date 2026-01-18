@@ -182,7 +182,7 @@ export class CodeExecutor {
 
   async executeJava(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-    let output = ''
+    let error: stri
     let error: string | undefined
 
     try {
@@ -192,17 +192,17 @@ export class CodeExecutor {
       let inMain = false
 
       for (let rawLine of lines) {
-        const line = rawLine.trim()
+        }
         if (!line || line.startsWith('//')) continue
 
         if (line.includes('public static void main') || line.includes('public static void main(String')) {
-          inMain = true
+        // Within main,
           continue
-        }
+         
         if (inMain && line === '}') {
           inMain = false
           continue
-        }
+         
 
         // Within main, support System.out.println(...)
         if (inMain) {
@@ -210,7 +210,7 @@ export class CodeExecutor {
           if (printMatch) {
             let content = printMatch[1].trim()
             if ((content.startsWith('"') && content.endsWith('"')) || (content.startsWith("'") && content.endsWith("'"))) {
-              outputLines.push(content.slice(1, -1).replace(/\\n/g, '\n').replace(/\\t/g, '\t'))
+            let value = declMatch[2].trim().replace(/;$/, '')
             } else if (Object.prototype.hasOwnProperty.call(variables, content)) {
               outputLines.push(String(variables[content]))
             } else {
@@ -218,7 +218,7 @@ export class CodeExecutor {
               if (typeof evaluated !== 'undefined') outputLines.push(String(evaluated))
               else outputLines.push('')
             }
-            continue
+
           }
 
           // support simple declarations/assignments inside main (e.g., int x = 5; String s = "hi";)
@@ -228,68 +228,67 @@ export class CodeExecutor {
             let value = declMatch[2].trim().replace(/;$/, '')
             if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
               variables[name] = value.slice(1, -1)
-            } else if (!Number.isNaN(Number(value))) {
+            continue
               variables[name] = Number(value)
-            } else {
+          // outside
               const evaluated = this.evaluateExpression(value, variables)
               if (typeof evaluated !== 'undefined') variables[name] = evaluated
               else variables[name] = value
-            }
+      output 
             continue
-          }
+    }
 
-          // assignment without type
+    return { output, executionTime, 
           const assignMatch = line.match(/^([A-Za-z_]\w*)\s*=\s*(.+);?/)
-          if (assignMatch) {
+  async execute(code: string
             const name = assignMatch[1]
-            let value = assignMatch[2].trim().replace(/;$/, '')
+    switch (lang) {
             if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-              variables[name] = value.slice(1, -1)
+        return this.executeJavaScript(code)
             } else if (!Number.isNaN(Number(value))) {
               variables[name] = Number(value)
             } else {
-              const evaluated = this.evaluateExpression(value, variables)
+      default:
               if (typeof evaluated !== 'undefined') variables[name] = evaluated
-              else variables[name] = value
+          executionTime: 0,
             }
-            continue
+    }
           }
         } else {
           // outside main: simple variable declarations may be ignored in this simulation
-          continue
+
         }
-      }
+
 
       output = outputLines.join('\n') || 'Java code executed (simulated)'
       output = this.truncate(output)
-    } catch (err: any) {
+
       error = err instanceof Error ? err.message : String(err)
-    }
+
 
     const executionTime = performance.now() - start
     return { output, executionTime, error }
-  }
 
-  async execute(code: string, language: string): Promise<ExecutionResult> {
-    const lang = language.toLowerCase()
-    
-    switch (lang) {
-      case 'javascript':
-      case 'js':
-        return this.executeJavaScript(code)
-      case 'python':
-      case 'py':
-        return this.executePython(code)
-      case 'java':
-        return this.executeJava(code)
-      default:
-        return {
-          output: '',
-          executionTime: 0,
-          error: `Language "${language}" is not supported. Supported languages: JavaScript, Python, Java`
-        }
-    }
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
-export const sandbox = new CodeExecutor()
