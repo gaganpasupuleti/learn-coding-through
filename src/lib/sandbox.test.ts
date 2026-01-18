@@ -1,15 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { CodeExecutor } from './sandbox'
 
-describe('CodeExecutor', () => {
-  let executor: CodeExecutor
-
   beforeEach(() => {
-    executor = new CodeExecutor()
     vi.clearAllMocks()
-  })
 
-  describe('JavaScript Execution', () => {
+    it('should execu
+      const result = await execut
+      expect(result.ou
+    
+
+      const code = `
     it('should execute simple console.log statements', async () => {
       const code = 'console.log("Hello, World!")'
       const result = await executor.executeJavaScript(code)
@@ -22,9 +22,9 @@ describe('CodeExecutor', () => {
     it('should execute multiple console.log statements', async () => {
       const code = `
         console.log("First line")
-        console.log("Second line")
+
         console.log("Third line")
-      `
+    })
       const result = await executor.executeJavaScript(code)
 
       expect(result.output).toBe('First line\nSecond line\nThird line')
@@ -32,7 +32,7 @@ describe('CodeExecutor', () => {
     })
 
     it('should capture return values from expressions', async () => {
-      const code = '5 + 10'
+      expect(result.output)
       const result = await executor.executeJavaScript(code)
 
       expect(result.output).toBe('15')
@@ -40,18 +40,18 @@ describe('CodeExecutor', () => {
     })
 
     it('should handle arithmetic operations', async () => {
-      const code = `
+    it('should handl
         const a = 10
-        const b = 20
+
         console.log(a + b)
-        console.log(a * b)
+
         console.log(b - a)
-      `
+       
       const result = await executor.executeJavaScript(code)
 
       expect(result.output).toBe('30\n200\n10')
       expect(result.error).toBeUndefined()
-    })
+      
 
     it('should handle syntax errors', async () => {
       const code = 'const x = ;'
@@ -59,14 +59,14 @@ describe('CodeExecutor', () => {
 
       expect(result.error).toBeDefined()
       expect(result.error).toContain('Unexpected token')
-    })
+      
 
     it('should handle runtime errors', async () => {
       const code = 'throw new Error("Test error")'
       const result = await executor.executeJavaScript(code)
 
       expect(result.error).toBe('Test error')
-    })
+      
 
     it('should handle function definitions and calls', async () => {
       const code = `
@@ -75,7 +75,7 @@ describe('CodeExecutor', () => {
         }
         console.log(greet("Alice"))
         console.log(greet("Bob"))
-      `
+b = 10
       const result = await executor.executeJavaScript(code)
 
       expect(result.output).toBe('Hello, Alice!\nHello, Bob!')
@@ -83,7 +83,7 @@ describe('CodeExecutor', () => {
     })
 
     it('should handle array operations', async () => {
-      const code = `
+    })
         const arr = [1, 2, 3, 4, 5]
         console.log(arr.map(x => x * 2))
         console.log(arr.filter(x => x > 2))
@@ -93,111 +93,111 @@ describe('CodeExecutor', () => {
       expect(result.output).toContain('2,4,6,8,10')
       expect(result.output).toContain('3,4,5')
       expect(result.error).toBeUndefined()
-    })
+print(
 
-    it('should handle object operations', async () => {
-      const code = `
-        const obj = { name: "John", age: 30 }
-        console.log(obj.name)
-        console.log(obj.age)
-      `
-      const result = await executor.executeJavaScript(code)
-
-      expect(result.output).toBe('John\n30')
       expect(result.error).toBeUndefined()
+
+      const code = ''
+
+      expect(result.error).t
+
+      const code = `
+
+      `
+
     })
 
-    it('should timeout for infinite loops', async () => {
-      const code = 'while(true) {}'
-      const result = await executor.executeJavaScript(code)
+  describe('Java Execution (Simulated)', () => {
+      const code = `
+  public static void main(String[] args) {
 
-      expect(result.error).toBe('Execution timed out')
-    }, 10000)
+      `
+
 
     it('should handle empty code', async () => {
       const code = ''
-      const result = await executor.executeJavaScript(code)
+public class Main {
 
-      expect(result.output).toBe('JavaScript code executed successfully')
-      expect(result.error).toBeUndefined()
-    })
-  })
+    System.out.println(x + y);
+}
+      
+    
 
-  describe('Python Execution (Simulated)', () => {
-    it('should execute simple print statements', async () => {
-      const code = 'print("Hello, World!")'
+    it('should handle multiple println statements'
+public class Main {
+    System.out.println("First");
       const result = await executor.executePython(code)
 
-      expect(result.output).toBe('Hello, World!')
-      expect(result.error).toBeUndefined()
-      expect(result.executionTime).toBeGreaterThan(0)
+      const result = await executor.executeJava(c
+      expect(result.output).toBe('First\nS
     })
+    it
 
-    it('should handle variable assignments and prints', async () => {
-      const code = `
-x = 10
-y = 20
-print(x + y)
+    int num = 42;
+    String name = "J
+    Sy
+  }
       `
-      const result = await executor.executePython(code)
 
-      expect(result.output).toBe('30')
-      expect(result.error).toBeUndefined()
-    })
+      expect(result.output).toContain('3.14')
 
-    it('should handle multiple variable operations', async () => {
+
       const code = `
-a = 5
-b = 10
-c = a + b
-print(c)
-print(a * b)
+  publ
+
+  }
       `
-      const result = await executor.executePython(code)
 
-      expect(result.output).toBe('15\n50')
-      expect(result.error).toBeUndefined()
-    })
+      
 
-    it('should handle string variables', async () => {
+      co
+  public sta
+    int
+    System.out.println(a * b);
+
+      `
+
+      
+
       const code = `
-name = "Alice"
-print(name)
-      `
-      const result = await executor.executePython(code)
-
-      expect(result.output).toContain('Alice')
-      expect(result.error).toBeUndefined()
+  public static void
+}
+      const
+      e
     })
 
-    it('should ignore comments', async () => {
-      const code = `
-# This is a comment
-x = 42
-print(x)
-# Another comment
-      `
-      const result = await executor.executePython(code)
+public class Main {
+  
+    Sy
 
-      expect(result.output).toBe('42')
-      expect(result.error).toBeUndefined()
+    System.out.println("This should not execut
+}
+      const result 
+      
     })
 
-    it('should handle arithmetic expressions in print', async () => {
-      const code = `
-print(5 + 10)
-print(20 * 3)
-print(100 - 25)
-      `
-      const result = await executor.executePython(code)
+    it(
+      const result = await executor.execute(code, 'java
 
-      expect(result.output).toBe('15\n60\n75')
-      expect(result.error).toBeUndefined()
     })
+    it('should dispatch to Python executor
+      
 
-    it('should handle empty code', async () => {
-      const code = ''
-      const result = await executor.executePython(code)
+    })
+    it('should dispa
+public class 
+    System.ou
+}
+      c
+      expect(result.output).toBe('Java Test')
+
+
+    it('should respect custom timeout conf
+      
+
+    }, 5000)
+    it('should respec
+      const code = 'console.log("This is a very long ou
 
       expect(result.output).toBe('Python code executed (simulated)')
       expect(result.error).toBeUndefined()
@@ -400,7 +400,7 @@ public class Main {
       const result = await limitedExecutor.executeJavaScript(code)
 
       expect(result.output.length).toBeLessThanOrEqual(30)
-      expect(result.output).toContain('...output truncated')
+
     })
 
     it('should use default configuration when not provided', () => {
@@ -412,7 +412,7 @@ public class Main {
       const partialExecutor = new CodeExecutor({ timeout: 3000 })
       expect(partialExecutor).toBeDefined()
     })
-  })
+
 
   describe('Edge Cases', () => {
     it('should handle code with only whitespace', async () => {
@@ -424,15 +424,15 @@ public class Main {
       expect(resultJS.output).toBe('JavaScript code executed successfully')
       expect(resultPython.output).toBe('Python code executed (simulated)')
       expect(resultJava.output).toBe('Java code executed (simulated)')
-    })
+
 
     it('should handle special characters in output', async () => {
       const code = 'console.log("Special: !@#$%^&*()_+-={}[]|:;<>?,./")'
-      const result = await executor.executeJavaScript(code)
+
 
       expect(result.output).toContain('Special: !@#$%^&*()_+-={}[]|:;<>?,./)')
       expect(result.error).toBeUndefined()
-    })
+
 
     it('should handle unicode characters', async () => {
       const code = 'console.log("Unicode: 你好 🚀 ñ")'
@@ -440,7 +440,7 @@ public class Main {
 
       expect(result.output).toContain('Unicode: 你好 🚀 ñ')
       expect(result.error).toBeUndefined()
-    })
+
 
     it('should handle multiline strings', async () => {
       const code = 'console.log("Line 1\\nLine 2\\nLine 3")'
@@ -456,25 +456,25 @@ public class Main {
       const code = `
         console.log(null)
         console.log(undefined)
-      `
+
       const result = await executor.executeJavaScript(code)
 
       expect(result.output).toContain('null')
-      expect(result.output).toContain('undefined')
+
       expect(result.error).toBeUndefined()
-    })
+
 
     it('should handle boolean values', async () => {
       const code = `
-        console.log(true)
+
         console.log(false)
-      `
+
       const result = await executor.executeJavaScript(code)
 
       expect(result.output).toBe('true\nfalse')
-      expect(result.error).toBeUndefined()
+
     })
-  })
+
 
   describe('Performance', () => {
     it('should complete simple operations quickly', async () => {
@@ -486,11 +486,11 @@ public class Main {
 
     it('should track execution time accurately', async () => {
       const code = `
-        let sum = 0
+
         for (let i = 0; i < 1000; i++) {
           sum += i
         }
-        console.log(sum)
+
       `
       const result = await executor.executeJavaScript(code)
 
@@ -498,4 +498,4 @@ public class Main {
       expect(result.output).toBe('499500')
     })
   })
-})
+
