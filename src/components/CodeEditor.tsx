@@ -477,7 +477,7 @@ export function CodeEditor({ initialCode, language, projectId, onRun }: CodeEdit
               {getLineNumbers()}
             </div>
             <div className="flex-1 relative overflow-hidden">
-              <pre className="code-highlight-wrapper absolute inset-0 pointer-events-none overflow-hidden p-4 m-0" aria-hidden="true">
+              <pre className="code-highlight-wrapper absolute inset-0 pointer-events-none overflow-auto p-4 m-0" aria-hidden="true">
                 <code 
                   ref={highlightRef}
                   className={`language-${getPrismLanguage()} block min-h-full`}
