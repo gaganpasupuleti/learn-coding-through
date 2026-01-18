@@ -96,15 +96,11 @@ export class CodeSandbox {
   /* ---------- SQL (simulated) ---------- */
   async executeSQL(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-    let error: string | undefined
     const output: string[] = []
+    let error: string | undefined
 
     const database: Record<string, any[]> = {
       users: [
-        { id: 1, name: 'Alice Johnson', email: 'alice@example.com', age: 28 },
-        { id: 2, name: 'Bob Smith', email: 'bob@example.com', age: 34 },
-        { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', age: 22 },
-        { id: 4, name: 'Diana Prince', email: 'diana@example.com', age: 29 },
         { id: 5, name: 'John Doe', email: 'john@example.com', age: 25 }
       ],
       customers: [
