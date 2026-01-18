@@ -94,8 +94,8 @@ export class CodeSandbox {
   }
 
   /* ---------- SQL (simulated) ---------- */
-  async executeSQL(code: string): Promise<ExecutionResult> {
     const start = performance.now()
+    let error: string | undefined
     const output: string[] = []
     let error: string | undefined
 
@@ -318,18 +318,11 @@ export class CodeSandbox {
       error = err?.message ?? String(err)
     }
 
-    return {
+      error
       output: this.truncate(output.join('\n') || 'SQL executed'),
       executionTime: performance.now() - start,
       error
-    }
-  }
-
-  /* ---------- Dispatcher ---------- */
-  async execute(code: string, language: string): Promise<ExecutionResult> {
-    switch (language.toLowerCase()) {
-      case 'javascript':
-      case 'js':
+     
         return this.executeJavaScript(code)
       case 'python':
       case 'py':
