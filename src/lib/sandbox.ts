@@ -269,4 +269,27 @@ export class CodeExecutor {
     const executionTime = performance.now() - start
     return { output, executionTime, error }
   }
+
+  async execute(code: string, language: string): Promise<ExecutionResult> {
+    const lang = language.toLowerCase()
+    
+    switch (lang) {
+      case 'javascript':
+      case 'js':
+        return this.executeJavaScript(code)
+      case 'python':
+      case 'py':
+        return this.executePython(code)
+      case 'java':
+        return this.executeJava(code)
+      default:
+        return {
+          output: '',
+          executionTime: 0,
+          error: `Language "${language}" is not supported. Supported languages: JavaScript, Python, Java`
+        }
+    }
+  }
 }
+
+export const sandbox = new CodeExecutor()
