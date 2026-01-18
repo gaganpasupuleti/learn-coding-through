@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Card } from '@/components/ui/card'
 import { CodeEditor } from '@/components/CodeEditor'
 import { Play, Eraser } from '@phosphor-icons/react'
-import { executeSandboxCode } from '@/lib/sandbox'
+import { CodeExecutor } from '@/lib/sandbox'
 import { toast } from 'sonner'
 
 type Language = 'python' | 'sql' | 'java'
@@ -80,14 +80,15 @@ export function PracticePage() {
     setOutput('Running code...')
 
     try {
-      const result = await executeSandboxCode(code, selectedLanguage)
+      const executor = new CodeExecutor()
+      const result = await executor.execute(code, selectedLanguage)
       
-      if (result.success) {
-        setOutput(result.output || 'Code executed successfully with no output.')
-        toast.success('Code executed successfully!')
-      } else {
+      if (result.error) {
         setOutput(`Error:\n${result.error}`)
         toast.error('Execution failed. Check the output for details.')
+      } else {
+        setOutput(result.output || 'Code executed successfully with no output.')
+        toast.success('Code executed successfully!')
       }
     } catch (error) {
       setOutput(`Unexpected error:\n${error}`)

@@ -23,9 +23,19 @@ export class CodeExecutor {
     return output.slice(0, this.maxOutputLength) + '\n...output truncated'
   }
 
-  /* =======================
-     JavaScript Executor
-     ======================= */
+  private evaluateExpression(expr: string, vars: Record<string, unknown>) {
+    try {
+      const safeExpr = expr.replace(/\b([A-Za-z_]\w*)\b/g, m =>
+        Object.prototype.hasOwnProperty.call(vars, m)
+          ? JSON.stringify(vars[m])
+          : m
+      )
+      return new Function(`return (${safeExpr});`)()
+    } catch {
+      return undefined
+    }
+  }
+
   async executeJavaScript(code: string): Promise<ExecutionResult> {
     const start = performance.now()
     const logs: string[] = []
@@ -65,25 +75,6 @@ export class CodeExecutor {
     }
   }
 
-  /* =======================
-     Expression Evaluator
-     ======================= */
-  private evaluateExpression(expr: string, vars: Record<string, unknown>) {
-    try {
-      const safeExpr = expr.replace(/\b([A-Za-z_]\w*)\b/g, m =>
-        Object.prototype.hasOwnProperty.call(vars, m)
-          ? JSON.stringify(vars[m])
-          : m
-      )
-      return new Function(`return (${safeExpr});`)()
-    } catch {
-      return undefined
-    }
-  }
-
-  /* =======================
-     Python (Simulated)
-     ======================= */
   async executePython(code: string): Promise<ExecutionResult> {
     const start = performance.now()
     const variables: Record<string, unknown> = {}
@@ -123,14 +114,11 @@ export class CodeExecutor {
     }
   }
 
-  /* =======================
-     Java (Simulated)
-     ======================= */
   async executeJava(code: string): Promise<ExecutionResult> {
-    let inMain = false
-    try {
-        const line = raw.trim()
-
+    const start = performance.now()
+    const variables: Record<string, unknown> = {}
+    const outputLines: string[] = []
+    let error: string | undefined
     let inMain = false
 
     try {
@@ -140,8 +128,8 @@ export class CodeExecutor {
 
         if (line.includes('public static void main')) {
           inMain = true
-        if (printM
-        c
+          continue
+        }
 
         if (inMain && line === '}') {
           inMain = false
@@ -159,33 +147,31 @@ export class CodeExecutor {
 
         const declMatch = line.match(
           /(int|double|String|long|float|boolean)\s+([A-Za-z_]\w*)\s*=\s*(.+);?/
-     SQL 
+        )
         if (declMatch) {
           variables[declMatch[2]] =
             this.evaluateExpression(declMatch[3], variables) ?? declMatch[3]
-    const
+          continue
+        }
       }
-      const statements =
+    } catch (err: any) {
       error = err?.message ?? String(err)
-     
+    }
 
     return {
       output: this.truncate(outputLines.join('\n') || 'Java code executed (simulated)'),
       executionTime: performance.now() - start,
       error
-     
+    }
   }
 
-  /* =======================
-          
-     ======================= */
   async executeSQL(code: string): Promise<ExecutionResult> {
     const start = performance.now()
-            tables[tableName].push(r
+    const outputLines: string[] = []
     let error: string | undefined
     const tables: Record<string, Array<Record<string, unknown>>> = {}
 
-        c
+    try {
       const statements = code
         .split(';')
         .map(s => s.trim())
@@ -193,15 +179,15 @@ export class CodeExecutor {
 
       for (const statement of statements) {
         const createMatch = statement.match(/CREATE\s+TABLE\s+(\w+)\s*\((.*)\)/i)
-                outputLine
+        if (createMatch) {
           const tableName = createMatch[1]
           tables[tableName] = []
           outputLines.push(`Table '${tableName}' created`)
-          }
+          continue
         }
 
         const insertMatch = statement.match(/INSERT\s+INTO\s+(\w+)\s+VALUES\s*\((.*)\)/i)
-          const tableName 
+        if (insertMatch) {
           const tableName = insertMatch[1]
           const values = insertMatch[2].split(',').map(v => v.trim().replace(/^['"]|['"]$/g, ''))
           
@@ -209,7 +195,7 @@ export class CodeExecutor {
             const row: Record<string, unknown> = {}
             values.forEach((val, idx) => {
               row[`col${idx}`] = isNaN(Number(val)) ? val : Number(val)
-            ou
+            })
             tables[tableName].push(row)
             outputLines.push(`1 row inserted into '${tableName}'`)
           }
@@ -217,7 +203,7 @@ export class CodeExecutor {
         }
 
         const selectMatch = statement.match(/SELECT\s+(.*?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.*))?/i)
-      error
+        if (selectMatch) {
           const tableName = selectMatch[2]
 
           if (tables[tableName]) {
@@ -229,21 +215,21 @@ export class CodeExecutor {
             } else {
               tables[tableName].forEach((row, idx) => {
                 outputLines.push(`Row ${idx + 1}: ${JSON.stringify(row)}`)
-      case 'sql'
+              })
             }
             outputLines.push(`\n${tables[tableName].length} row(s) returned`)
           } else {
             outputLines.push(`Table '${tableName}' does not exist`)
           }
-  }
+          continue
         }
 
         const updateMatch = statement.match(/UPDATE\s+(\w+)\s+SET\s+(.*?)(?:\s+WHERE\s+(.*))?/i)
-  code: string,
+        if (updateMatch) {
           const tableName = updateMatch[1]
           if (tables[tableName]) {
             outputLines.push(`Table '${tableName}' updated`)
-    if (res
+          }
           continue
         }
 
@@ -253,66 +239,41 @@ export class CodeExecutor {
           if (tables[tableName]) {
             tables[tableName] = []
             outputLines.push(`Rows deleted from '${tableName}'`)
-    }
+          }
           continue
-
+        }
       }
     } catch (err: any) {
       error = err?.message ?? String(err)
+    }
 
-
-
+    return {
       output: this.truncate(outputLines.join('\n') || 'SQL executed (simulated)'),
       executionTime: performance.now() - start,
       error
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  async execute(code: string, language: string): Promise<ExecutionResult> {
+    const lang = language.toLowerCase()
+    
+    switch (lang) {
+      case 'javascript':
+      case 'js':
+        return this.executeJavaScript(code)
+      case 'python':
+      case 'py':
+        return this.executePython(code)
+      case 'java':
+        return this.executeJava(code)
+      case 'sql':
+        return this.executeSQL(code)
+      default:
+        return {
+          output: '',
+          executionTime: 0,
+          error: `Unsupported language: ${language}`
+        }
+    }
+  }
+}
