@@ -3,17 +3,18 @@ import { Navigation } from '@/components/Navigation'
 import { LandingPage } from '@/components/pages/LandingPage'
 import { ProjectsPage } from '@/components/pages/ProjectsPage'
 import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
+import { PracticePage } from '@/components/pages/PracticePage'
 import { getProjectById } from '@/lib/projects'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
 
-type Page = 'landing' | 'projects' | 'learning'
+type Page = 'landing' | 'projects' | 'learning' | 'practice'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('landing')
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
 
-  const handleNavigate = (page: 'landing' | 'projects') => {
+  const handleNavigate = (page: 'landing' | 'projects' | 'practice') => {
     setCurrentPage(page)
     setSelectedProjectId(null)
   }
@@ -44,6 +45,10 @@ function App() {
 
       {currentPage === 'projects' && (
         <ProjectsPage onSelectProject={handleSelectProject} />
+      )}
+
+      {currentPage === 'practice' && (
+        <PracticePage />
       )}
 
       {currentPage === 'learning' && selectedProject && (

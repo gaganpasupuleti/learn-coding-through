@@ -47,6 +47,13 @@ A browser-based coding sandbox where students can learn SQL, Python, and Java by
 - **Progression**: Complete project → Mark as complete → Visual indicator on project card → Count updates
 - **Success criteria**: Completion status persists, visual badges/checkmarks appear
 
+### Practice Playground
+- **Functionality**: Free-form code editor where users can select a language (Python, SQL, Java) and write their own code without guided projects
+- **Purpose**: Allows students to experiment and practice independently, reinforcing learned concepts
+- **Trigger**: Clicking "Practice" navigation button
+- **Progression**: Navigate to Practice page → Select language from tabs → Write code in editor → Run code → View output → Code persists per language
+- **Success criteria**: Language-specific code persists between sessions, execution works correctly, smooth language switching, clean editor interface
+
 ## Edge Case Handling
 
 - **Empty Code Submission** - Display friendly message asking student to write code first

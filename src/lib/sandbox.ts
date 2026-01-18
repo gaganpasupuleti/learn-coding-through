@@ -181,7 +181,7 @@ export class CodeExecutor {
      ======================= */
   async execute(
     code: string,
-    lang: 'javascript' | 'python' | 'java'
+    lang: 'javascript' | 'python' | 'java' | 'sql'
   ): Promise<ExecutionResult> {
     switch (lang) {
       case 'javascript':
@@ -190,12 +190,42 @@ export class CodeExecutor {
         return this.executePython(code)
       case 'java':
         return this.executeJava(code)
+      case 'sql':
+        return this.executeSQL(code)
       default:
         return {
           output: '',
           executionTime: 0,
           error: 'Unsupported language'
         }
+    }
+  }
+}
+
+const defaultExecutor = new CodeExecutor()
+
+export async function executeSandboxCode(
+  code: string,
+  language: 'python' | 'sql' | 'java' | 'javascript'
+): Promise<{ success: boolean; output?: string; error?: string }> {
+  try {
+    const result = await defaultExecutor.execute(code, language)
+    
+    if (result.error) {
+      return {
+        success: false,
+        error: result.error
+      }
+    }
+    
+    return {
+      success: true,
+      output: result.output
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error?.message || String(error)
     }
   }
 }

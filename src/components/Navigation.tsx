@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button'
-import { House, Cube } from '@phosphor-icons/react'
+import { House, Cube, Code } from '@phosphor-icons/react'
 
 interface NavigationProps {
   currentPage: string
-  onNavigate: (page: 'landing' | 'projects') => void
+  onNavigate: (page: 'landing' | 'projects' | 'practice') => void
 }
 
 export function Navigation({ currentPage, onNavigate }: NavigationProps) {
@@ -36,6 +36,15 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
             >
               <Cube size={18} className="mr-2" weight={currentPage === 'projects' ? 'fill' : 'regular'} />
               Projects
+            </Button>
+            <Button
+              variant={currentPage === 'practice' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => onNavigate('practice')}
+              className={currentPage === 'practice' ? 'bg-primary' : ''}
+            >
+              <Code size={18} className="mr-2" weight={currentPage === 'practice' ? 'fill' : 'regular'} />
+              Practice
             </Button>
           </div>
         </div>

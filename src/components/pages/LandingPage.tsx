@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Cube, Lightbulb, Code } from '@phosphor-icons/react'
 
 interface LandingPageProps {
-  onNavigate: (page: 'projects') => void
+  onNavigate: (page: 'projects' | 'practice') => void
 }
 
 export function LandingPage({ onNavigate }: LandingPageProps) {
