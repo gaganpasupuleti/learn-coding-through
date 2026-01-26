@@ -69,6 +69,11 @@ export const projects: Project[] = [
         type: 'code',
         content: {
           language: 'typescript',
+          points: [
+            'Set up state to store the current time and update it every second',
+            'Format hours, minutes, and seconds to always be two digits',
+            'Render the time inside a large, easy-to-read display'
+          ],
           code: `import { useState, useEffect } from 'react'
 
 function DigitalClock() {
@@ -163,6 +168,11 @@ function DigitalClock() {
         type: 'code',
         content: {
           language: 'typescript',
+          points: [
+            'Track display value, previous value, and the selected operation in state',
+            'Handle number and operator button clicks to build expressions',
+            'Evaluate the expression on "=" and reset state on "Clear"'
+          ],
           code: `import { useState } from 'react'
 
 function Calculator() {

@@ -238,20 +238,43 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
                   </div>
                 )}
 
-                {currentStep.content.code && (
+                 {currentStep.content.code && (
                   <div className="space-y-3">
-                    <Tabs defaultValue="reference" className="w-full">
-                      <TabsList className="grid w-full max-w-[400px] grid-cols-2">
+                    <Tabs defaultValue="why" className="w-full">
+                      <TabsList className="grid w-full max-w-[600px] grid-cols-3">
+                        <TabsTrigger value="why" className="gap-2">
+                          <Lightbulb size={16} />
+                          Why &amp; How
+                        </TabsTrigger>
                         <TabsTrigger value="reference" className="gap-2">
                           <Eye size={16} />
-                          View Reference
+                          See It
                         </TabsTrigger>
                         <TabsTrigger value="editor" className="gap-2">
                           <CodeIcon size={16} />
-                          Write Code
+                          Try It
                         </TabsTrigger>
                       </TabsList>
                       
+                      <TabsContent value="why" className="mt-4 space-y-4">
+                        {currentStep.content.points && (
+                          <ul className="space-y-3">
+                            {currentStep.content.points.map((point, index) => (
+                              <li key={index} className="flex gap-3 items-start">
+                                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                  <span className="text-primary text-sm font-semibold">{index + 1}</span>
+                                </div>
+                                <span className="text-foreground leading-relaxed flex-1">{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        <ProjectStepWalkthrough
+                          gifUrl={currentStep.content.walkthroughGif}
+                          caption={currentStep.content.walkthroughCaption}
+                        />
+                      </TabsContent>
+
                       <TabsContent value="reference" className="mt-4">
                         <CodeDisplay
                           code={currentStep.content.code}
@@ -270,13 +293,8 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
                         />
                       </TabsContent>
                     </Tabs>
-
-                    <ProjectStepWalkthrough
-                      gifUrl={currentStep.content.walkthroughGif}
-                      caption={currentStep.content.walkthroughCaption}
-                    />
                   </div>
-                )}
+                 )}
 
                 {currentStep.type === 'preview' && (
                   <div className="space-y-3">
