@@ -1,7 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Play, ArrowsClockwise, CheckCircle, Warning, Palette, Timer } from '@phosphor-icons/react'
+import {
+  Play,
+  ArrowsClockwise,
+  CheckCircle,
+  Warning,
+  Palette,
+  Timer,
+} from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-python'
@@ -15,6 +22,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useKV } from '@github/spark/hooks'
 import { sandbox } from '@/lib/sandboxInstance'
+
+/* ---------------- Types ---------------- */
 
 interface CodeEditorProps {
   initialCode?: string
@@ -31,6 +40,8 @@ interface Suggestion {
 }
 
 type Theme = 'monokai' | 'dracula' | 'nord' | 'github' | 'synthwave'
+
+/* ---------------- Theme Config ---------------- */
 
 const themeConfig = {
   monokai: {
@@ -87,8 +98,10 @@ const themeConfig = {
     number: 'oklch(0.75 0.20 60)',
     operator: 'oklch(0.72 0.22 330)',
     punctuation: 'oklch(0.85 0.05 330)',
-  }
+  },
 }
+
+/* ---------------- Suggestions ---------------- */
 
 const languageSuggestions: Record<string, Suggestion[]> = {
   javascript: [
@@ -97,116 +110,91 @@ const languageSuggestions: Record<string, Suggestion[]> = {
     { text: 'let', description: 'Declare a variable' },
     { text: 'if', description: 'Conditional statement' },
     { text: 'for', description: 'For loop' },
-    { text: 'return', description: 'Return a value' },
+    { text: 'return', description: 'Return value' },
     { text: 'console.log()', description: 'Log to console' },
-    { text: 'useState', description: 'React state hook' },
-    { text: 'useEffect', description: 'React effect hook' },
-    { text: 'map', description: 'Array map method' },
-    { text: 'filter', description: 'Array filter method' },
-    { text: 'forEach', description: 'Array forEach method' },
   ],
   python: [
     { text: 'def', description: 'Define a function' },
     { text: 'class', description: 'Define a class' },
-    { text: 'if', description: 'Conditional statement' },
+    { text: 'print()', description: 'Print output' },
     { text: 'for', description: 'For loop' },
-    { text: 'while', description: 'While loop' },
-    { text: 'return', description: 'Return a value' },
-    { text: 'print()', description: 'Print to console' },
-    { text: 'import', description: 'Import module' },
     { text: 'try', description: 'Try-except block' },
-    { text: 'with', description: 'Context manager' },
-    { text: 'lambda', description: 'Anonymous function' },
   ],
   java: [
-    { text: 'public', description: 'Public access modifier' },
-    { text: 'private', description: 'Private access modifier' },
-    { text: 'class', description: 'Define a class' },
-    { text: 'void', description: 'No return type' },
-    { text: 'static', description: 'Static member' },
-    { text: 'if', description: 'Conditional statement' },
-    { text: 'for', description: 'For loop' },
-    { text: 'return', description: 'Return a value' },
-    { text: 'System.out.println()', description: 'Print to console' },
-    { text: 'new', description: 'Create object' },
-    { text: 'extends', description: 'Inherit from class' },
+    { text: 'public', description: 'Public modifier' },
+    { text: 'class', description: 'Define class' },
+    { text: 'static', description: 'Static keyword' },
+    { text: 'System.out.println()', description: 'Print output' },
   ],
   sql: [
     { text: 'SELECT', description: 'Query data' },
-    { text: 'FROM', description: 'Specify table' },
-    { text: 'WHERE', description: 'Filter condition' },
-    { text: 'INSERT INTO', description: 'Insert data' },
-    { text: 'UPDATE', description: 'Update data' },
-    { text: 'DELETE FROM', description: 'Delete data' },
-    { text: 'JOIN', description: 'Join tables' },
-    { text: 'ORDER BY', description: 'Sort results' },
-    { text: 'GROUP BY', description: 'Group results' },
-    { text: 'HAVING', description: 'Filter groups' },
-    { text: 'CREATE TABLE', description: 'Create table' },
+    { text: 'FROM', description: 'Select table' },
+    { text: 'WHERE', description: 'Filter rows' },
   ],
 }
 
-export function CodeEditor({ initialCode, code: externalCode, onChange, language, projectId, onRun }: CodeEditorProps) {
-  const [internalCode, setInternalCode] = useState(externalCode || initialCode || '')
-  const [output, setOutput] = useState<string>('')
+/* ---------------- Component ---------------- */
+
+export function CodeEditor({
+  initialCode,
+  code: externalCode,
+  onChange,
+  language,
+  projectId,
+  onRun,
+}: CodeEditorProps) {
+  const [internalCode, setInternalCode] = useState(
+    externalCode || initialCode || ''
+  )
+  const [output, setOutput] = useState('')
   const [isRunning, setIsRunning] = useState(false)
   const [hasError, setHasError] = useState(false)
-  const [executionTime, setExecutionTime] = useState<number>(0)
+  const [executionTime, setExecutionTime] = useState(0)
   const [theme, setTheme] = useKV<Theme>('editor-theme', 'monokai')
+
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [suggestionIndex, setSuggestionIndex] = useState(0)
+  const [suggestionPos, setSuggestionPos] = useState({ top: 0, left: 0 })
   const [cursorPosition, setCursorPosition] = useState({ line: 1, col: 1 })
+
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const highlightRef = useRef<HTMLElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
-  const code = externalCode !== undefined ? externalCode : internalCode
+  const code = externalCode ?? internalCode
+  const currentTheme = themeConfig[theme]
 
+  /* ---------- Debounced Prism ---------- */
   useEffect(() => {
-    if (initialCode && externalCode === undefined) {
-      setInternalCode(initialCode)
-    }
-  }, [initialCode, externalCode])
-
-  useEffect(() => {
-    if (highlightRef.current) {
-      Prism.highlightElement(highlightRef.current)
-      applyThemeToSyntax()
-    }
+    const id = setTimeout(() => {
+      if (highlightRef.current) {
+        Prism.highlightElement(highlightRef.current)
+      }
+    }, 80)
+    return () => clearTimeout(id)
   }, [code, language, theme])
 
-  const applyThemeToSyntax = () => {
-    if (!highlightRef.current) return
-    
-    const tokens = highlightRef.current.querySelectorAll('.token')
-    tokens.forEach((token) => {
-      const classList = Array.from(token.classList)
-      
-      if (classList.includes('comment') || classList.includes('prolog') || classList.includes('doctype') || classList.includes('cdata')) {
-        (token as HTMLElement).style.color = currentTheme.comment
-      } else if (classList.includes('keyword') || classList.includes('atrule') || classList.includes('attr-value')) {
-        (token as HTMLElement).style.color = currentTheme.keyword
-      } else if (classList.includes('function') || classList.includes('class-name')) {
-        (token as HTMLElement).style.color = currentTheme.function
-      } else if (classList.includes('string') || classList.includes('attr-name') || classList.includes('selector') || classList.includes('char') || classList.includes('builtin') || classList.includes('inserted')) {
-        (token as HTMLElement).style.color = currentTheme.string
-      } else if (classList.includes('number') || classList.includes('regex') || classList.includes('important') || classList.includes('variable')) {
-        (token as HTMLElement).style.color = currentTheme.number
-      } else if (classList.includes('operator') || classList.includes('entity') || classList.includes('url')) {
-        (token as HTMLElement).style.color = currentTheme.operator
-      } else if (classList.includes('punctuation')) {
-        (token as HTMLElement).style.color = currentTheme.punctuation
-      } else if (classList.includes('property') || classList.includes('tag') || classList.includes('boolean') || classList.includes('constant') || classList.includes('symbol') || classList.includes('deleted')) {
-        (token as HTMLElement).style.color = currentTheme.keyword
+  /* ---------- Click outside suggestions ---------- */
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(e.target as Node)
+      ) {
+        setShowSuggestions(false)
       }
-    })
-  }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
 
+  /* ---------- Update cursor position on code or selection change ---------- */
   useEffect(() => {
     updateCursorPosition()
   }, [code])
 
+  /* ---------- Update cursor position ---------- */
   const updateCursorPosition = () => {
     if (!textareaRef.current) return
     const pos = textareaRef.current.selectionStart
@@ -214,124 +202,134 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
     const lines = textBeforeCursor.split('\n')
     setCursorPosition({
       line: lines.length,
-      col: lines[lines.length - 1].length + 1
+      col: lines[lines.length - 1].length + 1,
     })
   }
 
+  /* ---------- Get line numbers ---------- */
   const getLineNumbers = () => {
     const lines = code.split('\n')
     return lines.map((_, i) => i + 1).join('\n')
   }
 
-  const handleCodeChange = (newCode: string) => {
-    if (onChange) {
-      onChange(newCode)
-    } else {
-      setInternalCode(newCode)
-    }
-    checkForSuggestions(newCode)
+  /* ---------- Code change ---------- */
+  const handleCodeChange = (value: string) => {
+    onChange ? onChange(value) : setInternalCode(value)
+    checkForSuggestions(value)
   }
 
+  /* ---------- Suggestions ---------- */
   const checkForSuggestions = (text: string) => {
     if (!textareaRef.current) return
-    
+
     const pos = textareaRef.current.selectionStart
-    const textBeforeCursor = text.substring(0, pos)
-    const words = textBeforeCursor.split(/[\s\n(){}\[\];,.]/)
-    const currentWord = words[words.length - 1].toLowerCase()
+    const before = text.slice(0, pos)
+    const word = before.split(/\s+/).pop()?.toLowerCase() || ''
 
-    if (currentWord.length < 2) {
-      setShowSuggestions(false)
-      return
-    }
+    if (word.length < 2) return setShowSuggestions(false)
 
-    const langSuggestions = languageSuggestions[language.toLowerCase()] || languageSuggestions.javascript
-    const filtered = langSuggestions.filter(s => 
-      s.text.toLowerCase().startsWith(currentWord)
+    const list =
+      languageSuggestions[language.toLowerCase()] ||
+      languageSuggestions.javascript
+
+    const filtered = list.filter((s) =>
+      s.text.toLowerCase().startsWith(word)
     )
 
-    if (filtered.length > 0) {
-      setSuggestions(filtered)
-      setSuggestionIndex(0)
-      setShowSuggestions(true)
-    } else {
-      setShowSuggestions(false)
-    }
+    if (!filtered.length) return setShowSuggestions(false)
+
+    const lineHeight = 24
+    const lines = before.split('\n').length
+
+    setSuggestionPos({
+      top: lines * lineHeight + 8,
+      left: 80,
+    })
+
+    setSuggestions(filtered)
+    setSuggestionIndex(0)
+    setShowSuggestions(true)
   }
 
-  const applySuggestion = (suggestion: Suggestion) => {
+  /* ---------- Apply suggestion ---------- */
+  const applySuggestion = (s: Suggestion) => {
     if (!textareaRef.current) return
-    
     const pos = textareaRef.current.selectionStart
-    const textBefore = code.substring(0, pos)
-    const textAfter = code.substring(pos)
-    const words = textBefore.split(/[\s\n(){}\[\];,.]/)
-    const currentWord = words[words.length - 1]
-    const beforeWord = textBefore.substring(0, textBefore.length - currentWord.length)
-    
-    const newCode = beforeWord + suggestion.text + textAfter
-    if (onChange) {
-      onChange(newCode)
-    } else {
-      setInternalCode(newCode)
-    }
+    const before = code.slice(0, pos).replace(/\w+$/, '')
+    const after = code.slice(pos)
+    const newCode = before + s.text + after
+    handleCodeChange(newCode)
     setShowSuggestions(false)
-    
-    setTimeout(() => {
-      if (textareaRef.current) {
-        const newPos = beforeWord.length + suggestion.text.length
-        textareaRef.current.selectionStart = newPos
-        textareaRef.current.selectionEnd = newPos
-        textareaRef.current.focus()
-      }
-    }, 0)
   }
 
+  /* ---------- Scroll sync ---------- */
+  const handleScroll = () => {
+    if (textareaRef.current && highlightRef.current) {
+      highlightRef.current.scrollTop = textareaRef.current.scrollTop
+      highlightRef.current.scrollLeft = textareaRef.current.scrollLeft
+    }
+  }
+
+  /* ---------- TAB handling (multi-line indent) ---------- */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (!showSuggestions) {
-      if (e.key === 'Tab') {
+    if (showSuggestions) {
+      if (e.key === 'Enter' || e.key === 'Tab') {
         e.preventDefault()
-        const start = e.currentTarget.selectionStart
-        const end = e.currentTarget.selectionEnd
-        const newCode = code.substring(0, start) + '  ' + code.substring(end)
-        if (onChange) {
-          onChange(newCode)
-        } else {
-          setInternalCode(newCode)
-        }
-        setTimeout(() => {
-          if (textareaRef.current) {
-            textareaRef.current.selectionStart = start + 2
-            textareaRef.current.selectionEnd = start + 2
-          }
-        }, 0)
+        applySuggestion(suggestions[suggestionIndex])
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setSuggestionIndex((prev) => (prev + 1) % suggestions.length)
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setSuggestionIndex((prev) => (prev - 1 + suggestions.length) % suggestions.length)
       }
       return
     }
 
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault()
-        setSuggestionIndex(prev => (prev + 1) % suggestions.length)
-        break
-      case 'ArrowUp':
-        e.preventDefault()
-        setSuggestionIndex(prev => (prev - 1 + suggestions.length) % suggestions.length)
-        break
-      case 'Enter':
-      case 'Tab':
-        e.preventDefault()
-        applySuggestion(suggestions[suggestionIndex])
-        break
-      case 'Escape':
-        setShowSuggestions(false)
-        break
+    if (e.key === 'Tab') {
+      e.preventDefault()
+      const ta = e.currentTarget
+      const start = ta.selectionStart
+      const end = ta.selectionEnd
+      const selected = code.slice(start, end)
+
+      const indented = selected
+        .split('\n')
+        .map((l) => '  ' + l)
+        .join('\n')
+
+      const newCode =
+        code.slice(0, start) + indented + code.slice(end)
+
+      handleCodeChange(newCode)
+      
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.selectionStart = start + 2
+          textareaRef.current.selectionEnd = start + 2 + selected.length
+        }
+      }, 0)
     }
   }
 
+  /* ---------- Execute ---------- */
   const executeCode = async () => {
     if (!code.trim()) {
       toast.error('Please write some code first!')
+      return
+    }
+
+    const langMap: Record<string, 'javascript' | 'python' | 'java'> = {
+      javascript: 'javascript',
+      python: 'python',
+      java: 'java',
+    }
+
+    const execLang = langMap[language.toLowerCase()]
+    if (!execLang) {
+      toast.error('Execution not supported for this language')
       return
     }
 
@@ -341,16 +339,9 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
     setExecutionTime(0)
 
     try {
-      const langMap: Record<string, 'javascript' | 'python' | 'java'> = {
-        'javascript': 'javascript',
-        'python': 'python',
-        'java': 'java'
-      }
-      const execLang = langMap[language.toLowerCase()] || 'javascript'
       const result = await sandbox.execute(code, execLang)
-      
       setExecutionTime(result.executionTime || 0)
-      
+
       if (result.error) {
         setHasError(true)
         setOutput(result.error)
@@ -359,48 +350,31 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
         setOutput(result.output || 'Code executed successfully (no output)')
         toast.success('Code executed successfully!')
       }
-    } catch (error) {
+    } catch (err: any) {
       setHasError(true)
-      setOutput(`Execution Error: ${error instanceof Error ? error.message : 'Something went wrong'}`)
+      setOutput(err.message || 'Execution failed')
       toast.error('Failed to execute code')
     } finally {
       setIsRunning(false)
-    }
-
-    if (onRun) {
-      onRun(code)
+      onRun?.(code)
     }
   }
 
-
-
+  /* ---------- Reset ---------- */
   const resetCode = () => {
-    const resetValue = initialCode || ''
-    if (onChange) {
-      onChange(resetValue)
-    } else {
-      setInternalCode(resetValue)
-    }
+    const val = initialCode || ''
+    onChange ? onChange(val) : setInternalCode(val)
     setOutput('')
     setHasError(false)
     toast.success('Code reset to original!')
   }
-
-  const handleScroll = () => {
-    if (textareaRef.current && highlightRef.current) {
-      highlightRef.current.scrollTop = textareaRef.current.scrollTop
-      highlightRef.current.scrollLeft = textareaRef.current.scrollLeft
-    }
-  }
-
-  const currentTheme = theme ? themeConfig[theme] : themeConfig.monokai
 
   const getPrismLanguage = () => {
     const langMap: Record<string, string> = {
       javascript: 'javascript',
       python: 'python',
       java: 'java',
-      sql: 'sql'
+      sql: 'sql',
     }
     return langMap[language.toLowerCase()] || 'javascript'
   }
@@ -436,19 +410,29 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setTheme('monokai')}>
-                  <span className={theme === 'monokai' ? 'font-semibold' : ''}>Monokai</span>
+                  <span className={theme === 'monokai' ? 'font-semibold' : ''}>
+                    Monokai
+                  </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme('dracula')}>
-                  <span className={theme === 'dracula' ? 'font-semibold' : ''}>Dracula</span>
+                  <span className={theme === 'dracula' ? 'font-semibold' : ''}>
+                    Dracula
+                  </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme('nord')}>
-                  <span className={theme === 'nord' ? 'font-semibold' : ''}>Nord</span>
+                  <span className={theme === 'nord' ? 'font-semibold' : ''}>
+                    Nord
+                  </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme('github')}>
-                  <span className={theme === 'github' ? 'font-semibold' : ''}>GitHub Light</span>
+                  <span className={theme === 'github' ? 'font-semibold' : ''}>
+                    GitHub Light
+                  </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme('synthwave')}>
-                  <span className={theme === 'synthwave' ? 'font-semibold' : ''}>Synthwave</span>
+                  <span className={theme === 'synthwave' ? 'font-semibold' : ''}>
+                    Synthwave
+                  </span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -472,16 +456,16 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
             </Button>
           </div>
         </div>
-        
-        <div 
+
+        <div
           className="relative overflow-hidden"
           style={{
             backgroundColor: currentTheme.background,
           }}
         >
           <div className="flex h-[400px]">
-            <div 
-              className="select-none py-4 px-3 text-right font-mono text-sm border-r whitespace-pre overflow-y-auto"
+            <div
+              className="select-none py-4 px-3 text-right font-mono text-sm border-r whitespace-pre"
               ref={(el) => {
                 if (el && textareaRef.current) {
                   el.scrollTop = textareaRef.current.scrollTop
@@ -495,14 +479,23 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
                 lineHeight: '1.5',
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
+                overflowY: 'hidden',
+                overflowX: 'hidden',
               }}
             >
               {getLineNumbers()}
             </div>
             <div className="flex-1 relative overflow-hidden">
-              <pre className="code-highlight-wrapper absolute inset-0 pointer-events-none overflow-auto p-4 m-0" aria-hidden="true">
-                <code 
-                  ref={highlightRef}
+              <pre
+                className="code-highlight-wrapper absolute inset-0 pointer-events-none m-0 p-4"
+                aria-hidden="true"
+                ref={highlightRef}
+                style={{
+                  lineHeight: '1.5',
+                  overflow: 'hidden',
+                }}
+              >
+                <code
                   className={`language-${getPrismLanguage()} block min-h-full`}
                   style={{
                     color: currentTheme.foreground,
@@ -519,11 +512,13 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
                 onKeyDown={handleKeyDown}
                 onSelect={updateCursorPosition}
                 onClick={updateCursorPosition}
-                className="code-editor-textarea relative font-mono text-sm h-full w-full border-0 focus-visible:ring-0 focus:outline-none rounded-none resize-none bg-transparent p-4 text-transparent caret-white overflow-auto"
+                className="code-editor-textarea absolute inset-0 font-mono text-sm border-0 focus-visible:ring-0 focus:outline-none rounded-none resize-none bg-transparent p-4 caret-white overflow-auto"
                 placeholder="Write your code here..."
                 spellCheck={false}
                 style={{
                   caretColor: currentTheme.foreground,
+                  color: currentTheme.foreground,
+                  lineHeight: '1.5',
                 }}
               />
               {showSuggestions && (
@@ -533,8 +528,8 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
                   style={{
                     backgroundColor: currentTheme.background,
                     borderColor: currentTheme.punctuation + '60',
-                    top: '5rem',
-                    left: '4rem',
+                    top: `${suggestionPos.top}px`,
+                    left: `${suggestionPos.left}px`,
                     minWidth: '16rem',
                     maxHeight: '12rem',
                   }}
@@ -544,16 +539,25 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
                       key={suggestion.text}
                       className="px-3 py-2 cursor-pointer transition-colors"
                       style={{
-                        backgroundColor: idx === suggestionIndex ? currentTheme.punctuation + '20' : 'transparent',
+                        backgroundColor:
+                          idx === suggestionIndex
+                            ? currentTheme.punctuation + '20'
+                            : 'transparent',
                         color: currentTheme.foreground,
                       }}
                       onClick={() => applySuggestion(suggestion)}
                       onMouseEnter={() => setSuggestionIndex(idx)}
                     >
-                      <div className="font-mono text-sm font-semibold" style={{ color: currentTheme.function }}>
+                      <div
+                        className="font-mono text-sm font-semibold"
+                        style={{ color: currentTheme.function }}
+                      >
                         {suggestion.text}
                       </div>
-                      <div className="text-xs" style={{ color: currentTheme.comment }}>
+                      <div
+                        className="text-xs"
+                        style={{ color: currentTheme.comment }}
+                      >
                         {suggestion.description}
                       </div>
                     </div>
@@ -566,18 +570,34 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
       </Card>
 
       {output && (
-        <Card className={`border-2 ${hasError ? 'border-destructive/50 bg-destructive/5' : 'border-primary/30 bg-primary/5'}`}>
+        <Card
+          className={`border-2 ${
+            hasError
+              ? 'border-destructive/50 bg-destructive/5'
+              : 'border-primary/30 bg-primary/5'
+          }`}
+        >
           <div className="p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 {hasError ? (
                   <>
-                    <Warning size={20} weight="fill" className="text-destructive" />
-                    <span className="font-semibold text-destructive">Error Output</span>
+                    <Warning
+                      size={20}
+                      weight="fill"
+                      className="text-destructive"
+                    />
+                    <span className="font-semibold text-destructive">
+                      Error Output
+                    </span>
                   </>
                 ) : (
                   <>
-                    <CheckCircle size={20} weight="fill" className="text-primary" />
+                    <CheckCircle
+                      size={20}
+                      weight="fill"
+                      className="text-primary"
+                    />
                     <span className="font-semibold text-primary">Output</span>
                   </>
                 )}
@@ -598,3 +618,4 @@ export function CodeEditor({ initialCode, code: externalCode, onChange, language
     </div>
   )
 }
+

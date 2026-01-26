@@ -13,7 +13,8 @@ import {
   Play,
   ListChecks,
   Brain,
-  Eye
+  Eye,
+  Rocket
 } from '@phosphor-icons/react'
 import { Project, Step } from '@/lib/projects'
 import { DigitalClockPreview } from '@/components/previews/DigitalClockPreview'
@@ -25,7 +26,10 @@ import { SalesAnalyticsPreview } from '@/components/previews/SalesAnalyticsPrevi
 import { GradeCalculatorPreview } from '@/components/previews/GradeCalculatorPreview'
 import { NumberGuesserPreview } from '@/components/previews/NumberGuesserPreview'
 import { CodeEditor } from '@/components/CodeEditor'
+import { CodeDisplay } from '@/components/CodeDisplay'
 import { SandboxInfo } from '@/components/SandboxInfo'
+import { InteractiveProjectBuilder } from '@/components/InteractiveProjectBuilder'
+import { projectBuilderConfigs } from '@/lib/project-builder-configs'
 
 interface ProjectLearningPageProps {
   project: Project
@@ -35,10 +39,14 @@ interface ProjectLearningPageProps {
 export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
+  const [viewMode, setViewMode] = useState<'tutorial' | 'builder'>('tutorial')
 
   const currentStep = project.steps[currentStepIndex]
   const isFirstStep = currentStepIndex === 0
   const isLastStep = currentStepIndex === project.steps.length - 1
+
+  // Check if this project has an interactive builder available
+  const hasInteractiveBuilder = projectBuilderConfigs[project.id] !== undefined
 
   const handleNext = () => {
     if (!isLastStep) {
@@ -72,11 +80,64 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
     }
   }
 
+  // Render interactive builder if available and selected
+  if (viewMode === 'builder' && hasInteractiveBuilder) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+        <div className="container mx-auto px-6 py-8">
+          <div className="max-w-5xl mx-auto space-y-6">
+            <div className="flex items-center justify-between">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={onBack}
+                className="hover:bg-secondary"
+              >
+                <ArrowLeft className="mr-2" size={18} />
+                Back to Projects
+              </Button>
+              
+              <div className="flex items-center gap-3">
+                <SandboxInfo />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setViewMode('tutorial')}
+                >
+                  <Eye className="mr-2" size={16} />
+                  View Tutorial
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
+                <Badge variant="default" className="bg-primary">
+                  <Rocket size={14} className="mr-1" weight="duotone" />
+                  Interactive Mode
+                </Badge>
+              </div>
+              <p className="text-muted-foreground text-lg">{project.description}</p>
+            </div>
+
+            <InteractiveProjectBuilder
+              projectId={project.id}
+              projectTitle={project.title}
+              buildSteps={projectBuilderConfigs[project.id]}
+              onComplete={handleComplete}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-6 py-8">
         <div className="max-w-5xl mx-auto space-y-6">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between">
             <Button 
               variant="ghost" 
               size="sm"
@@ -86,7 +147,21 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
               <ArrowLeft className="mr-2" size={18} />
               Back to Projects
             </Button>
-            <SandboxInfo />
+            
+            <div className="flex items-center gap-3">
+              <SandboxInfo />
+              {hasInteractiveBuilder && (
+                <Button 
+                  variant="default" 
+                  size="sm"
+                  onClick={() => setViewMode('builder')}
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  <Rocket className="mr-2" size={16} weight="duotone" />
+                  Build Interactive
+                </Button>
+              )}
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -137,68 +212,61 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
 
               <Separator />
 
-              <div className="space-y-6">
+              <div className="space-y-6 py-6 min-h-[400px]">
                 {currentStep.content.description && (
-                  <p className="text-lg leading-relaxed text-foreground">
-                    {currentStep.content.description}
-                  </p>
+                  <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg p-6 border-2 border-primary/20">
+                    <p className="text-lg leading-relaxed text-foreground font-medium">
+                      {currentStep.content.description}
+                    </p>
+                  </div>
                 )}
 
                 {currentStep.content.points && (
-                  <ul className="space-y-3">
-                    {currentStep.content.points.map((point, index) => (
-                      <li key={index} className="flex gap-3 items-start">
-                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-primary text-sm font-semibold">{index + 1}</span>
-                        </div>
-                        <span className="text-foreground leading-relaxed flex-1">{point}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="space-y-3">
+                    <h3 className="font-semibold text-foreground">Key Points:</h3>
+                    <ul className="space-y-3">
+                      {currentStep.content.points.map((point, index) => (
+                        <li key={index} className="flex gap-3 items-start">
+                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-primary text-sm font-semibold">{index + 1}</span>
+                          </div>
+                          <span className="text-foreground leading-relaxed flex-1">{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
 
                 {currentStep.content.code && (
                   <div className="space-y-3">
-                    <Tabs defaultValue="editor" className="w-full">
+                    <Tabs defaultValue="reference" className="w-full">
                       <TabsList className="grid w-full max-w-[400px] grid-cols-2">
-                        <TabsTrigger value="editor" className="gap-2">
-                          <CodeIcon size={16} />
-                          Write Code
-                        </TabsTrigger>
                         <TabsTrigger value="reference" className="gap-2">
                           <Eye size={16} />
                           View Reference
                         </TabsTrigger>
+                        <TabsTrigger value="editor" className="gap-2">
+                          <CodeIcon size={16} />
+                          Write Code
+                        </TabsTrigger>
                       </TabsList>
                       
-                      <TabsContent value="editor" className="mt-4">
-                        <CodeEditor
-                          initialCode={currentStep.content.code}
+                      <TabsContent value="reference" className="mt-4">
+                        <CodeDisplay
+                          code={currentStep.content.code}
                           language={currentStep.content.language || 'typescript'}
-                          projectId={project.id}
+                          title="Reference Code"
+                          maxHeight="500px"
                         />
                       </TabsContent>
                       
-                      <TabsContent value="reference" className="mt-4">
-                        <Card className="border-2 overflow-hidden">
-                          <div className="bg-muted/50 px-4 py-3 border-b">
-                            <div className="flex items-center gap-2">
-                              <div className="flex gap-1.5">
-                                <div className="w-3 h-3 rounded-full bg-destructive/60"></div>
-                                <div className="w-3 h-3 rounded-full bg-accent/60"></div>
-                                <div className="w-3 h-3 rounded-full bg-primary/60"></div>
-                              </div>
-                              <span className="text-sm font-medium text-muted-foreground ml-2">
-                                Reference Code
-                              </span>
-                            </div>
-                          </div>
-                          <div className="bg-background p-4 max-h-[400px] overflow-auto">
-                            <pre className="text-sm font-mono leading-relaxed">
-                              <code>{currentStep.content.code}</code>
-                            </pre>
-                          </div>
-                        </Card>
+                      <TabsContent value="editor" className="mt-4">
+                        <CodeDisplay
+                          code={currentStep.content.code}
+                          language={currentStep.content.language || 'typescript'}
+                          title="TypeScript Editor"
+                          maxHeight="600px"
+                        />
                       </TabsContent>
                     </Tabs>
                   </div>

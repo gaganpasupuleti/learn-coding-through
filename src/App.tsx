@@ -4,6 +4,7 @@ import { LandingPage } from '@/components/pages/LandingPage'
 import { ProjectsPage } from '@/components/pages/ProjectsPage'
 import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
 import { PracticePage } from '@/components/pages/PracticePage'
+import { PortBanner } from '@/components/PortBanner'
 import { getProjectById } from '@/lib/projects'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
@@ -11,7 +12,7 @@ import { toast } from 'sonner'
 type Page = 'landing' | 'projects' | 'learning' | 'practice'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('landing')
+  const [currentPage, setCurrentPage] = useState<Page>('projects')
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
 
   const handleNavigate = (page: 'landing' | 'projects' | 'practice') => {
@@ -35,6 +36,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PortBanner />
       {currentPage !== 'learning' && (
         <Navigation currentPage={currentPage} onNavigate={handleNavigate} />
       )}
