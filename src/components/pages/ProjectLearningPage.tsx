@@ -244,7 +244,7 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
                       <TabsList className="grid w-full max-w-[600px] grid-cols-3">
                         <TabsTrigger value="why" className="gap-2">
                           <Lightbulb size={16} />
-                          Why &amp; How
+                          Why & How
                         </TabsTrigger>
                         <TabsTrigger value="reference" className="gap-2">
                           <Eye size={16} />
