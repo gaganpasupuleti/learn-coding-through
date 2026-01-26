@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react'
 import { Card } from '@/components/ui/card'
 
 interface ProjectStepWalkthroughProps {
@@ -6,7 +7,20 @@ interface ProjectStepWalkthroughProps {
 }
 
 export function ProjectStepWalkthrough({ gifUrl, caption }: ProjectStepWalkthroughProps) {
-  if (!gifUrl) return null
+  const [loadError, setLoadError] = useState(false)
+
+  const safeGifUrl = useMemo(() => {
+    if (!gifUrl) return null
+    try {
+      const parsed = new URL(gifUrl)
+      const allowedHosts = new Set(['media.giphy.com', 'i.giphy.com', 'giphy.com'])
+      return allowedHosts.has(parsed.hostname) ? gifUrl : null
+    } catch {
+      return null
+    }
+  }, [gifUrl])
+
+  if (!safeGifUrl || loadError) return null
 
   return (
     <Card className="border-2 border-primary/20 bg-primary/5">
@@ -20,10 +34,11 @@ export function ProjectStepWalkthrough({ gifUrl, caption }: ProjectStepWalkthrou
         <div className="rounded-lg overflow-hidden border border-primary/20 bg-background">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={gifUrl}
+            src={safeGifUrl}
             alt={caption || 'Step walkthrough'}
             className="w-full h-auto object-cover"
             loading="lazy"
+            onError={() => setLoadError(true)}
           />
         </div>
         {caption && (
