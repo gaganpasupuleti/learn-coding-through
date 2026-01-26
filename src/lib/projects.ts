@@ -9,6 +9,8 @@ export interface Step {
     language?: string
     challenge?: string
     hint?: string
+    walkthroughGif?: string
+    walkthroughCaption?: string
   }
 }
 
@@ -91,7 +93,9 @@ function DigitalClock() {
       </div>
     </div>
   )
-}`
+ }`,
+          walkthroughGif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXo3N3NvNGxyZjdqbnZ0eHFmZzNyMDZmbWNzb2xvbTdhZ3ZxMTd0ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26tn33aiTi1jkl6H6/giphy.gif',
+          walkthroughCaption: 'Watch the clock component update every second as the state changes.'
         }
       },
       {
@@ -223,7 +227,9 @@ function Calculator() {
       {/* Number and operation buttons */}
     </div>
   )
-}`
+ }`,
+          walkthroughGif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXUwa2NlZ2g2NmJsbXYyMHltdnFzbWc5Z3B0d3NzMGQydnNraDhpOSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT0xeJpnrWC4XWblEk/giphy.gif',
+          walkthroughCaption: 'Follow the button presses to see how the calculator updates its display.'
         }
       },
       {

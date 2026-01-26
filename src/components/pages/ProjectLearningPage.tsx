@@ -30,6 +30,7 @@ import { CodeDisplay } from '@/components/CodeDisplay'
 import { SandboxInfo } from '@/components/SandboxInfo'
 import { InteractiveProjectBuilder } from '@/components/InteractiveProjectBuilder'
 import { projectBuilderConfigs } from '@/lib/project-builder-configs'
+import { ProjectStepWalkthrough } from '@/components/project/ProjectStepWalkthrough'
 
 interface ProjectLearningPageProps {
   project: Project
@@ -269,6 +270,11 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
                         />
                       </TabsContent>
                     </Tabs>
+
+                    <ProjectStepWalkthrough
+                      gifUrl={currentStep.content.walkthroughGif}
+                      caption={currentStep.content.walkthroughCaption}
+                    />
                   </div>
                 )}
 
