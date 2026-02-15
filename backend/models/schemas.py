@@ -1,6 +1,6 @@
 """Request/Response schemas for code execution API."""
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 
 
@@ -10,7 +10,8 @@ class ExecuteRequest(BaseModel):
     code: str = Field(..., description="Code to execute")
     language: str = Field(..., description="Programming language (javascript, python, java, sql)")
     
-    @validator("language")
+    @field_validator("language")
+    @classmethod
     def validate_language(cls, v):
         """Validate language is supported."""
         supported = ["javascript", "js", "python", "py", "java", "sql"]
@@ -18,7 +19,8 @@ class ExecuteRequest(BaseModel):
             raise ValueError(f"Language must be one of: {', '.join(supported)}")
         return v.lower()
     
-    @validator("code")
+    @field_validator("code")
+    @classmethod
     def validate_code(cls, v):
         """Validate code is not empty."""
         if not v or not v.strip():
