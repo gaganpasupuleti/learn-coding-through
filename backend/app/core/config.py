@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     environment: str = "development"
     secret_key: str = "change-me-in-production"
     access_token_expire_minutes: int = 60 * 24
-    database_url: str = "postgresql+psycopg2://postgres:postgres@db:5432/career_portal"
+    database_url: str = "sqlite:///./career_portal.db"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
