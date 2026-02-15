@@ -2,10 +2,20 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Install Node.js and Java
+RUN apt-get update && apt-get install -y \
+    nodejs \
+    npm \
+    default-jdk \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app
+COPY executors ./executors
+COPY models ./models
+COPY security ./security
 
 EXPOSE 8000
 
