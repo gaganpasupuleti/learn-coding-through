@@ -47,10 +47,7 @@ export function RoadmapperPage() {
     if (!previousStage) return false
 
     const metrics = getStageMetrics(previousStage.id)
-    return (
-      metrics.quizScore >= previousStage.quizPassThreshold &&
-      metrics.exerciseCompletion >= previousStage.exerciseCompletionThreshold
-    )
+    return metrics.quizScore >= previousStage.quizPassThreshold
   }
 
   const updateMetric = (stageId: number, field: keyof StageMetrics, value: number) => {
@@ -71,10 +68,7 @@ export function RoadmapperPage() {
   const overallProgress = Math.round(
     (selectedRole.stages.filter((stage) => {
       const metrics = getStageMetrics(stage.id)
-      return (
-        metrics.quizScore >= stage.quizPassThreshold &&
-        metrics.exerciseCompletion >= stage.exerciseCompletionThreshold
-      )
+      return metrics.quizScore >= stage.quizPassThreshold
     }).length /
       selectedRole.stages.length) *
       100
@@ -167,9 +161,7 @@ export function RoadmapperPage() {
                   {selectedRole.stages.map((stage) => {
                     const unlocked = isStageUnlocked(stage.id)
                     const metrics = getStageMetrics(stage.id)
-                    const stageCompleted =
-                      metrics.quizScore >= stage.quizPassThreshold &&
-                      metrics.exerciseCompletion >= stage.exerciseCompletionThreshold
+                    const stageCompleted = metrics.quizScore >= stage.quizPassThreshold
 
                     return (
                       <button
@@ -247,14 +239,14 @@ export function RoadmapperPage() {
                         </Button>
                       ))}
                     </div>
-                    <p className="text-xs text-muted-foreground">Required: {activeStage.exerciseCompletionThreshold}%</p>
+                    <p className="text-xs text-muted-foreground">Recommended: {activeStage.exerciseCompletionThreshold}%</p>
                   </div>
                 </div>
 
                 <div className="rounded-lg border p-4 bg-muted/40 text-sm">
                   {isStageUnlocked(activeStage.id + 1)
                     ? 'Next stage is unlocked. Continue with projects, interview prep, and resume tasks.'
-                    : 'Complete quiz and exercises to unlock the next stage.'}
+                    : 'Pass the stage quiz to unlock the next stage.'}
                 </div>
               </Card>
             </div>

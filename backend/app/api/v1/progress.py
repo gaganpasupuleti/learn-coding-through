@@ -37,9 +37,7 @@ def update_progress(
     progress.total_lessons = payload.total_lessons
     progress.exercises_completed_pct = payload.exercises_completed_pct
     progress.latest_quiz_score = payload.latest_quiz_score
-    progress.unlocked = (
-        payload.latest_quiz_score >= 70 and payload.exercises_completed_pct >= 80
-    )
+    progress.unlocked = payload.latest_quiz_score >= 70
 
     db.add(progress)
     db.commit()
