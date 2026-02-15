@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Cube, Lightbulb, Code } from '@phosphor-icons/react'
 
 interface LandingPageProps {
-  onNavigate: (page: 'projects' | 'practice') => void
+  onNavigate: (page: 'projects' | 'practice' | 'quiz' | 'roadmapper') => void
 }
 
 export function LandingPage({ onNavigate }: LandingPageProps) {
@@ -35,9 +35,9 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 size="lg"
                 variant="outline"
                 className="text-lg px-8 py-6 border-2 hover:bg-secondary/50 transition-all hover:-translate-y-0.5"
-                onClick={() => onNavigate('projects')}
+                onClick={() => onNavigate('roadmapper')}
               >
-                View Projects
+                Explore Roadmaps
                 <Cube className="ml-2" size={20} />
               </Button>
             </div>

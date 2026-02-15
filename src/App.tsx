@@ -4,18 +4,20 @@ import { LandingPage } from '@/components/pages/LandingPage'
 import { ProjectsPage } from '@/components/pages/ProjectsPage'
 import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
 import { PracticePage } from '@/components/pages/PracticePage'
+import { QuizPage } from '@/components/pages/QuizPage'
+import { RoadmapperPage } from '@/components/pages/RoadmapperPage'
 import { PortBanner } from '@/components/PortBanner'
 import { getProjectById } from '@/lib/projects'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
 
-type Page = 'landing' | 'projects' | 'learning' | 'practice'
+type Page = 'landing' | 'projects' | 'learning' | 'practice' | 'quiz' | 'roadmapper'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('projects')
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
 
-  const handleNavigate = (page: 'landing' | 'projects' | 'practice') => {
+  const handleNavigate = (page: 'landing' | 'projects' | 'practice' | 'quiz' | 'roadmapper') => {
     setCurrentPage(page)
     setSelectedProjectId(null)
   }
@@ -51,6 +53,14 @@ function App() {
 
       {currentPage === 'practice' && (
         <PracticePage />
+      )}
+
+      {currentPage === 'quiz' && (
+        <QuizPage />
+      )}
+
+      {currentPage === 'roadmapper' && (
+        <RoadmapperPage />
       )}
 
       {currentPage === 'learning' && selectedProject && (

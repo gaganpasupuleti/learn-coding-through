@@ -1,0 +1,43 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.v1 import auth, interview, progress, projects, quiz, resume, roadmap, roles
+from app.core.config import settings
+from app.core.database import Base, SessionLocal, engine
+from app.services.seed import seed_default_roles
+
+
+app = FastAPI(title=settings.app_name, version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.on_event("startup")
+def startup_event():
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        seed_default_roles(db)
+    finally:
+        db.close()
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
+app.include_router(auth.router, prefix="/api/v1")
+app.include_router(roles.router, prefix="/api/v1")
+app.include_router(roadmap.router, prefix="/api/v1")
+app.include_router(progress.router, prefix="/api/v1")
+app.include_router(quiz.router, prefix="/api/v1")
+app.include_router(projects.router, prefix="/api/v1")
+app.include_router(resume.router, prefix="/api/v1")
+app.include_router(interview.router, prefix="/api/v1")

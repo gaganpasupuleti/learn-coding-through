@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button'
-import { House, Cube, Code } from '@phosphor-icons/react'
+import { House, Cube, Code, ListChecks, MapTrifold } from '@phosphor-icons/react'
 
 interface NavigationProps {
   currentPage: string
-  onNavigate: (page: 'landing' | 'projects' | 'practice') => void
+  onNavigate: (page: 'landing' | 'projects' | 'practice' | 'quiz' | 'roadmapper') => void
 }
 
 export function Navigation({ currentPage, onNavigate }: NavigationProps) {
@@ -45,6 +45,24 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
             >
               <Code size={18} className="mr-2" weight={currentPage === 'practice' ? 'fill' : 'regular'} />
               Practice
+            </Button>
+            <Button
+              variant={currentPage === 'quiz' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => onNavigate('quiz')}
+              className={currentPage === 'quiz' ? 'bg-primary' : ''}
+            >
+              <ListChecks size={18} className="mr-2" weight={currentPage === 'quiz' ? 'fill' : 'regular'} />
+              Quiz
+            </Button>
+            <Button
+              variant={currentPage === 'roadmapper' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => onNavigate('roadmapper')}
+              className={currentPage === 'roadmapper' ? 'bg-primary' : ''}
+            >
+              <MapTrifold size={18} className="mr-2" weight={currentPage === 'roadmapper' ? 'fill' : 'regular'} />
+              Roadmapper
             </Button>
           </div>
         </div>
