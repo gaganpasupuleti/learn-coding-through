@@ -73,6 +73,13 @@ def execute_java(code: str, timeout: int = 5) -> Dict[str, Any]:
                 "error": f"Compilation timeout: exceeded {timeout} seconds",
                 "execution_time": timeout * 1000
             }
+        except FileNotFoundError:
+            return {
+                "success": False,
+                "output": "",
+                "error": "Java compiler not found. Install JDK and add 'javac' to PATH.",
+                "execution_time": (time.time() - start_time) * 1000
+            }
         except Exception as e:
             return {
                 "success": False,
@@ -113,6 +120,13 @@ def execute_java(code: str, timeout: int = 5) -> Dict[str, Any]:
                 "output": "",
                 "error": f"Execution timeout: exceeded {timeout} seconds",
                 "execution_time": timeout * 1000
+            }
+        except FileNotFoundError:
+            return {
+                "success": False,
+                "output": "",
+                "error": "Java runtime not found. Install JDK and add 'java' to PATH.",
+                "execution_time": (time.time() - start_time) * 1000
             }
         except Exception as e:
             return {

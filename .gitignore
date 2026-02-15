@@ -42,3 +42,4 @@ __pycache__
 *.so
 *.egg
 *.egg-info
+backend/career_portal.db

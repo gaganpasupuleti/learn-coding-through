@@ -17,8 +17,8 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             </h1>
             
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Pick your target role, follow stage-wise learning, clear quizzes to unlock next stages,
-              and finish with projects, resume, and interview preparation.
+              See career paths, choose your target role, build skills through practice and projects,
+              then validate readiness with stage quizzes.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
@@ -27,7 +27,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 transition-all hover:-translate-y-0.5"
                 onClick={() => onNavigate('roadmapper')}
               >
-                Start with Roadmapper
+                Choose My Career Path
                 <ArrowRight className="ml-2" size={20} weight="bold" />
               </Button>
               
@@ -35,48 +35,41 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                 size="lg"
                 variant="outline"
                 className="text-lg px-8 py-6 border-2 hover:bg-secondary/50 transition-all hover:-translate-y-0.5"
-                onClick={() => onNavigate('quiz')}
+                onClick={() => onNavigate('practice')}
               >
-                Jump to Quizzes
+                Practice Coding Now
                 <Cube className="ml-2" size={20} />
               </Button>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-5 gap-4 pt-4 text-left">
+          <div className="grid md:grid-cols-4 gap-4 pt-4 text-left">
             <div className="bg-card rounded-xl p-5 space-y-2 border">
-              <h3 className="text-base font-semibold">1. Choose Role</h3>
-              <p className="text-muted-foreground text-sm">Open Roadmapper and pick your target career role.</p>
+              <h3 className="text-base font-semibold">1. Explore Career Options</h3>
+              <p className="text-muted-foreground text-sm">View roles, salaries, skills, and timelines before selecting a path.</p>
               <Button size="sm" variant="outline" onClick={() => onNavigate('roadmapper')}>
-                Open Roadmapper
+                Explore Roles
               </Button>
             </div>
             <div className="bg-card rounded-xl p-5 space-y-2 border">
-              <h3 className="text-base font-semibold">2. Learn & Practice</h3>
-              <p className="text-muted-foreground text-sm">Use Projects and Practice tabs to build required skills.</p>
+              <h3 className="text-base font-semibold">2. Build Core Skills</h3>
+              <p className="text-muted-foreground text-sm">Start with practice challenges to strengthen coding fundamentals.</p>
+              <Button size="sm" variant="outline" onClick={() => onNavigate('practice')}>
+                Start Practice
+              </Button>
+            </div>
+            <div className="bg-card rounded-xl p-5 space-y-2 border">
+              <h3 className="text-base font-semibold">3. Build Projects</h3>
+              <p className="text-muted-foreground text-sm">Apply your skills in mini and capstone projects for portfolio proof.</p>
               <Button size="sm" variant="outline" onClick={() => onNavigate('projects')}>
                 Open Projects
               </Button>
             </div>
             <div className="bg-card rounded-xl p-5 space-y-2 border">
-              <h3 className="text-base font-semibold">3. Pass Quiz</h3>
-              <p className="text-muted-foreground text-sm">Clear the quiz with at least 70% to unlock next stage.</p>
+              <h3 className="text-base font-semibold">4. Check Readiness</h3>
+              <p className="text-muted-foreground text-sm">Take quizzes to validate progress and unlock the next stage.</p>
               <Button size="sm" variant="outline" onClick={() => onNavigate('quiz')}>
-                Open Quiz
-              </Button>
-            </div>
-            <div className="bg-card rounded-xl p-5 space-y-2 border">
-              <h3 className="text-base font-semibold">4. Build Project</h3>
-              <p className="text-muted-foreground text-sm">Complete mini and capstone projects for job readiness.</p>
-              <Button size="sm" variant="outline" onClick={() => onNavigate('projects')}>
-                Build Projects
-              </Button>
-            </div>
-            <div className="bg-card rounded-xl p-5 space-y-2 border">
-              <h3 className="text-base font-semibold">5. Get Interview Ready</h3>
-              <p className="text-muted-foreground text-sm">Prepare resume and interview responses using final stage tasks.</p>
-              <Button size="sm" variant="outline" onClick={() => onNavigate('roadmapper')}>
-                Track Final Stage
+                Take Quiz
               </Button>
             </div>
           </div>

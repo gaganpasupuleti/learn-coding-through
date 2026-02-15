@@ -32,6 +32,8 @@ interface CodeEditorProps {
   language: string
   projectId?: string
   onRun?: (code: string) => void
+  showExecutionControls?: boolean
+  showOutputPanel?: boolean
 }
 
 interface Suggestion {
@@ -45,59 +47,59 @@ type Theme = 'monokai' | 'dracula' | 'nord' | 'github' | 'synthwave'
 
 const themeConfig = {
   monokai: {
-    background: 'oklch(0.18 0.02 60)',
-    foreground: 'oklch(0.95 0.01 60)',
-    comment: 'oklch(0.55 0.02 60)',
-    keyword: 'oklch(0.75 0.20 330)',
-    function: 'oklch(0.75 0.15 110)',
-    string: 'oklch(0.78 0.18 85)',
-    number: 'oklch(0.70 0.18 290)',
-    operator: 'oklch(0.85 0.15 330)',
-    punctuation: 'oklch(0.90 0.01 60)',
+    background: '#1e1e1e',
+    foreground: '#f8f8f2',
+    comment: '#75715e',
+    keyword: '#f92672',
+    function: '#a6e22e',
+    string: '#e6db74',
+    number: '#ae81ff',
+    operator: '#f92672',
+    punctuation: '#f8f8f2',
   },
   dracula: {
-    background: 'oklch(0.22 0.03 265)',
-    foreground: 'oklch(0.93 0.01 265)',
-    comment: 'oklch(0.50 0.05 220)',
-    keyword: 'oklch(0.75 0.18 330)',
-    function: 'oklch(0.75 0.15 130)',
-    string: 'oklch(0.78 0.15 90)',
-    number: 'oklch(0.75 0.15 265)',
-    operator: 'oklch(0.75 0.18 330)',
-    punctuation: 'oklch(0.85 0.01 265)',
+    background: '#282a36',
+    foreground: '#f8f8f2',
+    comment: '#6272a4',
+    keyword: '#ff79c6',
+    function: '#50fa7b',
+    string: '#f1fa8c',
+    number: '#bd93f9',
+    operator: '#ff79c6',
+    punctuation: '#f8f8f2',
   },
   nord: {
-    background: 'oklch(0.25 0.02 220)',
-    foreground: 'oklch(0.88 0.01 220)',
-    comment: 'oklch(0.58 0.03 220)',
-    keyword: 'oklch(0.70 0.10 250)',
-    function: 'oklch(0.70 0.08 190)',
-    string: 'oklch(0.75 0.08 140)',
-    number: 'oklch(0.75 0.10 310)',
-    operator: 'oklch(0.70 0.08 190)',
-    punctuation: 'oklch(0.82 0.01 220)',
+    background: '#2e3440',
+    foreground: '#d8dee9',
+    comment: '#616e88',
+    keyword: '#81a1c1',
+    function: '#88c0d0',
+    string: '#a3be8c',
+    number: '#b48ead',
+    operator: '#81a1c1',
+    punctuation: '#d8dee9',
   },
   github: {
-    background: 'oklch(0.99 0 0)',
-    foreground: 'oklch(0.20 0 0)',
-    comment: 'oklch(0.55 0.01 145)',
-    keyword: 'oklch(0.45 0.15 330)',
-    function: 'oklch(0.40 0.12 265)',
-    string: 'oklch(0.40 0.10 130)',
-    number: 'oklch(0.38 0.14 260)',
-    operator: 'oklch(0.35 0.08 330)',
-    punctuation: 'oklch(0.35 0 0)',
+    background: '#ffffff',
+    foreground: '#24292f',
+    comment: '#6a737d',
+    keyword: '#d73a49',
+    function: '#6f42c1',
+    string: '#032f62',
+    number: '#005cc5',
+    operator: '#d73a49',
+    punctuation: '#24292f',
   },
   synthwave: {
-    background: 'oklch(0.15 0.04 290)',
-    foreground: 'oklch(0.92 0.05 330)',
-    comment: 'oklch(0.48 0.06 290)',
-    keyword: 'oklch(0.72 0.22 330)',
-    function: 'oklch(0.75 0.20 180)',
-    string: 'oklch(0.80 0.18 85)',
-    number: 'oklch(0.75 0.20 60)',
-    operator: 'oklch(0.72 0.22 330)',
-    punctuation: 'oklch(0.85 0.05 330)',
+    background: '#241b2f',
+    foreground: '#f8f8f2',
+    comment: '#7f7094',
+    keyword: '#ff7edb',
+    function: '#36f9f6',
+    string: '#fede5d',
+    number: '#f97e72',
+    operator: '#ff7edb',
+    punctuation: '#f8f8f2',
   },
 }
 
@@ -142,6 +144,8 @@ export function CodeEditor({
   language,
   projectId,
   onRun,
+  showExecutionControls = true,
+  showOutputPanel = true,
 }: CodeEditorProps) {
   const [internalCode, setInternalCode] = useState(
     externalCode || initialCode || ''
@@ -321,10 +325,11 @@ export function CodeEditor({
       return
     }
 
-    const langMap: Record<string, 'javascript' | 'python' | 'java'> = {
+    const langMap: Record<string, 'javascript' | 'python' | 'java' | 'sql'> = {
       javascript: 'javascript',
       python: 'python',
       java: 'java',
+      sql: 'sql',
     }
 
     const execLang = langMap[language.toLowerCase()]
@@ -441,6 +446,7 @@ export function CodeEditor({
               variant="ghost"
               onClick={resetCode}
               className="h-8 text-xs"
+              style={{ display: showExecutionControls ? 'inline-flex' : 'none' }}
             >
               <ArrowsClockwise className="mr-1.5" size={14} />
               Reset
@@ -450,6 +456,7 @@ export function CodeEditor({
               onClick={executeCode}
               disabled={isRunning}
               className="h-8 bg-primary hover:bg-primary/90 text-xs"
+              style={{ display: showExecutionControls ? 'inline-flex' : 'none' }}
             >
               <Play className="mr-1.5" size={14} weight="fill" />
               Run
@@ -461,6 +468,15 @@ export function CodeEditor({
           className="relative overflow-hidden"
           style={{
             backgroundColor: currentTheme.background,
+            ['--prism-background' as any]: currentTheme.background,
+            ['--prism-foreground' as any]: currentTheme.foreground,
+            ['--prism-comment' as any]: currentTheme.comment,
+            ['--prism-keyword' as any]: currentTheme.keyword,
+            ['--prism-function' as any]: currentTheme.function,
+            ['--prism-string' as any]: currentTheme.string,
+            ['--prism-number' as any]: currentTheme.number,
+            ['--prism-operator' as any]: currentTheme.operator,
+            ['--prism-punctuation' as any]: currentTheme.punctuation,
           }}
         >
           <div className="flex h-[400px]">
@@ -493,6 +509,7 @@ export function CodeEditor({
                 style={{
                   lineHeight: '1.5',
                   overflow: 'hidden',
+                  opacity: 0,
                 }}
               >
                 <code
@@ -518,6 +535,7 @@ export function CodeEditor({
                 style={{
                   caretColor: currentTheme.foreground,
                   color: currentTheme.foreground,
+                  WebkitTextFillColor: currentTheme.foreground,
                   lineHeight: '1.5',
                 }}
               />
@@ -569,7 +587,7 @@ export function CodeEditor({
         </div>
       </Card>
 
-      {output && (
+      {showOutputPanel && output && (
         <Card
           className={`border-2 ${
             hasError

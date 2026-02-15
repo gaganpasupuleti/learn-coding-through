@@ -8,9 +8,16 @@ from executors import (
     execute_javascript,
     execute_java,
     execute_sql,
+    get_practice_schema,
 )
 
 router = APIRouter()
+
+
+@router.get("/sql/schema")
+async def sql_practice_schema():
+    """Return SQL practice schema metadata for frontend helper UI."""
+    return get_practice_schema()
 
 
 @router.post("/execute", response_model=ExecuteResponse)

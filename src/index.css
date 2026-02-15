@@ -8,15 +8,15 @@
 }
 
 :root {
-  --prism-background: oklch(0.18 0.04 265);
-  --prism-foreground: oklch(0.92 0.01 265);
-  --prism-comment: oklch(0.55 0.04 265);
-  --prism-keyword: oklch(0.75 0.18 195);
-  --prism-function: oklch(0.70 0.12 150);
-  --prism-string: oklch(0.68 0.15 45);
-  --prism-number: oklch(0.75 0.15 310);
-  --prism-operator: oklch(0.65 0.15 230);
-  --prism-punctuation: oklch(0.70 0.04 265);
+  --prism-background: #1e1e1e;
+  --prism-foreground: #f8f8f2;
+  --prism-comment: #75715e;
+  --prism-keyword: #f92672;
+  --prism-function: #a6e22e;
+  --prism-string: #e6db74;
+  --prism-number: #ae81ff;
+  --prism-operator: #f92672;
+  --prism-punctuation: #f8f8f2;
 }
 
 :root {
@@ -157,11 +157,13 @@ pre[class*="language-"] {
 .code-highlight-wrapper .token.prolog,
 .code-highlight-wrapper .token.doctype,
 .code-highlight-wrapper .token.cdata {
+  color: var(--prism-comment) !important;
   font-style: italic;
   opacity: 0.8;
 }
 
 .code-highlight-wrapper .token.punctuation {
+  color: var(--prism-punctuation) !important;
   opacity: 0.9;
 }
 
@@ -175,6 +177,7 @@ pre[class*="language-"] {
 .code-highlight-wrapper .token.constant,
 .code-highlight-wrapper .token.symbol,
 .code-highlight-wrapper .token.deleted {
+  color: var(--prism-keyword) !important;
   font-weight: 500;
 }
 
@@ -184,6 +187,7 @@ pre[class*="language-"] {
 .code-highlight-wrapper .token.char,
 .code-highlight-wrapper .token.builtin,
 .code-highlight-wrapper .token.inserted {
+  color: var(--prism-string) !important;
   font-weight: 400;
 }
 
@@ -192,27 +196,32 @@ pre[class*="language-"] {
 .code-highlight-wrapper .token.url,
 .code-highlight-wrapper .language-css .token.string,
 .code-highlight-wrapper .style .token.string {
+  color: var(--prism-operator) !important;
   font-weight: 400;
 }
 
 .code-highlight-wrapper .token.atrule,
 .code-highlight-wrapper .token.attr-value,
 .code-highlight-wrapper .token.keyword {
+  color: var(--prism-keyword) !important;
   font-weight: 600;
 }
 
 .code-highlight-wrapper .token.function,
 .code-highlight-wrapper .token.class-name {
+  color: var(--prism-function) !important;
   font-weight: 600;
 }
 
 .code-highlight-wrapper .token.regex,
 .code-highlight-wrapper .token.important,
 .code-highlight-wrapper .token.variable {
+  color: var(--prism-foreground) !important;
   font-weight: 400;
 }
 
 .code-highlight-wrapper .token.number {
+  color: var(--prism-number) !important;
   font-weight: 400;
 }
 

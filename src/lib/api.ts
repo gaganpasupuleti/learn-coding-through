@@ -16,6 +16,17 @@ export interface ExecuteResponse {
   execution_time: number
 }
 
+export interface SqlSchemaTable {
+  name: string
+  primary_key: string
+  columns: string[]
+  description?: string
+}
+
+export interface SqlPracticeSchemaResponse {
+  tables: SqlSchemaTable[]
+}
+
 /**
  * Execute code on the backend
  */
@@ -50,4 +61,13 @@ export async function executeCode(
       execution_time: 0,
     }
   }
+}
+
+export async function fetchSqlPracticeSchema(): Promise<SqlPracticeSchemaResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/sql/schema`)
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+  }
+  return response.json() as Promise<SqlPracticeSchemaResponse>
 }
