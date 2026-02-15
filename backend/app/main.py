@@ -20,12 +20,16 @@ app.add_middleware(
 
 @app.on_event("startup")
 def startup_event():
-    Base.metadata.create_all(bind=engine)
-    db = SessionLocal()
     try:
-        seed_default_roles(db)
-    finally:
-        db.close()
+        Base.metadata.create_all(bind=engine)
+        db = SessionLocal()
+        try:
+            seed_default_roles(db)
+        finally:
+            db.close()
+    except Exception as e:
+        print(f"Warning: Database initialization failed: {e}")
+        print("Code execution endpoints will still work without database")
 
 
 @app.get("/health")
