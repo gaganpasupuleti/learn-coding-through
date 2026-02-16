@@ -42,6 +42,11 @@ class ProjectReviewStatus(str, Enum):
     REJECTED = "rejected"
 
 
+class CreditTransactionType(str, Enum):
+    CREDIT = "credit"
+    DEBIT = "debit"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -53,6 +58,7 @@ class User(Base):
     selected_role_id: Mapped[int | None] = mapped_column(ForeignKey("roles.id"), nullable=True)
     xp_points: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     streak_days: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    credit_balance: Mapped[int] = mapped_column(Integer, default=100, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
     target_role = relationship("Role", foreign_keys=[selected_role_id])
@@ -60,6 +66,7 @@ class User(Base):
     submissions = relationship("Submission", back_populates="user", cascade="all,delete-orphan")
     projects = relationship("Project", back_populates="user", cascade="all,delete-orphan")
     resumes = relationship("Resume", back_populates="user", cascade="all,delete-orphan")
+    credit_transactions = relationship("CreditTransaction", back_populates="user", cascade="all,delete-orphan")
 
 
 class Role(Base):
@@ -228,3 +235,18 @@ class ProgressTracking(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user = relationship("User", back_populates="progress_records")
+
+
+class CreditTransaction(Base):
+    __tablename__ = "credit_transactions"
+    __table_args__ = (Index("ix_credit_transactions_user_created", "user_id", "created_at"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    transaction_type: Mapped[CreditTransactionType] = mapped_column(SqlEnum(CreditTransactionType), nullable=False)
+    amount: Mapped[int] = mapped_column(Integer, nullable=False)
+    balance_after: Mapped[int] = mapped_column(Integer, nullable=False)
+    reason: Mapped[str] = mapped_column(String(255), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("User", back_populates="credit_transactions")
