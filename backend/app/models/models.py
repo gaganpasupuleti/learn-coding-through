@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import date, datetime
 from enum import Enum
 
 from sqlalchemy import (
     Boolean,
+    Date,
     DateTime,
     Enum as SqlEnum,
     ForeignKey,
@@ -47,6 +48,35 @@ class CreditTransactionType(str, Enum):
     DEBIT = "debit"
 
 
+class BatchMode(str, Enum):
+    ONLINE = "online"
+    HYBRID = "hybrid"
+
+
+class EnrollmentRole(str, Enum):
+    STUDENT = "student"
+    FACULTY = "faculty"
+
+
+class ProjectWorkStatus(str, Enum):
+    NOT_STARTED = "not_started"
+    IN_PROGRESS = "in_progress"
+    SUBMITTED = "submitted"
+    REVIEWED = "reviewed"
+
+
+class JobPostStatus(str, Enum):
+    OPEN = "open"
+    CLOSED = "closed"
+
+
+class JobApplicationStatus(str, Enum):
+    APPLIED = "applied"
+    SHORTLISTED = "shortlisted"
+    REJECTED = "rejected"
+    HIRED = "hired"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -59,7 +89,11 @@ class User(Base):
     xp_points: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     streak_days: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     credit_balance: Mapped[int] = mapped_column(Integer, default=100, nullable=False)
+    cohort_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    batch_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     target_role = relationship("Role", foreign_keys=[selected_role_id])
     progress_records = relationship("ProgressTracking", back_populates="user", cascade="all,delete-orphan")
@@ -67,6 +101,17 @@ class User(Base):
     projects = relationship("Project", back_populates="user", cascade="all,delete-orphan")
     resumes = relationship("Resume", back_populates="user", cascade="all,delete-orphan")
     credit_transactions = relationship("CreditTransaction", back_populates="user", cascade="all,delete-orphan")
+    admin_actions = relationship(
+        "AdminActivityLog",
+        foreign_keys="AdminActivityLog.admin_user_id",
+        back_populates="admin_user",
+        cascade="all,delete-orphan",
+    )
+    targeted_admin_actions = relationship(
+        "AdminActivityLog",
+        foreign_keys="AdminActivityLog.target_user_id",
+        back_populates="target_user",
+    )
 
 
 class Role(Base):
@@ -250,3 +295,107 @@ class CreditTransaction(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
     user = relationship("User", back_populates="credit_transactions")
+
+
+class AdminActivityLog(Base):
+    __tablename__ = "admin_activity_logs"
+    __table_args__ = (
+        Index("ix_admin_activity_logs_created", "created_at"),
+        Index("ix_admin_activity_logs_admin_target", "admin_user_id", "target_user_id"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    admin_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    target_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    action: Mapped[str] = mapped_column(String(100), nullable=False)
+    details: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    admin_user = relationship("User", foreign_keys=[admin_user_id], back_populates="admin_actions")
+    target_user = relationship("User", foreign_keys=[target_user_id], back_populates="targeted_admin_actions")
+
+
+class LearningBatch(Base):
+    __tablename__ = "learning_batches"
+    __table_args__ = (
+        Index("ix_learning_batches_start_date", "start_date"),
+        Index("ix_learning_batches_track_mode", "track", "mode"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(180), nullable=False)
+    track: Mapped[str] = mapped_column(String(180), nullable=False)
+    days: Mapped[str] = mapped_column(String(80), nullable=False)
+    time_ist: Mapped[str] = mapped_column(String(80), nullable=False)
+    mode: Mapped[BatchMode] = mapped_column(SqlEnum(BatchMode), default=BatchMode.ONLINE, nullable=False)
+    mentor_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    start_date: Mapped[date] = mapped_column(Date, nullable=False)
+    seats_total: Mapped[int] = mapped_column(Integer, default=30, nullable=False)
+    seats_filled: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    mentor = relationship("User", foreign_keys=[mentor_user_id])
+    enrollments = relationship("BatchEnrollment", back_populates="batch", cascade="all,delete-orphan")
+    jobs = relationship("JobPost", back_populates="eligible_batch")
+
+
+class BatchEnrollment(Base):
+    __tablename__ = "batch_enrollments"
+    __table_args__ = (
+        UniqueConstraint("batch_id", "user_id", name="uq_batch_enrollments_batch_user"),
+        Index("ix_batch_enrollments_batch_role", "batch_id", "enrollment_role"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    batch_id: Mapped[int] = mapped_column(ForeignKey("learning_batches.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    enrollment_role: Mapped[EnrollmentRole] = mapped_column(SqlEnum(EnrollmentRole), default=EnrollmentRole.STUDENT, nullable=False)
+    attendance_pct: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    college_info: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    year_or_grad: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    project_title: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    project_status: Mapped[ProjectWorkStatus] = mapped_column(SqlEnum(ProjectWorkStatus), default=ProjectWorkStatus.NOT_STARTED, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    batch = relationship("LearningBatch", back_populates="enrollments")
+    user = relationship("User")
+
+
+class JobPost(Base):
+    __tablename__ = "job_posts"
+    __table_args__ = (
+        Index("ix_job_posts_status_created", "status", "created_at"),
+        Index("ix_job_posts_batch", "eligible_batch_id"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    company_name: Mapped[str] = mapped_column(String(180), nullable=False)
+    location: Mapped[str] = mapped_column(String(120), nullable=False)
+    employment_type: Mapped[str] = mapped_column(String(80), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[JobPostStatus] = mapped_column(SqlEnum(JobPostStatus), default=JobPostStatus.OPEN, nullable=False)
+    eligible_batch_id: Mapped[int | None] = mapped_column(ForeignKey("learning_batches.id"), nullable=True)
+    created_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    eligible_batch = relationship("LearningBatch", back_populates="jobs")
+    created_by = relationship("User", foreign_keys=[created_by_user_id])
+    applications = relationship("JobApplication", back_populates="job", cascade="all,delete-orphan")
+
+
+class JobApplication(Base):
+    __tablename__ = "job_applications"
+    __table_args__ = (
+        UniqueConstraint("job_post_id", "student_user_id", name="uq_job_application_job_student"),
+        Index("ix_job_applications_status", "status"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    job_post_id: Mapped[int] = mapped_column(ForeignKey("job_posts.id"), nullable=False)
+    student_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    status: Mapped[JobApplicationStatus] = mapped_column(SqlEnum(JobApplicationStatus), default=JobApplicationStatus.APPLIED, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    job = relationship("JobPost", back_populates="applications")
+    student = relationship("User", foreign_keys=[student_user_id])

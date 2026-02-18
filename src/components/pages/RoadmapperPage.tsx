@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
-import { CheckCircle, Lock, Briefcase, CurrencyDollar, Timer, Target } from '@phosphor-icons/react'
+import { CheckCircle, Lock, Briefcase, CurrencyDollar, Timer, Target, ListChecks } from '@phosphor-icons/react'
 import {
   ApiError,
   BackendRole,
@@ -242,6 +242,38 @@ export function RoadmapperPage() {
 
   const activeStageTopics = ['Core Concepts', 'Hands-on Practice', 'Assessment Readiness']
 
+  const completedStages = roadmapStages.filter((stage) => {
+    const metrics = getStageMetrics(stage.id)
+    const requiredExercise = stage.unlock_exercise_completion ?? 0
+    return metrics.quizScore >= stage.unlock_quiz_score && metrics.exerciseCompletion >= requiredExercise
+  })
+
+  const inProgressStages = roadmapStages.filter((stage) => {
+    const metrics = getStageMetrics(stage.id)
+    const requiredExercise = stage.unlock_exercise_completion ?? 0
+    const isCompleted = metrics.quizScore >= stage.unlock_quiz_score && metrics.exerciseCompletion >= requiredExercise
+    return isStageUnlocked(stage.id) && !isCompleted
+  })
+
+  const pendingLockedStages = roadmapStages.filter((stage) => !isStageUnlocked(stage.id))
+
+  const activeStageAssignments = activeStage
+    ? [
+      {
+        label: `Reach quiz score ${activeStage.unlock_quiz_score}%`,
+        done: activeMetrics.quizScore >= activeStage.unlock_quiz_score,
+      },
+      {
+        label: `Reach exercise completion ${activeStage.unlock_exercise_completion ?? 80}%`,
+        done: activeMetrics.exerciseCompletion >= (activeStage.unlock_exercise_completion ?? 80),
+      },
+      {
+        label: nextStage ? `Unlock next stage: ${nextStage.title}` : 'Complete capstone and interview prep',
+        done: nextStage ? isStageUnlocked(nextStage.id) : completedStages.length === roadmapStages.length && roadmapStages.length > 0,
+      },
+    ]
+    : []
+
   if (!token && isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
@@ -371,6 +403,60 @@ export function RoadmapperPage() {
                         {company}
                       </Badge>
                     ))}
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6 border-2 space-y-4">
+                <div className="flex items-center gap-2">
+                  <ListChecks size={18} className="text-primary" weight="duotone" />
+                  <h3 className="text-xl font-semibold">Stage Progress & Pending Assignments</h3>
+                </div>
+
+                <div className="grid lg:grid-cols-3 gap-4 text-sm">
+                  <div className="rounded-lg border p-4 bg-card space-y-3">
+                    <div className="font-semibold">Completed So Far ({completedStages.length})</div>
+                    {completedStages.length === 0 ? (
+                      <p className="text-muted-foreground">No stage fully completed yet.</p>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        {completedStages.map((stage) => (
+                          <Badge key={stage.id} variant="secondary" className="bg-emerald-500/15 text-emerald-700 border-emerald-500/30">
+                            <CheckCircle size={12} className="mr-1" weight="fill" />
+                            {stage.title}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="rounded-lg border p-4 bg-card space-y-3">
+                    <div className="font-semibold">Current Stage</div>
+                    <div className="text-muted-foreground">{activeStage?.title ?? 'No active stage selected'}</div>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="outline">In Progress: {inProgressStages.length}</Badge>
+                      <Badge variant="outline">Locked: {pendingLockedStages.length}</Badge>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border p-4 bg-card space-y-3">
+                    <div className="font-semibold">Pending Tasks / Assignments</div>
+                    {activeStageAssignments.length === 0 ? (
+                      <p className="text-muted-foreground">Select a stage to see assignments.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {activeStageAssignments.map((assignment) => (
+                          <div key={assignment.label} className="flex items-start gap-2">
+                            {assignment.done ? (
+                              <CheckCircle size={14} className="text-emerald-600 mt-0.5" weight="fill" />
+                            ) : (
+                              <Lock size={14} className="text-amber-600 mt-0.5" />
+                            )}
+                            <span className={assignment.done ? 'text-foreground' : 'text-muted-foreground'}>{assignment.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </Card>

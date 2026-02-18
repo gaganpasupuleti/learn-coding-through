@@ -3,13 +3,81 @@ import { ArrowRight, Cube, Lightbulb, Code } from '@phosphor-icons/react'
 
 interface LandingPageProps {
   onNavigate: (page: 'projects' | 'practice' | 'quiz' | 'roadmapper') => void
+  experienceVersion: 'v1' | 'v2'
+  onChangeExperienceVersion: (version: 'v1' | 'v2') => void
+  selectedPalette: 'executive' | 'sapphire' | 'royal'
+  onChangePalette: (palette: 'executive' | 'sapphire' | 'royal') => void
 }
 
-export function LandingPage({ onNavigate }: LandingPageProps) {
+export function LandingPage({
+  onNavigate,
+  experienceVersion,
+  onChangeExperienceVersion,
+  selectedPalette,
+  onChangePalette,
+}: LandingPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <div className="container mx-auto px-6 py-12 md:py-20">
         <div className="max-w-6xl mx-auto text-center space-y-12">
+          <div className="flex flex-wrap justify-between items-center gap-3 rounded-xl border bg-card/60 p-3">
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant={experienceVersion === 'v1' ? 'default' : 'outline'}
+                onClick={() => onChangeExperienceVersion('v1')}
+              >
+                V1
+              </Button>
+              <Button
+                size="sm"
+                variant={experienceVersion === 'v2' ? 'default' : 'outline'}
+                onClick={() => onChangeExperienceVersion('v2')}
+              >
+                V2
+              </Button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant={selectedPalette === 'executive' ? 'default' : 'outline'}
+                onClick={() => {
+                  onChangePalette('executive')
+                  if (experienceVersion === 'v1') {
+                    onChangeExperienceVersion('v2')
+                  }
+                }}
+              >
+                Executive
+              </Button>
+              <Button
+                size="sm"
+                variant={selectedPalette === 'sapphire' ? 'default' : 'outline'}
+                onClick={() => {
+                  onChangePalette('sapphire')
+                  if (experienceVersion === 'v1') {
+                    onChangeExperienceVersion('v2')
+                  }
+                }}
+              >
+                Sapphire
+              </Button>
+              <Button
+                size="sm"
+                variant={selectedPalette === 'royal' ? 'default' : 'outline'}
+                onClick={() => {
+                  onChangePalette('royal')
+                  if (experienceVersion === 'v1') {
+                    onChangeExperienceVersion('v2')
+                  }
+                }}
+              >
+                Royal
+              </Button>
+            </div>
+          </div>
+
           <div className="space-y-6 animate-fadeIn">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground">
               Student Career{' '}

@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button'
-import { House, Cube, Code, ListChecks, MapTrifold } from '@phosphor-icons/react'
+import { House, Cube, Code, ListChecks, MapTrifold, ShieldCheck } from '@phosphor-icons/react'
 
 interface NavigationProps {
   currentPage: string
-  onNavigate: (page: 'landing' | 'projects' | 'practice' | 'quiz' | 'roadmapper') => void
+  onNavigate: (page: 'landing' | 'projects' | 'practice' | 'quiz' | 'roadmapper' | 'admin') => void
 }
 
 export function Navigation({ currentPage, onNavigate }: NavigationProps) {
@@ -63,6 +63,15 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
             >
               <MapTrifold size={18} className="mr-2" weight={currentPage === 'roadmapper' ? 'fill' : 'regular'} />
               Career Mapper
+            </Button>
+            <Button
+              variant={currentPage === 'admin' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => onNavigate('admin')}
+              className={currentPage === 'admin' ? 'bg-primary' : ''}
+            >
+              <ShieldCheck size={18} className="mr-2" weight={currentPage === 'admin' ? 'fill' : 'regular'} />
+              Admin
             </Button>
           </div>
         </div>

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import auth, credits, interview, progress, projects, quiz, resume, roadmap, roles, execute
+from app.api.v1 import admin, auth, credits, interview, progress, projects, quiz, resume, roadmap, roles, execute
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.services.seed import seed_default_roles
@@ -39,6 +39,7 @@ def health():
 
 
 app.include_router(auth.router, prefix="/api/v1")
+app.include_router(admin.router, prefix="/api/v1")
 app.include_router(roles.router, prefix="/api/v1")
 app.include_router(roadmap.router, prefix="/api/v1")
 app.include_router(progress.router, prefix="/api/v1")
