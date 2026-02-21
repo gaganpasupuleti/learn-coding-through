@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { CodeDisplay } from '@/components/CodeDisplay'
 import { quizzes, Quiz, QuizQuestion } from '@/lib/quizzes'
-import { ArrowLeft, ArrowRight, CheckCircle, ListChecks, XCircle } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, CheckCircle, ListChecks, Lock, XCircle } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
 const normalizeText = (value: string) => value.trim().replace(/\r\n/g, '\n')
@@ -92,7 +92,14 @@ const getWhyRightText = (question: QuizQuestion) => {
   return question.explanation
 }
 
-export function QuizPage() {
+interface QuizPageProps {
+  /** Quiz IDs that should be shown as locked (demo limit reached). */
+  lockedQuizIds?: string[]
+  /** Called before a quiz is selected; return false to block selection. */
+  onBeforeSelect?: (quizId: string) => boolean
+}
+
+export function QuizPage({ lockedQuizIds = [], onBeforeSelect }: QuizPageProps = {}) {
   const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [draftAnswers, setDraftAnswers] = useState<Record<number, string | number>>({})
@@ -107,6 +114,7 @@ export function QuizPage() {
   }
 
   const handleSelectQuiz = (quizId: string) => {
+    if (onBeforeSelect && !onBeforeSelect(quizId)) return
     resetQuizState()
     setSelectedQuizId(quizId)
   }
@@ -175,40 +183,63 @@ export function QuizPage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 pt-4">
-              {quizzes.map((quiz) => (
-                <Card
-                  key={quiz.id}
-                  className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-primary/50 bg-card"
-                >
-                  <div className="p-6 space-y-4">
-                    <div className="space-y-2">
-                      <h2 className="text-2xl font-semibold">{quiz.title}</h2>
-                      <p className="text-muted-foreground">{quiz.description}</p>
-                    </div>
+              {quizzes.map((quiz) => {
+                const isLocked = lockedQuizIds.includes(quiz.id)
+                return (
+                  <Card
+                    key={quiz.id}
+                    className={`transition-all duration-300 border-2 bg-card relative ${
+                      isLocked ? 'opacity-70' : 'hover:shadow-xl hover:-translate-y-1 hover:border-primary/50'
+                    }`}
+                  >
+                    {isLocked && (
+                      <div className="absolute inset-0 rounded-xl bg-background/60 backdrop-blur-[2px] flex flex-col items-center justify-center z-10 gap-2">
+                        <Lock size={20} className="text-muted-foreground" />
+                        <p className="text-xs font-medium text-muted-foreground text-center px-4">
+                          Demo limit reached. Upgrade for full access.
+                        </p>
+                      </div>
+                    )}
+                    <div className="p-6 space-y-4">
+                      <div className="space-y-2">
+                        <h2 className="text-2xl font-semibold">{quiz.title}</h2>
+                        <p className="text-muted-foreground">{quiz.description}</p>
+                      </div>
 
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="secondary" className="px-3 py-1">
-                        {quiz.difficulty}
-                      </Badge>
-                      <Badge variant="outline" className="px-3 py-1">
-                        {quiz.estimatedTime}
-                      </Badge>
-                      <Badge className="px-3 py-1 bg-primary/10 text-primary">
-                        {quiz.questions.length} Questions
-                      </Badge>
-                    </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary" className="px-3 py-1">
+                          {quiz.difficulty}
+                        </Badge>
+                        <Badge variant="outline" className="px-3 py-1">
+                          {quiz.estimatedTime}
+                        </Badge>
+                        <Badge className="px-3 py-1 bg-primary/10 text-primary">
+                          {quiz.questions.length} Questions
+                        </Badge>
+                      </div>
 
-                    <Button
-                      className="w-full bg-primary hover:bg-primary/90"
-                      size="lg"
-                      onClick={() => handleSelectQuiz(quiz.id)}
-                    >
-                      Start Quiz
-                      <ArrowRight className="ml-2" size={18} weight="bold" />
-                    </Button>
-                  </div>
-                </Card>
-              ))}
+                      <Button
+                        className="w-full bg-primary hover:bg-primary/90"
+                        size="lg"
+                        onClick={() => handleSelectQuiz(quiz.id)}
+                        disabled={isLocked}
+                      >
+                        {isLocked ? (
+                          <>
+                            <Lock size={16} className="mr-2" />
+                            Locked
+                          </>
+                        ) : (
+                          <>
+                            Start Quiz
+                            <ArrowRight className="ml-2" size={18} weight="bold" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </Card>
+                )
+              })}
             </div>
           </div>
         </div>
