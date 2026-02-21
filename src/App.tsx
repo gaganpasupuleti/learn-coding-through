@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Navigation } from '@/components/Navigation'
 import { LandingPage } from '@/components/pages/LandingPage'
 import { LandingPageV2 } from '@/components/pages/LandingPageV2'
 import { ProjectsPage } from '@/components/pages/ProjectsPage'
@@ -14,153 +13,202 @@ import { RoadmapperPage } from '@/components/pages/RoadmapperPage'
 import { RoadmapperPageV2 } from '@/components/pages/RoadmapperPageV2'
 import { AdminPage } from '@/components/pages/AdminPage'
 import { AdminPageV2 } from '@/components/pages/AdminPageV2'
+import { LoginPage } from '@/components/pages/LoginPage'
+import { StudentShell } from '@/components/shells/StudentShell'
+import { AdminShell } from '@/components/shells/AdminShell'
 import { PortBanner } from '@/components/PortBanner'
 import { getProjectById } from '@/lib/projects'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
+import { getStoredUser, type AuthUser } from '@/lib/auth'
 
-type Page = 'landing' | 'projects' | 'learning' | 'practice' | 'quiz' | 'roadmapper' | 'admin'
+type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'quiz' | 'roadmapper'
 type ExperienceVersion = 'v1' | 'v2'
 type V2Palette = 'executive' | 'sapphire' | 'royal'
+
+/** App-level auth state: null = unauthenticated, 'public' = browsing Career Mapper without login */
+type AuthState = AuthUser | 'public' | null
 
 const EXPERIENCE_VERSION_KEY = 'app-experience-version'
 const V2_PALETTE_KEY = 'app-v2-palette'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('landing')
+  // ---------- auth ----------
+  const [authState, setAuthState] = useState<AuthState>(() => getStoredUser())
+
+  // ---------- routing ----------
+  const [studentPage, setStudentPage] = useState<StudentPage>('landing')
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+
+  // ---------- experience version / palette (preserved from V1/V2 toggle) ----------
   const [experienceVersion, setExperienceVersion] = useState<ExperienceVersion>(() => {
     const params = new URLSearchParams(window.location.search)
     const queryVersion = params.get('experience')
     const legacyLandingVersion = params.get('landing')
 
-    if (queryVersion === 'v1' || queryVersion === 'v2') {
-      return queryVersion
-    }
+    if (queryVersion === 'v1' || queryVersion === 'v2') return queryVersion
+    if (legacyLandingVersion === 'v1' || legacyLandingVersion === 'v2') return legacyLandingVersion
 
-    if (legacyLandingVersion === 'v1' || legacyLandingVersion === 'v2') {
-      return legacyLandingVersion
-    }
-
-    const storedVersion = window.localStorage.getItem(EXPERIENCE_VERSION_KEY)
-    if (storedVersion === 'v1' || storedVersion === 'v2') {
-      return storedVersion
-    }
-
+    const stored = window.localStorage.getItem(EXPERIENCE_VERSION_KEY)
+    if (stored === 'v1' || stored === 'v2') return stored
     return 'v2'
   })
+
   const [v2Palette, setV2Palette] = useState<V2Palette>(() => {
     const queryPalette = new URLSearchParams(window.location.search).get('palette')
-    if (queryPalette === 'executive' || queryPalette === 'sapphire' || queryPalette === 'royal') {
-      return queryPalette
-    }
-
-    const storedPalette = window.localStorage.getItem(V2_PALETTE_KEY)
-    if (storedPalette === 'executive' || storedPalette === 'sapphire' || storedPalette === 'royal') {
-      return storedPalette
-    }
-
+    if (queryPalette === 'executive' || queryPalette === 'sapphire' || queryPalette === 'royal') return queryPalette
+    const stored = window.localStorage.getItem(V2_PALETTE_KEY)
+    if (stored === 'executive' || stored === 'sapphire' || stored === 'royal') return stored
     return 'executive'
   })
 
   const isV2Experience = useMemo(() => experienceVersion === 'v2', [experienceVersion])
 
-  useEffect(() => {
-    window.localStorage.setItem(EXPERIENCE_VERSION_KEY, experienceVersion)
-  }, [experienceVersion])
+  useEffect(() => { window.localStorage.setItem(EXPERIENCE_VERSION_KEY, experienceVersion) }, [experienceVersion])
+  useEffect(() => { window.localStorage.setItem(V2_PALETTE_KEY, v2Palette) }, [v2Palette])
 
-  useEffect(() => {
-    window.localStorage.setItem(V2_PALETTE_KEY, v2Palette)
-  }, [v2Palette])
+  // ---------- handlers ----------
 
-  const handleNavigate = (page: 'landing' | 'projects' | 'practice' | 'quiz' | 'roadmapper' | 'admin') => {
-    setCurrentPage(page)
+  const handleAuthenticated = (user: AuthUser) => {
+    setAuthState(user)
+    // Admins go to admin portal; students/demo go to student portal landing
+    if (user.role !== 'admin') setStudentPage('landing')
+  }
+
+  const handleLogout = () => {
+    setAuthState(null)
+    setStudentPage('landing')
+    setSelectedProjectId(null)
+    toast.success('Logged out successfully.')
+  }
+
+  const handleStudentNavigate = (page: StudentPage) => {
+    setStudentPage(page)
     setSelectedProjectId(null)
   }
 
   const handleSelectProject = (projectId: string) => {
     setSelectedProjectId(projectId)
-    setCurrentPage('learning')
+    setStudentPage('learning')
     toast.success('Project loaded! Let\'s start learning.')
   }
 
   const handleBackToProjects = () => {
     setSelectedProjectId(null)
-    setCurrentPage('projects')
+    setStudentPage('projects')
     toast.success('Great work! Ready for another project?')
   }
 
   const selectedProject = selectedProjectId ? getProjectById(selectedProjectId) : null
 
+  // ---------- render ----------
+
+  const wrapperClass = `min-h-screen bg-background ${isV2Experience ? 'app-v2' : ''}`
+
+  // Unauthenticated → show Login (with public browse option for Career Mapper)
+  if (!authState) {
+    return (
+      <div className={wrapperClass} data-v2-palette={v2Palette} data-experience-version={experienceVersion}>
+        <PortBanner />
+        <LoginPage
+          onAuthenticated={handleAuthenticated}
+          onBrowsePublicly={() => setAuthState('public')}
+        />
+        <Toaster position="top-center" />
+      </div>
+    )
+  }
+
+  // Public browse mode → Career Mapper only, no shell nav
+  if (authState === 'public') {
+    return (
+      <div className={wrapperClass} data-v2-palette={v2Palette} data-experience-version={experienceVersion}>
+        <PortBanner />
+        {isV2Experience ? (
+          <RoadmapperPageV2
+            onSignUp={() => setAuthState(null)}
+          />
+        ) : (
+          <RoadmapperPage />
+        )}
+        <Toaster position="top-center" />
+      </div>
+    )
+  }
+
+  const user = authState as AuthUser
+
+  // Admin portal
+  if (user.role === 'admin') {
+    return (
+      <div className={wrapperClass} data-v2-palette={v2Palette} data-experience-version={experienceVersion}>
+        <PortBanner />
+        <AdminShell user={user} onLogout={handleLogout}>
+          {isV2Experience ? <AdminPageV2 /> : <AdminPage />}
+        </AdminShell>
+        <Toaster position="top-center" />
+      </div>
+    )
+  }
+
+  // Student / Demo portal
   return (
-    <div
-      className={`min-h-screen bg-background ${isV2Experience ? 'app-v2' : ''}`}
-      data-v2-palette={v2Palette}
-      data-experience-version={experienceVersion}
-    >
+    <div className={wrapperClass} data-v2-palette={v2Palette} data-experience-version={experienceVersion}>
       <PortBanner />
-      {currentPage !== 'learning' && (
-        <Navigation currentPage={currentPage} onNavigate={handleNavigate} />
-      )}
+      <StudentShell
+        currentPage={studentPage === 'learning' ? 'projects' : studentPage}
+        user={user}
+        onNavigate={handleStudentNavigate}
+        onLogout={handleLogout}
+      >
+        {studentPage === 'landing' && (
+          isV2Experience ? (
+            <LandingPageV2
+              onNavigate={handleStudentNavigate}
+              experienceVersion={experienceVersion}
+              onChangeExperienceVersion={setExperienceVersion}
+              selectedPalette={v2Palette}
+              onChangePalette={setV2Palette}
+            />
+          ) : (
+            <LandingPage
+              onNavigate={handleStudentNavigate}
+              experienceVersion={experienceVersion}
+              onChangeExperienceVersion={setExperienceVersion}
+              selectedPalette={v2Palette}
+              onChangePalette={setV2Palette}
+            />
+          )
+        )}
 
-      {currentPage === 'landing' && (
-        isV2Experience ? (
-          <LandingPageV2
-            onNavigate={handleNavigate}
-            experienceVersion={experienceVersion}
-            onChangeExperienceVersion={setExperienceVersion}
-            selectedPalette={v2Palette}
-            onChangePalette={setV2Palette}
-          />
-        ) : (
-          <LandingPage
-            onNavigate={handleNavigate}
-            experienceVersion={experienceVersion}
-            onChangeExperienceVersion={setExperienceVersion}
-            selectedPalette={v2Palette}
-            onChangePalette={setV2Palette}
-          />
-        )
-      )}
+        {studentPage === 'projects' && (
+          isV2Experience ? (
+            <ProjectsPageV2 onSelectProject={handleSelectProject} />
+          ) : (
+            <ProjectsPage onSelectProject={handleSelectProject} />
+          )
+        )}
 
-      {currentPage === 'projects' && (
-        isV2Experience ? (
-          <ProjectsPageV2 onSelectProject={handleSelectProject} />
-        ) : (
-          <ProjectsPage onSelectProject={handleSelectProject} />
-        )
-      )}
+        {studentPage === 'practice' && (
+          isV2Experience ? <PracticePageV2 /> : <PracticePage />
+        )}
 
-      {currentPage === 'practice' && (
-        isV2Experience ? <PracticePageV2 /> : <PracticePage />
-      )}
+        {studentPage === 'quiz' && (
+          isV2Experience ? <QuizPageV2 /> : <QuizPage />
+        )}
 
-      {currentPage === 'quiz' && (
-        isV2Experience ? <QuizPageV2 /> : <QuizPage />
-      )}
+        {studentPage === 'roadmapper' && (
+          isV2Experience ? <RoadmapperPageV2 /> : <RoadmapperPage />
+        )}
 
-      {currentPage === 'roadmapper' && (
-        isV2Experience ? <RoadmapperPageV2 /> : <RoadmapperPage />
-      )}
-
-      {currentPage === 'admin' && (
-        isV2Experience ? <AdminPageV2 /> : <AdminPage />
-      )}
-
-      {currentPage === 'learning' && selectedProject && (
-        isV2Experience ? (
-          <ProjectLearningPageV2
-            project={selectedProject}
-            onBack={handleBackToProjects}
-          />
-        ) : (
-          <ProjectLearningPage
-            project={selectedProject}
-            onBack={handleBackToProjects}
-          />
-        )
-      )}
-
+        {studentPage === 'learning' && selectedProject && (
+          isV2Experience ? (
+            <ProjectLearningPageV2 project={selectedProject} onBack={handleBackToProjects} />
+          ) : (
+            <ProjectLearningPage project={selectedProject} onBack={handleBackToProjects} />
+          )
+        )}
+      </StudentShell>
       <Toaster position="top-center" />
     </div>
   )
