@@ -55,7 +55,7 @@ export const syllabusConfig: RoleSyllabus[] = [
           { week: 3, topic: 'Data Cleaning', activities: ['Handling nulls', 'Type coercion', 'Deduplication'] },
           { week: 4, topic: 'Excel & Sheets', activities: ['PivotTables', 'VLOOKUP', 'Charts'] },
         ],
-        capstone: 'Clean and analyse a real-world CSV dataset',
+        capstone: 'Clean and analyze a real-world CSV dataset',
       },
       {
         month: 3,

@@ -78,7 +78,10 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
         role: 'student' as const,
       }
       storeUser(user)
-      setDemoFlag(true)
+      // New accounts start with demo access unless they have an elevated role
+      if (user.role === 'student' || user.role === 'demo') {
+        setDemoFlag(true)
+      }
       toast.success(`Account created! Welcome, ${user.full_name}.`)
       onAuthenticated(user)
     } catch (err) {

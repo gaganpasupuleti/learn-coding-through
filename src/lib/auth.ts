@@ -83,6 +83,7 @@ interface MeResponse {
   email: string
   full_name: string
   role: string
+  /** Included for backend compatibility; not currently used client-side. */
   is_active?: boolean
 }
 

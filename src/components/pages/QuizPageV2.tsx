@@ -15,7 +15,7 @@ import { quizzes } from '@/lib/quizzes'
 
 export function QuizPageV2() {
   const isDemo = isDemoUser()
-  const [, forceRender] = useState(0)
+  const [, setForceRenderKey] = useState(0)
 
   // Build locked quiz IDs for demo users
   const attemptedQuizzes = isDemo ? getDemoAttemptedQuizzes() : []
@@ -27,7 +27,7 @@ export function QuizPageV2() {
     if (!isDemo) return true
     if (!canAttemptDemoQuiz(quizId)) return false
     recordDemoQuizAttempt(quizId)
-    forceRender((n) => n + 1)
+    setForceRenderKey((n) => n + 1)
     return true
   }
 

@@ -155,6 +155,8 @@ export function SyllabusTimeline({
       <CardContent className="space-y-0">
         {syllabus.months.map((month, index) => {
           const isCompleted = month.month <= completedMonths
+          // Only the current month (completedMonths + 1) is accessible;
+          // future months are locked until the preceding month is completed.
           const isLocked = month.month > completedMonths + 1
           const isActive = activeMonth === month.month
 
