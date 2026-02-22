@@ -1467,7 +1467,7 @@ if __name__ == '__main__':
         type: 'challenge',
         content: {
           challenge: 'Add a --dedupe flag that scans the directory for duplicate files (same content, different names) using SHA-256 hashing and lists them. Optionally delete all but the first copy.',
-          hint: 'Use hashlib.sha256() to hash each file\'s bytes (SHA-256 is preferred over MD5 for reliable deduplication). Group files by hash using a defaultdict(list). Files with the same hash are duplicates. Use --keep-first to delete all but the earliest one.',
+          hint: 'Use hashlib.md5() to hash each file\'s bytes (MD5 is fast and sufficient for deduplication — use hashlib.sha256() if security matters). Group files by hash using a defaultdict(list). Files with the same hash are duplicates. Use --keep-first to delete all but the earliest one.',
         },
         deliverableDescription: 'CLI tool with duplicate detection and optional removal.',
       },
@@ -1681,7 +1681,7 @@ if __name__ == '__main__':
         type: 'challenge',
         content: {
           challenge: 'Add a validate() stage between transform and load that checks: no nulls in required fields, email format matches a regex, all spend values are positive, and tier distribution is reasonable. Fail the pipeline (raise ValueError with a message listing which check failed and how many records were affected) if critical checks fail.',
-          hint: 'Use df.isnull().sum() to check for nulls. For email regex: import re; df[~df["email"].str.match(r"^[\\w.-]+@[\\w.-]+\\.\\w+$")]. Raise ValueError(f"Validation failed: {check_name} — {n} records affected") if validation fails.',
+          hint: 'Use df.isnull().sum() to check for nulls. For a simple email check: df["email"].str.contains("@") (for production, use a library like email-validator). Raise ValueError(f"Validation failed: {check_name} — {n} records affected") if validation fails.',
         },
         deliverableDescription: 'Pipeline with data quality gate that fails on bad data.',
       },
