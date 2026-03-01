@@ -4,7 +4,7 @@ import { ProjectsPage } from '@/components/pages/ProjectsPage'
 import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
 import { PracticePage } from '@/components/pages/PracticePage'
 import { QuizPage } from '@/components/pages/QuizPage'
-import { RoadmapperPage } from '@/components/pages/RoadmapperPage'
+import { CareerMapperPage } from '@/components/career-mapper'
 import { AdminPage } from '@/components/pages/AdminPage'
 import { LoginPage } from '@/components/pages/LoginPage'
 import { StudentShell } from '@/components/shells/StudentShell'
@@ -75,7 +75,7 @@ function App() {
     return (
       <div className={wrapperClass}>
         <PortBanner />
-        <RoadmapperPage />
+        <CareerMapperPage />
         <Toaster position="top-center" />
       </div>
     )
@@ -116,7 +116,7 @@ function App() {
 
         {studentPage === 'quiz' && <QuizPage />}
 
-        {studentPage === 'roadmapper' && <RoadmapperPage />}
+        {studentPage === 'roadmapper' && <CareerMapperPage />}
 
         {studentPage === 'learning' && selectedProject && (
           <ProjectLearningPage project={selectedProject} onBack={handleBackToProjects} />
