@@ -37,6 +37,7 @@ import {
   fetchAdminStudents,
   updateAdminStudent,
 } from '@/lib/api'
+import { getAuthToken } from '@/lib/auth'
 
 type AdminSection = 'dashboard' | 'board' | 'students' | 'classes' | 'jobs' | 'activity'
 type StudentWorkflowStage = 'new' | 'enrolled' | 'in_progress' | 'needs_attention'
@@ -102,7 +103,7 @@ const sectionTitle: Record<AdminSection, string> = {
 
 export function AdminPage() {
   const [section, setSection] = useState<AdminSection>('dashboard')
-  const [token, setToken] = useState('')
+  const [token, setToken] = useState(() => getAuthToken() ?? '')
   const [search, setSearch] = useState('')
   const [boardQuery, setBoardQuery] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -338,6 +339,17 @@ export function AdminPage() {
     }
   }
 
+  const handleAutoFillToken = () => {
+    const storedToken = getAuthToken()
+    if (!storedToken) {
+      toast.error('No stored login token found. Please log in first.')
+      return
+    }
+
+    setToken(storedToken)
+    toast.success('Admin token auto-filled from your current login session.')
+  }
+
   const handleDatabaseCheck = async () => {
     try {
       const result = await fetchDatabaseHealth()
@@ -461,6 +473,7 @@ export function AdminPage() {
                     type="password"
                     className="w-[280px]"
                   />
+                  <Button variant="outline" onClick={handleAutoFillToken}>Auto Fill Token</Button>
                   <Button variant="outline" onClick={handleDatabaseCheck}>DB Check</Button>
                   <Button onClick={loadAdminData} disabled={isLoading}>Load Data</Button>
                   <Button
