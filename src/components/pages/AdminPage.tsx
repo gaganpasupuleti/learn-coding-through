@@ -33,6 +33,7 @@ import {
   fetchAdminMetrics,
   fetchAdminMonthlyKpis,
   fetchAdminRoleSplitInsights,
+  fetchDatabaseHealth,
   fetchAdminStudents,
   updateAdminStudent,
 } from '@/lib/api'
@@ -337,6 +338,20 @@ export function AdminPage() {
     }
   }
 
+  const handleDatabaseCheck = async () => {
+    try {
+      const result = await fetchDatabaseHealth()
+      if (result.status === 'ok') {
+        toast.success('Supabase DB connected successfully.')
+      } else {
+        toast.error(result.detail || 'Database is not reachable.')
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Database health check failed'
+      toast.error(message)
+    }
+  }
+
   const renderBoardColumn = (stage: StudentWorkflowStage) => {
     const column = workflowColumns[stage]
     const meta = workflowStageMeta[stage]
@@ -446,6 +461,7 @@ export function AdminPage() {
                     type="password"
                     className="w-[280px]"
                   />
+                  <Button variant="outline" onClick={handleDatabaseCheck}>DB Check</Button>
                   <Button onClick={loadAdminData} disabled={isLoading}>Load Data</Button>
                   <Button
                     variant="outline"

@@ -167,6 +167,12 @@ export interface AdminRoleSplitInsights {
   faculty_insights: AdminRoleInsightItem[]
 }
 
+export interface DatabaseHealth {
+  status: 'ok' | 'error'
+  database: string
+  detail?: string
+}
+
 /**
  * Execute code on the backend
  */
@@ -210,6 +216,19 @@ export async function fetchSqlPracticeSchema(): Promise<SqlPracticeSchemaRespons
     throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
   }
   return response.json() as Promise<SqlPracticeSchemaResponse>
+}
+
+export async function fetchDatabaseHealth(): Promise<DatabaseHealth> {
+  const response = await fetch(`${API_BASE_URL}/health/db`)
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}))
+    return {
+      status: 'error',
+      database: payload.database ?? 'unreachable',
+      detail: payload.detail ?? `HTTP error ${response.status}`,
+    }
+  }
+  return response.json() as Promise<DatabaseHealth>
 }
 
 function buildAuthHeaders(token: string): HeadersInit {

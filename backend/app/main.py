@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
 
 from app.api.v1 import admin, auth, credits, interview, progress, projects, quiz, resume, roadmap, roles, execute
 from app.core.config import settings
@@ -42,6 +44,21 @@ def startup_event():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/health/db")
+def health_db():
+    db = SessionLocal()
+    try:
+        db.execute(text("SELECT 1"))
+        return {"status": "ok", "database": "connected"}
+    except Exception as exc:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "error", "database": "unreachable", "detail": str(exc)},
+        )
+    finally:
+        db.close()
 
 
 app.include_router(auth.router, prefix="/api/v1")
