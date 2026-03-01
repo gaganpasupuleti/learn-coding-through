@@ -1,5 +1,13 @@
-import { useMemo, useState } from 'react'
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
+import { useEffect, useMemo, useState } from 'react'
+import {
+  Briefcase,
+  CalendarBlank,
+  ChartBar,
+  ClockCounterClockwise,
+  Kanban,
+  MagnifyingGlass,
+  UsersThree,
+} from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
@@ -12,6 +20,7 @@ import {
   AdminJobCreatePayload,
   AdminJobPost,
   AdminMetrics,
+  AdminMonthlyKpis,
   AdminRoleSplitInsights,
   AdminStudent,
   AdminStudentCreatePayload,
@@ -22,17 +31,23 @@ import {
   fetchAdminClassInsights,
   fetchAdminJobs,
   fetchAdminMetrics,
+  fetchAdminMonthlyKpis,
   fetchAdminRoleSplitInsights,
   fetchAdminStudents,
   updateAdminStudent,
 } from '@/lib/api'
 
-const chartColors = [
-  'hsl(var(--primary))',
-  'hsl(var(--secondary))',
-  'hsl(var(--accent))',
-  'hsl(var(--muted-foreground))',
-]
+type AdminSection = 'dashboard' | 'board' | 'students' | 'classes' | 'jobs' | 'activity'
+type StudentWorkflowStage = 'new' | 'enrolled' | 'in_progress' | 'needs_attention'
+
+const WORKFLOW_STAGE_STORAGE_KEY = 'admin-student-workflow-stages'
+
+const workflowStageMeta: Record<StudentWorkflowStage, { title: string; hint: string }> = {
+  new: { title: 'New Enquiries', hint: 'Fresh students with no assignment yet' },
+  enrolled: { title: 'Enrolled', hint: 'Assigned to class and onboarding' },
+  in_progress: { title: 'In Progress', hint: 'Actively learning and progressing' },
+  needs_attention: { title: 'Needs Attention', hint: 'Inactive or blocked students' },
+}
 
 const defaultCreatePayload: AdminStudentCreatePayload = {
   email: '',
@@ -48,34 +63,85 @@ const defaultCreatePayload: AdminStudentCreatePayload = {
   is_active: true,
 }
 
-export function AdminPage() {
-  const [adminView, setAdminView] = useState<'overview' | 'class_timings' | 'class_detail' | 'job_portal'>('overview')
-  const [selectedBatchId, setSelectedBatchId] = useState<number | null>(null)
+const defaultJobPayload: AdminJobCreatePayload = {
+  title: '',
+  company_name: '',
+  location: '',
+  employment_type: 'Full-time',
+  description: '',
+  eligible_batch_id: null,
+}
 
+function resolveStudentWorkflowStage(student: AdminStudent): StudentWorkflowStage {
+  const hasBatchAssignment = Boolean(student.batch_name || student.cohort_name)
+
+  if (!student.is_active) {
+    return 'needs_attention'
+  }
+
+  if (!hasBatchAssignment) {
+    return 'new'
+  }
+
+  if ((student.xp_points ?? 0) >= 100) {
+    return 'in_progress'
+  }
+
+  return 'enrolled'
+}
+
+const sectionTitle: Record<AdminSection, string> = {
+  dashboard: 'Executive Dashboard',
+  board: 'Workflow Board',
+  students: 'Students',
+  classes: 'Classes & Timings',
+  jobs: 'Job Portal',
+  activity: 'Admin Activity',
+}
+
+export function AdminPage() {
+  const [section, setSection] = useState<AdminSection>('dashboard')
   const [token, setToken] = useState('')
   const [search, setSearch] = useState('')
-  const [students, setStudents] = useState<AdminStudent[]>([])
-  const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null)
+  const [boardQuery, setBoardQuery] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
+  const [students, setStudents] = useState<AdminStudent[]>([])
+  const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null)
+  const [manualWorkflowStages, setManualWorkflowStages] = useState<Record<number, StudentWorkflowStage>>({})
+  const [draggedStudentId, setDraggedStudentId] = useState<number | null>(null)
+  const [dragOverStage, setDragOverStage] = useState<StudentWorkflowStage | null>(null)
+
   const [metrics, setMetrics] = useState<AdminMetrics | null>(null)
-  const [activityLogs, setActivityLogs] = useState<AdminActivityLog[]>([])
+  const [monthlyKpis, setMonthlyKpis] = useState<AdminMonthlyKpis | null>(null)
   const [roleSplitInsights, setRoleSplitInsights] = useState<AdminRoleSplitInsights | null>(null)
+  const [activityLogs, setActivityLogs] = useState<AdminActivityLog[]>([])
 
   const [batches, setBatches] = useState<AdminBatch[]>([])
+  const [selectedBatchId, setSelectedBatchId] = useState<number | null>(null)
   const [classInsights, setClassInsights] = useState<AdminClassInsights | null>(null)
 
   const [jobs, setJobs] = useState<AdminJobPost[]>([])
-  const [jobPayload, setJobPayload] = useState<AdminJobCreatePayload>({
-    title: '',
-    company_name: '',
-    location: '',
-    employment_type: 'Full-time',
-    description: '',
-    eligible_batch_id: null,
-  })
-
+  const [jobPayload, setJobPayload] = useState<AdminJobCreatePayload>(defaultJobPayload)
   const [createPayload, setCreatePayload] = useState<AdminStudentCreatePayload>(defaultCreatePayload)
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(WORKFLOW_STAGE_STORAGE_KEY)
+      if (!raw) return
+      const parsed = JSON.parse(raw) as Record<string, StudentWorkflowStage>
+      const normalized: Record<number, StudentWorkflowStage> = {}
+      for (const [key, value] of Object.entries(parsed)) {
+        const studentId = Number(key)
+        if (!Number.isFinite(studentId)) continue
+        if (!['new', 'enrolled', 'in_progress', 'needs_attention'].includes(value)) continue
+        normalized[studentId] = value
+      }
+      setManualWorkflowStages(normalized)
+    } catch {
+      setManualWorkflowStages({})
+    }
+  }, [])
 
   const selectedStudent = useMemo(
     () => students.find((student) => student.id === selectedStudentId) ?? null,
@@ -87,6 +153,52 @@ export function AdminPage() {
     [batches, selectedBatchId]
   )
 
+  const getWorkflowStage = (student: AdminStudent): StudentWorkflowStage => {
+    return manualWorkflowStages[student.id] ?? resolveStudentWorkflowStage(student)
+  }
+
+  const boardStudents = useMemo(() => {
+    const query = boardQuery.trim().toLowerCase()
+    if (!query) return students
+    return students.filter((student) => {
+      const haystack = `${student.full_name} ${student.email} ${student.batch_name ?? ''} ${student.cohort_name ?? ''}`.toLowerCase()
+      return haystack.includes(query)
+    })
+  }, [students, boardQuery])
+
+  const workflowColumns = useMemo(() => {
+    const columns: Record<StudentWorkflowStage, AdminStudent[]> = {
+      new: [],
+      enrolled: [],
+      in_progress: [],
+      needs_attention: [],
+    }
+
+    for (const student of boardStudents) {
+      columns[getWorkflowStage(student)].push(student)
+    }
+
+    return columns
+  }, [boardStudents, manualWorkflowStages])
+
+  const moveStudentToStage = (studentId: number, stage: StudentWorkflowStage) => {
+    setManualWorkflowStages((prev) => {
+      const next = { ...prev, [studentId]: stage }
+      localStorage.setItem(WORKFLOW_STAGE_STORAGE_KEY, JSON.stringify(next))
+      return next
+    })
+  }
+
+  const handleDropToStage = (stage: StudentWorkflowStage) => {
+    if (!draggedStudentId) {
+      setDragOverStage(null)
+      return
+    }
+    moveStudentToStage(draggedStudentId, stage)
+    setDraggedStudentId(null)
+    setDragOverStage(null)
+  }
+
   const loadAdminData = async () => {
     if (!token.trim()) {
       toast.error('Paste an admin bearer token first.')
@@ -95,19 +207,21 @@ export function AdminPage() {
 
     try {
       setIsLoading(true)
-      const [studentList, adminMetrics, activity, splitInsights, batchList, jobList] = await Promise.all([
+      const [studentList, adminMetrics, kpis, splitInsights, activity, batchList, jobList] = await Promise.all([
         fetchAdminStudents(token, search),
         fetchAdminMetrics(token),
-        fetchAdminActivity(token, 20),
+        fetchAdminMonthlyKpis(token),
         fetchAdminRoleSplitInsights(token),
+        fetchAdminActivity(token, 30),
         fetchAdminBatches(token),
         fetchAdminJobs(token),
       ])
 
       setStudents(studentList)
       setMetrics(adminMetrics)
-      setActivityLogs(activity)
+      setMonthlyKpis(kpis)
       setRoleSplitInsights(splitInsights)
+      setActivityLogs(activity)
       setBatches(batchList)
       setJobs(jobList)
 
@@ -136,7 +250,6 @@ export function AdminPage() {
       const insights = await fetchAdminClassInsights(token, batchId)
       setClassInsights(insights)
       setSelectedBatchId(batchId)
-      setAdminView('class_detail')
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to load class detail'
       toast.error(message)
@@ -213,14 +326,7 @@ export function AdminPage() {
         company_name: jobPayload.company_name.trim(),
         location: jobPayload.location.trim(),
       })
-      setJobPayload({
-        title: '',
-        company_name: '',
-        location: '',
-        employment_type: 'Full-time',
-        description: '',
-        eligible_batch_id: null,
-      })
+      setJobPayload(defaultJobPayload)
       setJobs(await fetchAdminJobs(token))
       toast.success('Job created successfully')
     } catch (error) {
@@ -231,307 +337,376 @@ export function AdminPage() {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-background antialiased">
-      <div className="container mx-auto px-6 py-8 max-w-7xl space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-4xl md:text-5xl font-serif font-semibold leading-none tracking-tight">Admin Portal</h1>
-          <p className="text-base text-muted-foreground leading-7 font-medium">Faculty + student insights, class operations, and job placement portal.</p>
+  const renderBoardColumn = (stage: StudentWorkflowStage) => {
+    const column = workflowColumns[stage]
+    const meta = workflowStageMeta[stage]
+
+    return (
+      <div
+        key={stage}
+        className={`rounded-lg border p-3 space-y-3 transition ${dragOverStage === stage ? 'bg-primary/10 border-primary' : 'bg-muted/20'}`}
+        onDragOver={(event) => {
+          event.preventDefault()
+          setDragOverStage(stage)
+        }}
+        onDragLeave={() => setDragOverStage((current) => (current === stage ? null : current))}
+        onDrop={(event) => {
+          event.preventDefault()
+          handleDropToStage(stage)
+        }}
+      >
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-semibold tracking-tight">{meta.title}</p>
+          <span className="text-xs text-muted-foreground font-medium">{column.length}</span>
         </div>
+        <p className="text-xs text-muted-foreground">{meta.hint}</p>
 
-        <Card className="p-4 space-y-3">
-          <h2 className="text-xl font-serif font-semibold tracking-tight">Admin Access Token</h2>
-          <Input value={token} onChange={(event) => setToken(event.target.value)} placeholder="Paste admin bearer token" type="password" />
-          <div className="flex gap-2">
-            <Button onClick={loadAdminData} disabled={isLoading}>Load Data</Button>
-            <Button variant="outline" onClick={() => { setToken(''); setStudents([]); setMetrics(null); setSelectedStudentId(null) }}>Clear</Button>
-          </div>
-        </Card>
+        <div className="space-y-2 max-h-[420px] overflow-auto pr-1">
+          {column.map((student) => (
+            <button
+              key={student.id}
+              onClick={() => setSelectedStudentId(student.id)}
+              draggable
+              onDragStart={(event) => {
+                setDraggedStudentId(student.id)
+                event.dataTransfer.effectAllowed = 'move'
+                event.dataTransfer.setData('text/plain', String(student.id))
+              }}
+              onDragEnd={() => {
+                setDraggedStudentId(null)
+                setDragOverStage(null)
+              }}
+              className={`w-full rounded-md border bg-background p-3 text-left transition cursor-move ${selectedStudentId === student.id ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/30'}`}
+            >
+              <p className="text-sm font-semibold tracking-tight">{student.full_name}</p>
+              <p className="text-xs text-muted-foreground truncate">{student.email}</p>
+              <p className="text-xs text-muted-foreground mt-1">Batch: {student.batch_name || student.cohort_name || 'Unassigned'} · XP: {student.xp_points}</p>
+            </button>
+          ))}
+          {column.length === 0 && <p className="text-xs text-muted-foreground">Drop student cards here</p>}
+        </div>
+      </div>
+    )
+  }
 
-        <Card className="p-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <Button variant={adminView === 'overview' ? 'default' : 'outline'} size="sm" onClick={() => setAdminView('overview')}>Overview</Button>
-            <Button variant={adminView === 'class_timings' ? 'default' : 'outline'} size="sm" onClick={() => setAdminView('class_timings')}>Class Timings</Button>
-            <Button variant={adminView === 'job_portal' ? 'default' : 'outline'} size="sm" onClick={() => setAdminView('job_portal')}>Job Portal</Button>
-            <Button variant={adminView === 'class_detail' ? 'default' : 'outline'} size="sm" onClick={() => selectedBatchId && setAdminView('class_detail')} disabled={!selectedBatchId}>Open Class Detail</Button>
-          </div>
-        </Card>
+  const navItems: Array<{ key: AdminSection; label: string; icon: React.ReactNode }> = [
+    { key: 'dashboard', label: 'Dashboard', icon: <ChartBar size={16} /> },
+    { key: 'board', label: 'Workflow Board', icon: <Kanban size={16} /> },
+    { key: 'students', label: 'Students', icon: <UsersThree size={16} /> },
+    { key: 'classes', label: 'Classes', icon: <CalendarBlank size={16} /> },
+    { key: 'jobs', label: 'Jobs', icon: <Briefcase size={16} /> },
+    { key: 'activity', label: 'Activity', icon: <ClockCounterClockwise size={16} /> },
+  ]
 
-        {adminView === 'overview' && (
-          <div className="space-y-6">
-            <div className="grid gap-4 md:grid-cols-2">
-              <Card className="p-4 space-y-3">
-                <h3 className="text-lg font-serif font-semibold tracking-tight">Student Insights</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {(roleSplitInsights?.student_insights ?? []).map((item) => (
-                    <div key={item.label} className="rounded border p-3">
-                      <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-muted-foreground">{item.label}</p>
-                      <p className="text-xl font-semibold tabular-nums mt-2">{item.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
-              <Card className="p-4 space-y-3">
-                <h3 className="text-lg font-serif font-semibold tracking-tight">Faculty Insights</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {(roleSplitInsights?.faculty_insights ?? []).map((item) => (
-                    <div key={item.label} className="rounded border p-3">
-                      <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-muted-foreground">{item.label}</p>
-                      <p className="text-xl font-semibold tabular-nums mt-2">{item.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-4">
-              <Card className="p-4 min-h-[110px] flex flex-col items-center justify-center text-center">
-                <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-muted-foreground">Total Students</p>
-                <p className="text-2xl font-semibold tabular-nums leading-none mt-2">{metrics?.total_students ?? '-'}</p>
-              </Card>
-              <Card className="p-4 min-h-[110px] flex flex-col items-center justify-center text-center">
-                <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-muted-foreground">Total Admins</p>
-                <p className="text-2xl font-semibold tabular-nums leading-none mt-2">{metrics?.total_admins ?? '-'}</p>
-              </Card>
-              <Card className="p-4 min-h-[110px] flex flex-col items-center justify-center text-center">
-                <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-muted-foreground">Active Students</p>
-                <p className="text-2xl font-semibold tabular-nums leading-none mt-2">{metrics?.active_students ?? '-'}</p>
-              </Card>
-              <Card className="p-4 min-h-[110px] flex flex-col items-center justify-center text-center">
-                <p className="text-[11px] uppercase tracking-[0.08em] font-semibold text-muted-foreground">Inactive Students</p>
-                <p className="text-2xl font-semibold tabular-nums leading-none mt-2">{metrics?.inactive_students ?? '-'}</p>
-              </Card>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <Card className="p-4 space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <h2 className="text-xl font-serif font-semibold tracking-tight">Students</h2>
-                  <div className="flex gap-2">
-                    <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or email" className="w-56" />
-                    <Button variant="outline" onClick={loadAdminData} disabled={isLoading}>Search</Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2 max-h-[420px] overflow-auto pr-1">
-                  {students.map((student) => (
-                    <button key={student.id} className={`w-full rounded-md border p-3 text-left transition ${selectedStudentId === student.id ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/30'}`} onClick={() => setSelectedStudentId(student.id)}>
-                      <p className="text-base font-semibold tracking-tight">{student.full_name}</p>
-                      <p className="text-sm text-muted-foreground">{student.email}</p>
-                      <p className="text-sm text-muted-foreground mt-1">Role: {student.role} · Credits: {student.credit_balance} · XP: {student.xp_points}</p>
-                      <p className="text-sm text-muted-foreground mt-1">Cohort: {student.cohort_name || '-'} · Batch: {student.batch_name || '-'} · Active: {student.is_active ? 'Yes' : 'No'}</p>
-                    </button>
-                  ))}
-                  {students.length === 0 && <p className="text-base text-muted-foreground">No students found.</p>}
-                </div>
-              </Card>
-
-              <Card className="p-4 space-y-4">
-                <h2 className="text-xl font-serif font-semibold tracking-tight">Student Detail / Edit</h2>
-                {!selectedStudent && <p className="text-base text-muted-foreground">Select a student to edit details.</p>}
-
-                {selectedStudent && (
-                  <div className="space-y-3">
-                    <Input value={selectedStudent.full_name} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, full_name: event.target.value } : item))} placeholder="Full name" />
-                    <div className="grid grid-cols-2 gap-3">
-                      <Input value={selectedStudent.role} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, role: event.target.value } : item))} placeholder="Role" />
-                      <Input value={String(selectedStudent.credit_balance)} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, credit_balance: Number(event.target.value || 0) } : item))} placeholder="Credits" type="number" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <Input value={String(selectedStudent.xp_points)} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, xp_points: Number(event.target.value || 0) } : item))} placeholder="XP points" type="number" />
-                      <Input value={String(selectedStudent.streak_days)} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, streak_days: Number(event.target.value || 0) } : item))} placeholder="Streak days" type="number" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <Input value={selectedStudent.cohort_name ?? ''} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, cohort_name: event.target.value || null } : item))} placeholder="Cohort" />
-                      <Input value={selectedStudent.batch_name ?? ''} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, batch_name: event.target.value || null } : item))} placeholder="Batch" />
-                    </div>
-                    <label className="flex items-center gap-2 text-base">
-                      <input type="checkbox" checked={selectedStudent.is_active} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, is_active: event.target.checked } : item))} />
-                      Active student
-                    </label>
-                    <Button onClick={handleUpdateStudent} disabled={isLoading}>Save Student Changes</Button>
-                  </div>
-                )}
-              </Card>
-            </div>
-
-            <Card className="p-4 space-y-4">
-              <h2 className="text-xl font-serif font-semibold tracking-tight">Add New Student</h2>
-              <div className="grid gap-3 md:grid-cols-2">
-                <Input value={createPayload.full_name} onChange={(event) => setCreatePayload((prev) => ({ ...prev, full_name: event.target.value }))} placeholder="Full name" />
-                <Input value={createPayload.email} onChange={(event) => setCreatePayload((prev) => ({ ...prev, email: event.target.value }))} placeholder="Email" type="email" />
-                <Input value={createPayload.password} onChange={(event) => setCreatePayload((prev) => ({ ...prev, password: event.target.value }))} placeholder="Temporary password" type="password" />
-                <Input value={createPayload.role} onChange={(event) => setCreatePayload((prev) => ({ ...prev, role: event.target.value }))} placeholder="Role (student/admin)" />
-                <Input value={String(createPayload.credit_balance)} onChange={(event) => setCreatePayload((prev) => ({ ...prev, credit_balance: Number(event.target.value || 0) }))} placeholder="Credit balance" type="number" />
-                <Input value={String(createPayload.xp_points)} onChange={(event) => setCreatePayload((prev) => ({ ...prev, xp_points: Number(event.target.value || 0) }))} placeholder="XP points" type="number" />
-                <Input value={createPayload.cohort_name ?? ''} onChange={(event) => setCreatePayload((prev) => ({ ...prev, cohort_name: event.target.value || null }))} placeholder="Cohort" />
-                <Input value={createPayload.batch_name ?? ''} onChange={(event) => setCreatePayload((prev) => ({ ...prev, batch_name: event.target.value || null }))} placeholder="Batch" />
-              </div>
-              <label className="flex items-center gap-2 text-base">
-                <input type="checkbox" checked={createPayload.is_active} onChange={(event) => setCreatePayload((prev) => ({ ...prev, is_active: event.target.checked }))} />
-                Active student
-              </label>
-              <Button onClick={handleCreateStudent} disabled={isLoading}>Create Student</Button>
-            </Card>
-
-            <Card className="p-4 space-y-4">
-              <h2 className="text-xl font-serif font-semibold tracking-tight">Recent Admin Activity</h2>
-              <div className="space-y-2 max-h-64 overflow-auto pr-1">
-                {activityLogs.map((entry) => (
-                  <div key={entry.id} className="rounded-md border p-3">
-                    <p className="text-base font-semibold tracking-tight">{entry.action}</p>
-                    <p className="text-sm text-muted-foreground font-medium">{entry.details || 'No details'}</p>
-                    <p className="text-sm text-muted-foreground mt-1 font-medium">Admin #{entry.admin_user_id} · Target #{entry.target_user_id ?? '-'} · {new Date(entry.created_at).toLocaleString()}</p>
-                  </div>
-                ))}
-                {activityLogs.length === 0 && <p className="text-base text-muted-foreground">No recent activity yet.</p>}
-              </div>
-            </Card>
-          </div>
-        )}
-
-        {adminView === 'class_timings' && (
-          <Card className="p-4 space-y-4">
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto w-full max-w-[1500px] p-4 md:p-6">
+        <div className="grid gap-4 lg:grid-cols-[260px_1fr]">
+          <Card className="admin-sidebar admin-surface p-4 space-y-4 h-fit lg:sticky lg:top-24">
             <div>
-              <h2 className="text-xl font-serif font-semibold tracking-tight">Class Timings & Batches (IST)</h2>
-              <p className="text-sm text-muted-foreground font-medium mt-1">Open any class to view enrolled students, project status, and attendance charts.</p>
+              <p className="text-xs uppercase tracking-[0.08em] text-muted-foreground font-semibold">Admin Workspace</p>
+              <h1 className="text-xl font-semibold mt-1">CodeQuest Control Center</h1>
             </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              {batches.map((batch) => (
-                <div key={batch.id} className="rounded-md border p-3 space-y-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-base font-semibold tracking-tight">{batch.name}</p>
-                      <p className="text-sm text-muted-foreground font-medium">{batch.track}</p>
-                    </div>
-                    <span className="inline-flex items-center justify-center h-6 text-xs uppercase tracking-[0.08em] rounded bg-primary/10 px-2 text-primary font-semibold leading-none">{batch.mode}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <p className="text-muted-foreground">Days</p><p className="font-medium">{batch.days}</p>
-                    <p className="text-muted-foreground">Time</p><p className="font-medium tabular-nums">{batch.time_ist}</p>
-                    <p className="text-muted-foreground">Start</p><p className="font-medium">{batch.start_date}</p>
-                    <p className="text-muted-foreground">Mentor</p><p className="font-medium">{batch.mentor_name ?? 'TBD'}</p>
-                    <p className="text-muted-foreground">Seats</p><p className="font-medium tabular-nums">{batch.seats_filled}/{batch.seats_total}</p>
-                  </div>
-                  <Button size="sm" className="w-full" onClick={() => openClassDetail(batch.id)}>Open Class</Button>
-                </div>
+
+            <div className="space-y-1">
+              {navItems.map((item) => (
+                <Button
+                  key={item.key}
+                  variant={section === item.key ? 'default' : 'ghost'}
+                  className="w-full justify-start"
+                  onClick={() => setSection(item.key)}
+                >
+                  {item.icon}
+                  {item.label}
+                </Button>
               ))}
             </div>
-          </Card>
-        )}
 
-        {adminView === 'class_detail' && selectedBatch && classInsights && (
-          <div className="space-y-4">
-            <Card className="p-4 space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <h2 className="text-xl font-serif font-semibold tracking-tight">{selectedBatch.name}</h2>
-                  <p className="text-sm text-muted-foreground font-medium">{selectedBatch.track} · {selectedBatch.days} · {selectedBatch.time_ist} (IST)</p>
-                </div>
-                <Button variant="outline" size="sm" onClick={() => setAdminView('class_timings')}>Back to Timings</Button>
-              </div>
-            </Card>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <Card className="p-4 space-y-2">
-                <h3 className="text-base font-serif font-semibold">Attendance Distribution</h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={classInsights.attendance_pie} dataKey="value" nameKey="label" outerRadius={90}>
-                        {classInsights.attendance_pie.map((slice, index) => (
-                          <Cell key={slice.label} fill={chartColors[index % chartColors.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </Card>
-
-              <Card className="p-4 space-y-2">
-                <h3 className="text-base font-serif font-semibold">Project Status Distribution</h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={classInsights.project_status_pie} dataKey="value" nameKey="label" outerRadius={90}>
-                        {classInsights.project_status_pie.map((slice, index) => (
-                          <Cell key={slice.label} fill={chartColors[index % chartColors.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </Card>
+            <div className="rounded-md border bg-muted/30 p-3 space-y-1">
+              <p className="text-xs uppercase tracking-[0.08em] text-muted-foreground">Quick Snapshot</p>
+              <p className="text-sm">Students: <span className="font-semibold">{metrics?.total_students ?? '-'}</span></p>
+              <p className="text-sm">Open Jobs: <span className="font-semibold">{monthlyKpis?.open_jobs ?? '-'}</span></p>
+              <p className="text-sm">Running Classes: <span className="font-semibold">{monthlyKpis?.active_classes_running ?? '-'}</span></p>
             </div>
+          </Card>
 
-            <Card className="p-4 space-y-3">
-              <h3 className="text-lg font-serif font-semibold tracking-tight">Enrolled Students, Attendance & Projects</h3>
-              <div className="space-y-2 max-h-[460px] overflow-auto pr-1">
-                {classInsights.students.map((student) => (
-                  <div key={`${student.user_id}-${student.enrollment_role}`} className="rounded-md border p-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <p className="text-base font-semibold tracking-tight">{student.full_name}</p>
-                      <span className="inline-flex items-center justify-center h-6 text-xs uppercase tracking-[0.08em] rounded bg-primary/10 px-2 text-primary font-semibold leading-none">{student.project_status.replace('_', ' ')}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground font-medium mt-1">Role: {student.enrollment_role} · Attendance: {student.attendance_pct}%</p>
-                    <p className="text-sm text-muted-foreground font-medium mt-1">{student.college_info ?? 'N/A'} · {student.year_or_grad ?? 'N/A'}</p>
-                    <p className="text-sm text-muted-foreground font-medium mt-1">Project: {student.project_title ?? '-'}</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </div>
-        )}
-
-        {adminView === 'job_portal' && (
           <div className="space-y-4">
-            <Card className="p-4 space-y-3">
-              <h2 className="text-xl font-serif font-semibold tracking-tight">Job Portal</h2>
-              <p className="text-sm text-muted-foreground font-medium">Create jobs, map to batches, and track applications.</p>
-              <div className="grid gap-3 md:grid-cols-2">
-                <Input value={jobPayload.title} onChange={(event) => setJobPayload((prev) => ({ ...prev, title: event.target.value }))} placeholder="Job title" />
-                <Input value={jobPayload.company_name} onChange={(event) => setJobPayload((prev) => ({ ...prev, company_name: event.target.value }))} placeholder="Company" />
-                <Input value={jobPayload.location} onChange={(event) => setJobPayload((prev) => ({ ...prev, location: event.target.value }))} placeholder="Location" />
-                <Input value={jobPayload.employment_type} onChange={(event) => setJobPayload((prev) => ({ ...prev, employment_type: event.target.value }))} placeholder="Employment type" />
-                <Input value={jobPayload.description ?? ''} onChange={(event) => setJobPayload((prev) => ({ ...prev, description: event.target.value }))} placeholder="Description" />
-                <select
-                  className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-                  value={jobPayload.eligible_batch_id ?? ''}
-                  onChange={(event) => setJobPayload((prev) => ({ ...prev, eligible_batch_id: event.target.value ? Number(event.target.value) : null }))}
-                >
-                  <option value="">All Batches</option>
-                  {batches.map((batch) => (
-                    <option key={batch.id} value={batch.id}>{batch.name}</option>
-                  ))}
-                </select>
+            <Card className="admin-surface p-4">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.08em] text-muted-foreground font-semibold">Section</p>
+                  <h2 className="text-2xl font-semibold tracking-tight">{sectionTitle[section]}</h2>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <Input
+                    value={token}
+                    onChange={(event) => setToken(event.target.value)}
+                    placeholder="Paste admin bearer token"
+                    type="password"
+                    className="w-[280px]"
+                  />
+                  <Button onClick={loadAdminData} disabled={isLoading}>Load Data</Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setToken('')
+                      setStudents([])
+                      setMetrics(null)
+                      setMonthlyKpis(null)
+                      setRoleSplitInsights(null)
+                      setJobs([])
+                      setBatches([])
+                      setActivityLogs([])
+                      setClassInsights(null)
+                    }}
+                  >
+                    Clear
+                  </Button>
+                </div>
               </div>
-              <Button onClick={handleCreateJob} disabled={isLoading}>Create Job</Button>
             </Card>
 
-            <Card className="p-4 space-y-3">
-              <h3 className="text-lg font-serif font-semibold tracking-tight">Openings</h3>
-              <div className="space-y-2 max-h-[460px] overflow-auto pr-1">
-                {jobs.map((job) => (
-                  <div key={job.id} className="rounded-md border p-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <p className="text-base font-semibold tracking-tight">{job.title}</p>
-                      <span className="inline-flex items-center justify-center h-6 text-xs uppercase tracking-[0.08em] rounded bg-primary/10 px-2 text-primary font-semibold leading-none">{job.status}</span>
+            {section === 'dashboard' && (
+              <div className="space-y-4">
+                <div className="grid gap-3 md:grid-cols-4">
+                  <Card className="p-4"><p className="text-xs text-muted-foreground">Enrolled Students</p><p className="text-2xl font-semibold mt-1">{monthlyKpis?.total_enrolled_students ?? '-'}</p></Card>
+                  <Card className="p-4"><p className="text-xs text-muted-foreground">Enquiries This Month</p><p className="text-2xl font-semibold mt-1">{monthlyKpis?.enquiries_this_month ?? '-'}</p></Card>
+                  <Card className="p-4"><p className="text-xs text-muted-foreground">Classes Completing This Month</p><p className="text-2xl font-semibold mt-1">{monthlyKpis?.classes_completing_this_month ?? '-'}</p></Card>
+                  <Card className="p-4"><p className="text-xs text-muted-foreground">Hires This Month</p><p className="text-2xl font-semibold mt-1">{monthlyKpis?.hires_this_month ?? '-'}</p></Card>
+                </div>
+
+                <div className="grid gap-3 md:grid-cols-4">
+                  <Card className="p-4"><p className="text-xs text-muted-foreground">Total Students</p><p className="text-2xl font-semibold mt-1">{metrics?.total_students ?? '-'}</p></Card>
+                  <Card className="p-4"><p className="text-xs text-muted-foreground">Active Students</p><p className="text-2xl font-semibold mt-1">{metrics?.active_students ?? '-'}</p></Card>
+                  <Card className="p-4"><p className="text-xs text-muted-foreground">Open Jobs</p><p className="text-2xl font-semibold mt-1">{monthlyKpis?.open_jobs ?? '-'}</p></Card>
+                  <Card className="p-4"><p className="text-xs text-muted-foreground">KPI Month</p><p className="text-2xl font-semibold mt-1">{monthlyKpis?.month_label ?? '-'}</p></Card>
+                </div>
+
+                <div className="grid gap-3 md:grid-cols-2">
+                  <Card className="p-4 space-y-3">
+                    <h3 className="text-lg font-semibold">Student Insights</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {(roleSplitInsights?.student_insights ?? []).map((item) => (
+                        <div key={item.label} className="rounded border p-3">
+                          <p className="text-xs text-muted-foreground">{item.label}</p>
+                          <p className="text-xl font-semibold mt-1">{item.value}</p>
+                        </div>
+                      ))}
                     </div>
-                    <p className="text-sm text-muted-foreground font-medium mt-1">{job.company_name} · {job.location} · {job.employment_type}</p>
-                    <p className="text-sm text-muted-foreground font-medium mt-1">Eligible Batch: {job.eligible_batch_name ?? 'All'}</p>
-                    <p className="text-sm text-muted-foreground font-medium mt-1">Applications: {job.applications_count}</p>
-                  </div>
-                ))}
-                {jobs.length === 0 && <p className="text-sm text-muted-foreground">No jobs yet.</p>}
+                  </Card>
+                  <Card className="p-4 space-y-3">
+                    <h3 className="text-lg font-semibold">Faculty Insights</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {(roleSplitInsights?.faculty_insights ?? []).map((item) => (
+                        <div key={item.label} className="rounded border p-3">
+                          <p className="text-xs text-muted-foreground">{item.label}</p>
+                          <p className="text-xl font-semibold mt-1">{item.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </div>
               </div>
-            </Card>
+            )}
+
+            {section === 'board' && (
+              <Card className="admin-surface p-4 space-y-4 border-2">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold">Student Workflow Board</h3>
+                    <p className="text-sm text-muted-foreground">Jira-style board with drag-and-drop columns</p>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <div className="relative">
+                      <MagnifyingGlass size={16} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        value={boardQuery}
+                        onChange={(event) => setBoardQuery(event.target.value)}
+                        placeholder="Filter students"
+                        className="pl-8 w-[220px]"
+                      />
+                    </div>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setManualWorkflowStages({})
+                        localStorage.removeItem(WORKFLOW_STAGE_STORAGE_KEY)
+                        toast.success('Workflow board reset.')
+                      }}
+                    >
+                      Reset
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 xl:grid-cols-4">
+                  {(['new', 'enrolled', 'in_progress', 'needs_attention'] as StudentWorkflowStage[]).map(renderBoardColumn)}
+                </div>
+              </Card>
+            )}
+
+            {section === 'students' && (
+              <div className="grid gap-4 xl:grid-cols-3">
+                <Card className="admin-surface p-4 space-y-3 xl:col-span-1">
+                  <div className="flex items-center gap-2">
+                    <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search students" />
+                    <Button variant="outline" onClick={loadAdminData} disabled={isLoading}>Search</Button>
+                  </div>
+                  <div className="space-y-2 max-h-[600px] overflow-auto pr-1">
+                    {students.map((student) => (
+                      <button
+                        key={student.id}
+                        className={`w-full rounded-md border p-3 text-left transition ${selectedStudentId === student.id ? 'border-primary bg-primary/5' : 'hover:bg-muted/30'}`}
+                        onClick={() => setSelectedStudentId(student.id)}
+                      >
+                        <p className="text-sm font-semibold">{student.full_name}</p>
+                        <p className="text-xs text-muted-foreground">{student.email}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{student.role} · {student.batch_name || 'No batch'}</p>
+                      </button>
+                    ))}
+                  </div>
+                </Card>
+
+                <Card className="admin-surface p-4 space-y-3 xl:col-span-1">
+                  <h3 className="text-lg font-semibold">Edit Student</h3>
+                  {!selectedStudent && <p className="text-sm text-muted-foreground">Select a student from left panel.</p>}
+                  {selectedStudent && (
+                    <div className="space-y-3">
+                      <Input value={selectedStudent.full_name} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, full_name: event.target.value } : item))} placeholder="Full name" />
+                      <Input value={selectedStudent.role} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, role: event.target.value } : item))} placeholder="Role" />
+                      <Input value={String(selectedStudent.credit_balance)} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, credit_balance: Number(event.target.value || 0) } : item))} placeholder="Credits" type="number" />
+                      <Input value={String(selectedStudent.xp_points)} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, xp_points: Number(event.target.value || 0) } : item))} placeholder="XP" type="number" />
+                      <Input value={selectedStudent.cohort_name ?? ''} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, cohort_name: event.target.value || null } : item))} placeholder="Cohort" />
+                      <Input value={selectedStudent.batch_name ?? ''} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, batch_name: event.target.value || null } : item))} placeholder="Batch" />
+                      <label className="flex items-center gap-2 text-sm">
+                        <input type="checkbox" checked={selectedStudent.is_active} onChange={(event) => setStudents((prev) => prev.map((item) => item.id === selectedStudent.id ? { ...item, is_active: event.target.checked } : item))} />
+                        Active
+                      </label>
+                      <Button onClick={handleUpdateStudent} disabled={isLoading}>Save Changes</Button>
+                    </div>
+                  )}
+                </Card>
+
+                <Card className="admin-surface p-4 space-y-3 xl:col-span-1">
+                  <h3 className="text-lg font-semibold">Create Student</h3>
+                  <Input value={createPayload.full_name} onChange={(event) => setCreatePayload((prev) => ({ ...prev, full_name: event.target.value }))} placeholder="Full name" />
+                  <Input value={createPayload.email} onChange={(event) => setCreatePayload((prev) => ({ ...prev, email: event.target.value }))} placeholder="Email" type="email" />
+                  <Input value={createPayload.password} onChange={(event) => setCreatePayload((prev) => ({ ...prev, password: event.target.value }))} placeholder="Password" type="password" />
+                  <Input value={createPayload.role} onChange={(event) => setCreatePayload((prev) => ({ ...prev, role: event.target.value }))} placeholder="Role" />
+                  <Input value={String(createPayload.credit_balance)} onChange={(event) => setCreatePayload((prev) => ({ ...prev, credit_balance: Number(event.target.value || 0) }))} placeholder="Credits" type="number" />
+                  <Input value={String(createPayload.xp_points)} onChange={(event) => setCreatePayload((prev) => ({ ...prev, xp_points: Number(event.target.value || 0) }))} placeholder="XP" type="number" />
+                  <Input value={createPayload.cohort_name ?? ''} onChange={(event) => setCreatePayload((prev) => ({ ...prev, cohort_name: event.target.value || null }))} placeholder="Cohort" />
+                  <Input value={createPayload.batch_name ?? ''} onChange={(event) => setCreatePayload((prev) => ({ ...prev, batch_name: event.target.value || null }))} placeholder="Batch" />
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={createPayload.is_active} onChange={(event) => setCreatePayload((prev) => ({ ...prev, is_active: event.target.checked }))} />
+                    Active
+                  </label>
+                  <Button onClick={handleCreateStudent} disabled={isLoading}>Create Student</Button>
+                </Card>
+              </div>
+            )}
+
+            {section === 'classes' && (
+              <div className="grid gap-4 xl:grid-cols-2">
+                <Card className="admin-surface p-4 space-y-3">
+                  <h3 className="text-lg font-semibold">Class Batches</h3>
+                  <div className="space-y-2 max-h-[560px] overflow-auto pr-1">
+                    {batches.map((batch) => (
+                      <button
+                        key={batch.id}
+                        className={`w-full rounded-md border p-3 text-left transition ${selectedBatchId === batch.id ? 'border-primary bg-primary/5' : 'hover:bg-muted/30'}`}
+                        onClick={() => {
+                          setSelectedBatchId(batch.id)
+                          openClassDetail(batch.id)
+                        }}
+                      >
+                        <p className="text-sm font-semibold">{batch.name}</p>
+                        <p className="text-xs text-muted-foreground">{batch.track}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{batch.days} · {batch.time_ist} · Seats {batch.seats_filled}/{batch.seats_total}</p>
+                      </button>
+                    ))}
+                    {batches.length === 0 && <p className="text-sm text-muted-foreground">No batches loaded.</p>}
+                  </div>
+                </Card>
+
+                <Card className="admin-surface p-4 space-y-3">
+                  <h3 className="text-lg font-semibold">Class Detail</h3>
+                  {!selectedBatch && <p className="text-sm text-muted-foreground">Select a batch from left panel.</p>}
+                  {selectedBatch && (
+                    <div className="space-y-2">
+                      <p className="text-sm"><span className="text-muted-foreground">Batch:</span> {selectedBatch.name}</p>
+                      <p className="text-sm"><span className="text-muted-foreground">Track:</span> {selectedBatch.track}</p>
+                      <p className="text-sm"><span className="text-muted-foreground">Schedule:</span> {selectedBatch.days} · {selectedBatch.time_ist}</p>
+                      <p className="text-sm"><span className="text-muted-foreground">Start:</span> {selectedBatch.start_date}</p>
+
+                      <div className="pt-2 border-t mt-2">
+                        <p className="text-sm font-medium mb-2">Students</p>
+                        <div className="space-y-2 max-h-[420px] overflow-auto pr-1">
+                          {(classInsights?.students ?? []).map((student) => (
+                            <div key={student.user_id} className="rounded-md border p-2">
+                              <p className="text-sm font-semibold">{student.full_name}</p>
+                              <p className="text-xs text-muted-foreground">{student.enrollment_role} · Attendance {student.attendance_pct}% · {student.project_status}</p>
+                            </div>
+                          ))}
+                          {(classInsights?.students?.length ?? 0) === 0 && <p className="text-sm text-muted-foreground">Load a batch to view class details.</p>}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              </div>
+            )}
+
+            {section === 'jobs' && (
+              <div className="grid gap-4 xl:grid-cols-3">
+                <Card className="admin-surface p-4 space-y-3 xl:col-span-1">
+                  <h3 className="text-lg font-semibold">Create Job</h3>
+                  <Input value={jobPayload.title} onChange={(event) => setJobPayload((prev) => ({ ...prev, title: event.target.value }))} placeholder="Job title" />
+                  <Input value={jobPayload.company_name} onChange={(event) => setJobPayload((prev) => ({ ...prev, company_name: event.target.value }))} placeholder="Company" />
+                  <Input value={jobPayload.location} onChange={(event) => setJobPayload((prev) => ({ ...prev, location: event.target.value }))} placeholder="Location" />
+                  <Input value={jobPayload.employment_type ?? ''} onChange={(event) => setJobPayload((prev) => ({ ...prev, employment_type: event.target.value }))} placeholder="Employment type" />
+                  <Input value={jobPayload.description ?? ''} onChange={(event) => setJobPayload((prev) => ({ ...prev, description: event.target.value }))} placeholder="Description" />
+                  <Button onClick={handleCreateJob} disabled={isLoading}>Create Job</Button>
+                </Card>
+
+                <Card className="admin-surface p-4 space-y-3 xl:col-span-2">
+                  <h3 className="text-lg font-semibold">Open Job Pipeline</h3>
+                  <div className="space-y-2 max-h-[620px] overflow-auto pr-1">
+                    {jobs.map((job) => (
+                      <div key={job.id} className="rounded-md border p-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-semibold">{job.title}</p>
+                          <span className="text-xs rounded bg-primary/10 px-2 py-1 text-primary font-semibold">{job.status}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{job.company_name} · {job.location} · {job.employment_type}</p>
+                        <p className="text-xs text-muted-foreground mt-1">Batch: {job.eligible_batch_name || 'Any'} · Applications: {job.applications_count}</p>
+                      </div>
+                    ))}
+                    {jobs.length === 0 && <p className="text-sm text-muted-foreground">No jobs loaded.</p>}
+                  </div>
+                </Card>
+              </div>
+            )}
+
+            {section === 'activity' && (
+              <Card className="admin-surface p-4 space-y-3">
+                <h3 className="text-lg font-semibold">Recent Admin Activity</h3>
+                <div className="space-y-2 max-h-[700px] overflow-auto pr-1">
+                  {activityLogs.map((entry) => (
+                    <div key={entry.id} className="rounded-md border p-3">
+                      <p className="text-sm font-semibold">{entry.action}</p>
+                      <p className="text-xs text-muted-foreground">{entry.details || 'No details'}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Admin #{entry.admin_user_id} · Target #{entry.target_user_id ?? '-'} · {new Date(entry.created_at).toLocaleString()}</p>
+                    </div>
+                  ))}
+                  {activityLogs.length === 0 && <p className="text-sm text-muted-foreground">No activity found.</p>}
+                </div>
+              </Card>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   )

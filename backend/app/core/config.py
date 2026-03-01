@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 60 * 24
     database_url: str = DEFAULT_DATABASE_URL
     auto_create_tables: bool = True
+    bootstrap_admin_email: str | None = None
+    bootstrap_admin_password: str | None = None
+    bootstrap_admin_full_name: str = "Platform Admin"
     cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["http://localhost:5000", "http://localhost:5173"]
     )
@@ -45,6 +48,22 @@ class Settings(BaseSettings):
     @classmethod
     def normalize_environment(cls, value: str) -> str:
         return value.lower().strip() if isinstance(value, str) else value
+
+    @field_validator("bootstrap_admin_email", mode="before")
+    @classmethod
+    def normalize_admin_email(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = value.strip().lower()
+        return cleaned or None
+
+    @field_validator("bootstrap_admin_password", mode="before")
+    @classmethod
+    def normalize_admin_password(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = value.strip()
+        return cleaned or None
 
     @model_validator(mode="after")
     def validate_production_safety(self):

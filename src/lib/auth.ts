@@ -76,7 +76,26 @@ export function clearAuth() {
 
 // ---------- backend /auth/me ----------
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
+function resolveApiBaseUrl(): string {
+  const configured = (import.meta.env.VITE_API_BASE_URL ?? '').trim()
+  if (!configured) {
+    return '/api/v1'
+  }
+
+  const normalized = configured.replace(/\/+$/, '')
+  if (normalized.endsWith('/api/v1')) {
+    return normalized
+  }
+  if (normalized.endsWith('/api')) {
+    return `${normalized}/v1`
+  }
+  if (/^https?:\/\//i.test(normalized)) {
+    return `${normalized}/api/v1`
+  }
+  return normalized
+}
+
+const API_BASE_URL = resolveApiBaseUrl()
 
 interface MeResponse {
   id: number

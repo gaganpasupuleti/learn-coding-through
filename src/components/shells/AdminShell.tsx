@@ -15,18 +15,18 @@ export function AdminShell({ user, onLogout, children }: AdminShellProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="admin-theme min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+      <nav className="admin-topbar backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             {/* Brand */}
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center shadow-sm">
                 <Cube size={20} className="text-primary-foreground" weight="bold" />
               </div>
               <span className="text-xl font-bold">CodeQuest</span>
-              <span className="text-xs text-muted-foreground border border-border rounded-full px-2 py-0.5">
+              <span className="text-xs text-muted-foreground border border-border rounded-md px-2 py-0.5 bg-muted/40">
                 Admin
               </span>
             </div>

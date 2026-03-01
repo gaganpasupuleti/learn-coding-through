@@ -57,6 +57,17 @@ class AdminMetricsResponse(BaseModel):
     average_xp_points: float
 
 
+class AdminMonthlyKpiResponse(BaseModel):
+    month_label: str
+    total_enrolled_students: int
+    enquiries_this_month: int
+    classes_starting_this_month: int
+    classes_completing_this_month: int
+    active_classes_running: int
+    open_jobs: int
+    hires_this_month: int
+
+
 class AdminActivityLogResponse(BaseModel):
     id: int
     admin_user_id: int

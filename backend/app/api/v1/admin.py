@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -24,6 +24,7 @@ from app.models.models import (
 from app.schemas.admin import (
     AdminActivityLogResponse,
     AdminMetricsResponse,
+    AdminMonthlyKpiResponse,
     AdminStudentCreateRequest,
     AdminStudentResponse,
     AdminStudentUpdateRequest,
@@ -339,6 +340,78 @@ def get_metrics(
         inactive_students=inactive_students,
         average_credits=round(float(average_credits), 2),
         average_xp_points=round(float(average_xp_points), 2),
+    )
+
+
+@router.get("/kpis/monthly", response_model=AdminMonthlyKpiResponse)
+def get_monthly_kpis(
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    _ensure_learning_ops_demo_data(db, admin_user)
+
+    today = date.today()
+    month_start = today.replace(day=1)
+    next_month_start = (month_start.replace(day=28) + timedelta(days=4)).replace(day=1)
+    month_start_dt = datetime.combine(month_start, time.min)
+    next_month_start_dt = datetime.combine(next_month_start, time.min)
+
+    total_enrolled_students = (
+        db.query(BatchEnrollment)
+        .filter(BatchEnrollment.enrollment_role == EnrollmentRole.STUDENT)
+        .count()
+    )
+
+    enquiries_this_month = (
+        db.query(User)
+        .filter(
+            User.role == UserRole.STUDENT,
+            User.created_at >= month_start_dt,
+            User.created_at < next_month_start_dt,
+        )
+        .count()
+    )
+
+    classes_starting_this_month = (
+        db.query(LearningBatch)
+        .filter(
+            LearningBatch.start_date >= month_start,
+            LearningBatch.start_date < next_month_start,
+        )
+        .count()
+    )
+
+    all_batches = db.query(LearningBatch).all()
+    classes_completing_this_month = 0
+    active_classes_running = 0
+    for batch in all_batches:
+        estimated_end_date = batch.start_date + timedelta(days=120)
+        if month_start <= estimated_end_date < next_month_start:
+            classes_completing_this_month += 1
+        if batch.start_date <= today <= estimated_end_date:
+            active_classes_running += 1
+
+    open_jobs = db.query(JobPost).filter(JobPost.status == JobPostStatus.OPEN).count()
+
+    hires_this_month = (
+        db.query(JobApplication)
+        .filter(
+            JobApplication.status == JobApplicationStatus.HIRED,
+            JobApplication.created_at >= month_start_dt,
+            JobApplication.created_at < next_month_start_dt,
+        )
+        .count()
+    )
+
+    return AdminMonthlyKpiResponse(
+        month_label=today.strftime("%B %Y"),
+        total_enrolled_students=total_enrolled_students,
+        enquiries_this_month=enquiries_this_month,
+        classes_starting_this_month=classes_starting_this_month,
+        classes_completing_this_month=classes_completing_this_month,
+        active_classes_running=active_classes_running,
+        open_jobs=open_jobs,
+        hires_this_month=hires_this_month,
     )
 
 

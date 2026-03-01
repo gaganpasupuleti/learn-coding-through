@@ -19,6 +19,19 @@ AUTO_CREATE_TABLES=false
 CORS_ORIGINS=http://localhost:5000,http://localhost:5173
 ```
 
+## Admin Portal Bootstrap (First Admin)
+
+The UI opens the Admin portal only when `/api/v1/auth/me` returns `role: "admin"`.
+To bootstrap your first admin account, set these values in `backend/.env` before starting the API:
+
+```
+BOOTSTRAP_ADMIN_EMAIL=admin@example.com
+BOOTSTRAP_ADMIN_PASSWORD=Admin@12345
+BOOTSTRAP_ADMIN_FULL_NAME=Platform Admin
+```
+
+On startup, the backend creates (or upgrades) that user to admin automatically. Then login from the frontend with the same credentials.
+
 ## Migrations (Alembic)
 
 Install dependencies and run migrations from the `backend` directory:

@@ -2,7 +2,8 @@ import json
 
 from sqlalchemy.orm import Session
 
-from app.models.models import DifficultyLevel, Quiz, QuizQuestion, Role, Stage
+from app.core.security import get_password_hash
+from app.models.models import DifficultyLevel, Quiz, QuizQuestion, Role, Stage, User, UserRole
 
 
 def seed_default_roles(db: Session):
@@ -111,4 +112,29 @@ def seed_default_roles(db: Session):
                 ]
             )
 
+    db.commit()
+
+
+def seed_admin_user(db: Session, email: str | None, password: str | None, full_name: str):
+    if not email or not password:
+        return
+
+    normalized_email = email.strip().lower()
+    if not normalized_email:
+        return
+
+    existing = db.query(User).filter(User.email == normalized_email).first()
+    if existing:
+        if existing.role != UserRole.ADMIN:
+            existing.role = UserRole.ADMIN
+            db.commit()
+        return
+
+    user = User(
+        email=normalized_email,
+        full_name=full_name.strip() or "Platform Admin",
+        password_hash=get_password_hash(password),
+        role=UserRole.ADMIN,
+    )
+    db.add(user)
     db.commit()

@@ -96,7 +96,7 @@ cd backend
 python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8000
 ```
 
 > The frontend falls back gracefully when the backend is unavailable — demo mode and UI browsing work without a backend connection.

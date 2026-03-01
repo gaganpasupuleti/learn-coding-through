@@ -78,6 +78,17 @@ export interface AdminMetrics {
   average_xp_points: number
 }
 
+export interface AdminMonthlyKpis {
+  month_label: string
+  total_enrolled_students: number
+  enquiries_this_month: number
+  classes_starting_this_month: number
+  classes_completing_this_month: number
+  active_classes_running: number
+  open_jobs: number
+  hires_this_month: number
+}
+
 export interface AdminActivityLog {
   id: number
   admin_user_id: number
@@ -229,6 +240,13 @@ export async function fetchAdminMetrics(token: string): Promise<AdminMetrics> {
     headers: buildAuthHeaders(token),
   })
   return parseOrThrow(response) as Promise<AdminMetrics>
+}
+
+export async function fetchAdminMonthlyKpis(token: string): Promise<AdminMonthlyKpis> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/kpis/monthly`, {
+    headers: buildAuthHeaders(token),
+  })
+  return parseOrThrow(response) as Promise<AdminMonthlyKpis>
 }
 
 export async function fetchAdminActivity(token: string, limit = 20): Promise<AdminActivityLog[]> {
