@@ -163,11 +163,11 @@ export function CodeEditor({
   const [cursorPosition, setCursorPosition] = useState({ line: 1, col: 1 })
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const highlightRef = useRef<HTMLElement>(null)
+  const highlightRef = useRef<HTMLPreElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
   const code = externalCode ?? internalCode
-  const currentTheme = themeConfig[theme]
+  const currentTheme = themeConfig[theme ?? 'monokai']
 
   /* ---------- Debounced Prism ---------- */
   useEffect(() => {
