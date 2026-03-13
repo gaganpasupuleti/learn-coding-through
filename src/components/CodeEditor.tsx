@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useKV } from '@github/spark/hooks'
 import { sandbox } from '@/lib/sandboxInstance'
+import { DemoLimits } from '../lib/demo-limits'
 
 /* ---------------- Types ---------------- */
 
@@ -320,6 +321,11 @@ export function CodeEditor({
 
   /* ---------- Execute ---------- */
   const executeCode = async () => {
+    if (!DemoLimits.canExecuteCode()) {
+      DemoLimits.triggerLimitReachedError();
+      return;
+    }
+
     if (!code.trim()) {
       toast.error('Please write some code first!')
       return
@@ -354,6 +360,15 @@ export function CodeEditor({
       } else {
         setOutput(result.output || 'Code executed successfully (no output)')
         toast.success('Code executed successfully!')
+
+        // Increment the execution counter on successful executions
+        DemoLimits.incrementExecutionCount()
+
+        // Optional: Trigger a warning toast if executions are running low
+        const remaining = DemoLimits.getRemainingExecutions()
+        if (remaining <= 3) {
+          toast.warning(`Only ${remaining} executions left!`)
+        }
       }
     } catch (err: any) {
       setHasError(true)
@@ -451,6 +466,9 @@ export function CodeEditor({
               <ArrowsClockwise className="mr-1.5" size={14} />
               Reset
             </Button>
+            <span className="text-xs text-muted-foreground mr-2">
+              Demo: {DemoLimits.getRemainingExecutions()} runs left
+            </span>
             <Button
               size="sm"
               onClick={executeCode}

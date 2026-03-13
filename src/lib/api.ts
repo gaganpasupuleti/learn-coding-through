@@ -4,6 +4,8 @@
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || ''
 
+import { DemoLimits } from './demo-limits';
+
 export interface ExecuteRequest {
   code: string
   language: string
@@ -180,6 +182,16 @@ export async function executeCode(
   code: string,
   language: string
 ): Promise<ExecuteResponse> {
+  if (!DemoLimits.canExecuteCode()) {
+    DemoLimits.triggerLimitReachedError();
+    return {
+      success: false,
+      output: '',
+      error: 'Execution limit reached',
+      execution_time: 0,
+    };
+  }
+
   try {
     const response = await fetch(`${API_BASE_URL}/api/execute`, {
       method: 'POST',
@@ -198,6 +210,18 @@ export async function executeCode(
     }
 
     const data = await response.json()
+
+    // Increment the execution counter on successful API calls
+    DemoLimits.incrementExecutionCount()
+
+    // Optional: Trigger a warning toast if executions are running low
+    const remaining = DemoLimits.getRemainingExecutions()
+    if (remaining <= 3) {
+      import('sonner').then(({ toast }) => {
+        toast.warning(`Only ${remaining} executions left!`)
+      });
+    }
+
     return data
   } catch (error: any) {
     return {

@@ -86,3 +86,46 @@ export function resetDemoLimits() {
   localStorage.removeItem(DEMO_PROJECTS_KEY)
   localStorage.removeItem(DEMO_QUIZZES_KEY)
 }
+
+// Add a new utility object for tracking code execution limits
+
+const DEMO_CODE_EXECUTION_KEY = 'demo-code-executions'
+const DEMO_CODE_EXECUTION_LIMIT = 10
+
+export const DemoLimits = {
+  /** Check if the user is under the execution limit */
+  canExecuteCode: (): boolean => {
+    const executions = DemoLimits.getExecutionCount()
+    return executions < DEMO_CODE_EXECUTION_LIMIT
+  },
+
+  /** Increment the execution counter by 1 */
+  incrementExecutionCount: (): void => {
+    const executions = DemoLimits.getExecutionCount()
+    localStorage.setItem(DEMO_CODE_EXECUTION_KEY, JSON.stringify(executions + 1))
+  },
+
+  /** Get the remaining number of executions */
+  getRemainingExecutions: (): number => {
+    const executions = DemoLimits.getExecutionCount()
+    return DEMO_CODE_EXECUTION_LIMIT - executions
+  },
+
+  /** Trigger a toast error when the limit is reached */
+  triggerLimitReachedError: (): void => {
+    // Assuming `sonner` is already set up in the project
+    import('sonner').then(({ toast }) => {
+      toast.error('Interactive Demo Limit Reached. Full course unlocks unlimited sandboxes.')
+    })
+  },
+
+  /** Helper to get the current execution count */
+  getExecutionCount: (): number => {
+    try {
+      const raw = localStorage.getItem(DEMO_CODE_EXECUTION_KEY)
+      return raw ? JSON.parse(raw) : 0
+    } catch {
+      return 0
+    }
+  },
+}
