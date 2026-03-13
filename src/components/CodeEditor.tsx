@@ -331,4 +331,5 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   )
 }
 
+export { CodeEditor }
 export default CodeEditor
