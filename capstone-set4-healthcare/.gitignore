@@ -1,0 +1,7 @@
+# .NET build artifacts
+**/bin/
+**/obj/
+
+# Frontend node_modules and compiled output
+capstone-set4-healthcare/frontend/node_modules/
+capstone-set4-healthcare/frontend/dist/

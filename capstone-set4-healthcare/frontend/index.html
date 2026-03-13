@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clinic Operations — Healthcare Appointment System</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- App styles -->
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+
+  <body>
+    <!-- ── Toast container ─────────────────────────────────────────────────── -->
+    <div id="toast-container"></div>
+
+    <!-- ── Sidebar navigation ──────────────────────────────────────────────── -->
+    <nav class="sidebar">
+      <div class="brand">
+        <i class="bi bi-hospital"></i>
+        ClinicOps
+      </div>
+      <ul class="nav flex-column mt-2">
+        <li class="nav-item">
+          <a class="nav-link active" href="#" data-section="section-dashboard">
+            <i class="bi bi-speedometer2"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-section="section-patients">
+            <i class="bi bi-person-lines-fill"></i> Patients
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-section="section-appointments">
+            <i class="bi bi-calendar-check"></i> Appointments
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- ── Main content ────────────────────────────────────────────────────── -->
+    <main class="main-content">
+
+      <!-- ── Dashboard ─────────────────────────────────────────────────────── -->
+      <section id="section-dashboard" class="spa-section">
+        <div class="page-header">
+          <h1><i class="bi bi-speedometer2 me-2 text-primary"></i>Dashboard</h1>
+        </div>
+
+        <div class="row g-4 mb-4">
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                <i class="bi bi-people-fill"></i>
+              </div>
+              <div>
+                <div class="stat-value" id="dash-total-patients">—</div>
+                <div class="stat-label">Total Patients</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-info bg-opacity-10 text-info">
+                <i class="bi bi-calendar2-check-fill"></i>
+              </div>
+              <div>
+                <div class="stat-value" id="dash-total-appointments">—</div>
+                <div class="stat-label">Total Appointments</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-success bg-opacity-10 text-success">
+                <i class="bi bi-check2-circle"></i>
+              </div>
+              <div>
+                <div class="stat-value" id="dash-confirmed">—</div>
+                <div class="stat-label">Confirmed Today</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                <i class="bi bi-clock-history"></i>
+              </div>
+              <div>
+                <div class="stat-value" id="dash-scheduled">—</div>
+                <div class="stat-label">Scheduled</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-4">
+          <h6 class="fw-semibold mb-3">
+            <i class="bi bi-calendar-event me-2 text-primary"></i>Upcoming Appointments
+          </h6>
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Doctor</th>
+                  <th>Date &amp; Time</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="dash-upcoming-tbody">
+                <tr><td colspan="5" class="text-center text-muted py-3">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Patients ───────────────────────────────────────────────────────── -->
+      <section id="section-patients" class="spa-section d-none">
+        <div class="page-header">
+          <h1><i class="bi bi-person-lines-fill me-2 text-primary"></i>Patients</h1>
+          <button id="btn-add-patient" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Add Patient
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Date of Birth</th>
+                    <th>Address</th>
+                    <th style="width: 110px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="patients-tbody">
+                  <tr><td colspan="6" class="text-center text-muted py-4">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Appointments ───────────────────────────────────────────────────── -->
+      <section id="section-appointments" class="spa-section d-none">
+        <div class="page-header">
+          <h1><i class="bi bi-calendar-check me-2 text-primary"></i>Appointments</h1>
+          <button id="btn-add-appointment" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Schedule Appointment
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Scheduled At</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                    <th style="width: 130px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="appointments-tbody">
+                  <tr><td colspan="7" class="text-center text-muted py-4">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ── Patient Modal ────────────────────────────────────────────────────── -->
+    <div class="modal fade" id="patient-modal" tabindex="-1" aria-labelledby="patient-modal-title" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="patient-modal-title">Add Patient</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <form id="patient-form" novalidate>
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
+                  <input id="pt-first-name" type="text" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
+                  <input id="pt-last-name" type="text" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                  <input id="pt-email" type="email" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
+                  <input id="pt-phone" type="tel" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Date of Birth <span class="text-danger">*</span></label>
+                  <input id="pt-dob" type="date" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Address</label>
+                  <input id="pt-address" type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save me-1"></i>Save Patient
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Appointment Modal ─────────────────────────────────────────────────── -->
+    <div class="modal fade" id="appointment-modal" tabindex="-1" aria-labelledby="apt-modal-title" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="apt-modal-title">Schedule Appointment</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <form id="appointment-form" novalidate>
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Patient <span class="text-danger">*</span></label>
+                  <select id="apt-patient-id" class="form-select" required>
+                    <option value="">-- Select Patient --</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Doctor <span class="text-danger">*</span></label>
+                  <input id="apt-doctor" type="text" class="form-control" placeholder="Dr. Smith" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Date &amp; Time <span class="text-danger">*</span></label>
+                  <input id="apt-scheduled-at" type="datetime-local" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Reason <span class="text-danger">*</span></label>
+                  <input id="apt-reason" type="text" class="form-control" placeholder="e.g. Annual check-up" required />
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold">Notes</label>
+                  <textarea id="apt-notes" class="form-control" rows="2" placeholder="Optional notes…"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-calendar-plus me-1"></i>Save Appointment
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Status Change Modal ───────────────────────────────────────────────── -->
+    <div class="modal fade" id="status-modal" tabindex="-1" aria-labelledby="status-modal-label" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="status-modal-label">Change Appointment Status</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <form id="status-form">
+            <div class="modal-body">
+              <input type="hidden" id="status-apt-id" />
+              <p class="mb-3">
+                Current status:
+                <strong id="status-current" class="text-primary"></strong>
+              </p>
+              <label class="form-label fw-semibold">New Status <span class="text-danger">*</span></label>
+              <select id="status-new-status" class="form-select" required>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="NoShow">No Show</option>
+              </select>
+              <small class="text-muted d-block mt-2">
+                Invalid transitions (e.g. reopening a completed appointment) will be rejected by the API.
+              </small>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-arrow-repeat me-1"></i>Update Status
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS (bundle with Popper) -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmqXBs7o9p2+W2NLFpTbdMnp3fV"
+      crossorigin="anonymous"
+    ></script>
+    <!--
+      Dashboard stats update — inline script (no TS compilation needed for this snippet)
+      because the compiled app.js handles all major logic.
+    -->
+    <script type="module" src="dist/app.js"></script>
+    <script>
+      // Update dashboard stat counters whenever patients/appointments change.
+      // This runs after app.js has loaded data into the DOM.
+      function updateDashboard() {
+        const pRows = document.querySelectorAll('#patients-tbody tr[onclick], #patients-tbody tr:not(:has(td[colspan]))').length;
+        // Count via DOM is unreliable; we use data attributes set by app.js instead.
+        // The actual stat population is driven by app.ts via dataset updates on load.
+      }
+    </script>
+  </body>
+</html>

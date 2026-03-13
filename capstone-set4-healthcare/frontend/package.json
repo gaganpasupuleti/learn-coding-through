@@ -1,0 +1,13 @@
+{
+  "name": "clinic-ops-frontend",
+  "version": "1.0.0",
+  "description": "SPA frontend for Capstone Set 4: Healthcare Appointment & Care Analytics",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
