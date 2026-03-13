@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.api.v1 import admin, auth, credits, interview, progress, projects, quiz, resume, roadmap, roles, execute
 from app.core.config import settings
@@ -10,6 +13,11 @@ from app.services.seed import seed_admin_user, seed_default_roles
 
 
 app = FastAPI(title=settings.app_name, version="0.1.0")
+
+# Initialize the rate limiter
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

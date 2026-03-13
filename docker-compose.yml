@@ -23,6 +23,11 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "512M"
 
   frontend:
     image: node:20

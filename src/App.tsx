@@ -14,7 +14,7 @@ import { getProjectById } from '@/lib/projects'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
 import { getStoredUser, type AuthUser } from '@/lib/auth'
-import { DemoLimits } from '@/lib/demo-limits'
+import { DemoLimits, isProjectUnlocked, triggerProjectLockedError } from '@/lib/demo-limits'
 
 export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'quiz' | 'roadmapper'
 
@@ -45,8 +45,8 @@ function App() {
   }
 
   const handleSelectProject = (projectId: string) => {
-    if (!DemoLimits.isProjectUnlocked(projectId)) {
-      DemoLimits.triggerProjectLockedError();
+    if (!isProjectUnlocked(projectId)) {
+      triggerProjectLockedError();
       return;
     }
     setSelectedProjectId(projectId)

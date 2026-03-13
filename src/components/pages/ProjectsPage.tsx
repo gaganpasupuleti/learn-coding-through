@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Clock, ChartBar, Lock } from '@phosphor-icons/react'
 import { projects } from '@/lib/projects'
-import { DemoLimits } from '@/lib/demo-limits'
+import { DemoLimits, isProjectUnlocked, triggerProjectLockedError } from '@/lib/demo-limits'
 
 interface ProjectsPageProps {
   onSelectProject: (projectId: string) => void
@@ -30,7 +30,7 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
                 key={project.id}
                 className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-primary/50 bg-card relative"
               >
-                {!DemoLimits.isProjectUnlocked(project.id) && (
+                {!isProjectUnlocked(project.id) && (
                   <Lock
                     size={24}
                     weight="bold"
@@ -73,8 +73,8 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
                     className="w-full bg-primary hover:bg-primary/90 transition-all"
                     size="lg"
                     onClick={() => {
-                      if (!DemoLimits.isProjectUnlocked(project.id)) {
-                        DemoLimits.triggerProjectLockedError();
+                      if (!isProjectUnlocked(project.id)) {
+                        triggerProjectLockedError();
                         return;
                       }
                       onSelectProject(project.id);

@@ -10,17 +10,14 @@ from executors import (
     execute_sql,
     get_practice_schema,
 )
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from fastapi.responses import PlainTextResponse
 
-router = APIRouter()
-
-
-@router.get("/sql/schema")
-async def sql_practice_schema():
-    """Return SQL practice schema metadata for frontend helper UI."""
-    return get_practice_schema()
-
-
+# Add rate limiting to the /execute route
 @router.post("/execute", response_model=ExecuteResponse)
+@limiter.limit("5/minute")
 async def execute_code(request: ExecuteRequest) -> ExecuteResponse:
     """
     Execute code in specified language.
@@ -68,3 +65,11 @@ async def execute_code(request: ExecuteRequest) -> ExecuteResponse:
             status_code=500,
             detail=f"Execution failed: {str(e)}"
         )
+
+router = APIRouter()
+
+
+@router.get("/sql/schema")
+async def sql_practice_schema():
+    """Return SQL practice schema metadata for frontend helper UI."""
+    return get_practice_schema()
