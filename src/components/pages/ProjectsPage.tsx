@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowRight, Clock, ChartBar } from '@phosphor-icons/react'
+import { ArrowRight, Clock, ChartBar, Lock } from '@phosphor-icons/react'
 import { projects } from '@/lib/projects'
+import { DemoLimits } from '@/lib/demo-limits'
 
 interface ProjectsPageProps {
   onSelectProject: (projectId: string) => void
@@ -27,8 +28,15 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
             {projects.map((project) => (
               <Card 
                 key={project.id}
-                className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-primary/50 bg-card"
+                className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-primary/50 bg-card relative"
               >
+                {!DemoLimits.isProjectUnlocked(project.id) && (
+                  <Lock
+                    size={24}
+                    weight="bold"
+                    className="absolute top-4 right-4 text-muted-foreground"
+                  />
+                )}
                 <CardHeader>
                   <div className="flex items-start justify-between gap-4">
                     <div className="space-y-2 flex-1">
@@ -64,7 +72,13 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
                   <Button 
                     className="w-full bg-primary hover:bg-primary/90 transition-all"
                     size="lg"
-                    onClick={() => onSelectProject(project.id)}
+                    onClick={() => {
+                      if (!DemoLimits.isProjectUnlocked(project.id)) {
+                        DemoLimits.triggerProjectLockedError();
+                        return;
+                      }
+                      onSelectProject(project.id);
+                    }}
                   >
                     Start Project
                     <ArrowRight className="ml-2" size={18} weight="bold" />

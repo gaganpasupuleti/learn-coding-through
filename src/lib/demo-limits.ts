@@ -18,6 +18,9 @@ const DEMO_QUIZZES_KEY = 'demo-attempted-quizzes'
 export const DEMO_PROJECT_LIMIT = 2
 export const DEMO_QUIZ_LIMIT = 2
 
+// Define the Hero Project ID
+const HERO_PROJECT_ID = 'password-generator'
+
 // ---------- projects ----------
 
 export function getDemoStartedProjects(): string[] {
@@ -128,4 +131,22 @@ export const DemoLimits = {
       return 0
     }
   },
+}
+
+/**
+ * Check if a project is unlocked.
+ * @param projectId - The ID of the project to check.
+ * @returns True if the project is unlocked, false otherwise.
+ */
+export function isProjectUnlocked(projectId: string): boolean {
+  return projectId === HERO_PROJECT_ID
+}
+
+/**
+ * Trigger a toast error for locked projects.
+ */
+export function triggerProjectLockedError(): void {
+  import('sonner').then(({ toast }) => {
+    toast.error('🔒 Locked in Demo Mode. The full backend curriculum unlocks all interactive projects!')
+  })
 }
