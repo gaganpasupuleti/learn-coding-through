@@ -379,8 +379,6 @@ function updateDashboard(): void {
     .join("");
 }
 
-
-
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, "&amp;")
