@@ -193,10 +193,15 @@ export async function executeCode(
   }
 
   try {
+    const token = localStorage.getItem('career-portal-token')
+    const authHeaders: Record<string, string> = token
+      ? { Authorization: `Bearer ${token}` }
+      : {}
     const response = await fetch(`${API_BASE_URL}/api/execute`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...authHeaders,
       },
       body: JSON.stringify({
         code,
