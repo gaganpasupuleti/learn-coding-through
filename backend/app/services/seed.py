@@ -1,9 +1,25 @@
 import json
+import logging
+from typing import Any
 
 from sqlalchemy.orm import Session
 
 from app.core.security import get_password_hash
-from app.models.models import DifficultyLevel, Quiz, QuizQuestion, Role, Stage, User, UserRole
+from app.models.models import (
+    DifficultyLevel,
+    ProjectCatalog,
+    ProjectCatalogStep,
+    Quiz,
+    QuizCatalog,
+    QuizCatalogQuestion,
+    QuizQuestion,
+    Role,
+    Stage,
+    User,
+    UserRole,
+)
+
+logger = logging.getLogger(__name__)
 
 
 def seed_default_roles(db: Session):
@@ -122,6 +138,306 @@ def seed_admin_user(db: Session, email: str | None, password: str | None, full_n
     normalized_email = email.strip().lower()
     if not normalized_email:
         return
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Catalog seed data — mirrors src/lib/quizzes.ts and src/lib/projects.ts
+# ──────────────────────────────────────────────────────────────────────────────
+
+QUIZZES: list[dict[str, Any]] = [
+    {
+        "slug": "frontend-foundations",
+        "title": "Frontend Foundations",
+        "description": "Quick checks on HTML, CSS, and basic browser behavior.",
+        "difficulty": "beginner",
+        "estimated_time": "10 minutes",
+        "questions": [
+            {
+                "order": 1,
+                "question_type": "multiple-choice",
+                "title": "HTML Structure",
+                "prompt": "Which tag represents the main heading of a page?",
+                "options": ["<h1>", "<head>", "<title>", "<p>"],
+                "correct_index": 0,
+                "explanation": "The <h1> tag is used for the top-level heading in HTML.",
+            },
+            {
+                "order": 2,
+                "question_type": "true-false",
+                "title": "CSS Responsibility",
+                "prompt": "CSS is responsible for the structure of a web page.",
+                "options": ["True", "False"],
+                "correct_index": 1,
+                "explanation": "HTML provides structure, while CSS handles presentation and styling.",
+            },
+            {
+                "order": 3,
+                "question_type": "code-completion",
+                "title": "Event Listener",
+                "prompt": "Complete the line to log a message when the button is clicked.",
+                "code_snippet": "const button = document.querySelector('button')\n\nbutton.addEventListener('click', () => {\n  // TODO\n})",
+                "language": "javascript",
+                "answer": "console.log('Clicked!')",
+                "acceptable_answers": ["console.log('Clicked!')", 'console.log("Clicked!")'],
+                "explanation": "The click handler should log a message inside the callback function.",
+            },
+            {
+                "order": 4,
+                "question_type": "code-output",
+                "title": "Array Length",
+                "prompt": "What is the output of this code?",
+                "code_snippet": "const colors = ['red', 'blue', 'green']\nconsole.log(colors.length)",
+                "language": "javascript",
+                "expected_output": "3",
+                "explanation": "Arrays store three items, so length is 3.",
+            },
+        ],
+    },
+    {
+        "slug": "js-logic-check",
+        "title": "JavaScript Logic Check",
+        "description": "Practice reasoning about conditions, loops, and outputs.",
+        "difficulty": "beginner",
+        "estimated_time": "12 minutes",
+        "questions": [
+            {
+                "order": 1,
+                "question_type": "multiple-choice",
+                "title": "Conditional Logic",
+                "prompt": "Which operator checks if two values are equal and of the same type?",
+                "options": ["==", "===", "!=", "="],
+                "correct_index": 1,
+                "explanation": "The strict equality operator (===) checks both value and type.",
+            },
+            {
+                "order": 2,
+                "question_type": "true-false",
+                "title": "Loop Behavior",
+                "prompt": "A for-loop can run zero times if its condition is false at the start.",
+                "options": ["True", "False"],
+                "correct_index": 0,
+                "explanation": "If the condition is false initially, the loop body never runs.",
+            },
+            {
+                "order": 3,
+                "question_type": "code-completion",
+                "title": "Function Return",
+                "prompt": "Fill in the missing line to return the sum.",
+                "code_snippet": "function add(a, b) {\n  // TODO\n}\n\nconsole.log(add(2, 5))",
+                "language": "javascript",
+                "answer": "return a + b",
+                "acceptable_answers": ["return a + b", "return a+b"],
+                "explanation": "The function needs to return the sum of a and b.",
+            },
+            {
+                "order": 4,
+                "question_type": "code-output",
+                "title": "Loop Output",
+                "prompt": "What is the output of this code?",
+                "code_snippet": "let total = 0\nfor (let i = 1; i <= 3; i += 1) {\n  total += i\n}\nconsole.log(total)",
+                "language": "javascript",
+                "expected_output": "6",
+                "explanation": "The loop adds 1 + 2 + 3, which equals 6.",
+            },
+        ],
+    },
+]
+
+
+PROJECTS: list[dict[str, Any]] = [
+    {
+        "slug": "digital-clock",
+        "title": "Digital Clock",
+        "short_description": "Build a live updating clock that shows hours, minutes, and seconds.",
+        "description": "Learn how to display and update time in real-time by building a digital clock from scratch.",
+        "difficulty": "beginner",
+        "estimated_time": "15 minutes",
+        "steps": [
+            {"order": 1, "step_type": "understanding", "title": "Understanding the Problem", "description": "A digital clock shows the current time and updates automatically every second.", "points": ["The clock needs to know what time it is right now", "It must show hours, minutes, and seconds clearly", "It should update every single second to stay accurate", "The display should be easy to read at a glance"]},
+            {"order": 2, "step_type": "logic", "title": "Breaking Down the Logic", "description": "Let's break this down into simple steps:", "points": ["Ask the computer 'What time is it right now?'", "Split the time into hours, minutes, and seconds", "Make sure each part always shows 2 digits", "Display the time on the screen", "Wait one second, then repeat", "Keep repeating forever"]},
+            {"order": 3, "step_type": "code", "title": "The Code", "language": "typescript", "points": ["Set up state to store the current time and update it every second", "Format hours, minutes, and seconds to always be two digits", "Render the time inside a large, easy-to-read display"], "code": "import { useState, useEffect } from 'react'\n\nfunction DigitalClock() {\n  const [time, setTime] = useState(new Date())\n\n  useEffect(() => {\n    const timer = setInterval(() => setTime(new Date()), 1000)\n    return () => clearInterval(timer)\n  }, [])\n\n  const hours = time.getHours().toString().padStart(2, '0')\n  const minutes = time.getMinutes().toString().padStart(2, '0')\n  const seconds = time.getSeconds().toString().padStart(2, '0')\n\n  return <div className=\"text-6xl font-bold\">{hours}:{minutes}:{seconds}</div>\n}", "walkthrough_gif": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXo3N3NvNGxyZjdqbnZ0eHFmZzNyMDZmbWNzb2xvbTdhZ3ZxMTd0ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26tn33aiTi1jkl6H6/giphy.gif", "walkthrough_caption": "Watch the clock component update every second as the state changes."},
+            {"order": 4, "step_type": "preview", "title": "See It In Action", "description": "Watch your digital clock come to life! It updates every second automatically."},
+            {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Can you modify the clock to show 12-hour format (with AM/PM) instead of 24-hour format?", "hint": "Check if hours > 12 and subtract 12 if so. Don't forget AM/PM!"},
+        ],
+    },
+    {
+        "slug": "calculator",
+        "title": "Calculator",
+        "short_description": "Create a working calculator that can add, subtract, multiply, and divide.",
+        "description": "Build an interactive calculator with buttons and learn how to handle user input and perform calculations.",
+        "difficulty": "beginner",
+        "estimated_time": "20 minutes",
+        "steps": [
+            {"order": 1, "step_type": "understanding", "title": "Understanding the Problem", "description": "A calculator takes numbers and operations from the user, does the math, and shows the result.", "points": ["Users click number buttons to build their number", "Users click operation buttons (+, -, x, /) to choose math", "The calculator remembers the first number and the operation", "When = is pressed, it calculates and shows the answer", "A Clear button lets users start over"]},
+            {"order": 2, "step_type": "logic", "title": "Breaking Down the Logic", "description": "Here's how the calculator thinks step-by-step:", "points": ["Start with empty display showing 0", "When a number is clicked, add it to the display", "When an operation is clicked, remember the number and operation", "Let the user enter a second number", "When = is clicked, do the math", "Show the result", "Clear resets to 0"]},
+            {"order": 3, "step_type": "code", "title": "The Code", "language": "typescript", "code": "import { useState } from 'react'\n\nfunction Calculator() {\n  const [display, setDisplay] = useState('0')\n  const [prev, setPrev] = useState<number | null>(null)\n  const [op, setOp] = useState<string | null>(null)\n  const [fresh, setFresh] = useState(true)\n\n  const handleNumber = (n: string) => {\n    setDisplay(fresh ? n : (display === '0' ? n : display + n))\n    setFresh(false)\n  }\n  const handleClear = () => { setDisplay('0'); setPrev(null); setOp(null); setFresh(true) }\n  // ... operator and equals handlers\n}", "walkthrough_gif": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXUwa2NlZ2g2NmJsbXYyMHltdnFzbWc5Z3B0d3NzMGQydnNraDhpOSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT0xeJpnrWC4XWblEk/giphy.gif", "walkthrough_caption": "Follow the button presses to see how the calculator updates its display."},
+            {"order": 4, "step_type": "preview", "title": "See It In Action", "description": "Try out your calculator! Click the buttons to enter numbers and operations."},
+            {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Can you add a decimal point button so users can calculate with decimal numbers like 3.14?", "hint": "Check if the display already has a decimal point before adding another one!"},
+        ],
+    },
+    {
+        "slug": "temperature-converter",
+        "title": "Temperature Converter",
+        "short_description": "Convert between Celsius, Fahrenheit, and Kelvin with Python.",
+        "description": "Learn Python basics by building a temperature converter that handles multiple temperature scales.",
+        "difficulty": "beginner",
+        "estimated_time": "15 minutes",
+        "steps": [
+            {"order": 1, "step_type": "understanding", "title": "Understanding the Problem", "description": "A temperature converter takes a temperature in one scale and converts it to another.", "points": ["Users input a value and select the source scale", "The program applies the correct formula", "Displays the converted temperature", "Supports Celsius, Fahrenheit, and Kelvin"]},
+            {"order": 2, "step_type": "logic", "title": "Breaking Down the Logic", "description": "Here's how we'll convert temperatures:", "points": ["Get the temperature value", "Get the source scale (C, F, or K)", "Get the target scale", "Apply the correct conversion formula", "Display the result", "Handle edge cases like absolute zero"]},
+            {"order": 3, "step_type": "code", "title": "The Code", "language": "python", "code": "def convert_temperature(value, from_scale, to_scale):\n    if from_scale == to_scale:\n        return value\n    if from_scale == 'F':\n        celsius = (value - 32) * 5/9\n    elif from_scale == 'K':\n        celsius = value - 273.15\n    else:\n        celsius = value\n    if to_scale == 'F':\n        return (celsius * 9/5) + 32\n    elif to_scale == 'K':\n        return celsius + 273.15\n    else:\n        return celsius\n\nprint(f\"25C = {convert_temperature(25, 'C', 'F')}F\")"},
+            {"order": 4, "step_type": "preview", "title": "See It In Action", "description": "Test your converter with different temperatures and scales!"},
+            {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Add input validation to ensure the temperature isn't below absolute zero.", "hint": "Check if converted Celsius < -273.15 and raise an error!"},
+        ],
+    },
+    {
+        "slug": "password-generator",
+        "title": "Password Generator",
+        "short_description": "Create secure random passwords with customizable options in Python.",
+        "description": "Build a Python tool that generates strong, random passwords with different character types.",
+        "difficulty": "beginner",
+        "estimated_time": "20 minutes",
+        "steps": [
+            {"order": 1, "step_type": "understanding", "title": "Understanding the Problem", "description": "A password generator creates random, secure passwords.", "points": ["Generate random combinations of characters", "Include uppercase, lowercase, numbers, and symbols", "Allow users to specify password length", "Make passwords unpredictable"]},
+            {"order": 2, "step_type": "logic", "title": "Breaking Down the Logic", "description": "Here's how we'll generate secure passwords:", "points": ["Define character sets", "Get desired length from user", "Randomly select characters", "Ensure one of each type is included", "Shuffle the result", "Return the password"]},
+            {"order": 3, "step_type": "code", "title": "The Code", "language": "python", "code": "import random, string\n\ndef generate_password(length=12):\n    chars = string.ascii_letters + string.digits + string.punctuation\n    required = [random.choice(string.ascii_uppercase), random.choice(string.ascii_lowercase), random.choice(string.digits), random.choice(string.punctuation)]\n    rest = [random.choice(chars) for _ in range(length - 4)]\n    pwd = required + rest\n    random.shuffle(pwd)\n    return ''.join(pwd)\n\nprint(generate_password(16))"},
+            {"order": 4, "step_type": "preview", "title": "See It In Action", "description": "Generate multiple passwords and see how random and secure they are!"},
+            {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Add a password strength checker that rates passwords as weak, medium, or strong.", "hint": "Check the length and count how many different character types are used!"},
+        ],
+    },
+    {
+        "slug": "student-database",
+        "title": "Student Database",
+        "short_description": "Create and query a student records database with SQL.",
+        "description": "Learn SQL basics by creating tables, inserting data, and running queries on a student database.",
+        "difficulty": "beginner",
+        "estimated_time": "20 minutes",
+        "steps": [
+            {"order": 1, "step_type": "understanding", "title": "Understanding the Problem", "description": "A student database stores information about students. SQL lets us organize and retrieve it easily.", "points": ["Create tables to store student information", "Insert records with multiple fields", "Query data to find specific students", "Update records when info changes", "Use relationships between tables"]},
+            {"order": 2, "step_type": "logic", "title": "Breaking Down the Logic", "description": "Here's how we'll structure our database:", "points": ["Design a Students table with ID, name, email, and major", "Define primary keys", "Write SELECT queries", "Use WHERE clauses to filter"]},
+            {"order": 3, "step_type": "code", "title": "The Code", "language": "sql", "code": "CREATE TABLE Students (\n    student_id INT PRIMARY KEY,\n    first_name VARCHAR(50),\n    last_name VARCHAR(50),\n    email VARCHAR(100),\n    major VARCHAR(50)\n);\n\nINSERT INTO Students VALUES (1,'Alice','Johnson','alice@email.com','Computer Science'), (2,'Bob','Smith','bob@email.com','Mathematics');\n\nSELECT * FROM Students;\nSELECT first_name, last_name FROM Students WHERE major = 'Computer Science';"},
+            {"order": 4, "step_type": "preview", "title": "See It In Action", "description": "See how SQL queries retrieve and manipulate student data!"},
+            {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Add a Courses table and create a JOIN query to show which students are enrolled in which courses.", "hint": "You'll need a junction table to handle the many-to-many relationship!"},
+        ],
+    },
+    {
+        "slug": "sales-analytics",
+        "title": "Sales Analytics Dashboard",
+        "short_description": "Analyze sales data with SQL aggregations and reports.",
+        "description": "Master SQL aggregate functions by building queries for a sales analytics dashboard.",
+        "difficulty": "beginner",
+        "estimated_time": "25 minutes",
+        "steps": [
+            {"order": 1, "step_type": "understanding", "title": "Understanding the Problem", "description": "A sales analytics system helps businesses understand performance through totals, averages, and trends.", "points": ["Store sales transactions", "Calculate total revenue", "Find top products/salespeople", "Group by time periods"]},
+            {"order": 2, "step_type": "logic", "title": "Breaking Down the Logic", "description": "Here's how we'll analyze sales:", "points": ["Create Sales table", "Use SUM() for total revenue", "Use AVG() for averages", "Use COUNT() for transactions", "Use GROUP BY for categories", "Use ORDER BY to rank"]},
+            {"order": 3, "step_type": "code", "title": "The Code", "language": "sql", "code": "CREATE TABLE Sales (sale_id INT PRIMARY KEY, product_name VARCHAR(100), sale_amount DECIMAL(10,2), sale_date DATE, salesperson VARCHAR(50));\n\nINSERT INTO Sales VALUES (1,'Laptop',1200,'2024-01-15','John'),(2,'Mouse',25,'2024-01-15','Sarah'),(3,'Keyboard',75,'2024-01-16','John');\n\nSELECT SUM(sale_amount) total_revenue FROM Sales;\nSELECT salesperson, COUNT(*) sales, SUM(sale_amount) total FROM Sales GROUP BY salesperson ORDER BY total DESC;"},
+            {"order": 4, "step_type": "preview", "title": "See It In Action", "description": "Watch SQL aggregate functions transform raw sales data into insights!"},
+            {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Find the salesperson with the highest average sale, excluding sales below $100.", "hint": "Use HAVING clause with AVG() and a WHERE filter!"},
+        ],
+    },
+    {
+        "slug": "grade-calculator",
+        "title": "Grade Calculator",
+        "short_description": "Calculate and display student grades with letter grades in Java.",
+        "description": "Learn Java fundamentals by building a grade calculator that computes averages and assigns letter grades.",
+        "difficulty": "beginner",
+        "estimated_time": "20 minutes",
+        "steps": [
+            {"order": 1, "step_type": "understanding", "title": "Understanding the Problem", "description": "A grade calculator takes multiple test scores, computes the average, and assigns a letter grade.", "points": ["Accept multiple test scores", "Calculate the average", "Assign a letter grade", "Display both numeric and letter grade"]},
+            {"order": 2, "step_type": "logic", "title": "Breaking Down the Logic", "description": "Here's how we'll calculate grades:", "points": ["Store scores in an array", "Loop to sum all scores", "Divide by count for average", "Use if-else for letter grades", "A:90+, B:80-89, C:70-79, D:60-69, F:<60"]},
+            {"order": 3, "step_type": "code", "title": "The Code", "language": "java", "code": "public class GradeCalculator {\n    public static double calculateAverage(double[] scores) {\n        double sum = 0;\n        for (double s : scores) sum += s;\n        return sum / scores.length;\n    }\n    public static String getLetterGrade(double avg) {\n        if (avg >= 90) return \"A\";\n        else if (avg >= 80) return \"B\";\n        else if (avg >= 70) return \"C\";\n        else if (avg >= 60) return \"D\";\n        else return \"F\";\n    }\n    public static void main(String[] args) {\n        double[] scores = {85.5, 92.0, 78.5, 88.0, 95.0};\n        double avg = calculateAverage(scores);\n        System.out.println(\"Average: \" + String.format(\"%.2f\", avg));\n        System.out.println(\"Grade: \" + getLetterGrade(avg));\n    }\n}"},
+            {"order": 4, "step_type": "preview", "title": "See It In Action", "description": "See how the calculator processes scores and assigns letter grades!"},
+            {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Extend the calculator to support plus/minus grades (A+, A, A-).", "hint": "97-100=A+, 93-96=A, 90-92=A-, etc."},
+        ],
+    },
+    {
+        "slug": "number-guesser",
+        "title": "Number Guessing Game",
+        "short_description": "Build an interactive game where users guess a random number in Java.",
+        "description": "Create a fun Java game that generates a random number and gives hints until the user guesses correctly.",
+        "difficulty": "beginner",
+        "estimated_time": "20 minutes",
+        "steps": [
+            {"order": 1, "step_type": "understanding", "title": "Understanding the Problem", "description": "A number guessing game generates a random number and challenges the player with hints.", "points": ["Generate a random number", "Accept guesses", "Give too-high/too-low feedback", "Track attempt count", "Celebrate on correct guess"]},
+            {"order": 2, "step_type": "logic", "title": "Breaking Down the Logic", "description": "Here's how the game works:", "points": ["Generate random 1-100", "Initialize attempt counter", "Loop until correct", "Compare guess", "Print hint", "Count attempts and show on win"]},
+            {"order": 3, "step_type": "code", "title": "The Code", "language": "java", "code": "import java.util.Random;\nimport java.util.Scanner;\n\npublic class NumberGuessingGame {\n    public static void main(String[] args) {\n        int secret = new Random().nextInt(100) + 1;\n        Scanner sc = new Scanner(System.in);\n        int attempts = 0;\n        System.out.println(\"Guess a number between 1 and 100!\");\n        while (true) {\n            int guess = sc.nextInt();\n            attempts++;\n            if (guess < secret) System.out.println(\"Too low!\");\n            else if (guess > secret) System.out.println(\"Too high!\");\n            else { System.out.println(\"Correct in \" + attempts + \" attempts!\"); break; }\n        }\n        sc.close();\n    }\n}"},
+            {"order": 4, "step_type": "preview", "title": "See It In Action", "description": "Watch the game provide hints to guide the player!"},
+            {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Add difficulty levels: Easy (1-50, unlimited), Medium (1-100, 10 guesses), Hard (1-200, 7 guesses).", "hint": "Add a max-attempts limit and check it in the while condition!"},
+        ],
+    },
+]
+
+
+def _upsert_quiz(db: Session, data: dict[str, Any]) -> None:
+    quiz = db.query(QuizCatalog).filter_by(slug=data["slug"]).first()
+    if quiz is None:
+        quiz = QuizCatalog()
+        db.add(quiz)
+    quiz.slug = data["slug"]
+    quiz.title = data["title"]
+    quiz.description = data["description"]
+    quiz.difficulty = data.get("difficulty", "beginner")
+    quiz.estimated_time = data["estimated_time"]
+    db.flush()
+    db.query(QuizCatalogQuestion).filter_by(quiz_id=quiz.id).delete()
+    for q in data["questions"]:
+        db.add(QuizCatalogQuestion(
+            quiz_id=quiz.id,
+            order=q["order"],
+            question_type=q["question_type"],
+            title=q["title"],
+            prompt=q["prompt"],
+            options_json=json.dumps(q["options"]) if "options" in q else None,
+            correct_index=q.get("correct_index"),
+            answer=q.get("answer"),
+            acceptable_answers_json=json.dumps(q["acceptable_answers"]) if "acceptable_answers" in q else None,
+            expected_output=q.get("expected_output"),
+            code_snippet=q.get("code_snippet"),
+            language=q.get("language"),
+            explanation=q["explanation"],
+        ))
+
+
+def _upsert_project(db: Session, data: dict[str, Any]) -> None:
+    project = db.query(ProjectCatalog).filter_by(slug=data["slug"]).first()
+    if project is None:
+        project = ProjectCatalog()
+        db.add(project)
+    project.slug = data["slug"]
+    project.title = data["title"]
+    project.short_description = data["short_description"]
+    project.description = data["description"]
+    project.difficulty = data.get("difficulty", "beginner")
+    project.estimated_time = data["estimated_time"]
+    db.flush()
+    db.query(ProjectCatalogStep).filter_by(project_id=project.id).delete()
+    for s in data["steps"]:
+        db.add(ProjectCatalogStep(
+            project_id=project.id,
+            order=s["order"],
+            step_type=s["step_type"],
+            title=s["title"],
+            description=s.get("description"),
+            points_json=json.dumps(s["points"]) if "points" in s else None,
+            code=s.get("code"),
+            language=s.get("language"),
+            challenge=s.get("challenge"),
+            hint=s.get("hint"),
+            walkthrough_gif=s.get("walkthrough_gif"),
+            walkthrough_caption=s.get("walkthrough_caption"),
+        ))
+
+
+def seed_catalog_data(db: Session) -> None:
+    """Idempotent catalog seeder. Safe to call on every startup."""
+    logger.info("Seeding quiz catalog (%d quizzes)…", len(QUIZZES))
+    for quiz_data in QUIZZES:
+        _upsert_quiz(db, quiz_data)
+    logger.info("Seeding project catalog (%d projects)…", len(PROJECTS))
+    for project_data in PROJECTS:
+        _upsert_project(db, project_data)
+    db.commit()
+    logger.info("Catalog seed complete.")
 
     existing = db.query(User).filter(User.email == normalized_email).first()
     if existing:

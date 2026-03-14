@@ -399,3 +399,91 @@ class JobApplication(Base):
 
     job = relationship("JobPost", back_populates="applications")
     student = relationship("User", foreign_keys=[student_user_id])
+
+
+# ---------------------------------------------------------------------------
+# Catalog models — standalone learning content (quizzes & projects)
+# These are NOT linked to the Stage/Role hierarchy; they are the
+# self-contained modules shown on the frontend.
+# ---------------------------------------------------------------------------
+
+class QuizCatalog(Base):
+    __tablename__ = "quiz_catalog"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    slug: Mapped[str] = mapped_column(String(120), unique=True, nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    difficulty: Mapped[str] = mapped_column(String(50), default="beginner", nullable=False)
+    estimated_time: Mapped[str] = mapped_column(String(80), nullable=False)
+
+    questions = relationship(
+        "QuizCatalogQuestion",
+        back_populates="quiz",
+        cascade="all,delete-orphan",
+        order_by="QuizCatalogQuestion.order",
+    )
+
+
+class QuizCatalogQuestion(Base):
+    __tablename__ = "quiz_catalog_questions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    quiz_id: Mapped[int] = mapped_column(ForeignKey("quiz_catalog.id"), nullable=False, index=True)
+    order: Mapped[int] = mapped_column(Integer, nullable=False)
+    question_type: Mapped[str] = mapped_column(String(30), nullable=False)   # multiple-choice | true-false | code-completion | code-output
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    # multiple-choice / true-false
+    options_json: Mapped[str | None] = mapped_column(Text, nullable=True)     # JSON array of strings
+    correct_index: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # code-completion
+    answer: Mapped[str | None] = mapped_column(Text, nullable=True)
+    acceptable_answers_json: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON array
+    # code-output
+    expected_output: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # shared optional fields
+    code_snippet: Mapped[str | None] = mapped_column(Text, nullable=True)
+    language: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    explanation: Mapped[str] = mapped_column(Text, nullable=False)
+
+    quiz = relationship("QuizCatalog", back_populates="questions")
+
+
+class ProjectCatalog(Base):
+    __tablename__ = "project_catalog"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    slug: Mapped[str] = mapped_column(String(120), unique=True, nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    short_description: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    difficulty: Mapped[str] = mapped_column(String(50), default="beginner", nullable=False)
+    estimated_time: Mapped[str] = mapped_column(String(80), nullable=False)
+
+    steps = relationship(
+        "ProjectCatalogStep",
+        back_populates="project",
+        cascade="all,delete-orphan",
+        order_by="ProjectCatalogStep.order",
+    )
+
+
+class ProjectCatalogStep(Base):
+    __tablename__ = "project_catalog_steps"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    project_id: Mapped[int] = mapped_column(ForeignKey("project_catalog.id"), nullable=False, index=True)
+    order: Mapped[int] = mapped_column(Integer, nullable=False)
+    step_type: Mapped[str] = mapped_column(String(30), nullable=False)  # understanding | logic | code | preview | challenge
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    points_json: Mapped[str | None] = mapped_column(Text, nullable=True)   # JSON array of strings
+    code: Mapped[str | None] = mapped_column(Text, nullable=True)
+    language: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    challenge: Mapped[str | None] = mapped_column(Text, nullable=True)
+    hint: Mapped[str | None] = mapped_column(Text, nullable=True)
+    walkthrough_gif: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    walkthrough_caption: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    project = relationship("ProjectCatalog", back_populates="steps")
