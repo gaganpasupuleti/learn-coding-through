@@ -16,26 +16,26 @@ import type { CareerRole, SyllabusItem } from '@/types/career'
 
 // ── Design tokens for the Flight Plan ───────────────────────────────────────
 const T = {
-  bg:          '#0b0b0b',
-  surface:     '#111111',
-  surfaceHover:'#161616',
-  border:      '#1e1e1e',
-  borderFocus: '#2a2a3d',
+  bg:          'var(--background)',
+  surface:     'var(--card)',
+  surfaceHover:'var(--muted)',
+  border:      'var(--border)',
+  borderFocus: 'var(--border)',
   done:        '#052e16',
   doneBorder:  '#166534',
-  locked:      '#0c0c0c',
-  lockedBorder:'#1a1a1a',
+  locked:      'var(--muted)',
+  lockedBorder:'var(--border)',
   skip:        '#052e0f',
   skipBorder:  '#166534',
   focus:       '#1a120a',
   focusBorder: '#78350f',
-  textPrimary: '#e2e8f0',
-  textSub:     '#64748b',
+  textPrimary: 'var(--foreground)',
+  textSub:     'var(--muted-foreground)',
   textDone:    '#4ade80',
-  textLocked:  '#334155',
+  textLocked:  'var(--muted-foreground)',
   accent:      '#818cf8',
   accentDim:   '#3730a3',
-  lineColor:   '#1e1e1e',
+  lineColor:   'var(--border)',
   lineDone:    '#166534',
 } as const
 
@@ -333,7 +333,7 @@ export function LearningRoadmap({
 
                               {/* Note preview */}
                               {itemHasNote && itemNoteData && (
-                                <div style={{ padding: '6px 10px', background: '#0d0d1a', border: '1px solid #1e1e3d', borderRadius: 5, marginBottom: 4 }}>
+                                <div style={{ padding: '6px 10px', background: 'var(--muted)', border: '1px solid var(--border)', borderRadius: 5, marginBottom: 4 }}>
                                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
                                     <Note size={11} style={{ color: T.accent, flexShrink: 0, marginTop: 1 }} weight="fill" />
                                     <span style={{ fontSize: 10, color: T.textSub, lineHeight: 1.5, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>

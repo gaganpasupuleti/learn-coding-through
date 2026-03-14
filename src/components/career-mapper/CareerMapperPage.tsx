@@ -27,11 +27,11 @@ const SELECTED_ROLE_KEY = 'career-mapper-selected-role'
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const STYLE = {
-  bg:      '#0b0b0b',
-  surface: '#111111',
-  border:  '#1e1e1e',
-  txt:     '#e2e8f0',
-  sub:     '#64748b',
+  bg:      'var(--background)',
+  surface: 'var(--card)',
+  border:  'var(--border)',
+  txt:     'var(--foreground)',
+  sub:     'var(--muted-foreground)',
   accent:  '#818cf8',
 } as const
 
@@ -135,9 +135,9 @@ export function CareerMapperPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: 16 }}>
               {[...Array(6)].map((_, i) => (
                 <div key={i} style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: 20, background: STYLE.surface }}>
-                  <div style={{ height: 14, width: '60%', background: '#1a1a1a', borderRadius: 4, marginBottom: 10 }} />
-                  <div style={{ height: 10, width: '40%', background: '#1a1a1a', borderRadius: 4, marginBottom: 16 }} />
-                  <div style={{ height: 32, background: '#1a1a1a', borderRadius: 6 }} />
+                  <div style={{ height: 14, width: '60%', background: 'var(--muted)', borderRadius: 4, marginBottom: 10 }} />
+                  <div style={{ height: 10, width: '40%', background: 'var(--muted)', borderRadius: 4, marginBottom: 16 }} />
+                  <div style={{ height: 32, background: 'var(--muted)', borderRadius: 6 }} />
                 </div>
               ))}
             </div>

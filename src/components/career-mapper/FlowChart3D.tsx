@@ -17,11 +17,11 @@ interface HierarchyNode {
   isCompleted?: boolean
 }
 
-// ── Dark palette ────────────────────────────────────────────────────────────
+// ── Palette ─────────────────────────────────────────────────────────────────
 const C = {
-  bg:         '#0b0b0b',
-  surface:    '#111111',
-  border:     '#1f1f1f',
+  bg:         'var(--background)',
+  surface:    'var(--card)',
+  border:     'var(--border)',
   courseFrom: '#1a1a2e',
   courseTo:   '#16213e',
   courseBorder:'#3b3b5c',
@@ -42,8 +42,8 @@ const C = {
   milestoneText:'#fbbf24',
   lineDefault:'#2a2a3d',
   lineDone:   '#166534',
-  textPrimary:'#e2e8f0',
-  textSub:    '#64748b',
+  textPrimary:'var(--foreground)',
+  textSub:    'var(--muted-foreground)',
   textDone:   '#4ade80',
   glowColor:  '#818cf8',
 } as const
