@@ -19,6 +19,7 @@ import {
 import { CodeEditor } from '@/components/CodeEditor'
 import { toast } from 'sonner'
 import { sandbox } from '@/lib/sandboxInstance'
+import { fetchUserProgress, saveProjectStepProgress } from '@/lib/api'
 
 interface TestCase {
   id: number
@@ -67,6 +68,20 @@ export function InteractiveProjectBuilder({
   const [isRunning, setIsRunning] = useState(false)
   const [livePreview, setLivePreview] = useState<string>('')
   const [previewError, setPreviewError] = useState<string>('')
+
+  // Restore persisted progress on mount
+  useEffect(() => {
+    fetchUserProgress()
+      .then((progress) => {
+        const saved = progress.completedSteps
+          .filter((s) => s.projectSlug === projectId)
+          .map((s) => s.stepId)
+        if (saved.length > 0) {
+          setCompletedSteps(saved)
+        }
+      })
+      .catch(() => { /* offline / backend unavailable — start fresh */ })
+  }, [projectId])
 
   const currentStep = buildSteps[currentStepIndex]
   const passedTests = Array.from(testResults.values()).filter(Boolean).length
@@ -137,7 +152,10 @@ export function InteractiveProjectBuilder({
       })
 
       if (!completedSteps.includes(currentStep.id)) {
-        setCompletedSteps([...completedSteps, currentStep.id])
+        const updated = [...completedSteps, currentStep.id]
+        setCompletedSteps(updated)
+        // Persist to backend (fire-and-forget)
+        saveProjectStepProgress(projectId, currentStep.id).catch(() => {})
       }
     } else {
       const failed = totalTests - passedTests

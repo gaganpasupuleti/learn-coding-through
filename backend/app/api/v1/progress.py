@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
 from app.core.database import get_db
-from app.models.models import ProgressTracking, User
+from app.models.models import ProgressTracking, ProjectStepCompletion, User
 from app.schemas.progress import ProgressResponse, ProgressUpdateRequest
 
 
@@ -67,3 +67,47 @@ def my_progress(db: Session = Depends(get_db), current_user: User = Depends(get_
         )
         for item in records
     ]
+
+
+# ── Catalog project-step progress ──────────────────────────────────────────────
+
+@router.get("/catalog")
+def get_catalog_progress(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Return all completed project steps for the current user."""
+    rows = (
+        db.query(ProjectStepCompletion)
+        .filter(ProjectStepCompletion.user_id == current_user.id)
+        .all()
+    )
+    return {
+        "completedSteps": [
+            {"projectSlug": r.project_slug, "stepId": r.step_id}
+            for r in rows
+        ]
+    }
+
+
+@router.post("/project/{slug}/step/{step_id}", status_code=200)
+def complete_project_step(
+    slug: str,
+    step_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Idempotent upsert: mark a project step as completed."""
+    existing = (
+        db.query(ProjectStepCompletion)
+        .filter_by(user_id=current_user.id, project_slug=slug, step_id=step_id)
+        .first()
+    )
+    if existing is None:
+        db.add(ProjectStepCompletion(
+            user_id=current_user.id,
+            project_slug=slug,
+            step_id=step_id,
+        ))
+        db.commit()
+    return {"projectSlug": slug, "stepId": step_id, "completed": True}

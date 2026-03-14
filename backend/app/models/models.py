@@ -101,6 +101,7 @@ class User(Base):
     projects = relationship("Project", back_populates="user", cascade="all,delete-orphan")
     resumes = relationship("Resume", back_populates="user", cascade="all,delete-orphan")
     credit_transactions = relationship("CreditTransaction", back_populates="user", cascade="all,delete-orphan")
+    project_step_completions = relationship("ProjectStepCompletion", back_populates="user", cascade="all,delete-orphan")
     admin_actions = relationship(
         "AdminActivityLog",
         foreign_keys="AdminActivityLog.admin_user_id",
@@ -487,3 +488,20 @@ class ProjectCatalogStep(Base):
     walkthrough_caption: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     project = relationship("ProjectCatalog", back_populates="steps")
+
+
+class ProjectStepCompletion(Base):
+    """Tracks which catalog project steps a user has completed."""
+    __tablename__ = "project_step_completions"
+    __table_args__ = (
+        UniqueConstraint("user_id", "project_slug", "step_id", name="uq_psc_user_project_step"),
+        Index("ix_psc_user_project", "user_id", "project_slug"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    project_slug: Mapped[str] = mapped_column(String(120), nullable=False)
+    step_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    completed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("User", back_populates="project_step_completions")

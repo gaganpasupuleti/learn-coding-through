@@ -475,3 +475,30 @@ export async function fetchCatalogProject(slug: string): Promise<CatalogProject>
   const response = await fetch(`${API_BASE_URL}/api/v1/projects/catalog/${encodeURIComponent(slug)}`)
   return parseOrThrow(response) as Promise<CatalogProject>
 }
+
+// ── User progress ──────────────────────────────────────────────────────────────
+
+export interface CompletedStep {
+  projectSlug: string
+  stepId: number
+}
+
+export interface UserCatalogProgress {
+  completedSteps: CompletedStep[]
+}
+
+export async function fetchUserProgress(): Promise<UserCatalogProgress> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/progress/catalog`)
+  return parseOrThrow(response) as Promise<UserCatalogProgress>
+}
+
+export async function saveProjectStepProgress(projectSlug: string, stepId: number): Promise<void> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/progress/project/${encodeURIComponent(projectSlug)}/step/${stepId}`,
+    { method: 'POST' },
+  )
+  if (!response.ok) {
+    // Non-blocking: log but don't crash the UI
+    console.warn('Failed to save step progress:', response.status)
+  }
+}

@@ -16,7 +16,7 @@ import {
   Eye,
   Rocket
 } from '@phosphor-icons/react'
-import { CatalogProject, CatalogProjectStep, fetchCatalogProject } from '@/lib/api'
+import { CatalogProject, CatalogProjectStep, fetchCatalogProject, fetchUserProgress, saveProjectStepProgress } from '@/lib/api'
 import { DigitalClockPreview } from '@/components/previews/DigitalClockPreview'
 import { CalculatorPreview } from '@/components/previews/CalculatorPreview'
 import { TemperatureConverterPreview } from '@/components/previews/TemperatureConverterPreview'
@@ -52,6 +52,18 @@ export function ProjectLearningPage({ projectId, onBack }: ProjectLearningPagePr
       .finally(() => setLoading(false))
   }, [projectId])
 
+  // Restore persisted step completion for the tutorial view
+  useEffect(() => {
+    fetchUserProgress()
+      .then((progress) => {
+        const saved = progress.completedSteps
+          .filter((s) => s.projectSlug === projectId)
+          .map((s) => s.stepId)
+        if (saved.length > 0) setCompletedSteps(saved)
+      })
+      .catch(() => {})
+  }, [projectId])
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center">
@@ -79,6 +91,7 @@ export function ProjectLearningPage({ projectId, onBack }: ProjectLearningPagePr
     if (!isLastStep) {
       if (!completedSteps.includes(currentStep.id)) {
         setCompletedSteps([...completedSteps, currentStep.id])
+        saveProjectStepProgress(projectId, currentStep.id).catch(() => {})
       }
       setCurrentStepIndex(currentStepIndex + 1)
     }
