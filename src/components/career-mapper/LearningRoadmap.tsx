@@ -16,27 +16,29 @@ import type { CareerRole, SyllabusItem } from '@/types/career'
 
 // ── Design tokens for the Flight Plan ───────────────────────────────────────
 const T = {
-  bg:          'var(--background)',
-  surface:     'var(--card)',
-  surfaceHover:'var(--muted)',
-  border:      'var(--border)',
-  borderFocus: 'var(--border)',
+  bg:          '#0b0b0b',
+  surface:     '#111118',
+  surfaceHover:'#16161e',
+  border:      'rgba(255,255,255,0.08)',
+  borderFocus: 'rgba(255,255,255,0.12)',
   done:        '#052e16',
   doneBorder:  '#166534',
-  locked:      'var(--muted)',
-  lockedBorder:'var(--border)',
+  locked:      '#0a0a0a',
+  lockedBorder:'rgba(255,255,255,0.04)',
   skip:        '#052e0f',
   skipBorder:  '#166534',
   focus:       '#1a120a',
   focusBorder: '#78350f',
-  textPrimary: 'var(--foreground)',
-  textSub:     'var(--muted-foreground)',
+  textPrimary: '#d1d5db',
+  textSub:     '#6b7280',
   textDone:    '#4ade80',
-  textLocked:  'var(--muted-foreground)',
+  textLocked:  '#374151',
   accent:      '#818cf8',
   accentDim:   '#3730a3',
-  lineColor:   'var(--border)',
+  lineColor:   'rgba(255,255,255,0.08)',
   lineDone:    '#166534',
+  fontMono:    "'JetBrains Mono', monospace",
+  fontSans:    "'Inter', system-ui, sans-serif",
 } as const
 
 interface LearningRoadmapProps {
@@ -78,11 +80,18 @@ export function LearningRoadmap({
     4: role.syllabus.filter(i => i.month === 4).sort((a, b) => a.sortOrder - b.sortOrder),
   }
 
-  // An item is unlocked if all items with lower sortOrder in the same month are completed
+  // An item is unlocked when:
+  // - first of month N > 1: all items in month N-1 are complete
+  // - otherwise: all lower-sortOrder items in the same month are complete
   const isUnlocked = (item: SyllabusItem, monthItems: SyllabusItem[]) => {
     const sorted = [...monthItems].sort((a, b) => a.sortOrder - b.sortOrder)
     const idx = sorted.findIndex(i => i.id === item.id)
-    if (idx <= 0) return true
+    if (idx === 0) {
+      if (item.month === 1) return true
+      const prevMonth = (item.month - 1) as 1 | 2 | 3 | 4
+      const prevItems = role.syllabus.filter(i => i.month === prevMonth)
+      return prevItems.every(prev => completedItems.has(prev.id))
+    }
     return sorted.slice(0, idx).every(prev => completedItems.has(prev.id))
   }
 
@@ -136,7 +145,8 @@ export function LearningRoadmap({
                         borderRadius: 6,
                         background: isDone ? T.done : unlocked ? T.surface : T.locked,
                         cursor: unlocked && onToggleItem ? 'pointer' : 'default',
-                        opacity: unlocked ? 1 : 0.4,
+                        opacity: unlocked ? 1 : 0.3,
+                        filter: unlocked ? 'none' : 'grayscale(1)',
                         pointerEvents: unlocked ? 'auto' : 'none',
                         display: 'flex', alignItems: 'center', gap: 8,
                       }}>
@@ -184,7 +194,7 @@ export function LearningRoadmap({
             <div style={{ height: 2, background: T.accent, width: `${overallPct}%`, transition: 'width 0.5s', borderRadius: 2 }} />
           </div>
         </div>
-        <span style={{ fontSize: 11, fontWeight: 700, color: T.accent, whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: T.accent, whiteSpace: 'nowrap', fontFamily: T.fontMono }}>
           {totalDone}/{totalItems} · {overallPct}%
         </span>
         <AirplaneLanding size={20} style={{ color: overallPct === 100 ? T.textDone : T.textSub, flexShrink: 0 }} />
@@ -199,7 +209,11 @@ export function LearningRoadmap({
           const allDone = done === items.length && items.length > 0
           const status  = getMonthStatus(month)
 
+          const prevMonth = (month > 1 ? month - 1 : 1) as 1 | 2 | 3 | 4
+          const moduleLocked = month > 1
+            && !syllabusByMonth[prevMonth].every(i => completedItems.has(i.id))
           const phaseAccent = allDone ? T.textDone
+            : moduleLocked ? T.textLocked
             : status === 'focus' ? '#fbbf24'
             : T.accent
 
@@ -210,14 +224,16 @@ export function LearningRoadmap({
                 {/* Phase marker */}
                 <div style={{
                   width: 28, height: 28, borderRadius: '50%', flexShrink: 0, zIndex: 1, marginTop: 14,
-                  border: `1px solid ${allDone ? T.doneBorder : T.borderFocus}`,
-                  background: allDone ? T.done : T.surface,
+                  border: `1px solid ${allDone ? T.doneBorder : moduleLocked ? T.lockedBorder : T.borderFocus}`,
+                  background: allDone ? T.done : moduleLocked ? T.locked : T.surface,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: allDone ? `0 0 8px ${T.doneBorder}` : 'none',
                 }}>
                   {allDone
                     ? <CheckCircle size={14} weight="fill" style={{ color: T.textDone }} />
-                    : <span style={{ fontSize: 10, fontWeight: 700, color: phaseAccent }}>{month}</span>}
+                    : moduleLocked
+                    ? <Lock size={14} style={{ color: T.textLocked }} />
+                    : <span style={{ fontSize: 10, fontWeight: 700, fontFamily: T.fontMono, color: phaseAccent }}>{month}</span>}
                 </div>
                 {/* Connecting line to next phase */}
                 {monthIdx < 3 && (
@@ -233,6 +249,7 @@ export function LearningRoadmap({
               <div style={{ flex: 1, paddingLeft: 16, paddingBottom: monthIdx < 3 ? 0 : 24, paddingTop: 8 }}>
                 {/* Phase header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
+                  {moduleLocked && <Lock size={12} style={{ color: T.textLocked, flexShrink: 0 }} />}
                   <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.02em', color: phaseAccent }}>
                     Month {month} — {MONTH_NAMES[month - 1]}
                   </span>
@@ -246,7 +263,7 @@ export function LearningRoadmap({
                       FOCUS AREA
                     </span>
                   )}
-                  <span style={{ marginLeft: 'auto', fontSize: 10, color: T.textSub, fontWeight: 600 }}>
+                  <span style={{ marginLeft: 'auto', fontSize: 10, color: T.textSub, fontWeight: 600, fontFamily: T.fontMono }}>
                     {done}/{items.length}
                   </span>
                 </div>
@@ -283,7 +300,8 @@ export function LearningRoadmap({
                             background: bgColor,
                             padding: '10px 14px',
                             cursor: unlocked && onToggleItem ? 'pointer' : 'default',
-                            opacity: unlocked ? 1 : 0.4,
+                            opacity: unlocked ? 1 : 0.3,
+                            filter: unlocked ? 'none' : 'grayscale(1)',
                             pointerEvents: unlocked ? 'auto' : 'none',
                             transition: 'background 0.15s, border-color 0.15s',
                           }}
@@ -327,13 +345,13 @@ export function LearningRoadmap({
                                   </span>
                                 )}
                               </div>
-                              <p style={{ fontSize: 11, color: T.textSub, lineHeight: 1.6, marginBottom: itemHasNote ? 8 : 0 }}>
+                              <p style={{ fontSize: 11, color: T.textSub, lineHeight: 1.6, marginBottom: itemHasNote ? 8 : 0, fontFamily: T.fontSans }}>
                                 {item.description}
                               </p>
 
                               {/* Note preview */}
                               {itemHasNote && itemNoteData && (
-                                <div style={{ padding: '6px 10px', background: 'var(--muted)', border: '1px solid var(--border)', borderRadius: 5, marginBottom: 4 }}>
+                                <div style={{ padding: '6px 10px', background: T.surface, border: `1px solid ${T.border}`, borderRadius: 5, marginBottom: 4 }}>
                                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
                                     <Note size={11} style={{ color: T.accent, flexShrink: 0, marginTop: 1 }} weight="fill" />
                                     <span style={{ fontSize: 10, color: T.textSub, lineHeight: 1.5, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>

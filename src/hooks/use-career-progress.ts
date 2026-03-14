@@ -31,13 +31,23 @@ export function useCareerProgress(roleId: string) {
   }
 
   /**
-   * An item is unlocked when all items with a lower sortOrder in the same month
-   * are already completed. The first item in each month is always unlocked.
+   * An item is unlocked when:
+   * - First item of month N > 1: all items in month N-1 are complete
+   * - Otherwise: all lower-sortOrder items in the same month are complete
+   * Pass allSyllabus to enable cross-month gating.
    */
-  const isUnlocked = (item: SyllabusItem, allMonthItems: SyllabusItem[]) => {
+  const isUnlocked = (item: SyllabusItem, allMonthItems: SyllabusItem[], allSyllabus?: SyllabusItem[]) => {
     const sorted = [...allMonthItems].sort((a, b) => a.sortOrder - b.sortOrder)
     const idx = sorted.findIndex(i => i.id === item.id)
-    if (idx <= 0) return true
+    if (idx === 0) {
+      if (item.month === 1) return true
+      if (allSyllabus) {
+        const prevMonth = (item.month - 1) as 1 | 2 | 3 | 4
+        const prevItems = allSyllabus.filter(i => i.month === prevMonth)
+        return prevItems.every(prev => safeProgress.completedItems[prev.id] === true)
+      }
+      return true
+    }
     return sorted.slice(0, idx).every(prev => safeProgress.completedItems[prev.id] === true)
   }
 

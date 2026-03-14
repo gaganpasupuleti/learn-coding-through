@@ -1,5 +1,4 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   ArrowLeft,
   Brain,
@@ -56,9 +55,10 @@ export function CareerMapperPage() {
       return s ? (JSON.parse(s) as CareerRole) : null
     } catch { return null }
   })
-  const [activeTab, setActiveTab]   = useState<'flow' | 'roadmap' | 'insights'>('flow')
-  const [analyzerOpen, setAnalyzerOpen] = useState(false)
-  const [isLoading, setIsLoading]   = useState(true)
+  const [flowModalOpen, setFlowModalOpen]         = useState(false)
+  const [insightsPanelOpen, setInsightsPanelOpen] = useState(false)
+  const [analyzerOpen, setAnalyzerOpen]           = useState(false)
+  const [isLoading, setIsLoading]                 = useState(true)
 
   const { progress, toggleItem } = useCareerProgress(selectedRole?.id ?? 'none')
   const { skillReports, getReport } = useSkillAssessments()
@@ -99,7 +99,8 @@ export function CareerMapperPage() {
   const chooseRole = (role: CareerRole) => {
     setSelectedRole(role)
     localStorage.setItem(SELECTED_ROLE_KEY, JSON.stringify(role))
-    setActiveTab('flow')
+    setInsightsPanelOpen(false)
+    setFlowModalOpen(false)
   }
 
   const clearRole = () => {
@@ -252,114 +253,143 @@ export function CareerMapperPage() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={v => setActiveTab(v as typeof activeTab)}>
-          <TabsList className="mb-5" style={{ background: STYLE.surface, border: `1px solid ${STYLE.border}` }}>
-            <TabsTrigger value="flow"    className="gap-2 text-xs"><MapTrifold size={13} />Flow Chart</TabsTrigger>
-            <TabsTrigger value="roadmap" className="gap-2 text-xs"><ChartLine  size={13} />Roadmap</TabsTrigger>
-            <TabsTrigger value="insights" className="gap-2 text-xs"><Brain     size={13} />AI Insights</TabsTrigger>
-          </TabsList>
+        {/* View mode toggle row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, gap: 12, flexWrap: 'wrap' }}>
+          {/* Pill toggle */}
+          <div style={{ display: 'flex', background: STYLE.surface, border: `1px solid ${STYLE.border}`, borderRadius: 8, padding: 3, gap: 2 }}>
+            <button type="button"
+              style={{ padding: '6px 14px', borderRadius: 6, border: 'none', cursor: 'default',
+                background: STYLE.accent, color: '#fff',
+                fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
+              <MapTrifold size={12} /> Roadmap
+            </button>
+            <button type="button" onClick={() => setFlowModalOpen(true)}
+              style={{ padding: '6px 14px', borderRadius: 6, border: 'none', cursor: 'pointer',
+                background: 'transparent', color: STYLE.sub,
+                fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5,
+                transition: 'color 0.15s' }}>
+              <ChartLine size={12} /> 3D Map ↗
+            </button>
+          </div>
+          {/* AI Insights toggle */}
+          <button type="button" onClick={() => setInsightsPanelOpen(v => !v)}
+            style={{ border: `1px solid ${insightsPanelOpen ? STYLE.accent : STYLE.border}`, borderRadius: 6,
+              padding: '6px 14px', background: 'transparent',
+              color: insightsPanelOpen ? STYLE.accent : STYLE.sub,
+              fontSize: 11, fontWeight: 700, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.15s' }}>
+            <Brain size={12} /> AI Insights
+          </button>
+        </div>
 
-          <TabsContent value="flow">
-            <FlowChart3D role={selectedRole} completedItems={completedSet} />
-          </TabsContent>
-
-          <TabsContent value="roadmap">
-            <LearningRoadmap
-              role={selectedRole}
-              completedItems={completedSet}
-              isAuthenticated={true}
-              canSkipMonths={currentReport?.canSkipMonths}
-              focusMonths={currentReport?.focusMonths}
-              onToggleItem={toggleItem}
-            />
-          </TabsContent>
-
-          <TabsContent value="insights">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              {/* Skill Gap CTA */}
-              <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: '16px 20px', background: STYLE.surface }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: STYLE.txt, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <MagnifyingGlass size={14} style={{ color: STYLE.accent }} />
-                      Skill Gap Analysis
-                    </div>
-                    <p style={{ fontSize: 11, color: STYLE.sub }}>
-                      {currentReport
-                        ? 'Your personalised skill report is ready. Re-run to refresh.'
-                        : 'Answer a few questions to get a personalised skill gap report and AI recommendations.'}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setAnalyzerOpen(true)}
-                    style={{ border: `1px solid ${STYLE.accent}`, borderRadius: 6, padding: '7px 14px', background: 'transparent',
-                      color: STYLE.accent, fontSize: 11, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Sparkle size={12} />
-                    {currentReport ? 'Re-run Assessment' : 'Start Assessment'}
-                  </button>
-                </div>
-                {currentReport && (
-                  <div style={{ marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {[
-                      { label: `${profCount} Proficient`, color: '#4ade80', border: '#166534' },
-                      { label: `${partCount} Partial`,    color: '#fbbf24', border: '#78350f' },
-                      { label: `${noneCount} To Learn`,   color: '#f87171', border: '#7f1d1d' },
-                    ].map(({ label, color, border }) => (
-                      <span key={label} style={{ fontSize: 10, color, border: `1px solid ${border}`, borderRadius: 4, padding: '2px 8px' }}>
-                        {label}
-                      </span>
-                    ))}
-                    {currentReport.canSkipMonths.length > 0 && (
-                      <span style={{ fontSize: 10, color: '#818cf8', border: '1px solid #3730a3', borderRadius: 4, padding: '2px 8px' }}>
-                        Skip Month {currentReport.canSkipMonths.join(', ')}
-                      </span>
-                    )}
-                    <span style={{ marginLeft: 'auto', fontSize: 10, color: STYLE.sub }}>
-                      {currentReport.overallReadiness}% ready
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* ML Career Matches */}
-              {topRecos.length > 0 && (
+        {/* AI Insights collapsible panel */}
+        {insightsPanelOpen && (
+          <div style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: '16px 20px', background: STYLE.surface }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: STYLE.txt, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Brain size={14} style={{ color: STYLE.accent }} />
-                    Top Career Matches
+                  <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: STYLE.txt, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <MagnifyingGlass size={14} style={{ color: STYLE.accent }} />
+                    Skill Gap Analysis
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
-                    {topRecos.map((reco, idx) => {
-                      const matched = roles.find(r => r.id === reco.roleId)
-                      if (!matched) return null
-                      return (
-                        <MLCareerRecommendationCard
-                          key={reco.roleId}
-                          recommendation={reco}
-                          role={matched}
-                          rank={idx + 1}
-                          onView={() => chooseRole(matched)}
-                        />
-                      )
-                    })}
-                  </div>
+                  <p style={{ fontSize: 11, color: STYLE.sub }}>
+                    {currentReport
+                      ? 'Your personalised skill report is ready. Re-run to refresh.'
+                      : 'Answer a few questions to get a personalised skill gap report and AI recommendations.'}
+                  </p>
                 </div>
-              )}
-
-              {topRecos.length === 0 && !currentReport && (
-                <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: 40, textAlign: 'center', background: STYLE.surface }}>
-                  <Brain size={40} style={{ color: STYLE.border, margin: '0 auto 12px' }} />
-                  <p style={{ fontSize: 12, color: STYLE.sub }}>Run the skill assessment above to generate personalised career recommendations.</p>
+                <button type="button" onClick={() => setAnalyzerOpen(true)}
+                  style={{ border: `1px solid ${STYLE.accent}`, borderRadius: 6, padding: '7px 14px', background: 'transparent',
+                    color: STYLE.accent, fontSize: 11, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Sparkle size={12} />
+                  {currentReport ? 'Re-run Assessment' : 'Start Assessment'}
+                </button>
+              </div>
+              {currentReport && (
+                <div style={{ marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {[
+                    { label: `${profCount} Proficient`, color: '#4ade80', border: '#166534' },
+                    { label: `${partCount} Partial`,    color: '#fbbf24', border: '#78350f' },
+                    { label: `${noneCount} To Learn`,   color: '#f87171', border: '#7f1d1d' },
+                  ].map(({ label, color, border }) => (
+                    <span key={label} style={{ fontSize: 10, color, border: `1px solid ${border}`, borderRadius: 4, padding: '2px 8px' }}>
+                      {label}
+                    </span>
+                  ))}
+                  {currentReport.canSkipMonths.length > 0 && (
+                    <span style={{ fontSize: 10, color: '#818cf8', border: '1px solid #3730a3', borderRadius: 4, padding: '2px 8px' }}>
+                      Skip Month {currentReport.canSkipMonths.join(', ')}
+                    </span>
+                  )}
+                  <span style={{ marginLeft: 'auto', fontSize: 10, color: STYLE.sub }}>
+                    {currentReport.overallReadiness}% ready
+                  </span>
                 </div>
               )}
             </div>
-          </TabsContent>
-        </Tabs>
+
+            {topRecos.length > 0 && (
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: STYLE.txt, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Brain size={14} style={{ color: STYLE.accent }} />
+                  Top Career Matches
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
+                  {topRecos.map((reco, idx) => {
+                    const matched = roles.find(r => r.id === reco.roleId)
+                    if (!matched) return null
+                    return (
+                      <MLCareerRecommendationCard
+                        key={reco.roleId}
+                        recommendation={reco}
+                        role={matched}
+                        rank={idx + 1}
+                        onView={() => chooseRole(matched)}
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {topRecos.length === 0 && !currentReport && (
+              <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: 40, textAlign: 'center', background: STYLE.surface }}>
+                <Brain size={40} style={{ color: STYLE.border, margin: '0 auto 12px' }} />
+                <p style={{ fontSize: 12, color: STYLE.sub }}>Run the skill assessment above to generate personalised career recommendations.</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Primary view: Learning Roadmap */}
+        <LearningRoadmap
+          role={selectedRole}
+          completedItems={completedSet}
+          isAuthenticated={true}
+          canSkipMonths={currentReport?.canSkipMonths}
+          focusMonths={currentReport?.focusMonths}
+          onToggleItem={toggleItem}
+        />
 
         <SkillGapAnalyzer role={selectedRole} open={analyzerOpen} onOpenChange={handleAnalyzerClose} />
       </div>
+
+      {/* 3D Flowchart full-screen modal */}
+      {flowModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#0b0b0b', overflow: 'auto', padding: 24 }}>
+          <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+            <button type="button" onClick={() => setFlowModalOpen(false)}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none',
+                color: '#64748b', fontSize: 11, cursor: 'pointer', marginBottom: 20, padding: 0 }}>
+              <ArrowLeft size={13} /> Back to Roadmap
+            </button>
+            <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.02em', color: '#e2e8f0', marginBottom: 20 }}>
+              {selectedRole.title} · 3D Course Map
+            </div>
+            <FlowChart3D role={selectedRole} completedItems={completedSet} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
