@@ -19,9 +19,9 @@ interface HierarchyNode {
 
 // ── Palette ─────────────────────────────────────────────────────────────────
 const C = {
-  bg:         'var(--background)',
-  surface:    'var(--card)',
-  border:     'var(--border)',
+  bg:         '#0b0b0b',
+  surface:    '#111118',
+  border:     'rgba(255,255,255,0.08)',
   courseFrom: '#1a1a2e',
   courseTo:   '#16213e',
   courseBorder:'#3b3b5c',
@@ -42,10 +42,11 @@ const C = {
   milestoneText:'#fbbf24',
   lineDefault:'#2a2a3d',
   lineDone:   '#166534',
-  textPrimary:'var(--foreground)',
-  textSub:    'var(--muted-foreground)',
+  textPrimary:'#ffffff',
+  textSub:    '#9ca3af',
   textDone:   '#4ade80',
   glowColor:  '#818cf8',
+  fontMono:   "'JetBrains Mono', monospace",
 } as const
 
 export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
@@ -80,7 +81,7 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
     const conns: React.ReactElement[] = []
 
     // Course root node
-    const cX = 60, cY = 60, cW = 220, cH = 90
+    const cX = 60, cY = 60, cW = 235, cH = 100
     const isHovered = (id: string) => hoveredNode?.id === id
 
     nodes.push(
@@ -92,13 +93,13 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
         )}
         <rect x={cX} y={cY} width={cW} height={cH} rx={14}
           fill={`url(#courseGrad)`} stroke={C.courseBorder} strokeWidth={1} />
-        <foreignObject x={cX + 16} y={cY + 14} width={cW - 32} height={cH - 28}
+        <foreignObject x={cX + 10} y={cY + 10} width={cW - 20} height={cH - 20}
           style={{ pointerEvents: 'none' }}>
-          <div style={{ fontFamily: 'inherit' }}>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: C.textSub, marginBottom: 4 }}>
-              COURSE
+          <div style={{ fontFamily: C.fontMono, background: 'rgba(0,0,0,0.5)', borderRadius: 8, padding: '8px 10px', boxSizing: 'border-box', height: '100%' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', color: C.textSub, marginBottom: 5, textTransform: 'uppercase' }}>
+              Course
             </div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: C.textPrimary, lineHeight: 1.3 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#ffffff', lineHeight: 1.25, textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
               {role.title}
             </div>
           </div>
@@ -107,7 +108,7 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
     )
 
     const monthStartY = 220
-    const mX = 110, mW = 140, mH = 75, mSpacing = 44
+    const mX = 110, mW = 150, mH = 82, mSpacing = 44
     let currentY = monthStartY
 
     ;([1, 2, 3, 4] as const).forEach((month) => {
@@ -123,7 +124,7 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
           x1={cX + cW / 2} y1={cY + cH}
           x2={mX + mW / 2} y2={mY}
           stroke={allDone ? C.lineDone : C.lineDefault}
-          strokeWidth={1} opacity={0.7}
+          strokeWidth={1} opacity={0.18}
           markerEnd={`url(#arr-${allDone ? 'done' : 'def'})`} />
       )
 
@@ -139,16 +140,16 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
           <rect x={mX} y={mY} width={mW} height={mH} rx={10}
             fill={allDone ? C.done : C.month}
             stroke={allDone ? C.doneBorder : C.monthBorder} strokeWidth={1} />
-          <foreignObject x={mX + 12} y={mY + 10} width={mW - 24} height={mH - 20}
+          <foreignObject x={mX + 8} y={mY + 8} width={mW - 16} height={mH - 16}
             style={{ pointerEvents: 'none' }}>
-            <div style={{ fontFamily: 'inherit' }}>
-              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: allDone ? C.doneText : C.textSub, marginBottom: 3 }}>
-                MONTH {month}
+            <div style={{ fontFamily: C.fontMono, background: 'rgba(0,0,0,0.5)', borderRadius: 6, padding: '6px 8px', boxSizing: 'border-box', height: '100%' }}>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', color: allDone ? C.doneText : C.textSub, marginBottom: 3, textTransform: 'uppercase' }}>
+                Month {month}
               </div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: allDone ? C.doneText : C.textPrimary }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: allDone ? C.doneText : '#ffffff', textShadow: '0 1px 4px rgba(0,0,0,0.9)', marginBottom: 2 }}>
                 {doneCount}/{items.length} done
               </div>
-              <div style={{ fontSize: 10, color: C.textSub, marginTop: 3 }}>
+              <div style={{ fontSize: 9, color: C.textSub, letterSpacing: '0.06em' }}>
                 {isExpanded ? '▼ collapse' : '▶ expand'}
               </div>
             </div>
@@ -158,7 +159,7 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
 
       if (isExpanded) {
         const weeks = getWeeksByMonth(month)
-        const wStartX = mX + mW + 110, wW = 150, wH = 64, wSpacing = 36
+        const wStartX = mX + mW + 110, wW = 160, wH = 70, wSpacing = 36
 
         weeks.forEach(([weekNum, weekItems], wIdx) => {
           const wY = mY + wIdx * (wH + wSpacing)
@@ -171,7 +172,7 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
               x1={mX + mW} y1={mY + mH / 2}
               x2={wStartX} y2={wY + wH / 2}
               stroke={allWDone ? C.lineDone : C.lineDefault}
-              strokeWidth={1} opacity={0.5}
+              strokeWidth={1} opacity={0.2}
               markerEnd={`url(#arr-${allWDone ? 'done' : 'def'})`} />
           )
 
@@ -187,13 +188,13 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
               <rect x={wStartX} y={wY} width={wW} height={wH} rx={7}
                 fill={allWDone ? C.done : C.week}
                 stroke={allWDone ? C.doneBorder : C.weekBorder} strokeWidth={1} />
-              <foreignObject x={wStartX + 10} y={wY + 10} width={wW - 20} height={wH - 20}
+              <foreignObject x={wStartX + 8} y={wY + 8} width={wW - 16} height={wH - 16}
                 style={{ pointerEvents: 'none' }}>
-                <div style={{ fontFamily: 'inherit' }}>
-                  <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: allWDone ? C.doneText : C.textSub, marginBottom: 3 }}>
-                    WEEK {weekNum}
+                <div style={{ fontFamily: C.fontMono, background: 'rgba(0,0,0,0.5)', borderRadius: 5, padding: '5px 8px', boxSizing: 'border-box', height: '100%' }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', color: allWDone ? C.doneText : C.textSub, marginBottom: 3, textTransform: 'uppercase' }}>
+                    Week {weekNum}
                   </div>
-                  <div style={{ fontSize: 11, color: allWDone ? C.doneText : C.textPrimary }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: allWDone ? C.doneText : '#ffffff', textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>
                     {wDone}/{weekItems.length} topics
                   </div>
                 </div>
@@ -201,7 +202,7 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
             </g>
           )
 
-          const tStartX = wStartX + wW + 90, tW = 175, tH = 56, tSpacing = 18
+          const tStartX = wStartX + wW + 90, tW = 185, tH = 64, tSpacing = 20
 
           weekItems.forEach((item, tIdx) => {
             const tY = wY + tIdx * (tH + tSpacing) - ((weekItems.length - 1) * (tH + tSpacing)) / 2
@@ -219,7 +220,7 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
                 x1={wStartX + wW} y1={wY + wH / 2}
                 x2={tStartX} y2={tY + tH / 2}
                 stroke={done ? C.lineDone : C.lineDefault}
-                strokeWidth={1} opacity={0.4}
+                strokeWidth={1} opacity={0.15}
                 markerEnd={`url(#arr-${done ? 'done' : 'def'})`} />
             )
 
@@ -235,14 +236,15 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
                 )}
                 <rect x={tStartX} y={tY} width={tW} height={tH} rx={7}
                   fill={fill} stroke={border} strokeWidth={1} />
-                <foreignObject x={tStartX + 10} y={tY + 9} width={tW - 20} height={tH - 18}
+                <foreignObject x={tStartX + 8} y={tY + 7} width={tW - 16} height={tH - 14}
                   style={{ pointerEvents: 'none' }}>
-                  <div style={{ fontFamily: 'inherit' }}>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: txtCol, lineHeight: 1.3,
-                      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  <div style={{ fontFamily: C.fontMono, background: 'rgba(0,0,0,0.5)', borderRadius: 5, padding: '5px 8px', boxSizing: 'border-box', height: '100%' }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: txtCol, lineHeight: 1.3,
+                      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                      textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>
                       {item.title}
                     </div>
-                    <div style={{ fontSize: 9, color: C.textSub, marginTop: 3, textTransform: 'capitalize', letterSpacing: '0.05em' }}>
+                    <div style={{ fontSize: 9, color: C.textSub, marginTop: 2, textTransform: 'capitalize', letterSpacing: '0.08em' }}>
                       {item.type}
                     </div>
                   </div>
