@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -16,7 +16,7 @@ import {
   Eye,
   Rocket
 } from '@phosphor-icons/react'
-import { Project, Step } from '@/lib/projects'
+import { CatalogProject, CatalogProjectStep, fetchCatalogProject } from '@/lib/api'
 import { DigitalClockPreview } from '@/components/previews/DigitalClockPreview'
 import { CalculatorPreview } from '@/components/previews/CalculatorPreview'
 import { TemperatureConverterPreview } from '@/components/previews/TemperatureConverterPreview'
@@ -33,14 +33,40 @@ import { projectBuilderConfigs } from '@/lib/project-builder-configs'
 import { ProjectStepWalkthrough } from '@/components/project/ProjectStepWalkthrough'
 
 interface ProjectLearningPageProps {
-  project: Project
+  projectId: string
   onBack: () => void
 }
 
-export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProps) {
+export function ProjectLearningPage({ projectId, onBack }: ProjectLearningPageProps) {
+  const [project, setProject] = useState<CatalogProject | null>(null)
+  const [loading, setLoading] = useState(true)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
   const [viewMode, setViewMode] = useState<'tutorial' | 'builder'>('tutorial')
+
+  useEffect(() => {
+    setLoading(true)
+    fetchCatalogProject(projectId)
+      .then(setProject)
+      .catch(() => setProject(null))
+      .finally(() => setLoading(false))
+  }, [projectId])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center">
+        <p className="text-muted-foreground">Loading project...</p>
+      </div>
+    )
+  }
+
+  if (!project) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center">
+        <p className="text-muted-foreground">Project not found.</p>
+      </div>
+    )
+  }
 
   const currentStep = project.steps[currentStepIndex]
   const isFirstStep = currentStepIndex === 0
@@ -71,7 +97,7 @@ export function ProjectLearningPage({ project, onBack }: ProjectLearningPageProp
     onBack()
   }
 
-  const getStepIcon = (step: Step) => {
+  const getStepIcon = (step: CatalogProjectStep) => {
     switch (step.type) {
       case 'understanding': return <Brain size={20} weight="duotone" />
       case 'logic': return <ListChecks size={20} weight="duotone" />

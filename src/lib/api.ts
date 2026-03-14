@@ -357,3 +357,121 @@ export async function updateAdminStudent(
   })
   return parseOrThrow(response) as Promise<AdminStudent>
 }
+
+// ── Catalog types ──────────────────────────────────────────────────────────────
+
+export type CatalogQuizQuestionType =
+  | 'multiple-choice'
+  | 'true-false'
+  | 'code-completion'
+  | 'code-output'
+
+interface CatalogBaseQuestion {
+  id: number
+  type: CatalogQuizQuestionType
+  title: string
+  prompt: string
+  explanation: string
+  code?: string | null
+  language?: string | null
+}
+
+export interface CatalogChoiceQuestion extends CatalogBaseQuestion {
+  type: 'multiple-choice' | 'true-false'
+  options: string[]
+  correctIndex: number
+}
+
+export interface CatalogCodeCompletionQuestion extends CatalogBaseQuestion {
+  type: 'code-completion'
+  answer: string
+  acceptableAnswers?: string[] | null
+}
+
+export interface CatalogCodeOutputQuestion extends CatalogBaseQuestion {
+  type: 'code-output'
+  expectedOutput: string
+}
+
+export type CatalogQuizQuestion =
+  | CatalogChoiceQuestion
+  | CatalogCodeCompletionQuestion
+  | CatalogCodeOutputQuestion
+
+export interface CatalogQuiz {
+  id: string
+  title: string
+  description: string
+  difficulty: 'beginner'
+  estimatedTime: string
+  questions: CatalogQuizQuestion[]
+}
+
+export interface CatalogQuizSummary {
+  id: string
+  title: string
+  description: string
+  difficulty: 'beginner'
+  estimatedTime: string
+  questionCount: number
+}
+
+export interface CatalogProjectStepContent {
+  description?: string | null
+  points?: string[] | null
+  code?: string | null
+  language?: string | null
+  challenge?: string | null
+  hint?: string | null
+  walkthroughGif?: string | null
+  walkthroughCaption?: string | null
+}
+
+export interface CatalogProjectStep {
+  id: number
+  title: string
+  type: 'understanding' | 'logic' | 'code' | 'preview' | 'challenge'
+  content: CatalogProjectStepContent
+}
+
+export interface CatalogProject {
+  id: string
+  title: string
+  description: string
+  shortDescription: string
+  difficulty: 'beginner'
+  estimatedTime: string
+  steps: CatalogProjectStep[]
+}
+
+export interface CatalogProjectSummary {
+  id: string
+  title: string
+  description: string
+  shortDescription: string
+  difficulty: 'beginner'
+  estimatedTime: string
+  stepCount: number
+}
+
+// ── Catalog fetch functions ────────────────────────────────────────────────────
+
+export async function fetchCatalogQuizzes(): Promise<CatalogQuizSummary[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/quiz/catalog`)
+  return parseOrThrow(response) as Promise<CatalogQuizSummary[]>
+}
+
+export async function fetchCatalogQuiz(slug: string): Promise<CatalogQuiz> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/quiz/catalog/${encodeURIComponent(slug)}`)
+  return parseOrThrow(response) as Promise<CatalogQuiz>
+}
+
+export async function fetchCatalogProjects(): Promise<CatalogProjectSummary[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/projects/catalog`)
+  return parseOrThrow(response) as Promise<CatalogProjectSummary[]>
+}
+
+export async function fetchCatalogProject(slug: string): Promise<CatalogProject> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/projects/catalog/${encodeURIComponent(slug)}`)
+  return parseOrThrow(response) as Promise<CatalogProject>
+}
