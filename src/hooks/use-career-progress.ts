@@ -23,6 +23,18 @@ export function useCareerProgress(roleId: string) {
     })
   }
 
+  const markComplete = (itemId: string) => {
+    setProgress(current => {
+      const cp = current || safeProgress
+      if (cp.completedItems[itemId] === true) return cp
+      return {
+        ...cp,
+        completedItems: { ...cp.completedItems, [itemId]: true },
+        lastUpdated: new Date().toISOString(),
+      }
+    })
+  }
+
   const isCompleted = (itemId: string) => safeProgress.completedItems[itemId] || false
 
   const getCompletionPercentage = (totalItems: number) => {
@@ -54,6 +66,7 @@ export function useCareerProgress(roleId: string) {
   return {
     progress: safeProgress,
     toggleItem,
+    markComplete,
     isCompleted,
     isUnlocked,
     getCompletionPercentage

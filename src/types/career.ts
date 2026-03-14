@@ -11,6 +11,8 @@ export interface SyllabusItem {
   description: string
   type: ItemType
   sortOrder: number
+  quizId?: string
+  projectId?: string
 }
 
 export interface CareerRole {

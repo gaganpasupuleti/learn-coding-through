@@ -21,6 +21,8 @@ import { FlowChart3D } from './FlowChart3D'
 import { LearningRoadmap } from './LearningRoadmap'
 import { SkillGapAnalyzer } from './SkillGapAnalyzer'
 import { MLCareerRecommendationCard } from './MLRecommendationCard'
+import { QuizPage } from '@/components/pages/QuizPage'
+import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
 
 const SELECTED_ROLE_KEY = 'career-mapper-selected-role'
 
@@ -60,7 +62,14 @@ export function CareerMapperPage() {
   const [analyzerOpen, setAnalyzerOpen]           = useState(false)
   const [isLoading, setIsLoading]                 = useState(true)
 
-  const { progress, toggleItem } = useCareerProgress(selectedRole?.id ?? 'none')
+  // Sub-view routing (quiz / project) inside the mapper frame
+  type MapperSubView = 'roadmap' | 'quiz' | 'project'
+  const [subView, setSubView]                         = useState<MapperSubView>('roadmap')
+  const [activeQuizId, setActiveQuizId]               = useState<string | null>(null)
+  const [activeProjectId, setActiveProjectId]         = useState<string | null>(null)
+  const [pendingCompleteItemId, setPendingCompleteItemId] = useState<string | null>(null)
+
+  const { progress, toggleItem, markComplete } = useCareerProgress(selectedRole?.id ?? 'none')
   const { skillReports, getReport } = useSkillAssessments()
   const { generateAllCareerRecommendations, getTopCareerRecommendations } = useMLRecommendations()
 
@@ -114,6 +123,35 @@ export function CareerMapperPage() {
       const report = getReport(selectedRole.id)
       if (report) generateAllCareerRecommendations(roles, Object.values(skillReports))
     }
+  }
+
+  const openQuiz = (quizId: string, itemId?: string) => {
+    setActiveQuizId(quizId)
+    setPendingCompleteItemId(itemId ?? null)
+    setSubView('quiz')
+  }
+
+  const openProject = (projectId: string, itemId?: string) => {
+    setActiveProjectId(projectId)
+    setPendingCompleteItemId(itemId ?? null)
+    setSubView('project')
+  }
+
+  const handleSubViewBack = () => {
+    setSubView('roadmap')
+    setActiveQuizId(null)
+    setActiveProjectId(null)
+    setPendingCompleteItemId(null)
+  }
+
+  const handleSubViewComplete = (passed?: boolean) => {
+    if (pendingCompleteItemId) markComplete(pendingCompleteItemId)
+    if (passed !== undefined) {
+      toast.success(passed ? 'Quiz passed! Item marked complete.' : 'Quiz finished. Keep practising!')
+    } else {
+      toast.success('Project complete! Item marked complete.')
+    }
+    handleSubViewBack()
   }
 
   // ── Role grid ──────────────────────────────────────────────────────────────
@@ -361,15 +399,33 @@ export function CareerMapperPage() {
           </div>
         )}
 
-        {/* Primary view: Learning Roadmap */}
-        <LearningRoadmap
-          role={selectedRole}
-          completedItems={completedSet}
-          isAuthenticated={true}
-          canSkipMonths={currentReport?.canSkipMonths}
-          focusMonths={currentReport?.focusMonths}
-          onToggleItem={toggleItem}
-        />
+        {/* Primary view: sub-view routing */}
+        {subView === 'quiz' && activeQuizId && (
+          <QuizPage
+            initialQuizId={activeQuizId}
+            onBack={handleSubViewBack}
+            onComplete={(passed) => handleSubViewComplete(passed)}
+          />
+        )}
+        {subView === 'project' && activeProjectId && (
+          <ProjectLearningPage
+            projectId={activeProjectId}
+            onBack={handleSubViewBack}
+            onComplete={() => handleSubViewComplete()}
+          />
+        )}
+        {subView === 'roadmap' && (
+          <LearningRoadmap
+            role={selectedRole}
+            completedItems={completedSet}
+            isAuthenticated={true}
+            canSkipMonths={currentReport?.canSkipMonths}
+            focusMonths={currentReport?.focusMonths}
+            onToggleItem={toggleItem}
+            onOpenQuiz={openQuiz}
+            onOpenProject={openProject}
+          />
+        )}
 
         <SkillGapAnalyzer role={selectedRole} open={analyzerOpen} onOpenChange={handleAnalyzerClose} />
       </div>

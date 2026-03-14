@@ -35,9 +35,10 @@ import { ProjectStepWalkthrough } from '@/components/project/ProjectStepWalkthro
 interface ProjectLearningPageProps {
   projectId: string
   onBack: () => void
+  onComplete?: () => void
 }
 
-export function ProjectLearningPage({ projectId, onBack }: ProjectLearningPageProps) {
+export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLearningPageProps) {
   const [project, setProject] = useState<CatalogProject | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
@@ -107,6 +108,7 @@ export function ProjectLearningPage({ projectId, onBack }: ProjectLearningPagePr
     if (!completedSteps.includes(currentStep.id)) {
       setCompletedSteps([...completedSteps, currentStep.id])
     }
+    onComplete?.()
     onBack()
   }
 

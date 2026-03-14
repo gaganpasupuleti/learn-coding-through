@@ -101,12 +101,18 @@ interface QuizPageProps {
   lockedQuizIds?: string[]
   /** Called before a quiz is selected; return false to block selection. */
   onBeforeSelect?: (quizId: string) => boolean
+  /** Pre-select a specific quiz by slug on mount. */
+  initialQuizId?: string
+  /** Called when the user clicks "Finish Quiz" on the last question. */
+  onComplete?: (passed: boolean) => void
+  /** Override the "back to list" action (e.g. navigate back to roadmap). */
+  onBack?: () => void
 }
 
-export function QuizPage({ lockedQuizIds = [], onBeforeSelect }: QuizPageProps = {}) {
+export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, onComplete, onBack }: QuizPageProps = {}) {
   const [quizList, setQuizList] = useState<CatalogQuizSummary[]>([])
   const [quizzesLoading, setQuizzesLoading] = useState(true)
-  const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null)
+  const [selectedQuizId, setSelectedQuizId] = useState<string | null>(initialQuizId ?? null)
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null)
   const [quizLoading, setQuizLoading] = useState(false)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -143,6 +149,7 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect }: QuizPageProps =
   }
 
   const handleBackToList = () => {
+    if (onBack) { onBack(); return }
     resetQuizState()
     setSelectedQuizId(null)
   }
@@ -547,7 +554,11 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect }: QuizPageProps =
                       <ArrowRight className="ml-2" size={16} />
                     </Button>
                   ) : (
-                    <Button onClick={handleBackToList} className="bg-primary hover:bg-primary/90">
+                    <Button onClick={() => {
+                      const passed = correctCount >= Math.ceil(selectedQuiz.questions.length * 0.6)
+                      onComplete?.(passed)
+                      handleBackToList()
+                    }} className="bg-primary hover:bg-primary/90">
                       Finish Quiz
                       <ArrowRight className="ml-2" size={16} />
                     </Button>

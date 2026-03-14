@@ -49,6 +49,8 @@ interface LearningRoadmapProps {
   focusMonths?: number[]
   compact?: boolean
   onToggleItem?: (itemId: string) => void
+  onOpenQuiz?: (quizId: string, itemId: string) => void
+  onOpenProject?: (projectId: string, itemId: string) => void
 }
 
 const MONTH_NAMES = ['Foundation', 'Build', 'Advanced', 'Career Ready']
@@ -68,6 +70,8 @@ export function LearningRoadmap({
   focusMonths = [],
   compact = false,
   onToggleItem,
+  onOpenQuiz,
+  onOpenProject,
 }: LearningRoadmapProps) {
   const [noteDialogOpen, setNoteDialogOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState<SyllabusItem | null>(null)
@@ -362,17 +366,37 @@ export function LearningRoadmap({
                               )}
                             </div>
 
-                            {/* Note button */}
+                            {/* Note button + action buttons */}
+                            <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
+                            {item.quizId && onOpenQuiz && (
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); onOpenQuiz(item.quizId!, item.id) }}
+                                style={{ background: 'transparent', border: `1px solid ${T.accentDim}`, borderRadius: 5, padding: '3px 7px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' }}
+                              >
+                                <span style={{ fontSize: 9, color: T.accent, letterSpacing: '0.03em' }}>QUIZ →</span>
+                              </button>
+                            )}
+                            {item.projectId && onOpenProject && (
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); onOpenProject(item.projectId!, item.id) }}
+                                style={{ background: 'transparent', border: '1px solid #7f1d1d', borderRadius: 5, padding: '3px 7px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' }}
+                              >
+                                <span style={{ fontSize: 9, color: '#f87171', letterSpacing: '0.03em' }}>BUILD →</span>
+                              </button>
+                            )}
                             {isAuthenticated && (
                               <button
                                 type="button"
                                 onClick={(e) => openNoteDialog(e, item)}
-                                style={{ flexShrink: 0, background: 'transparent', border: `1px solid ${T.border}`, borderRadius: 5, padding: '3px 7px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+                                style={{ background: 'transparent', border: `1px solid ${T.border}`, borderRadius: 5, padding: '3px 7px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
                               >
                                 <NotePencil size={11} style={{ color: T.textSub }} />
                                 <span style={{ fontSize: 9, color: T.textSub, letterSpacing: '0.03em' }}>{itemHasNote ? 'EDIT' : 'NOTE'}</span>
                               </button>
                             )}
+                            </div>
                           </div>
                         </div>
 

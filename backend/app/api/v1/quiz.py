@@ -93,8 +93,20 @@ class QuizSubmitResponse(BaseModel):
 
 
 @router.get("/{quiz_id}")
-def get_quiz(quiz_id: int, db: Session = Depends(get_db), _: User = Depends(get_current_user)):
-    quiz = db.query(Quiz).filter(Quiz.id == quiz_id).first()
+def get_quiz(quiz_id: str, db: Session = Depends(get_db)):
+    """Return a quiz by catalog slug or legacy integer ID."""
+    # Try catalog slug first (public, no auth)
+    catalog = db.query(QuizCatalog).filter_by(slug=quiz_id).first()
+    if catalog:
+        return get_quiz_catalog(quiz_id, db)
+
+    # Fall back to legacy integer ID
+    try:
+        qid = int(quiz_id)
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Quiz not found")
+
+    quiz = db.query(Quiz).filter(Quiz.id == qid).first()
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz not found")
 
