@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+﻿import { useState } from 'react'
 import type { CareerRole, SyllabusItem } from '@/types/career'
 
 interface FlowChart3DProps {
@@ -10,500 +8,347 @@ interface FlowChart3DProps {
 
 interface HierarchyNode {
   id: string
-  type: 'course' | 'month' | 'week' | 'topic'
   label: string
   x: number
   y: number
   width: number
   height: number
-  color: string
-  children?: HierarchyNode[]
   item?: SyllabusItem
   isCompleted?: boolean
 }
+
+// ── Dark palette ────────────────────────────────────────────────────────────
+const C = {
+  bg:         '#0b0b0b',
+  surface:    '#111111',
+  border:     '#1f1f1f',
+  courseFrom: '#1a1a2e',
+  courseTo:   '#16213e',
+  courseBorder:'#3b3b5c',
+  month:      '#0f1117',
+  monthBorder:'#2a2a3d',
+  week:       '#101014',
+  weekBorder: '#252530',
+  topic:      '#0d1117',
+  topicBorder:'#1e1e2e',
+  done:       '#052e16',
+  doneBorder: '#166534',
+  doneText:   '#4ade80',
+  deliver:    '#1a0a0a',
+  deliverBorder:'#7f1d1d',
+  deliverText:'#f87171',
+  milestone:  '#1a140a',
+  milestoneBorder:'#78350f',
+  milestoneText:'#fbbf24',
+  lineDefault:'#2a2a3d',
+  lineDone:   '#166534',
+  textPrimary:'#e2e8f0',
+  textSub:    '#64748b',
+  textDone:   '#4ade80',
+  glowColor:  '#818cf8',
+} as const
 
 export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
   const [hoveredNode, setHoveredNode] = useState<HierarchyNode | null>(null)
   const [expandedMonths, setExpandedMonths] = useState<Set<number>>(new Set([1]))
 
   const syllabusByMonth = {
-    1: role.syllabus.filter(item => item.month === 1).sort((a, b) => a.sortOrder - b.sortOrder),
-    2: role.syllabus.filter(item => item.month === 2).sort((a, b) => a.sortOrder - b.sortOrder),
-    3: role.syllabus.filter(item => item.month === 3).sort((a, b) => a.sortOrder - b.sortOrder),
-    4: role.syllabus.filter(item => item.month === 4).sort((a, b) => a.sortOrder - b.sortOrder)
+    1: role.syllabus.filter(i => i.month === 1).sort((a, b) => a.sortOrder - b.sortOrder),
+    2: role.syllabus.filter(i => i.month === 2).sort((a, b) => a.sortOrder - b.sortOrder),
+    3: role.syllabus.filter(i => i.month === 3).sort((a, b) => a.sortOrder - b.sortOrder),
+    4: role.syllabus.filter(i => i.month === 4).sort((a, b) => a.sortOrder - b.sortOrder),
   }
 
   const toggleMonth = (month: number) => {
-    const newExpanded = new Set(expandedMonths)
-    if (newExpanded.has(month)) {
-      newExpanded.delete(month)
-    } else {
-      newExpanded.add(month)
-    }
-    setExpandedMonths(newExpanded)
+    const s = new Set(expandedMonths)
+    s.has(month) ? s.delete(month) : s.add(month)
+    setExpandedMonths(s)
   }
 
   const getWeeksByMonth = (month: 1 | 2 | 3 | 4) => {
     const items = syllabusByMonth[month]
-    const weekMap = new Map<number, SyllabusItem[]>()
-    
+    const map = new Map<number, SyllabusItem[]>()
     items.forEach(item => {
-      if (!weekMap.has(item.week)) {
-        weekMap.set(item.week, [])
-      }
-      weekMap.get(item.week)!.push(item)
+      if (!map.has(item.week)) map.set(item.week, [])
+      map.get(item.week)!.push(item)
     })
-    
-    return Array.from(weekMap.entries()).sort((a, b) => a[0] - b[0])
+    return Array.from(map.entries()).sort((a, b) => a[0] - b[0])
   }
 
   const renderHierarchy = () => {
     const nodes: React.ReactElement[] = []
-    const connections: React.ReactElement[] = []
-    
-    const courseStartX = 50
-    const courseStartY = 50
-    const courseWidth = 200
-    const courseHeight = 100
-    
+    const conns: React.ReactElement[] = []
+
+    // Course root node
+    const cX = 60, cY = 60, cW = 220, cH = 90
+    const isHovered = (id: string) => hoveredNode?.id === id
+
     nodes.push(
       <g key="course-node">
-        <rect
-          x={courseStartX}
-          y={courseStartY}
-          width={courseWidth}
-          height={courseHeight}
-          rx={16}
-          fill="url(#courseGradient)"
-          stroke="#6366f1"
-          strokeWidth={3}
-          filter="url(#shadow)"
-        />
-        <foreignObject
-          x={courseStartX + 20}
-          y={courseStartY + 20}
-          width={courseWidth - 40}
-          height={courseHeight - 40}
-        >
-          <div className="flex flex-col justify-center h-full">
-            <div className="text-xs font-semibold text-white/80 mb-1">
+        {isHovered('__course__') && (
+          <rect x={cX - 4} y={cY - 4} width={cW + 8} height={cH + 8} rx={18}
+            fill="none" stroke={C.glowColor} strokeWidth={2} opacity={0.6}
+            filter="url(#glow)" />
+        )}
+        <rect x={cX} y={cY} width={cW} height={cH} rx={14}
+          fill={`url(#courseGrad)`} stroke={C.courseBorder} strokeWidth={1} />
+        <foreignObject x={cX + 16} y={cY + 14} width={cW - 32} height={cH - 28}
+          style={{ pointerEvents: 'none' }}>
+          <div style={{ fontFamily: 'inherit' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: C.textSub, marginBottom: 4 }}>
               COURSE
             </div>
-            <div className="text-base font-bold text-white leading-tight line-clamp-2">
+            <div style={{ fontSize: 13, fontWeight: 700, color: C.textPrimary, lineHeight: 1.3 }}>
               {role.title}
             </div>
           </div>
         </foreignObject>
       </g>
     )
-    
+
     const monthStartY = 220
-    const monthX = 100
-    const monthWidth = 140
-    const monthHeight = 80
-    const monthSpacing = 50
+    const mX = 110, mW = 140, mH = 75, mSpacing = 44
     let currentY = monthStartY
-    
+
     ;([1, 2, 3, 4] as const).forEach((month) => {
       const isExpanded = expandedMonths.has(month)
       const items = syllabusByMonth[month]
-      const completedCount = items.filter(item => completedItems.has(item.id)).length
-      const allCompleted = items.length > 0 && completedCount === items.length
-      
-      const monthY = currentY
-      
-      connections.push(
-        <line
-          key={`conn-course-month${month}`}
-          x1={courseStartX + courseWidth / 2}
-          y1={courseStartY + courseHeight}
-          x2={monthX + monthWidth / 2}
-          y2={monthY}
-          stroke={allCompleted ? '#10b981' : '#8b5cf6'}
-          strokeWidth={allCompleted ? 3 : 2}
-          opacity={0.6}
-          markerEnd={`url(#arrowhead-${allCompleted ? 'completed' : 'default'})`}
-        />
+      const doneCount = items.filter(i => completedItems.has(i.id)).length
+      const allDone = items.length > 0 && doneCount === items.length
+      const mY = currentY
+      const mHovered = isHovered(`__month_${month}__`)
+
+      conns.push(
+        <line key={`c-cm${month}`}
+          x1={cX + cW / 2} y1={cY + cH}
+          x2={mX + mW / 2} y2={mY}
+          stroke={allDone ? C.lineDone : C.lineDefault}
+          strokeWidth={1} opacity={0.7}
+          markerEnd={`url(#arr-${allDone ? 'done' : 'def'})`} />
       )
-      
+
       nodes.push(
-        <g
-          key={`month-${month}`}
-          onClick={() => toggleMonth(month)}
-          style={{ cursor: 'pointer' }}
-        >
-          <rect
-            x={monthX}
-            y={monthY}
-            width={monthWidth}
-            height={monthHeight}
-            rx={12}
-            fill={allCompleted ? '#10b981' : '#8b5cf6'}
-            stroke={allCompleted ? '#059669' : '#7c3aed'}
-            strokeWidth={2}
-            filter="url(#shadow)"
-          />
-          <foreignObject
-            x={monthX + 15}
-            y={monthY + 15}
-            width={monthWidth - 30}
-            height={monthHeight - 30}
-          >
-            <div className="flex flex-col justify-center h-full">
-              <div className="text-xs font-semibold text-white/90 mb-1">
+        <g key={`month-${month}`} onClick={() => toggleMonth(month)} style={{ cursor: 'pointer' }}
+          onMouseEnter={() => setHoveredNode({ id: `__month_${month}__`, label: `Month ${month}`, x: mX, y: mY, width: mW, height: mH })}
+          onMouseLeave={() => setHoveredNode(null)}>
+          {mHovered && (
+            <rect x={mX - 3} y={mY - 3} width={mW + 6} height={mH + 6} rx={12}
+              fill="none" stroke={C.glowColor} strokeWidth={1.5} opacity={0.5}
+              filter="url(#glow)" />
+          )}
+          <rect x={mX} y={mY} width={mW} height={mH} rx={10}
+            fill={allDone ? C.done : C.month}
+            stroke={allDone ? C.doneBorder : C.monthBorder} strokeWidth={1} />
+          <foreignObject x={mX + 12} y={mY + 10} width={mW - 24} height={mH - 20}
+            style={{ pointerEvents: 'none' }}>
+            <div style={{ fontFamily: 'inherit' }}>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: allDone ? C.doneText : C.textSub, marginBottom: 3 }}>
                 MONTH {month}
               </div>
-              <div className="text-sm font-bold text-white">
-                {completedCount}/{items.length} completed
+              <div style={{ fontSize: 12, fontWeight: 600, color: allDone ? C.doneText : C.textPrimary }}>
+                {doneCount}/{items.length} done
               </div>
-              <div className="text-xs text-white/80 mt-1">
-                {isExpanded ? '▼ Click to collapse' : '▶ Click to expand'}
+              <div style={{ fontSize: 10, color: C.textSub, marginTop: 3 }}>
+                {isExpanded ? '▼ collapse' : '▶ expand'}
               </div>
             </div>
           </foreignObject>
         </g>
       )
-      
+
       if (isExpanded) {
         const weeks = getWeeksByMonth(month)
-        const weekStartX = monthX + monthWidth + 120
-        const weekWidth = 160
-        const weekHeight = 70
-        const weekSpacing = 40
-        
-        weeks.forEach(([weekNum, weekItems], weekIdx) => {
-          const weekY = monthY + (weekIdx * (weekHeight + weekSpacing))
-          const weekCompletedCount = weekItems.filter(item => completedItems.has(item.id)).length
-          const weekAllCompleted = weekItems.length > 0 && weekCompletedCount === weekItems.length
-          
-          connections.push(
-            <line
-              key={`conn-month${month}-week${weekNum}`}
-              x1={monthX + monthWidth}
-              y1={monthY + monthHeight / 2}
-              x2={weekStartX}
-              y2={weekY + weekHeight / 2}
-              stroke={weekAllCompleted ? '#10b981' : '#cbd5e1'}
-              strokeWidth={weekAllCompleted ? 2 : 1}
-              opacity={0.5}
-              markerEnd={`url(#arrowhead-${weekAllCompleted ? 'completed' : 'default'})`}
-            />
+        const wStartX = mX + mW + 110, wW = 150, wH = 64, wSpacing = 36
+
+        weeks.forEach(([weekNum, weekItems], wIdx) => {
+          const wY = mY + wIdx * (wH + wSpacing)
+          const wDone = weekItems.filter(i => completedItems.has(i.id)).length
+          const allWDone = weekItems.length > 0 && wDone === weekItems.length
+          const wHov = isHovered(`__week_${month}_${weekNum}__`)
+
+          conns.push(
+            <line key={`c-mw${month}-${weekNum}`}
+              x1={mX + mW} y1={mY + mH / 2}
+              x2={wStartX} y2={wY + wH / 2}
+              stroke={allWDone ? C.lineDone : C.lineDefault}
+              strokeWidth={1} opacity={0.5}
+              markerEnd={`url(#arr-${allWDone ? 'done' : 'def'})`} />
           )
-          
+
           nodes.push(
-            <g key={`week-${month}-${weekNum}`}>
-              <rect
-                x={weekStartX}
-                y={weekY}
-                width={weekWidth}
-                height={weekHeight}
-                rx={8}
-                fill={weekAllCompleted ? '#10b981' : '#3b82f6'}
-                stroke={weekAllCompleted ? '#059669' : '#2563eb'}
-                strokeWidth={2}
-                filter="url(#shadow-sm)"
-              />
-              <foreignObject
-                x={weekStartX + 12}
-                y={weekY + 12}
-                width={weekWidth - 24}
-                height={weekHeight - 24}
-                style={{ pointerEvents: 'none' }}
-              >
-                <div className="flex flex-col justify-center h-full">
-                  <div className="text-xs font-semibold text-white/90 mb-0.5">
+            <g key={`week-${month}-${weekNum}`}
+              onMouseEnter={() => setHoveredNode({ id: `__week_${month}_${weekNum}__`, label: `Week ${weekNum}`, x: wStartX, y: wY, width: wW, height: wH })}
+              onMouseLeave={() => setHoveredNode(null)}>
+              {wHov && (
+                <rect x={wStartX - 2} y={wY - 2} width={wW + 4} height={wH + 4} rx={8}
+                  fill="none" stroke={C.glowColor} strokeWidth={1.5} opacity={0.45}
+                  filter="url(#glow)" />
+              )}
+              <rect x={wStartX} y={wY} width={wW} height={wH} rx={7}
+                fill={allWDone ? C.done : C.week}
+                stroke={allWDone ? C.doneBorder : C.weekBorder} strokeWidth={1} />
+              <foreignObject x={wStartX + 10} y={wY + 10} width={wW - 20} height={wH - 20}
+                style={{ pointerEvents: 'none' }}>
+                <div style={{ fontFamily: 'inherit' }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: allWDone ? C.doneText : C.textSub, marginBottom: 3 }}>
                     WEEK {weekNum}
                   </div>
-                  <div className="text-xs text-white/80">
-                    {weekCompletedCount}/{weekItems.length} topics
+                  <div style={{ fontSize: 11, color: allWDone ? C.doneText : C.textPrimary }}>
+                    {wDone}/{weekItems.length} topics
                   </div>
                 </div>
               </foreignObject>
             </g>
           )
-          
-          const topicStartX = weekStartX + weekWidth + 100
-          const topicWidth = 180
-          const topicHeight = 60
-          const topicSpacing = 20
-          
-          weekItems.forEach((item, topicIdx) => {
-            const topicY = weekY + (topicIdx * (topicHeight + topicSpacing)) - ((weekItems.length - 1) * (topicHeight + topicSpacing)) / 2
-            const isCompleted = completedItems.has(item.id)
-            
-            let topicColor = '#6366f1'
-            let topicShape: 'diamond' | 'rect' | 'rounded' = 'rounded'
-            
-            if (item.type === 'milestone') {
-              topicColor = isCompleted ? '#10b981' : '#f59e0b'
-              topicShape = 'diamond'
-            } else if (item.type === 'deliverable') {
-              topicColor = isCompleted ? '#10b981' : '#ec4899'
-              topicShape = 'rect'
-            } else {
-              topicColor = isCompleted ? '#10b981' : '#6366f1'
-              topicShape = 'rounded'
-            }
-            
-            connections.push(
-              <line
-                key={`conn-week${month}-${weekNum}-topic${topicIdx}`}
-                x1={weekStartX + weekWidth}
-                y1={weekY + weekHeight / 2}
-                x2={topicStartX}
-                y2={topicY + topicHeight / 2}
-                stroke={isCompleted ? '#10b981' : '#cbd5e1'}
-                strokeWidth={isCompleted ? 2 : 1}
-                opacity={0.4}
-                markerEnd={`url(#arrowhead-${isCompleted ? 'completed' : 'default'})`}
-              />
+
+          const tStartX = wStartX + wW + 90, tW = 175, tH = 56, tSpacing = 18
+
+          weekItems.forEach((item, tIdx) => {
+            const tY = wY + tIdx * (tH + tSpacing) - ((weekItems.length - 1) * (tH + tSpacing)) / 2
+            const done = completedItems.has(item.id)
+            const tHov = isHovered(item.id)
+
+            const fill   = done ? C.done : item.type === 'deliverable' ? C.deliver : item.type === 'milestone' ? C.milestone : C.topic
+            const border = done ? C.doneBorder : item.type === 'deliverable' ? C.deliverBorder : item.type === 'milestone' ? C.milestoneBorder : C.topicBorder
+            const txtCol = done ? C.doneText : item.type === 'deliverable' ? C.deliverText : item.type === 'milestone' ? C.milestoneText : C.textPrimary
+
+            const nodeData: HierarchyNode = { id: item.id, label: item.title, x: tStartX, y: tY, width: tW, height: tH, item, isCompleted: done }
+
+            conns.push(
+              <line key={`c-wt-${item.id}`}
+                x1={wStartX + wW} y1={wY + wH / 2}
+                x2={tStartX} y2={tY + tH / 2}
+                stroke={done ? C.lineDone : C.lineDefault}
+                strokeWidth={1} opacity={0.4}
+                markerEnd={`url(#arr-${done ? 'done' : 'def'})`} />
             )
-            
-            const nodeData: HierarchyNode = {
-              id: item.id,
-              type: 'topic',
-              label: item.title,
-              x: topicStartX,
-              y: topicY,
-              width: topicWidth,
-              height: topicHeight,
-              color: topicColor,
-              item: item,
-              isCompleted
-            }
-            
-            if (topicShape === 'diamond') {
-              const cx = topicStartX + topicWidth / 2
-              const cy = topicY + topicHeight / 2
-              const size = 30
-              
-              nodes.push(
-                <g
-                  key={`topic-${item.id}`}
-                  onMouseEnter={() => setHoveredNode(nodeData)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <path
-                    d={`M ${cx} ${cy - size} L ${cx + size} ${cy} L ${cx} ${cy + size} L ${cx - size} ${cy} Z`}
-                    fill={topicColor}
-                    stroke={topicColor}
-                    strokeWidth={2}
-                    filter="url(#shadow-sm)"
-                  />
-                  <foreignObject
-                    x={cx - 60}
-                    y={cy - 20}
-                    width={120}
-                    height={40}
-                    style={{ pointerEvents: 'none' }}
-                  >
-                    <div className="flex items-center justify-center h-full text-center px-2">
-                      <div className="text-xs font-bold text-white line-clamp-2 leading-tight">
-                        {item.title}
-                      </div>
+
+            nodes.push(
+              <g key={`topic-${item.id}`}
+                onMouseEnter={() => setHoveredNode(nodeData)}
+                onMouseLeave={() => setHoveredNode(null)}
+                style={{ cursor: 'pointer' }}>
+                {tHov && (
+                  <rect x={tStartX - 3} y={tY - 3} width={tW + 6} height={tH + 6} rx={9}
+                    fill="none" stroke={C.glowColor} strokeWidth={1.5} opacity={0.7}
+                    filter="url(#glow)" />
+                )}
+                <rect x={tStartX} y={tY} width={tW} height={tH} rx={7}
+                  fill={fill} stroke={border} strokeWidth={1} />
+                <foreignObject x={tStartX + 10} y={tY + 9} width={tW - 20} height={tH - 18}
+                  style={{ pointerEvents: 'none' }}>
+                  <div style={{ fontFamily: 'inherit' }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: txtCol, lineHeight: 1.3,
+                      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {item.title}
                     </div>
-                  </foreignObject>
-                  {isCompleted && (
-                    <circle
-                      cx={cx + size - 10}
-                      cy={cy - size + 10}
-                      r={8}
-                      fill="white"
-                    />
-                  )}
-                  {isCompleted && (
-                    <text
-                      x={cx + size - 10}
-                      y={cy - size + 14}
-                      fill="#10b981"
-                      fontSize="12"
-                      fontWeight="bold"
-                      textAnchor="middle"
-                    >
-                      ✓
-                    </text>
-                  )}
-                </g>
-              )
-            } else {
-              const rx = topicShape === 'rounded' ? 30 : 6
-              
-              nodes.push(
-                <g
-                  key={`topic-${item.id}`}
-                  onMouseEnter={() => setHoveredNode(nodeData)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <rect
-                    x={topicStartX}
-                    y={topicY}
-                    width={topicWidth}
-                    height={topicHeight}
-                    rx={rx}
-                    fill={topicColor}
-                    stroke={topicColor}
-                    strokeWidth={2}
-                    filter="url(#shadow-sm)"
-                  />
-                  <foreignObject
-                    x={topicStartX + 10}
-                    y={topicY + 10}
-                    width={topicWidth - 20}
-                    height={topicHeight - 20}
-                    style={{ pointerEvents: 'none' }}
-                  >
-                    <div className="flex flex-col justify-center h-full">
-                      <div className="text-xs font-bold text-white line-clamp-2 leading-tight">
-                        {item.title}
-                      </div>
-                      <div className="text-[10px] text-white/70 mt-1 capitalize">
-                        {item.type}
-                      </div>
+                    <div style={{ fontSize: 9, color: C.textSub, marginTop: 3, textTransform: 'capitalize', letterSpacing: '0.05em' }}>
+                      {item.type}
                     </div>
-                  </foreignObject>
-                  {isCompleted && (
-                    <circle
-                      cx={topicStartX + topicWidth - 12}
-                      cy={topicY + 12}
-                      r={8}
-                      fill="white"
-                    />
-                  )}
-                  {isCompleted && (
-                    <text
-                      x={topicStartX + topicWidth - 12}
-                      y={topicY + 16}
-                      fill="#10b981"
-                      fontSize="12"
-                      fontWeight="bold"
-                      textAnchor="middle"
-                    >
-                      ✓
-                    </text>
-                  )}
-                </g>
-              )
-            }
+                  </div>
+                </foreignObject>
+                {done && (
+                  <>
+                    <circle cx={tStartX + tW - 12} cy={tY + 12} r={7} fill={C.done} stroke={C.doneBorder} strokeWidth={1} />
+                    <text x={tStartX + tW - 12} y={tY + 16} fill={C.doneText} fontSize={10} fontWeight="bold" textAnchor="middle">✓</text>
+                  </>
+                )}
+              </g>
+            )
           })
         })
-        
-        currentY += Math.max(weeks.length * (weekHeight + weekSpacing), monthHeight) + monthSpacing
+
+        currentY += Math.max(weeks.length * (wH + wSpacing), mH) + mSpacing
       } else {
-        currentY += monthHeight + monthSpacing
+        currentY += mH + mSpacing
       }
     })
-    
-    return { nodes, connections }
+
+    return { nodes, conns }
   }
 
-  const { nodes, connections } = renderHierarchy()
-
-  const svgHeight = 100 + (expandedMonths.size * 600) + ((4 - expandedMonths.size) * 150)
-  const svgWidth = 1400
+  const { nodes, conns } = renderHierarchy()
+  const svgH = 100 + expandedMonths.size * 580 + (4 - expandedMonths.size) * 140
+  const svgW = 1360
 
   return (
-    <div className="relative w-full">
-      <Card className="p-6 bg-gradient-to-br from-secondary/30 via-background to-secondary/20 border-border/50">
-        <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <h3 className="text-xl font-bold mb-2">Hierarchical Course Flow</h3>
-            <p className="text-sm text-muted-foreground">
-              Course → Months → Weeks → Topics. Click months to expand/collapse.
-            </p>
+    <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24 }}>
+      {/* Header */}
+      <div style={{ marginBottom: 20, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: '#e2e8f0', marginBottom: 4 }}>
+            Hierarchical Course Flow
           </div>
-          <div className="flex gap-4 items-center text-xs flex-wrap">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-6 rounded-full bg-blue-500" />
-              <span>Topic</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-pink-500 rounded" />
-              <span>Deliverable</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-amber-500 rotate-45" />
-              <span>Milestone</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-emerald-500 rounded-full" />
-              <span>Completed</span>
-            </div>
+          <div style={{ fontSize: 11, color: C.textSub }}>
+            Course → Months → Weeks → Topics · Click months to expand
           </div>
         </div>
-
-        <div className="overflow-auto border border-border/40 rounded-lg bg-gradient-to-br from-slate-50 to-blue-50/30">
-          <svg
-            width={svgWidth}
-            height={svgHeight}
-            className="min-w-full"
-            style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' }}
-          >
-            <defs>
-              <linearGradient id="courseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#6366f1" />
-                <stop offset="100%" stopColor="#8b5cf6" />
-              </linearGradient>
-              <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-                <feDropShadow dx="0" dy="4" stdDeviation="8" floodOpacity="0.2" />
-              </filter>
-              <filter id="shadow-sm" x="-50%" y="-50%" width="200%" height="200%">
-                <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.15" />
-              </filter>
-              <marker
-                id="arrowhead-default"
-                markerWidth="8"
-                markerHeight="8"
-                refX="7"
-                refY="3"
-                orient="auto"
-              >
-                <polygon points="0 0, 8 3, 0 6" fill="#cbd5e1" opacity="0.6" />
-              </marker>
-              <marker
-                id="arrowhead-completed"
-                markerWidth="8"
-                markerHeight="8"
-                refX="7"
-                refY="3"
-                orient="auto"
-              >
-                <polygon points="0 0, 8 3, 0 6" fill="#10b981" opacity="0.8" />
-              </marker>
-            </defs>
-
-            {connections}
-            {nodes}
-          </svg>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+          {[
+            { color: C.topicBorder, label: 'Topic' },
+            { color: C.deliverBorder, label: 'Deliverable' },
+            { color: C.milestoneBorder, label: 'Milestone' },
+            { color: C.doneBorder, label: 'Completed' },
+          ].map(({ color, label }) => (
+            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ width: 20, height: 10, borderRadius: 3, border: `1px solid ${color}`, background: 'transparent' }} />
+              <span style={{ fontSize: 10, color: C.textSub }}>{label}</span>
+            </div>
+          ))}
         </div>
+      </div>
 
-        {hoveredNode && hoveredNode.item && (
-          <Card className="mt-4 p-4 bg-background border-border/60">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2 flex-wrap">
-                  <h4 className="font-bold text-base">{hoveredNode.item.title}</h4>
-                  <Badge variant="outline" className="text-xs">
-                    Month {hoveredNode.item.month}, Week {hoveredNode.item.week}
-                  </Badge>
-                  <Badge variant="outline" className="text-xs capitalize">
-                    {hoveredNode.item.type}
-                  </Badge>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {hoveredNode.item.description}
-                </p>
+      {/* Canvas */}
+      <div style={{ overflowX: 'auto', overflowY: 'auto', border: `1px solid ${C.border}`, borderRadius: 8, background: C.bg }}>
+        <svg width={svgW} height={svgH} style={{ minWidth: '100%' }}>
+          <defs>
+            <linearGradient id="courseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={C.courseFrom} />
+              <stop offset="100%" stopColor={C.courseTo} />
+            </linearGradient>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <marker id="arr-def" markerWidth="6" markerHeight="6" refX="5" refY="2.5" orient="auto">
+              <polygon points="0 0, 6 2.5, 0 5" fill={C.lineDefault} />
+            </marker>
+            <marker id="arr-done" markerWidth="6" markerHeight="6" refX="5" refY="2.5" orient="auto">
+              <polygon points="0 0, 6 2.5, 0 5" fill={C.lineDone} />
+            </marker>
+          </defs>
+          {conns}
+          {nodes}
+        </svg>
+      </div>
+
+      {/* Hover tooltip */}
+      {hoveredNode?.item && (
+        <div style={{ marginTop: 16, padding: '12px 16px', background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: C.textPrimary }}>{hoveredNode.item.title}</span>
+                <span style={{ fontSize: 10, color: C.textSub, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1px 6px' }}>
+                  M{hoveredNode.item.month} · W{hoveredNode.item.week}
+                </span>
+                <span style={{ fontSize: 10, color: C.textSub, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1px 6px', textTransform: 'capitalize' }}>
+                  {hoveredNode.item.type}
+                </span>
               </div>
-              {hoveredNode.isCompleted && (
-                <Badge className="bg-emerald-500 text-white border-0">
-                  ✓ Completed
-                </Badge>
-              )}
+              <p style={{ fontSize: 11, color: C.textSub, lineHeight: 1.6 }}>{hoveredNode.item.description}</p>
             </div>
-          </Card>
-        )}
-      </Card>
+            {hoveredNode.isCompleted && (
+              <span style={{ fontSize: 10, color: C.doneText, border: `1px solid ${C.doneBorder}`, borderRadius: 4, padding: '2px 8px', whiteSpace: 'nowrap' }}>
+                ✓ Completed
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

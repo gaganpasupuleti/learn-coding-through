@@ -1,5 +1,5 @@
 import { useKV } from '@github/spark/hooks'
-import type { UserProgress } from '@/types/career'
+import type { UserProgress, SyllabusItem } from '@/types/career'
 
 export function useCareerProgress(roleId: string) {
   const [progress, setProgress] = useKV<UserProgress>(`career-progress-${roleId}`, {
@@ -30,10 +30,22 @@ export function useCareerProgress(roleId: string) {
     return totalItems > 0 ? Math.round((completed / totalItems) * 100) : 0
   }
 
+  /**
+   * An item is unlocked when all items with a lower sortOrder in the same month
+   * are already completed. The first item in each month is always unlocked.
+   */
+  const isUnlocked = (item: SyllabusItem, allMonthItems: SyllabusItem[]) => {
+    const sorted = [...allMonthItems].sort((a, b) => a.sortOrder - b.sortOrder)
+    const idx = sorted.findIndex(i => i.id === item.id)
+    if (idx <= 0) return true
+    return sorted.slice(0, idx).every(prev => safeProgress.completedItems[prev.id] === true)
+  }
+
   return {
     progress: safeProgress,
     toggleItem,
     isCompleted,
+    isUnlocked,
     getCompletionPercentage
   }
 }

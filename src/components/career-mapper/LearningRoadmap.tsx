@@ -1,12 +1,43 @@
-import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { CheckCircle, Target, BookOpen, FlagCheckered, NotePencil, Note } from '@phosphor-icons/react'
+﻿import { useState } from 'react'
+import {
+  AirplaneTakeoff,
+  AirplaneLanding,
+  CheckCircle,
+  Lock,
+  NotePencil,
+  Note,
+  Target,
+  Rocket,
+  Flag,
+} from '@phosphor-icons/react'
 import { MilestoneNoteDialog } from './MilestoneNoteDialog'
 import { useMilestoneNotes } from '@/hooks/use-milestone-notes'
 import type { CareerRole, SyllabusItem } from '@/types/career'
+
+// ── Design tokens for the Flight Plan ───────────────────────────────────────
+const T = {
+  bg:          '#0b0b0b',
+  surface:     '#111111',
+  surfaceHover:'#161616',
+  border:      '#1e1e1e',
+  borderFocus: '#2a2a3d',
+  done:        '#052e16',
+  doneBorder:  '#166534',
+  locked:      '#0c0c0c',
+  lockedBorder:'#1a1a1a',
+  skip:        '#052e0f',
+  skipBorder:  '#166534',
+  focus:       '#1a120a',
+  focusBorder: '#78350f',
+  textPrimary: '#e2e8f0',
+  textSub:     '#64748b',
+  textDone:    '#4ade80',
+  textLocked:  '#334155',
+  accent:      '#818cf8',
+  accentDim:   '#3730a3',
+  lineColor:   '#1e1e1e',
+  lineDone:    '#166534',
+} as const
 
 interface LearningRoadmapProps {
   role: CareerRole
@@ -15,8 +46,16 @@ interface LearningRoadmapProps {
   canSkipMonths?: number[]
   focusMonths?: number[]
   compact?: boolean
-  /** Optional: called when user clicks an item card to toggle completion */
   onToggleItem?: (itemId: string) => void
+}
+
+const MONTH_NAMES = ['Foundation', 'Build', 'Advanced', 'Career Ready']
+
+function ItemTypeIcon({ type, size }: { type: SyllabusItem['type']; size?: number }) {
+  const s = size ?? 14
+  if (type === 'deliverable') return <Rocket size={s} />
+  if (type === 'milestone')   return <Flag size={s} />
+  return <Target size={s} />
 }
 
 export function LearningRoadmap({
@@ -33,22 +72,24 @@ export function LearningRoadmap({
   const { hasNote, getNote } = useMilestoneNotes()
 
   const syllabusByMonth = {
-    1: role.syllabus.filter(item => item.month === 1).sort((a, b) => a.sortOrder - b.sortOrder),
-    2: role.syllabus.filter(item => item.month === 2).sort((a, b) => a.sortOrder - b.sortOrder),
-    3: role.syllabus.filter(item => item.month === 3).sort((a, b) => a.sortOrder - b.sortOrder),
-    4: role.syllabus.filter(item => item.month === 4).sort((a, b) => a.sortOrder - b.sortOrder),
+    1: role.syllabus.filter(i => i.month === 1).sort((a, b) => a.sortOrder - b.sortOrder),
+    2: role.syllabus.filter(i => i.month === 2).sort((a, b) => a.sortOrder - b.sortOrder),
+    3: role.syllabus.filter(i => i.month === 3).sort((a, b) => a.sortOrder - b.sortOrder),
+    4: role.syllabus.filter(i => i.month === 4).sort((a, b) => a.sortOrder - b.sortOrder),
   }
 
-  const openNoteDialog = (item: SyllabusItem) => {
+  // An item is unlocked if all items with lower sortOrder in the same month are completed
+  const isUnlocked = (item: SyllabusItem, monthItems: SyllabusItem[]) => {
+    const sorted = [...monthItems].sort((a, b) => a.sortOrder - b.sortOrder)
+    const idx = sorted.findIndex(i => i.id === item.id)
+    if (idx <= 0) return true
+    return sorted.slice(0, idx).every(prev => completedItems.has(prev.id))
+  }
+
+  const openNoteDialog = (e: React.MouseEvent, item: SyllabusItem) => {
+    e.stopPropagation()
     setSelectedItem(item)
     setNoteDialogOpen(true)
-  }
-
-  const getItemIcon = (item: SyllabusItem, isCompleted: boolean) => {
-    if (isCompleted) return <CheckCircle weight="fill" className="text-accent" size={compact ? 18 : 24} />
-    if (item.type === 'deliverable') return <Target className="text-primary" size={compact ? 18 : 24} />
-    if (item.type === 'milestone') return <FlagCheckered className="text-primary" size={compact ? 18 : 24} />
-    return <BookOpen className="text-muted-foreground" size={compact ? 18 : 24} />
   }
 
   const getMonthStatus = (month: number) => {
@@ -57,95 +98,64 @@ export function LearningRoadmap({
     return 'normal'
   }
 
-  const getMonthColor = (status: string) => {
-    if (status === 'skip') return 'border-green-300 bg-green-50/50'
-    if (status === 'focus') return 'border-accent bg-accent/5'
-    return 'border-border bg-card'
-  }
-
+  // ── Compact mode (used inside accordions elsewhere) ──────────────────────
   if (compact) {
     return (
-      <div className="space-y-3">
-        <Accordion type="multiple" defaultValue={['1']} className="space-y-2">
-          {([1, 2, 3, 4] as const).map((month) => {
-            const monthStatus = getMonthStatus(month)
-            const items = syllabusByMonth[month]
-            const monthComplete = items.every(item => completedItems.has(item.id))
-            const monthProgress = items.length > 0
-              ? (items.filter(item => completedItems.has(item.id)).length / items.length) * 100
-              : 0
+      <div style={{ background: T.bg, border: `1px solid ${T.border}`, borderRadius: 8, padding: 12 }}>
+        {([1, 2, 3, 4] as const).map((month) => {
+          const items = syllabusByMonth[month]
+          const done = items.filter(i => completedItems.has(i.id)).length
+          const pct  = items.length > 0 ? Math.round((done / items.length) * 100) : 0
+          const status = getMonthStatus(month)
 
-            return (
-              <AccordionItem key={month} value={month.toString()} className="border rounded-lg px-3">
-                <AccordionTrigger className="hover:no-underline py-3">
-                  <div className="flex items-center gap-3 flex-1 text-left">
-                    <div className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center font-bold text-sm flex-shrink-0 ${monthComplete ? 'bg-accent border-accent text-accent-foreground' : 'bg-card border-primary text-primary'}`}>
-                      {monthComplete ? <CheckCircle weight="fill" size={20} /> : month}
+          return (
+            <div key={month} style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: T.textSub }}>
+                  M{month} · {MONTH_NAMES[month - 1].toUpperCase()}
+                </span>
+                {status === 'skip'  && <span style={{ fontSize: 9, color: T.textDone, border: `1px solid ${T.doneBorder}`, borderRadius: 3, padding: '1px 5px' }}>SKIP</span>}
+                {status === 'focus' && <span style={{ fontSize: 9, color: '#fbbf24', border: '1px solid #78350f', borderRadius: 3, padding: '1px 5px' }}>FOCUS</span>}
+                <span style={{ marginLeft: 'auto', fontSize: 9, color: T.textSub }}>{pct}%</span>
+              </div>
+              <div style={{ height: 1, background: T.border, marginBottom: 8 }}>
+                <div style={{ height: 1, background: T.accent, width: `${pct}%`, transition: 'width 0.5s' }} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {items.map((item) => {
+                  const isDone    = completedItems.has(item.id)
+                  const unlocked  = isUnlocked(item, items)
+                  const itemHasNote = hasNote(role.id, item.id)
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => unlocked && onToggleItem?.(item.id)}
+                      style={{
+                        padding: '6px 10px',
+                        border: `1px solid ${isDone ? T.doneBorder : unlocked ? T.border : T.lockedBorder}`,
+                        borderRadius: 6,
+                        background: isDone ? T.done : unlocked ? T.surface : T.locked,
+                        cursor: unlocked && onToggleItem ? 'pointer' : 'default',
+                        opacity: unlocked ? 1 : 0.4,
+                        pointerEvents: unlocked ? 'auto' : 'none',
+                        display: 'flex', alignItems: 'center', gap: 8,
+                      }}>
+                      <span style={{ color: isDone ? T.textDone : unlocked ? T.textSub : T.textLocked, flexShrink: 0 }}>
+                        {isDone        ? <CheckCircle size={12} weight="fill" />
+                          : !unlocked  ? <Lock size={12} />
+                          : <ItemTypeIcon type={item.type} size={12} />}
+                      </span>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: isDone ? T.textDone : T.textPrimary, flex: 1, letterSpacing: '-0.01em' }}>
+                        {item.title}
+                      </span>
+                      {itemHasNote && <Note size={10} style={{ color: T.accent, flexShrink: 0 }} weight="fill" />}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-semibold text-sm">Month {month}</h4>
-                        {monthStatus === 'skip' && <Badge className="bg-green-500 text-white border-0 px-1.5 py-0 text-xs h-4">Skip</Badge>}
-                        {monthStatus === 'focus' && <Badge className="bg-accent text-accent-foreground border-0 px-1.5 py-0 text-xs h-4">Focus</Badge>}
-                      </div>
-                      {isAuthenticated && (
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-500" style={{ width: `${monthProgress}%` }} />
-                          </div>
-                          <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">{Math.round(monthProgress)}%</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pb-3 pt-1">
-                  <div className="space-y-2">
-                    {items.map((item) => {
-                      const isCompleted = completedItems.has(item.id)
-                      const itemHasNote = hasNote(role.id, item.id)
-                      const itemNote = getNote(role.id, item.id)
-                      return (
-                        <Card
-                          key={item.id}
-                          className={`p-3 transition-all duration-200 ${isCompleted ? 'border-accent/50 bg-accent/5' : getMonthColor(monthStatus)} ${onToggleItem ? 'cursor-pointer hover:shadow-sm' : ''}`}
-                          onClick={() => onToggleItem?.(item.id)}
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="flex-shrink-0 mt-0.5">{getItemIcon(item, isCompleted)}</div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                                <h5 className="font-medium text-sm">{item.title}</h5>
-                                <Badge variant="outline" className="text-xs h-4 px-1">W{item.week}</Badge>
-                                {item.type === 'deliverable' && <Badge className="text-xs h-4 px-1.5 bg-primary text-primary-foreground">Project</Badge>}
-                                {item.type === 'milestone' && <Badge className="text-xs h-4 px-1.5 bg-accent text-accent-foreground">Milestone</Badge>}
-                              </div>
-                              <p className="text-xs text-muted-foreground leading-relaxed mb-2">{item.description}</p>
-                              {itemHasNote && itemNote && (
-                                <div className="mb-2 p-2 bg-accent/5 border border-accent/20 rounded">
-                                  <div className="flex items-start gap-2">
-                                    <Note className="text-accent flex-shrink-0 mt-0.5" size={12} weight="fill" />
-                                    <p className="text-xs text-muted-foreground line-clamp-1">{itemNote.content}</p>
-                                  </div>
-                                </div>
-                              )}
-                              {isAuthenticated && (
-                                <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openNoteDialog(item) }} className="gap-1.5 h-6 text-xs px-2 -ml-2">
-                                  <NotePencil size={12} />
-                                  {itemHasNote ? 'Edit' : 'Note'}
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        </Card>
-                      )
-                    })}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            )
-          })}
-        </Accordion>
+                  )
+                })}
+              </div>
+            </div>
+          )
+        })}
         {selectedItem && (
           <MilestoneNoteDialog open={noteDialogOpen} onOpenChange={setNoteDialogOpen} roleId={role.id} item={selectedItem} />
         )}
@@ -153,118 +163,235 @@ export function LearningRoadmap({
     )
   }
 
+  // ── Full Flight Plan view ─────────────────────────────────────────────────
+  const totalItems = role.syllabus.length
+  const totalDone  = completedItems.size
+  const overallPct = totalItems > 0 ? Math.round((totalDone / totalItems) * 100) : 0
+
   return (
-    <div className="relative">
-      <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-accent to-primary opacity-20 rounded-full hidden md:block" />
-      <div className="space-y-8">
-        {([1, 2, 3, 4] as const).map((month, monthIndex) => {
-          const monthStatus = getMonthStatus(month)
-          const items = syllabusByMonth[month]
-          const monthComplete = items.every(item => completedItems.has(item.id))
-          const monthProgress = items.length > 0
-            ? (items.filter(item => completedItems.has(item.id)).length / items.length) * 100
-            : 0
+    <div style={{ background: T.bg, fontFamily: 'inherit' }}>
+      {/* Flight plan header */}
+      <div style={{
+        border: `1px solid ${T.border}`, borderRadius: 10, padding: '14px 20px',
+        marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap'
+      }}>
+        <AirplaneTakeoff size={20} style={{ color: T.accent, flexShrink: 0 }} />
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '-0.01em', color: T.textPrimary, marginBottom: 4 }}>
+            {role.title} · Flight Plan
+          </div>
+          <div style={{ height: 2, background: T.border, borderRadius: 2, overflow: 'hidden' }}>
+            <div style={{ height: 2, background: T.accent, width: `${overallPct}%`, transition: 'width 0.5s', borderRadius: 2 }} />
+          </div>
+        </div>
+        <span style={{ fontSize: 11, fontWeight: 700, color: T.accent, whiteSpace: 'nowrap' }}>
+          {totalDone}/{totalItems} · {overallPct}%
+        </span>
+        <AirplaneLanding size={20} style={{ color: overallPct === 100 ? T.textDone : T.textSub, flexShrink: 0 }} />
+      </div>
+
+      {/* Monthly phases */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+        {([1, 2, 3, 4] as const).map((month, monthIdx) => {
+          const items   = syllabusByMonth[month]
+          const done    = items.filter(i => completedItems.has(i.id)).length
+          const pct     = items.length > 0 ? Math.round((done / items.length) * 100) : 0
+          const allDone = done === items.length && items.length > 0
+          const status  = getMonthStatus(month)
+
+          const phaseAccent = allDone ? T.textDone
+            : status === 'focus' ? '#fbbf24'
+            : T.accent
 
           return (
-            <div key={month} className="relative">
-              <div className="flex items-start gap-6">
-                <div className="relative z-10 flex-shrink-0">
-                  <div className={`w-16 h-16 rounded-2xl border-4 flex items-center justify-center font-bold text-xl ${monthComplete ? 'bg-accent border-accent text-accent-foreground' : 'bg-card border-primary text-primary'} shadow-lg transition-all duration-300`}>
-                    {monthComplete ? <CheckCircle weight="fill" size={32} /> : month}
-                  </div>
-                  {monthStatus === 'skip' && <Badge className="absolute -top-2 -right-2 bg-green-500 text-white border-0 px-1.5 py-0.5 text-xs">Skip</Badge>}
-                  {monthStatus === 'focus' && <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground border-0 px-1.5 py-0.5 text-xs">Focus</Badge>}
+            <div key={month} style={{ display: 'flex', gap: 0 }}>
+              {/* Vertical timeline spine */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 40, flexShrink: 0 }}>
+                {/* Phase marker */}
+                <div style={{
+                  width: 28, height: 28, borderRadius: '50%', flexShrink: 0, zIndex: 1, marginTop: 14,
+                  border: `1px solid ${allDone ? T.doneBorder : T.borderFocus}`,
+                  background: allDone ? T.done : T.surface,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: allDone ? `0 0 8px ${T.doneBorder}` : 'none',
+                }}>
+                  {allDone
+                    ? <CheckCircle size={14} weight="fill" style={{ color: T.textDone }} />
+                    : <span style={{ fontSize: 10, fontWeight: 700, color: phaseAccent }}>{month}</span>}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-2xl font-bold">Month {month}</h3>
-                      {isAuthenticated && <span className="text-sm font-semibold text-muted-foreground">{Math.round(monthProgress)}% Complete</span>}
-                    </div>
-                    {isAuthenticated && (
-                      <div className="h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-500" style={{ width: `${monthProgress}%` }} />
-                      </div>
-                    )}
-                    {monthStatus === 'skip' && <p className="text-sm text-green-700 mt-2 font-medium">✓ You already know these skills - feel free to skip or use as review</p>}
-                    {monthStatus === 'focus' && <p className="text-sm text-accent-foreground mt-2 font-medium">⚡ Key learning area - dedicate extra time here</p>}
-                  </div>
-                  <div className="space-y-3">
-                    {items.map((item, itemIndex) => {
-                      const isCompleted = completedItems.has(item.id)
-                      const isLast = itemIndex === items.length - 1
-                      const itemHasNote = hasNote(role.id, item.id)
-                      const itemNote = getNote(role.id, item.id)
-                      return (
-                        <div key={item.id} className="relative">
-                          <Card
-                            className={`p-4 transition-all duration-300 hover:shadow-md ${isCompleted ? 'border-accent/50 bg-accent/5' : getMonthColor(monthStatus)} ${onToggleItem ? 'cursor-pointer' : ''}`}
-                            onClick={() => onToggleItem?.(item.id)}
-                          >
-                            <div className="flex items-start gap-4">
-                              <div className="flex-shrink-0 mt-0.5">{getItemIcon(item, isCompleted)}</div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                  <h4 className={`font-semibold ${isCompleted ? 'text-foreground' : ''}`}>{item.title}</h4>
-                                  <Badge variant="outline" className="text-xs">Week {item.week}</Badge>
-                                  {item.type === 'deliverable' && <Badge className="text-xs bg-primary text-primary-foreground">Project</Badge>}
-                                  {item.type === 'milestone' && <Badge className="text-xs bg-accent text-accent-foreground">Milestone</Badge>}
-                                  {isCompleted && <Badge className="text-xs bg-accent/20 text-accent-foreground border-accent">✓ Completed</Badge>}
-                                </div>
-                                <p className="text-sm text-muted-foreground leading-relaxed mb-3">{item.description}</p>
-                                {itemHasNote && itemNote && (
-                                  <div className="mb-3 p-3 bg-accent/5 border border-accent/20 rounded-lg">
-                                    <div className="flex items-start gap-2">
-                                      <Note className="text-accent flex-shrink-0 mt-0.5" size={16} weight="fill" />
-                                      <div className="flex-1 min-w-0">
-                                        <p className="text-xs font-medium text-accent-foreground mb-1">Your Note:</p>
-                                        <p className="text-sm text-muted-foreground line-clamp-2">{itemNote.content}</p>
-                                      </div>
-                                    </div>
-                                  </div>
+                {/* Connecting line to next phase */}
+                {monthIdx < 3 && (
+                  <div style={{
+                    flex: 1, width: 1, minHeight: 24,
+                    background: `linear-gradient(${allDone ? T.lineDone : T.lineColor}, ${T.lineColor})`,
+                    marginTop: 4, marginBottom: 4,
+                  }} />
+                )}
+              </div>
+
+              {/* Phase content */}
+              <div style={{ flex: 1, paddingLeft: 16, paddingBottom: monthIdx < 3 ? 0 : 24, paddingTop: 8 }}>
+                {/* Phase header */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.02em', color: phaseAccent }}>
+                    Month {month} — {MONTH_NAMES[month - 1]}
+                  </span>
+                  {status === 'skip' && (
+                    <span style={{ fontSize: 9, color: T.textDone, border: `1px solid ${T.doneBorder}`, borderRadius: 3, padding: '1px 6px', letterSpacing: '0.05em' }}>
+                      SKIP ELIGIBLE
+                    </span>
+                  )}
+                  {status === 'focus' && (
+                    <span style={{ fontSize: 9, color: '#fbbf24', border: '1px solid #78350f', borderRadius: 3, padding: '1px 6px', letterSpacing: '0.05em' }}>
+                      FOCUS AREA
+                    </span>
+                  )}
+                  <span style={{ marginLeft: 'auto', fontSize: 10, color: T.textSub, fontWeight: 600 }}>
+                    {done}/{items.length}
+                  </span>
+                </div>
+
+                {/* Progress bar */}
+                <div style={{ height: 1, background: T.border, borderRadius: 1, marginBottom: 14, overflow: 'hidden' }}>
+                  <div style={{ height: 1, background: phaseAccent, width: `${pct}%`, transition: 'width 0.5s' }} />
+                </div>
+
+                {/* Items */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20 }}>
+                  {items.map((item, itemIdx) => {
+                    const isDone    = completedItems.has(item.id)
+                    const unlocked  = isUnlocked(item, items)
+                    const isLast    = itemIdx === items.length - 1
+                    const itemHasNote = hasNote(role.id, item.id)
+                    const itemNoteData = getNote(role.id, item.id)
+
+                    const bgColor  = isDone ? T.done : unlocked ? T.surface : T.locked
+                    const bdColor  = isDone ? T.doneBorder
+                      : item.type === 'deliverable' ? '#7f1d1d'
+                      : item.type === 'milestone'   ? '#78350f'
+                      : unlocked ? T.border : T.lockedBorder
+                    const txtColor = isDone ? T.textDone : unlocked ? T.textPrimary : T.textLocked
+                    const metaColor= isDone ? T.textDone : T.textSub
+
+                    return (
+                      <div key={item.id} style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                        <div
+                          onClick={() => unlocked && onToggleItem?.(item.id)}
+                          style={{
+                            border: `1px solid ${bdColor}`,
+                            borderRadius: 8,
+                            background: bgColor,
+                            padding: '10px 14px',
+                            cursor: unlocked && onToggleItem ? 'pointer' : 'default',
+                            opacity: unlocked ? 1 : 0.4,
+                            pointerEvents: unlocked ? 'auto' : 'none',
+                            transition: 'background 0.15s, border-color 0.15s',
+                          }}
+                          onMouseEnter={e => {
+                            if (unlocked && !isDone) (e.currentTarget as HTMLDivElement).style.background = T.surfaceHover
+                          }}
+                          onMouseLeave={e => {
+                            if (unlocked && !isDone) (e.currentTarget as HTMLDivElement).style.background = bgColor
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                            {/* Status icon */}
+                            <div style={{ flexShrink: 0, marginTop: 1, color: isDone ? T.textDone : unlocked ? metaColor : T.textLocked }}>
+                              {isDone       ? <CheckCircle size={15} weight="fill" />
+                                : !unlocked ? <Lock size={15} />
+                                : <ItemTypeIcon type={item.type} size={15} />}
+                            </div>
+
+                            {/* Content */}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 3 }}>
+                                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '-0.01em', color: txtColor, lineHeight: 1.3 }}>
+                                  {item.title}
+                                </span>
+                                <span style={{ fontSize: 9, color: metaColor, border: `1px solid ${T.border}`, borderRadius: 3, padding: '1px 5px', letterSpacing: '0.04em' }}>
+                                  W{item.week}
+                                </span>
+                                {item.type === 'deliverable' && (
+                                  <span style={{ fontSize: 9, color: '#f87171', border: '1px solid #7f1d1d', borderRadius: 3, padding: '1px 5px', letterSpacing: '0.04em' }}>
+                                    PROJECT
+                                  </span>
                                 )}
-                                {isAuthenticated && (
-                                  <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openNoteDialog(item) }} className="gap-2 h-8 text-xs">
-                                    <NotePencil size={14} />
-                                    {itemHasNote ? 'Edit Note' : 'Add Note'}
-                                  </Button>
+                                {item.type === 'milestone' && (
+                                  <span style={{ fontSize: 9, color: '#fbbf24', border: '1px solid #78350f', borderRadius: 3, padding: '1px 5px', letterSpacing: '0.04em' }}>
+                                    MILESTONE
+                                  </span>
+                                )}
+                                {isDone && (
+                                  <span style={{ fontSize: 9, color: T.textDone, border: `1px solid ${T.doneBorder}`, borderRadius: 3, padding: '1px 5px', letterSpacing: '0.04em', marginLeft: 'auto' }}>
+                                    ✓ DONE
+                                  </span>
                                 )}
                               </div>
+                              <p style={{ fontSize: 11, color: T.textSub, lineHeight: 1.6, marginBottom: itemHasNote ? 8 : 0 }}>
+                                {item.description}
+                              </p>
+
+                              {/* Note preview */}
+                              {itemHasNote && itemNoteData && (
+                                <div style={{ padding: '6px 10px', background: '#0d0d1a', border: '1px solid #1e1e3d', borderRadius: 5, marginBottom: 4 }}>
+                                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
+                                    <Note size={11} style={{ color: T.accent, flexShrink: 0, marginTop: 1 }} weight="fill" />
+                                    <span style={{ fontSize: 10, color: T.textSub, lineHeight: 1.5, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                                      {itemNoteData.content}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          </Card>
-                          {!isLast && (
-                            <div className="flex justify-center py-2">
-                              <div className={`h-6 w-0.5 rounded-full border-l-2 border-dashed ${monthStatus === 'skip' ? 'border-green-300' : monthStatus === 'focus' ? 'border-accent' : 'border-muted'}`} />
-                            </div>
-                          )}
+
+                            {/* Note button */}
+                            {isAuthenticated && (
+                              <button
+                                type="button"
+                                onClick={(e) => openNoteDialog(e, item)}
+                                style={{ flexShrink: 0, background: 'transparent', border: `1px solid ${T.border}`, borderRadius: 5, padding: '3px 7px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+                              >
+                                <NotePencil size={11} style={{ color: T.textSub }} />
+                                <span style={{ fontSize: 9, color: T.textSub, letterSpacing: '0.03em' }}>{itemHasNote ? 'EDIT' : 'NOTE'}</span>
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      )
-                    })}
-                  </div>
+
+                        {/* Connector between items */}
+                        {!isLast && (
+                          <div style={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 16 }}>
+                            <div style={{ width: 1, height: 8, background: isDone ? T.lineDone : T.lineColor }} />
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
-              {monthIndex < 3 && (
-                <div className="flex justify-start ml-8 my-6">
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="h-8 w-0.5 bg-gradient-to-b from-primary to-accent rounded-full" />
-                    <div className="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20" />
-                    <div className="h-8 w-0.5 bg-gradient-to-b from-accent to-primary rounded-full" />
-                  </div>
-                </div>
-              )}
             </div>
           )
         })}
       </div>
-      <div className="mt-8 text-center">
-        <Card className="p-6 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border-primary/20">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <FlagCheckered className="text-primary" size={32} weight="fill" />
-            <h3 className="text-2xl font-bold">Career Ready!</h3>
+
+      {/* Landing footer */}
+      <div style={{
+        border: `1px solid ${overallPct === 100 ? T.doneBorder : T.border}`,
+        borderRadius: 10, padding: '14px 20px',
+        background: overallPct === 100 ? T.done : T.surface,
+        display: 'flex', alignItems: 'center', gap: 12,
+      }}>
+        <AirplaneLanding size={18} style={{ color: overallPct === 100 ? T.textDone : T.textSub }} />
+        <div>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '-0.01em', color: overallPct === 100 ? T.textDone : T.textPrimary }}>
+            {overallPct === 100 ? 'Destination reached — Career Ready!' : `${role.title} · Destination`}
           </div>
-          <p className="text-muted-foreground">Complete all milestones to become job-ready in {role.title}</p>
-        </Card>
+          <div style={{ fontSize: 10, color: T.textSub, marginTop: 2 }}>
+            {overallPct === 100 ? 'All milestones complete. Time to apply!' : `${totalItems - totalDone} items remaining`}
+          </div>
+        </div>
       </div>
+
       {selectedItem && (
         <MilestoneNoteDialog open={noteDialogOpen} onOpenChange={setNoteDialogOpen} roleId={role.id} item={selectedItem} />
       )}
