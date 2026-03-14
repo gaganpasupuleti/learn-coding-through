@@ -110,11 +110,15 @@ export function CareerMapperPage() {
     localStorage.setItem(SELECTED_ROLE_KEY, JSON.stringify(role))
     setInsightsPanelOpen(false)
     setFlowModalOpen(false)
+    setSubView('roadmap')
+    setActiveQuizId(null)
+    setActiveProjectId(null)
   }
 
   const clearRole = () => {
     setSelectedRole(null)
     localStorage.removeItem(SELECTED_ROLE_KEY)
+    setSubView('roadmap')
   }
 
   const handleAnalyzerClose = (open: boolean) => {
@@ -248,6 +252,27 @@ export function CareerMapperPage() {
           )}
         </div>
       </div>
+    )
+  }
+
+  // ── Sub-view full-screen overrides (quiz / project) ──────────────────────
+  if (subView === 'quiz' && activeQuizId) {
+    return (
+      <QuizPage
+        initialQuizId={activeQuizId}
+        onBack={handleSubViewBack}
+        onComplete={(passed) => handleSubViewComplete(passed)}
+      />
+    )
+  }
+
+  if (subView === 'project' && activeProjectId) {
+    return (
+      <ProjectLearningPage
+        projectId={activeProjectId}
+        onBack={handleSubViewBack}
+        onComplete={() => handleSubViewComplete()}
+      />
     )
   }
 
@@ -399,21 +424,7 @@ export function CareerMapperPage() {
           </div>
         )}
 
-        {/* Primary view: sub-view routing */}
-        {subView === 'quiz' && activeQuizId && (
-          <QuizPage
-            initialQuizId={activeQuizId}
-            onBack={handleSubViewBack}
-            onComplete={(passed) => handleSubViewComplete(passed)}
-          />
-        )}
-        {subView === 'project' && activeProjectId && (
-          <ProjectLearningPage
-            projectId={activeProjectId}
-            onBack={handleSubViewBack}
-            onComplete={() => handleSubViewComplete()}
-          />
-        )}
+        {/* Primary view: Learning Roadmap */}
         {subView === 'roadmap' && (
           <LearningRoadmap
             role={selectedRole}
