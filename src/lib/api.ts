@@ -193,10 +193,15 @@ export async function executeCode(
   }
 
   try {
+    const token = localStorage.getItem('career-portal-token')
+    const authHeaders: Record<string, string> = token
+      ? { Authorization: `Bearer ${token}` }
+      : {}
     const response = await fetch(`${API_BASE_URL}/api/execute`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...authHeaders,
       },
       body: JSON.stringify({
         code,
@@ -356,4 +361,194 @@ export async function updateAdminStudent(
     body: JSON.stringify(payload),
   })
   return parseOrThrow(response) as Promise<AdminStudent>
+}
+
+// ── Catalog types ──────────────────────────────────────────────────────────────
+
+export type CatalogQuizQuestionType =
+  | 'multiple-choice'
+  | 'true-false'
+  | 'code-completion'
+  | 'code-output'
+
+interface CatalogBaseQuestion {
+  id: number
+  type: CatalogQuizQuestionType
+  title: string
+  prompt: string
+  explanation: string
+  code?: string | null
+  language?: string | null
+}
+
+export interface CatalogChoiceQuestion extends CatalogBaseQuestion {
+  type: 'multiple-choice' | 'true-false'
+  options: string[]
+  correctIndex: number
+}
+
+export interface CatalogCodeCompletionQuestion extends CatalogBaseQuestion {
+  type: 'code-completion'
+  answer: string
+  acceptableAnswers?: string[] | null
+}
+
+export interface CatalogCodeOutputQuestion extends CatalogBaseQuestion {
+  type: 'code-output'
+  expectedOutput: string
+}
+
+export type CatalogQuizQuestion =
+  | CatalogChoiceQuestion
+  | CatalogCodeCompletionQuestion
+  | CatalogCodeOutputQuestion
+
+export interface CatalogQuiz {
+  id: string
+  title: string
+  description: string
+  difficulty: 'beginner'
+  estimatedTime: string
+  questions: CatalogQuizQuestion[]
+}
+
+export interface CatalogQuizSummary {
+  id: string
+  title: string
+  description: string
+  difficulty: 'beginner'
+  estimatedTime: string
+  questionCount: number
+}
+
+export interface CatalogProjectStepContent {
+  description?: string | null
+  points?: string[] | null
+  code?: string | null
+  language?: string | null
+  challenge?: string | null
+  hint?: string | null
+  walkthroughGif?: string | null
+  walkthroughCaption?: string | null
+}
+
+export interface CatalogProjectStep {
+  id: number
+  title: string
+  type: 'understanding' | 'logic' | 'code' | 'preview' | 'challenge'
+  content: CatalogProjectStepContent
+}
+
+export interface CatalogProject {
+  id: string
+  title: string
+  description: string
+  shortDescription: string
+  difficulty: 'beginner'
+  estimatedTime: string
+  steps: CatalogProjectStep[]
+}
+
+export interface CatalogProjectSummary {
+  id: string
+  title: string
+  description: string
+  shortDescription: string
+  difficulty: 'beginner'
+  estimatedTime: string
+  stepCount: number
+}
+
+// ── Catalog fetch functions ────────────────────────────────────────────────────
+
+export async function fetchCatalogQuizzes(): Promise<CatalogQuizSummary[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/quiz/catalog`)
+  return parseOrThrow(response) as Promise<CatalogQuizSummary[]>
+}
+
+export async function fetchCatalogQuiz(slug: string): Promise<CatalogQuiz> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/quiz/catalog/${encodeURIComponent(slug)}`)
+  return parseOrThrow(response) as Promise<CatalogQuiz>
+}
+
+export async function fetchCatalogProjects(): Promise<CatalogProjectSummary[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/projects/catalog`)
+  return parseOrThrow(response) as Promise<CatalogProjectSummary[]>
+}
+
+export async function fetchCatalogProject(slug: string): Promise<CatalogProject> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/projects/catalog/${encodeURIComponent(slug)}`)
+  return parseOrThrow(response) as Promise<CatalogProject>
+}
+
+// ── User progress ──────────────────────────────────────────────────────────────
+
+export interface CompletedStep {
+  projectSlug: string
+  stepId: number
+}
+
+export interface UserCatalogProgress {
+  completedSteps: CompletedStep[]
+}
+
+export async function fetchUserProgress(): Promise<UserCatalogProgress> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/progress/catalog`)
+  return parseOrThrow(response) as Promise<UserCatalogProgress>
+}
+
+export async function saveProjectStepProgress(projectSlug: string, stepId: number): Promise<void> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/progress/project/${encodeURIComponent(projectSlug)}/step/${stepId}`,
+    { method: 'POST' },
+  )
+  if (!response.ok) {
+    // Non-blocking: log but don't crash the UI
+    console.warn('Failed to save step progress:', response.status)
+  }
+}
+
+// ── Career Mapper ──────────────────────────────────────────────────────────────
+
+import type { CareerRole } from '@/types/career'
+import { careerSeedData } from '@/lib/career-seed-data'
+
+interface BackendRoleBasic {
+  id: number
+  name: string
+  skills_required: string[]
+  salary_range: string
+  companies_hiring: string[]
+  difficulty_level: string
+  estimated_duration_weeks: number
+}
+
+/**
+ * Fetches career roles merging backend metadata with frontend seed data (syllabus).
+ * Falls back to seed data if the backend is unavailable.
+ */
+export async function fetchCareerRoles(): Promise<CareerRole[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/roles`)
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const backendRoles: BackendRoleBasic[] = await response.json()
+    const enriched = backendRoles
+      .map((br) => {
+        const slug = br.name.toLowerCase().replace(/\s+/g, '-')
+        const seed = careerSeedData.find((r) => r.slug === slug)
+        if (!seed) return null
+        return { ...seed, skills: br.skills_required }
+      })
+      .filter((r): r is CareerRole => r !== null)
+    return enriched.length > 0 ? enriched : careerSeedData.filter((r) => r.isActive)
+  } catch {
+    return careerSeedData.filter((r) => r.isActive)
+  }
+}
+
+export async function fetchCareerRole(slug: string): Promise<CareerRole> {
+  const roles = await fetchCareerRoles()
+  const role = roles.find((r) => r.slug === slug)
+  if (!role) throw new Error(`Career role not found: ${slug}`)
+  return role
 }

@@ -1,587 +1,395 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import { Separator } from '@/components/ui/separator'
-import { CheckCircle, Lock, Briefcase, CurrencyDollar, Timer, Target, ListChecks } from '@phosphor-icons/react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import {
-  ApiError,
-  BackendRole,
-  BackendRoadmapStage,
-  clearStoredToken,
-  ensureRoadmapperToken,
-  fetchProgress,
-  fetchRoadmap,
-  fetchRoles,
-  getStoredToken,
-  updateProgress,
-} from '@/lib/roadmapper-api'
+  ArrowLeft,
+  Brain,
+  Briefcase,
+  ChartLine,
+  CurrencyDollar,
+  Lightning,
+  MagnifyingGlass,
+  MapTrifold,
+  Sparkle,
+  Timer,
+} from '@phosphor-icons/react'
 import { toast } from 'sonner'
+import { fetchCareerRoles } from '@/lib/api'
+import { useCareerProgress } from '@/hooks/use-career-progress'
+import { useSkillAssessments } from '@/hooks/use-skill-assessments'
+import { useMLRecommendations } from '@/hooks/use-ml-recommendations'
+import type { CareerRole } from '@/types/career'
+import { FlowChart3D } from './FlowChart3D'
+import { LearningRoadmap } from './LearningRoadmap'
+import { SkillGapAnalyzer } from './SkillGapAnalyzer'
+import { MLCareerRecommendationCard } from './MLRecommendationCard'
 
-interface StageMetrics {
-  quizScore: number
-  exerciseCompletion: number
+const SELECTED_ROLE_KEY = 'career-mapper-selected-role'
+
+// ── Design tokens ──────────────────────────────────────────────────────────
+const STYLE = {
+  bg:      'var(--background)',
+  surface: 'var(--card)',
+  border:  'var(--border)',
+  txt:     'var(--foreground)',
+  sub:     'var(--muted-foreground)',
+  accent:  '#818cf8',
+} as const
+
+const DOMAIN_ICON: Record<string, React.ReactNode> = {
+  Data:   <ChartLine size={16} />,
+  AI:     <Brain size={16} />,
+  Web:    <Lightning size={16} />,
+  DevOps: <Sparkle size={16} />,
 }
 
-const defaultMetrics: StageMetrics = {
-  quizScore: 0,
-  exerciseCompletion: 0,
-}
-
-const SELECTED_ROLE_KEY = 'career-portal-selected-role-id'
-
-const getDifficultyBadgeVariant = (difficulty: string) => {
-  if (difficulty === 'beginner') return 'secondary'
-  if (difficulty === 'intermediate') return 'outline'
-  return 'default'
-}
-
-const formatApiError = (error: unknown, fallback: string) => {
-  if (error instanceof ApiError) {
-    const endpoint = error.endpoint.startsWith('/') ? error.endpoint : `/${error.endpoint}`
-    const status = error.status === 0 ? 'NETWORK' : String(error.status)
-    return `[${status}] ${endpoint}: ${error.message}`
-  }
-  if (error instanceof Error) {
-    return error.message
-  }
-  return fallback
+const DIFF_COLOR: Record<string, string> = {
+  Beginner:     '#4ade80',
+  Intermediate: '#fbbf24',
+  Advanced:     '#f87171',
 }
 
 export function CareerMapperPage() {
-  const [roles, setRoles] = useState<BackendRole[]>([])
-  const [selectedRoleId, setSelectedRoleId] = useState<number | null>(() => {
-    const stored = localStorage.getItem(SELECTED_ROLE_KEY)
-    if (!stored) return null
-    const parsed = Number(stored)
-    return Number.isFinite(parsed) ? parsed : null
+  const [roles, setRoles]               = useState<CareerRole[]>([])
+  const [selectedRole, setSelectedRole] = useState<CareerRole | null>(() => {
+    try {
+      const s = localStorage.getItem(SELECTED_ROLE_KEY)
+      return s ? (JSON.parse(s) as CareerRole) : null
+    } catch { return null }
   })
-  const [activeStageId, setActiveStageId] = useState<number | null>(null)
-  const [stageMetrics, setStageMetrics] = useState<Record<number, StageMetrics>>({})
-  const [roadmapStages, setRoadmapStages] = useState<BackendRoadmapStage[]>([])
-  const [token, setToken] = useState<string | null>(() => getStoredToken())
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
-  const [apiError, setApiError] = useState<string | null>(null)
+  const [flowModalOpen, setFlowModalOpen]         = useState(false)
+  const [insightsPanelOpen, setInsightsPanelOpen] = useState(false)
+  const [analyzerOpen, setAnalyzerOpen]           = useState(false)
+  const [isLoading, setIsLoading]                 = useState(true)
 
-  const selectedRole = useMemo(
-    () => roles.find((role) => role.id === selectedRoleId) ?? null,
-    [roles, selectedRoleId]
+  const { progress, toggleItem } = useCareerProgress(selectedRole?.id ?? 'none')
+  const { skillReports, getReport } = useSkillAssessments()
+  const { generateAllCareerRecommendations, getTopCareerRecommendations } = useMLRecommendations()
+
+  const completedSet = useMemo(
+    () => new Set<string>(Object.entries(progress.completedItems).filter(([,v]) => v).map(([k]) => k)),
+    [progress]
   )
 
-  const getStageMetrics = (stageId: number): StageMetrics => {
-    return stageMetrics[stageId] ?? defaultMetrics
-  }
+  const currentReport = selectedRole ? getReport(selectedRole.id) : undefined
+  const topRecos      = getTopCareerRecommendations(3)
 
-  const chooseRole = (roleId: number) => {
-    setSelectedRoleId(roleId)
-    localStorage.setItem(SELECTED_ROLE_KEY, String(roleId))
-  }
-
-  const resetSelectedRole = () => {
-    setSelectedRoleId(null)
-    setRoadmapStages([])
-    setActiveStageId(null)
-    localStorage.removeItem(SELECTED_ROLE_KEY)
-  }
+  // Derived counts from assessments
+  const profCount  = currentReport?.assessments.filter(a => a.level === 'proficient').length ?? 0
+  const partCount  = currentReport?.assessments.filter(a => a.level === 'partial').length ?? 0
+  const noneCount  = currentReport?.assessments.filter(a => a.level === 'none').length ?? 0
 
   useEffect(() => {
-    const loadRolesAndProgress = async () => {
-      if (!token) {
-        try {
-          setIsLoading(true)
-          setApiError(null)
-          const autoToken = await ensureRoadmapperToken()
-          setToken(autoToken)
-        } catch (error) {
-          const message = formatApiError(error, 'Failed to initialize Roadmapper session.')
-          setApiError(message)
-          toast.error(message)
-        } finally {
-          setIsLoading(false)
-        }
-        return
-      }
-
+    ;(async () => {
       try {
         setIsLoading(true)
-        setApiError(null)
-
-        const [loadedRoles, progressRecords] = await Promise.all([
-          fetchRoles(),
-          fetchProgress(token),
-        ])
-
-        setRoles(loadedRoles)
-        setSelectedRoleId((current) => {
-          if (current && loadedRoles.some((role) => role.id === current)) {
-            return current
-          }
-          localStorage.removeItem(SELECTED_ROLE_KEY)
-          return null
-        })
-
-        const mappedProgress = progressRecords.reduce<Record<number, StageMetrics>>((acc, record) => {
-          acc[record.stage_id] = {
-            quizScore: record.latest_quiz_score,
-            exerciseCompletion: record.exercises_completed_pct,
-          }
-          return acc
-        }, {})
-        setStageMetrics(mappedProgress)
-      } catch (error) {
-        const message = formatApiError(error, 'Failed to load roles and progress.')
-        setApiError(message)
-        toast.error(message)
-        if (error instanceof ApiError && error.status === 401) {
-          clearStoredToken()
-          setToken(null)
+        const loaded = await fetchCareerRoles()
+        setRoles(loaded)
+        if (selectedRole) {
+          const fresh = loaded.find(r => r.id === selectedRole.id)
+          if (fresh) setSelectedRole(fresh)
         }
+      } catch {
+        toast.error('Failed to load career roles. Using local data.')
       } finally {
         setIsLoading(false)
       }
-    }
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-    loadRolesAndProgress()
-  }, [token])
-
-  useEffect(() => {
-    const loadRoadmap = async () => {
-      if (!token || !selectedRoleId) {
-        return
-      }
-
-      try {
-        setApiError(null)
-        const roadmap = await fetchRoadmap(selectedRoleId, token)
-        setRoadmapStages(roadmap.stages)
-        setActiveStageId((current) => {
-          if (current && roadmap.stages.some((stage) => stage.id === current)) {
-            return current
-          }
-          return roadmap.stages[0]?.id ?? null
-        })
-      } catch (error) {
-        const message = formatApiError(error, 'Failed to load roadmap stages.')
-        setApiError(message)
-        toast.error(message)
-      }
-    }
-
-    loadRoadmap()
-  }, [selectedRoleId, token])
-
-  const isStageUnlocked = (stageId: number) => {
-    const stageIndex = roadmapStages.findIndex((stage) => stage.id === stageId)
-    if (stageIndex <= 0) return true
-
-    const previousStage = roadmapStages[stageIndex - 1]
-    if (!previousStage) return false
-
-    const previousMetrics = getStageMetrics(previousStage.id)
-    return previousMetrics.quizScore >= previousStage.unlock_quiz_score
+  const chooseRole = (role: CareerRole) => {
+    setSelectedRole(role)
+    localStorage.setItem(SELECTED_ROLE_KEY, JSON.stringify(role))
+    setInsightsPanelOpen(false)
+    setFlowModalOpen(false)
   }
 
-  const updateMetric = async (stageId: number, field: keyof StageMetrics, value: number) => {
-    if (!token || !selectedRoleId) {
-      toast.error('Session unavailable. Please refresh and try again.')
-      return
-    }
+  const clearRole = () => {
+    setSelectedRole(null)
+    localStorage.removeItem(SELECTED_ROLE_KEY)
+  }
 
-    const clampedValue = Math.max(0, Math.min(100, value))
-    const current = stageMetrics[stageId] ?? defaultMetrics
-    const updated = {
-      ...current,
-      [field]: clampedValue,
-    }
-
-    setStageMetrics((prev) => ({
-      ...prev,
-      [stageId]: updated,
-    }))
-
-    try {
-      setIsSaving(true)
-      setApiError(null)
-      await updateProgress(
-        {
-          role_id: selectedRoleId,
-          stage_id: stageId,
-          lessons_completed: updated.exerciseCompletion > 0 ? 1 : 0,
-          total_lessons: 1,
-          exercises_completed_pct: updated.exerciseCompletion,
-          latest_quiz_score: updated.quizScore,
-        },
-        token
-      )
-    } catch (error) {
-      const message = formatApiError(error, 'Failed to save progress.')
-      setApiError(message)
-      toast.error(message)
-    } finally {
-      setIsSaving(false)
+  const handleAnalyzerClose = (open: boolean) => {
+    setAnalyzerOpen(open)
+    if (!open && selectedRole) {
+      const report = getReport(selectedRole.id)
+      if (report) generateAllCareerRecommendations(roles, Object.values(skillReports))
     }
   }
 
-  const activeStage = roadmapStages.find((stage) => stage.id === activeStageId) ?? roadmapStages[0]
-  const activeMetrics = activeStage ? getStageMetrics(activeStage.id) : defaultMetrics
-  const activeStageIndex = activeStage ? roadmapStages.findIndex((stage) => stage.id === activeStage.id) : -1
-  const nextStage = activeStageIndex >= 0 ? roadmapStages[activeStageIndex + 1] : undefined
-
-  const overallProgress = Math.round(
-    ((roadmapStages.length > 0
-      ? roadmapStages.filter((stage) => {
-      const metrics = getStageMetrics(stage.id)
-      return metrics.quizScore >= stage.unlock_quiz_score
-    }).length
-      : 0) /
-      Math.max(roadmapStages.length, 1)) *
-      100
-  )
-
-  const activeStageTopics = ['Core Concepts', 'Hands-on Practice', 'Assessment Readiness']
-
-  const completedStages = roadmapStages.filter((stage) => {
-    const metrics = getStageMetrics(stage.id)
-    const requiredExercise = stage.unlock_exercise_completion ?? 0
-    return metrics.quizScore >= stage.unlock_quiz_score && metrics.exerciseCompletion >= requiredExercise
-  })
-
-  const inProgressStages = roadmapStages.filter((stage) => {
-    const metrics = getStageMetrics(stage.id)
-    const requiredExercise = stage.unlock_exercise_completion ?? 0
-    const isCompleted = metrics.quizScore >= stage.unlock_quiz_score && metrics.exerciseCompletion >= requiredExercise
-    return isStageUnlocked(stage.id) && !isCompleted
-  })
-
-  const pendingLockedStages = roadmapStages.filter((stage) => !isStageUnlocked(stage.id))
-
-  const activeStageAssignments = activeStage
-    ? [
-      {
-        label: `Reach quiz score ${activeStage.unlock_quiz_score}%`,
-        done: activeMetrics.quizScore >= activeStage.unlock_quiz_score,
-      },
-      {
-        label: `Reach exercise completion ${activeStage.unlock_exercise_completion ?? 80}%`,
-        done: activeMetrics.exerciseCompletion >= (activeStage.unlock_exercise_completion ?? 80),
-      },
-      {
-        label: nextStage ? `Unlock next stage: ${nextStage.title}` : 'Complete capstone and interview prep',
-        done: nextStage ? isStageUnlocked(nextStage.id) : completedStages.length === roadmapStages.length && roadmapStages.length > 0,
-      },
-    ]
-    : []
-
-  if (!token && isLoading) {
+  // ── Role grid ──────────────────────────────────────────────────────────────
+  if (!selectedRole) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
-        <div className="container mx-auto px-6 py-10 max-w-xl">
-          <Card className="p-6 border-2 space-y-3">
-            <h1 className="text-2xl font-bold">Career Mapper</h1>
-            <p className="text-sm text-muted-foreground">Preparing your Career Mapper session...</p>
-            {apiError && (
-              <div className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-                {apiError}
-              </div>
-            )}
-          </Card>
+      <div style={{ minHeight: '100vh', background: STYLE.bg, padding: '40px 24px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          {/* Page header */}
+          <div style={{ marginBottom: 32 }}>
+            <h1 style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em', color: STYLE.txt, marginBottom: 6 }}>
+              Career Mapper
+            </h1>
+            <p style={{ fontSize: 13, color: STYLE.sub }}>
+              Choose a career path, explore your 4-month syllabus, and track your progress with AI insights.
+            </p>
+          </div>
+
+          {/* Skeleton or grid */}
+          {isLoading ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: 16 }}>
+              {[...Array(6)].map((_, i) => (
+                <div key={i} style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: 20, background: STYLE.surface }}>
+                  <div style={{ height: 14, width: '60%', background: 'var(--muted)', borderRadius: 4, marginBottom: 10 }} />
+                  <div style={{ height: 10, width: '40%', background: 'var(--muted)', borderRadius: 4, marginBottom: 16 }} />
+                  <div style={{ height: 32, background: 'var(--muted)', borderRadius: 6 }} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: 16 }}>
+              {roles.map(role => (
+                <div
+                  key={role.id}
+                  onClick={() => chooseRole(role)}
+                  style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: 20, background: STYLE.surface,
+                    cursor: 'pointer', transition: 'border-color 0.15s', display: 'flex', flexDirection: 'column', gap: 12 }}
+                  onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.borderColor = STYLE.accent}
+                  onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.borderColor = STYLE.border}
+                >
+                  {/* Title row */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ color: STYLE.accent }}>{DOMAIN_ICON[role.domain] ?? <Briefcase size={16} />}</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: STYLE.txt }}>{role.title}</span>
+                    </div>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: DIFF_COLOR[role.difficulty] ?? STYLE.sub,
+                      border: `1px solid ${DIFF_COLOR[role.difficulty] ?? STYLE.border}`, borderRadius: 3, padding: '1px 6px', whiteSpace: 'nowrap' }}>
+                      {role.difficulty.toUpperCase()}
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <p style={{ fontSize: 11, color: STYLE.sub, lineHeight: 1.6,
+                    overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                    {role.description}
+                  </p>
+
+                  {/* Meta */}
+                  <div style={{ display: 'flex', gap: 16, fontSize: 10, color: STYLE.sub }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <CurrencyDollar size={11} />
+                      ${Math.round(role.salaryRangeMin / 1000)}k–${Math.round(role.salaryRangeMax / 1000)}k
+                    </span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Timer size={11} />
+                      4 months
+                    </span>
+                  </div>
+
+                  {/* Skills */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                    {role.skills.slice(0, 5).map(skill => (
+                      <span key={skill} style={{ fontSize: 9, color: STYLE.sub, border: `1px solid ${STYLE.border}`,
+                        borderRadius: 3, padding: '1px 6px' }}>{skill}</span>
+                    ))}
+                    {role.skills.length > 5 && (
+                      <span style={{ fontSize: 9, color: STYLE.sub, border: `1px solid ${STYLE.border}`, borderRadius: 3, padding: '1px 6px' }}>
+                        +{role.skills.length - 5}
+                      </span>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={e => { e.stopPropagation(); chooseRole(role) }}
+                    style={{ marginTop: 4, padding: '8px 0', border: `1px solid ${STYLE.accent}`, borderRadius: 6,
+                      background: 'transparent', color: STYLE.accent, fontSize: 11, fontWeight: 700,
+                      cursor: 'pointer', letterSpacing: '0.02em' }}>
+                    Explore Path →
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     )
   }
 
+  // ── Role detail view ───────────────────────────────────────────────────────
+  const completionPct = selectedRole.syllabus.length > 0
+    ? Math.round((completedSet.size / selectedRole.syllabus.length) * 100)
+    : 0
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
-      <div className="container mx-auto px-6 py-8">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="space-y-2">
-            <h1 className="text-3xl md:text-4xl font-bold">Career Mapper</h1>
-            <p className="text-muted-foreground text-lg">
-              Choose a target role, complete stages, and unlock your job-focused acceleration path.
-            </p>
+    <div style={{ minHeight: '100vh', background: STYLE.bg, padding: '24px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        {/* Back */}
+        <button
+          type="button"
+          onClick={clearRole}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none',
+            color: STYLE.sub, fontSize: 11, cursor: 'pointer', marginBottom: 20, padding: 0 }}>
+          <ArrowLeft size={13} /> All Roles
+        </button>
+
+        {/* Role header */}
+        <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: '16px 20px', marginBottom: 24, background: STYLE.surface }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+            <h1 style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.02em', color: STYLE.txt }}>{selectedRole.title}</h1>
+            <span style={{ fontSize: 9, fontWeight: 700, color: DIFF_COLOR[selectedRole.difficulty] ?? STYLE.sub,
+              border: `1px solid ${DIFF_COLOR[selectedRole.difficulty] ?? STYLE.border}`, borderRadius: 3, padding: '1px 6px' }}>
+              {selectedRole.difficulty.toUpperCase()}
+            </span>
+            <span style={{ fontSize: 9, color: STYLE.sub, border: `1px solid ${STYLE.border}`, borderRadius: 3, padding: '1px 6px' }}>
+              {selectedRole.domain}
+            </span>
           </div>
-
-          {apiError && (
-            <div className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-              {apiError}
-            </div>
-          )}
-
-          {!selectedRole ? (
-            <Card className="p-6 border-2 space-y-4">
-              <div className="space-y-2">
-                <h2 className="text-2xl font-bold">Career Explorer</h2>
-                <p className="text-sm text-muted-foreground">
-                  Explore role outcomes first. Choose one role to start your staged learning path.
-                </p>
-              </div>
-
-              {!isLoading && roles.length === 0 && (
-                <div className="rounded-md border border-border p-4 text-sm text-muted-foreground">
-                  No roles available right now. Please try again shortly.
-                </div>
-              )}
-
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {roles.map((role) => (
-                  <Card key={role.id} className="p-4 space-y-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className="text-lg font-semibold">{role.name}</h3>
-                      <Badge variant={getDifficultyBadgeVariant(role.difficulty_level)}>{role.difficulty_level}</Badge>
-                    </div>
-
-                    <div className="text-sm text-muted-foreground space-y-1">
-                      <div className="flex items-center gap-2"><CurrencyDollar size={14} /> {role.salary_range}</div>
-                      <div className="flex items-center gap-2"><Timer size={14} /> {role.estimated_duration_weeks} weeks</div>
-                    </div>
-
-                    <div>
-                      <div className="text-xs font-semibold mb-2">Top Skills</div>
-                      <div className="flex flex-wrap gap-2">
-                        {role.skills_required.slice(0, 4).map((skill) => (
-                          <Badge key={skill} variant="secondary">{skill}</Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    <Button className="w-full" onClick={() => chooseRole(role.id)} disabled={isLoading}>
-                      Choose This Role
-                    </Button>
-                  </Card>
-                ))}
-              </div>
-
-              {isLoading && (
-                <div className="text-xs text-muted-foreground">Connecting to backend and loading roles...</div>
-              )}
-            </Card>
-          ) : (
-            <div className="space-y-6">
-              <Card className="p-6 space-y-4 border-2">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-2xl font-bold">{selectedRole.name}</h2>
-                    <Badge variant={getDifficultyBadgeVariant(selectedRole.difficulty_level)}>
-                      {selectedRole.difficulty_level}
-                    </Badge>
-                  </div>
-                  <Button variant="outline" onClick={resetSelectedRole}>Change Role</Button>
-                </div>
-
-                <div className="grid md:grid-cols-3 gap-3 text-sm">
-                  <div className="rounded-lg border p-3 bg-card">
-                    <div className="flex items-center gap-2 font-semibold"><CurrencyDollar size={16} /> Salary</div>
-                    <div className="text-muted-foreground mt-1">{selectedRole.salary_range}</div>
-                  </div>
-                  <div className="rounded-lg border p-3 bg-card">
-                    <div className="flex items-center gap-2 font-semibold"><Timer size={16} /> Duration</div>
-                    <div className="text-muted-foreground mt-1">{selectedRole.estimated_duration_weeks} weeks</div>
-                  </div>
-                  <div className="rounded-lg border p-3 bg-card">
-                    <div className="flex items-center gap-2 font-semibold"><Target size={16} /> Progress</div>
-                    <div className="text-muted-foreground mt-1">{overallProgress}% completed</div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-sm font-semibold mb-2">Skills Required</div>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedRole.skills_required.map((skill) => (
-                      <Badge key={skill} variant="secondary">{skill}</Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-sm font-semibold mb-2">Companies Hiring</div>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedRole.companies_hiring.map((company) => (
-                      <Badge key={company} variant="outline">
-                        <Briefcase size={12} className="mr-1" />
-                        {company}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-6 border-2 space-y-4">
-                <div className="flex items-center gap-2">
-                  <ListChecks size={18} className="text-primary" weight="duotone" />
-                  <h3 className="text-xl font-semibold">Stage Progress & Pending Assignments</h3>
-                </div>
-
-                <div className="grid lg:grid-cols-3 gap-4 text-sm">
-                  <div className="rounded-lg border p-4 bg-card space-y-3">
-                    <div className="font-semibold">Completed So Far ({completedStages.length})</div>
-                    {completedStages.length === 0 ? (
-                      <p className="text-muted-foreground">No stage fully completed yet.</p>
-                    ) : (
-                      <div className="flex flex-wrap gap-2">
-                        {completedStages.map((stage) => (
-                          <Badge key={stage.id} variant="secondary" className="bg-emerald-500/15 text-emerald-700 border-emerald-500/30">
-                            <CheckCircle size={12} className="mr-1" weight="fill" />
-                            {stage.title}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="rounded-lg border p-4 bg-card space-y-3">
-                    <div className="font-semibold">Current Stage</div>
-                    <div className="text-muted-foreground">{activeStage?.title ?? 'No active stage selected'}</div>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline">In Progress: {inProgressStages.length}</Badge>
-                      <Badge variant="outline">Locked: {pendingLockedStages.length}</Badge>
-                    </div>
-                  </div>
-
-                  <div className="rounded-lg border p-4 bg-card space-y-3">
-                    <div className="font-semibold">Pending Tasks / Assignments</div>
-                    {activeStageAssignments.length === 0 ? (
-                      <p className="text-muted-foreground">Select a stage to see assignments.</p>
-                    ) : (
-                      <div className="space-y-2">
-                        {activeStageAssignments.map((assignment) => (
-                          <div key={assignment.label} className="flex items-start gap-2">
-                            {assignment.done ? (
-                              <CheckCircle size={14} className="text-emerald-600 mt-0.5" weight="fill" />
-                            ) : (
-                              <Lock size={14} className="text-amber-600 mt-0.5" />
-                            )}
-                            <span className={assignment.done ? 'text-foreground' : 'text-muted-foreground'}>{assignment.label}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </Card>
-
-              <div className="grid xl:grid-cols-[380px_1fr] gap-6">
-                <Card className="p-6 space-y-4 border-2 h-fit">
-                  <h3 className="text-xl font-semibold">Stage Roadmap</h3>
-                  <div className="space-y-3">
-                    {!isLoading && roadmapStages.length === 0 && (
-                      <div className="rounded-md border border-border p-4 text-sm text-muted-foreground">
-                        No stages found for this role yet.
-                      </div>
-                    )}
-                    {roadmapStages.map((stage) => {
-                      const unlocked = isStageUnlocked(stage.id)
-                      const metrics = getStageMetrics(stage.id)
-                      const stageCompleted = metrics.quizScore >= stage.unlock_quiz_score
-
-                      return (
-                        <button
-                          key={stage.id}
-                          type="button"
-                          className={`w-full text-left rounded-lg border p-4 transition-all ${
-                            activeStage?.id === stage.id
-                              ? 'border-primary bg-primary/5'
-                              : 'border-border bg-card'
-                          } ${!unlocked ? 'opacity-70 cursor-not-allowed' : 'hover:border-primary/40'}`}
-                          onClick={() => unlocked && setActiveStageId(stage.id)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="font-semibold">{stage.title}</div>
-                            {unlocked ? (
-                              stageCompleted ? (
-                                <CheckCircle size={18} className="text-emerald-600" weight="fill" />
-                              ) : (
-                                <Badge variant="outline">Open</Badge>
-                              )
-                            ) : (
-                              <Lock size={18} className="text-muted-foreground" />
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground mt-1">{stage.description}</p>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </Card>
-
-                <Card className="p-6 border-2 space-y-4">
-                  <div>
-                    <h3 className="text-xl font-semibold">{activeStage?.title ?? 'Loading stage...'}</h3>
-                    <p className="text-muted-foreground mt-1">{activeStage?.description ?? 'Please wait while stages load.'}</p>
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-2">
-                    <div className="text-sm font-semibold">Topics</div>
-                    <ul className="list-disc ml-5 text-sm text-muted-foreground space-y-1">
-                      {activeStageTopics.map((topic) => (
-                        <li key={topic}>{topic}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <div className="text-sm font-semibold">Quiz Score ({activeMetrics.quizScore}%)</div>
-                      <Progress value={activeMetrics.quizScore} className="h-2" />
-                      <div className="flex gap-2">
-                        {[50, 70, 85].map((score) => (
-                          <Button
-                            key={score}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => activeStage && updateMetric(activeStage.id, 'quizScore', score)}
-                            disabled={!activeStage || isSaving || isLoading}
-                          >
-                            Set {score}%
-                          </Button>
-                        ))}
-                      </div>
-                      <p className="text-xs text-muted-foreground">Required: {activeStage?.unlock_quiz_score ?? 70}%</p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="text-sm font-semibold">Exercise Completion ({activeMetrics.exerciseCompletion}%)</div>
-                      <Progress value={activeMetrics.exerciseCompletion} className="h-2" />
-                      <div className="flex gap-2">
-                        {[60, 80, 100].map((score) => (
-                          <Button
-                            key={score}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => activeStage && updateMetric(activeStage.id, 'exerciseCompletion', score)}
-                            disabled={!activeStage || isSaving || isLoading}
-                          >
-                            Set {score}%
-                          </Button>
-                        ))}
-                      </div>
-                      <p className="text-xs text-muted-foreground">Recommended: {activeStage?.unlock_exercise_completion ?? 80}%</p>
-                    </div>
-                  </div>
-
-                  <div className="rounded-lg border p-4 bg-muted/40 text-sm">
-                    {!nextStage
-                      ? 'Final stage selected. Focus on capstone, resume building, and interview prep.'
-                      : isStageUnlocked(nextStage.id)
-                        ? 'Next stage is unlocked. Continue with projects, interview prep, and resume tasks.'
-                        : 'Pass the stage quiz to unlock the next stage.'}
-                  </div>
-
-                  {isLoading && (
-                    <div className="text-xs text-muted-foreground">Connecting to backend and loading roadmap...</div>
-                  )}
-                  {isSaving && (
-                    <div className="text-xs text-muted-foreground">Saving progress...</div>
-                  )}
-                </Card>
-              </div>
-            </div>
-          )}
+          <p style={{ fontSize: 11, color: STYLE.sub, marginBottom: 10, lineHeight: 1.6 }}>{selectedRole.description}</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 10, color: STYLE.sub, marginBottom: 10 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><CurrencyDollar size={11} />${Math.round(selectedRole.salaryRangeMin / 1000)}k–${Math.round(selectedRole.salaryRangeMax / 1000)}k</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Timer size={11} />4-month curriculum</span>
+            <span style={{ fontWeight: 700, color: STYLE.accent }}>{completionPct}% complete</span>
+          </div>
+          <div style={{ height: 1, background: STYLE.border, overflow: 'hidden', borderRadius: 1 }}>
+            <div style={{ height: 1, background: STYLE.accent, width: `${completionPct}%`, transition: 'width 0.5s' }} />
+          </div>
         </div>
+
+        {/* View mode toggle row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, gap: 12, flexWrap: 'wrap' }}>
+          {/* Pill toggle */}
+          <div style={{ display: 'flex', background: STYLE.surface, border: `1px solid ${STYLE.border}`, borderRadius: 8, padding: 3, gap: 2 }}>
+            <button type="button"
+              style={{ padding: '6px 14px', borderRadius: 6, border: 'none', cursor: 'default',
+                background: STYLE.accent, color: '#fff',
+                fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
+              <MapTrifold size={12} /> Roadmap
+            </button>
+            <button type="button" onClick={() => setFlowModalOpen(true)}
+              style={{ padding: '6px 14px', borderRadius: 6, border: 'none', cursor: 'pointer',
+                background: 'transparent', color: STYLE.sub,
+                fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5,
+                transition: 'color 0.15s' }}>
+              <ChartLine size={12} /> 3D Map ↗
+            </button>
+          </div>
+          {/* AI Insights toggle */}
+          <button type="button" onClick={() => setInsightsPanelOpen(v => !v)}
+            style={{ border: `1px solid ${insightsPanelOpen ? STYLE.accent : STYLE.border}`, borderRadius: 6,
+              padding: '6px 14px', background: 'transparent',
+              color: insightsPanelOpen ? STYLE.accent : STYLE.sub,
+              fontSize: 11, fontWeight: 700, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.15s' }}>
+            <Brain size={12} /> AI Insights
+          </button>
+        </div>
+
+        {/* AI Insights collapsible panel */}
+        {insightsPanelOpen && (
+          <div style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: '16px 20px', background: STYLE.surface }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: STYLE.txt, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <MagnifyingGlass size={14} style={{ color: STYLE.accent }} />
+                    Skill Gap Analysis
+                  </div>
+                  <p style={{ fontSize: 11, color: STYLE.sub }}>
+                    {currentReport
+                      ? 'Your personalised skill report is ready. Re-run to refresh.'
+                      : 'Answer a few questions to get a personalised skill gap report and AI recommendations.'}
+                  </p>
+                </div>
+                <button type="button" onClick={() => setAnalyzerOpen(true)}
+                  style={{ border: `1px solid ${STYLE.accent}`, borderRadius: 6, padding: '7px 14px', background: 'transparent',
+                    color: STYLE.accent, fontSize: 11, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Sparkle size={12} />
+                  {currentReport ? 'Re-run Assessment' : 'Start Assessment'}
+                </button>
+              </div>
+              {currentReport && (
+                <div style={{ marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {[
+                    { label: `${profCount} Proficient`, color: '#4ade80', border: '#166534' },
+                    { label: `${partCount} Partial`,    color: '#fbbf24', border: '#78350f' },
+                    { label: `${noneCount} To Learn`,   color: '#f87171', border: '#7f1d1d' },
+                  ].map(({ label, color, border }) => (
+                    <span key={label} style={{ fontSize: 10, color, border: `1px solid ${border}`, borderRadius: 4, padding: '2px 8px' }}>
+                      {label}
+                    </span>
+                  ))}
+                  {currentReport.canSkipMonths.length > 0 && (
+                    <span style={{ fontSize: 10, color: '#818cf8', border: '1px solid #3730a3', borderRadius: 4, padding: '2px 8px' }}>
+                      Skip Month {currentReport.canSkipMonths.join(', ')}
+                    </span>
+                  )}
+                  <span style={{ marginLeft: 'auto', fontSize: 10, color: STYLE.sub }}>
+                    {currentReport.overallReadiness}% ready
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {topRecos.length > 0 && (
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: STYLE.txt, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Brain size={14} style={{ color: STYLE.accent }} />
+                  Top Career Matches
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
+                  {topRecos.map((reco, idx) => {
+                    const matched = roles.find(r => r.id === reco.roleId)
+                    if (!matched) return null
+                    return (
+                      <MLCareerRecommendationCard
+                        key={reco.roleId}
+                        recommendation={reco}
+                        role={matched}
+                        rank={idx + 1}
+                        onView={() => chooseRole(matched)}
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {topRecos.length === 0 && !currentReport && (
+              <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: 40, textAlign: 'center', background: STYLE.surface }}>
+                <Brain size={40} style={{ color: STYLE.border, margin: '0 auto 12px' }} />
+                <p style={{ fontSize: 12, color: STYLE.sub }}>Run the skill assessment above to generate personalised career recommendations.</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Primary view: Learning Roadmap */}
+        <LearningRoadmap
+          role={selectedRole}
+          completedItems={completedSet}
+          isAuthenticated={true}
+          canSkipMonths={currentReport?.canSkipMonths}
+          focusMonths={currentReport?.focusMonths}
+          onToggleItem={toggleItem}
+        />
+
+        <SkillGapAnalyzer role={selectedRole} open={analyzerOpen} onOpenChange={handleAnalyzerClose} />
       </div>
+
+      {/* 3D Flowchart full-screen modal */}
+      {flowModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#0b0b0b', overflow: 'auto', padding: 24 }}>
+          <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+            <button type="button" onClick={() => setFlowModalOpen(false)}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none',
+                color: '#64748b', fontSize: 11, cursor: 'pointer', marginBottom: 20, padding: 0 }}>
+              <ArrowLeft size={13} /> Back to Roadmap
+            </button>
+            <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.02em', color: '#e2e8f0', marginBottom: 20 }}>
+              {selectedRole.title} · 3D Course Map
+            </div>
+            <FlowChart3D role={selectedRole} completedItems={completedSet} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

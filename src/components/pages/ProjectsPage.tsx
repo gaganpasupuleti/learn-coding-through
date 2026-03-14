@@ -1,15 +1,25 @@
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Clock, ChartBar, Lock } from '@phosphor-icons/react'
-import { projects } from '@/lib/projects'
 import { DemoLimits, isProjectUnlocked, triggerProjectLockedError } from '@/lib/demo-limits'
+import { CatalogProjectSummary, fetchCatalogProjects } from '@/lib/api'
 
 interface ProjectsPageProps {
   onSelectProject: (projectId: string) => void
 }
 
 export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
+  const [projects, setProjects] = useState<CatalogProjectSummary[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchCatalogProjects()
+      .then(setProjects)
+      .catch(() => setProjects([]))
+      .finally(() => setLoading(false))
+  }, [])
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
       <div className="container mx-auto px-6 py-12">
@@ -24,6 +34,9 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
             </p>
           </div>
 
+          {loading ? (
+            <div className="text-center py-12 text-muted-foreground">Loading projects...</div>
+          ) : (
           <div className="grid md:grid-cols-2 gap-6 pt-4">
             {projects.map((project) => (
               <Card 
@@ -63,7 +76,7 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
                       {project.estimatedTime}
                     </Badge>
                     <Badge className="px-3 py-1 bg-primary/10 text-primary hover:bg-primary/20">
-                      {project.steps.length} Steps
+                      {project.stepCount} Steps
                     </Badge>
                   </div>
                 </CardContent>
@@ -87,6 +100,7 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
               </Card>
             ))}
           </div>
+          )}
 
           {projects.length === 0 && (
             <div className="text-center py-12">

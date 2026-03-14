@@ -10,40 +10,30 @@ from executors import (
     execute_sql,
     get_practice_schema,
 )
-from slowapi import Limiter
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
-from fastapi.responses import PlainTextResponse
 
-# Add rate limiting to the /execute route
+# router must be defined before it is used as a decorator
+router = APIRouter()
+
+
 @router.post("/execute", response_model=ExecuteResponse)
-@limiter.limit("5/minute")
 async def execute_code(request: ExecuteRequest) -> ExecuteResponse:
     """
     Execute code in specified language.
-    
-    Args:
-        request: ExecuteRequest with code and language
-        
-    Returns:
-        ExecuteResponse with execution results
-        
+
     Raises:
-        HTTPException: If validation fails or execution errors occur
+        HTTPException 400: code fails security validation or unsupported language
+        HTTPException 500: executor raised an unexpected error
     """
-    # Validate code for security issues
     is_valid, error_message = validate_code(request.code, request.language)
     if not is_valid:
         raise HTTPException(status_code=400, detail=error_message)
-    
-    # Normalize language
+
     language = request.language.lower()
     if language == "js":
         language = "javascript"
     elif language == "py":
         language = "python"
-    
-    # Execute code based on language
+
     try:
         if language == "python":
             result = execute_python(request.code)
@@ -56,17 +46,14 @@ async def execute_code(request: ExecuteRequest) -> ExecuteResponse:
         else:
             raise HTTPException(
                 status_code=400,
-                detail=f"Unsupported language: {request.language}"
+                detail=f"Unsupported language: {request.language}",
             )
-        
-        return ExecuteResponse(**result)
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Execution failed: {str(e)}"
-        )
 
-router = APIRouter()
+        return ExecuteResponse(**result)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Execution failed: {str(e)}")
 
 
 @router.get("/sql/schema")

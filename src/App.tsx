@@ -10,10 +10,9 @@ import { LoginPage } from '@/components/pages/LoginPage'
 import { StudentShell } from '@/components/shells/StudentShell'
 import { AdminShell } from '@/components/shells/AdminShell'
 import { PortBanner } from '@/components/PortBanner'
-import { getProjectById } from '@/lib/projects'
+import { getStoredUser, type AuthUser } from '@/lib/auth'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
-import { getStoredUser, type AuthUser } from '@/lib/auth'
 import { DemoLimits, isProjectUnlocked, triggerProjectLockedError } from '@/lib/demo-limits'
 
 export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'quiz' | 'roadmapper'
@@ -60,7 +59,6 @@ function App() {
     toast.success('Great work! Ready for another project?')
   }
 
-  const selectedProject = selectedProjectId ? getProjectById(selectedProjectId) : null
   const wrapperClass = 'min-h-screen bg-background'
 
   if (!authState) {
@@ -123,8 +121,8 @@ function App() {
 
         {studentPage === 'roadmapper' && <CareerMapperPage />}
 
-        {studentPage === 'learning' && selectedProject && (
-          <ProjectLearningPage project={selectedProject} onBack={handleBackToProjects} />
+        {studentPage === 'learning' && selectedProjectId && (
+          <ProjectLearningPage projectId={selectedProjectId} onBack={handleBackToProjects} />
         )}
       </StudentShell>
       <Toaster position="top-center" />

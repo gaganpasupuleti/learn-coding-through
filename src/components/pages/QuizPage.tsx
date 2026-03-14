@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -7,7 +7,13 @@ import { Progress } from '@/components/ui/progress'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { CodeDisplay } from '@/components/CodeDisplay'
-import { quizzes, Quiz, QuizQuestion } from '@/lib/quizzes'
+import {
+  CatalogQuiz as Quiz,
+  CatalogQuizSummary,
+  CatalogQuizQuestion as QuizQuestion,
+  fetchCatalogQuizzes,
+  fetchCatalogQuiz,
+} from '@/lib/api'
 import { ArrowLeft, ArrowRight, CheckCircle, ListChecks, Lock, XCircle } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
@@ -27,8 +33,6 @@ const getQuestionTypeLabel = (type: QuizQuestion['type']) => {
 }
 
 const getLetter = (index: number) => String.fromCharCode(65 + index)
-
-const getQuizById = (quizId: string | null) => quizzes.find((quiz) => quiz.id === quizId) ?? null
 
 const getCorrectAnswerText = (question: QuizQuestion) => {
   if (question.type === 'multiple-choice' || question.type === 'true-false') {
@@ -100,17 +104,36 @@ interface QuizPageProps {
 }
 
 export function QuizPage({ lockedQuizIds = [], onBeforeSelect }: QuizPageProps = {}) {
+  const [quizList, setQuizList] = useState<CatalogQuizSummary[]>([])
+  const [quizzesLoading, setQuizzesLoading] = useState(true)
   const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null)
+  const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null)
+  const [quizLoading, setQuizLoading] = useState(false)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [draftAnswers, setDraftAnswers] = useState<Record<number, string | number>>({})
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, boolean>>({})
 
-  const selectedQuiz = useMemo(() => getQuizById(selectedQuizId), [selectedQuizId])
+  useEffect(() => {
+    fetchCatalogQuizzes()
+      .then(setQuizList)
+      .catch(() => setQuizList([]))
+      .finally(() => setQuizzesLoading(false))
+  }, [])
+
+  useEffect(() => {
+    if (!selectedQuizId) return
+    setQuizLoading(true)
+    fetchCatalogQuiz(selectedQuizId)
+      .then(setSelectedQuiz)
+      .catch(() => setSelectedQuiz(null))
+      .finally(() => setQuizLoading(false))
+  }, [selectedQuizId])
 
   const resetQuizState = () => {
     setCurrentQuestionIndex(0)
     setDraftAnswers({})
     setSubmittedAnswers({})
+    setSelectedQuiz(null)
   }
 
   const handleSelectQuiz = (quizId: string) => {
@@ -182,8 +205,13 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect }: QuizPageProps =
               </p>
             </div>
 
+            {quizzesLoading || quizLoading ? (
+              <div className="text-center py-12 text-muted-foreground">
+                {quizLoading ? 'Loading quiz...' : 'Loading quizzes...'}
+              </div>
+            ) : (
             <div className="grid md:grid-cols-2 gap-6 pt-4">
-              {quizzes.map((quiz) => {
+              {quizList.map((quiz) => {
                 const isLocked = lockedQuizIds.includes(quiz.id)
                 return (
                   <Card
@@ -214,7 +242,7 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect }: QuizPageProps =
                           {quiz.estimatedTime}
                         </Badge>
                         <Badge className="px-3 py-1 bg-primary/10 text-primary">
-                          {quiz.questions.length} Questions
+                          {quiz.questionCount} Questions
                         </Badge>
                       </div>
 
@@ -241,6 +269,7 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect }: QuizPageProps =
                 )
               })}
             </div>
+            )}
           </div>
         </div>
       </div>

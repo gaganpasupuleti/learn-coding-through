@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -5,32 +7,45 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
-from app.core.security import ALGORITHM
+from app.core.security import ALGORITHM, get_password_hash
 from app.models.models import User, UserRole
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+# auto_error=False so unauthenticated requests get None instead of 401.
+# Endpoints that truly require auth raise their own 401 via require_admin.
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=False)
+
+_DEMO_EMAIL = "demo@student.com"
 
 
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> User:
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-
-    try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=[ALGORITHM])
-        user_id: str | None = payload.get("sub")
-        if user_id is None:
-            raise credentials_exception
-    except JWTError as exc:
-        raise credentials_exception from exc
-
-    user = db.query(User).filter(User.id == int(user_id)).first()
+def _get_or_create_demo_user(db: Session) -> User:
+    user = db.query(User).filter(User.email == _DEMO_EMAIL).first()
     if user is None:
-        raise credentials_exception
+        user = User(
+            email=_DEMO_EMAIL,
+            full_name="Demo Student",
+            password_hash=get_password_hash("demo-password-not-for-login"),
+            role=UserRole.STUDENT,
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
     return user
+
+
+def get_current_user(db: Session = Depends(get_db), token: Optional[str] = Depends(oauth2_scheme)) -> User:
+    if token:
+        try:
+            payload = jwt.decode(token, settings.secret_key, algorithms=[ALGORITHM])
+            user_id: str | None = payload.get("sub")
+            if user_id is not None:
+                user = db.query(User).filter(User.id == int(user_id)).first()
+                if user is not None:
+                    return user
+        except JWTError:
+            pass
+    # No token or invalid token — fall back to the shared demo student account.
+    return _get_or_create_demo_user(db)
 
 
 def require_admin(current_user: User = Depends(get_current_user)) -> User:
