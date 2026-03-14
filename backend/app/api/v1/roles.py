@@ -1,6 +1,6 @@
 import json
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_admin
@@ -44,3 +44,13 @@ def create_role(payload: RoleCreate, db: Session = Depends(get_db), _: object = 
 def list_roles(db: Session = Depends(get_db)):
     roles = db.query(Role).order_by(Role.name).all()
     return [to_role_response(role) for role in roles]
+
+
+@router.get("/report/{slug}", response_model=RoleResponse)
+def get_role_by_slug(slug: str, db: Session = Depends(get_db)):
+    """Retrieve a single role by its URL slug (e.g. 'data-analyst')."""
+    name = " ".join(word.capitalize() for word in slug.split("-"))
+    role = db.query(Role).filter(Role.name == name).first()
+    if not role:
+        raise HTTPException(status_code=404, detail=f"Role '{slug}' not found")
+    return to_role_response(role)

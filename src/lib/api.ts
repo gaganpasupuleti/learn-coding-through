@@ -507,3 +507,48 @@ export async function saveProjectStepProgress(projectSlug: string, stepId: numbe
     console.warn('Failed to save step progress:', response.status)
   }
 }
+
+// ── Career Mapper ──────────────────────────────────────────────────────────────
+
+import type { CareerRole } from '@/types/career'
+import { careerSeedData } from '@/lib/career-seed-data'
+
+interface BackendRoleBasic {
+  id: number
+  name: string
+  skills_required: string[]
+  salary_range: string
+  companies_hiring: string[]
+  difficulty_level: string
+  estimated_duration_weeks: number
+}
+
+/**
+ * Fetches career roles merging backend metadata with frontend seed data (syllabus).
+ * Falls back to seed data if the backend is unavailable.
+ */
+export async function fetchCareerRoles(): Promise<CareerRole[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/roles`)
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const backendRoles: BackendRoleBasic[] = await response.json()
+    const enriched = backendRoles
+      .map((br) => {
+        const slug = br.name.toLowerCase().replace(/\s+/g, '-')
+        const seed = careerSeedData.find((r) => r.slug === slug)
+        if (!seed) return null
+        return { ...seed, skills: br.skills_required }
+      })
+      .filter((r): r is CareerRole => r !== null)
+    return enriched.length > 0 ? enriched : careerSeedData.filter((r) => r.isActive)
+  } catch {
+    return careerSeedData.filter((r) => r.isActive)
+  }
+}
+
+export async function fetchCareerRole(slug: string): Promise<CareerRole> {
+  const roles = await fetchCareerRoles()
+  const role = roles.find((r) => r.slug === slug)
+  if (!role) throw new Error(`Career role not found: ${slug}`)
+  return role
+}
