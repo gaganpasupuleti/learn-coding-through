@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -29,8 +29,9 @@ import { CodeEditor } from '@/components/CodeEditor'
 import { CodeDisplay } from '@/components/CodeDisplay'
 import { SandboxInfo } from '@/components/SandboxInfo'
 import { InteractiveProjectBuilder } from '@/components/InteractiveProjectBuilder'
-import { projectBuilderConfigs } from '@/lib/project-builder-configs'
-import { ProjectStepWalkthrough } from '@/components/project/ProjectStepWalkthrough'
+import { projectBuilderConfigs, tddProjectConfigs } from '@/lib/project-builder-configs'
+import { ProjectStepWalkthrough, type TestResult } from '@/components/project/ProjectStepWalkthrough'
+import { sandbox } from '@/lib/sandboxInstance'
 
 interface ProjectLearningPageProps {
   projectId: string
@@ -44,6 +45,90 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
   const [viewMode, setViewMode] = useState<'tutorial' | 'builder'>('tutorial')
+
+  // ── TDD validation state ────────────────────────────────────────────────────
+  const tddConfig = tddProjectConfigs[projectId]
+  const [tddStepIndex, setTddStepIndex] = useState(0)
+  const [isExecuting, setIsExecuting] = useState(false)
+  const [testResults, setTestResults] = useState<TestResult[]>([])
+  const [isStepValidated, setIsStepValidated] = useState(false)
+
+  // Reset validation state whenever the TDD step changes
+  useEffect(() => {
+    setTestResults([])
+    setIsStepValidated(false)
+  }, [tddStepIndex])
+
+  /** Convert a JS value to a Python literal string for injection into the harness. */
+  const toPythonLiteral = (val: unknown): string => {
+    if (val === null) return 'None'
+    if (val === true) return 'True'
+    if (val === false) return 'False'
+    if (typeof val === 'number') return String(val)
+    if (typeof val === 'string') return JSON.stringify(val)
+    if (Array.isArray(val)) return `[${val.map(toPythonLiteral).join(', ')}]`
+    if (typeof val === 'object') {
+      const pairs = Object.entries(val as Record<string, unknown>)
+        .map(([k, v]) => `${JSON.stringify(k)}: ${toPythonLiteral(v)}`)
+      return `{${pairs.join(', ')}}`
+    }
+    return JSON.stringify(val)
+  }
+
+  const handleRunTests = useCallback(async (code: string) => {
+    const cfg = tddProjectConfigs[projectId]
+    if (!cfg) return
+    const step = cfg.steps[tddStepIndex]
+
+    setIsExecuting(true)
+    setTestResults([])
+    setIsStepValidated(false)
+
+    const results: TestResult[] = []
+
+    for (const tc of step.testCases) {
+      let execCode = code
+
+      if (tc.input_data !== undefined && step.callableName) {
+        // Append hidden-test harness: inject alternate data and call the function.
+        // The user's code may already have a print() at the bottom which will
+        // produce an extra line — we take only the LAST non-empty output line.
+        const pyLiteral = toPythonLiteral(tc.input_data)
+        execCode = `${code}\n\n__td__ = ${pyLiteral}\nprint(${step.callableName}(__td__))`
+      }
+
+      const result = await sandbox.execute(execCode, cfg.language)
+      const rawOutput = (result.output ?? '').trim()
+      const lines = rawOutput.split('\n').map(l => l.trim()).filter(Boolean)
+      // For hidden tests (input injected), take the last line; otherwise full output.
+      const actualOutput = tc.input_data !== undefined
+        ? (lines[lines.length - 1] ?? '')
+        : rawOutput
+
+      let passed = false
+      if (result.error && !tc.validation_regex && !tc.input_data) {
+        passed = false
+      } else if (tc.expected_output !== undefined) {
+        passed = actualOutput === tc.expected_output.trim()
+      } else if (tc.validation_regex) {
+        passed = new RegExp(tc.validation_regex).test(actualOutput)
+      }
+
+      results.push({
+        hidden: tc.hidden,
+        expected: tc.expected_output,
+        actualOutput,
+        passed,
+        error: result.error,
+      })
+    }
+
+    setTestResults(results)
+    setIsExecuting(false)
+    setIsStepValidated(results.every(r => r.passed))
+  }, [projectId, tddStepIndex])
+
+  // ── Catalog project fetch ──────────────────────────────────────────────────
 
   useEffect(() => {
     setLoading(true)
@@ -73,7 +158,7 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
     )
   }
 
-  if (!project) {
+  if (!project && !tddConfig) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center">
         <p className="text-muted-foreground">Project not found.</p>
@@ -81,12 +166,80 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
     )
   }
 
-  const currentStep = project.steps[currentStepIndex]
+  // ── TDD project view (early return) ─────────────────────────────────────────
+  if (tddConfig) {
+    const tddStep = tddConfig.steps[tddStepIndex]
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+        <div className="container mx-auto px-6 py-8">
+          <div className="max-w-4xl mx-auto space-y-6">
+            <div className="flex items-center justify-between">
+              <Button variant="ghost" size="sm" onClick={onBack} className="hover:bg-secondary">
+                <ArrowLeft className="mr-2" size={18} />
+                Back to Projects
+              </Button>
+              <SandboxInfo />
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-3">
+                <h1 className="text-3xl md:text-4xl font-bold">{tddConfig.title}</h1>
+                <Badge className="bg-indigo-500/15 text-indigo-600 border border-indigo-500/30">
+                  TDD Mode
+                </Badge>
+              </div>
+              <p className="text-muted-foreground">
+                Your code must pass all automated tests before you can advance.
+              </p>
+            </div>
+
+            {/* Step pill navigation */}
+            <div className="flex flex-wrap gap-2">
+              {tddConfig.steps.map((s, i) => (
+                <Badge
+                  key={s.id}
+                  variant={i === tddStepIndex ? 'default' : 'secondary'}
+                  className={`px-3 py-2 text-sm cursor-pointer transition-all ${
+                    i === tddStepIndex ? 'bg-indigo-600 text-white scale-105' : ''
+                  }`}
+                  onClick={() => setTddStepIndex(i)}
+                >
+                  Step {i + 1}
+                </Badge>
+              ))}
+            </div>
+
+            <ProjectStepWalkthrough
+              tddProps={{
+                step: tddStep,
+                language: tddConfig.language,
+                stepIndex: tddStepIndex,
+                totalSteps: tddConfig.steps.length,
+                testResults,
+                isExecuting,
+                isStepValidated,
+                onRunTests: handleRunTests,
+                onNext: () => setTddStepIndex(i => i + 1),
+                onPrevious: () => setTddStepIndex(i => i - 1),
+                onComplete: () => { onComplete?.(); onBack() },
+                isFirst: tddStepIndex === 0,
+                isLast: tddStepIndex === tddConfig.steps.length - 1,
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Catalog tutorial view ────────────────────────────────────────────────────
+  // (project is guaranteed non-null below, guarded by the TDD check above)
+  const currentStep = project_.steps[currentStepIndex]
   const isFirstStep = currentStepIndex === 0
-  const isLastStep = currentStepIndex === project.steps.length - 1
+  const isLastStep = currentStepIndex === project_.steps.length - 1
 
   // Check if this project has an interactive builder available
-  const hasInteractiveBuilder = projectBuilderConfigs[project.id] !== undefined
+  const hasInteractiveBuilder = projectBuilderConfigs[project_.id] !== undefined
 
   const handleNext = () => {
     if (!isLastStep) {
@@ -154,19 +307,19 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
+                  <h1 className="text-3xl md:text-4xl font-bold">{project_.title}</h1>
                 <Badge variant="default" className="bg-primary">
                   <Rocket size={14} className="mr-1" weight="duotone" />
                   Interactive Mode
                 </Badge>
               </div>
-              <p className="text-muted-foreground text-lg">{project.description}</p>
+              <p className="text-muted-foreground text-lg">{project_.description}</p>
             </div>
 
             <InteractiveProjectBuilder
-              projectId={project.id}
-              projectTitle={project.title}
-              buildSteps={projectBuilderConfigs[project.id]}
+              projectId={project_.id}
+              projectTitle={project_.title}
+              buildSteps={projectBuilderConfigs[project_.id]}
               onComplete={handleComplete}
             />
           </div>
@@ -207,12 +360,12 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-            <p className="text-muted-foreground text-lg">{project.description}</p>
+            <h1 className="text-3xl md:text-4xl font-bold">{project_.title}</h1>
+            <p className="text-muted-foreground text-lg">{project_.description}</p>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {project.steps.map((step, index) => {
+            {project_.steps.map((step, index) => {
               const isCompleted = completedSteps.includes(step.id)
               const isCurrent = index === currentStepIndex
               
@@ -246,7 +399,7 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
                 </div>
                 <div>
                   <div className="text-sm text-muted-foreground font-medium">
-                    Step {currentStep.id} of {project.steps.length}
+                    Step {currentStep.id} of {project_.steps.length}
                   </div>
                   <h2 className="text-2xl font-bold">{currentStep.title}</h2>
                 </div>
@@ -339,14 +492,14 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
                 {currentStep.type === 'preview' && (
                   <div className="space-y-3">
-                    {project.id === 'digital-clock' && <DigitalClockPreview />}
-                    {project.id === 'calculator' && <CalculatorPreview />}
-                    {project.id === 'temperature-converter' && <TemperatureConverterPreview />}
-                    {project.id === 'password-generator' && <PasswordGeneratorPreview />}
-                    {project.id === 'student-database' && <StudentDatabasePreview />}
-                    {project.id === 'sales-analytics' && <SalesAnalyticsPreview />}
-                    {project.id === 'grade-calculator' && <GradeCalculatorPreview />}
-                    {project.id === 'number-guesser' && <NumberGuesserPreview />}
+                    {project_.id === 'digital-clock' && <DigitalClockPreview />}
+                    {project_.id === 'calculator' && <CalculatorPreview />}
+                    {project_.id === 'temperature-converter' && <TemperatureConverterPreview />}
+                    {project_.id === 'password-generator' && <PasswordGeneratorPreview />}
+                    {project_.id === 'student-database' && <StudentDatabasePreview />}
+                    {project_.id === 'sales-analytics' && <SalesAnalyticsPreview />}
+                    {project_.id === 'grade-calculator' && <GradeCalculatorPreview />}
+                    {project_.id === 'number-guesser' && <NumberGuesserPreview />}
                   </div>
                 )}
 
