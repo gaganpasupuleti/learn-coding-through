@@ -14,7 +14,8 @@ import {
   ListChecks,
   Brain,
   Eye,
-  Rocket
+  Rocket,
+  Trophy,
 } from '@phosphor-icons/react'
 import { CatalogProject, CatalogProjectStep, fetchCatalogProject, fetchUserProgress, saveProjectStepProgress, saveStepProgress } from '@/lib/api'
 import type { ProjectStep, TestCase } from '@/types/project'
@@ -53,6 +54,8 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
   const [isExecuting, setIsExecuting] = useState(false)
   const [testResults, setTestResults] = useState<TestResult[]>([])  
   const [isStepValidated, setIsStepValidated] = useState(false)
+  const [consoleOutput, setConsoleOutput] = useState('')
+  const [isProjectCompleted, setIsProjectCompleted] = useState(false)
 
   // Derived: a project is TDD if its first step has test cases populated
   const isTddMode = !loading && !!project?.steps[0]?.content?.testCases?.length
@@ -84,8 +87,10 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
     setIsExecuting(true)
     setTestResults([])
     setIsStepValidated(false)
+    setConsoleOutput('')
 
     const results: TestResult[] = []
+    let terminalOutput = ''
 
     try {
       for (const tc of testCases) {
@@ -101,6 +106,13 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
         }
 
         const result = await sandbox.execute(execCode, language)
+
+        // Capture raw stdout from the first visible test for the terminal panel
+        if (!terminalOutput && !tc.hidden) {
+          const parts = [result.output?.trim(), result.error ? `Error: ${result.error}` : '']
+          terminalOutput = parts.filter(Boolean).join('\n').trim()
+        }
+
         const rawOutput = (result.output ?? '').trim()
         const lines = rawOutput.split('\n').map(l => l.trim()).filter(Boolean)
         const actualOutput = tc.input_data !== undefined
@@ -126,6 +138,7 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
       }
 
       setTestResults(results)
+      setConsoleOutput(terminalOutput)
       const allPassed = results.every(r => r.passed)
       setIsStepValidated(allPassed)
       // Non-blocking: save to DB if authenticated
@@ -138,17 +151,26 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
       }
     } catch (err: any) {
       // Timeout (or other fatal) errors: surface as a failed console entry
+      const msg = err?.message ?? String(err)
+      setConsoleOutput(msg)
       setTestResults([{
         hidden: false,
         actualOutput: '',
         passed: false,
-        error: err?.message ?? String(err),
+        error: msg,
       }])
     } finally {
       // Always re-enable the Run & Test button, even if execution was aborted
       setIsExecuting(false)
     }
   }, [project, projectId, tddStepIndex])
+
+  // Reset terminal/test state whenever the active TDD step changes
+  useEffect(() => {
+    setTestResults([])
+    setIsStepValidated(false)
+    setConsoleOutput('')
+  }, [tddStepIndex])
 
   // ── Catalog project fetch ──────────────────────────────────────────────────
 
@@ -200,6 +222,44 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
   // ── TDD project view (early return) ─────────────────────────────────────────
   if (isTddMode) {
+    // ── Completion celebration ──────────────────────────────────────────────
+    if (isProjectCompleted) {
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center">
+          <div className="max-w-lg w-full mx-auto text-center space-y-8 px-6 py-16">
+            <div className="flex justify-center">
+              <div className="w-28 h-28 rounded-full bg-green-500/15 flex items-center justify-center animate-bounce">
+                <Trophy size={56} className="text-green-500" weight="fill" />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h1 className="text-4xl font-bold">Project Complete! 🎉</h1>
+              <p className="text-lg text-muted-foreground">
+                You successfully built a{' '}
+                <span className="font-semibold text-foreground">{project.steps.length}-Step Python CRUD Engine!</span>
+              </p>
+            </div>
+            <div className="bg-green-500/10 border-2 border-green-500/30 rounded-xl p-6 space-y-3 text-left">
+              {project.steps.map((s, i) => (
+                <div key={i} className="flex items-center gap-3 text-sm">
+                  <CheckCircle size={18} className="text-green-600 shrink-0" weight="fill" />
+                  <span className="font-medium">{s.title}</span>
+                </div>
+              ))}
+            </div>
+            <Button
+              size="lg"
+              onClick={() => { onComplete?.(); onBack() }}
+              className="bg-primary hover:bg-primary/90 px-10 gap-2"
+            >
+              <Rocket size={18} />
+              Back to Projects
+            </Button>
+          </div>
+        </div>
+      )
+    }
+
     const tddStep = toProjectStep(project.steps[tddStepIndex])
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
@@ -250,10 +310,11 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
                 testResults,
                 isExecuting,
                 isStepValidated,
+                consoleOutput,
                 onRunTests: handleRunTests,
                 onNext: () => setTddStepIndex(i => i + 1),
                 onPrevious: () => setTddStepIndex(i => i - 1),
-                onComplete: () => { onComplete?.(); onBack() },
+                onComplete: () => setIsProjectCompleted(true),
                 isFirst: tddStepIndex === 0,
                 isLast: tddStepIndex === project.steps.length - 1,
               }}
