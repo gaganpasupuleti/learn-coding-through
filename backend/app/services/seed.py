@@ -308,16 +308,81 @@ PROJECTS: list[dict[str, Any]] = [
     {
         "slug": "student-database",
         "title": "Student Database",
-        "short_description": "Create and query a student records database with SQL.",
-        "description": "Learn SQL basics by creating tables, inserting data, and running queries on a student database.",
+        "short_description": "Build a Python CRUD system for student records — validated with automated tests.",
+        "description": "Learn core data manipulation by implementing Create, Read, Update, Delete, and Analytics functions on a list-based student database. Each step is validated by hidden test cases.",
         "difficulty": "beginner",
-        "estimated_time": "20 minutes",
+        "estimated_time": "25 minutes",
         "steps": [
-            {"order": 1, "step_type": "understanding", "title": "Understanding the Problem", "description": "A student database stores information about students. SQL lets us organize and retrieve it easily.", "points": ["Create tables to store student information", "Insert records with multiple fields", "Query data to find specific students", "Update records when info changes", "Use relationships between tables"]},
-            {"order": 2, "step_type": "logic", "title": "Breaking Down the Logic", "description": "Here's how we'll structure our database:", "points": ["Design a Students table with ID, name, email, and major", "Define primary keys", "Write SELECT queries", "Use WHERE clauses to filter"]},
-            {"order": 3, "step_type": "code", "title": "The Code", "language": "sql", "code": "CREATE TABLE Students (\n    student_id INT PRIMARY KEY,\n    first_name VARCHAR(50),\n    last_name VARCHAR(50),\n    email VARCHAR(100),\n    major VARCHAR(50)\n);\n\nINSERT INTO Students VALUES (1,'Alice','Johnson','alice@email.com','Computer Science'), (2,'Bob','Smith','bob@email.com','Mathematics');\n\nSELECT * FROM Students;\nSELECT first_name, last_name FROM Students WHERE major = 'Computer Science';"},
-            {"order": 4, "step_type": "preview", "title": "See It In Action", "description": "See how SQL queries retrieve and manipulate student data!"},
-            {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Add a Courses table and create a JOIN query to show which students are enrolled in which courses.", "hint": "You'll need a junction table to handle the many-to-many relationship!"},
+            {
+                "order": 1,
+                "slug": "step-1-create",
+                "step_type": "code",
+                "title": "Step 1: The Insertion Engine",
+                "description": "Write a function `add_student(db, student_id, name, grade)` that appends a new student dictionary to the database list and returns the updated list.",
+                "language": "python",
+                "callable_name": "add_student",
+                "initial_code": "def add_student(db, student_id, name, grade):\n    pass\n\n# Example usage\ndb = []\nresult = add_student(db, 'S1', 'Alice', 95)\nprint(result)",
+                "test_cases": json.dumps([
+                    {"input_data": [[], "S1", "Alice", 95], "expected_output": "[{'id': 'S1', 'name': 'Alice', 'grade': 95}]", "hidden": False},
+                    {"input_data": [[{"id": "S0", "name": "Bob", "grade": 80}], "S2", "Charlie", 88], "expected_output": "[{'id': 'S0', 'name': 'Bob', 'grade': 80}, {'id': 'S2', 'name': 'Charlie', 'grade': 88}]", "hidden": True},
+                ]),
+            },
+            {
+                "order": 2,
+                "slug": "step-2-read",
+                "step_type": "code",
+                "title": "Step 2: The Retrieval Query",
+                "description": "Write a function `get_student(db, student_id)` that finds and returns the student dict with the given id, or None if not found.",
+                "language": "python",
+                "callable_name": "get_student",
+                "initial_code": "def get_student(db, student_id):\n    pass\n\n# Example usage\ndb = [{'id': 'S1', 'name': 'Alice', 'grade': 95}]\nresult = get_student(db, 'S1')\nprint(result)",
+                "test_cases": json.dumps([
+                    {"input_data": [[{"id": "S1", "name": "Alice", "grade": 95}], "S1"], "expected_output": "{'id': 'S1', 'name': 'Alice', 'grade': 95}", "hidden": False},
+                    {"input_data": [[{"id": "S1", "name": "Alice", "grade": 95}], "S99"], "expected_output": "None", "hidden": True},
+                ]),
+            },
+            {
+                "order": 3,
+                "slug": "step-3-update",
+                "step_type": "code",
+                "title": "Step 3: The Update Mutation",
+                "description": "Write a function `update_grade(db, student_id, new_grade)` that updates the grade of the matching student and returns the updated database list.",
+                "language": "python",
+                "callable_name": "update_grade",
+                "initial_code": "def update_grade(db, student_id, new_grade):\n    pass\n\n# Example usage\ndb = [{'id': 'S1', 'name': 'Alice', 'grade': 95}]\nresult = update_grade(db, 'S1', 99)\nprint(result)",
+                "test_cases": json.dumps([
+                    {"input_data": [[{"id": "S1", "name": "Alice", "grade": 95}], "S1", 99], "expected_output": "[{'id': 'S1', 'name': 'Alice', 'grade': 99}]", "hidden": False},
+                    {"input_data": [[{"id": "S1", "name": "Alice", "grade": 95}, {"id": "S2", "name": "Bob", "grade": 70}], "S2", 85], "expected_output": "[{'id': 'S1', 'name': 'Alice', 'grade': 95}, {'id': 'S2', 'name': 'Bob', 'grade': 85}]", "hidden": True},
+                ]),
+            },
+            {
+                "order": 4,
+                "slug": "step-4-delete",
+                "step_type": "code",
+                "title": "Step 4: The Deletion Protocol",
+                "description": "Write a function `remove_student(db, student_id)` that removes the student with the given id and returns True if removed, False if not found.",
+                "language": "python",
+                "callable_name": "remove_student",
+                "initial_code": "def remove_student(db, student_id):\n    pass\n\n# Example usage\ndb = [{'id': 'S1', 'name': 'Alice', 'grade': 95}]\nresult = remove_student(db, 'S1')\nprint(result)",
+                "test_cases": json.dumps([
+                    {"input_data": [[{"id": "S1", "name": "Alice", "grade": 95}], "S1"], "expected_output": "True", "hidden": False},
+                    {"input_data": [[{"id": "S1", "name": "Alice", "grade": 95}], "S99"], "expected_output": "False", "hidden": True},
+                ]),
+            },
+            {
+                "order": 5,
+                "slug": "step-5-analytics",
+                "step_type": "code",
+                "title": "Step 5: The Analytics Engine",
+                "description": "Write a function `calculate_class_average(db)` that returns the average grade as a float. Return 0.0 if the database is empty.",
+                "language": "python",
+                "callable_name": "calculate_class_average",
+                "initial_code": "def calculate_class_average(db):\n    pass\n\n# Example usage\ndb = [{'id': 'S1', 'grade': 90}, {'id': 'S2', 'grade': 100}]\nresult = calculate_class_average(db)\nprint(result)",
+                "test_cases": json.dumps([
+                    {"input_data": [[{"id": "S1", "grade": 90}, {"id": "S2", "grade": 100}]], "expected_output": "95.0", "hidden": False},
+                    {"input_data": [[]], "expected_output": "0.0", "hidden": True},
+                ]),
+            },
         ],
     },
     {
@@ -415,6 +480,7 @@ def _upsert_project(db: Session, data: dict[str, Any]) -> None:
         db.add(ProjectCatalogStep(
             project_id=project.id,
             order=s["order"],
+            slug=s.get("slug"),
             step_type=s["step_type"],
             title=s["title"],
             description=s.get("description"),
@@ -425,6 +491,9 @@ def _upsert_project(db: Session, data: dict[str, Any]) -> None:
             hint=s.get("hint"),
             walkthrough_gif=s.get("walkthrough_gif"),
             walkthrough_caption=s.get("walkthrough_caption"),
+            callable_name=s.get("callable_name"),
+            initial_code=s.get("initial_code"),
+            test_cases=s.get("test_cases"),  # already a JSON string
         ))
 
 
@@ -438,19 +507,3 @@ def seed_catalog_data(db: Session) -> None:
         _upsert_project(db, project_data)
     db.commit()
     logger.info("Catalog seed complete.")
-
-    existing = db.query(User).filter(User.email == normalized_email).first()
-    if existing:
-        if existing.role != UserRole.ADMIN:
-            existing.role = UserRole.ADMIN
-            db.commit()
-        return
-
-    user = User(
-        email=normalized_email,
-        full_name=full_name.strip() or "Platform Admin",
-        password_hash=get_password_hash(password),
-        role=UserRole.ADMIN,
-    )
-    db.add(user)
-    db.commit()

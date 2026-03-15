@@ -421,6 +421,13 @@ export interface CatalogQuizSummary {
   questionCount: number
 }
 
+export interface TddTestCase {
+  input_data?: unknown
+  expected_output?: string
+  validation_regex?: string
+  hidden: boolean
+}
+
 export interface CatalogProjectStepContent {
   description?: string | null
   points?: string[] | null
@@ -430,10 +437,15 @@ export interface CatalogProjectStepContent {
   hint?: string | null
   walkthroughGif?: string | null
   walkthroughCaption?: string | null
+  // TDD fields (populated for Python/code-validated projects)
+  initialCode?: string | null
+  callableName?: string | null
+  testCases?: TddTestCase[] | null
 }
 
 export interface CatalogProjectStep {
   id: number
+  slug?: string | null
   title: string
   type: 'understanding' | 'logic' | 'code' | 'preview' | 'challenge'
   content: CatalogProjectStepContent
@@ -514,6 +526,9 @@ export async function fetchCatalogProject(slug: string): Promise<CatalogProject>
   }
 }
 
+// Alias for TDD project fetching — same endpoint, richer return type.
+export const fetchProjectBySlug = fetchCatalogProject
+
 // ── User progress ──────────────────────────────────────────────────────────────
 
 export interface CompletedStep {
@@ -537,6 +552,25 @@ export async function saveProjectStepProgress(projectSlug: string, stepId: numbe
   )
   if (!response.ok) {
     // Non-blocking: log but don't crash the UI
+    console.warn('Failed to save step progress:', response.status)
+  }
+}
+
+export interface StepProgressPayload {
+  step_id: number
+  code_snapshot?: string
+  passed: boolean
+}
+
+export async function saveStepProgress(projectSlug: string, payload: StepProgressPayload): Promise<void> {
+  const token = localStorage.getItem('auth_token')
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (token) headers['Authorization'] = `Bearer ${token}`
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/projects/catalog/${encodeURIComponent(projectSlug)}/progress`,
+    { method: 'POST', headers, body: JSON.stringify(payload) },
+  )
+  if (!response.ok) {
     console.warn('Failed to save step progress:', response.status)
   }
 }

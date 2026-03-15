@@ -486,6 +486,11 @@ class ProjectCatalogStep(Base):
     hint: Mapped[str | None] = mapped_column(Text, nullable=True)
     walkthrough_gif: Mapped[str | None] = mapped_column(String(500), nullable=True)
     walkthrough_caption: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # TDD fields
+    slug: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    callable_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    initial_code: Mapped[str | None] = mapped_column(Text, nullable=True)
+    test_cases: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON array of TestCase objects
 
     project = relationship("ProjectCatalog", back_populates="steps")
 
@@ -503,5 +508,7 @@ class ProjectStepCompletion(Base):
     project_slug: Mapped[str] = mapped_column(String(120), nullable=False)
     step_id: Mapped[int] = mapped_column(Integer, nullable=False)
     completed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    code_snapshot: Mapped[str | None] = mapped_column(Text, nullable=True)
+    passed: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
 
     user = relationship("User", back_populates="project_step_completions")

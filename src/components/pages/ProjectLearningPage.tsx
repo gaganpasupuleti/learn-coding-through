@@ -16,7 +16,8 @@ import {
   Eye,
   Rocket
 } from '@phosphor-icons/react'
-import { CatalogProject, CatalogProjectStep, fetchCatalogProject, fetchUserProgress, saveProjectStepProgress } from '@/lib/api'
+import { CatalogProject, CatalogProjectStep, fetchCatalogProject, fetchUserProgress, saveProjectStepProgress, saveStepProgress } from '@/lib/api'
+import type { ProjectStep, TestCase } from '@/types/project'
 import { DigitalClockPreview } from '@/components/previews/DigitalClockPreview'
 import { CalculatorPreview } from '@/components/previews/CalculatorPreview'
 import { TemperatureConverterPreview } from '@/components/previews/TemperatureConverterPreview'
@@ -29,7 +30,7 @@ import { CodeEditor } from '@/components/CodeEditor'
 import { CodeDisplay } from '@/components/CodeDisplay'
 import { SandboxInfo } from '@/components/SandboxInfo'
 import { InteractiveProjectBuilder } from '@/components/InteractiveProjectBuilder'
-import { projectBuilderConfigs, tddProjectConfigs } from '@/lib/project-builder-configs'
+import { projectBuilderConfigs } from '@/lib/project-builder-configs'
 import { ProjectStepWalkthrough, type TestResult } from '@/components/project/ProjectStepWalkthrough'
 import { sandbox } from '@/lib/sandboxInstance'
 
@@ -47,16 +48,14 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
   const [viewMode, setViewMode] = useState<'tutorial' | 'builder'>('tutorial')
 
   // ── TDD validation state ────────────────────────────────────────────────────
-  const tddConfig = tddProjectConfigs[projectId]
+  // TDD mode is detected from the loaded project data (steps that have testCases)
   const [tddStepIndex, setTddStepIndex] = useState(0)
   const [isExecuting, setIsExecuting] = useState(false)
-  const [testResults, setTestResults] = useState<TestResult[]>([])
+  const [testResults, setTestResults] = useState<TestResult[]>([])  
   const [isStepValidated, setIsStepValidated] = useState(false)
 
-  // Reset validation state whenever the TDD step changes
-  useEffect(() => {
-    setTestResults([])
-    setIsStepValidated(false)
+  // Derived: a project is TDD if its first step has test cases populated
+  const isTddMode = !loading && !!project?.steps[0]?.content?.testCases?.length
   }, [tddStepIndex])
 
   /** Convert a JS value to a Python literal string for injection into the harness. */
@@ -76,9 +75,12 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
   }
 
   const handleRunTests = useCallback(async (code: string) => {
-    const cfg = tddProjectConfigs[projectId]
-    if (!cfg) return
-    const step = cfg.steps[tddStepIndex]
+    if (!project) return
+    const step = project.steps[tddStepIndex]
+    const testCases = step?.content?.testCases
+    if (!testCases?.length) return
+    const language = step.content.language || 'python'
+    const callableName = step.content.callableName
 
     setIsExecuting(true)
     setTestResults([])
@@ -86,21 +88,21 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
     const results: TestResult[] = []
 
-    for (const tc of step.testCases) {
+    for (const tc of testCases) {
       let execCode = code
 
-      if (tc.input_data !== undefined && step.callableName) {
-        // Append hidden-test harness: inject alternate data and call the function.
-        // The user's code may already have a print() at the bottom which will
-        // produce an extra line — we take only the LAST non-empty output line.
+      if (tc.input_data !== undefined && callableName) {
         const pyLiteral = toPythonLiteral(tc.input_data)
-        execCode = `${code}\n\n__td__ = ${pyLiteral}\nprint(${step.callableName}(__td__))`
+        // Array input_data → spread as positional args; object → single arg
+        const callExpr = Array.isArray(tc.input_data)
+          ? `${callableName}(*__td__)`
+          : `${callableName}(__td__)`
+        execCode = `${code}\n\n__td__ = ${pyLiteral}\nprint(${callExpr})`
       }
 
-      const result = await sandbox.execute(execCode, cfg.language)
+      const result = await sandbox.execute(execCode, language)
       const rawOutput = (result.output ?? '').trim()
       const lines = rawOutput.split('\n').map(l => l.trim()).filter(Boolean)
-      // For hidden tests (input injected), take the last line; otherwise full output.
       const actualOutput = tc.input_data !== undefined
         ? (lines[lines.length - 1] ?? '')
         : rawOutput
@@ -125,8 +127,17 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
     setTestResults(results)
     setIsExecuting(false)
-    setIsStepValidated(results.every(r => r.passed))
-  }, [projectId, tddStepIndex])
+    const allPassed = results.every(r => r.passed)
+    setIsStepValidated(allPassed)
+    // Non-blocking: save to DB if authenticated
+    if (allPassed) {
+      saveStepProgress(projectId, {
+        step_id: tddStepIndex + 1,
+        code_snapshot: code,
+        passed: true,
+      }).catch(() => {})
+    }
+  }, [project, projectId, tddStepIndex])
 
   // ── Catalog project fetch ──────────────────────────────────────────────────
 
@@ -158,7 +169,7 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
     )
   }
 
-  if (!project && !tddConfig) {
+  if (!project) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center">
         <p className="text-muted-foreground">Project not found.</p>
@@ -166,9 +177,19 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
     )
   }
 
+  // Helper: map DB step to ProjectStep shape expected by TddStepView
+  const toProjectStep = (s: CatalogProjectStep): ProjectStep => ({
+    id: s.slug || String(s.id),
+    title: s.title,
+    instructions: s.content.description || '',
+    initialCode: s.content.initialCode || '',
+    testCases: (s.content.testCases || []) as TestCase[],
+    callableName: s.content.callableName ?? undefined,
+  })
+
   // ── TDD project view (early return) ─────────────────────────────────────────
-  if (tddConfig) {
-    const tddStep = tddConfig.steps[tddStepIndex]
+  if (isTddMode) {
+    const tddStep = toProjectStep(project.steps[tddStepIndex])
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto px-6 py-8">
@@ -183,7 +204,7 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
             <div className="space-y-1">
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl md:text-4xl font-bold">{tddConfig.title}</h1>
+                <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
                 <Badge className="bg-indigo-500/15 text-indigo-600 border border-indigo-500/30">
                   TDD Mode
                 </Badge>
@@ -195,9 +216,9 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
             {/* Step pill navigation */}
             <div className="flex flex-wrap gap-2">
-              {tddConfig.steps.map((s, i) => (
+              {project.steps.map((s, i) => (
                 <Badge
-                  key={s.id}
+                  key={s.slug || s.id}
                   variant={i === tddStepIndex ? 'default' : 'secondary'}
                   className={`px-3 py-2 text-sm cursor-pointer transition-all ${
                     i === tddStepIndex ? 'bg-indigo-600 text-white scale-105' : ''
@@ -212,9 +233,9 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
             <ProjectStepWalkthrough
               tddProps={{
                 step: tddStep,
-                language: tddConfig.language,
+                language: project.steps[tddStepIndex].content.language || 'python',
                 stepIndex: tddStepIndex,
-                totalSteps: tddConfig.steps.length,
+                totalSteps: project.steps.length,
                 testResults,
                 isExecuting,
                 isStepValidated,
@@ -223,7 +244,7 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
                 onPrevious: () => setTddStepIndex(i => i - 1),
                 onComplete: () => { onComplete?.(); onBack() },
                 isFirst: tddStepIndex === 0,
-                isLast: tddStepIndex === tddConfig.steps.length - 1,
+                isLast: tddStepIndex === project.steps.length - 1,
               }}
             />
           </div>
@@ -233,7 +254,8 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
   }
 
   // ── Catalog tutorial view ────────────────────────────────────────────────────
-  // (project is guaranteed non-null below, guarded by the TDD check above)
+  // project is guaranteed non-null here: guarded by the `if (!project && !tddConfig)` check above
+  const project_ = project!
   const currentStep = project_.steps[currentStepIndex]
   const isFirstStep = currentStepIndex === 0
   const isLastStep = currentStepIndex === project_.steps.length - 1

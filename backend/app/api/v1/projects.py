@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -11,6 +12,7 @@ from app.models.models import (
     ProjectCatalog,
     ProjectCatalogStep,
     ProjectReviewStatus,
+    ProjectStepCompletion,
     User,
 )
 
@@ -60,6 +62,7 @@ def get_project_catalog(slug: str, db: Session = Depends(get_db)):
         "steps": [
             {
                 "id": s.order,
+                "slug": s.slug,
                 "title": s.title,
                 "type": s.step_type,
                 "content": {
@@ -71,6 +74,9 @@ def get_project_catalog(slug: str, db: Session = Depends(get_db)):
                     "hint": s.hint,
                     "walkthroughGif": s.walkthrough_gif,
                     "walkthroughCaption": s.walkthrough_caption,
+                    "initialCode": s.initial_code,
+                    "callableName": s.callable_name,
+                    "testCases": json.loads(s.test_cases) if s.test_cases else None,
                 },
             }
             for s in steps
@@ -78,7 +84,44 @@ def get_project_catalog(slug: str, db: Session = Depends(get_db)):
     }
 
 
-class ProjectSubmitRequest(BaseModel):
+# ── TDD progress endpoint ─────────────────────────────────────────────────────
+
+class StepProgressRequest(BaseModel):
+    step_id: int
+    code_snapshot: str | None = None
+    passed: bool
+
+
+@router.post("/catalog/{slug}/progress")
+def save_step_progress(
+    slug: str,
+    payload: StepProgressRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Upsert a step completion record for the current user."""
+    existing = (
+        db.query(ProjectStepCompletion)
+        .filter_by(user_id=current_user.id, project_slug=slug, step_id=payload.step_id)
+        .first()
+    )
+    if existing:
+        existing.passed = payload.passed
+        existing.code_snapshot = payload.code_snapshot
+        existing.completed_at = datetime.utcnow()
+    else:
+        db.add(ProjectStepCompletion(
+            user_id=current_user.id,
+            project_slug=slug,
+            step_id=payload.step_id,
+            passed=payload.passed,
+            code_snapshot=payload.code_snapshot,
+            completed_at=datetime.utcnow(),
+        ))
+    db.commit()
+    return {"ok": True}
+
+
     stage_id: int
     title: str
     description: str
