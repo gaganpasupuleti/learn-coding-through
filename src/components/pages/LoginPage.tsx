@@ -12,10 +12,7 @@ import {
   setDemoFlag,
   type AuthUser,
 } from '@/lib/auth'
-import {
-  loginUser,
-  registerUser,
-} from '@/lib/roadmapper-api'
+import { supabase } from '@/lib/supabase'
 
 interface LoginPageProps {
   onAuthenticated: (user: AuthUser) => void
@@ -39,15 +36,23 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
     }
     try {
       setIsLoading(true)
-      const token = await loginUser({ email: email.trim(), password })
-      storeAuthToken(token)
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      })
+      if (error) throw new Error(error.message)
 
-      // Try to fetch user profile; default to 'student' if endpoint unavailable
-      const user = await fetchCurrentUser(token) ?? {
+      const accessToken = data.session?.access_token
+      if (!accessToken) throw new Error('No session returned from Supabase.')
+      storeAuthToken(accessToken)
+
+      // Fetch backend profile (role, xp, etc.) using the Supabase JWT
+      const user = await fetchCurrentUser(accessToken) ?? {
         id: 0,
         email: email.trim(),
-        full_name: email.split('@')[0],
+        full_name: data.user?.user_metadata?.full_name ?? email.split('@')[0],
         role: 'student' as const,
+        supabase_uid: data.user?.id,
       }
       storeUser(user)
       toast.success(`Welcome back, ${user.full_name}!`)
@@ -67,21 +72,33 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
     }
     try {
       setIsLoading(true)
-      await registerUser({ email: email.trim(), full_name: fullName.trim(), password })
-      const token = await loginUser({ email: email.trim(), password })
-      storeAuthToken(token)
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: { data: { full_name: fullName.trim() } },
+      })
+      if (signUpError) throw new Error(signUpError.message)
 
-      const user = await fetchCurrentUser(token) ?? {
+      // Supabase can require email confirmation — handle that case
+      if (!signUpData.session) {
+        toast.success('Account created! Please check your email to confirm your account.')
+        return
+      }
+
+      const accessToken = signUpData.session.access_token
+      storeAuthToken(accessToken)
+
+      const user = await fetchCurrentUser(accessToken) ?? {
         id: 0,
         email: email.trim(),
         full_name: fullName.trim(),
         role: 'student' as const,
+        supabase_uid: signUpData.user?.id,
       }
-      storeUser(user)
-      // New accounts start with demo access unless they have an elevated role
       if (user.role === 'student' || user.role === 'demo') {
         setDemoFlag(true)
       }
+      storeUser(user)
       toast.success(`Account created! Welcome, ${user.full_name}.`)
       onAuthenticated(user)
     } catch (err) {

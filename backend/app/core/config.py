@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     bootstrap_admin_email: str | None = None
     bootstrap_admin_password: str | None = None
     bootstrap_admin_full_name: str = "Platform Admin"
+    # Supabase JWT Secret — used to verify tokens issued by Supabase Auth.
+    # Get it from: Supabase Dashboard > Project Settings > API > JWT Settings > JWT Secret
+    supabase_jwt_secret: str = ""
     cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["http://localhost:5000", "http://localhost:5173"]
     )

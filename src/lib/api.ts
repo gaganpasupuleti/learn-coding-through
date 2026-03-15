@@ -565,7 +565,10 @@ export interface StepProgressPayload {
 }
 
 export async function saveStepProgress(projectSlug: string, payload: StepProgressPayload): Promise<void> {
-  const token = localStorage.getItem('auth_token')
+  // Prefer the live Supabase session token; fall back to legacy localStorage key.
+  const { supabase } = await import('@/lib/supabase')
+  const { data: { session } } = await supabase.auth.getSession()
+  const token = session?.access_token ?? localStorage.getItem('career-portal-token')
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   if (token) headers['Authorization'] = `Bearer ${token}`
   const response = await fetch(

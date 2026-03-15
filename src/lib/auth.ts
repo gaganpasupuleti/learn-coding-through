@@ -12,6 +12,8 @@ export interface AuthUser {
   email: string
   full_name: string
   role: UserRole
+  /** Supabase Auth UUID (set when signed in via Supabase). */
+  supabase_uid?: string
 }
 
 const TOKEN_KEY = 'career-portal-token'
