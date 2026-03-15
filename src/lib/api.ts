@@ -460,25 +460,58 @@ export interface CatalogProjectSummary {
 }
 
 // ── Catalog fetch functions ────────────────────────────────────────────────────
+// These try the backend first and fall back to the bundled static catalog so
+// the app works without a running backend (e.g. local dev, demo mode).
+
+import {
+  CATALOG_QUIZ_SUMMARIES,
+  CATALOG_QUIZZES,
+  CATALOG_PROJECT_SUMMARIES,
+  CATALOG_PROJECTS,
+} from './catalog-data'
 
 export async function fetchCatalogQuizzes(): Promise<CatalogQuizSummary[]> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/quiz/catalog`)
-  return parseOrThrow(response) as Promise<CatalogQuizSummary[]>
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/quiz/catalog`)
+    if (!response.ok) return CATALOG_QUIZ_SUMMARIES
+    return (await response.json()) as CatalogQuizSummary[]
+  } catch {
+    return CATALOG_QUIZ_SUMMARIES
+  }
 }
 
 export async function fetchCatalogQuiz(slug: string): Promise<CatalogQuiz> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/quiz/catalog/${encodeURIComponent(slug)}`)
-  return parseOrThrow(response) as Promise<CatalogQuiz>
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/quiz/catalog/${encodeURIComponent(slug)}`)
+    if (!response.ok) throw new Error('not ok')
+    return (await response.json()) as CatalogQuiz
+  } catch {
+    const found = CATALOG_QUIZZES.find((q) => q.id === slug)
+    if (!found) throw new Error(`Quiz "${slug}" not found`)
+    return found
+  }
 }
 
 export async function fetchCatalogProjects(): Promise<CatalogProjectSummary[]> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/projects/catalog`)
-  return parseOrThrow(response) as Promise<CatalogProjectSummary[]>
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/projects/catalog`)
+    if (!response.ok) return CATALOG_PROJECT_SUMMARIES
+    return (await response.json()) as CatalogProjectSummary[]
+  } catch {
+    return CATALOG_PROJECT_SUMMARIES
+  }
 }
 
 export async function fetchCatalogProject(slug: string): Promise<CatalogProject> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/projects/catalog/${encodeURIComponent(slug)}`)
-  return parseOrThrow(response) as Promise<CatalogProject>
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/projects/catalog/${encodeURIComponent(slug)}`)
+    if (!response.ok) throw new Error('not ok')
+    return (await response.json()) as CatalogProject
+  } catch {
+    const found = CATALOG_PROJECTS.find((p) => p.id === slug)
+    if (!found) throw new Error(`Project "${slug}" not found`)
+    return found
+  }
 }
 
 // ── User progress ──────────────────────────────────────────────────────────────
