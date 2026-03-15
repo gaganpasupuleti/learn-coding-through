@@ -93,7 +93,7 @@ export function resetDemoLimits() {
 // Add a new utility object for tracking code execution limits
 
 const DEMO_CODE_EXECUTION_KEY = 'demo-code-executions'
-const DEMO_CODE_EXECUTION_LIMIT = 10
+const DEMO_CODE_EXECUTION_LIMIT = 1000
 
 export const DemoLimits = {
   /** Check if the user is under the execution limit */
