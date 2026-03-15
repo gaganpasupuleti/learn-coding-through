@@ -56,7 +56,6 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
   // Derived: a project is TDD if its first step has test cases populated
   const isTddMode = !loading && !!project?.steps[0]?.content?.testCases?.length
-  }, [tddStepIndex])
 
   /** Convert a JS value to a Python literal string for injection into the harness. */
   const toPythonLiteral = (val: unknown): string => {
@@ -88,54 +87,66 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
     const results: TestResult[] = []
 
-    for (const tc of testCases) {
-      let execCode = code
+    try {
+      for (const tc of testCases) {
+        let execCode = code
 
-      if (tc.input_data !== undefined && callableName) {
-        const pyLiteral = toPythonLiteral(tc.input_data)
-        // Array input_data → spread as positional args; object → single arg
-        const callExpr = Array.isArray(tc.input_data)
-          ? `${callableName}(*__td__)`
-          : `${callableName}(__td__)`
-        execCode = `${code}\n\n__td__ = ${pyLiteral}\nprint(${callExpr})`
+        if (tc.input_data !== undefined && callableName) {
+          const pyLiteral = toPythonLiteral(tc.input_data)
+          // Array input_data → spread as positional args; object → single arg
+          const callExpr = Array.isArray(tc.input_data)
+            ? `${callableName}(*__td__)`
+            : `${callableName}(__td__)`
+          execCode = `${code}\n\n__td__ = ${pyLiteral}\nprint(${callExpr})`
+        }
+
+        const result = await sandbox.execute(execCode, language)
+        const rawOutput = (result.output ?? '').trim()
+        const lines = rawOutput.split('\n').map(l => l.trim()).filter(Boolean)
+        const actualOutput = tc.input_data !== undefined
+          ? (lines[lines.length - 1] ?? '')
+          : rawOutput
+
+        let passed = false
+        if (result.error && !tc.validation_regex && !tc.input_data) {
+          passed = false
+        } else if (tc.expected_output !== undefined) {
+          passed = actualOutput === tc.expected_output.trim()
+        } else if (tc.validation_regex) {
+          passed = new RegExp(tc.validation_regex).test(actualOutput)
+        }
+
+        results.push({
+          hidden: tc.hidden,
+          expected: tc.expected_output,
+          actualOutput,
+          passed,
+          error: result.error,
+        })
       }
 
-      const result = await sandbox.execute(execCode, language)
-      const rawOutput = (result.output ?? '').trim()
-      const lines = rawOutput.split('\n').map(l => l.trim()).filter(Boolean)
-      const actualOutput = tc.input_data !== undefined
-        ? (lines[lines.length - 1] ?? '')
-        : rawOutput
-
-      let passed = false
-      if (result.error && !tc.validation_regex && !tc.input_data) {
-        passed = false
-      } else if (tc.expected_output !== undefined) {
-        passed = actualOutput === tc.expected_output.trim()
-      } else if (tc.validation_regex) {
-        passed = new RegExp(tc.validation_regex).test(actualOutput)
+      setTestResults(results)
+      const allPassed = results.every(r => r.passed)
+      setIsStepValidated(allPassed)
+      // Non-blocking: save to DB if authenticated
+      if (allPassed) {
+        saveStepProgress(projectId, {
+          step_id: tddStepIndex + 1,
+          code_snapshot: code,
+          passed: true,
+        }).catch(() => {})
       }
-
-      results.push({
-        hidden: tc.hidden,
-        expected: tc.expected_output,
-        actualOutput,
-        passed,
-        error: result.error,
-      })
-    }
-
-    setTestResults(results)
-    setIsExecuting(false)
-    const allPassed = results.every(r => r.passed)
-    setIsStepValidated(allPassed)
-    // Non-blocking: save to DB if authenticated
-    if (allPassed) {
-      saveStepProgress(projectId, {
-        step_id: tddStepIndex + 1,
-        code_snapshot: code,
-        passed: true,
-      }).catch(() => {})
+    } catch (err: any) {
+      // Timeout (or other fatal) errors: surface as a failed console entry
+      setTestResults([{
+        hidden: false,
+        actualOutput: '',
+        passed: false,
+        error: err?.message ?? String(err),
+      }])
+    } finally {
+      // Always re-enable the Run & Test button, even if execution was aborted
+      setIsExecuting(false)
     }
   }, [project, projectId, tddStepIndex])
 

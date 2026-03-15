@@ -25,23 +25,37 @@ export class CodeSandbox {
     return output.slice(0, this.maxOutputLength) + '\n...output truncated'
   }
 
-  /* ---------- Execute via Backend API ---------- */
+  /* ---------- Execute via Backend API ----------
+   * Uses a client-side timeout (this.timeout ms). If the backend hasn't
+   * responded by then, the fetch is aborted and the returned Promise
+   * *rejects* with a human-readable timeout message — allowing the
+   * caller to catch it and surface it as a console error.
+   */
   async execute(code: string, language: string): Promise<ExecutionResult> {
-    try {
-      const result = await executeCode(code, language)
-      
-      return {
+    const controller = new AbortController()
+
+    // Timeout promise: aborts the in-flight fetch and rejects after this.timeout ms
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => {
+        controller.abort()
+        reject(new Error(
+          'Execution Error: Code timed out after 3 seconds. Did you write an infinite loop?'
+        ))
+      }, this.timeout)
+    )
+
+    // API call promise: always resolves (executeCode swallows its own errors)
+    const apiPromise = executeCode(code, language, controller.signal).then(
+      (result): ExecutionResult => ({
         output: this.truncate(result.output),
         executionTime: result.execution_time,
-        error: result.error
-      }
-    } catch (err: any) {
-      return {
-        output: '',
-        executionTime: 0,
-        error: err?.message ?? String(err)
-      }
-    }
+        error: result.error,
+      })
+    )
+
+    // The timeout promise rejects synchronously when the timer fires,
+    // so it always beats any microtask-delayed apiPromise resolution.
+    return Promise.race([apiPromise, timeoutPromise])
   }
 
   /* Legacy methods for backwards compatibility */

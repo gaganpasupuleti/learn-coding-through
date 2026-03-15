@@ -122,6 +122,7 @@ def save_step_progress(
     return {"ok": True}
 
 
+class ProjectSubmitRequest(BaseModel):
     stage_id: int
     title: str
     description: str

@@ -180,7 +180,8 @@ export interface DatabaseHealth {
  */
 export async function executeCode(
   code: string,
-  language: string
+  language: string,
+  signal?: AbortSignal,
 ): Promise<ExecuteResponse> {
   if (!DemoLimits.canExecuteCode()) {
     DemoLimits.triggerLimitReachedError();
@@ -207,6 +208,7 @@ export async function executeCode(
         code,
         language,
       }),
+      signal,
     })
 
     if (!response.ok) {
