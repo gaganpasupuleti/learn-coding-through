@@ -22,14 +22,14 @@ export const careerSeedData: CareerRole[] = [
     sortOrder: 1,
     isActive: true,
     syllabus: [
-      { id: 'da-m1-w1-1', month: 1, week: 1, title: 'SQL Fundamentals', description: 'SELECT, WHERE, JOINs, GROUP BY, subqueries and window functions on real datasets', type: 'topic', sortOrder: 1 },
+      { id: 'da-m1-w1-1', month: 1, week: 1, title: 'SQL Fundamentals', description: 'SELECT, WHERE, JOINs, GROUP BY, subqueries and window functions on real datasets', type: 'topic', sortOrder: 1, projectId: 'student-database' },
       { id: 'da-m1-w2-1', month: 1, week: 2, title: 'Python for Data Analysis', description: 'Pandas DataFrames, NumPy arrays, data loading and transformation pipelines', type: 'topic', sortOrder: 2 },
-      { id: 'da-m1-w3-1', month: 1, week: 3, title: 'Statistics & Probability', description: 'Descriptive stats, distributions, hypothesis testing, correlation vs causation', type: 'topic', sortOrder: 3 },
+      { id: 'da-m1-w3-1', month: 1, week: 3, title: 'Statistics & Probability', description: 'Descriptive stats, distributions, hypothesis testing, correlation vs causation', type: 'topic', sortOrder: 3, projectId: 'number-guesser' },
       { id: 'da-m1-w4-1', month: 1, week: 4, title: 'Exploratory Data Analysis Report', description: 'Produce a complete EDA notebook on a public dataset with visualizations and summary', type: 'deliverable', sortOrder: 4 },
 
       { id: 'da-m2-w1-1', month: 2, week: 1, title: 'Data Visualization with Matplotlib & Seaborn', description: 'Charts, heatmaps, box plots and storytelling through visuals', type: 'topic', sortOrder: 5 },
       { id: 'da-m2-w2-1', month: 2, week: 2, title: 'Power BI Essentials', description: 'Connecting data sources, DAX basics, building interactive reports and sharing dashboards', type: 'topic', sortOrder: 6 },
-      { id: 'da-m2-w3-1', month: 2, week: 3, title: 'Advanced SQL (CTEs & Stored Procedures)', description: 'Window functions, recursive CTEs, performance tuning and indexing', type: 'milestone', sortOrder: 7 },
+      { id: 'da-m2-w3-1', month: 2, week: 3, title: 'Advanced SQL (CTEs & Stored Procedures)', description: 'Window functions, recursive CTEs, performance tuning and indexing', type: 'milestone', sortOrder: 7, projectId: 'sales-analytics' },
       { id: 'da-m2-w4-1', month: 2, week: 4, title: 'Sales Performance Dashboard', description: 'Build a Power BI dashboard from a sales dataset with KPI tiles and slicers', type: 'deliverable', sortOrder: 8 },
 
       { id: 'da-m3-w1-1', month: 3, week: 1, title: 'Data Cleaning & Wrangling', description: 'Handling nulls, outliers, dtype mismatches, merging inconsistent tables', type: 'topic', sortOrder: 9 },
@@ -60,17 +60,17 @@ export const careerSeedData: CareerRole[] = [
     sortOrder: 2,
     isActive: true,
     syllabus: [
-      { id: 'pbd-m1-w1-1', month: 1, week: 1, title: 'Python Fundamentals & OOP', description: 'Advanced Python: decorators, generators, context managers, dataclasses and type hints', type: 'topic', sortOrder: 1 },
+      { id: 'pbd-m1-w1-1', month: 1, week: 1, title: 'Python Fundamentals & OOP', description: 'Advanced Python: decorators, generators, context managers, dataclasses and type hints', type: 'topic', sortOrder: 1, quizId: 'js-logic-check' },
       { id: 'pbd-m1-w2-1', month: 1, week: 2, title: 'Data Structures & Algorithms', description: 'Big-O analysis, lists, dicts, heaps, graphs — interview-level problem solving in Python', type: 'topic', sortOrder: 2 },
       { id: 'pbd-m1-w3-1', month: 1, week: 3, title: 'File I/O, Concurrency & Async', description: 'asyncio, aiohttp, threading vs multiprocessing, file and network I/O', type: 'topic', sortOrder: 3 },
       { id: 'pbd-m1-w4-1', month: 1, week: 4, title: 'CLI Task Manager', description: 'Build a feature-rich command-line task manager with JSON persistence and async operations', type: 'deliverable', sortOrder: 4 },
 
       { id: 'pbd-m2-w1-1', month: 2, week: 1, title: 'FastAPI Fundamentals', description: 'Routing, path/query params, Pydantic validation, dependency injection and OpenAPI docs', type: 'topic', sortOrder: 5 },
-      { id: 'pbd-m2-w2-1', month: 2, week: 2, title: 'PostgreSQL & SQLAlchemy ORM', description: 'Schemas, relationships, migrations with Alembic, query optimisation and indexes', type: 'topic', sortOrder: 6 },
+      { id: 'pbd-m2-w2-1', month: 2, week: 2, title: 'PostgreSQL & SQLAlchemy ORM', description: 'Schemas, relationships, migrations with Alembic, query optimisation and indexes', type: 'topic', sortOrder: 6, projectId: 'student-database' },
       { id: 'pbd-m2-w3-1', month: 2, week: 3, title: 'REST API Design Principles', description: 'Resource naming, versioning, status codes, pagination and HATEOAS', type: 'milestone', sortOrder: 7 },
       { id: 'pbd-m2-w4-1', month: 2, week: 4, title: 'CRUD REST API', description: 'Production-quality FastAPI + PostgreSQL CRUD API with Pydantic schemas and Alembic migrations', type: 'deliverable', sortOrder: 8 },
 
-      { id: 'pbd-m3-w1-1', month: 3, week: 1, title: 'Authentication & Authorisation', description: 'JWT tokens, OAuth2 flow, hashed passwords, role-based access control (RBAC)', type: 'topic', sortOrder: 9 },
+      { id: 'pbd-m3-w1-1', month: 3, week: 1, title: 'Authentication & Authorisation', description: 'JWT tokens, OAuth2 flow, hashed passwords, role-based access control (RBAC)', type: 'topic', sortOrder: 9, projectId: 'password-generator' },
       { id: 'pbd-m3-w2-1', month: 3, week: 2, title: 'Testing (pytest)', description: 'Unit tests, integration tests, fixtures, mocking, test coverage and CI integration', type: 'topic', sortOrder: 10 },
       { id: 'pbd-m3-w3-1', month: 3, week: 3, title: 'Docker & Containerisation', description: 'Dockerfile best practices, multi-stage builds, docker-compose for local dev stacks', type: 'topic', sortOrder: 11 },
       { id: 'pbd-m3-w4-1', month: 3, week: 4, title: 'Authenticated Multi-tenant Service', description: 'API with JWT auth, role guards, full test suite and Docker deployment', type: 'deliverable', sortOrder: 12 },
@@ -98,10 +98,10 @@ export const careerSeedData: CareerRole[] = [
     sortOrder: 3,
     isActive: true,
     syllabus: [
-      { id: 'de-m1-w1-1', month: 1, week: 1, title: 'Advanced SQL & Data Modelling', description: 'Star schema, snowflake schema, slowly changing dimensions, query optimisation', type: 'topic', sortOrder: 1 },
-      { id: 'de-m1-w2-1', month: 1, week: 2, title: 'Python Data Pipelines', description: 'Pandas, file formats (Parquet, Avro, ORC), chunked processing, data profiling', type: 'topic', sortOrder: 2 },
+      { id: 'de-m1-w1-1', month: 1, week: 1, title: 'Advanced SQL & Data Modelling', description: 'Star schema, snowflake schema, slowly changing dimensions, query optimisation', type: 'topic', sortOrder: 1, projectId: 'student-database' },
+      { id: 'de-m1-w2-1', month: 1, week: 2, title: 'Python Data Pipelines', description: 'Pandas, file formats (Parquet, Avro, ORC), chunked processing, data profiling', type: 'topic', sortOrder: 2, projectId: 'temperature-converter' },
       { id: 'de-m1-w3-1', month: 1, week: 3, title: 'Linux & Shell Scripting', description: 'Bash for automation, cron jobs, file system operations, environment management', type: 'topic', sortOrder: 3 },
-      { id: 'de-m1-w4-1', month: 1, week: 4, title: 'Batch ETL Pipeline', description: 'Extract from CSV/API, transform with Pandas, load into PostgreSQL with validation checks', type: 'deliverable', sortOrder: 4 },
+      { id: 'de-m1-w4-1', month: 1, week: 4, title: 'Batch ETL Pipeline', description: 'Extract from CSV/API, transform with Pandas, load into PostgreSQL with validation checks', type: 'deliverable', sortOrder: 4, projectId: 'sales-analytics' },
 
       { id: 'de-m2-w1-1', month: 2, week: 1, title: 'Apache Spark Fundamentals', description: 'RDDs vs DataFrames, transformations/actions, Spark SQL, join optimisation', type: 'topic', sortOrder: 5 },
       { id: 'de-m2-w2-1', month: 2, week: 2, title: 'Cloud Storage & Data Lakes', description: 'S3/GCS object storage, Delta Lake, data lake architecture, partitioning strategies', type: 'topic', sortOrder: 6 },
@@ -137,9 +137,9 @@ export const careerSeedData: CareerRole[] = [
     isActive: true,
     syllabus: [
       { id: 'mle-m1-w1-1', month: 1, week: 1, title: 'Math for ML (Linear Algebra & Calculus)', description: 'Vectors, matrices, eigenvalues, gradients, backpropagation from scratch', type: 'topic', sortOrder: 1 },
-      { id: 'mle-m1-w2-1', month: 1, week: 2, title: 'ML Fundamentals with scikit-learn', description: 'Supervised/unsupervised learning, train/test splits, cross-validation, bias-variance', type: 'topic', sortOrder: 2 },
+      { id: 'mle-m1-w2-1', month: 1, week: 2, title: 'ML Fundamentals with scikit-learn', description: 'Supervised/unsupervised learning, train/test splits, cross-validation, bias-variance', type: 'topic', sortOrder: 2, quizId: 'js-logic-check' },
       { id: 'mle-m1-w3-1', month: 1, week: 3, title: 'Feature Engineering & Selection', description: 'Encoding, scaling, imputation, feature importance, dimensionality reduction (PCA)', type: 'topic', sortOrder: 3 },
-      { id: 'mle-m1-w4-1', month: 1, week: 4, title: 'Regression & Classification Models', description: 'Predict real estate prices and customer churn with fully documented models', type: 'deliverable', sortOrder: 4 },
+      { id: 'mle-m1-w4-1', month: 1, week: 4, title: 'Regression & Classification Models', description: 'Predict real estate prices and customer churn with fully documented models', type: 'deliverable', sortOrder: 4, projectId: 'grade-calculator' },
 
       { id: 'mle-m2-w1-1', month: 2, week: 1, title: 'Deep Learning with TensorFlow/Keras', description: 'Neural network architecture, activation functions, regularisation, transfer learning', type: 'topic', sortOrder: 5 },
       { id: 'mle-m2-w2-1', month: 2, week: 2, title: 'Computer Vision (CNNs)', description: 'ResNet, EfficientNet, object detection (YOLO), image augmentation pipelines', type: 'topic', sortOrder: 6 },
@@ -174,17 +174,17 @@ export const careerSeedData: CareerRole[] = [
     sortOrder: 5,
     isActive: true,
     syllabus: [
-      { id: 'fsd-m1-w1-1', month: 1, week: 1, title: 'React Fundamentals & Hooks', description: 'Components, JSX, useState, useEffect, useContext, custom hooks, React DevTools', type: 'topic', sortOrder: 1 },
-      { id: 'fsd-m1-w2-1', month: 1, week: 2, title: 'TypeScript Deep Dive', description: 'Generics, utility types, discriminated unions, type guards, module augmentation', type: 'topic', sortOrder: 2 },
-      { id: 'fsd-m1-w3-1', month: 1, week: 3, title: 'State Management (Zustand / React Query)', description: 'Global state patterns, server state caching, optimistic updates, real-time sync', type: 'topic', sortOrder: 3 },
-      { id: 'fsd-m1-w4-1', month: 1, week: 4, title: 'Interactive UI Application', description: 'React + TypeScript app with state management, routing and TailwindCSS design system', type: 'deliverable', sortOrder: 4 },
+      { id: 'fsd-m1-w1-1', month: 1, week: 1, title: 'React Fundamentals & Hooks', description: 'Components, JSX, useState, useEffect, useContext, custom hooks, React DevTools', type: 'topic', sortOrder: 1, quizId: 'frontend-foundations' },
+      { id: 'fsd-m1-w2-1', month: 1, week: 2, title: 'TypeScript Deep Dive', description: 'Generics, utility types, discriminated unions, type guards, module augmentation', type: 'topic', sortOrder: 2, quizId: 'js-logic-check' },
+      { id: 'fsd-m1-w3-1', month: 1, week: 3, title: 'State Management (Zustand / React Query)', description: 'Global state patterns, server state caching, optimistic updates, real-time sync', type: 'topic', sortOrder: 3, projectId: 'temperature-converter' },
+      { id: 'fsd-m1-w4-1', month: 1, week: 4, title: 'Interactive UI Application', description: 'React + TypeScript app with state management, routing and TailwindCSS design system', type: 'deliverable', sortOrder: 4, projectId: 'digital-clock' },
 
       { id: 'fsd-m2-w1-1', month: 2, week: 1, title: 'Node.js & Express/Fastify', description: 'Event loop, streams, middleware patterns, REST API design, error handling', type: 'topic', sortOrder: 5 },
       { id: 'fsd-m2-w2-1', month: 2, week: 2, title: 'Databases: SQL & NoSQL', description: 'PostgreSQL with Prisma/Drizzle ORM, Redis for caching, MongoDB for document store', type: 'topic', sortOrder: 6 },
       { id: 'fsd-m2-w3-1', month: 2, week: 3, title: 'REST API Design & GraphQL Intro', description: 'Versioning, pagination, filtering, GraphQL resolvers and Apollo Server', type: 'milestone', sortOrder: 7 },
-      { id: 'fsd-m2-w4-1', month: 2, week: 4, title: 'Full Stack CRUD Application', description: 'React frontend + Node.js API + PostgreSQL with full CRUD, validation and error handling', type: 'deliverable', sortOrder: 8 },
+      { id: 'fsd-m2-w4-1', month: 2, week: 4, title: 'Full Stack CRUD Application', description: 'React frontend + Node.js API + PostgreSQL with full CRUD, validation and error handling', type: 'deliverable', sortOrder: 8, projectId: 'calculator' },
 
-      { id: 'fsd-m3-w1-1', month: 3, week: 1, title: 'Authentication & Security', description: 'JWT + refresh tokens, OAuth2 (Google/GitHub), RBAC, rate limiting, OWASP top 10', type: 'topic', sortOrder: 9 },
+      { id: 'fsd-m3-w1-1', month: 3, week: 1, title: 'Authentication & Security', description: 'JWT + refresh tokens, OAuth2 (Google/GitHub), RBAC, rate limiting, OWASP top 10', type: 'topic', sortOrder: 9, projectId: 'password-generator' },
       { id: 'fsd-m3-w2-1', month: 3, week: 2, title: 'Cloud Deployment & DevOps', description: 'Docker compose, Railway/Render/Vercel deploy, CI/CD with GitHub Actions', type: 'topic', sortOrder: 10 },
       { id: 'fsd-m3-w3-1', month: 3, week: 3, title: 'Testing (Vitest, Playwright, Supertest)', description: 'Unit, component, E2E tests, TDD workflow, test coverage dashboards', type: 'topic', sortOrder: 11 },
       { id: 'fsd-m3-w4-1', month: 3, week: 4, title: 'SaaS MVP', description: 'Multi-tenant SaaS with auth, subscriptions, feature flags, deployed to cloud with CI/CD', type: 'deliverable', sortOrder: 12 },
@@ -213,8 +213,8 @@ export const careerSeedData: CareerRole[] = [
     isActive: true,
     syllabus: [
       { id: 'dve-m1-w1-1', month: 1, week: 1, title: 'Linux Administration', description: 'File system, permissions, users/groups, processes, networking, systemd services', type: 'topic', sortOrder: 1 },
-      { id: 'dve-m1-w2-1', month: 1, week: 2, title: 'Bash Scripting & Automation', description: 'Variables, loops, conditionals, functions, cron jobs, sed/awk text processing', type: 'topic', sortOrder: 2 },
-      { id: 'dve-m1-w3-1', month: 1, week: 3, title: 'Git & Version Control Workflows', description: 'Branching strategies (GitFlow, trunk-based), rebasing, hooks, monorepo tools', type: 'topic', sortOrder: 3 },
+      { id: 'dve-m1-w2-1', month: 1, week: 2, title: 'Bash Scripting & Automation', description: 'Variables, loops, conditionals, functions, cron jobs, sed/awk text processing', type: 'topic', sortOrder: 2, quizId: 'js-logic-check' },
+      { id: 'dve-m1-w3-1', month: 1, week: 3, title: 'Git & Version Control Workflows', description: 'Branching strategies (GitFlow, trunk-based), rebasing, hooks, monorepo tools', type: 'topic', sortOrder: 3, quizId: 'frontend-foundations' },
       { id: 'dve-m1-w4-1', month: 1, week: 4, title: 'Server Automation Scripts', description: 'Bash scripts that provision, configure and monitor a Linux server end-to-end', type: 'deliverable', sortOrder: 4 },
 
       { id: 'dve-m2-w1-1', month: 2, week: 1, title: 'Docker & Containerisation', description: 'Dockerfile best practices, multi-stage builds, images, volumes, networking', type: 'topic', sortOrder: 5 },
