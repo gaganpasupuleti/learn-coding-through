@@ -8,3 +8,9 @@ healthcheckPath = "/health"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
+
+# Temporary wildcard — replace with your Railway frontend URL once known:
+#   https://<your-frontend>.railway.app
+# In production also set ENVIRONMENT=production to enable safety checks.
+[variables]
+CORS_ORIGINS = "*"
