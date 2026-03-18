@@ -103,6 +103,14 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
             ? `${callableName}(*__td__)`
             : `${callableName}(__td__)`
           execCode = `${code}\n\n__td__ = ${pyLiteral}\nprint(${callExpr})`
+        } else if (language === 'sql' && tc.input_data !== undefined) {
+          // SQL TDD setup: prepend hidden setup SQL before executing user query.
+          const setupSql = typeof tc.input_data === 'string'
+            ? tc.input_data
+            : ((tc.input_data as { setup_sql?: unknown })?.setup_sql as string | undefined)
+          if (setupSql) {
+            execCode = `${setupSql}\n${code}`
+          }
         }
 
         const result = await sandbox.execute(execCode, language)
@@ -115,7 +123,8 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
         const rawOutput = (result.output ?? '').trim()
         const lines = rawOutput.split('\n').map(l => l.trim()).filter(Boolean)
-        const actualOutput = tc.input_data !== undefined
+        const shouldExtractLastLine = tc.input_data !== undefined && !!callableName
+        const actualOutput = shouldExtractLastLine
           ? (lines[lines.length - 1] ?? '')
           : rawOutput
 

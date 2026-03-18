@@ -232,10 +232,18 @@ def execute_sql(code: str, timeout: int = 5) -> Dict[str, Any]:
         
         for statement in statements:
             try:
+                upper_stmt = statement.upper().strip()
+
+                # SQLite does not support CREATE DATABASE; emulate success for learning flows.
+                if upper_stmt.startswith('CREATE DATABASE'):
+                    db_name = statement.strip().split()[-1].rstrip(';')
+                    output_lines.append(f"Database '{db_name}' created successfully")
+                    continue
+
                 cursor.execute(statement)
                 
                 # Check if it's a SELECT query
-                if statement.upper().strip().startswith('SELECT'):
+                if upper_stmt.startswith('SELECT'):
                     rows = cursor.fetchall()
                     
                     if rows:
@@ -256,14 +264,16 @@ def execute_sql(code: str, timeout: int = 5) -> Dict[str, Any]:
                         output_lines.append(f"\n{len(rows)} row(s) returned")
                     else:
                         output_lines.append("0 rows returned")
-                elif statement.upper().strip().startswith('INSERT'):
+                elif upper_stmt.startswith('INSERT'):
                     output_lines.append(f"{cursor.rowcount} row(s) inserted")
-                elif statement.upper().strip().startswith('UPDATE'):
+                elif upper_stmt.startswith('UPDATE'):
                     output_lines.append(f"{cursor.rowcount} row(s) updated")
-                elif statement.upper().strip().startswith('DELETE'):
+                elif upper_stmt.startswith('DELETE'):
                     output_lines.append(f"{cursor.rowcount} row(s) deleted")
-                elif statement.upper().strip().startswith('CREATE'):
+                elif upper_stmt.startswith('CREATE TABLE'):
                     output_lines.append("Table created successfully")
+                elif upper_stmt.startswith('CREATE'):
+                    output_lines.append("Object created successfully")
                 else:
                     output_lines.append(f"Executed: {statement[:50]}...")
                 

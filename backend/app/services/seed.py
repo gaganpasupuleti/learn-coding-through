@@ -306,6 +306,78 @@ PROJECTS: list[dict[str, Any]] = [
         ],
     },
     {
+        "slug": "medical-sql-basics",
+        "title": "Medical SQL Basics",
+        "short_description": "Create a Medical database flow with Patients table and validate each SQL step.",
+        "description": "Practice core SQL workflow in 4 steps: create database, create table, insert data, and query results.",
+        "difficulty": "beginner",
+        "estimated_time": "15 minutes",
+        "steps": [
+            {
+                "order": 1,
+                "slug": "medical-step-1-create-db",
+                "step_type": "code",
+                "title": "Step 1: Create the Database",
+                "description": "Write a SQL command to create a database named Medical.",
+                "language": "sql",
+                "initial_code": "CREATE DATABASE Medical;",
+                "test_cases": json.dumps([
+                    {
+                        "expected_output": "Database 'Medical' created successfully",
+                        "hidden": False,
+                    }
+                ]),
+            },
+            {
+                "order": 2,
+                "slug": "medical-step-2-create-patients-table",
+                "step_type": "code",
+                "title": "Step 2: Create the Patients Table",
+                "description": "Create a Patients table with patient_id (INT, Primary Key) and name (VARCHAR).",
+                "language": "sql",
+                "initial_code": "CREATE TABLE Patients (patient_id INT PRIMARY KEY, name VARCHAR(50));",
+                "test_cases": json.dumps([
+                    {
+                        "expected_output": "Table created successfully",
+                        "hidden": False,
+                    }
+                ]),
+            },
+            {
+                "order": 3,
+                "slug": "medical-step-3-insert-data",
+                "step_type": "code",
+                "title": "Step 3: Insert Data",
+                "description": "Insert a patient named 'John Doe' with ID 1.",
+                "language": "sql",
+                "initial_code": "INSERT INTO Patients (patient_id, name) VALUES (1, 'John Doe');",
+                "test_cases": json.dumps([
+                    {
+                        "input_data": "CREATE TABLE Patients (patient_id INT PRIMARY KEY, name VARCHAR(50));",
+                        "expected_output": "1 row(s) inserted",
+                        "hidden": False,
+                    }
+                ]),
+            },
+            {
+                "order": 4,
+                "slug": "medical-step-4-query-data",
+                "step_type": "code",
+                "title": "Step 4: Query the Data",
+                "description": "Write a query to select all patients.",
+                "language": "sql",
+                "initial_code": "SELECT * FROM Patients;",
+                "test_cases": json.dumps([
+                    {
+                        "input_data": "CREATE TABLE Patients (patient_id INT PRIMARY KEY, name VARCHAR(50));\nINSERT INTO Patients (patient_id, name) VALUES (1, 'John Doe');",
+                        "validation_regex": "(?is)patient_id\\s*\\|\\s*name.*1\\s*\\|\\s*John Doe.*1 row\\(s\\) returned",
+                        "hidden": False,
+                    }
+                ]),
+            },
+        ],
+    },
+    {
         "slug": "student-database",
         "title": "Student Database",
         "short_description": "Build a Python CRUD system for student records — validated with automated tests.",
