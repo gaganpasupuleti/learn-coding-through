@@ -410,8 +410,8 @@ export function PracticePage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {sqlSchemaTables.map((table, i) => (
-                          <tr key={table.name} className={`border-b border-slate-100 hover:bg-slate-50 transition-colors duration-100 ${i === sqlSchemaTables.length - 1 ? 'border-b-0' : ''}`}>
+                        {sqlSchemaTables.map((table) => (
+                          <tr key={table.name} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors duration-100">
                             <td className="px-4 py-3">
                               <span className="font-semibold text-slate-800 text-xs">{table.name}</span>
                               {table.description && <p className="text-xs text-slate-400 mt-0.5">{table.description}</p>}
@@ -515,7 +515,7 @@ export function PracticePage() {
                             </thead>
                             <tbody>
                               {sqlTableResult.rows.map((row, rowIndex) => (
-                                <tr key={`${row.join('-')}-${rowIndex}`} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors duration-100">
+                                <tr key={rowIndex} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors duration-100">
                                   {row.map((cell, cellIndex) => (
                                     <td key={`${rowIndex}-${cellIndex}`} className="px-4 py-3 text-slate-700 font-mono text-xs">
                                       {cell}
