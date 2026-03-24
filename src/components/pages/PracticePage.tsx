@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useKV } from '@github/spark/hooks'
-import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { Card } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { CodeEditor } from '@/components/CodeEditor'
-import { Play, Eraser } from '@phosphor-icons/react'
+import { Play, Eraser } from 'lucide-react'
 import { CodeSandbox } from '@/lib/sandbox'
 import { getAllTestsForLanguage } from '@/lib/test-cases'
 import { fetchSqlPracticeSchema, SqlSchemaTable } from '@/lib/api'
@@ -288,23 +285,23 @@ export function PracticePage() {
   const hasSqlRows = !!sqlTableResult && sqlTableResult.headers.length > 0 && sqlTableResult.rows.length > 0
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-6 py-8 max-w-7xl">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         <div className="space-y-6">
-          <div className="space-y-3">
-            <h1 className="text-3xl md:text-4xl font-bold">Practice Playground</h1>
-            <p className="text-muted-foreground text-lg">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Practice Playground</h1>
+            <p className="text-slate-500">
               Pick a language, load a quick exercise, and practice with instant output.
             </p>
           </div>
 
-          <Card className="p-4 border">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 className="text-sm font-semibold">What students usually practice first</h2>
+                <h2 className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Common practice topics</h2>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {languageFocusMap[selectedLanguage].map((focus) => (
-                    <span key={focus} className="rounded-md border px-2 py-1 text-xs text-muted-foreground">
+                    <span key={focus} className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs text-slate-600 font-medium">
                       {focus}
                     </span>
                   ))}
@@ -313,7 +310,7 @@ export function PracticePage() {
 
               <div className="flex items-center gap-2">
                 <select
-                  className="h-9 rounded-md border bg-background px-3 text-sm"
+                  className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-sm"
                   value={selectedDifficulty}
                   onChange={(event) => setSelectedDifficulty(event.target.value as Difficulty)}
                 >
@@ -322,7 +319,7 @@ export function PracticePage() {
                   <option value="hard">Hard</option>
                 </select>
                 <select
-                  className="h-9 rounded-md border bg-background px-3 text-sm"
+                  className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-sm"
                   defaultValue=""
                   onChange={(event) => {
                     const value = event.target.value
@@ -341,10 +338,10 @@ export function PracticePage() {
                 </select>
               </div>
             </div>
-          </Card>
+          </div>
 
-          <Tabs 
-            value={selectedLanguage} 
+          <Tabs
+            value={selectedLanguage}
             onValueChange={(value) => {
               setSelectedLanguage(value as Language)
               setOutput('')
@@ -352,39 +349,30 @@ export function PracticePage() {
             }}
             className="space-y-6"
           >
-            <TabsList className="grid w-full max-w-md grid-cols-3 h-12">
-              <TabsTrigger value="python" className="text-base">
+            <TabsList className="grid w-full max-w-xs grid-cols-3 h-9 bg-slate-100 rounded-lg p-1">
+              <TabsTrigger value="python" className="text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500">
                 {languageLabels.python}
               </TabsTrigger>
-              <TabsTrigger value="sql" className="text-base">
+              <TabsTrigger value="sql" className="text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500">
                 {languageLabels.sql}
               </TabsTrigger>
-              <TabsTrigger value="java" className="text-base">
+              <TabsTrigger value="java" className="text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500">
                 {languageLabels.java}
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="python" className="space-y-4 mt-6">
-              <Card className="overflow-hidden">
-                <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
-                  <h3 className="font-semibold text-lg">Python Editor</h3>
+            {/* ---------- Python tab ---------- */}
+            <TabsContent value="python" className="space-y-4 mt-0">
+              <div className="rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div className="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-slate-800">Python Editor</span>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleReset}
-                    >
-                      <Eraser size={16} className="mr-2" />
-                      Reset
-                    </Button>
-                    <Button
-                      onClick={handleRunCode}
-                      disabled={isRunning}
-                      size="sm"
-                    >
-                      <Play size={16} className="mr-2" weight="fill" />
-                      {isRunning ? 'Running...' : 'Run Code'}
-                    </Button>
+                    <button type="button" onClick={handleReset} className="flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-md hover:bg-slate-200 border border-slate-200 bg-white transition-all duration-150">
+                      <Eraser size={13} /> Reset
+                    </button>
+                    <button type="button" onClick={handleRunCode} disabled={isRunning} className="flex items-center gap-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 px-3 py-1.5 rounded-md transition-all duration-150">
+                      <Play size={13} strokeWidth={2.5} /> {isRunning ? 'Running…' : 'Run Code'}
+                    </button>
                   </div>
                 </div>
                 <CodeEditor
@@ -394,78 +382,60 @@ export function PracticePage() {
                   showExecutionControls={false}
                   showOutputPanel={false}
                 />
-                <div className="border-t border-border px-4 py-2 text-xs text-muted-foreground">
+                <div className="border-t border-slate-100 px-4 py-2 text-xs text-slate-400">
                   Tip: Start with an exercise template, run, then modify one thing at a time.
                 </div>
-              </Card>
+              </div>
             </TabsContent>
 
-            <TabsContent value="sql" className="space-y-4 mt-6">
-              <Card className="p-4 border">
-                <div className="space-y-2">
-                  <h3 className="text-base font-semibold">Practice Database Schema</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Use these tables and primary keys for `SELECT`, `JOIN`, `GROUP BY`, and filtering queries.
+            {/* ---------- SQL tab ---------- */}
+            <TabsContent value="sql" className="space-y-4 mt-0">
+              <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <div className="bg-slate-50 border-b border-slate-100 px-4 py-3">
+                  <h3 className="text-sm font-semibold text-slate-800">Practice Database Schema</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Use these tables for <code className="font-mono bg-slate-100 px-1 rounded">SELECT</code>, <code className="font-mono bg-slate-100 px-1 rounded">JOIN</code>, <code className="font-mono bg-slate-100 px-1 rounded">GROUP BY</code>, and filtering queries.
                   </p>
                 </div>
-
-                {isSchemaLoading && (
-                  <p className="text-xs text-muted-foreground mt-3">Loading schema...</p>
-                )}
-
-                {schemaError && (
-                  <p className="text-xs text-destructive mt-3">{schemaError}</p>
-                )}
-
+                {isSchemaLoading && <p className="text-xs text-slate-400 p-4">Loading schema…</p>}
+                {schemaError && <p className="text-xs text-red-500 p-4">{schemaError}</p>}
                 {!isSchemaLoading && !schemaError && sqlSchemaTables.length > 0 && (
-                  <div className="mt-3 border rounded-md overflow-hidden">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Table</TableHead>
-                          <TableHead>Primary Key</TableHead>
-                          <TableHead>Columns</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {sqlSchemaTables.map((table) => (
-                          <TableRow key={table.name}>
-                            <TableCell>
-                              <div className="font-medium">{table.name}</div>
-                              {table.description && (
-                                <p className="text-xs text-muted-foreground mt-1">{table.description}</p>
-                              )}
-                            </TableCell>
-                            <TableCell className="font-mono text-xs">{table.primary_key}</TableCell>
-                            <TableCell className="font-mono text-xs">{table.columns.join(', ')}</TableCell>
-                          </TableRow>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-slate-100 bg-slate-50">
+                          <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-4 py-3 w-32">Table</th>
+                          <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-4 py-3 w-28">Primary Key</th>
+                          <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-4 py-3">Columns</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sqlSchemaTables.map((table, i) => (
+                          <tr key={table.name} className={`border-b border-slate-100 hover:bg-slate-50 transition-colors duration-100 ${i === sqlSchemaTables.length - 1 ? 'border-b-0' : ''}`}>
+                            <td className="px-4 py-3">
+                              <span className="font-semibold text-slate-800 text-xs">{table.name}</span>
+                              {table.description && <p className="text-xs text-slate-400 mt-0.5">{table.description}</p>}
+                            </td>
+                            <td className="px-4 py-3 font-mono text-xs text-slate-600">{table.primary_key}</td>
+                            <td className="px-4 py-3 font-mono text-xs text-slate-500">{table.columns.join(', ')}</td>
+                          </tr>
                         ))}
-                      </TableBody>
-                    </Table>
+                      </tbody>
+                    </table>
                   </div>
                 )}
-              </Card>
+              </div>
 
-              <Card className="overflow-hidden">
-                <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
-                  <h3 className="font-semibold text-lg">SQL Editor</h3>
+              <div className="rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div className="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-slate-800">SQL Editor</span>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleReset}
-                    >
-                      <Eraser size={16} className="mr-2" />
-                      Reset
-                    </Button>
-                    <Button
-                      onClick={handleRunCode}
-                      disabled={isRunning}
-                      size="sm"
-                    >
-                      <Play size={16} className="mr-2" weight="fill" />
-                      {isRunning ? 'Running...' : 'Run Code'}
-                    </Button>
+                    <button type="button" onClick={handleReset} className="flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-md hover:bg-slate-200 border border-slate-200 bg-white transition-all duration-150">
+                      <Eraser size={13} /> Reset
+                    </button>
+                    <button type="button" onClick={handleRunCode} disabled={isRunning} className="flex items-center gap-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 px-3 py-1.5 rounded-md transition-all duration-150">
+                      <Play size={13} strokeWidth={2.5} /> {isRunning ? 'Running…' : 'Run Code'}
+                    </button>
                   </div>
                 </div>
                 <CodeEditor
@@ -475,33 +445,24 @@ export function PracticePage() {
                   showExecutionControls={false}
                   showOutputPanel={false}
                 />
-                <div className="border-t border-border px-4 py-2 text-xs text-muted-foreground">
+                <div className="border-t border-slate-100 px-4 py-2 text-xs text-slate-400">
                   Tip: Practice by changing filters, joins, and selected columns.
                 </div>
-              </Card>
+              </div>
             </TabsContent>
 
-            <TabsContent value="java" className="space-y-4 mt-6">
-              <Card className="overflow-hidden">
-                <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
-                  <h3 className="font-semibold text-lg">Java Editor</h3>
+            {/* ---------- Java tab ---------- */}
+            <TabsContent value="java" className="space-y-4 mt-0">
+              <div className="rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div className="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-slate-800">Java Editor</span>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleReset}
-                    >
-                      <Eraser size={16} className="mr-2" />
-                      Reset
-                    </Button>
-                    <Button
-                      onClick={handleRunCode}
-                      disabled={isRunning}
-                      size="sm"
-                    >
-                      <Play size={16} className="mr-2" weight="fill" />
-                      {isRunning ? 'Running...' : 'Run Code'}
-                    </Button>
+                    <button type="button" onClick={handleReset} className="flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-md hover:bg-slate-200 border border-slate-200 bg-white transition-all duration-150">
+                      <Eraser size={13} /> Reset
+                    </button>
+                    <button type="button" onClick={handleRunCode} disabled={isRunning} className="flex items-center gap-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 px-3 py-1.5 rounded-md transition-all duration-150">
+                      <Play size={13} strokeWidth={2.5} /> {isRunning ? 'Running…' : 'Run Code'}
+                    </button>
                   </div>
                 </div>
                 <CodeEditor
@@ -511,81 +472,79 @@ export function PracticePage() {
                   showExecutionControls={false}
                   showOutputPanel={false}
                 />
-                <div className="border-t border-border px-4 py-2 text-xs text-muted-foreground">
+                <div className="border-t border-slate-100 px-4 py-2 text-xs text-slate-400">
                   Tip: Practice method logic first, then refactor into cleaner classes.
                 </div>
-              </Card>
+              </div>
             </TabsContent>
           </Tabs>
 
+          {/* Output panel */}
           {output && (
             <div ref={outputRef}>
-            <Card className="overflow-hidden">
-              <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between gap-3">
-                <div>
-                  <h3 className="font-semibold text-lg">Output</h3>
-                  {executionTime !== null && (
-                    <p className="text-xs text-muted-foreground">Execution time: {executionTime} ms</p>
+              <div className="rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div className="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-slate-800">Output</span>
+                    {executionTime !== null && (
+                      <span className="text-xs text-slate-400">{executionTime} ms</span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setOutput(''); setExecutionTime(null) }}
+                    className="text-xs text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded-md border border-slate-200 bg-white hover:bg-slate-100 transition-all duration-150"
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div className="p-4 bg-white max-h-[500px] overflow-auto">
+                  {selectedLanguage === 'sql' && sqlTableResult ? (
+                    <div className="space-y-5">
+                      {hasSqlRows ? (
+                        <div className="rounded-lg border border-slate-200 overflow-hidden">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b border-slate-200 bg-slate-50">
+                                {sqlTableResult.headers.map((header) => (
+                                  <th key={header} className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-4 py-3">
+                                    {header}
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {sqlTableResult.rows.map((row, rowIndex) => (
+                                <tr key={`${row.join('-')}-${rowIndex}`} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors duration-100">
+                                  {row.map((cell, cellIndex) => (
+                                    <td key={`${rowIndex}-${cellIndex}`} className="px-4 py-3 text-slate-700 font-mono text-xs">
+                                      {cell}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-slate-400">No rows returned for this query.</p>
+                      )}
+                      {sqlTableResult.notes.length > 0 && (
+                        <div>
+                          <p className="text-xs font-semibold text-slate-600 mb-1">Notes</p>
+                          <ul className="list-disc ml-4 space-y-0.5 text-xs text-slate-500">
+                            {sqlTableResult.notes.map((note, index) => (
+                              <li key={`${note}-${index}`}>{note}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <pre className="font-mono text-xs text-slate-700 whitespace-pre-wrap">{output}</pre>
                   )}
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setOutput('')
-                    setExecutionTime(null)
-                  }}
-                >
-                  Clear Output
-                </Button>
               </div>
-              <div className="p-4 bg-muted/30 text-sm whitespace-pre-wrap max-h-[500px] overflow-auto">
-                {selectedLanguage === 'sql' && sqlTableResult ? (
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <h4 className="font-semibold">Output</h4>
-                      {hasSqlRows ? (
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              {sqlTableResult.headers.map((header) => (
-                                <TableHead key={header}>{header}</TableHead>
-                              ))}
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {sqlTableResult.rows.map((row, rowIndex) => (
-                              <TableRow key={`${row.join('-')}-${rowIndex}`}>
-                                {row.map((cell, cellIndex) => (
-                                  <TableCell key={`${rowIndex}-${cellIndex}`}>{cell}</TableCell>
-                                ))}
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      ) : (
-                        <p className="text-xs text-muted-foreground">No table rows returned for this query.</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <h4 className="font-semibold">Notes</h4>
-                      {sqlTableResult.notes.length > 0 ? (
-                        <ul className="list-disc ml-5 space-y-1 text-xs text-muted-foreground">
-                          {sqlTableResult.notes.map((note, index) => (
-                            <li key={`${note}-${index}`}>{note}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-xs text-muted-foreground">No notes for this query.</p>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="font-mono">{output}</div>
-                )}
-              </div>
-            </Card>
             </div>
           )}
         </div>

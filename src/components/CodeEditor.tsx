@@ -1,14 +1,12 @@
 ﻿import { useState, useEffect, useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import {
   Play,
-  ArrowsClockwise,
-  CheckCircle,
-  Warning,
+  RotateCcw,
+  CheckCircle2,
+  AlertTriangle,
   Palette,
   Timer,
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { Editor } from '@monaco-editor/react'
 import {
@@ -117,14 +115,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     if (isPython && workerRef.current) {
       const startTime = Date.now()
 
-      // 5-second timeout failsafe for infinite loops
       const timeoutId = setTimeout(() => {
         workerRef.current?.terminate()
         setHasError(true)
         setOutput('Timeout: Possible infinite loop detected')
         setIsRunning(false)
         toast.error('Execution timed out. Possible infinite loop detected.')
-        // Re-initialize a fresh worker so the user can keep coding
         createWorker()
         onRun?.(code)
       }, 5000)
@@ -144,9 +140,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
           toast.success('Code executed successfully!')
           DemoLimits.incrementExecutionCount()
           const remaining = DemoLimits.getRemainingExecutions()
-          if (remaining <= 3) {
-            toast.warning(`Only ${remaining} executions left!`)
-          }
+          if (remaining <= 3) toast.warning(`Only ${remaining} executions left!`)
         }
 
         setIsRunning(false)
@@ -155,7 +149,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
       workerRef.current.postMessage({ code })
     } else {
-      // Fallback: sandbox API for non-Python languages
       const langMap: Record<string, 'javascript' | 'python' | 'java' | 'sql'> = {
         javascript: 'javascript',
         python: 'python',
@@ -183,9 +176,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             toast.success('Code executed successfully!')
             DemoLimits.incrementExecutionCount()
             const remaining = DemoLimits.getRemainingExecutions()
-            if (remaining <= 3) {
-              toast.warning(`Only ${remaining} executions left!`)
-            }
+            if (remaining <= 3) toast.warning(`Only ${remaining} executions left!`)
           }
         } catch (err: any) {
           setHasError(true)
@@ -209,27 +200,41 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   }
 
   return (
-    <div className="space-y-4">
-      <Card className="border-2 overflow-hidden">
+    <div className="space-y-3">
+      {/* Editor container */}
+      <div className="rounded-lg border border-slate-200 overflow-hidden shadow-sm">
         {/* Toolbar */}
-        <div className="bg-muted/50 px-4 py-3 border-b flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            {/* macOS-style traffic dots */}
             <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-destructive/60" />
-              <div className="w-3 h-3 rounded-full bg-accent/60" />
-              <div className="w-3 h-3 rounded-full bg-primary/60" />
+              <span className="w-3 h-3 rounded-full bg-red-400/80" />
+              <span className="w-3 h-3 rounded-full bg-yellow-400/80" />
+              <span className="w-3 h-3 rounded-full bg-green-400/80" />
             </div>
-            <span className="text-sm font-medium text-muted-foreground ml-2">
-              {language.toUpperCase()} Editor
+            <span className="text-xs font-medium text-slate-500 ml-1 font-mono">
+              {language.toUpperCase()}
             </span>
           </div>
-          <div className="flex gap-2 items-center">
+
+          <div className="flex items-center gap-1.5">
+            {/* Runs left counter */}
+            {showExecutionControls && (
+              <span className="text-xs text-slate-400 mr-1 hidden sm:inline">
+                {DemoLimits.getRemainingExecutions()} runs left
+              </span>
+            )}
+
+            {/* Theme picker */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button size="sm" variant="ghost" className="h-8 text-xs">
-                  <Palette className="mr-1.5" size={14} />
+                <button
+                  type="button"
+                  className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800 px-2.5 py-1.5 rounded-md hover:bg-slate-200 transition-all duration-150"
+                >
+                  <Palette size={13} />
                   Theme
-                </Button>
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {(['monokai', 'dracula', 'nord', 'github', 'synthwave'] as Theme[]).map((t) => (
@@ -242,31 +247,28 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={resetCode}
-              className="h-8 text-xs"
-              style={{ display: showExecutionControls ? 'inline-flex' : 'none' }}
-            >
-              <ArrowsClockwise className="mr-1.5" size={14} />
-              Reset
-            </Button>
+            {showExecutionControls && (
+              <button
+                type="button"
+                onClick={resetCode}
+                className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800 px-2.5 py-1.5 rounded-md hover:bg-slate-200 transition-all duration-150"
+              >
+                <RotateCcw size={13} />
+                Reset
+              </button>
+            )}
 
-            <span className="text-xs text-muted-foreground mr-2">
-              Demo: {DemoLimits.getRemainingExecutions()} runs left
-            </span>
-
-            <Button
-              size="sm"
-              onClick={executeCode}
-              disabled={isRunning}
-              className="h-8 bg-primary hover:bg-primary/90 text-xs"
-              style={{ display: showExecutionControls ? 'inline-flex' : 'none' }}
-            >
-              <Play className="mr-1.5" size={14} weight="fill" />
-              {isRunning ? 'Running…' : 'Run'}
-            </Button>
+            {showExecutionControls && (
+              <button
+                type="button"
+                onClick={executeCode}
+                disabled={isRunning}
+                className="flex items-center gap-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-60 px-3 py-1.5 rounded-md transition-all duration-150 hover:shadow-sm"
+              >
+                <Play size={13} strokeWidth={2.5} />
+                {isRunning ? 'Running…' : 'Run'}
+              </button>
+            )}
           </div>
         </div>
 
@@ -281,51 +283,55 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             options={{
               minimap: { enabled: false },
               fontSize: 14,
+              fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
               wordWrap: 'on',
               automaticLayout: true,
               autoClosingBrackets: 'always',
               autoClosingQuotes: 'always',
+              lineDecorationsWidth: 8,
+              padding: { top: 12, bottom: 12 },
             }}
           />
         </div>
-      </Card>
+      </div>
 
       {/* Output panel */}
       {showOutputPanel && output && (
-        <Card
-          className={`border-2 ${
+        <div
+          className={`rounded-lg border overflow-hidden shadow-sm ${
             hasError
-              ? 'border-destructive/50 bg-destructive/5'
-              : 'border-primary/30 bg-primary/5'
+              ? 'border-red-200 bg-red-50'
+              : 'border-emerald-200 bg-emerald-50'
           }`}
         >
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                {hasError ? (
-                  <>
-                    <Warning size={20} weight="fill" className="text-destructive" />
-                    <span className="font-semibold text-destructive">Error Output</span>
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle size={20} weight="fill" className="text-primary" />
-                    <span className="font-semibold text-primary">Output</span>
-                  </>
-                )}
-              </div>
-              {executionTime > 0 && (
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Timer size={14} />
-                  <span>{executionTime.toFixed(2)}ms</span>
-                </div>
+          <div className="px-4 py-3 border-b flex items-center justify-between" style={{
+            borderColor: hasError ? 'rgb(254 202 202)' : 'rgb(167 243 208)',
+            backgroundColor: hasError ? 'rgb(255 241 242)' : 'rgb(240 253 244)',
+          }}>
+            <div className="flex items-center gap-2">
+              {hasError ? (
+                <>
+                  <AlertTriangle size={15} className="text-red-500" />
+                  <span className="text-sm font-semibold text-red-700">Error Output</span>
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 size={15} className="text-emerald-600" />
+                  <span className="text-sm font-semibold text-emerald-700">Output</span>
+                </>
               )}
             </div>
-            <pre className="font-mono text-sm whitespace-pre-wrap leading-relaxed text-foreground">
-              {output}
-            </pre>
+            {executionTime > 0 && (
+              <div className="flex items-center gap-1 text-xs text-slate-400">
+                <Timer size={12} />
+                <span>{executionTime.toFixed(2)}ms</span>
+              </div>
+            )}
           </div>
-        </Card>
+          <pre className="font-mono text-xs whitespace-pre-wrap leading-relaxed text-slate-700 p-4">
+            {output}
+          </pre>
+        </div>
       )}
     </div>
   )

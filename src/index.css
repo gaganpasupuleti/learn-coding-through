@@ -20,35 +20,36 @@
 }
 
 :root {
-  --background: oklch(0.98 0.01 80);
-  --foreground: oklch(0.25 0.01 260);
+  /* Pristine white backgrounds with clean slate grays — premium B2B SaaS palette */
+  --background: oklch(1 0 0);              /* #FFFFFF */
+  --foreground: oklch(0.15 0.02 264);      /* #0F172A dark slate */
 
-  --card: oklch(0.92 0.02 80);
-  --card-foreground: oklch(0.25 0.01 260);
+  --card: oklch(1 0 0);                    /* #FFFFFF */
+  --card-foreground: oklch(0.15 0.02 264);
 
-  --popover: oklch(0.98 0.01 80);
-  --popover-foreground: oklch(0.25 0.01 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.02 264);
 
-  --primary: oklch(0.45 0.12 200);
-  --primary-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.55 0.22 264);         /* #2563EB — Tech Blue 600 */
+  --primary-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.75 0.08 290);
-  --secondary-foreground: oklch(0.25 0.01 260);
+  --secondary: oklch(0.967 0.005 264);     /* #F1F5F9 slate-100 */
+  --secondary-foreground: oklch(0.28 0.03 264);
 
-  --muted: oklch(0.88 0.02 80);
-  --muted-foreground: oklch(0.50 0.01 260);
+  --muted: oklch(0.983 0.003 264);         /* #F8FAFC slate-50 */
+  --muted-foreground: oklch(0.52 0.04 264); /* #64748B slate-500 */
 
-  --accent: oklch(0.68 0.18 25);
-  --accent-foreground: oklch(0.98 0 0);
+  --accent: oklch(0.967 0.005 264);        /* slate-100 for accent surfaces */
+  --accent-foreground: oklch(0.28 0.03 264);
 
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.98 0 0);
+  --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.82 0.02 80);
-  --input: oklch(0.82 0.02 80);
-  --ring: oklch(0.45 0.12 200);
+  --border: oklch(0.91 0.007 264);         /* #E2E8F0 slate-200 */
+  --input: oklch(0.91 0.007 264);
+  --ring: oklch(0.55 0.22 264);
 
-  --radius: 0.75rem;
+  --radius: 0.625rem;                      /* 10px — crisp but soft */
 }
 
   /* Admin-only visual theme (inspired by shadcn-admin style language) */
@@ -128,7 +129,7 @@
   --radius-2xl: calc(var(--radius) * 3);
   --radius-full: 9999px;
 
-  --font-space: 'Space Grotesk', system-ui, sans-serif;
+  --font-space: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-inter: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 }

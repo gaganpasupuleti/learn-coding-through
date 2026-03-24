@@ -1,9 +1,6 @@
 import { useState } from 'react'
-import { Cube, User, Lock, ArrowRight, Sparkle } from '@phosphor-icons/react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Code2, User, Lock, ArrowRight, Sparkles } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import {
   fetchCurrentUser,
@@ -16,7 +13,6 @@ import { supabase } from '@/lib/supabase'
 
 interface LoginPageProps {
   onAuthenticated: (user: AuthUser) => void
-  /** Allow browsing without login (for Career Mapper public access) */
   onBrowsePublicly?: () => void
 }
 
@@ -36,17 +32,11 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
     }
     try {
       setIsLoading(true)
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      })
+      const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
       if (error) throw new Error(error.message)
-
       const accessToken = data.session?.access_token
       if (!accessToken) throw new Error('No session returned from Supabase.')
       storeAuthToken(accessToken)
-
-      // Fetch backend profile (role, xp, etc.) using the Supabase JWT
       const user = await fetchCurrentUser(accessToken) ?? {
         id: 0,
         email: email.trim(),
@@ -58,8 +48,7 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
       toast.success(`Welcome back, ${user.full_name}!`)
       onAuthenticated(user)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Login failed. Check credentials.'
-      toast.error(message)
+      toast.error(err instanceof Error ? err.message : 'Login failed. Check credentials.')
     } finally {
       setIsLoading(false)
     }
@@ -78,16 +67,12 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
         options: { data: { full_name: fullName.trim() } },
       })
       if (signUpError) throw new Error(signUpError.message)
-
-      // Supabase can require email confirmation — handle that case
       if (!signUpData.session) {
         toast.success('Account created! Please check your email to confirm your account.')
         return
       }
-
       const accessToken = signUpData.session.access_token
       storeAuthToken(accessToken)
-
       const user = await fetchCurrentUser(accessToken) ?? {
         id: 0,
         email: email.trim(),
@@ -95,27 +80,19 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
         role: 'student' as const,
         supabase_uid: signUpData.user?.id,
       }
-      if (user.role === 'student' || user.role === 'demo') {
-        setDemoFlag(true)
-      }
+      if (user.role === 'student' || user.role === 'demo') setDemoFlag(true)
       storeUser(user)
       toast.success(`Account created! Welcome, ${user.full_name}.`)
       onAuthenticated(user)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Sign-up failed. Try a different email.'
-      toast.error(message)
+      toast.error(err instanceof Error ? err.message : 'Sign-up failed. Try a different email.')
     } finally {
       setIsLoading(false)
     }
   }
 
   const handleDemoAccess = () => {
-    const demoUser: AuthUser = {
-      id: -1,
-      email: 'demo@codequest.dev',
-      full_name: 'Demo User',
-      role: 'demo',
-    }
+    const demoUser: AuthUser = { id: -1, email: 'demo@codequest.dev', full_name: 'Demo User', role: 'demo' }
     storeUser(demoUser)
     setDemoFlag(true)
     toast.success('Demo access granted! You can start 2 projects and 2 quizzes.')
@@ -129,134 +106,112 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
     }
   }
 
+  const modeLabels: Record<AuthMode, string> = { login: 'Log In', signup: 'Sign Up', demo: 'Try Demo' }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-4">
-        {/* Brand */}
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-sm space-y-5">
+
+        {/* Brand mark */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary text-primary-foreground mx-auto">
-            <Cube size={28} weight="bold" />
+          <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-blue-600 text-white mx-auto shadow-sm">
+            <Code2 size={22} strokeWidth={2.5} />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">CodeQuest</h1>
-          <p className="text-muted-foreground text-sm">Career Acceleration Platform</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">CodeQuest</h1>
+          <p className="text-sm text-slate-500">Career Acceleration Platform</p>
         </div>
 
         {/* Mode tabs */}
-        <div className="flex gap-1 rounded-lg border bg-muted/40 p-1">
+        <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
           {(['login', 'signup', 'demo'] as AuthMode[]).map((m) => (
             <button
               key={m}
               type="button"
-              className={`flex-1 text-sm py-1.5 rounded-md font-medium transition-colors capitalize ${
-                mode === m ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
+              className={`flex-1 text-sm py-1.5 rounded-md font-medium transition-all duration-150 ${
+                mode === m
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
               }`}
               onClick={() => setMode(m)}
             >
-              {m === 'demo' ? 'Try Demo' : m === 'login' ? 'Log In' : 'Sign Up'}
+              {modeLabels[m]}
             </button>
           ))}
         </div>
 
-        {/* Card content */}
-        <Card className="border-border/60">
-          <CardHeader className="pb-4">
-            {mode === 'login' && (
-              <>
-                <CardTitle>Welcome back</CardTitle>
-                <CardDescription>Sign in to continue your learning journey.</CardDescription>
-              </>
-            )}
-            {mode === 'signup' && (
-              <>
-                <CardTitle>Create account</CardTitle>
-                <CardDescription>
-                  Free demo access: try any 2 projects + 2 quizzes.{' '}
-                  <Badge variant="secondary" className="rounded-full text-xs">Demo</Badge>
-                </CardDescription>
-              </>
-            )}
-            {mode === 'demo' && (
-              <>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkle size={18} className="text-primary" weight="fill" />
+        {/* Card */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+          {mode === 'demo' ? (
+            <div className="space-y-5">
+              <div className="space-y-1">
+                <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
+                  <Sparkles size={16} className="text-blue-500" />
                   Demo Access
-                </CardTitle>
-                <CardDescription>
-                  No account needed. Explore the platform with limited access: 2 projects + 2 quizzes.
-                </CardDescription>
-              </>
-            )}
-          </CardHeader>
-
-          <CardContent className="space-y-4" onKeyDown={handleKeyDown}>
-            {mode === 'demo' ? (
-              <div className="space-y-4">
-                <div className="rounded-lg border bg-primary/5 p-4 space-y-2">
-                  <p className="text-sm font-medium">What you get with Demo access:</p>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">✓</span>
-                      Browse all career paths & 4-month syllabus
+                </h2>
+                <p className="text-sm text-slate-500">No account needed — explore with limited access.</p>
+              </div>
+              <div className="rounded-lg border border-slate-100 bg-slate-50 p-4 space-y-2">
+                <p className="text-xs font-semibold text-slate-700 uppercase tracking-wide">What's included</p>
+                <ul className="space-y-1.5 text-sm text-slate-600">
+                  {[
+                    'Browse all career paths & 4-month syllabus',
+                    'Start any 2 projects of your choice',
+                    'Attempt any 2 quizzes of your choice',
+                    'Full practice module access',
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="text-blue-500 mt-0.5 font-bold text-xs">✓</span>
+                      {item}
                     </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">✓</span>
-                      Start any 2 projects of your choice
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">✓</span>
-                      Attempt any 2 quizzes of your choice
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">✓</span>
-                      Full practice module access
-                    </li>
-                  </ul>
-                </div>
-                <Button className="w-full" size="lg" onClick={handleDemoAccess}>
-                  Start Demo Access
-                  <ArrowRight size={18} weight="bold" />
-                </Button>
-                <p className="text-xs text-center text-muted-foreground">
-                  Want full access?{' '}
-                  <button
-                    type="button"
-                    className="underline text-foreground hover:text-primary"
-                    onClick={() => setMode('signup')}
-                  >
-                    Create a free account
-                  </button>
+                  ))}
+                </ul>
+              </div>
+              <button
+                type="button"
+                onClick={handleDemoAccess}
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-150"
+              >
+                Start Demo Access
+                <ArrowRight size={15} strokeWidth={2.5} />
+              </button>
+              <p className="text-xs text-center text-slate-400">
+                Want full access?{' '}
+                <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('signup')}>
+                  Create a free account
+                </button>
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-5" onKeyDown={handleKeyDown}>
+              <div className="space-y-1">
+                <h2 className="text-base font-semibold text-slate-900">
+                  {mode === 'login' ? 'Welcome back' : 'Create your account'}
+                </h2>
+                <p className="text-sm text-slate-500">
+                  {mode === 'login'
+                    ? 'Sign in to continue your learning journey.'
+                    : 'Free demo access: try any 2 projects + 2 quizzes.'}
                 </p>
               </div>
-            ) : (
+
               <div className="space-y-3">
                 {mode === 'signup' && (
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium flex items-center gap-2">
-                      <User size={14} /> Full Name
+                    <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                      <User size={12} /> Full Name
                     </label>
-                    <Input
-                      placeholder="Your full name"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      disabled={isLoading}
-                    />
+                    <Input placeholder="Your full name" value={fullName} onChange={(e) => setFullName(e.target.value)} disabled={isLoading} />
                   </div>
                 )}
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <User size={14} /> Email
+                  <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                    <User size={12} /> Email
                   </label>
-                  <Input
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={isLoading}
-                  />
+                  <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Lock size={14} /> Password
+                  <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                    <Lock size={12} /> Password
                   </label>
                   <Input
                     type="password"
@@ -266,49 +221,34 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
                     disabled={isLoading}
                   />
                 </div>
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={mode === 'login' ? handleLogin : handleSignup}
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Please wait…' : mode === 'login' ? 'Log In' : 'Create Account'}
-                  {!isLoading && <ArrowRight size={18} weight="bold" />}
-                </Button>
-                {mode === 'login' && (
-                  <p className="text-xs text-center text-muted-foreground">
-                    No account?{' '}
-                    <button
-                      type="button"
-                      className="underline text-foreground hover:text-primary"
-                      onClick={() => setMode('signup')}
-                    >
-                      Sign up free
-                    </button>
-                    {' '}or{' '}
-                    <button
-                      type="button"
-                      className="underline text-foreground hover:text-primary"
-                      onClick={() => setMode('demo')}
-                    >
-                      try demo
-                    </button>
-                  </p>
-                )}
               </div>
-            )}
-          </CardContent>
-        </Card>
 
-        {/* Public browse link */}
+              <button
+                type="button"
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-150"
+                onClick={mode === 'login' ? handleLogin : handleSignup}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Please wait…' : mode === 'login' ? 'Log In' : 'Create Account'}
+                {!isLoading && <ArrowRight size={15} strokeWidth={2.5} />}
+              </button>
+
+              {mode === 'login' && (
+                <p className="text-xs text-center text-slate-400">
+                  No account?{' '}
+                  <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('signup')}>Sign up free</button>
+                  {' '}or{' '}
+                  <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('demo')}>try demo</button>
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
         {onBrowsePublicly && (
-          <p className="text-xs text-center text-muted-foreground">
+          <p className="text-xs text-center text-slate-400">
             Just exploring?{' '}
-            <button
-              type="button"
-              className="underline text-foreground hover:text-primary"
-              onClick={onBrowsePublicly}
-            >
+            <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={onBrowsePublicly}>
               Browse Career Mapper publicly
             </button>
           </p>
