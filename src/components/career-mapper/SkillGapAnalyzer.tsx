@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
-import { Gauge, Sparkle } from '@phosphor-icons/react'
+import { Gauge, Sparkles } from 'lucide-react'
 import type { CareerRole, SkillAssessment } from '@/types/career'
 import { useSkillAssessments } from '@/hooks/use-skill-assessments'
 import { toast } from 'sonner'
@@ -71,7 +71,7 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Sparkle className="text-accent" weight="fill" />
+              <Sparkles size={16} className="text-blue-600" />
               Your Skill Gap Analysis
             </DialogTitle>
             <DialogDescription>
@@ -98,7 +98,7 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Gauge className="text-accent" />
+              <Gauge size={16} className="text-blue-600" />
               Skill Gap Analyzer
             </DialogTitle>
             <DialogDescription>
@@ -126,7 +126,7 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Gauge className="text-accent" />
+            <Gauge size={16} className="text-blue-600" />
             Skill Gap Analyzer
           </DialogTitle>
           <DialogDescription>
@@ -145,13 +145,13 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
 
           <div className="space-y-4">
             <div className="text-lg font-semibold text-foreground">
-              How proficient are you with <span className="text-accent">{currentSkill}</span>?
+              How proficient are you with <span className="text-blue-600">{currentSkill}</span>?
             </div>
 
             <RadioGroup className="space-y-3">
               <div 
                 onClick={() => handleAssessment('none')}
-                className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent/5 hover:border-accent transition-colors"
+                className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors"
               >
                 <RadioGroupItem value="none" id={`none-${currentSkillIndex}`} />
                 <Label htmlFor={`none-${currentSkillIndex}`} className="flex-1 cursor-pointer">
@@ -164,7 +164,7 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
 
               <div 
                 onClick={() => handleAssessment('partial')}
-                className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent/5 hover:border-accent transition-colors"
+                className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors"
               >
                 <RadioGroupItem value="partial" id={`partial-${currentSkillIndex}`} />
                 <Label htmlFor={`partial-${currentSkillIndex}`} className="flex-1 cursor-pointer">
@@ -177,7 +177,7 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
 
               <div 
                 onClick={() => handleAssessment('proficient')}
-                className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent/5 hover:border-accent transition-colors"
+                className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors"
               >
                 <RadioGroupItem value="proficient" id={`proficient-${currentSkillIndex}`} />
                 <Label htmlFor={`proficient-${currentSkillIndex}`} className="flex-1 cursor-pointer">

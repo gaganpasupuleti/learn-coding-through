@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { CheckCircle, XCircle, Warning, ArrowRight } from '@phosphor-icons/react'
+import { CheckCircle2, XCircle, AlertTriangle, ArrowRight } from 'lucide-react'
 import type { SkillGapReport as SkillGapReportType, CareerRole } from '@/types/career'
 import { useMemo } from 'react'
 
@@ -73,11 +73,11 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
             </div>
             <div className="text-right text-sm space-y-1">
               <div className="flex items-center gap-2 text-green-600">
-                <CheckCircle weight="fill" />
+                <CheckCircle2 />
                 <span>{skillsByLevel.proficient.length} Proficient</span>
               </div>
               <div className="flex items-center gap-2 text-yellow-600">
-                <Warning weight="fill" />
+                <AlertTriangle />
                 <span>{skillsByLevel.partial.length} Partial</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
@@ -106,7 +106,7 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
                     status === 'skip' 
                       ? 'border-green-200 bg-green-50/50' 
                       : status === 'focus' 
-                      ? 'border-accent bg-accent/5' 
+                      ? 'border-blue-300 bg-blue-50' 
                       : 'border-border'
                   }
                 >
@@ -119,7 +119,7 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
                         </Badge>
                       )}
                       {status === 'focus' && (
-                        <Badge className="bg-accent text-accent-foreground">
+                        <Badge className="bg-blue-600 text-white">
                           Focus Here
                         </Badge>
                       )}
@@ -135,7 +135,7 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
                       </div>
                     )}
                     {status === 'focus' && (
-                      <div className="text-sm text-accent-foreground">
+                      <div className="text-sm text-blue-900">
                         Spend extra time mastering these concepts
                       </div>
                     )}
@@ -156,7 +156,7 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
         <Card className="border-green-200 bg-green-50/50">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <CheckCircle className="text-green-600" weight="fill" />
+              <CheckCircle2 className="text-green-600"  />
               Proficient Skills
             </CardTitle>
           </CardHeader>
@@ -165,7 +165,7 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
               <ul className="space-y-2">
                 {skillsByLevel.proficient.map(skill => (
                   <li key={skill} className="flex items-center gap-2 text-sm">
-                    <CheckCircle size={16} className="text-green-600" weight="fill" />
+                    <CheckCircle2 size={16} className="text-green-600"  />
                     {skill}
                   </li>
                 ))}
@@ -179,7 +179,7 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
         <Card className="border-yellow-200 bg-yellow-50/50">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Warning className="text-yellow-600" weight="fill" />
+              <AlertTriangle className="text-yellow-600"  />
               Partial Skills
             </CardTitle>
           </CardHeader>
@@ -188,7 +188,7 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
               <ul className="space-y-2">
                 {skillsByLevel.partial.map(skill => (
                   <li key={skill} className="flex items-center gap-2 text-sm">
-                    <Warning size={16} className="text-yellow-600" weight="fill" />
+                    <AlertTriangle size={16} className="text-yellow-600"  />
                     {skill}
                   </li>
                 ))}

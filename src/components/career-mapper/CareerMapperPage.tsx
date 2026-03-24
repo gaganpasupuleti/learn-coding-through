@@ -1,16 +1,16 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   ArrowLeft,
   Brain,
   Briefcase,
-  ChartLine,
-  CurrencyDollar,
-  Lightning,
-  MagnifyingGlass,
-  MapTrifold,
-  Sparkle,
-  Timer,
-} from '@phosphor-icons/react'
+  BarChart2,
+  DollarSign,
+  Clock,
+  Map,
+  Sparkles,
+  Search,
+  ChevronRight,
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { fetchCareerRoles } from '@/lib/api'
 import { useCareerProgress } from '@/hooks/use-career-progress'
@@ -26,27 +26,17 @@ import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
 
 const SELECTED_ROLE_KEY = 'career-mapper-selected-role'
 
-// ── Design tokens ──────────────────────────────────────────────────────────
-const STYLE = {
-  bg:      'var(--background)',
-  surface: 'var(--card)',
-  border:  'var(--border)',
-  txt:     'var(--foreground)',
-  sub:     'var(--muted-foreground)',
-  accent:  '#818cf8',
-} as const
-
 const DOMAIN_ICON: Record<string, React.ReactNode> = {
-  Data:   <ChartLine size={16} />,
-  AI:     <Brain size={16} />,
-  Web:    <Lightning size={16} />,
-  DevOps: <Sparkle size={16} />,
+  Data:   <BarChart2 size={15} className="text-blue-600" />,
+  AI:     <Brain size={15} className="text-violet-600" />,
+  Web:    <Sparkles size={15} className="text-emerald-600" />,
+  DevOps: <Map size={15} className="text-orange-500" />,
 }
 
-const DIFF_COLOR: Record<string, string> = {
-  Beginner:     '#4ade80',
-  Intermediate: '#fbbf24',
-  Advanced:     '#f87171',
+const DIFF_CLASSES: Record<string, string> = {
+  Beginner:     'text-emerald-700 bg-emerald-50 border-emerald-200',
+  Intermediate: 'text-amber-700 bg-amber-50 border-amber-200',
+  Advanced:     'text-red-700 bg-red-50 border-red-200',
 }
 
 export function CareerMapperPage() {
@@ -62,7 +52,6 @@ export function CareerMapperPage() {
   const [analyzerOpen, setAnalyzerOpen]           = useState(false)
   const [isLoading, setIsLoading]                 = useState(true)
 
-  // Sub-view routing (quiz / project) inside the mapper frame
   type MapperSubView = 'roadmap' | 'quiz' | 'project'
   const [subView, setSubView]                         = useState<MapperSubView>('roadmap')
   const [activeQuizId, setActiveQuizId]               = useState<string | null>(null)
@@ -81,7 +70,6 @@ export function CareerMapperPage() {
   const currentReport = selectedRole ? getReport(selectedRole.id) : undefined
   const topRecos      = getTopCareerRecommendations(3)
 
-  // Derived counts from assessments
   const profCount  = currentReport?.assessments.filter(a => a.level === 'proficient').length ?? 0
   const partCount  = currentReport?.assessments.filter(a => a.level === 'partial').length ?? 0
   const noneCount  = currentReport?.assessments.filter(a => a.level === 'none').length ?? 0
@@ -161,90 +149,78 @@ export function CareerMapperPage() {
   // ── Role grid ──────────────────────────────────────────────────────────────
   if (!selectedRole) {
     return (
-      <div style={{ minHeight: '100vh', background: STYLE.bg, padding: '40px 24px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          {/* Page header */}
-          <div style={{ marginBottom: 32 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em', color: STYLE.txt, marginBottom: 6 }}>
-              Career Mapper
-            </h1>
-            <p style={{ fontSize: 13, color: STYLE.sub }}>
-              Choose a career path, explore your 4-month syllabus, and track your progress with AI insights.
+      <div className="min-h-screen bg-white">
+        <div className="max-w-6xl mx-auto px-6 py-10">
+          {/* Header */}
+          <div className="mb-8 space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Career Mapper</h1>
+            <p className="text-sm text-slate-500">
+              Choose a career path, explore your 4-month syllabus, and track progress with AI insights.
             </p>
           </div>
 
           {/* Skeleton or grid */}
           {isLoading ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: 16 }}>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[...Array(6)].map((_, i) => (
-                <div key={i} style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: 20, background: STYLE.surface }}>
-                  <div style={{ height: 14, width: '60%', background: 'var(--muted)', borderRadius: 4, marginBottom: 10 }} />
-                  <div style={{ height: 10, width: '40%', background: 'var(--muted)', borderRadius: 4, marginBottom: 16 }} />
-                  <div style={{ height: 32, background: 'var(--muted)', borderRadius: 6 }} />
+                <div key={i} className="rounded-xl border border-slate-200 p-5 space-y-3 animate-pulse">
+                  <div className="h-3.5 w-3/5 bg-slate-100 rounded" />
+                  <div className="h-2.5 w-2/5 bg-slate-100 rounded" />
+                  <div className="h-8 bg-slate-100 rounded-lg" />
                 </div>
               ))}
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))', gap: 16 }}>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {roles.map(role => (
                 <div
                   key={role.id}
                   onClick={() => chooseRole(role)}
-                  style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: 20, background: STYLE.surface,
-                    cursor: 'pointer', transition: 'border-color 0.15s', display: 'flex', flexDirection: 'column', gap: 12 }}
-                  onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.borderColor = STYLE.accent}
-                  onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.borderColor = STYLE.border}
+                  className="group rounded-xl border border-slate-200 bg-white p-5 flex flex-col gap-3 cursor-pointer hover:border-blue-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                 >
                   {/* Title row */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ color: STYLE.accent }}>{DOMAIN_ICON[role.domain] ?? <Briefcase size={16} />}</span>
-                      <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: STYLE.txt }}>{role.title}</span>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="flex-shrink-0">{DOMAIN_ICON[role.domain] ?? <Briefcase size={15} className="text-slate-400" />}</span>
+                      <span className="text-sm font-semibold text-slate-900 tracking-tight">{role.title}</span>
                     </div>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: DIFF_COLOR[role.difficulty] ?? STYLE.sub,
-                      border: `1px solid ${DIFF_COLOR[role.difficulty] ?? STYLE.border}`, borderRadius: 3, padding: '1px 6px', whiteSpace: 'nowrap' }}>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${DIFF_CLASSES[role.difficulty] ?? 'text-slate-500 bg-slate-50 border-slate-200'}`}>
                       {role.difficulty.toUpperCase()}
                     </span>
                   </div>
 
                   {/* Description */}
-                  <p style={{ fontSize: 11, color: STYLE.sub, lineHeight: 1.6,
-                    overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                    {role.description}
-                  </p>
+                  <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">{role.description}</p>
 
                   {/* Meta */}
-                  <div style={{ display: 'flex', gap: 16, fontSize: 10, color: STYLE.sub }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <CurrencyDollar size={11} />
+                  <div className="flex gap-4 text-xs text-slate-400">
+                    <span className="flex items-center gap-1">
+                      <DollarSign size={11} />
                       ${Math.round(role.salaryRangeMin / 1000)}k–${Math.round(role.salaryRangeMax / 1000)}k
                     </span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <Timer size={11} />
+                    <span className="flex items-center gap-1">
+                      <Clock size={11} />
                       4 months
                     </span>
                   </div>
 
                   {/* Skills */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                  <div className="flex flex-wrap gap-1.5">
                     {role.skills.slice(0, 5).map(skill => (
-                      <span key={skill} style={{ fontSize: 9, color: STYLE.sub, border: `1px solid ${STYLE.border}`,
-                        borderRadius: 3, padding: '1px 6px' }}>{skill}</span>
+                      <span key={skill} className="text-[10px] text-slate-500 border border-slate-200 rounded-full px-2 py-0.5">{skill}</span>
                     ))}
                     {role.skills.length > 5 && (
-                      <span style={{ fontSize: 9, color: STYLE.sub, border: `1px solid ${STYLE.border}`, borderRadius: 3, padding: '1px 6px' }}>
-                        +{role.skills.length - 5}
-                      </span>
+                      <span className="text-[10px] text-slate-400 border border-slate-200 rounded-full px-2 py-0.5">+{role.skills.length - 5}</span>
                     )}
                   </div>
 
                   <button
                     type="button"
                     onClick={e => { e.stopPropagation(); chooseRole(role) }}
-                    style={{ marginTop: 4, padding: '8px 0', border: `1px solid ${STYLE.accent}`, borderRadius: 6,
-                      background: 'transparent', color: STYLE.accent, fontSize: 11, fontWeight: 700,
-                      cursor: 'pointer', letterSpacing: '0.02em' }}>
-                    Explore Path →
+                    className="mt-1 w-full flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-150"
+                  >
+                    Explore Path
+                    <ChevronRight size={13} strokeWidth={2.5} />
                   </button>
                 </div>
               ))}
@@ -282,122 +258,120 @@ export function CareerMapperPage() {
     : 0
 
   return (
-    <div style={{ minHeight: '100vh', background: STYLE.bg, padding: '24px' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-5xl mx-auto px-6 py-8">
         {/* Back */}
         <button
           type="button"
           onClick={clearRole}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none',
-            color: STYLE.sub, fontSize: 11, cursor: 'pointer', marginBottom: 20, padding: 0 }}>
-          <ArrowLeft size={13} /> All Roles
+          className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800 mb-5 transition-colors duration-150"
+        >
+          <ArrowLeft size={13} />
+          All Roles
         </button>
 
-        {/* Role header */}
-        <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: '16px 20px', marginBottom: 24, background: STYLE.surface }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-            <h1 style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.02em', color: STYLE.txt }}>{selectedRole.title}</h1>
-            <span style={{ fontSize: 9, fontWeight: 700, color: DIFF_COLOR[selectedRole.difficulty] ?? STYLE.sub,
-              border: `1px solid ${DIFF_COLOR[selectedRole.difficulty] ?? STYLE.border}`, borderRadius: 3, padding: '1px 6px' }}>
+        {/* Role header card */}
+        <div className="rounded-xl border border-slate-200 bg-white p-5 mb-5 shadow-sm">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <h1 className="text-lg font-bold tracking-tight text-slate-900">{selectedRole.title}</h1>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${DIFF_CLASSES[selectedRole.difficulty] ?? 'text-slate-500 bg-slate-50 border-slate-200'}`}>
               {selectedRole.difficulty.toUpperCase()}
             </span>
-            <span style={{ fontSize: 9, color: STYLE.sub, border: `1px solid ${STYLE.border}`, borderRadius: 3, padding: '1px 6px' }}>
-              {selectedRole.domain}
-            </span>
+            <span className="text-[10px] text-slate-500 border border-slate-200 rounded-full px-2 py-0.5">{selectedRole.domain}</span>
           </div>
-          <p style={{ fontSize: 11, color: STYLE.sub, marginBottom: 10, lineHeight: 1.6 }}>{selectedRole.description}</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 10, color: STYLE.sub, marginBottom: 10 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><CurrencyDollar size={11} />${Math.round(selectedRole.salaryRangeMin / 1000)}k–${Math.round(selectedRole.salaryRangeMax / 1000)}k</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Timer size={11} />4-month curriculum</span>
-            <span style={{ fontWeight: 700, color: STYLE.accent }}>{completionPct}% complete</span>
+          <p className="text-xs text-slate-500 mb-3 leading-relaxed">{selectedRole.description}</p>
+          <div className="flex flex-wrap gap-4 text-xs text-slate-400 mb-3">
+            <span className="flex items-center gap-1"><DollarSign size={11} />${Math.round(selectedRole.salaryRangeMin / 1000)}k–${Math.round(selectedRole.salaryRangeMax / 1000)}k</span>
+            <span className="flex items-center gap-1"><Clock size={11} />4-month curriculum</span>
+            <span className="font-semibold text-blue-600">{completionPct}% complete</span>
           </div>
-          <div style={{ height: 1, background: STYLE.border, overflow: 'hidden', borderRadius: 1 }}>
-            <div style={{ height: 1, background: STYLE.accent, width: `${completionPct}%`, transition: 'width 0.5s' }} />
+          {/* Progress bar */}
+          <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-600 rounded-full transition-all duration-500" style={{ width: `${completionPct}%` }} />
           </div>
         </div>
 
         {/* View mode toggle row */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, gap: 12, flexWrap: 'wrap' }}>
+        <div className="flex items-center justify-between mb-5 gap-3 flex-wrap">
           {/* Pill toggle */}
-          <div style={{ display: 'flex', background: STYLE.surface, border: `1px solid ${STYLE.border}`, borderRadius: 8, padding: 3, gap: 2 }}>
-            <button type="button"
-              style={{ padding: '6px 14px', borderRadius: 6, border: 'none', cursor: 'default',
-                background: STYLE.accent, color: '#fff',
-                fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
-              <MapTrifold size={12} /> Roadmap
+          <div className="flex bg-slate-100 border border-slate-200 rounded-lg p-1 gap-1">
+            <button
+              type="button"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-600 text-white shadow-sm"
+            >
+              <Map size={12} /> Roadmap
             </button>
-            <button type="button" onClick={() => setFlowModalOpen(true)}
-              style={{ padding: '6px 14px', borderRadius: 6, border: 'none', cursor: 'pointer',
-                background: 'transparent', color: STYLE.sub,
-                fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5,
-                transition: 'color 0.15s' }}>
-              <ChartLine size={12} /> 3D Map ↗
+            <button
+              type="button"
+              onClick={() => setFlowModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md text-slate-600 hover:text-slate-900 hover:bg-white transition-all duration-150"
+            >
+              <BarChart2 size={12} /> 3D Map ↗
             </button>
           </div>
           {/* AI Insights toggle */}
-          <button type="button" onClick={() => setInsightsPanelOpen(v => !v)}
-            style={{ border: `1px solid ${insightsPanelOpen ? STYLE.accent : STYLE.border}`, borderRadius: 6,
-              padding: '6px 14px', background: 'transparent',
-              color: insightsPanelOpen ? STYLE.accent : STYLE.sub,
-              fontSize: 11, fontWeight: 700, cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.15s' }}>
-            <Brain size={12} /> AI Insights
+          <button
+            type="button"
+            onClick={() => setInsightsPanelOpen(v => !v)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-150 ${
+              insightsPanelOpen
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600'
+            }`}
+          >
+            <Sparkles size={13} /> AI Insights
           </button>
         </div>
 
-        {/* AI Insights collapsible panel */}
+        {/* AI Insights panel */}
         {insightsPanelOpen && (
-          <div style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: '16px 20px', background: STYLE.surface }}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+          <div className="mb-6 space-y-4">
+            {/* Skill gap card */}
+            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: STYLE.txt, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <MagnifyingGlass size={14} style={{ color: STYLE.accent }} />
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-900 mb-1">
+                    <Search size={14} className="text-blue-600" />
                     Skill Gap Analysis
                   </div>
-                  <p style={{ fontSize: 11, color: STYLE.sub }}>
+                  <p className="text-xs text-slate-500">
                     {currentReport
                       ? 'Your personalised skill report is ready. Re-run to refresh.'
                       : 'Answer a few questions to get a personalised skill gap report and AI recommendations.'}
                   </p>
                 </div>
-                <button type="button" onClick={() => setAnalyzerOpen(true)}
-                  style={{ border: `1px solid ${STYLE.accent}`, borderRadius: 6, padding: '7px 14px', background: 'transparent',
-                    color: STYLE.accent, fontSize: 11, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Sparkle size={12} />
+                <button
+                  type="button"
+                  onClick={() => setAnalyzerOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-150"
+                >
+                  <Sparkles size={12} />
                   {currentReport ? 'Re-run Assessment' : 'Start Assessment'}
                 </button>
               </div>
               {currentReport && (
-                <div style={{ marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {[
-                    { label: `${profCount} Proficient`, color: '#4ade80', border: '#166534' },
-                    { label: `${partCount} Partial`,    color: '#fbbf24', border: '#78350f' },
-                    { label: `${noneCount} To Learn`,   color: '#f87171', border: '#7f1d1d' },
-                  ].map(({ label, color, border }) => (
-                    <span key={label} style={{ fontSize: 10, color, border: `1px solid ${border}`, borderRadius: 4, padding: '2px 8px' }}>
-                      {label}
-                    </span>
-                  ))}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2.5 py-0.5">{profCount} Proficient</span>
+                  <span className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">{partCount} Partial</span>
+                  <span className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-full px-2.5 py-0.5">{noneCount} To Learn</span>
                   {currentReport.canSkipMonths.length > 0 && (
-                    <span style={{ fontSize: 10, color: '#818cf8', border: '1px solid #3730a3', borderRadius: 4, padding: '2px 8px' }}>
+                    <span className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-2.5 py-0.5">
                       Skip Month {currentReport.canSkipMonths.join(', ')}
                     </span>
                   )}
-                  <span style={{ marginLeft: 'auto', fontSize: 10, color: STYLE.sub }}>
-                    {currentReport.overallReadiness}% ready
-                  </span>
+                  <span className="ml-auto text-xs text-slate-400">{currentReport.overallReadiness}% ready</span>
                 </div>
               )}
             </div>
 
+            {/* Top career matches */}
             {topRecos.length > 0 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: STYLE.txt, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Brain size={14} style={{ color: STYLE.accent }} />
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-900 mb-3">
+                  <Brain size={14} className="text-blue-600" />
                   Top Career Matches
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
+                <div className="grid md:grid-cols-3 gap-4">
                   {topRecos.map((reco, idx) => {
                     const matched = roles.find(r => r.id === reco.roleId)
                     if (!matched) return null
@@ -416,15 +390,15 @@ export function CareerMapperPage() {
             )}
 
             {topRecos.length === 0 && !currentReport && (
-              <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: 40, textAlign: 'center', background: STYLE.surface }}>
-                <Brain size={40} style={{ color: STYLE.border, margin: '0 auto 12px' }} />
-                <p style={{ fontSize: 12, color: STYLE.sub }}>Run the skill assessment above to generate personalised career recommendations.</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-10 text-center">
+                <Brain size={36} className="text-slate-300 mx-auto mb-3" />
+                <p className="text-xs text-slate-400">Run the skill assessment above to generate personalised career recommendations.</p>
               </div>
             )}
           </div>
         )}
 
-        {/* Primary view: Learning Roadmap */}
+        {/* Learning Roadmap */}
         {subView === 'roadmap' && (
           <LearningRoadmap
             role={selectedRole}
@@ -443,14 +417,16 @@ export function CareerMapperPage() {
 
       {/* 3D Flowchart full-screen modal */}
       {flowModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#0b0b0b', overflow: 'auto', padding: 24 }}>
-          <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-            <button type="button" onClick={() => setFlowModalOpen(false)}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none',
-                color: '#64748b', fontSize: 11, cursor: 'pointer', marginBottom: 20, padding: 0 }}>
+        <div className="fixed inset-0 z-50 bg-slate-950 overflow-auto p-6">
+          <div className="max-w-5xl mx-auto">
+            <button
+              type="button"
+              onClick={() => setFlowModalOpen(false)}
+              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 mb-5 transition-colors"
+            >
               <ArrowLeft size={13} /> Back to Roadmap
             </button>
-            <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.02em', color: '#e2e8f0', marginBottom: 20 }}>
+            <div className="text-base font-bold text-slate-100 mb-5 tracking-tight">
               {selectedRole.title} · 3D Course Map
             </div>
             <FlowChart3D role={selectedRole} completedItems={completedSet} />
