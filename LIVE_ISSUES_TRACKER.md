@@ -158,10 +158,7 @@ Last updated: 2026-03-25
   - Export to markdown/PDF.
   - Integrate existing `resume app/Resume-Matcher` code into main app flow.
 - Integration prerequisite:
-  - Current state: `resume app/Resume-Matcher` is tracked as an embedded repository (gitlink), not normal source files.
-  - Decide one approach before feature work:
-    - Keep as submodule and define independent release/versioning.
-    - Flatten/import files into this repo and remove nested `.git` metadata.
+  - Completed: `resume app/Resume-Matcher` has been flattened/imported into this repository as normal source files.
   - Add clear route/entrypoint from main student app to resume module.
 - Exit criteria:
   - User can build, save, and export resume without manual formatting.
