@@ -354,7 +354,7 @@ export function AdminPage() {
     try {
       const result = await fetchDatabaseHealth()
       if (result.status === 'ok') {
-        toast.success('Supabase DB connected successfully.')
+        toast.success('Database connected successfully.')
       } else {
         toast.error(result.detail || 'Database is not reachable.')
       }

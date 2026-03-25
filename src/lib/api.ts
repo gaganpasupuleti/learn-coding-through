@@ -571,9 +571,7 @@ export interface ProjectProgressResponse {
 }
 
 async function getAuthHeadersForProjectWrites(): Promise<Record<string, string>> {
-  const { supabase } = await import('@/lib/supabase')
-  const { data: { session } } = await supabase.auth.getSession()
-  const token = session?.access_token ?? localStorage.getItem('career-portal-token')
+  const token = localStorage.getItem('career-portal-token')
 
   return token
     ? {

@@ -11,7 +11,6 @@ import {
   setDemoFlag,
   type AuthUser,
 } from '@/lib/auth'
-import { isSupabaseConfigured, supabase } from '@/lib/supabase'
 
 interface LoginPageProps {
   onAuthenticated: (user: AuthUser) => void
@@ -36,11 +35,6 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
     onAuthenticated(user)
   }
 
-  const shouldFallbackToBackend = (error: unknown): boolean => {
-    const message = error instanceof Error ? error.message.toLowerCase() : ''
-    return message.includes('invalid api key') || message.includes('supabase')
-  }
-
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
       toast.error('Email and password are required.')
@@ -48,46 +42,13 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
     }
     try {
       setIsLoading(true)
-      if (!isSupabaseConfigured) {
-        const token = await loginWithBackend(email.trim(), password)
-        await finalizeLogin(token, {
-          id: 0,
-          email: email.trim(),
-          full_name: email.split('@')[0],
-          role: 'student',
-        })
-        return
-      }
-
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        })
-        if (error) throw new Error(error.message)
-
-        const accessToken = data.session?.access_token
-        if (!accessToken) throw new Error('No session returned from Supabase.')
-
-        await finalizeLogin(accessToken, {
-          id: 0,
-          email: email.trim(),
-          full_name: data.user?.user_metadata?.full_name ?? email.split('@')[0],
-          role: 'student',
-          supabase_uid: data.user?.id,
-        })
-      } catch (supabaseError) {
-        if (!shouldFallbackToBackend(supabaseError)) {
-          throw supabaseError
-        }
-        const token = await loginWithBackend(email.trim(), password)
-        await finalizeLogin(token, {
-          id: 0,
-          email: email.trim(),
-          full_name: email.split('@')[0],
-          role: 'student',
-        })
-      }
+      const token = await loginWithBackend(email.trim(), password)
+      await finalizeLogin(token, {
+        id: 0,
+        email: email.trim(),
+        full_name: email.split('@')[0],
+        role: 'student',
+      })
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Login failed. Check credentials.')
     } finally {
@@ -102,60 +63,14 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
     }
     try {
       setIsLoading(true)
-      if (!isSupabaseConfigured) {
-        await registerWithBackend(fullName.trim(), email.trim(), password)
-        const token = await loginWithBackend(email.trim(), password)
-        await finalizeLogin(token, {
-          id: 0,
-          email: email.trim(),
-          full_name: fullName.trim(),
-          role: 'student',
-        })
-        return
-      }
-
-      try {
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-          options: { data: { full_name: fullName.trim() } },
-        })
-        if (signUpError) throw new Error(signUpError.message)
-
-        // Supabase can require email confirmation — handle that case
-        if (!signUpData.session) {
-          toast.success('Account created! Please check your email to confirm your account.')
-          return
-        }
-
-        const accessToken = signUpData.session.access_token
-        const user = await fetchCurrentUser(accessToken) ?? {
-          id: 0,
-          email: email.trim(),
-          full_name: fullName.trim(),
-          role: 'student' as const,
-          supabase_uid: signUpData.user?.id,
-        }
-        if (user.role === 'student' || user.role === 'demo') {
-          setDemoFlag(true)
-        }
-        storeAuthToken(accessToken)
-        storeUser(user)
-        toast.success(`Account created! Welcome, ${user.full_name}.`)
-        onAuthenticated(user)
-      } catch (supabaseError) {
-        if (!shouldFallbackToBackend(supabaseError)) {
-          throw supabaseError
-        }
-        await registerWithBackend(fullName.trim(), email.trim(), password)
-        const token = await loginWithBackend(email.trim(), password)
-        await finalizeLogin(token, {
-          id: 0,
-          email: email.trim(),
-          full_name: fullName.trim(),
-          role: 'student',
-        })
-      }
+      await registerWithBackend(fullName.trim(), email.trim(), password)
+      const token = await loginWithBackend(email.trim(), password)
+      await finalizeLogin(token, {
+        id: 0,
+        email: email.trim(),
+        full_name: fullName.trim(),
+        role: 'student',
+      })
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Sign-up failed. Try a different email.')
     } finally {
