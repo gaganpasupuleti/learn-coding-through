@@ -81,9 +81,20 @@ Last updated: 2026-03-25
   - Add student application flow and admin/recruiter review views.
   - Add metrics for conversion funnel (applied/shortlisted/hired).
 
+### 9) Typing test module missing (email writing + code typing)
+- Problem: No dedicated typing practice to improve speed and accuracy for real interview tasks.
+- Impact: Students cannot benchmark or improve practical typing performance over time.
+- Required outcome: Built-in typing tests for professional email writing and coding syntax typing with score tracking.
+- Next actions:
+  - Add two test modes: email composition typing and code typing drills.
+  - Track WPM, accuracy percentage, error count, and completion time per attempt.
+  - Store per-user score history and show progress trend charts.
+  - Add timed difficulty levels and weekly improvement goals.
+  - Add leaderboard or percentile comparison for motivation (optional first release).
+
 ## P2 - Medium (Strategic improvements)
 
-### 9) Real-time syllabus and role tracking for live job outcomes
+### 10) Real-time syllabus and role tracking for live job outcomes
 - Problem: Syllabus/roles are not fully aligned to real-time job tracking outcomes.
 - Impact: Learning path relevance can drift from hiring demand.
 - Required outcome: Live-updated syllabus-role-job mapping.
@@ -92,7 +103,7 @@ Last updated: 2026-03-25
   - Add job-market signal inputs and periodic refresh process.
   - Show role readiness and gap trend over time.
 
-### 10) Supabase DB issues review and migration to Railway strategy
+### 11) Supabase DB issues review and migration to Railway strategy
 - Problem: Current DB strategy is mixed/unclear across environments.
 - Impact: Data consistency and deployment reliability risks.
 - Required outcome: Clear migration plan and single production DB strategy.
@@ -113,6 +124,68 @@ Last updated: 2026-03-25
 - Resume maker MVP.
 - Job portal full workflow.
 - Career mapper UI cleanup.
+- Typing test module (email + code) with score tracking.
+
+## Sprint B Execution (Active)
+
+### Goal
+- Ship complete student-facing core modules needed for placements and measurable practice progress.
+
+### Build Order (Do in sequence)
+1. Typing test MVP (email + code) with scoring and history.
+2. Resume maker MVP end-to-end (create, edit, save, export).
+3. Job portal workflow completion (student apply + admin review pipeline).
+4. Career mapper UI polish and consistency pass.
+
+### Milestone B1 - Typing Test MVP
+- Scope:
+  - Two test modes: email writing and code typing.
+  - Metrics: WPM, accuracy, errors, elapsed time.
+  - Score history per user and trend chart.
+- Backend deliverables:
+  - Typing attempts table/model.
+  - APIs for submit attempt and fetch history.
+- Frontend deliverables:
+  - Typing test screen with timer and live metrics.
+  - Score history panel and trend view.
+- Exit criteria:
+  - User can complete test and see saved scores across sessions.
+
+### Milestone B2 - Resume Maker MVP
+- Scope:
+  - Profile, skills, projects, experience, links sections.
+  - Save/load templates.
+  - Export to markdown/PDF.
+  - Integrate existing `resume app/Resume-Matcher` code into main app flow.
+- Integration prerequisite:
+  - Current state: `resume app/Resume-Matcher` is tracked as an embedded repository (gitlink), not normal source files.
+  - Decide one approach before feature work:
+    - Keep as submodule and define independent release/versioning.
+    - Flatten/import files into this repo and remove nested `.git` metadata.
+  - Add clear route/entrypoint from main student app to resume module.
+- Exit criteria:
+  - User can build, save, and export resume without manual formatting.
+  - Resume module is directly accessible from the main app navigation in production build.
+
+### Milestone B3 - Job Portal Completion
+- Scope:
+  - Job posting CRUD finalized.
+  - Student application flow.
+  - Admin/recruiter review and status transitions.
+- Exit criteria:
+  - End-to-end apply to review workflow functional with audit trail.
+
+### Milestone B4 - Career Mapper UI Cleanup
+- Scope:
+  - Improve readability, spacing, visual hierarchy, and responsiveness.
+  - Align components with common app design language.
+- Exit criteria:
+  - UX review passes on desktop/mobile with no major readability issues.
+
+### Sprint B Definition of Done
+- Typing test, resume maker, and job flow are usable in production paths.
+- Career mapper has no major UI/UX blockers.
+- Key user journeys are covered by smoke tests.
 
 ### Sprint C (Scale and data strategy)
 - Real-time syllabus-role-job tracking.
