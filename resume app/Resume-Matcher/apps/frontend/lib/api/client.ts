@@ -61,8 +61,16 @@ export async function apiFetch(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
 
+  const headers = new Headers(options?.headers ?? {});
+  if (typeof window !== 'undefined' && !headers.has('Authorization')) {
+    const token = localStorage.getItem('career-portal-token');
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+  }
+
   try {
-    return await fetch(url, { ...options, signal: controller.signal });
+    return await fetch(url, { ...options, headers, signal: controller.signal });
   } finally {
     clearTimeout(timer);
   }

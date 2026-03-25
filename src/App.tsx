@@ -7,6 +7,7 @@ import { QuizPage } from '@/components/pages/QuizPage'
 import { CareerMapperPage } from '@/components/career-mapper'
 import { AdminPage } from '@/components/pages/AdminPage'
 import { LoginPage } from '@/components/pages/LoginPage'
+import { ResumeModuleGatewayPage } from '@/components/pages/ResumeModuleGatewayPage'
 import { StudentShell } from '@/components/shells/StudentShell'
 import { AdminShell } from '@/components/shells/AdminShell'
 import { PortBanner } from '@/components/PortBanner'
@@ -22,7 +23,7 @@ import {
   triggerQuizLockedError,
 } from '@/lib/demo-limits'
 
-export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'quiz' | 'roadmapper'
+export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'quiz' | 'roadmapper' | 'resume'
 
 type AuthState = AuthUser | 'public' | null
 
@@ -146,6 +147,8 @@ function App() {
         {studentPage === 'quiz' && <QuizPage onBeforeSelect={handleBeforeSelectQuiz} />}
 
         {studentPage === 'roadmapper' && <CareerMapperPage />}
+
+        {studentPage === 'resume' && <ResumeModuleGatewayPage user={user} />}
 
         {studentPage === 'learning' && selectedProjectId && (
           <ProjectLearningPage projectId={selectedProjectId} onBack={handleBackToProjects} />
