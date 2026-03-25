@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { Sparkle, TrendUp, Target, Brain } from '@phosphor-icons/react'
+import { Sparkles, TrendingUp, Target, Brain } from 'lucide-react'
 import { MLJobRecommendation, MLCareerRecommendation } from '@/hooks/use-ml-recommendations'
 import { Job, CareerRole } from '@/types/career'
 import { motion } from 'framer-motion'
@@ -16,7 +16,7 @@ interface MLJobRecommendationCardProps {
 
 export function MLJobRecommendationCard({ recommendation, job, onView, rank }: MLJobRecommendationCardProps) {
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-accent'
+    if (score >= 80) return 'text-blue-600'
     if (score >= 60) return 'text-primary'
     return 'text-muted-foreground'
   }
@@ -42,7 +42,7 @@ export function MLJobRecommendationCard({ recommendation, job, onView, rank }: M
                   {rank === 0 ? '🏆 Top Match' : `#${rank + 1}`}
                 </Badge>
                 <Badge variant="outline">
-                  <Sparkle className="w-3 h-3 mr-1" weight="fill" />
+                  <Sparkles className="w-3 h-3 mr-1" />
                   {getConfidenceLabel(recommendation.confidenceLevel)}
                 </Badge>
               </div>
@@ -78,13 +78,13 @@ export function MLJobRecommendationCard({ recommendation, job, onView, rank }: M
 
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium">
-              <Brain weight="fill" />
+              <Brain size={16} />
               <span>Why This Job?</span>
             </div>
             <ul className="space-y-1">
               {recommendation.reasoning.slice(0, 3).map((reason, index) => (
                 <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
-                  <span className="text-accent">•</span>
+                  <span className="text-blue-600">•</span>
                   <span>{reason}</span>
                 </li>
               ))}
@@ -99,7 +99,7 @@ export function MLJobRecommendationCard({ recommendation, job, onView, rank }: M
                   .filter(s => s.relevance === 100)
                   .slice(0, 5)
                   .map((skillMatch, index) => (
-                    <Badge key={index} variant="secondary" className="bg-accent/10 text-accent">
+                    <Badge key={index} variant="secondary" className="bg-blue-50 text-blue-600">
                       {skillMatch.skill}
                     </Badge>
                   ))}
@@ -125,7 +125,7 @@ interface MLCareerRecommendationCardProps {
 
 export function MLCareerRecommendationCard({ recommendation, role, onView, rank }: MLCareerRecommendationCardProps) {
   const getScoreColor = (score: number) => {
-    if (score >= 70) return 'text-accent'
+    if (score >= 70) return 'text-blue-600'
     if (score >= 50) return 'text-primary'
     return 'text-muted-foreground'
   }
@@ -152,7 +152,7 @@ export function MLCareerRecommendationCard({ recommendation, role, onView, rank 
                 <Badge variant={rank === 0 ? 'default' : 'secondary'}>
                   {rank === 0 ? '⭐ Best Fit' : `#${rank + 1}`}
                 </Badge>
-                <Badge variant="outline" className="text-accent">
+                <Badge variant="outline" className="text-blue-600">
                   {role.domain}
                 </Badge>
               </div>
@@ -173,14 +173,14 @@ export function MLCareerRecommendationCard({ recommendation, role, onView, rank 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Target weight="fill" />
+                <Target size={16} />
                 <span>Time to Ready</span>
               </div>
               <div className="text-lg font-bold">{recommendation.timeToReady} month{recommendation.timeToReady > 1 ? 's' : ''}</div>
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <TrendUp weight="fill" />
+                <TrendingUp size={16} />
                 <span>Success Rate</span>
               </div>
               <div className="text-lg font-bold">{recommendation.successProbability}%</div>
@@ -189,13 +189,13 @@ export function MLCareerRecommendationCard({ recommendation, role, onView, rank 
 
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium">
-              <Brain weight="fill" />
+              <Brain size={16} />
               <span>AI Insights</span>
             </div>
             <ul className="space-y-1">
               {recommendation.reasoning.map((reason, index) => (
                 <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
-                  <span className="text-accent">•</span>
+                  <span className="text-blue-600">•</span>
                   <span>{reason}</span>
                 </li>
               ))}
