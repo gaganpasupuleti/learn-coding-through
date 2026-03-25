@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   Briefcase,
   CalendarBlank,
@@ -155,9 +155,9 @@ export function AdminPage() {
     [batches, selectedBatchId]
   )
 
-  const getWorkflowStage = (student: AdminStudent): StudentWorkflowStage => {
+  const getWorkflowStage = useCallback((student: AdminStudent): StudentWorkflowStage => {
     return manualWorkflowStages[student.id] ?? resolveStudentWorkflowStage(student)
-  }
+  }, [manualWorkflowStages])
 
   const boardStudents = useMemo(() => {
     const query = boardQuery.trim().toLowerCase()
@@ -181,7 +181,7 @@ export function AdminPage() {
     }
 
     return columns
-  }, [boardStudents, manualWorkflowStages])
+  }, [boardStudents, getWorkflowStage])
 
   const moveStudentToStage = (studentId: number, stage: StudentWorkflowStage) => {
     setManualWorkflowStages((prev) => {

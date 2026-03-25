@@ -198,7 +198,7 @@ export async function executeCode(
     const authHeaders: Record<string, string> = token
       ? { Authorization: `Bearer ${token}` }
       : {}
-    const response = await fetch(`${API_BASE_URL}/api/execute`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/execute`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -241,7 +241,7 @@ export async function executeCode(
 }
 
 export async function fetchSqlPracticeSchema(): Promise<SqlPracticeSchemaResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/sql/schema`)
+  const response = await fetch(`${API_BASE_URL}/api/v1/sql/schema`)
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}))
     throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
@@ -564,13 +564,54 @@ export interface StepProgressPayload {
   passed: boolean
 }
 
-export async function saveStepProgress(projectSlug: string, payload: StepProgressPayload): Promise<void> {
-  // Prefer the live Supabase session token; fall back to legacy localStorage key.
+export interface ProjectProgressResponse {
+  projectSlug: string
+  completedStepIds: number[]
+  nextStepId: number
+}
+
+async function getAuthHeadersForProjectWrites(): Promise<Record<string, string>> {
   const { supabase } = await import('@/lib/supabase')
   const { data: { session } } = await supabase.auth.getSession()
   const token = session?.access_token ?? localStorage.getItem('career-portal-token')
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  if (token) headers['Authorization'] = `Bearer ${token}`
+
+  return token
+    ? {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    : {
+        'Content-Type': 'application/json',
+      }
+}
+
+export async function fetchProjectProgress(projectSlug: string): Promise<ProjectProgressResponse> {
+  const headers = await getAuthHeadersForProjectWrites()
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/projects/${encodeURIComponent(projectSlug)}/progress`,
+    { headers },
+  )
+  return parseOrThrow(response) as Promise<ProjectProgressResponse>
+}
+
+export async function saveProjectProgressStep(
+  projectSlug: string,
+  payload: StepProgressPayload,
+): Promise<void> {
+  const headers = await getAuthHeadersForProjectWrites()
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/projects/${encodeURIComponent(projectSlug)}/progress`,
+    { method: 'POST', headers, body: JSON.stringify(payload) },
+  )
+
+  if (!response.ok) {
+    const payloadError = await response.json().catch(() => ({}))
+    throw new Error(payloadError.detail || `Failed to persist step progress (${response.status})`)
+  }
+}
+
+export async function saveStepProgress(projectSlug: string, payload: StepProgressPayload): Promise<void> {
+  const headers = await getAuthHeadersForProjectWrites()
   const response = await fetch(
     `${API_BASE_URL}/api/v1/projects/catalog/${encodeURIComponent(projectSlug)}/progress`,
     { method: 'POST', headers, body: JSON.stringify(payload) },

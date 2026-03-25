@@ -10,6 +10,7 @@ from app.api.v1 import admin, auth, credits, interview, progress, projects, quiz
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.services.seed import seed_admin_user, seed_catalog_data, seed_default_roles
+from executors.java_executor import verify_java_runtime_setup
 
 
 app = FastAPI(title=settings.app_name, version="0.1.0")
@@ -30,6 +31,16 @@ app.add_middleware(
 
 @app.on_event("startup")
 def startup_event():
+    # Surface Java toolchain problems at boot time without blocking non-Java features.
+    try:
+        verify_java_runtime_setup()
+        app.state.java_runtime_ready = True
+        app.state.java_runtime_error = None
+    except RuntimeError as exc:
+        app.state.java_runtime_ready = False
+        app.state.java_runtime_error = str(exc)
+        print(f"Warning: Java runtime unavailable at startup: {exc}")
+
     try:
         if settings.auto_create_tables:
             Base.metadata.create_all(bind=engine)
@@ -53,6 +64,21 @@ def startup_event():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/health/capabilities")
+def health_capabilities():
+    java_ready = bool(getattr(app.state, "java_runtime_ready", False))
+    java_error = getattr(app.state, "java_runtime_error", None)
+    return {
+        "status": "ok",
+        "capabilities": {
+            "java": {
+                "ready": java_ready,
+                "error": None if java_ready else java_error,
+            }
+        },
+    }
 
 
 @app.get("/health/db")
@@ -80,4 +106,4 @@ app.include_router(quiz.router, prefix="/api/v1")
 app.include_router(projects.router, prefix="/api/v1")
 app.include_router(resume.router, prefix="/api/v1")
 app.include_router(interview.router, prefix="/api/v1")
-app.include_router(execute.router, prefix="/api")
+app.include_router(execute.router, prefix="/api/v1")

@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
   SelectContent,
@@ -11,7 +9,7 @@ import {
 } from '@/components/ui/select'
 import { CodeEditor } from '@/components/CodeEditor'
 import { SandboxInfo } from '@/components/SandboxInfo'
-import { testCases, getAllTestsForLanguage } from '@/lib/test-cases'
+import { getAllTestsForLanguage } from '@/lib/test-cases'
 import { Code, Flask } from '@phosphor-icons/react'
 
 export function SandboxTestPage() {

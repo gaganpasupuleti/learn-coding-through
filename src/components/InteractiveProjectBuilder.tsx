@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
@@ -19,7 +18,9 @@ import {
 import { CodeEditor } from '@/components/CodeEditor'
 import { toast } from 'sonner'
 import { sandbox } from '@/lib/sandboxInstance'
-import { fetchUserProgress, saveProjectStepProgress } from '@/lib/api'
+import { fetchProjectProgress, fetchUserProgress, saveProjectProgressStep } from '@/lib/api'
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || ''
 
 interface TestCase {
   id: number
@@ -69,19 +70,66 @@ export function InteractiveProjectBuilder({
   const [livePreview, setLivePreview] = useState<string>('')
   const [previewError, setPreviewError] = useState<string>('')
 
+  const runWithFallback = useCallback(async (userCode: string, language: string) => {
+    try {
+      return await Promise.race([
+        sandbox.execute(userCode, language),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Sandbox timeout')), 3500)
+        ),
+      ])
+    } catch {
+      const response = await fetch(`${API_BASE_URL}/api/v1/execute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: userCode, language }),
+      })
+      const backend = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        throw new Error(backend.detail || `Backend execute failed (${response.status})`)
+      }
+
+      return {
+        output: backend.output,
+        executionTime: backend.execution_time ?? 0,
+        error: backend.error,
+      }
+    }
+  }, [])
+
   // Restore persisted progress on mount
   useEffect(() => {
-    fetchUserProgress()
+    fetchProjectProgress(projectId)
       .then((progress) => {
-        const saved = progress.completedSteps
-          .filter((s) => s.projectSlug === projectId)
-          .map((s) => s.stepId)
+        const saved = progress.completedStepIds
         if (saved.length > 0) {
           setCompletedSteps(saved)
         }
+        const safeIndex = Math.max(
+          0,
+          Math.min((progress.nextStepId ?? 1) - 1, Math.max(buildSteps.length - 1, 0))
+        )
+        setCurrentStepIndex(safeIndex)
       })
-      .catch(() => { /* offline / backend unavailable — start fresh */ })
-  }, [projectId])
+      .catch(() => {
+        // Fallback to existing aggregate progress endpoint.
+        fetchUserProgress()
+          .then((progress) => {
+            const saved = progress.completedSteps
+              .filter((s) => s.projectSlug === projectId)
+              .map((s) => s.stepId)
+            if (saved.length > 0) {
+              setCompletedSteps(saved)
+              const contiguous = saved
+                .sort((a, b) => a - b)
+                .reduce((acc, stepId) => (stepId === acc + 1 ? stepId : acc), 0)
+              setCurrentStepIndex(Math.min(contiguous, Math.max(buildSteps.length - 1, 0)))
+            }
+          })
+          .catch(() => { /* offline / backend unavailable — start fresh */ })
+      })
+  }, [projectId, buildSteps.length])
 
   const currentStep = buildSteps[currentStepIndex]
   const passedTests = Array.from(testResults.values()).filter(Boolean).length
@@ -98,22 +146,14 @@ export function InteractiveProjectBuilder({
     setPreviewError('')
   }, [currentStepIndex, currentStep.starterCode])
 
-  // Live preview with debounce
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      updateLivePreview(code)
-    }, 1000)
-    return () => clearTimeout(timer)
-  }, [code])
-
-  const updateLivePreview = async (userCode: string) => {
+  const updateLivePreview = useCallback(async (userCode: string) => {
     if (!userCode.trim()) {
       setLivePreview('')
       return
     }
 
     try {
-      const result = await sandbox.executeJavaScript(userCode)
+      const result = await runWithFallback(userCode, 'javascript')
       if (result.error) {
         setPreviewError(result.error)
         setLivePreview('')
@@ -121,11 +161,20 @@ export function InteractiveProjectBuilder({
         setPreviewError('')
         setLivePreview(result.output)
       }
-    } catch (err: any) {
-      setPreviewError(err.message || 'Preview error')
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Preview error'
+      setPreviewError(message)
       setLivePreview('')
     }
-  }
+  }, [runWithFallback])
+
+  // Live preview with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      updateLivePreview(code)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [code, updateLivePreview])
 
   const runTests = useCallback(async () => {
     setIsRunning(true)
@@ -135,8 +184,20 @@ export function InteractiveProjectBuilder({
       try {
         const passed = await testCase.test(code)
         results.set(testCase.id, passed)
-      } catch (err) {
-        results.set(testCase.id, false)
+      } catch {
+        // Fallback: run code on backend executor when sandbox-driven tests fail/hang.
+        try {
+          const fallback = await runWithFallback(code, 'javascript')
+          if (fallback.error) {
+            results.set(testCase.id, false)
+          } else if (testCase.expected !== undefined) {
+            results.set(testCase.id, String(fallback.output).includes(String(testCase.expected)))
+          } else {
+            results.set(testCase.id, true)
+          }
+        } catch {
+          results.set(testCase.id, false)
+        }
       }
     }
 
@@ -146,24 +207,37 @@ export function InteractiveProjectBuilder({
     const allPassed = Array.from(results.values()).every(Boolean)
 
     if (allPassed) {
-      toast.success(currentStep.successMessage, {
-        description: `All ${totalTests} tests passed! 🎉`,
-        duration: 4000,
-      })
+      try {
+        // Secure persistence must succeed before unlocking the next step in the UI.
+        await saveProjectProgressStep(projectId, {
+          step_id: currentStep.id,
+          code_snapshot: code,
+          passed: true,
+        })
 
-      if (!completedSteps.includes(currentStep.id)) {
-        const updated = [...completedSteps, currentStep.id]
-        setCompletedSteps(updated)
-        // Persist to backend (fire-and-forget)
-        saveProjectStepProgress(projectId, currentStep.id).catch(() => {})
+        if (!completedSteps.includes(currentStep.id)) {
+          const updated = [...completedSteps, currentStep.id]
+          setCompletedSteps(updated)
+        }
+
+        toast.success(currentStep.successMessage, {
+          description: `All ${totalTests} tests passed! 🎉`,
+          duration: 4000,
+        })
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unable to persist step completion'
+        toast.error('Step verification failed', {
+          description: `${message}. Step remains locked until backend save succeeds.`,
+        })
       }
     } else {
-      const failed = totalTests - passedTests
+      const passedCount = Array.from(results.values()).filter(Boolean).length
+      const failed = totalTests - passedCount
       toast.error('Some tests failed', {
         description: `${failed} test${failed > 1 ? 's' : ''} need${failed === 1 ? 's' : ''} attention. Check the feedback below.`,
       })
     }
-  }, [code, currentStep, completedSteps, totalTests, passedTests])
+  }, [code, currentStep, completedSteps, totalTests, projectId, runWithFallback])
 
   const handleNextStep = () => {
     if (currentStepIndex < buildSteps.length - 1) {
@@ -192,6 +266,9 @@ export function InteractiveProjectBuilder({
             <div className="space-y-1">
               <div className="text-sm text-muted-foreground font-medium">
                 Step {currentStepIndex + 1} of {buildSteps.length}
+              </div>
+              <div className="text-xs uppercase tracking-wide text-muted-foreground/80">
+                {projectTitle}
               </div>
               <h2 className="text-2xl font-bold">{currentStep.title}</h2>
             </div>

@@ -573,6 +573,21 @@ PROJECTS: list[dict[str, Any]] = [
             {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Add difficulty levels: Easy (1-50, unlimited), Medium (1-100, 10 guesses), Hard (1-200, 7 guesses).", "hint": "Add a max-attempts limit and check it in the while condition!"},
         ],
     },
+    {
+        "slug": "resume-builder",
+        "title": "Resume Builder",
+        "short_description": "Create an ATS-friendly resume generator with Python and JSON output.",
+        "description": "Build a guided resume builder that structures profile data, formats skills and experience, and computes a simple ATS-style score.",
+        "difficulty": "beginner",
+        "estimated_time": "25 minutes",
+        "steps": [
+            {"order": 1, "step_type": "understanding", "title": "Understanding the Problem", "description": "A resume builder captures user data and outputs a structured, readable resume.", "points": ["Collect personal details", "Organize skills and experience", "Generate formatted output", "Add a simple quality/ATS check", "Keep the flow easy for beginners"]},
+            {"order": 2, "step_type": "logic", "title": "Breaking Down the Logic", "description": "We'll split the builder into small reusable functions:", "points": ["Create a base profile dictionary", "Normalize and deduplicate skills", "Append experience entries safely", "Generate markdown/plain text output", "Compute ATS score from required skills match"]},
+            {"order": 3, "step_type": "code", "title": "The Code", "language": "python", "code": "def build_profile(full_name, email, summary):\n    return {\n        'full_name': full_name.strip(),\n        'email': email.strip().lower(),\n        'summary': summary.strip(),\n        'skills': [],\n        'experience': [],\n    }\n\ndef add_skills(profile, skills):\n    clean = {s.strip().lower() for s in skills if s.strip()}\n    profile['skills'] = sorted(clean)\n    return profile\n\ndef add_experience(profile, title, company, impact):\n    profile['experience'].append({\n        'title': title.strip(),\n        'company': company.strip(),\n        'impact': impact.strip(),\n    })\n    return profile\n\ndef ats_score(required_skills, candidate_skills):\n    req = {s.strip().lower() for s in required_skills if s.strip()}\n    got = {s.strip().lower() for s in candidate_skills if s.strip()}\n    if not req:\n        return 0\n    return int((len(req & got) / len(req)) * 100)\n\nprofile = build_profile('Asha Patel', 'ASHA@MAIL.COM', 'Frontend developer with strong UI focus')\nprofile = add_skills(profile, ['React', 'TypeScript', 'Tailwind', 'React'])\nprofile = add_experience(profile, 'Frontend Intern', 'Acme', 'Built reusable dashboard components')\nprint(profile)\nprint('ATS:', ats_score(['react', 'typescript', 'python'], profile['skills']))"},
+            {"order": 4, "step_type": "preview", "title": "See It In Action", "description": "Run your script and inspect the structured resume object and ATS score output."},
+            {"order": 5, "step_type": "challenge", "title": "Try It Yourself", "challenge": "Extend output to markdown format with a projects section and bullet highlights.", "hint": "Create a render_markdown(profile) function and map each experience/project to bullet lines."},
+        ],
+    },
 ]
 
 

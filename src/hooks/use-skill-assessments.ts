@@ -16,8 +16,9 @@ export function useSkillAssessments() {
   const deleteReport = (roleId: string) => {
     setSkillReports(currentReports => {
       if (!currentReports) return {}
-      const { [roleId]: _, ...rest } = currentReports
-      return rest
+      const next = { ...currentReports }
+      delete next[roleId]
+      return next
     })
   }
 

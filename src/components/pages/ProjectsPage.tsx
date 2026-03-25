@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowRight, Clock, BarChart2, Lock } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { DemoLimits, isProjectUnlocked, triggerProjectLockedError } from '@/lib/demo-limits'
+import { canStartDemoProject, recordDemoProjectStart, triggerProjectLockedError } from '@/lib/demo-limits'
 import { CatalogProjectSummary, fetchCatalogProjects } from '@/lib/api'
+import { isDemoUser } from '@/lib/auth'
 
 interface ProjectsPageProps {
   onSelectProject: (projectId: string) => void
@@ -11,6 +11,7 @@ interface ProjectsPageProps {
 export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
   const [projects, setProjects] = useState<CatalogProjectSummary[]>([])
   const [loading, setLoading] = useState(true)
+  const demoMode = isDemoUser()
 
   useEffect(() => {
     fetchCatalogProjects()
@@ -22,7 +23,6 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-5xl mx-auto px-6 py-14">
-        {/* Header */}
         <div className="mb-10 space-y-2">
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">Projects</h1>
           <p className="text-slate-500 max-w-xl">
@@ -37,13 +37,12 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
             ))}
           </div>
         ) : projects.length === 0 ? (
-          <div className="text-center py-20 text-slate-400">
-            No projects available yet. Check back soon!
-          </div>
+          <div className="text-center py-20 text-slate-400">No projects available yet. Check back soon!</div>
         ) : (
           <div className="grid md:grid-cols-2 gap-5">
             {projects.map((project) => {
-              const unlocked = isProjectUnlocked(project.id)
+              const unlocked = !demoMode || canStartDemoProject(project.id)
+
               return (
                 <div
                   key={project.id}
@@ -59,7 +58,9 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
 
                   <div className="space-y-1 flex-1">
                     <h3 className="text-base font-semibold text-slate-900">{project.title}</h3>
-                    <p className="text-sm text-slate-500 leading-relaxed">{project.description || project.shortDescription}</p>
+                    <p className="text-sm text-slate-500 leading-relaxed">
+                      {project.description || project.shortDescription}
+                    </p>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
@@ -84,7 +85,13 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
                         : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                     }`}
                     onClick={() => {
-                      if (!unlocked) { triggerProjectLockedError(); return }
+                      if (!unlocked) {
+                        triggerProjectLockedError()
+                        return
+                      }
+                      if (demoMode) {
+                        recordDemoProjectStart(project.id)
+                      }
                       onSelectProject(project.id)
                     }}
                   >
@@ -109,5 +116,3 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
     </div>
   )
 }
-
-

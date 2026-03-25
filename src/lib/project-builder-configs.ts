@@ -481,9 +481,257 @@ console.log(fahrenheitToCelsius(212)) // Should output: 100`,
   }
 ]
 
+/* =============== RESUME BUILDER PROJECT =============== */
+
+export const resumeBuilderBuildSteps: BuildStep[] = [
+  {
+    id: 1,
+    title: 'Step 1: Build Base Profile',
+    description: 'Start by creating a function that initializes a resume profile dictionary.',
+    requirements: [
+      'Create a function named buildProfile',
+      'Accept fullName, email, and summary parameters',
+      'Return an object with keys: full_name, email, summary, skills, experience',
+    ],
+    starterCode: `// TODO: Create buildProfile(fullName, email, summary)
+// It should return an object with empty skills and experience arrays
+
+
+console.log(buildProfile('Asha Patel', 'asha@mail.com', 'Frontend developer'))`,
+    testCases: [
+      {
+        id: 1,
+        description: 'Should define buildProfile function',
+        expected: 'Function exists',
+        test: async (code: string) => {
+          return code.includes('function buildProfile') || code.includes('const buildProfile')
+        },
+      },
+      {
+        id: 2,
+        description: 'Should return profile shape',
+        expected: 'Object with required keys',
+        test: async (code: string) => {
+          return ['full_name', 'email', 'summary', 'skills', 'experience'].every((key) => code.includes(key))
+        },
+      },
+    ],
+    hints: [
+      {
+        level: 0,
+        text: 'Return one object literal that stores all profile fields.',
+      },
+      {
+        level: 1,
+        text: 'Initialize skills and experience as empty arrays so we can append data later.',
+        codeSnippet: "function buildProfile(fullName, email, summary) {\n  return { full_name: fullName, email, summary, skills: [], experience: [] }\n}",
+      },
+    ],
+    successMessage: 'Great start! Your base resume profile is ready.'
+  },
+  {
+    id: 2,
+    title: 'Step 2: Normalize Skills',
+    description: 'Add a helper that cleans skill input and removes duplicates.',
+    requirements: [
+      'Create a function called addSkills(profile, skills)',
+      'Trim and lowercase each skill',
+      'Remove duplicates before storing them in profile.skills',
+    ],
+    starterCode: `function buildProfile(fullName, email, summary) {
+  return { full_name: fullName, email, summary, skills: [], experience: [] }
+}
+
+// TODO: Create addSkills(profile, skills)
+// skills will be an array like ['React', ' TypeScript ', 'react']
+
+
+const profile = buildProfile('Asha', 'asha@mail.com', 'Frontend dev')
+console.log(addSkills(profile, ['React', ' TypeScript ', 'react']))`,
+    testCases: [
+      {
+        id: 1,
+        description: 'Should create addSkills function',
+        expected: 'Function exists',
+        test: async (code: string) => {
+          return code.includes('function addSkills') || code.includes('const addSkills')
+        },
+      },
+      {
+        id: 2,
+        description: 'Should normalize and deduplicate',
+        expected: 'trim/lowercase + unique',
+        test: async (code: string) => {
+          return code.includes('trim') && (code.includes('toLowerCase') || code.includes('toLowerCase()'))
+        },
+      },
+    ],
+    hints: [
+      {
+        level: 0,
+        text: 'A Set is useful when you want unique values.',
+      },
+      {
+        level: 1,
+        text: 'Map each skill through trim and toLowerCase before adding to Set.',
+        codeSnippet: 'const normalized = [...new Set(skills.map((s) => s.trim().toLowerCase()))]'
+      }
+    ],
+    successMessage: 'Nice! Skills are now clean and duplicate-free.'
+  },
+  {
+    id: 3,
+    title: 'Step 3: Add Experience Entries',
+    description: 'Now add a function to push work experience items into the profile.',
+    requirements: [
+      'Create addExperience(profile, title, company, impact)',
+      'Push a new object with title, company, and impact into profile.experience',
+      'Return the updated profile',
+    ],
+    starterCode: `function buildProfile(fullName, email, summary) {
+  return { full_name: fullName, email, summary, skills: [], experience: [] }
+}
+
+// TODO: Create addExperience(profile, title, company, impact)
+
+
+const profile = buildProfile('Asha', 'asha@mail.com', 'Frontend dev')
+console.log(addExperience(profile, 'Frontend Intern', 'Acme', 'Built reusable dashboard widgets'))`,
+    testCases: [
+      {
+        id: 1,
+        description: 'Should create addExperience function',
+        expected: 'Function exists',
+        test: async (code: string) => {
+          return code.includes('function addExperience') || code.includes('const addExperience')
+        },
+      },
+      {
+        id: 2,
+        description: 'Should push into experience list',
+        expected: 'push call',
+        test: async (code: string) => {
+          return code.includes('experience') && code.includes('push')
+        },
+      },
+    ],
+    hints: [
+      {
+        level: 0,
+        text: 'Create one object for the new experience and push it into profile.experience.',
+      },
+      {
+        level: 1,
+        text: 'The new object should include exactly title, company, and impact fields.',
+      },
+    ],
+    successMessage: 'Excellent! Your resume can now store project/work history.'
+  },
+  {
+    id: 4,
+    title: 'Step 4: Compute ATS Score',
+    description: 'Implement an ATS score function by matching required vs candidate skills.',
+    requirements: [
+      'Create atsScore(requiredSkills, candidateSkills)',
+      'Compare skills case-insensitively',
+      'Return percentage match as an integer from 0 to 100',
+    ],
+    starterCode: `// TODO: Create atsScore(requiredSkills, candidateSkills)
+// Example: ['react', 'typescript'] vs ['React', 'TypeScript', 'css'] should return 100
+
+
+console.log(atsScore(['react', 'typescript', 'python'], ['React', 'TypeScript'])) // Expected around 66`,
+    testCases: [
+      {
+        id: 1,
+        description: 'Should define atsScore function',
+        expected: 'Function exists',
+        test: async (code: string) => {
+          return code.includes('function atsScore') || code.includes('const atsScore')
+        },
+      },
+      {
+        id: 2,
+        description: 'Should use intersection logic',
+        expected: 'matching sets',
+        test: async (code: string) => {
+          return code.includes('Set') || code.includes('filter')
+        },
+      },
+    ],
+    hints: [
+      {
+        level: 0,
+        text: 'Convert both arrays to lowercase sets before comparison.',
+      },
+      {
+        level: 1,
+        text: 'Use matched/required length times 100, then Math.floor or Math.round.',
+        codeSnippet: 'return Math.floor((matched / required.size) * 100)'
+      },
+    ],
+    successMessage: 'Great! You now have a meaningful resume quality score.'
+  },
+  {
+    id: 5,
+    title: 'Step 5: Render Markdown Resume',
+    description: 'Finish by generating a markdown version that can be copied to a CV document.',
+    requirements: [
+      'Create renderMarkdown(profile) function',
+      'Include full name, summary, skills, and experience sections',
+      'Return one markdown string',
+    ],
+    starterCode: `// TODO: Create renderMarkdown(profile)
+// Return markdown with sections: Name, Summary, Skills, Experience
+
+
+const profile = {
+  full_name: 'Asha Patel',
+  email: 'asha@mail.com',
+  summary: 'Frontend developer with strong UI focus',
+  skills: ['react', 'typescript', 'tailwind'],
+  experience: [
+    { title: 'Frontend Intern', company: 'Acme', impact: 'Built reusable dashboard widgets' }
+  ]
+}
+
+console.log(renderMarkdown(profile))`,
+    testCases: [
+      {
+        id: 1,
+        description: 'Should define renderMarkdown function',
+        expected: 'Function exists',
+        test: async (code: string) => {
+          return code.includes('function renderMarkdown') || code.includes('const renderMarkdown')
+        },
+      },
+      {
+        id: 2,
+        description: 'Should include markdown heading structure',
+        expected: '# and section markers',
+        test: async (code: string) => {
+          return code.includes('#') && (code.includes('Skills') || code.includes('Experience'))
+        },
+      },
+    ],
+    hints: [
+      {
+        level: 0,
+        text: 'Build the markdown with template literals and array joins.',
+      },
+      {
+        level: 1,
+        text: 'Convert each experience object into a bullet line like: - Title at Company: Impact.',
+      },
+    ],
+    successMessage: 'Outstanding! You completed an end-to-end Resume Builder workflow.'
+  },
+]
+
 export const projectBuilderConfigs: Record<string, BuildStep[]> = {
   'digital-clock': digitalClockBuildSteps,
   'calculator': calculatorBuildSteps,
   'temperature-converter': temperatureConverterBuildSteps,
+  'resume-builder': resumeBuilderBuildSteps,
 }
 

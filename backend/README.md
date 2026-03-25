@@ -32,6 +32,25 @@ BOOTSTRAP_ADMIN_FULL_NAME=Platform Admin
 
 On startup, the backend creates (or upgrades) that user to admin automatically. Then login from the frontend with the same credentials.
 
+## One-Click User Seeding (Admin + Students)
+
+To create a ready-to-use admin and sample student accounts in the current database:
+
+```
+python scripts/seed_auth_users.py
+```
+
+Default credentials after running:
+
+- Admin: `admin@example.com` / `Admin@12345`
+- Students: `student1@codequest.dev`, `student2@codequest.dev`, `student3@codequest.dev` / `Student@123`
+
+Optional flags:
+
+```
+python scripts/seed_auth_users.py --student-count 10 --student-password "Student@123" --student-prefix student
+```
+
 ## Migrations (Alembic)
 
 Install dependencies and run migrations from the `backend` directory:

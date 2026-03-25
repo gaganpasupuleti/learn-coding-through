@@ -41,7 +41,7 @@ sys.stdout = io.StringIO()
     // Attempt to restore stdout even on error
     try {
       pyodide?.runPython('sys.stdout = sys.__stdout__')
-    } catch (_) {
+    } catch {
       // ignore
     }
 

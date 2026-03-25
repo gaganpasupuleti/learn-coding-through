@@ -5,7 +5,31 @@ import time
 import tempfile
 import os
 import re
+import shutil
 from typing import Dict, Any
+
+
+def verify_java_runtime_setup() -> None:
+    """Validate Java compiler/runtime availability with actionable errors."""
+    missing_tools = [tool for tool in ("javac", "java") if shutil.which(tool) is None]
+    if missing_tools:
+        tool_list = ", ".join(missing_tools)
+        raise RuntimeError(
+            f"Missing Java tools on PATH: {tool_list}. Install a JDK and ensure PATH includes both javac and java."
+        )
+
+    for tool in ("javac", "java"):
+        try:
+            subprocess.run([tool, "-version"], capture_output=True, text=True, timeout=5, check=True)
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError(
+                f"{tool} version check timed out. Verify Java installation and PATH configuration."
+            ) from exc
+        except subprocess.CalledProcessError as exc:
+            detail = (exc.stderr or exc.stdout or "").strip()
+            raise RuntimeError(
+                f"{tool} version check failed: {detail or 'unknown error'}. Verify Java installation."
+            ) from exc
 
 
 def execute_java(code: str, timeout: int = 5) -> Dict[str, Any]:

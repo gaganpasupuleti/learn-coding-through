@@ -68,7 +68,7 @@ Successfully migrated all code execution logic from frontend to backend, replaci
 ## API Endpoint
 
 ```
-POST /api/execute
+POST /api/v1/execute
 ```
 
 **Request:**

@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
-import { Gauge, Sparkle } from '@phosphor-icons/react'
+import { Badge } from '@/components/ui/badge'
+import { Brain, Gauge, Sparkle } from '@phosphor-icons/react'
 import type { CareerRole, SkillAssessment } from '@/types/career'
 import { useSkillAssessments } from '@/hooks/use-skill-assessments'
 import { toast } from 'sonner'
@@ -68,19 +69,19 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
 
     return (
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto border-border/50 bg-card/50 backdrop-blur-sm animate-in fade-in duration-700">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Sparkle className="text-accent" weight="fill" />
+            <DialogTitle className="flex items-center gap-2 text-foreground">
+              <Sparkle className="text-primary" weight="fill" />
               Your Skill Gap Analysis
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-muted-foreground">
               Based on your assessment, here's your personalized learning roadmap for {role.title}
             </DialogDescription>
           </DialogHeader>
           <SkillGapReportComponent report={report} role={role} />
           <div className="flex gap-3 justify-end mt-4">
-            <Button variant="outline" onClick={handleStartNew}>
+            <Button variant="outline" className="border-border/60 hover:border-primary/50 transition-colors" onClick={handleStartNew}>
               Retake Assessment
             </Button>
             <Button onClick={handleClose}>
@@ -95,18 +96,18 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
   if (existingReport && currentSkillIndex === 0 && assessments.length === 0) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl border-border/50 bg-card/50 backdrop-blur-sm animate-in fade-in duration-700">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Gauge className="text-accent" />
+            <DialogTitle className="flex items-center gap-2 text-foreground">
+              <Gauge className="text-primary" weight="duotone" />
               Skill Gap Analyzer
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-muted-foreground">
               You've already completed an assessment for {role.title}. Would you like to view your existing report or start a new assessment?
             </DialogDescription>
           </DialogHeader>
           <div className="flex gap-3 justify-end mt-6">
-            <Button variant="outline" onClick={handleClose}>
+            <Button variant="outline" className="border-border/60 hover:border-primary/50 transition-colors" onClick={handleClose}>
               Cancel
             </Button>
             <Button variant="secondary" onClick={handleStartNew}>
@@ -123,39 +124,50 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl border-border/50 bg-card/50 backdrop-blur-sm animate-in fade-in duration-700">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Gauge className="text-accent" />
+          <DialogTitle className="flex items-center gap-2 text-foreground">
+            <Gauge className="text-primary" weight="duotone" />
             Skill Gap Analyzer
           </DialogTitle>
-          <DialogDescription>
-            Question {currentSkillIndex + 1} of {role.skills.length}
+          <DialogDescription className="text-muted-foreground">
+            Calibrate your current level so we can generate a sharper learning flight plan.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
-          <div className="space-y-2">
+        <div className="space-y-6 py-4 animate-in fade-in duration-700">
+          <div className="rounded-xl border border-border/50 bg-gradient-to-br from-primary/10 to-transparent p-4">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary">
+                <Brain className="mr-1.5" size={12} weight="duotone" />
+                Assessment Session
+              </Badge>
+              <Badge variant="secondary" className="bg-secondary/50 text-foreground animate-pulse [animation-duration:2.8s]">
+                Question {currentSkillIndex + 1} / {role.skills.length}
+              </Badge>
+            </div>
+
             <div className="flex items-center justify-between text-sm text-muted-foreground">
               <span>Progress</span>
               <span>{Math.round(progress)}%</span>
             </div>
-            <Progress value={progress} className="h-2" />
+            <Progress value={progress} className="mt-2 h-2" />
           </div>
 
           <div className="space-y-4">
-            <div className="text-lg font-semibold text-foreground">
-              How proficient are you with <span className="text-accent">{currentSkill}</span>?
+            <div className="text-lg font-semibold text-foreground tracking-tight">
+              How proficient are you with <span className="text-primary">{currentSkill}</span>?
             </div>
 
             <RadioGroup className="space-y-3">
               <div 
                 onClick={() => handleAssessment('none')}
-                className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent/5 hover:border-accent transition-colors"
+                className="flex items-center space-x-3 rounded-xl border border-border/50 bg-card/50 p-4 cursor-pointer hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-200 animate-in fade-in"
+                style={{ animationDelay: '40ms' }}
               >
                 <RadioGroupItem value="none" id={`none-${currentSkillIndex}`} />
                 <Label htmlFor={`none-${currentSkillIndex}`} className="flex-1 cursor-pointer">
-                  <div className="font-medium">Not familiar</div>
+                  <div className="font-medium text-foreground">Not familiar</div>
                   <div className="text-sm text-muted-foreground">
                     I haven't used this skill or need to learn it from scratch
                   </div>
@@ -164,11 +176,12 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
 
               <div 
                 onClick={() => handleAssessment('partial')}
-                className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent/5 hover:border-accent transition-colors"
+                className="flex items-center space-x-3 rounded-xl border border-border/50 bg-card/50 p-4 cursor-pointer hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-200 animate-in fade-in"
+                style={{ animationDelay: '90ms' }}
               >
                 <RadioGroupItem value="partial" id={`partial-${currentSkillIndex}`} />
                 <Label htmlFor={`partial-${currentSkillIndex}`} className="flex-1 cursor-pointer">
-                  <div className="font-medium">Some experience</div>
+                  <div className="font-medium text-foreground">Some experience</div>
                   <div className="text-sm text-muted-foreground">
                     I've used this skill before but need more practice
                   </div>
@@ -177,11 +190,12 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
 
               <div 
                 onClick={() => handleAssessment('proficient')}
-                className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent/5 hover:border-accent transition-colors"
+                className="flex items-center space-x-3 rounded-xl border border-border/50 bg-card/50 p-4 cursor-pointer hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-200 animate-in fade-in"
+                style={{ animationDelay: '140ms' }}
               >
                 <RadioGroupItem value="proficient" id={`proficient-${currentSkillIndex}`} />
                 <Label htmlFor={`proficient-${currentSkillIndex}`} className="flex-1 cursor-pointer">
-                  <div className="font-medium">Proficient</div>
+                  <div className="font-medium text-foreground">Proficient</div>
                   <div className="text-sm text-muted-foreground">
                     I'm comfortable using this skill in real projects
                   </div>
@@ -197,7 +211,7 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
                 setCurrentSkillIndex(prev => prev - 1)
                 setAssessments(prev => prev.slice(0, -1))
               }}
-              className="w-full"
+              className="w-full border-border/60 hover:border-primary/50 transition-colors"
             >
               Back to Previous Question
             </Button>

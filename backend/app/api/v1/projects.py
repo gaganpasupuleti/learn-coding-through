@@ -92,6 +92,71 @@ class StepProgressRequest(BaseModel):
     passed: bool
 
 
+@router.get("/{slug}/progress")
+def get_project_progress(
+    slug: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Return completed step ids and next step pointer for a catalog project."""
+    rows = (
+        db.query(ProjectStepCompletion)
+        .filter_by(user_id=current_user.id, project_slug=slug)
+        .order_by(ProjectStepCompletion.step_id.asc())
+        .all()
+    )
+    completed_step_ids = sorted({row.step_id for row in rows})
+
+    next_step_id = 1
+    for step_id in completed_step_ids:
+        if step_id == next_step_id:
+            next_step_id += 1
+        elif step_id > next_step_id:
+            break
+
+    return {
+        "projectSlug": slug,
+        "completedStepIds": completed_step_ids,
+        "nextStepId": next_step_id,
+    }
+
+
+@router.post("/{slug}/progress")
+def save_project_progress(
+    slug: str,
+    payload: StepProgressRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Secure upsert for project_step_completions used by interactive builders."""
+    existing = (
+        db.query(ProjectStepCompletion)
+        .filter_by(user_id=current_user.id, project_slug=slug, step_id=payload.step_id)
+        .first()
+    )
+    if existing:
+        existing.passed = payload.passed
+        existing.code_snapshot = payload.code_snapshot
+        existing.completed_at = datetime.utcnow()
+    else:
+        db.add(ProjectStepCompletion(
+            user_id=current_user.id,
+            project_slug=slug,
+            step_id=payload.step_id,
+            passed=payload.passed,
+            code_snapshot=payload.code_snapshot,
+            completed_at=datetime.utcnow(),
+        ))
+
+    db.commit()
+    return {
+        "projectSlug": slug,
+        "stepId": payload.step_id,
+        "passed": payload.passed,
+        "saved": True,
+    }
+
+
 @router.post("/catalog/{slug}/progress")
 def save_step_progress(
     slug: str,

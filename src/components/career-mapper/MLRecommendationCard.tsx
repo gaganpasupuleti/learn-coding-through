@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { Sparkle, TrendUp, Target, Brain } from '@phosphor-icons/react'
+import { Brain, Sparkle, Target, TrendUp } from '@phosphor-icons/react'
 import { MLJobRecommendation, MLCareerRecommendation } from '@/hooks/use-ml-recommendations'
 import { Job, CareerRole } from '@/types/career'
 import { motion } from 'framer-motion'
@@ -32,22 +32,24 @@ export function MLJobRecommendationCard({ recommendation, job, onView, rank }: M
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: rank * 0.1 }}
+      className="animate-in fade-in duration-700"
     >
-      <Card className="hover:shadow-lg transition-shadow">
+      <Card className="relative overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 hover:-translate-y-1 transition-all duration-300">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Badge variant={rank === 0 ? 'default' : 'secondary'}>
-                  {rank === 0 ? '🏆 Top Match' : `#${rank + 1}`}
+                <Badge variant={rank === 0 ? 'default' : 'secondary'} className="border-border/50">
+                  {rank === 0 ? 'Top Match' : `#${rank + 1}`}
                 </Badge>
-                <Badge variant="outline">
-                  <Sparkle className="w-3 h-3 mr-1" weight="fill" />
+                <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary animate-pulse [animation-duration:3s]">
+                  <Sparkle className="mr-1 h-3 w-3" weight="fill" />
                   {getConfidenceLabel(recommendation.confidenceLevel)}
                 </Badge>
               </div>
-              <CardTitle className="text-xl">{job.title}</CardTitle>
-              <CardDescription className="mt-1">
+              <CardTitle className="text-xl tracking-tight">{job.title}</CardTitle>
+              <CardDescription className="mt-1 text-muted-foreground">
                 {job.company} • {job.location}
               </CardDescription>
             </div>
@@ -59,7 +61,7 @@ export function MLJobRecommendationCard({ recommendation, job, onView, rank }: M
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="relative space-y-4">
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Career Fit</span>
@@ -78,7 +80,7 @@ export function MLJobRecommendationCard({ recommendation, job, onView, rank }: M
 
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium">
-              <Brain weight="fill" />
+              <Brain weight="duotone" className="text-primary" />
               <span>Why This Job?</span>
             </div>
             <ul className="space-y-1">
@@ -99,7 +101,7 @@ export function MLJobRecommendationCard({ recommendation, job, onView, rank }: M
                   .filter(s => s.relevance === 100)
                   .slice(0, 5)
                   .map((skillMatch, index) => (
-                    <Badge key={index} variant="secondary" className="bg-accent/10 text-accent">
+                    <Badge key={index} variant="secondary" className="border-border/50 bg-secondary/50 text-foreground hover:border-primary/50 transition-colors">
                       {skillMatch.skill}
                     </Badge>
                   ))}
@@ -143,21 +145,24 @@ export function MLCareerRecommendationCard({ recommendation, role, onView, rank 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: rank * 0.1 }}
+      className="animate-in fade-in duration-700"
     >
-      <Card className="hover:shadow-lg transition-shadow">
+      <Card className="relative overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 hover:-translate-y-1 transition-all duration-300">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Badge variant={rank === 0 ? 'default' : 'secondary'}>
-                  {rank === 0 ? '⭐ Best Fit' : `#${rank + 1}`}
+                <Badge variant={rank === 0 ? 'default' : 'secondary'} className="border-border/50">
+                  {rank === 0 ? 'Best Fit' : `#${rank + 1}`}
                 </Badge>
-                <Badge variant="outline" className="text-accent">
+                <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary animate-pulse [animation-duration:3s]">
+                  <Sparkle className="mr-1 h-3 w-3" weight="fill" />
                   {role.domain}
                 </Badge>
               </div>
-              <CardTitle className="text-xl">{role.title}</CardTitle>
-              <CardDescription className="mt-1">
+              <CardTitle className="text-xl tracking-tight">{role.title}</CardTitle>
+              <CardDescription className="mt-1 text-muted-foreground">
                 {role.difficulty} • ${role.salaryRangeMin.toLocaleString()} - ${role.salaryRangeMax.toLocaleString()}
               </CardDescription>
             </div>
@@ -169,18 +174,18 @@ export function MLCareerRecommendationCard({ recommendation, role, onView, rank 
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
+        <CardContent className="relative space-y-4">
+          <div className="grid grid-cols-2 gap-4 rounded-xl border border-border/50 bg-background/30 p-3">
+            <div className="space-y-1 rounded-lg border border-border/40 bg-card/40 p-3">
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Target weight="fill" />
+                <Target weight="duotone" className="text-primary" />
                 <span>Time to Ready</span>
               </div>
               <div className="text-lg font-bold">{recommendation.timeToReady} month{recommendation.timeToReady > 1 ? 's' : ''}</div>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1 rounded-lg border border-border/40 bg-card/40 p-3">
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <TrendUp weight="fill" />
+                <TrendUp weight="duotone" className="text-primary" />
                 <span>Success Rate</span>
               </div>
               <div className="text-lg font-bold">{recommendation.successProbability}%</div>
@@ -189,7 +194,7 @@ export function MLCareerRecommendationCard({ recommendation, role, onView, rank 
 
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium">
-              <Brain weight="fill" />
+              <Brain weight="duotone" className="text-primary" />
               <span>AI Insights</span>
             </div>
             <ul className="space-y-1">
@@ -207,7 +212,7 @@ export function MLCareerRecommendationCard({ recommendation, role, onView, rank 
               <div className="text-sm font-medium">Skills to Learn</div>
               <div className="flex flex-wrap gap-2">
                 {recommendation.skillGaps.slice(0, 6).map((gap, index) => (
-                  <Badge key={index} variant={getPriorityColor(gap.priority)}>
+                  <Badge key={index} variant={getPriorityColor(gap.priority)} className="border-border/50 hover:border-primary/50 transition-colors">
                     {gap.skill}
                   </Badge>
                 ))}

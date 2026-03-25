@@ -16,6 +16,12 @@ import {
 } from '@/lib/api'
 import { ArrowLeft, ArrowRight, CheckCircle, ListChecks, Lock, XCircle } from '@phosphor-icons/react'
 import { toast } from 'sonner'
+import { isDemoUser } from '@/lib/auth'
+import {
+  canAttemptDemoQuiz,
+  recordDemoQuizAttempt,
+  triggerQuizLockedError,
+} from '@/lib/demo-limits'
 
 const normalizeText = (value: string) => value.trim().replace(/\r\n/g, '\n')
 
@@ -118,6 +124,7 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [draftAnswers, setDraftAnswers] = useState<Record<number, string | number>>({})
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, boolean>>({})
+  const demoMode = isDemoUser()
 
   useEffect(() => {
     fetchCatalogQuizzes()
@@ -144,6 +151,16 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
 
   const handleSelectQuiz = (quizId: string) => {
     if (onBeforeSelect && !onBeforeSelect(quizId)) return
+
+    if (demoMode && !canAttemptDemoQuiz(quizId)) {
+      triggerQuizLockedError()
+      return
+    }
+
+    if (demoMode) {
+      recordDemoQuizAttempt(quizId)
+    }
+
     resetQuizState()
     setSelectedQuizId(quizId)
   }
@@ -219,7 +236,9 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
             ) : (
             <div className="grid md:grid-cols-2 gap-6 pt-4">
               {quizList.map((quiz) => {
-                const isLocked = lockedQuizIds.includes(quiz.id)
+                const isLockedByProps = lockedQuizIds.includes(quiz.id)
+                const isLockedByDemo = demoMode && !canAttemptDemoQuiz(quiz.id)
+                const isLocked = isLockedByProps || isLockedByDemo
                 return (
                   <Card
                     key={quiz.id}

@@ -27,13 +27,27 @@ import { StudentDatabasePreview } from '@/components/previews/StudentDatabasePre
 import { SalesAnalyticsPreview } from '@/components/previews/SalesAnalyticsPreview'
 import { GradeCalculatorPreview } from '@/components/previews/GradeCalculatorPreview'
 import { NumberGuesserPreview } from '@/components/previews/NumberGuesserPreview'
-import { CodeEditor } from '@/components/CodeEditor'
 import { CodeDisplay } from '@/components/CodeDisplay'
 import { SandboxInfo } from '@/components/SandboxInfo'
 import { InteractiveProjectBuilder } from '@/components/InteractiveProjectBuilder'
 import { projectBuilderConfigs } from '@/lib/project-builder-configs'
 import { ProjectStepWalkthrough, type TestResult } from '@/components/project/ProjectStepWalkthrough'
 import { sandbox } from '@/lib/sandboxInstance'
+
+function toPythonLiteral(val: unknown): string {
+  if (val === null) return 'None'
+  if (val === true) return 'True'
+  if (val === false) return 'False'
+  if (typeof val === 'number') return String(val)
+  if (typeof val === 'string') return JSON.stringify(val)
+  if (Array.isArray(val)) return `[${val.map(toPythonLiteral).join(', ')}]`
+  if (typeof val === 'object') {
+    const pairs = Object.entries(val as Record<string, unknown>)
+      .map(([k, v]) => `${JSON.stringify(k)}: ${toPythonLiteral(v)}`)
+    return `{${pairs.join(', ')}}`
+  }
+  return JSON.stringify(val)
+}
 
 interface ProjectLearningPageProps {
   projectId: string
@@ -59,22 +73,6 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
   // Derived: a project is TDD if its first step has test cases populated
   const isTddMode = !loading && !!project?.steps[0]?.content?.testCases?.length
-
-  /** Convert a JS value to a Python literal string for injection into the harness. */
-  const toPythonLiteral = (val: unknown): string => {
-    if (val === null) return 'None'
-    if (val === true) return 'True'
-    if (val === false) return 'False'
-    if (typeof val === 'number') return String(val)
-    if (typeof val === 'string') return JSON.stringify(val)
-    if (Array.isArray(val)) return `[${val.map(toPythonLiteral).join(', ')}]`
-    if (typeof val === 'object') {
-      const pairs = Object.entries(val as Record<string, unknown>)
-        .map(([k, v]) => `${JSON.stringify(k)}: ${toPythonLiteral(v)}`)
-      return `{${pairs.join(', ')}}`
-    }
-    return JSON.stringify(val)
-  }
 
   const handleRunTests = useCallback(async (code: string) => {
     if (!project) return

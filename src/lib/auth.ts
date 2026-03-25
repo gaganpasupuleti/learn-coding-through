@@ -108,6 +108,45 @@ interface MeResponse {
   is_active?: boolean
 }
 
+interface BackendLoginResponse {
+  access_token: string
+  token_type?: string
+}
+
+async function parseOrThrow(response: Response): Promise<any> {
+  const payload = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw new Error(payload?.detail || `HTTP error ${response.status}`)
+  }
+  return payload
+}
+
+export async function loginWithBackend(email: string, password: string): Promise<string> {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  })
+  const payload = (await parseOrThrow(response)) as BackendLoginResponse
+  if (!payload?.access_token) {
+    throw new Error('Login did not return an access token.')
+  }
+  return payload.access_token
+}
+
+export async function registerWithBackend(fullName: string, email: string, password: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      full_name: fullName,
+      email,
+      password,
+    }),
+  })
+  await parseOrThrow(response)
+}
+
 /**
  * Fetch the current user profile from the backend.
  * Returns null if the request fails (offline, 401, etc.).

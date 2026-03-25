@@ -33,7 +33,7 @@ backend/
 
 ## API Endpoint
 
-### POST /api/execute
+### POST /api/v1/execute
 
 Execute code in the specified language.
 
@@ -186,7 +186,7 @@ print(result)
 Test the API endpoint:
 
 ```bash
-curl -X POST http://localhost:8000/api/execute \
+curl -X POST http://localhost:8000/api/v1/execute \
   -H "Content-Type: application/json" \
   -d '{"code": "print(\"Hello, World!\")", "language": "python"}'
 ```

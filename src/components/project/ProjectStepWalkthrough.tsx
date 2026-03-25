@@ -12,7 +12,7 @@ import {
   LockSimple,
 } from '@phosphor-icons/react'
 import { CodeEditor } from '@/components/CodeEditor'
-import type { ProjectStep, TestCase } from '@/types/project'
+import type { ProjectStep } from '@/types/project'
 
 // ── Legacy GIF walkthrough props (tutorial flow) ──────────────────────────────
 
@@ -93,7 +93,6 @@ function TddStepView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step.id])
 
-  const anyFailed = testResults.length > 0 && testResults.some(r => !r.passed)
   const allPassed = testResults.length > 0 && testResults.every(r => r.passed)
 
   return (

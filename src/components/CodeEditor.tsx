@@ -90,7 +90,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   /* ---------- Code change ---------- */
   const handleCodeChange = (value: string | undefined) => {
     const val = value ?? ''
-    onChange ? onChange(val) : setInternalCode(val)
+    if (onChange) {
+      onChange(val)
+    } else {
+      setInternalCode(val)
+    }
   }
 
   /* ---------- Execute ---------- */
@@ -162,7 +166,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         return
       }
 
-      ;(async () => {
+      void (async () => {
         try {
           const result = await sandbox.execute(code, execLang)
           setExecutionTime(result.executionTime || 0)
@@ -178,9 +182,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             const remaining = DemoLimits.getRemainingExecutions()
             if (remaining <= 3) toast.warning(`Only ${remaining} executions left!`)
           }
-        } catch (err: any) {
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Execution failed'
           setHasError(true)
-          setOutput(err.message || 'Execution failed')
+          setOutput(message)
           toast.error('Failed to execute code')
         } finally {
           setIsRunning(false)
@@ -193,7 +198,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   /* ---------- Reset ---------- */
   const resetCode = () => {
     const val = initialCode || ''
-    onChange ? onChange(val) : setInternalCode(val)
+    if (onChange) {
+      onChange(val)
+    } else {
+      setInternalCode(val)
+    }
     setOutput('')
     setHasError(false)
     toast.success('Code reset to original!')

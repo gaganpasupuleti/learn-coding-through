@@ -10,10 +10,17 @@ import { LoginPage } from '@/components/pages/LoginPage'
 import { StudentShell } from '@/components/shells/StudentShell'
 import { AdminShell } from '@/components/shells/AdminShell'
 import { PortBanner } from '@/components/PortBanner'
-import { getStoredUser, type AuthUser } from '@/lib/auth'
+import { getStoredUser, isDemoUser, type AuthUser } from '@/lib/auth'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
-import { DemoLimits, isProjectUnlocked, triggerProjectLockedError } from '@/lib/demo-limits'
+import {
+  canAttemptDemoQuiz,
+  canStartDemoProject,
+  recordDemoProjectStart,
+  recordDemoQuizAttempt,
+  triggerProjectLockedError,
+  triggerQuizLockedError,
+} from '@/lib/demo-limits'
 
 export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'quiz' | 'roadmapper'
 
@@ -44,13 +51,32 @@ function App() {
   }
 
   const handleSelectProject = (projectId: string) => {
-    if (!isProjectUnlocked(projectId)) {
-      triggerProjectLockedError();
-      return;
+    if (isDemoUser() && !canStartDemoProject(projectId)) {
+      triggerProjectLockedError()
+      return
     }
+
+    if (isDemoUser()) {
+      recordDemoProjectStart(projectId)
+    }
+
     setSelectedProjectId(projectId)
     setStudentPage('learning')
     toast.success('Project loaded! Let\'s start learning.')
+  }
+
+  const handleBeforeSelectQuiz = (quizId: string) => {
+    if (!isDemoUser()) {
+      return true
+    }
+
+    if (!canAttemptDemoQuiz(quizId)) {
+      triggerQuizLockedError()
+      return false
+    }
+
+    recordDemoQuizAttempt(quizId)
+    return true
   }
 
   const handleBackToProjects = () => {
@@ -117,7 +143,7 @@ function App() {
 
         {studentPage === 'practice' && <PracticePage />}
 
-        {studentPage === 'quiz' && <QuizPage />}
+        {studentPage === 'quiz' && <QuizPage onBeforeSelect={handleBeforeSelectQuiz} />}
 
         {studentPage === 'roadmapper' && <CareerMapperPage />}
 

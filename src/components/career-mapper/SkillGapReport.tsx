@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { CheckCircle, XCircle, Warning, ArrowRight } from '@phosphor-icons/react'
+import { ArrowRight, Brain, CheckCircle, Warning, XCircle } from '@phosphor-icons/react'
 import type { SkillGapReport as SkillGapReportType, CareerRole } from '@/types/career'
 import { useMemo } from 'react'
 
@@ -56,10 +56,13 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
   }, [report])
 
   return (
-    <div className="space-y-6">
-      <Card className="border-accent/20 bg-gradient-to-br from-accent/5 to-transparent">
+    <div className="space-y-6 animate-in fade-in duration-700">
+      <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '40ms' }}>
         <CardHeader>
-          <CardTitle className="text-2xl">Overall Readiness</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-2xl tracking-tight">
+            <Brain className="text-primary" weight="duotone" />
+            Overall Readiness
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
@@ -72,11 +75,11 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
               </div>
             </div>
             <div className="text-right text-sm space-y-1">
-              <div className="flex items-center gap-2 text-green-600">
+              <div className="flex items-center gap-2 text-green-500">
                 <CheckCircle weight="fill" />
                 <span>{skillsByLevel.proficient.length} Proficient</span>
               </div>
-              <div className="flex items-center gap-2 text-yellow-600">
+              <div className="flex items-center gap-2 text-yellow-500">
                 <Warning weight="fill" />
                 <span>{skillsByLevel.partial.length} Partial</span>
               </div>
@@ -90,9 +93,12 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '90ms' }}>
         <CardHeader>
-          <CardTitle>Your Personalized Roadmap</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <ArrowRight className="text-primary" weight="duotone" />
+            Your Personalized Roadmap
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -104,22 +110,23 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
                   key={month} 
                   className={
                     status === 'skip' 
-                      ? 'border-green-200 bg-green-50/50' 
+                      ? 'border-green-500/40 bg-green-500/10 backdrop-blur-sm hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-200' 
                       : status === 'focus' 
-                      ? 'border-accent bg-accent/5' 
-                      : 'border-border'
+                      ? 'border-primary/50 bg-primary/10 backdrop-blur-sm hover:border-primary/60 hover:-translate-y-0.5 transition-all duration-200' 
+                      : 'border-border/50 bg-background/30 backdrop-blur-sm hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-200'
                   }
+                  style={{ animationDelay: `${month * 60}ms` }}
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg">Month {month}</CardTitle>
                       {status === 'skip' && (
-                        <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
+                        <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/40">
                           Can Skip
                         </Badge>
                       )}
                       {status === 'focus' && (
-                        <Badge className="bg-accent text-accent-foreground">
+                        <Badge className="bg-primary/30 text-primary border border-primary/40">
                           Focus Here
                         </Badge>
                       )}
@@ -130,12 +137,12 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
                       {monthSyllabus.length} topics
                     </div>
                     {status === 'skip' && (
-                      <div className="text-sm text-green-700">
+                      <div className="text-sm text-green-400">
                         You already have the skills covered in this month
                       </div>
                     )}
                     {status === 'focus' && (
-                      <div className="text-sm text-accent-foreground">
+                      <div className="text-sm text-primary">
                         Spend extra time mastering these concepts
                       </div>
                     )}
@@ -153,10 +160,10 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-green-200 bg-green-50/50">
+        <Card className="border-green-500/40 bg-green-500/10 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '130ms' }}>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <CheckCircle className="text-green-600" weight="fill" />
+              <CheckCircle className="text-green-400" weight="fill" />
               Proficient Skills
             </CardTitle>
           </CardHeader>
@@ -165,8 +172,8 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
               <ul className="space-y-2">
                 {skillsByLevel.proficient.map(skill => (
                   <li key={skill} className="flex items-center gap-2 text-sm">
-                    <CheckCircle size={16} className="text-green-600" weight="fill" />
-                    {skill}
+                    <CheckCircle size={16} className="text-green-400" weight="fill" />
+                    <Badge variant="secondary" className="border-green-500/30 bg-green-500/20 text-green-300 hover:border-primary/50 transition-colors">{skill}</Badge>
                   </li>
                 ))}
               </ul>
@@ -176,10 +183,10 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
           </CardContent>
         </Card>
 
-        <Card className="border-yellow-200 bg-yellow-50/50">
+        <Card className="border-yellow-500/40 bg-yellow-500/10 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '170ms' }}>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Warning className="text-yellow-600" weight="fill" />
+              <Warning className="text-yellow-400" weight="fill" />
               Partial Skills
             </CardTitle>
           </CardHeader>
@@ -188,8 +195,8 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
               <ul className="space-y-2">
                 {skillsByLevel.partial.map(skill => (
                   <li key={skill} className="flex items-center gap-2 text-sm">
-                    <Warning size={16} className="text-yellow-600" weight="fill" />
-                    {skill}
+                    <Warning size={16} className="text-yellow-400" weight="fill" />
+                    <Badge variant="secondary" className="border-yellow-500/30 bg-yellow-500/20 text-yellow-300 hover:border-primary/50 transition-colors">{skill}</Badge>
                   </li>
                 ))}
               </ul>
@@ -199,10 +206,10 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
           </CardContent>
         </Card>
 
-        <Card className="border-orange-200 bg-orange-50/50">
+        <Card className="border-orange-500/40 bg-orange-500/10 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '210ms' }}>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <ArrowRight className="text-orange-600" />
+              <ArrowRight className="text-orange-400" weight="duotone" />
               Need to Learn
             </CardTitle>
           </CardHeader>
@@ -211,8 +218,8 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
               <ul className="space-y-2">
                 {skillsByLevel.none.map(skill => (
                   <li key={skill} className="flex items-center gap-2 text-sm">
-                    <ArrowRight size={16} className="text-orange-600" />
-                    {skill}
+                    <ArrowRight size={16} className="text-orange-400" weight="duotone" />
+                    <Badge variant="secondary" className="border-orange-500/30 bg-orange-500/20 text-orange-300 hover:border-primary/50 transition-colors">{skill}</Badge>
                   </li>
                 ))}
               </ul>

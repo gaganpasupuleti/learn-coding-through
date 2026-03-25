@@ -1,4 +1,7 @@
 ﻿import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ChartLineUp, Sparkle } from '@phosphor-icons/react'
 import type { CareerRole, SyllabusItem } from '@/types/career'
 
 interface FlowChart3DProps {
@@ -62,7 +65,11 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
 
   const toggleMonth = (month: number) => {
     const s = new Set(expandedMonths)
-    s.has(month) ? s.delete(month) : s.add(month)
+    if (s.has(month)) {
+      s.delete(month)
+    } else {
+      s.add(month)
+    }
     setExpandedMonths(s)
   }
 
@@ -274,35 +281,43 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
   const svgW = 1360
 
   return (
-    <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24 }}>
-      {/* Header */}
-      <div style={{ marginBottom: 20, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: '#e2e8f0', marginBottom: 4 }}>
-            Hierarchical Course Flow
+    <Card className="border-border/50 bg-card/50 backdrop-blur-sm animate-in fade-in duration-700 hover:border-primary/50 transition-colors">
+      <CardHeader className="space-y-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <ChartLineUp className="text-primary" size={18} weight="duotone" />
+              Hierarchical Course Flow
+            </CardTitle>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Course → Months → Weeks → Topics · Click months to expand
+            </p>
           </div>
-          <div style={{ fontSize: 11, color: C.textSub }}>
-            Course → Months → Weeks → Topics · Click months to expand
-          </div>
+          <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary animate-pulse [animation-duration:3s]">
+            <Sparkle className="mr-1.5" size={12} weight="fill" />
+            Interactive Graph
+          </Badge>
         </div>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+
+        <div className="flex flex-wrap gap-2">
           {[
             { color: C.topicBorder, label: 'Topic' },
             { color: C.deliverBorder, label: 'Deliverable' },
             { color: C.milestoneBorder, label: 'Milestone' },
             { color: C.doneBorder, label: 'Completed' },
           ].map(({ color, label }) => (
-            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <div style={{ width: 20, height: 10, borderRadius: 3, border: `1px solid ${color}`, background: 'transparent' }} />
-              <span style={{ fontSize: 10, color: C.textSub }}>{label}</span>
-            </div>
+            <Badge key={label} variant="secondary" className="border-border/50 bg-secondary/40 text-foreground hover:border-primary/50 transition-colors">
+              <span style={{ width: 8, height: 8, borderRadius: 9999, background: color }} />
+              {label}
+            </Badge>
           ))}
         </div>
-      </div>
+      </CardHeader>
 
-      {/* Canvas */}
-      <div style={{ overflowX: 'auto', overflowY: 'auto', border: `1px solid ${C.border}`, borderRadius: 8, background: C.bg }}>
-        <svg width={svgW} height={svgH} style={{ minWidth: '100%' }}>
+      <CardContent className="space-y-4">
+        {/* Canvas */}
+        <div className="overflow-x-auto overflow-y-auto rounded-xl border border-border/50 bg-background/40 hover:border-primary/40 transition-colors">
+          <svg width={svgW} height={svgH} style={{ minWidth: '100%' }}>
           <defs>
             <linearGradient id="courseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor={C.courseFrom} />
@@ -324,33 +339,32 @@ export function FlowChart3D({ role, completedItems }: FlowChart3DProps) {
           </defs>
           {conns}
           {nodes}
-        </svg>
-      </div>
-
-      {/* Hover tooltip */}
-      {hoveredNode?.item && (
-        <div style={{ marginTop: 16, padding: '12px 16px', background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
-                <span style={{ fontSize: 12, fontWeight: 700, color: C.textPrimary }}>{hoveredNode.item.title}</span>
-                <span style={{ fontSize: 10, color: C.textSub, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1px 6px' }}>
-                  M{hoveredNode.item.month} · W{hoveredNode.item.week}
-                </span>
-                <span style={{ fontSize: 10, color: C.textSub, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1px 6px', textTransform: 'capitalize' }}>
-                  {hoveredNode.item.type}
-                </span>
-              </div>
-              <p style={{ fontSize: 11, color: C.textSub, lineHeight: 1.6 }}>{hoveredNode.item.description}</p>
-            </div>
-            {hoveredNode.isCompleted && (
-              <span style={{ fontSize: 10, color: C.doneText, border: `1px solid ${C.doneBorder}`, borderRadius: 4, padding: '2px 8px', whiteSpace: 'nowrap' }}>
-                ✓ Completed
-              </span>
-            )}
-          </div>
+          </svg>
         </div>
-      )}
-    </div>
+
+        {/* Hover tooltip */}
+        {hoveredNode?.item && (
+          <div className="rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm animate-in fade-in duration-700">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="flex-1">
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <p className="text-sm font-semibold text-foreground">{hoveredNode.item.title}</p>
+                  <Badge variant="outline" className="border-border/60 text-muted-foreground">
+                    M{hoveredNode.item.month} · W{hoveredNode.item.week}
+                  </Badge>
+                  <Badge variant="secondary" className="bg-secondary/50 text-foreground capitalize">
+                    {hoveredNode.item.type}
+                  </Badge>
+                </div>
+                <p className="text-xs leading-relaxed text-muted-foreground">{hoveredNode.item.description}</p>
+              </div>
+              {hoveredNode.isCompleted && (
+                <Badge className="bg-primary/20 text-primary border-primary/40">Completed</Badge>
+              )}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
