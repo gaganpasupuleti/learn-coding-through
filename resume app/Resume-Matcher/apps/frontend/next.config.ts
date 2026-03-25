@@ -1,9 +1,14 @@
 import type { NextConfig } from 'next';
+import path from 'path';
 
 const BACKEND_ORIGIN = process.env.BACKEND_ORIGIN || 'http://127.0.0.1:8000';
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  turbopack: {
+    // Prevent Next from scanning parent directories when multiple lockfiles exist.
+    root: path.resolve(__dirname),
+  },
   experimental: {
     turbopackUseSystemTlsCerts: true,
     proxyTimeout: 240_000,
