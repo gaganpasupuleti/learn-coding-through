@@ -21,7 +21,7 @@ interface TypingMetrics {
   correctChars: number
 }
 
-const TIMED_OPTIONS = [1, 3, 5] as const
+const TIMED_OPTIONS = [1, 3, 5, 0] as const
 const PAGE_OPTIONS = [1, 2, 3] as const
 
 const SENTENCE_PARAGRAPHS = [
@@ -80,7 +80,7 @@ function buildPrompt(
     return expandTextToTarget(CODE_SNIPPETS[codeLanguage], targetChars)
   }
 
-  const timedTargetChars = option * 500
+  const timedTargetChars = option === 0 ? 6000 : option * 500
   if (mode === 'sentence') {
     return expandTextToTarget(SENTENCE_PARAGRAPHS, timedTargetChars)
   }
@@ -114,6 +114,33 @@ function calculateTypingMetrics(sourceText: string, typedText: string, elapsedSe
     elapsedSeconds: safeElapsedSeconds,
     correctChars,
   }
+}
+
+function HighlightedPrompt({ source, typed }: { source: string; typed: string }) {
+  if (!source) {
+    return <p className="p-4 text-sm text-slate-400">Click Start Test to generate prompt text.</p>
+  }
+  return (
+    <pre className="p-4 text-sm md:text-base font-mono whitespace-pre-wrap max-h-[360px] overflow-auto leading-relaxed select-none">
+      {source.split('').map((char, i) => {
+        if (i < typed.length) {
+          return (
+            <span key={i} className={typed[i] === char ? 'text-green-600' : 'bg-red-100 text-red-600'}>
+              {char}
+            </span>
+          )
+        }
+        if (i === typed.length) {
+          return (
+            <span key={i} className="bg-blue-200 text-slate-900 rounded-sm">
+              {char}
+            </span>
+          )
+        }
+        return <span key={i} className="text-slate-400">{char}</span>
+      })}
+    </pre>
+  )
 }
 
 export function TypingTrainerPage() {
@@ -167,7 +194,7 @@ export function TypingTrainerPage() {
       await createTypingAttempt({
         mode,
         test_type: testType,
-        test_option: testType === 'timed' ? `${selectedOption}m` : `${selectedOption}p`,
+        test_option: testType === 'timed' ? (selectedOption === 0 ? 'unlimited' : `${selectedOption}m`) : `${selectedOption}p`,
         language: mode === 'code' ? codeLanguage : undefined,
         prompt_text: sourceText,
         typed_text: typedText,
@@ -206,7 +233,7 @@ export function TypingTrainerPage() {
 
     const intervalId = window.setInterval(() => {
       setElapsedSeconds((value) => value + 1)
-      if (testType === 'timed') {
+      if (testType === 'timed' && selectedOption !== 0) {
         setRemainingSeconds((value) => {
           if (value <= 1) {
             window.setTimeout(() => {
@@ -222,7 +249,7 @@ export function TypingTrainerPage() {
     return () => {
       window.clearInterval(intervalId)
     }
-  }, [finishAttempt, isRunning, testType])
+  }, [finishAttempt, isRunning, testType, selectedOption])
 
   const startAttempt = () => {
     const generatedPrompt = buildPrompt(mode, codeLanguage, testType, selectedOption)
@@ -278,14 +305,14 @@ export function TypingTrainerPage() {
               <button
                 type="button"
                 onClick={() => setMode('sentence')}
-                className={`px-3 py-1.5 text-sm rounded-md border ${mode === 'sentence' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-700 border-slate-200'}`}
+                className={`px-4 py-2 text-sm rounded-md border ${mode === 'sentence' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-700 border-slate-200'}`}
               >
                 Sentence
               </button>
               <button
                 type="button"
                 onClick={() => setMode('code')}
-                className={`px-3 py-1.5 text-sm rounded-md border ${mode === 'code' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-700 border-slate-200'}`}
+                className={`px-4 py-2 text-sm rounded-md border ${mode === 'code' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-700 border-slate-200'}`}
               >
                 Code
               </button>
@@ -298,14 +325,14 @@ export function TypingTrainerPage() {
               <button
                 type="button"
                 onClick={() => setTestType('timed')}
-                className={`px-3 py-1.5 text-sm rounded-md border ${testType === 'timed' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-700 border-slate-200'}`}
+                className={`px-4 py-2 text-sm rounded-md border ${testType === 'timed' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-700 border-slate-200'}`}
               >
                 Timed
               </button>
               <button
                 type="button"
                 onClick={() => setTestType('length')}
-                className={`px-3 py-1.5 text-sm rounded-md border ${testType === 'length' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-700 border-slate-200'}`}
+                className={`px-4 py-2 text-sm rounded-md border ${testType === 'length' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-700 border-slate-200'}`}
               >
                 Page
               </button>
@@ -320,9 +347,9 @@ export function TypingTrainerPage() {
                   key={option}
                   type="button"
                   onClick={() => testType === 'timed' ? setTimedOption(option) : setPageOption(option)}
-                  className={`px-3 py-1.5 text-sm rounded-md border ${selectedOption === option ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200'}`}
+                  className={`px-4 py-2 text-sm rounded-md border ${selectedOption === option ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200'}`}
                 >
-                  {testType === 'timed' ? `${option} min` : `${option} page`}
+                  {testType === 'timed' ? (option === 0 ? '∞' : `${option} min`) : `${option} page`}
                 </button>
               ))}
             </div>
@@ -365,7 +392,10 @@ export function TypingTrainerPage() {
 
           {testType === 'timed' && (
             <span className="inline-flex items-center gap-1.5 text-sm text-slate-600">
-              <Timer size={14} /> Remaining: {Math.max(remainingSeconds, 0)}s
+              <Timer size={14} />
+              {selectedOption === 0
+                ? `Elapsed: ${elapsedSeconds}s`
+                : `Remaining: ${Math.max(remainingSeconds, 0)}s`}
             </span>
           )}
         </div>
@@ -379,7 +409,7 @@ export function TypingTrainerPage() {
             </span>
             <span className="text-xs text-slate-500">{sourceText.length} chars</span>
           </div>
-          <pre className="p-4 text-xs md:text-sm text-slate-700 whitespace-pre-wrap max-h-[360px] overflow-auto leading-relaxed">{sourceText || 'Click Start Test to generate prompt text.'}</pre>
+          <HighlightedPrompt source={sourceText} typed={typedText} />
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
@@ -400,7 +430,7 @@ export function TypingTrainerPage() {
               }
             }}
             disabled={!isRunning}
-            className="w-full h-[360px] p-4 text-xs md:text-sm font-mono text-slate-700 border-0 focus:outline-none resize-none disabled:bg-slate-50"
+            className="w-full h-[360px] p-4 text-sm md:text-base font-mono text-slate-700 border-0 focus:outline-none resize-none disabled:bg-slate-50"
             placeholder={isRunning ? 'Start typing here...' : 'Start a test to begin typing'}
             spellCheck={false}
           />
