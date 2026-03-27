@@ -77,6 +77,16 @@ class JobApplicationStatus(str, Enum):
     HIRED = "hired"
 
 
+class TypingMode(str, Enum):
+    SENTENCE = "sentence"
+    CODE = "code"
+
+
+class TypingTestType(str, Enum):
+    TIMED = "timed"
+    LENGTH = "length"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -115,6 +125,7 @@ class User(Base):
         foreign_keys="AdminActivityLog.target_user_id",
         back_populates="target_user",
     )
+    typing_attempts = relationship("TypingAttempt", back_populates="user", cascade="all,delete-orphan")
 
 
 class Role(Base):
@@ -514,3 +525,28 @@ class ProjectStepCompletion(Base):
     passed: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
 
     user = relationship("User", back_populates="project_step_completions")
+
+
+class TypingAttempt(Base):
+    __tablename__ = "typing_attempts"
+    __table_args__ = (
+        Index("ix_typing_attempts_user_created", "user_id", "created_at"),
+        Index("ix_typing_attempts_mode_test", "mode", "test_type"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    mode: Mapped[TypingMode] = mapped_column(SqlEnum(TypingMode), nullable=False)
+    test_type: Mapped[TypingTestType] = mapped_column(SqlEnum(TypingTestType), nullable=False)
+    test_option: Mapped[str] = mapped_column(String(20), nullable=False)
+    language: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    prompt_text: Mapped[str] = mapped_column(Text, nullable=False)
+    typed_text: Mapped[str] = mapped_column(Text, nullable=False)
+    wpm: Mapped[float] = mapped_column(Numeric(6, 2), nullable=False)
+    raw_wpm: Mapped[float] = mapped_column(Numeric(6, 2), nullable=False)
+    accuracy: Mapped[float] = mapped_column(Numeric(5, 2), nullable=False)
+    error_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    elapsed_seconds: Mapped[int] = mapped_column(Integer, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("User", back_populates="typing_attempts")

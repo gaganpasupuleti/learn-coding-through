@@ -3,6 +3,7 @@ import { LandingPage } from '@/components/pages/LandingPage'
 import { ProjectsPage } from '@/components/pages/ProjectsPage'
 import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
 import { PracticePage } from '@/components/pages/PracticePage'
+import { TypingTrainerPage } from '@/components/pages/TypingTrainerPage'
 import { QuizPage } from '@/components/pages/QuizPage'
 import { CareerMapperPage } from '@/components/career-mapper'
 import { AdminPage } from '@/components/pages/AdminPage'
@@ -23,7 +24,7 @@ import {
   triggerQuizLockedError,
 } from '@/lib/demo-limits'
 
-export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'quiz' | 'roadmapper' | 'resume'
+export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'typing' | 'quiz' | 'roadmapper' | 'resume'
 
 type AuthState = AuthUser | 'public' | null
 
@@ -143,6 +144,8 @@ function App() {
         )}
 
         {studentPage === 'practice' && <PracticePage />}
+
+        {studentPage === 'typing' && <TypingTrainerPage />}
 
         {studentPage === 'quiz' && <QuizPage onBeforeSelect={handleBeforeSelectQuiz} />}
 

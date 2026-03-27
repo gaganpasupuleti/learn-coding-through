@@ -175,6 +175,37 @@ export interface DatabaseHealth {
   detail?: string
 }
 
+export type TypingMode = 'sentence' | 'code'
+export type TypingTestType = 'timed' | 'length'
+
+export interface TypingAttempt {
+  id: number
+  mode: TypingMode
+  test_type: TypingTestType
+  test_option: string
+  language: string | null
+  wpm: number
+  raw_wpm: number
+  accuracy: number
+  error_count: number
+  elapsed_seconds: number
+  created_at: string
+}
+
+export interface CreateTypingAttemptPayload {
+  mode: TypingMode
+  test_type: TypingTestType
+  test_option: string
+  language?: string
+  prompt_text: string
+  typed_text: string
+  wpm: number
+  raw_wpm: number
+  accuracy: number
+  error_count: number
+  elapsed_seconds: number
+}
+
 /**
  * Execute code on the backend
  */
@@ -262,11 +293,42 @@ export async function fetchDatabaseHealth(): Promise<DatabaseHealth> {
   return response.json() as Promise<DatabaseHealth>
 }
 
+export async function createTypingAttempt(
+  payload: CreateTypingAttemptPayload,
+): Promise<TypingAttempt> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/typing/attempts`, {
+    method: 'POST',
+    headers: getOptionalAuthHeaders(),
+    body: JSON.stringify(payload),
+  })
+
+  return parseOrThrow(response) as Promise<TypingAttempt>
+}
+
+export async function fetchTypingAttempts(limit = 20): Promise<TypingAttempt[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/typing/attempts?limit=${limit}`, {
+    headers: getOptionalAuthHeaders(),
+  })
+
+  return parseOrThrow(response) as Promise<TypingAttempt[]>
+}
+
 function buildAuthHeaders(token: string): HeadersInit {
   return {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
   }
+}
+
+function getOptionalAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('career-portal-token')
+  if (!token) {
+    return {
+      'Content-Type': 'application/json',
+    }
+  }
+
+  return buildAuthHeaders(token)
 }
 
 async function parseOrThrow(response: Response) {

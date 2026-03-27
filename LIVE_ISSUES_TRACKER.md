@@ -92,9 +92,20 @@ Last updated: 2026-03-25
   - Add timed difficulty levels and weekly improvement goals.
   - Add leaderboard or percentile comparison for motivation (optional first release).
 
+### 10) Learning library module missing (books, PDFs, articles)
+- Problem: There is no centralized place for students to view and read learning resources shared by admins.
+- Impact: Study materials are fragmented and hard to discover during learning flow.
+- Required outcome: In-app content library for books, PDFs, and articles with filtering and progress-friendly UX.
+- Next actions:
+  - Add content types: book, PDF, article with title, author/source, topic, difficulty, and URL/file reference.
+  - Build admin upload/publish workflow for adding and updating resources.
+  - Add student library UI with search, filters, and open/read actions.
+  - Track per-user resource interactions (opened/read/bookmarked).
+  - Add role/category tagging to map resources to career paths and syllabus weeks.
+
 ## P2 - Medium (Strategic improvements)
 
-### 10) Real-time syllabus and role tracking for live job outcomes
+### 11) Real-time syllabus and role tracking for live job outcomes
 - Problem: Syllabus/roles are not fully aligned to real-time job tracking outcomes.
 - Impact: Learning path relevance can drift from hiring demand.
 - Required outcome: Live-updated syllabus-role-job mapping.
@@ -103,7 +114,7 @@ Last updated: 2026-03-25
   - Add job-market signal inputs and periodic refresh process.
   - Show role readiness and gap trend over time.
 
-### 11) Supabase DB issues review and migration to Railway strategy
+### 12) Supabase DB issues review and migration to Railway strategy
 - Problem: Current DB strategy is mixed/unclear across environments.
 - Impact: Data consistency and deployment reliability risks.
 - Required outcome: Clear migration plan and single production DB strategy.
@@ -121,21 +132,27 @@ Last updated: 2026-03-25
 - Resolve project lock parity for real students.
 
 ### Sprint B (Core product completeness)
+- Learning library module (books, PDFs, articles).
+- Typing test module (email + code) with score tracking.
 - Resume maker MVP.
 - Job portal full workflow.
 - Career mapper UI cleanup.
-- Typing test module (email + code) with score tracking.
 
 ## Sprint B Execution (Active)
 
 ### Goal
 - Ship complete student-facing core modules needed for placements and measurable practice progress.
 
+### Sprint 1 Focus (Immediate)
+1. Learning library module (books, PDFs, articles).
+2. Typing tester module (email + code) with scoring and history.
+
 ### Build Order (Do in sequence)
-1. Typing test MVP (email + code) with scoring and history.
-2. Resume maker MVP end-to-end (create, edit, save, export).
-3. Job portal workflow completion (student apply + admin review pipeline).
-4. Career mapper UI polish and consistency pass.
+1. Learning library module for books, PDFs, and articles.
+2. Typing test MVP (email + code) with scoring and history.
+3. Resume maker MVP end-to-end (create, edit, save, export).
+4. Job portal workflow completion (student apply + admin review pipeline).
+5. Career mapper UI polish and consistency pass.
 
 ### Milestone B1 - Typing Test MVP
 - Scope:
@@ -178,6 +195,14 @@ Last updated: 2026-03-25
   - Align components with common app design language.
 - Exit criteria:
   - UX review passes on desktop/mobile with no major readability issues.
+
+### Milestone B5 - Learning Library Module
+- Scope:
+  - Student-facing library for books, PDFs, and articles.
+  - Admin workflow to add/publish/update resources.
+  - Search and filter by topic, role, type, and difficulty.
+- Exit criteria:
+  - Students can reliably discover and open shared learning resources from within the app.
 
 ### Sprint B Definition of Done
 - Typing test, resume maker, and job flow are usable in production paths.

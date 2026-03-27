@@ -51,6 +51,29 @@ Optional flags:
 python scripts/seed_auth_users.py --student-count 10 --student-password "Student@123" --student-prefix student
 ```
 
+## Optional: Auto-start Resume Module Backend
+
+If you want `backend/app/main.py` to start the Resume-Matcher backend automatically,
+set the following in `backend/.env`:
+
+```
+AUTO_START_RESUME_BACKEND=true
+RESUME_BACKEND_HOST=127.0.0.1
+RESUME_BACKEND_PORT=8001
+```
+
+Optional override:
+
+```
+RESUME_BACKEND_PYTHON=C:/absolute/path/to/python.exe
+```
+
+Notes:
+
+- This auto-start only launches the Resume-Matcher backend API, not the Resume-Matcher frontend UI.
+- If `RESUME_BACKEND_HOST:RESUME_BACKEND_PORT` is already in use, auto-start is skipped.
+- The expected Resume-Matcher backend directory is `resume app/Resume-Matcher/apps/backend` relative to repo root.
+
 ## Migrations (Alembic)
 
 Install dependencies and run migrations from the `backend` directory:

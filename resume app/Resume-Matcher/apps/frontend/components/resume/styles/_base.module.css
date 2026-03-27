@@ -295,8 +295,8 @@
   }
 
   /* Keep section header together with its first item */
-  .resume-section-title + .resume-items > *:first-child,
-  .resume-section-title-sm + .resume-items > *:first-child,
+  .resume-section-title + .resume-items > :first-child,
+  .resume-section-title-sm + .resume-items > :first-child,
   .resume-section-title + p,
   .resume-section-title-sm + p,
   .resume-section-title + ul,

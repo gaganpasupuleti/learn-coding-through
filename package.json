@@ -5,6 +5,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
+        "dev:all": "powershell -ExecutionPolicy Bypass -File ./scripts/dev-all.ps1",
+        "dev:all:stop": "powershell -ExecutionPolicy Bypass -File ./scripts/dev-all-stop.ps1",
         "dev:auto": "node scripts/dev-port.js",
         "kill": "fuser -k 5000/tcp",
         "build": "tsc -b --noCheck && vite build",
