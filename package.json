@@ -12,6 +12,7 @@
         "build": "tsc -b --noCheck && vite build",
         "lint": "eslint .",
         "qa:smoke": "node scripts/e2e-smoke.mjs",
+        "health:check": "node scripts/health-check.mjs",
         "optimize": "vite optimize",
         "preview": "vite preview"
     },

@@ -7,6 +7,7 @@ import {
   type TypingMode,
   type TypingTestType,
 } from '@/lib/api'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { toast } from 'sonner'
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
@@ -116,6 +117,20 @@ function calculateTypingMetrics(sourceText: string, typedText: string, elapsedSe
   }
 }
 
+function getUpcomingPromptSegment(sourceText: string, typedLength: number, windowSize = 220): string {
+  if (!sourceText) return ''
+
+  const start = Math.max(0, typedLength)
+  const end = Math.min(sourceText.length, start + windowSize)
+  const visible = sourceText.slice(start, end)
+
+  if (!visible) {
+    return 'Completed. Great work!'
+  }
+
+  return end < sourceText.length ? `${visible}...` : visible
+}
+
 function HighlightedPrompt({ source, typed }: { source: string; typed: string }) {
   if (!source) {
     return <p className="p-4 text-sm text-slate-400">Click Start Test to generate prompt text.</p>
@@ -144,6 +159,7 @@ function HighlightedPrompt({ source, typed }: { source: string; typed: string })
 }
 
 export function TypingTrainerPage() {
+  const isMobile = useIsMobile()
   const [mode, setMode] = useState<TypingMode>('sentence')
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguage>('python')
   const [testType, setTestType] = useState<TypingTestType>('timed')
@@ -158,6 +174,7 @@ export function TypingTrainerPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [history, setHistory] = useState<TypingAttempt[]>([])
   const [lastResult, setLastResult] = useState<TypingMetrics | null>(null)
+  const [isTypingFocused, setIsTypingFocused] = useState(false)
 
   const typingAreaRef = useRef<HTMLTextAreaElement | null>(null)
   const isFinishingRef = useRef(false)
@@ -417,6 +434,16 @@ export function TypingTrainerPage() {
             <span className="text-sm font-semibold text-slate-800 inline-flex items-center gap-2"><Keyboard size={15} /> Your Typing</span>
             <span className="text-xs text-slate-500">Progress: {completionPct}%</span>
           </div>
+
+          {isMobile && sourceText.length > 0 && isRunning && (
+            <div className="px-4 py-3 border-b border-blue-100 bg-blue-50">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-700">Next To Type</p>
+              <pre className="mt-1 whitespace-pre-wrap font-mono text-[13px] leading-5 text-blue-900 max-h-24 overflow-auto">
+                {getUpcomingPromptSegment(sourceText, typedText.length)}
+              </pre>
+            </div>
+          )}
+
           <textarea
             ref={typingAreaRef}
             value={typedText}
@@ -430,10 +457,18 @@ export function TypingTrainerPage() {
               }
             }}
             disabled={!isRunning}
-            className="w-full h-[360px] p-4 text-sm md:text-base font-mono text-slate-700 border-0 focus:outline-none resize-none disabled:bg-slate-50"
+            onFocus={() => setIsTypingFocused(true)}
+            onBlur={() => setIsTypingFocused(false)}
+            className={`w-full p-4 font-mono text-slate-700 border-0 focus:outline-none resize-none disabled:bg-slate-50 ${isMobile ? 'h-[34dvh] min-h-[200px] text-[15px] leading-6' : 'h-[360px] text-sm md:text-base'}`}
             placeholder={isRunning ? 'Start typing here...' : 'Start a test to begin typing'}
             spellCheck={false}
           />
+
+          {isMobile && isTypingFocused && (
+            <div className="px-4 py-2 border-t border-slate-100 bg-slate-50 text-[11px] text-slate-500">
+              Tip: keep this field focused and follow the "Next To Type" strip above.
+            </div>
+          )}
         </div>
       </div>
 

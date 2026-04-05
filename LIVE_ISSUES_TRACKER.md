@@ -69,6 +69,17 @@ Last updated: 2026-04-05
   - Add startup diagnostics banner/log for active auth mode.
   - Add E2E tests for admin login, student login, signup, invalid credentials.
 
+### 13) [P0] Assessment integrity controls missing (no screenshot/screen-recording safeguards)
+- Problem: Quiz/typing assessments currently do not enforce integrity controls against easy answer capture and sharing.
+- Impact: Students can capture and redistribute answers; scoring reliability drops for evaluative use cases.
+- Required outcome: Add practical anti-cheat controls and explicit policy for assessment mode.
+- Next actions:
+  - Add assessment mode flags that disable copy, context menu, and text selection where possible.
+  - Add blur/visibility-change detection to auto-pause or flag attempts when app loses focus.
+  - Add mobile guidance + deterrence UI for screenshots/screen recording (best effort; platform limits apply).
+  - Add server-side attempt flags (focus loss count, suspicious timing, repeated perfect attempts) for reviewer audit.
+  - Split "practice mode" and "assessment mode" behavior so anti-cheat controls are opt-in and auditable.
+
 ## P1 - High (Major product gaps)
 
 ### 4) [PENDING] Main student login should have full feature parity (not demo-like restrictions)
@@ -195,6 +206,7 @@ Last updated: 2026-04-05
   - Metrics: WPM, accuracy, errors, elapsed time.
   - Score history per user and trend chart.
   - Test integrity rule: once a test starts, lock all test configuration fields (timer, language, mode, difficulty, prompt set) until submission or restart.
+  - Add no-screenshot/no-recording deterrence layer in assessment mode (with clear user disclosure and limitation notes).
   - Email writing practice is mandatory, not optional: include professional email composition scenarios as a first-class typing mode.
 - Backend deliverables:
   - Typing attempts table/model.

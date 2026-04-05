@@ -11,6 +11,11 @@ import { toast } from 'sonner'
 type Language = 'python' | 'sql' | 'java'
 type Difficulty = 'easy' | 'medium' | 'hard'
 
+interface PracticeTopic {
+  label: string
+  exerciseKey: string
+}
+
 interface ParsedSqlTable {
   headers: string[]
   rows: string[][]
@@ -251,11 +256,25 @@ export function PracticePage() {
     java: 'Java'
   }
 
-  const languageFocusMap: Record<Language, string[]> = {
-    python: ['Loops & conditions', 'Functions', 'List operations'],
-    sql: ['SELECT + WHERE', 'JOINs', 'Table updates'],
-    java: ['Classes & methods', 'Loops', 'Input/output'],
+  const languageFocusMap: Record<Language, PracticeTopic[]> = {
+    python: [
+      { label: 'Loops & conditions', exerciseKey: 'loops' },
+      { label: 'Functions', exerciseKey: 'functions' },
+      { label: 'List operations', exerciseKey: 'lists' },
+    ],
+    sql: [
+      { label: 'SELECT + WHERE', exerciseKey: 'basic' },
+      { label: 'JOINs', exerciseKey: 'join' },
+      { label: 'Table updates', exerciseKey: 'update' },
+    ],
+    java: [
+      { label: 'Classes & methods', exerciseKey: 'methods' },
+      { label: 'Loops', exerciseKey: 'loops' },
+      { label: 'Input/output', exerciseKey: 'basic' },
+    ],
   }
+
+  const [activeTopic, setActiveTopic] = useState(languageFocusMap.python[0].label)
 
   const availableExercises = getAllTestsForLanguage(selectedLanguage)
 
@@ -300,10 +319,21 @@ export function PracticePage() {
               <div>
                 <h2 className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Common practice topics</h2>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {languageFocusMap[selectedLanguage].map((focus) => (
-                    <span key={focus} className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs text-slate-600 font-medium">
-                      {focus}
-                    </span>
+                  {languageFocusMap[selectedLanguage].map((topic) => (
+                    <button
+                      key={topic.label}
+                      type="button"
+                      onClick={() => {
+                        setActiveTopic(topic.label)
+                        handleLoadExercise(topic.exerciseKey)
+                      }}
+                      disabled={!availableExercises[topic.exerciseKey]}
+                      className={`rounded-full border px-3 py-1 text-xs font-medium transition-all duration-150 ${activeTopic === topic.label
+                        ? 'border-blue-600 bg-blue-50 text-blue-700'
+                        : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'} disabled:cursor-not-allowed disabled:opacity-50`}
+                    >
+                      {topic.label}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -343,7 +373,9 @@ export function PracticePage() {
           <Tabs
             value={selectedLanguage}
             onValueChange={(value) => {
-              setSelectedLanguage(value as Language)
+              const nextLanguage = value as Language
+              setSelectedLanguage(nextLanguage)
+              setActiveTopic(languageFocusMap[nextLanguage][0].label)
               setOutput('')
               setExecutionTime(null)
             }}

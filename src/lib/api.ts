@@ -8,8 +8,6 @@ type RuntimeConfig = {
   VITE_API_PROXY_TARGET?: string
 }
 
-const CANONICAL_RAILWAY_BACKEND_BASE = 'https://learn-coding-through-production.up.railway.app'
-
 const runtimeConfig: RuntimeConfig =
   typeof window !== 'undefined' && (window as Window & { __RUNTIME_CONFIG__?: RuntimeConfig }).__RUNTIME_CONFIG__
     ? (window as Window & { __RUNTIME_CONFIG__?: RuntimeConfig }).__RUNTIME_CONFIG__!
@@ -33,9 +31,8 @@ function normalizeConfiguredApiBase(raw: string): string {
   }
 
   // Railway private network domains are not reachable from the browser.
-  // Map them to the canonical public backend domain so requests succeed.
   if (normalized.endsWith('.railway.internal')) {
-    return CANONICAL_RAILWAY_BACKEND_BASE
+    return ''
   }
 
   if (/^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(normalized)) {
@@ -50,38 +47,16 @@ function normalizeConfiguredApiBase(raw: string): string {
   return ''
 }
 
-function inferRailwayBackendUrl(): string {
-  if (typeof window === 'undefined') return ''
-
-  const { protocol, hostname } = window.location
-  if (!hostname.includes('railway.app')) return ''
-
-  // The backend's public domain is stable — always use it when running on Railway.
-  if (hostname.endsWith('.up.railway.app') || hostname.endsWith('.railway.app')) {
-    return CANONICAL_RAILWAY_BACKEND_BASE
-  }
-
-  return ''
-}
-
 function resolveApiBaseUrl(raw: string): string {
   const normalized = (raw || '').replace(/\/$/, '')
-  if (!normalized || typeof window === 'undefined') {
-    return normalized || inferRailwayBackendUrl()
-  }
+  if (!normalized || typeof window === 'undefined') return normalized
 
   try {
     const configured = new URL(normalized)
-    const current = window.location.host
 
     // Browser clients cannot reach Railway private network domains.
     if (configured.hostname.endsWith('.railway.internal') && window.location.hostname.includes('railway.app')) {
-      return inferRailwayBackendUrl() || normalized
-    }
-
-    // In production, same-origin API base on the frontend domain causes 405 for POST.
-    if (configured.host === current && window.location.hostname.includes('railway.app')) {
-      return inferRailwayBackendUrl() || normalized
+      return ''
     }
   } catch {
     // Keep existing value if URL parsing fails.
@@ -105,18 +80,15 @@ async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<R
     candidateUrls.push(url)
   }
 
-  addCandidate(`${API_BASE_URL}${path}`)
-
-  const inferredRailway = inferRailwayBackendUrl()
-  if (inferredRailway) {
-    addCandidate(`${inferredRailway}${path}`)
+  if (API_BASE_URL) {
+    addCandidate(`${API_BASE_URL}${path}`)
   }
 
   if (typeof window !== 'undefined') {
     const host = window.location.hostname
     const isLocalHost = host === 'localhost' || host === '127.0.0.1'
-    if (!isLocalHost) {
-      addCandidate(`${CANONICAL_RAILWAY_BACKEND_BASE}${path}`)
+    if (!API_BASE_URL || isLocalHost) {
+      addCandidate(path)
     }
   }
 
