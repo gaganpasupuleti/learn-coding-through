@@ -63,6 +63,28 @@ function resolveApiBaseUrl(raw: string): string {
 
 const API_BASE_URL = resolveApiBaseUrl(RAW_API_BASE_URL)
 
+function isNetworkFetchError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false
+  const message = error.message.toLowerCase()
+  return message.includes('failed to fetch') || message.includes('networkerror')
+}
+
+async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<Response> {
+  const primaryUrl = `${API_BASE_URL}${path}`
+  try {
+    return await fetch(primaryUrl, init)
+  } catch (error) {
+    const canRetryRelative =
+      !!API_BASE_URL && typeof window !== 'undefined' && isNetworkFetchError(error)
+
+    if (!canRetryRelative) {
+      throw error
+    }
+
+    return fetch(path, init)
+  }
+}
+
 import { DemoLimits } from './demo-limits';
 
 export interface ExecuteRequest {
@@ -288,7 +310,7 @@ export async function executeCode(
     const authHeaders: Record<string, string> = token
       ? { Authorization: `Bearer ${token}` }
       : {}
-    const response = await fetch(`${API_BASE_URL}/api/v1/execute`, {
+    const response = await fetchWithApiFallback('/api/v1/execute', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -336,7 +358,7 @@ export async function executeCode(
 }
 
 export async function fetchSqlPracticeSchema(): Promise<SqlPracticeSchemaResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/sql/schema`)
+  const response = await fetchWithApiFallback('/api/v1/sql/schema')
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}))
     throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
