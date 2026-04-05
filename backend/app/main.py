@@ -118,9 +118,15 @@ limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
 
+default_railway_origin_regex = r"^https://[a-z0-9-]+(?:\.up)?\.railway\.app$"
+cors_origin_regex = settings.cors_origin_regex
+if not cors_origin_regex and settings.environment == "production":
+    cors_origin_regex = default_railway_origin_regex
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
+    allow_origin_regex=cors_origin_regex,
     allow_credentials="*" not in settings.cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],

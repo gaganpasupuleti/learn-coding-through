@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["http://localhost:5000", "http://localhost:5173"]
     )
+    cors_origin_regex: str | None = None
 
     @field_validator("database_url", mode="before")
     @classmethod
