@@ -9,6 +9,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 
 revision = "20260327_08"
@@ -23,6 +24,8 @@ def upgrade() -> None:
 
     bind = op.get_bind()
     if bind.dialect.name == "postgresql":
+        typing_mode_enum = postgresql.ENUM("SENTENCE", "CODE", name="typingmode", create_type=False)
+        typing_test_type_enum = postgresql.ENUM("TIMED", "LENGTH", name="typingtesttype", create_type=False)
         typing_mode_enum.create(bind, checkfirst=True)
         typing_test_type_enum.create(bind, checkfirst=True)
 

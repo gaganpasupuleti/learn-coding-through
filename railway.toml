@@ -14,3 +14,4 @@ restartPolicyMaxRetries = 10
 # In production also set ENVIRONMENT=production to enable safety checks.
 [variables]
 CORS_ORIGINS = "*"
+

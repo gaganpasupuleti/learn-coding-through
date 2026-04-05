@@ -10,7 +10,7 @@ interface HandoffUser {
 }
 
 interface HandoffPayload {
-  token: string;
+  token?: string;
   user: HandoffUser;
   returnUrl: string;
   issuedAt: number;
@@ -42,7 +42,9 @@ function readHandoffPayload(): HandoffPayload | null {
 }
 
 function applyHandoff(payload: HandoffPayload): void {
-  localStorage.setItem('career-portal-token', payload.token);
+  if (payload.token) {
+    localStorage.setItem('career-portal-token', payload.token);
+  }
   localStorage.setItem('career-portal-user', JSON.stringify(payload.user));
   localStorage.setItem(RETURN_URL_KEY, payload.returnUrl);
 }
@@ -58,7 +60,7 @@ export function CodeQuestHandoff() {
 
   useEffect(() => {
     const payload = readHandoffPayload();
-    if (payload?.token) {
+    if (payload) {
       applyHandoff(payload);
       setReturnUrl(payload.returnUrl || null);
       setUserName(payload.user?.full_name || 'CodeQuest user');

@@ -8,6 +8,8 @@ import re
 import shutil
 from typing import Dict, Any
 
+from .common import build_result, run_guarded_subprocess
+
 
 def verify_java_runtime_setup() -> None:
     """Validate Java compiler/runtime availability with actionable errors."""
@@ -48,12 +50,14 @@ def execute_java(code: str, timeout: int = 5) -> Dict[str, Any]:
     # Extract class name from code
     class_match = re.search(r'public\s+class\s+(\w+)', code)
     if not class_match:
-        return {
-            "success": False,
-            "output": "",
-            "error": "No public class found in Java code",
-            "execution_time": (time.time() - start_time) * 1000
-        }
+        return build_result(
+            success=False,
+            output="",
+            error="No public class found in Java code",
+            start_time=start_time,
+            language="java",
+            error_code="validation_error",
+        )
     
     class_name = class_match.group(1)
     
@@ -66,96 +70,107 @@ def execute_java(code: str, timeout: int = 5) -> Dict[str, Any]:
             with open(java_file, 'w') as f:
                 f.write(code)
         except Exception as e:
-            return {
-                "success": False,
-                "output": "",
-                "error": f"Failed to write Java file: {str(e)}",
-                "execution_time": (time.time() - start_time) * 1000
-            }
+            return build_result(
+                success=False,
+                output="",
+                error=f"Failed to write Java file: {str(e)}",
+                start_time=start_time,
+                language="java",
+                error_code="executor_error",
+            )
         
         # Compile Java code
         try:
-            compile_result = subprocess.run(
-                ["javac", java_file],
-                capture_output=True,
-                text=True,
+            compile_result = run_guarded_subprocess(
+                ["javac", "-J-Xms32m", "-J-Xmx128m", java_file],
                 timeout=timeout,
-                cwd=temp_dir
+                cwd=temp_dir,
+                max_memory_mb=384,
             )
             
             if compile_result.returncode != 0:
-                return {
-                    "success": False,
-                    "output": "",
-                    "error": f"Compilation error:\n{compile_result.stderr}",
-                    "execution_time": (time.time() - start_time) * 1000
-                }
+                return build_result(
+                    success=False,
+                    output="",
+                    error=f"Compilation error:\n{compile_result.stderr}",
+                    start_time=start_time,
+                    language="java",
+                    error_code="compile_error",
+                )
         except subprocess.TimeoutExpired:
-            return {
-                "success": False,
-                "output": "",
-                "error": f"Compilation timeout: exceeded {timeout} seconds",
-                "execution_time": timeout * 1000
-            }
+            return build_result(
+                success=False,
+                output="",
+                error=f"Compilation timeout: exceeded {timeout} seconds",
+                start_time=start_time,
+                language="java",
+                error_code="timeout",
+                timed_out=True,
+            )
         except FileNotFoundError:
-            return {
-                "success": False,
-                "output": "",
-                "error": "Java compiler not found. Install JDK and add 'javac' to PATH.",
-                "execution_time": (time.time() - start_time) * 1000
-            }
+            return build_result(
+                success=False,
+                output="",
+                error="Java compiler not found. Install JDK and add 'javac' to PATH.",
+                start_time=start_time,
+                language="java",
+                error_code="runtime_unavailable",
+            )
         except Exception as e:
-            return {
-                "success": False,
-                "output": "",
-                "error": f"Compilation failed: {str(e)}",
-                "execution_time": (time.time() - start_time) * 1000
-            }
+            return build_result(
+                success=False,
+                output="",
+                error=f"Compilation failed: {str(e)}",
+                start_time=start_time,
+                language="java",
+                error_code="executor_error",
+            )
         
         # Execute Java code
         try:
-            exec_result = subprocess.run(
-                ["java", class_name],
-                capture_output=True,
-                text=True,
+            exec_result = run_guarded_subprocess(
+                ["java", "-Xms32m", "-Xmx128m", class_name],
                 timeout=timeout,
-                cwd=temp_dir
+                cwd=temp_dir,
+                max_memory_mb=384,
             )
-            
-            execution_time = (time.time() - start_time) * 1000  # Convert to ms
             
             output = exec_result.stdout.strip()
             error = exec_result.stderr.strip() if exec_result.returncode != 0 else None
-            
-            # Limit output length
-            max_length = 10000
-            if output and len(output) > max_length:
-                output = output[:max_length] + "\n...output truncated"
-            
-            return {
-                "success": exec_result.returncode == 0,
-                "output": output or "Java executed successfully",
-                "error": error,
-                "execution_time": execution_time
-            }
+
+            return build_result(
+                success=exec_result.returncode == 0,
+                output=output or "Java executed successfully",
+                error=error,
+                start_time=start_time,
+                language="java",
+                error_code=None if exec_result.returncode == 0 else "runtime_error",
+            )
         except subprocess.TimeoutExpired:
-            return {
-                "success": False,
-                "output": "",
-                "error": f"Execution timeout: exceeded {timeout} seconds",
-                "execution_time": timeout * 1000
-            }
+            return build_result(
+                success=False,
+                output="",
+                error=f"Execution timeout: exceeded {timeout} seconds",
+                start_time=start_time,
+                language="java",
+                error_code="timeout",
+                timed_out=True,
+            )
         except FileNotFoundError:
-            return {
-                "success": False,
-                "output": "",
-                "error": "Java runtime not found. Install JDK and add 'java' to PATH.",
-                "execution_time": (time.time() - start_time) * 1000
-            }
+            return build_result(
+                success=False,
+                output="",
+                error="Java runtime not found. Install JDK and add 'java' to PATH.",
+                start_time=start_time,
+                language="java",
+                error_code="runtime_unavailable",
+            )
         except Exception as e:
-            return {
-                "success": False,
-                "output": "",
-                "error": f"Execution failed: {str(e)}",
-                "execution_time": (time.time() - start_time) * 1000
-            }
+            return build_result(
+                success=False,
+                output="",
+                error=f"Execution failed: {str(e)}",
+                start_time=start_time,
+                language="java",
+                error_code="executor_error",
+            )

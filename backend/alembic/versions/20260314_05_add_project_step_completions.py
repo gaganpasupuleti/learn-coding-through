@@ -14,18 +14,26 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.create_table(
-        "project_step_completions",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("user_id", sa.Integer(), nullable=False),
-        sa.Column("project_slug", sa.String(120), nullable=False),
-        sa.Column("step_id", sa.Integer(), nullable=False),
-        sa.Column("completed_at", sa.DateTime(), nullable=False),
-        sa.ForeignKeyConstraint(["user_id"], ["users.id"]),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("user_id", "project_slug", "step_id", name="uq_psc_user_project_step"),
-    )
-    op.create_index("ix_psc_user_project", "project_step_completions", ["user_id", "project_slug"])
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    tables = set(inspector.get_table_names())
+
+    if "project_step_completions" not in tables:
+        op.create_table(
+            "project_step_completions",
+            sa.Column("id", sa.Integer(), nullable=False),
+            sa.Column("user_id", sa.Integer(), nullable=False),
+            sa.Column("project_slug", sa.String(120), nullable=False),
+            sa.Column("step_id", sa.Integer(), nullable=False),
+            sa.Column("completed_at", sa.DateTime(), nullable=False),
+            sa.ForeignKeyConstraint(["user_id"], ["users.id"]),
+            sa.PrimaryKeyConstraint("id"),
+            sa.UniqueConstraint("user_id", "project_slug", "step_id", name="uq_psc_user_project_step"),
+        )
+
+    indexes = {idx["name"] for idx in inspector.get_indexes("project_step_completions")}
+    if "ix_psc_user_project" not in indexes:
+        op.create_index("ix_psc_user_project", "project_step_completions", ["user_id", "project_slug"])
 
 
 def downgrade() -> None:

@@ -1,7 +1,7 @@
 import { getAuthToken, type AuthUser } from '@/lib/auth'
 
 interface ResumeHandoffPayload {
-  token: string
+  token?: string
   user: AuthUser
   returnUrl: string
   issuedAt: number
@@ -22,12 +22,9 @@ function resolveResumeAppUrl(): string {
 
 export function buildResumeHandoffUrl(user: AuthUser): string {
   const token = getAuthToken()
-  if (!token) {
-    throw new Error('No active auth token. Please log in again.')
-  }
 
   const payload: ResumeHandoffPayload = {
-    token,
+    ...(token ? { token } : {}),
     user,
     returnUrl: window.location.origin,
     issuedAt: Date.now(),

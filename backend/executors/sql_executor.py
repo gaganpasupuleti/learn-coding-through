@@ -4,6 +4,8 @@ import sqlite3
 import time
 from typing import Dict, Any
 
+from .common import build_result
+
 
 PRACTICE_SCHEMA = {
     "tables": [
@@ -229,6 +231,7 @@ def execute_sql(code: str, timeout: int = 5) -> Dict[str, Any]:
         )
         statements = [s.strip() for s in sql_without_line_comments.split(';') if s.strip()]
         output_lines = []
+        statement_errors = []
         
         for statement in statements:
             try:
@@ -279,29 +282,28 @@ def execute_sql(code: str, timeout: int = 5) -> Dict[str, Any]:
                 
                 conn.commit()
             except sqlite3.Error as e:
-                output_lines.append(f"Error: {str(e)}")
+                message = str(e)
+                output_lines.append(f"Error: {message}")
+                statement_errors.append(message)
         
         conn.close()
         
-        execution_time = (time.time() - start_time) * 1000  # Convert to ms
-        
         output = "\n".join(output_lines)
-        
-        # Limit output length
-        max_length = 10000
-        if output and len(output) > max_length:
-            output = output[:max_length] + "\n...output truncated"
-        
-        return {
-            "success": True,
-            "output": output or "SQL executed successfully",
-            "error": None,
-            "execution_time": execution_time
-        }
+
+        return build_result(
+            success=len(statement_errors) == 0,
+            output=output or "SQL executed successfully",
+            error="; ".join(statement_errors) if statement_errors else None,
+            start_time=start_time,
+            language="sql",
+            error_code="sql_error" if statement_errors else None,
+        )
     except Exception as e:
-        return {
-            "success": False,
-            "output": "",
-            "error": str(e),
-            "execution_time": (time.time() - start_time) * 1000
-        }
+        return build_result(
+            success=False,
+            output="",
+            error=str(e),
+            start_time=start_time,
+            language="sql",
+            error_code="executor_error",
+        )

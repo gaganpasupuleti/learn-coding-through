@@ -94,8 +94,14 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    # UUID from Supabase Auth — set for users who log in via Supabase.
-    supabase_uid: Mapped[str | None] = mapped_column(String(36), unique=True, nullable=True, index=True)
+    # Optional external auth provider user id (provider-neutral field).
+    external_auth_uid: Mapped[str | None] = mapped_column(
+        String(64),
+        unique=True,
+        nullable=True,
+        index=True,
+        deferred=True,
+    )
     role: Mapped[UserRole] = mapped_column(SqlEnum(UserRole), default=UserRole.STUDENT, nullable=False)
     selected_role_id: Mapped[int | None] = mapped_column(ForeignKey("roles.id"), nullable=True)
     xp_points: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

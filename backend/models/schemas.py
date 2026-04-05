@@ -9,6 +9,7 @@ class ExecuteRequest(BaseModel):
     
     code: str = Field(..., description="Code to execute")
     language: str = Field(..., description="Programming language (javascript, python, java, sql)")
+    timeout_seconds: int = Field(5, ge=1, le=15, description="Execution timeout in seconds (1-15)")
     
     @field_validator("language")
     @classmethod
@@ -35,3 +36,7 @@ class ExecuteResponse(BaseModel):
     output: str = Field(..., description="Execution output")
     error: Optional[str] = Field(None, description="Error message if execution failed")
     execution_time: float = Field(..., description="Execution time in milliseconds")
+    language: Optional[str] = Field(None, description="Language executed")
+    error_code: Optional[str] = Field(None, description="Stable error category code")
+    timed_out: bool = Field(False, description="Whether execution hit timeout")
+    truncated: bool = Field(False, description="Whether output was truncated")

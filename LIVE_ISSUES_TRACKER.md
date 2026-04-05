@@ -1,10 +1,42 @@
 # Live Product Issues Tracker
 
-Last updated: 2026-03-25
+Last updated: 2026-04-05
+
+## Current Status Snapshot (2026-04-05)
+
+### P0 #3 Authentication and environment drift
+- Status: PARTIAL
+- Completed now:
+  - Local runtime mapping fixed so both modules run together:
+    - Main UI `:5000` -> Main backend `:8000`
+    - Resume UI `:3000` -> Resume backend `:8001`
+  - Resume handoff from main UI no longer hard-fails in demo/no-token flow.
+- Still pending:
+  - Define one production auth source of truth (no mixed modes).
+  - Add explicit env validation per environment (dev/stage/prod).
+  - Add E2E auth matrix (admin/student/signup/invalid credentials).
+
+### P1 #7 Resume maker not built
+- Status: PARTIAL
+- Completed now:
+  - Resume module is reachable from main navigation in local runtime.
+  - Resume backend + LLM health path verified as healthy via `/api/v1/health`.
+- Still pending:
+  - Full MVP completion checklist (template save/load + export hardening + role-fit scoring validation).
+  - Production-grade route/entrypoint hardening and smoke tests.
+
+### P2 #12 Supabase issues review and Railway migration strategy
+- Status: PARTIAL
+- Completed now:
+  - Local development decoupled from broken Supabase dependency path.
+  - Local stack stabilized for concurrent main + resume workflows.
+- Still pending:
+  - Formal migration playbook (backup, transform, verify, rollback).
+  - Production environment cutover plan and post-migration verification suite.
 
 ## P0 - Critical (Blocks reliable production use)
 
-### 1) Sandbox is unstable / unreliable
+### 1) [PENDING] Sandbox is unstable / unreliable
 - Problem: Current sandbox behavior is inconsistent and not production-safe.
 - Impact: Core learning workflows break, trust drops.
 - Required outcome: Stable execution pipeline with clear language boundaries and isolation.
@@ -14,7 +46,7 @@ Last updated: 2026-03-25
   - Add health checks and smoke tests for each language runtime.
   - Define rollback/fallback path when execution fails.
 
-### 2) SQL sandbox approach needs redesign
+### 2) [PENDING] SQL sandbox approach needs redesign
 - Problem: Existing SQL practice execution path is fragile and hard to scale safely.
 - Impact: SQL learning module can fail or be unsafe.
 - Required outcome: New SQL sandbox architecture with strict isolation and repeatable state.
@@ -24,7 +56,7 @@ Last updated: 2026-03-25
   - Version and seed SQL practice schema separately from app DB.
   - Add deterministic validator outputs for SQL tasks.
 
-### 3) Authentication and environment drift (Supabase vs backend auth vs hosted DB)
+### 3) [PARTIAL] Authentication and environment drift (Supabase vs backend auth vs hosted DB)
 - Problem: Login behavior differs by environment; invalid API key appears in some setups.
 - Impact: Users cannot log in reliably.
 - Required outcome: Single source of truth for auth in production with explicit fallback rules.
@@ -36,7 +68,7 @@ Last updated: 2026-03-25
 
 ## P1 - High (Major product gaps)
 
-### 4) Main student login should have full feature parity (not demo-like restrictions)
+### 4) [PENDING] Main student login should have full feature parity (not demo-like restrictions)
 - Problem: Real student experience has friction/parity mismatch with expected full product behavior.
 - Impact: Paying/real users experience constraints similar to demo.
 - Required outcome: Real students have full unlocked path according to role/progress policy.
@@ -45,7 +77,7 @@ Last updated: 2026-03-25
   - Separate demo gating from authenticated student gating in one policy layer.
   - Add tests for demo user vs student user entitlement matrix.
 
-### 5) Projects appear locked unexpectedly
+### 5) [PENDING] Projects appear locked unexpectedly
 - Problem: Lock/unlock logic is confusing or over-restrictive.
 - Impact: Users cannot start intended learning paths.
 - Required outcome: Transparent unlock rules with predictable progression.
@@ -54,7 +86,7 @@ Last updated: 2026-03-25
   - Expose lock reason in UI when blocked.
   - Ensure backend progress persistence and unlock checks are consistent.
 
-### 6) Career Mapper UI needs improvement
+### 6) [PENDING] Career Mapper UI needs improvement
 - Problem: Current career mapper UX/UI quality is not at target.
 - Impact: Lower engagement and clarity for role planning.
 - Required outcome: Cleaner, consistent, production-ready mapper UX.
@@ -63,7 +95,7 @@ Last updated: 2026-03-25
   - Unify typography, spacing, and interaction patterns with app shell.
   - Validate desktop/mobile behavior with accessibility checks.
 
-### 7) Resume maker not built
+### 7) [PARTIAL] Resume maker not built
 - Problem: Resume creation workflow is incomplete/missing as a full product module.
 - Impact: Missing core placement feature.
 - Required outcome: End-to-end resume builder with export and role-fit scoring.
@@ -72,7 +104,7 @@ Last updated: 2026-03-25
   - Implement save/load templates and markdown/pdf export path.
   - Integrate role-skill matching and ATS-style score.
 
-### 8) Job portal not complete
+### 8) [PENDING] Job portal not complete
 - Problem: Job portal capability is incomplete for live operations.
 - Impact: Placement pipeline not production-ready.
 - Required outcome: Full recruiter/job workflow with student eligibility and application tracking.
@@ -81,7 +113,7 @@ Last updated: 2026-03-25
   - Add student application flow and admin/recruiter review views.
   - Add metrics for conversion funnel (applied/shortlisted/hired).
 
-### 9) Typing test module missing (email writing + code typing)
+### 9) [PENDING] Typing test module missing (email writing + code typing)
 - Problem: No dedicated typing practice to improve speed and accuracy for real interview tasks.
 - Impact: Students cannot benchmark or improve practical typing performance over time.
 - Required outcome: Built-in typing tests for professional email writing and coding syntax typing with score tracking.
@@ -92,7 +124,7 @@ Last updated: 2026-03-25
   - Add timed difficulty levels and weekly improvement goals.
   - Add leaderboard or percentile comparison for motivation (optional first release).
 
-### 10) Learning library module missing (books, PDFs, articles)
+### 10) [PENDING] Learning library module missing (books, PDFs, articles)
 - Problem: There is no centralized place for students to view and read learning resources shared by admins.
 - Impact: Study materials are fragmented and hard to discover during learning flow.
 - Required outcome: In-app content library for books, PDFs, and articles with filtering and progress-friendly UX.
@@ -105,7 +137,7 @@ Last updated: 2026-03-25
 
 ## P2 - Medium (Strategic improvements)
 
-### 11) Real-time syllabus and role tracking for live job outcomes
+### 11) [PENDING] Real-time syllabus and role tracking for live job outcomes
 - Problem: Syllabus/roles are not fully aligned to real-time job tracking outcomes.
 - Impact: Learning path relevance can drift from hiring demand.
 - Required outcome: Live-updated syllabus-role-job mapping.
@@ -114,7 +146,7 @@ Last updated: 2026-03-25
   - Add job-market signal inputs and periodic refresh process.
   - Show role readiness and gap trend over time.
 
-### 12) Supabase DB issues review and migration to Railway strategy
+### 12) [PARTIAL] Supabase DB issues review and migration to Railway strategy
 - Problem: Current DB strategy is mixed/unclear across environments.
 - Impact: Data consistency and deployment reliability risks.
 - Required outcome: Clear migration plan and single production DB strategy.
@@ -159,6 +191,8 @@ Last updated: 2026-03-25
   - Two test modes: email writing and code typing.
   - Metrics: WPM, accuracy, errors, elapsed time.
   - Score history per user and trend chart.
+  - Test integrity rule: once a test starts, lock all test configuration fields (timer, language, mode, difficulty, prompt set) until submission or restart.
+  - Email writing practice is mandatory, not optional: include professional email composition scenarios as a first-class typing mode.
 - Backend deliverables:
   - Typing attempts table/model.
   - APIs for submit attempt and fetch history.
@@ -167,6 +201,29 @@ Last updated: 2026-03-25
   - Score history panel and trend view.
 - Exit criteria:
   - User can complete test and see saved scores across sessions.
+  - User cannot change timer/language/settings mid-test.
+  - User can practice professional email typing in addition to speed typing.
+
+### Typing Trainer Product Notes (Added 2026-04-05)
+- Hard lock during active test session:
+  - Freeze timer, language, test type, difficulty, and prompt once countdown begins.
+  - Provide only pause (if allowed), submit, restart, or quit actions.
+- Expand Type Master beyond speed-only typing:
+  - Professional email writing practice (subject line, greeting, body clarity, closing tone).
+  - Context-based drills (leave request, follow-up, escalation, interview thank-you, status update).
+- AI/spaCy-assisted coaching for email typing mode:
+  - Grammar and punctuation quality checks.
+  - Tone classification (formal, neutral, too casual) with corrective hints.
+  - Readability and sentence-structure feedback.
+  - Keyword/intent coverage checks against prompt goals.
+- New Type Master ideas backlog:
+  - Error heatmap by key and n-gram confusion patterns.
+  - Personal weak-key drills generated from recent attempts.
+  - Time-boxed workplace writing missions (compose under deadline).
+  - Copy-edit mode: fix flawed emails under time pressure.
+  - Role-based templates (developer, analyst, recruiter communication).
+  - Weekly typing goals with streak rewards and percentile progress.
+  - Real interview simulation: code + email context switching in one session.
 
 ### Milestone B2 - Resume Maker MVP
 - Scope:

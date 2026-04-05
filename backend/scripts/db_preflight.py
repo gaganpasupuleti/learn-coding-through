@@ -58,9 +58,6 @@ def main() -> int:
     database_url = settings.database_url
     print(f"DB URL: {mask_database_url(database_url)}")
 
-    if "supabase.com" in database_url:
-        print("Detected Supabase database URL")
-
     engine = create_engine(database_url, pool_pre_ping=True)
 
     try:

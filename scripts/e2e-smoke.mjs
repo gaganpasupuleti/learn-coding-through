@@ -2,6 +2,9 @@ import { chromium } from 'playwright'
 
 const API_BASE = process.env.SMOKE_API_BASE ?? 'http://127.0.0.1:8000'
 const WEB_BASE = process.env.SMOKE_WEB_BASE ?? 'http://localhost:5000'
+const MAX_UI_NAV_MS = Number(process.env.SMOKE_MAX_UI_NAV_MS ?? 4000)
+const MAX_SANDBOX_MS = Number(process.env.SMOKE_MAX_SANDBOX_MS ?? 5000)
+const MAX_JAVA_SANDBOX_MS = Number(process.env.SMOKE_MAX_JAVA_SANDBOX_MS ?? 12000)
 
 const results = []
 
@@ -9,10 +12,15 @@ function addResult(name, status, detail) {
   results.push({ name, status, detail })
 }
 
-async function runCheck(name, fn) {
+async function runCheck(name, fn, options = {}) {
+  const startedAt = Date.now()
   try {
     const detail = await fn()
-    addResult(name, 'pass', detail)
+    const duration = Date.now() - startedAt
+    if (options.maxDurationMs && duration > options.maxDurationMs) {
+      throw new Error(`duration ${duration}ms exceeded threshold ${options.maxDurationMs}ms`)
+    }
+    addResult(name, 'pass', `${detail} duration_ms=${duration}`)
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error)
     addResult(name, 'fail', detail)
@@ -104,21 +112,21 @@ async function runApiChecks() {
     const payload = await requestJson('/api/v1/execute', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ language: 'python', code: 'print(6*7)' }),
+      body: JSON.stringify({ language: 'python', code: 'print(6*7)', timeout_seconds: 5 }),
     })
     if (!payload?.success) throw new Error(payload?.error ?? 'Execution failed')
-    return String(payload.output).trim()
-  })
+    return `output=${String(payload.output).trim()} executor_ms=${Math.round(payload.execution_time ?? 0)}`
+  }, { maxDurationMs: MAX_SANDBOX_MS })
 
   await runCheck('api_execute_sql', async () => {
     const payload = await requestJson('/api/v1/execute', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ language: 'sql', code: 'SELECT 42 AS answer;' }),
+      body: JSON.stringify({ language: 'sql', code: 'SELECT 42 AS answer;', timeout_seconds: 5 }),
     })
     if (!payload?.success) throw new Error(payload?.error ?? 'Execution failed')
-    return 'ok'
-  })
+    return `executor_ms=${Math.round(payload.execution_time ?? 0)}`
+  }, { maxDurationMs: MAX_SANDBOX_MS })
 
   await runCheck('api_execute_java', async () => {
     const javaCode = `
@@ -131,11 +139,11 @@ public class Main {
     const payload = await requestJson('/api/v1/execute', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ language: 'java', code: javaCode }),
+      body: JSON.stringify({ language: 'java', code: javaCode, timeout_seconds: 10 }),
     })
     if (!payload?.success) throw new Error(payload?.error ?? 'Execution failed')
-    return String(payload.output).trim()
-  })
+    return `output=${String(payload.output).trim()} executor_ms=${Math.round(payload.execution_time ?? 0)}`
+  }, { maxDurationMs: MAX_JAVA_SANDBOX_MS })
 }
 
 async function runUiChecks() {
@@ -162,31 +170,31 @@ async function runUiChecks() {
 
     await runCheck('ui_projects_flow', async () => {
       await page.getByRole('button', { name: 'Projects', exact: true }).click()
-      await page.waitForTimeout(900)
+      await page.getByRole('button', { name: 'Start Project', exact: true }).first().waitFor({ state: 'visible', timeout: 10000 })
       const startCount = await page.getByRole('button', { name: 'Start Project', exact: true }).count()
       if (startCount === 0) throw new Error('No Start Project buttons found')
       return `start_buttons=${startCount}`
-    })
+    }, { maxDurationMs: MAX_UI_NAV_MS })
 
     await runCheck('ui_practice_flow', async () => {
       await page.getByRole('button', { name: 'Practice', exact: true }).click()
-      await page.waitForTimeout(900)
+      await page.getByRole('button', { name: 'Run Code', exact: true }).waitFor({ state: 'visible', timeout: 10000 })
       const visible = await page.getByRole('button', { name: 'Run Code', exact: true }).isVisible()
       if (!visible) throw new Error('Run Code button not visible')
       return 'practice loaded'
-    })
+    }, { maxDurationMs: MAX_UI_NAV_MS })
 
     await runCheck('ui_quiz_flow', async () => {
       await page.getByRole('button', { name: 'Quiz', exact: true }).click()
-      await page.waitForTimeout(900)
+      await page.getByRole('button', { name: 'Start Quiz', exact: true }).first().waitFor({ state: 'visible', timeout: 10000 })
       const startCount = await page.getByRole('button', { name: 'Start Quiz', exact: true }).count()
       if (startCount === 0) throw new Error('No Start Quiz buttons found')
       await page.getByRole('button', { name: 'Start Quiz', exact: true }).first().click()
-      await page.waitForTimeout(900)
+      await page.getByRole('button', { name: 'Check Answer', exact: true }).waitFor({ state: 'visible', timeout: 10000 })
       const checkVisible = await page.getByRole('button', { name: 'Check Answer', exact: true }).isVisible()
       if (!checkVisible) throw new Error('Quiz question action button not visible')
       return 'quiz runtime loaded'
-    })
+    }, { maxDurationMs: MAX_UI_NAV_MS })
   } finally {
     await browser.close()
   }

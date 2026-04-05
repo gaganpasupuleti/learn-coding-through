@@ -25,9 +25,6 @@ class Settings(BaseSettings):
     resume_backend_host: str = "127.0.0.1"
     resume_backend_port: int = 8001
     resume_backend_python: str | None = None
-    # Supabase JWT Secret — used to verify tokens issued by Supabase Auth.
-    # Get it from: Supabase Dashboard > Project Settings > API > JWT Settings > JWT Secret
-    supabase_jwt_secret: str = ""
     cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["http://localhost:5000", "http://localhost:5173"]
     )

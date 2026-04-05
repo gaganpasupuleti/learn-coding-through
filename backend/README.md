@@ -2,19 +2,19 @@
 
 This directory contains the FastAPI application along with directory structures for different language executions.
 
-## Supabase DB Setup
+## Railway DB Setup
 
 Config source: settings are read from `backend/.env` regardless of where commands are executed.
 
 1. Copy `.env.example` to `.env`.
-2. Set `DATABASE_URL` to your Supabase connection string.
+2. Set `DATABASE_URL` to your Railway Postgres connection string.
 3. For first bootstrapping run, keep `AUTO_CREATE_TABLES=true` once, then switch it to `false`.
 4. Set frontend origins in `CORS_ORIGINS` (comma-separated).
 
 Example:
 
 ```
-DATABASE_URL=postgresql+psycopg2://postgres.your-project-ref:your-password@aws-0-us-east-1.pooler.supabase.com:6543/postgres?sslmode=require
+DATABASE_URL=postgresql+psycopg2://<railway-user>:<railway-password>@<railway-host>:<railway-port>/<railway-db>
 AUTO_CREATE_TABLES=false
 CORS_ORIGINS=http://localhost:5000,http://localhost:5173
 ```
@@ -93,23 +93,25 @@ alembic upgrade head
 
 ## DB-Only Workflow (No Hosting Yet)
 
-If you want to focus only on Supabase/database setup now:
+If you want to focus only on Railway/database setup now:
 
-1. Copy `.env.supabase.example` to `.env`.
-2. Fill your real Supabase `DATABASE_URL` and `SECRET_KEY`.
-3. Run migrations:
-
-```
-alembic upgrade head
-```
-
-4. Run DB preflight check:
+1. Copy `.env.railway.example` to `.env`.
+2. Fill your Railway `DATABASE_URL` and `SECRET_KEY`.
+3. Run the one-shot bootstrap (migrate + insert + verify):
 
 ```
-python scripts/db_preflight.py
+python scripts/railway_seed_all.py
+```
+
+Preview steps without changing DB:
+
+```
+python scripts/railway_seed_all.py --dry-run
 ```
 
 Expected result: `All required tables are present`.
+
+For backup/rollback commands before inserts, see `backend/RAILWAY_DB_INSERT_PLAN.md`.
 
 ## Railway Deployment (Backend)
 
@@ -127,7 +129,7 @@ Set these values in Railway service variables:
 
 - `ENVIRONMENT=production`
 - `SECRET_KEY=<strong-random-secret>`
-- `DATABASE_URL=<supabase-pooler-url-with-sslmode=require>`
+- `DATABASE_URL=<railway-postgres-url>`
 - `ACCESS_TOKEN_EXPIRE_MINUTES=1440`
 - `AUTO_CREATE_TABLES=false`
 - `CORS_ORIGINS=https://<your-frontend-domain>`
