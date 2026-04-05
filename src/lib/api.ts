@@ -2,7 +2,21 @@
  * API client for backend code execution
  */
 
+type RuntimeConfig = {
+  VITE_API_URL?: string
+  VITE_API_BASE_URL?: string
+  VITE_API_PROXY_TARGET?: string
+}
+
+const runtimeConfig: RuntimeConfig =
+  typeof window !== 'undefined' && (window as Window & { __RUNTIME_CONFIG__?: RuntimeConfig }).__RUNTIME_CONFIG__
+    ? (window as Window & { __RUNTIME_CONFIG__?: RuntimeConfig }).__RUNTIME_CONFIG__!
+    : {}
+
 const RAW_API_BASE_URL =
+  runtimeConfig.VITE_API_URL ||
+  runtimeConfig.VITE_API_BASE_URL ||
+  runtimeConfig.VITE_API_PROXY_TARGET ||
   import.meta.env.VITE_API_URL ||
   import.meta.env.VITE_API_BASE_URL ||
   import.meta.env.VITE_API_PROXY_TARGET ||
