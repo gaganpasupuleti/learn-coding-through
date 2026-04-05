@@ -5,6 +5,7 @@
 const RAW_API_BASE_URL =
   import.meta.env.VITE_API_URL ||
   import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_API_PROXY_TARGET ||
   ''
 
 const API_BASE_URL = RAW_API_BASE_URL.replace(/\/$/, '')
