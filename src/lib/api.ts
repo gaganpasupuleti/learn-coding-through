@@ -24,6 +24,31 @@ const RAW_API_BASE_URL =
   import.meta.env.VITE_API_PROXY_TARGET ||
   ''
 
+function normalizeConfiguredApiBase(raw: string): string {
+  const normalized = (raw || '').trim().replace(/\/$/, '')
+  if (!normalized) return ''
+
+  if (/^https?:\/\//i.test(normalized) || normalized.startsWith('/')) {
+    return normalized
+  }
+
+  // Browser clients cannot resolve Railway private network domains.
+  if (normalized.endsWith('.railway.internal')) {
+    return ''
+  }
+
+  if (/^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(normalized)) {
+    return `http://${normalized}`
+  }
+
+  // Accept bare hostnames by promoting them to https.
+  if (/^[a-z0-9.-]+(?::\d+)?$/i.test(normalized)) {
+    return `https://${normalized}`
+  }
+
+  return ''
+}
+
 function inferRailwayBackendUrl(): string {
   if (typeof window === 'undefined') return ''
 
@@ -74,7 +99,7 @@ function resolveApiBaseUrl(raw: string): string {
   return normalized
 }
 
-const API_BASE_URL = resolveApiBaseUrl(RAW_API_BASE_URL)
+const API_BASE_URL = resolveApiBaseUrl(normalizeConfiguredApiBase(RAW_API_BASE_URL))
 
 function isNetworkFetchError(error: unknown): boolean {
   if (!(error instanceof Error)) return false
