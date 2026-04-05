@@ -25,11 +25,27 @@ const RAW_API_BASE_URL =
 function inferRailwayBackendUrl(): string {
   if (typeof window === 'undefined') return ''
 
-  const { protocol, hostname } = window.location
-  if (!hostname.includes('railway.app')) return ''
+  // Prefer an explicitly configured backend URL over inference.
+  const explicitUrl =
+    runtimeConfig.VITE_API_URL ||
+    import.meta.env.VITE_API_URL
+  if (explicitUrl) return explicitUrl.replace(/\/$/, '')
 
-  if (hostname.startsWith('acceptable-clarity-')) {
-    return `${protocol}//${hostname.replace('acceptable-clarity-', 'learn-coding-through-')}`
+  const { protocol, hostname } = window.location
+
+  // Handle Railway internal domain: {service}.railway.internal
+  if (hostname === 'acceptable-clarity.railway.internal') {
+    return `${protocol}//learn-coding-through.railway.internal`
+  }
+
+  // Handle Railway public domain: {service}-{environment}-{hash}.up.railway.app
+  // Extract the suffix (everything after the frontend service name) and reattach it
+  // to the backend service name so the environment/hash are preserved exactly.
+  if (hostname.endsWith('.up.railway.app')) {
+    const suffix = hostname.slice('acceptable-clarity'.length) // e.g. "-production-5fb2.up.railway.app"
+    if (suffix.startsWith('-') || suffix === '.up.railway.app') {
+      return `${protocol}//learn-coding-through${suffix}`
+    }
   }
 
   return ''
