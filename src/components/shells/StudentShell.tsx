@@ -35,57 +35,80 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
     <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
-          {/* Brand */}
-          <button
-            type="button"
-            onClick={() => onNavigate('landing')}
-            className="flex items-center gap-2.5 flex-shrink-0 group"
-          >
-            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm group-hover:bg-blue-700 transition-colors duration-150">
-              <Code2 size={15} className="text-white" strokeWidth={2.5} />
-            </div>
-            <span className="text-base font-bold text-slate-900 tracking-tight">CodeQuest</span>
-            {isDemo && (
-              <Badge variant="outline" className="text-[10px] h-4 px-1.5 rounded-full border-amber-400/70 text-amber-600 bg-amber-50 font-medium">
-                Demo
-              </Badge>
-            )}
-          </button>
-
-          {/* Nav links */}
-          <div className="flex items-center gap-0.5 flex-wrap">
-            {navItems.map(({ page, label, icon }) => (
-              <button
-                key={page}
-                type="button"
-                onClick={() => onNavigate(page)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-150 ${
-                  currentPage === page
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                }`}
-              >
-                {icon}
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {/* User area */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500">
-              <User size={12} />
-              {user.full_name}
-            </span>
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-0">
+          <div className="h-10 md:h-14 flex items-center justify-between gap-3 md:gap-4">
+            {/* Brand */}
             <button
               type="button"
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-150"
+              onClick={() => onNavigate('landing')}
+              className="flex items-center gap-2.5 flex-shrink-0 group"
             >
-              <LogOut size={14} />
-              <span className="hidden sm:inline">Log out</span>
+              <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm group-hover:bg-blue-700 transition-colors duration-150">
+                <Code2 size={15} className="text-white" strokeWidth={2.5} />
+              </div>
+              <span className="text-base font-bold text-slate-900 tracking-tight">CodeQuest</span>
+              {isDemo && (
+                <Badge variant="outline" className="text-[10px] h-4 px-1.5 rounded-full border-amber-400/70 text-amber-600 bg-amber-50 font-medium">
+                  Demo
+                </Badge>
+              )}
             </button>
+
+            {/* Desktop nav links */}
+            <div className="hidden md:flex items-center gap-0.5 flex-wrap">
+              {navItems.map(({ page, label, icon }) => (
+                <button
+                  key={page}
+                  type="button"
+                  onClick={() => onNavigate(page)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-150 ${
+                    currentPage === page
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  {icon}
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* User area */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500">
+                <User size={12} />
+                {user.full_name}
+              </span>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-150"
+              >
+                <LogOut size={14} />
+                <span className="hidden sm:inline">Log out</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile nav links */}
+          <div className="md:hidden -mx-4 px-4 pb-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex items-center gap-1 min-w-max">
+              {navItems.map(({ page, label, icon }) => (
+                <button
+                  key={page}
+                  type="button"
+                  onClick={() => onNavigate(page)}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg transition-all duration-150 ${
+                    currentPage === page
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  {icon}
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </nav>
