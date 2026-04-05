@@ -3,7 +3,10 @@ import { X } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 
 export function PortBanner() {
+  const shouldShowBanner = import.meta.env.DEV || import.meta.env.VITE_SHOW_PORT_BANNER === 'true'
   const [visible, setVisible] = useState(true)
+
+  if (!shouldShowBanner) return null
   
   if (!visible) return null
 
