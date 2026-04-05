@@ -11,6 +11,7 @@ FROM nginx:1.27-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY frontend-entrypoint.sh /frontend-entrypoint.sh
 RUN chmod +x /frontend-entrypoint.sh
+RUN printf '#!/bin/sh\nexec /frontend-entrypoint.sh\n' > /usr/local/bin/npm && chmod +x /usr/local/bin/npm
 
 # Force startup through our entrypoint so service-level command overrides do not break boot.
 ENTRYPOINT ["/frontend-entrypoint.sh"]
