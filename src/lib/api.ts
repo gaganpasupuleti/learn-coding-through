@@ -45,6 +45,11 @@ function resolveApiBaseUrl(raw: string): string {
     const configured = new URL(normalized)
     const current = window.location.host
 
+    // Browser clients cannot reach Railway private network domains.
+    if (configured.hostname.endsWith('.railway.internal') && window.location.hostname.includes('railway.app')) {
+      return inferRailwayBackendUrl() || normalized
+    }
+
     // In production, same-origin API base on the frontend domain causes 405 for POST.
     if (configured.host === current && window.location.hostname.includes('railway.app')) {
       return inferRailwayBackendUrl() || normalized
