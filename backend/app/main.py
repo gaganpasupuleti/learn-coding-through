@@ -119,9 +119,7 @@ app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
 
 default_railway_origin_regex = r"^https://[a-z0-9-]+(?:\.up)?\.railway\.app$"
-cors_origin_regex = settings.cors_origin_regex
-if not cors_origin_regex and settings.environment == "production":
-    cors_origin_regex = default_railway_origin_regex
+cors_origin_regex = settings.cors_origin_regex or default_railway_origin_regex
 
 app.add_middleware(
     CORSMiddleware,
