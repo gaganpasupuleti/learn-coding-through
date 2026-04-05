@@ -8,6 +8,8 @@ type RuntimeConfig = {
   VITE_API_PROXY_TARGET?: string
 }
 
+const CANONICAL_RAILWAY_BACKEND_BASE = 'https://learn-coding-through-production.up.railway.app'
+
 const runtimeConfig: RuntimeConfig =
   typeof window !== 'undefined' && (window as Window & { __RUNTIME_CONFIG__?: RuntimeConfig }).__RUNTIME_CONFIG__
     ? (window as Window & { __RUNTIME_CONFIG__?: RuntimeConfig }).__RUNTIME_CONFIG__!
@@ -81,19 +83,61 @@ function isNetworkFetchError(error: unknown): boolean {
 }
 
 async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<Response> {
-  const primaryUrl = `${API_BASE_URL}${path}`
-  try {
-    return await fetch(primaryUrl, init)
-  } catch (error) {
-    const canRetryRelative =
-      !!API_BASE_URL && typeof window !== 'undefined' && isNetworkFetchError(error)
-
-    if (!canRetryRelative) {
-      throw error
-    }
-
-    return fetch(path, init)
+  const candidateUrls: string[] = []
+  const addCandidate = (url: string) => {
+    if (!url || candidateUrls.includes(url)) return
+    candidateUrls.push(url)
   }
+
+  addCandidate(`${API_BASE_URL}${path}`)
+
+  const inferredRailway = inferRailwayBackendUrl()
+  if (inferredRailway) {
+    addCandidate(`${inferredRailway}${path}`)
+  }
+
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname
+    const isLocalHost = host === 'localhost' || host === '127.0.0.1'
+    if (!isLocalHost) {
+      addCandidate(`${CANONICAL_RAILWAY_BACKEND_BASE}${path}`)
+    }
+  }
+
+  addCandidate(path)
+
+  let lastError: unknown = null
+
+  for (let index = 0; index < candidateUrls.length; index += 1) {
+    const candidate = candidateUrls[index]
+    const hasMoreCandidates = index < candidateUrls.length - 1
+
+    try {
+      const response = await fetch(candidate, init)
+
+      if (response.ok) {
+        return response
+      }
+
+      if (hasMoreCandidates && [404, 405, 502, 503].includes(response.status)) {
+        continue
+      }
+
+      return response
+    } catch (error) {
+      lastError = error
+
+      if (!hasMoreCandidates || !isNetworkFetchError(error)) {
+        throw error
+      }
+    }
+  }
+
+  if (lastError) {
+    throw lastError
+  }
+
+  throw new Error('Failed to execute API request')
 }
 
 import { DemoLimits } from './demo-limits';
