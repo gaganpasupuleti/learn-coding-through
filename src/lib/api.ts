@@ -243,6 +243,11 @@ export async function executeCode(
     })
 
     if (!response.ok) {
+      if (response.status === 405 && !API_BASE_URL) {
+        throw new Error(
+          'Sandbox backend is not configured for production. Set VITE_API_URL to your backend Railway URL and redeploy frontend.'
+        )
+      }
       const errorData = await response.json().catch(() => ({}))
       throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
     }
