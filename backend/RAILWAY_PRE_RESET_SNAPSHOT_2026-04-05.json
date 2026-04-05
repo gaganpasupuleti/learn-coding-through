@@ -1,0 +1,106 @@
+{
+  "created_at_utc": "2026-04-04T22:39:40.078679Z",
+  "database": "railway",
+  "counts": [
+    {
+      "table": "admin_activity_logs",
+      "rows": 0
+    },
+    {
+      "table": "alembic_version",
+      "rows": 1
+    },
+    {
+      "table": "batch_enrollments",
+      "rows": 0
+    },
+    {
+      "table": "credit_transactions",
+      "rows": 0
+    },
+    {
+      "table": "exercises",
+      "rows": 0
+    },
+    {
+      "table": "job_applications",
+      "rows": 0
+    },
+    {
+      "table": "job_posts",
+      "rows": 0
+    },
+    {
+      "table": "learning_batches",
+      "rows": 0
+    },
+    {
+      "table": "lessons",
+      "rows": 0
+    },
+    {
+      "table": "progress_tracking",
+      "rows": 0
+    },
+    {
+      "table": "project_catalog",
+      "rows": 10
+    },
+    {
+      "table": "project_catalog_steps",
+      "rows": 45
+    },
+    {
+      "table": "project_step_completions",
+      "rows": 0
+    },
+    {
+      "table": "projects",
+      "rows": 0
+    },
+    {
+      "table": "quiz_catalog",
+      "rows": 2
+    },
+    {
+      "table": "quiz_catalog_questions",
+      "rows": 8
+    },
+    {
+      "table": "quiz_questions",
+      "rows": 48
+    },
+    {
+      "table": "quizzes",
+      "rows": 24
+    },
+    {
+      "table": "resumes",
+      "rows": 0
+    },
+    {
+      "table": "roles",
+      "rows": 6
+    },
+    {
+      "table": "stages",
+      "rows": 24
+    },
+    {
+      "table": "submissions",
+      "rows": 0
+    },
+    {
+      "table": "topics",
+      "rows": 0
+    },
+    {
+      "table": "typing_attempts",
+      "rows": 0
+    },
+    {
+      "table": "users",
+      "rows": 2
+    }
+  ]
+}

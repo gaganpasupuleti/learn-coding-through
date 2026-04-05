@@ -40,3 +40,6 @@ class ExecuteResponse(BaseModel):
     error_code: Optional[str] = Field(None, description="Stable error category code")
     timed_out: bool = Field(False, description="Whether execution hit timeout")
     truncated: bool = Field(False, description="Whether output was truncated")
+    degraded_mode: bool = Field(False, description="True when executor is in degraded fallback mode")
+    fallback_used: bool = Field(False, description="True when fallback response path was used")
+    request_id: Optional[str] = Field(None, description="Execution request identifier for tracing")

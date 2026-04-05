@@ -40,11 +40,14 @@ Last updated: 2026-04-05
 - Problem: Current sandbox behavior is inconsistent and not production-safe.
 - Impact: Core learning workflows break, trust drops.
 - Required outcome: Stable execution pipeline with clear language boundaries and isolation.
+- Progress update (2026-04-05, pass-2):
+  - Added deterministic degraded fallback path in execute API to avoid raw 500s when executors crash.
+  - Added execution telemetry counters (total/success/failure/fallback, error-code distribution, recent failure log).
+  - Added runtime diagnostics endpoint for sandbox telemetry visibility.
 - Next actions:
-  - Audit current sandbox failure modes and classify by language/runtime.
-  - Add deterministic execution contracts (input/output/timeouts/error schema).
-  - Add health checks and smoke tests for each language runtime.
-  - Define rollback/fallback path when execution fails.
+  - Add persistent telemetry sink (file/DB) and dashboard wiring for long-term trend analysis.
+  - Add alert thresholds for fallback spikes and timeout anomalies.
+  - Add explicit operator runbook for degraded mode and service recovery steps.
 
 ### 2) [PENDING] SQL sandbox approach needs redesign
 - Problem: Existing SQL practice execution path is fragile and hard to scale safely.
