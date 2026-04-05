@@ -32,9 +32,10 @@ function normalizeConfiguredApiBase(raw: string): string {
     return normalized
   }
 
-  // Browser clients cannot resolve Railway private network domains.
+  // Railway private network domains are not reachable from the browser.
+  // Map them to the canonical public backend domain so requests succeed.
   if (normalized.endsWith('.railway.internal')) {
-    return ''
+    return CANONICAL_RAILWAY_BACKEND_BASE
   }
 
   if (/^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(normalized)) {
@@ -55,19 +56,9 @@ function inferRailwayBackendUrl(): string {
   const { protocol, hostname } = window.location
   if (!hostname.includes('railway.app')) return ''
 
-  const canonicalBackendHost = 'learn-coding-through-production.up.railway.app'
-
-  if (hostname === canonicalBackendHost) {
-    return `${protocol}//${canonicalBackendHost}`
-  }
-
-  if (hostname.startsWith('acceptable-clarity-')) {
-    return `${protocol}//${hostname.replace('acceptable-clarity-', 'learn-coding-through-')}`
-  }
-
-  // Frontend Railway domains vary per service, but backend host is stable in this deployment.
-  if (hostname.endsWith('.up.railway.app')) {
-    return `${protocol}//${canonicalBackendHost}`
+  // The backend's public domain is stable — always use it when running on Railway.
+  if (hostname.endsWith('.up.railway.app') || hostname.endsWith('.railway.app')) {
+    return CANONICAL_RAILWAY_BACKEND_BASE
   }
 
   return ''
@@ -128,8 +119,6 @@ async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<R
       addCandidate(`${CANONICAL_RAILWAY_BACKEND_BASE}${path}`)
     }
   }
-
-  addCandidate(path)
 
   let lastError: unknown = null
 
