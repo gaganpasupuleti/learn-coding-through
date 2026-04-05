@@ -22,7 +22,41 @@ const RAW_API_BASE_URL =
   import.meta.env.VITE_API_PROXY_TARGET ||
   ''
 
-const API_BASE_URL = RAW_API_BASE_URL.replace(/\/$/, '')
+function inferRailwayBackendUrl(): string {
+  if (typeof window === 'undefined') return ''
+
+  const { protocol, hostname } = window.location
+  if (!hostname.includes('railway.app')) return ''
+
+  if (hostname.startsWith('acceptable-clarity-')) {
+    return `${protocol}//${hostname.replace('acceptable-clarity-', 'learn-coding-through-')}`
+  }
+
+  return ''
+}
+
+function resolveApiBaseUrl(raw: string): string {
+  const normalized = (raw || '').replace(/\/$/, '')
+  if (!normalized || typeof window === 'undefined') {
+    return normalized || inferRailwayBackendUrl()
+  }
+
+  try {
+    const configured = new URL(normalized)
+    const current = window.location.host
+
+    // In production, same-origin API base on the frontend domain causes 405 for POST.
+    if (configured.host === current && window.location.hostname.includes('railway.app')) {
+      return inferRailwayBackendUrl() || normalized
+    }
+  } catch {
+    // Keep existing value if URL parsing fails.
+  }
+
+  return normalized
+}
+
+const API_BASE_URL = resolveApiBaseUrl(RAW_API_BASE_URL)
 
 import { DemoLimits } from './demo-limits';
 
