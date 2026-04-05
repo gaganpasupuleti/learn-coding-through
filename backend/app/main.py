@@ -173,6 +173,16 @@ def health():
     return {"status": "ok"}
 
 
+@app.get("/")
+def root():
+    return {
+        "service": "learn-coding-through-backend",
+        "status": "ok",
+        "health": "/health",
+        "docs": "/docs",
+    }
+
+
 @app.get("/health/capabilities")
 def health_capabilities():
     java_ready = bool(getattr(app.state, "java_runtime_ready", False))

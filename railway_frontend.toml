@@ -16,7 +16,7 @@ restartPolicyMaxRetries = 5
 [variables]
 # Replace the placeholders with real service values in Railway dashboard after deploy
 # Backend URL used by frontend to call APIs; update to your backend Railway service URL
-FRONTEND_API_BASE = "https://<backend-railway-url>"
+VITE_API_URL = "https://<backend-railway-url>"
 NODE_ENV = "production"
 
 # Optional: Add any other frontend-specific env values the project expects (VITE_*, REACT_APP_*, etc.)
