@@ -28,8 +28,19 @@ function inferRailwayBackendUrl(): string {
   const { protocol, hostname } = window.location
   if (!hostname.includes('railway.app')) return ''
 
+  const canonicalBackendHost = 'learn-coding-through-production.up.railway.app'
+
+  if (hostname === canonicalBackendHost) {
+    return `${protocol}//${canonicalBackendHost}`
+  }
+
   if (hostname.startsWith('acceptable-clarity-')) {
     return `${protocol}//${hostname.replace('acceptable-clarity-', 'learn-coding-through-')}`
+  }
+
+  // Frontend Railway domains vary per service, but backend host is stable in this deployment.
+  if (hostname.endsWith('.up.railway.app')) {
+    return `${protocol}//${canonicalBackendHost}`
   }
 
   return ''
