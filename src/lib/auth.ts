@@ -111,6 +111,11 @@ interface BackendLoginResponse {
   token_type?: string
 }
 
+interface ForgotPasswordApiResponse {
+  message: string
+  reset_token?: string
+}
+
 async function parseOrThrow(response: Response): Promise<any> {
   const payload = await response.json().catch(() => ({}))
   if (!response.ok) {
@@ -132,6 +137,19 @@ export async function loginWithBackend(email: string, password: string): Promise
   return payload.access_token
 }
 
+export async function loginWithGoogleIdToken(idToken: string): Promise<string> {
+  const response = await fetch(`${API_BASE_URL}/auth/google-login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id_token: idToken }),
+  })
+  const payload = (await parseOrThrow(response)) as BackendLoginResponse
+  if (!payload?.access_token) {
+    throw new Error('Google login did not return an access token.')
+  }
+  return payload.access_token
+}
+
 export async function registerWithBackend(fullName: string, email: string, password: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: 'POST',
@@ -140,6 +158,27 @@ export async function registerWithBackend(fullName: string, email: string, passw
       full_name: fullName,
       email,
       password,
+    }),
+  })
+  await parseOrThrow(response)
+}
+
+export async function requestPasswordReset(email: string): Promise<ForgotPasswordApiResponse> {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  })
+  return (await parseOrThrow(response)) as ForgotPasswordApiResponse
+}
+
+export async function resetPasswordWithToken(resetToken: string, newPassword: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      reset_token: resetToken,
+      new_password: newPassword,
     }),
   })
   await parseOrThrow(response)

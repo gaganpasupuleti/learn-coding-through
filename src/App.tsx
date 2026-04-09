@@ -12,9 +12,11 @@ import { ResumeModuleGatewayPage } from '@/components/pages/ResumeModuleGatewayP
 import { StudentShell } from '@/components/shells/StudentShell'
 import { AdminShell } from '@/components/shells/AdminShell'
 import { PortBanner } from '@/components/PortBanner'
+import { AssessmentGuard } from '@/components/assessment/AssessmentGuard'
 import { getStoredUser, isDemoUser, type AuthUser } from '@/lib/auth'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
+import { isRailwayPublicHost } from '@/lib/host-env'
 import {
   canAttemptDemoQuiz,
   canStartDemoProject,
@@ -48,6 +50,11 @@ function App() {
   }
 
   const handleStudentNavigate = (page: StudentPage) => {
+    if (page === 'resume' && isDemoUser() && isRailwayPublicHost()) {
+      toast.error('Resume module is locked for demo users on hosted Railway. Please use local mode or log in with a full account.')
+      return
+    }
+
     setStudentPage(page)
     setSelectedProjectId(null)
   }
@@ -113,6 +120,8 @@ function App() {
   }
 
   const user = authState as AuthUser
+  const assessmentGuardEnabled = (import.meta.env.VITE_ENABLE_ASSESSMENT_GUARD ?? 'true') !== 'false'
+  const isAssessmentPage = studentPage === 'quiz' || studentPage === 'typing'
 
   if (user.role === 'admin') {
     return (
@@ -129,6 +138,7 @@ function App() {
   return (
     <div className={wrapperClass}>
       <PortBanner />
+      <AssessmentGuard enabled={assessmentGuardEnabled && isAssessmentPage} user={user} page={studentPage} />
       <StudentShell
         currentPage={studentPage === 'learning' ? 'projects' : studentPage}
         user={user}

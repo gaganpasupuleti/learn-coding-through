@@ -20,6 +20,7 @@ import { useTranslations } from '@/lib/i18n';
 import { withLocalizedDefaultSections } from '@/lib/utils/section-helpers';
 import { useLanguage } from '@/lib/context/language-context';
 import { downloadBlobAsFile, openUrlInNewTab, sanitizeFilename } from '@/lib/utils/download';
+import { getResumeFlowMode, type ResumeFlowMode } from '@/components/common/codequest-handoff';
 
 type ProcessingStatus = 'pending' | 'processing' | 'ready' | 'failed';
 
@@ -28,7 +29,7 @@ export default function ResumeViewerPage() {
   const { uiLanguage } = useLanguage();
   const params = useParams();
   const router = useRouter();
-  const { decrementResumes, setHasMasterResume } = useStatusCache();
+  const { decrementResumes, setHasMasterResume, status: systemStatus, isLoading: statusLoading } = useStatusCache();
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,13 +44,21 @@ export default function ResumeViewerPage() {
   const [resumeTitle, setResumeTitle] = useState<string | null>(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editingTitleValue, setEditingTitleValue] = useState('');
+  const [flowMode, setFlowMode] = useState<ResumeFlowMode | 'unknown'>('unknown');
 
   const resumeId = params?.id as string;
+  const isLlmConfigured = Boolean(!statusLoading && systemStatus?.llm_configured);
+  const isNoAiMode = flowMode === 'no_ai';
+  const canShowAiFeatures = flowMode === 'ai';
 
   const localizedResumeData = useMemo(() => {
     if (!resumeData) return null;
     return withLocalizedDefaultSections(resumeData, t);
   }, [resumeData, t]);
+
+  useEffect(() => {
+    setFlowMode(getResumeFlowMode());
+  }, []);
 
   useEffect(() => {
     if (!resumeId) return;
@@ -289,10 +298,16 @@ export default function ResumeViewerPage() {
           </Button>
 
           <div className="flex gap-3">
-            {isMasterResume && (
+            {isMasterResume && canShowAiFeatures && isLlmConfigured && (
               <Button onClick={() => setShowEnrichmentModal(true)} className="gap-2">
                 <Sparkles className="w-4 h-4" />
                 {t('resumeViewer.enhanceResume')}
+              </Button>
+            )}
+            {isMasterResume && canShowAiFeatures && !isLlmConfigured && (
+              <Button variant="outline" onClick={() => router.push('/settings')} className="gap-2">
+                <Sparkles className="w-4 h-4" />
+                AI setup required
               </Button>
             )}
             <Button variant="outline" onClick={handleEdit}>
@@ -435,7 +450,7 @@ export default function ResumeViewerPage() {
       )}
 
       {/* Enrichment Modal - Only for master resume */}
-      {isMasterResume && (
+      {isMasterResume && canShowAiFeatures && (
         <EnrichmentModal
           resumeId={resumeId}
           isOpen={showEnrichmentModal}

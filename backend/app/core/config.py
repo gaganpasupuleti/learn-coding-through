@@ -16,11 +16,13 @@ class Settings(BaseSettings):
     environment: str = "development"
     secret_key: str = "change-me-in-production"
     access_token_expire_minutes: int = 60 * 24
+    password_reset_token_expire_minutes: int = 30
     database_url: str = DEFAULT_DATABASE_URL
     auto_create_tables: bool = True
     bootstrap_admin_email: str | None = None
     bootstrap_admin_password: str | None = None
     bootstrap_admin_full_name: str = "Platform Admin"
+    google_oauth_client_id: str | None = None
     auto_start_resume_backend: bool = False
     resume_backend_host: str = "127.0.0.1"
     resume_backend_port: int = 8001

@@ -1,6 +1,6 @@
 # Live Product Issues Tracker
 
-Last updated: 2026-04-05
+Last updated: 2026-04-08
 
 ## Current Status Snapshot (2026-04-05)
 
@@ -148,6 +148,125 @@ Last updated: 2026-04-05
   - Add student library UI with search, filters, and open/read actions.
   - Track per-user resource interactions (opened/read/bookmarked).
   - Add role/category tagging to map resources to career paths and syllabus weeks.
+
+### 14) [PENDING] Resume module split into two explicit flows (With AI / Without AI)
+- Problem: Resume workflow currently mixes AI-required actions (tailor, enrichment, cover-letter generation) with non-AI actions (upload/edit/export), causing user confusion when LLM is not configured.
+- Impact: Students cannot clearly understand which resume actions are always available versus which require AI setup.
+- Required outcome: Two explicit resume tracks with clear UX boundaries:
+  - Without AI: upload/create, edit, save, reorder sections, and export PDF.
+  - With AI: tailoring to JD, enrichment/regeneration, role-fit enhancement, cover letter/outreach generation.
+- Next actions:
+  - Add Resume landing chooser with two cards: "Resume Builder (No AI)" and "AI Resume Assistant".
+  - Route "Resume Builder (No AI)" directly to dashboard/builder path even when `llm_configured=false`.
+  - Keep "AI Resume Assistant" path gated by `llm_configured` and show setup CTA to Settings.
+  - Gate master resume enrichment button by LLM readiness to avoid AI action failures in non-AI mode.
+  - Add badges/labels in UI: "AI required" vs "No AI required" on actions and entrypoints.
+  - Add E2E matrix: no-key user can complete full non-AI resume lifecycle; configured-key user can complete both flows.
+- Exit criteria:
+  - User can build and export a full resume without API key setup.
+  - AI actions are visible but blocked with clear reason and one-click setup path.
+  - No broken AI endpoint calls occur from the non-AI flow.
+
+### 15) [PENDING] Resume module production hosting completeness
+- Problem: Resume module works locally but production hardening/checklist for hosted path is incomplete.
+- Impact: Risk of broken handoff, CORS mismatch, and partial rollout in production.
+- Required outcome: Resume module hosted and verified end-to-end with main app handoff.
+- Next actions:
+  - Define final production URLs for main app, resume frontend, and resume backend.
+  - Validate handoff token/user payload from main app to resume app in hosted environment.
+  - Lock CORS for production domains and verify preflight for all resume APIs.
+  - Add smoke checks: upload, edit, tailor (if AI enabled), PDF export, return-to-main link.
+  - Add rollback notes and incident fallback route if resume app is unavailable.
+- Exit criteria:
+  - Main app -> Resume handoff works in production without manual URL changes.
+  - Resume upload/edit/export passes hosted smoke tests.
+
+### 16) [PENDING] Resume template/design library expansion
+- Problem: Current resume design options are limited compared to expected market variety.
+- Impact: Lower user adoption and weaker perceived quality.
+- Required outcome: Multi-template resume library with modern, ATS-safe variants.
+- Next actions:
+  - Define template catalog v1: Minimal ATS, Modern Single, Modern Two-Column, Executive, Creative, Compact.
+  - Create shared design token contract (spacing/typography/color) so all templates remain editable.
+  - Add template preview gallery with quick apply and compare mode.
+  - Add template quality checks: ATS readability, print/PDF consistency, mobile preview compatibility.
+  - Build phased backlog for +20 templates (v2) with localization-safe typography handling.
+- Exit criteria:
+  - At least 6 production-ready templates with stable PDF output and no content loss.
+
+### 17) [PENDING] Resume module mobile-first usability
+- Problem: Resume flow is desktop-oriented; mobile experience is inconsistent.
+- Impact: High friction for users creating/editing resumes on phones.
+- Required outcome: Mobile-first resume editing/viewing with responsive controls and readable preview.
+- Next actions:
+  - Add mobile breakpoints for dashboard, builder controls, and viewer actions.
+  - Introduce sticky action bar on mobile for Save / Preview / Export.
+  - Add touch-friendly section editing, reorder handles, and input spacing.
+  - Optimize preview rendering for small screens with zoom and section collapse.
+  - Run device matrix QA (Android Chrome, iOS Safari, tablet).
+- Exit criteria:
+  - Core flow (upload/create/edit/save/export) works cleanly on mobile viewport.
+
+### 18) [PENDING] Authentication roadmap (email auth, password reset, support mailbox)
+- Problem: Basic login/register exists, but password recovery and support-email workflow are missing.
+- Impact: Account recovery and support operations are not production-ready.
+- Required outcome: Complete auth lifecycle with recoverability and support contact process.
+- Next actions:
+  - Decide auth provider path: in-house JWT + SMTP OR managed auth provider.
+  - Implement forgot-password request + tokenized reset flow with expiry.
+  - Add transactional email sender configuration (free-tier compatible for MVP).
+  - Add support mailbox routing and SLA workflow (support@... with ticket triage notes).
+  - Add anti-abuse controls (rate limit reset requests, token replay protections).
+- Exit criteria:
+  - User can request password reset, receive mail, and set a new password securely.
+
+### 19) [PENDING] Login personas cleanup (master logins, testing logins, demo registration flow)
+- Problem: Current login mixes direct demo entry with regular auth; seeded operational accounts need clearer policy.
+- Impact: Confusing QA and production onboarding behavior.
+- Required outcome: Clear persona-based login paths for production, testing, and demo.
+- Next actions:
+  - Create seeded master/admin + test student accounts using controlled script/config.
+  - Move demo experience from instant login to explicit demo registration/start flow.
+  - Keep production login path strict (email/password) and separate non-prod shortcuts.
+  - Add environment guardrails so test/demo accounts are not exposed unintentionally in prod.
+  - Document credentials lifecycle and rotation policy for seeded accounts.
+- Exit criteria:
+  - Distinct flows exist for production users, testers, and demo users with no ambiguity.
+
+### 20) [PENDING] Skill Gap Analyzer modal layout and responsiveness issues
+- Problem: The Skill Gap Analyzer view in Career Map shows layout breakage (horizontal overflow, cramped cards, clipped labels/chips, and nested scrollbars) inside the modal on common desktop viewport sizes.
+- Impact: Readability and usability are degraded, roadmap details are hard to scan, and users may miss recommendations/actions.
+- Required outcome: A stable, fully responsive Skill Gap Analyzer modal with clean vertical flow and no unintended horizontal scroll.
+- Next actions:
+  - Enforce modal width/height constraints with responsive breakpoints and predictable internal spacing.
+  - Remove horizontal overflow from roadmap month cards; use wrap/stack behavior instead of overflow scrolling.
+  - Fix chip/label positioning so badges (for example, focus hints) stay inside card bounds.
+  - Normalize card typography/line-height so readiness metrics and recommendations remain readable on small/medium screens.
+  - Ensure one primary scroll container only (modal body), avoiding nested scrollbar conflicts.
+  - Add visual regression checks for Skill Gap Analyzer at key widths (1366, 1024, 768, 390).
+- Exit criteria:
+  - No horizontal scrollbar appears in the Skill Gap Analyzer modal at supported breakpoints.
+  - All roadmap cards, labels, and readiness metrics render fully without clipping.
+  - Desktop and mobile viewport QA passes for the Career Map -> Skill Gap Analyzer flow.
+
+## Tonight Delivery Plan (Target: 2026-04-07 01:00)
+
+### Can finish by 01:00 (realistic cutline)
+1. Resume split UX implementation (With AI / Without AI entry + clear gating labels).
+2. Resume production-hosting checklist + local/hosted smoke script updates.
+3. Seeded master/test login setup + documented credentials for QA.
+4. Demo flow policy update in UI copy and issue tracker (demo as explicit registration/start path).
+
+### Likely not complete by 01:00 (requires follow-up)
+1. Full forgot-password email delivery pipeline end-to-end.
+2. Support mailbox/ticket automation.
+3. Large template library (+6 to +20 polished designs).
+4. Full mobile polish across all resume pages and devices.
+
+### Post-01:00 continuation
+1. Password reset + email sender integration.
+2. Mobile-first refactor pass and cross-device QA.
+3. Template expansion sprint with ATS and PDF regression suite.
 
 ## P2 - Medium (Strategic improvements)
 

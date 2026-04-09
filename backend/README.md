@@ -32,6 +32,39 @@ BOOTSTRAP_ADMIN_FULL_NAME=Platform Admin
 
 On startup, the backend creates (or upgrades) that user to admin automatically. Then login from the frontend with the same credentials.
 
+## Google Login Setup
+
+To enable Google sign-in:
+
+1. Create a Google OAuth Web Client in Google Cloud Console.
+2. Add frontend origins (for example `http://localhost:5000`) in Authorized JavaScript origins.
+3. Set backend env:
+
+```
+GOOGLE_OAUTH_CLIENT_ID=<your-google-web-client-id>
+```
+
+4. Set frontend env (root `.env` for Vite app):
+
+```
+VITE_GOOGLE_CLIENT_ID=<same-google-web-client-id>
+```
+
+Auth endpoints then include:
+
+- `POST /api/v1/auth/register`
+- `POST /api/v1/auth/login`
+- `POST /api/v1/auth/google-login`
+- `POST /api/v1/auth/forgot-password`
+- `POST /api/v1/auth/reset-password`
+- `GET /api/v1/auth/me`
+
+Notes for forgot/reset password:
+
+- `POST /api/v1/auth/forgot-password` always returns a generic success message.
+- In non-production environments, the response includes `reset_token` for local testing.
+- In production, connect this flow to your email provider and send the reset link out-of-band.
+
 ## One-Click User Seeding (Admin + Students)
 
 To create a ready-to-use admin and sample student accounts in the current database:

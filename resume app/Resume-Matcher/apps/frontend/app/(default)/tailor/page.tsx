@@ -20,6 +20,7 @@ import { Loader2, ArrowLeft, AlertTriangle, Settings } from 'lucide-react';
 import { useTranslations } from '@/lib/i18n';
 import { DiffPreviewModal } from '@/components/tailor/diff-preview-modal';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { getResumeFlowMode } from '@/components/common/codequest-handoff';
 
 export default function TailorPage() {
   const { t } = useTranslations();
@@ -56,6 +57,12 @@ export default function TailorPage() {
   const isLlmConfigured = !statusLoading && systemStatus?.llm_configured;
 
   useEffect(() => {
+    const flowMode = getResumeFlowMode();
+    if (flowMode === 'no_ai') {
+      router.push('/dashboard');
+      return;
+    }
+
     const storedId = localStorage.getItem('master_resume_id');
     if (!storedId) {
       router.push('/dashboard');

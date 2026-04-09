@@ -13,11 +13,15 @@ interface HandoffPayload {
   token?: string;
   user: HandoffUser;
   returnUrl: string;
+  flowMode?: ResumeFlowMode;
   issuedAt: number;
 }
 
+export type ResumeFlowMode = 'no_ai' | 'ai';
+
 const HANDOFF_PARAM = 'cq_handoff';
 const RETURN_URL_KEY = 'codequest_return_url';
+const FLOW_MODE_KEY = 'codequest_resume_flow_mode';
 
 function fromBase64Url(value: string): string {
   const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
@@ -47,6 +51,15 @@ function applyHandoff(payload: HandoffPayload): void {
   }
   localStorage.setItem('career-portal-user', JSON.stringify(payload.user));
   localStorage.setItem(RETURN_URL_KEY, payload.returnUrl);
+  if (payload.flowMode === 'no_ai' || payload.flowMode === 'ai') {
+    localStorage.setItem(FLOW_MODE_KEY, payload.flowMode);
+  }
+}
+
+export function getResumeFlowMode(): ResumeFlowMode {
+  if (typeof window === 'undefined') return 'ai';
+  const storedMode = localStorage.getItem(FLOW_MODE_KEY);
+  return storedMode === 'no_ai' ? 'no_ai' : 'ai';
 }
 
 function clearHandoffFromUrl(): void {
@@ -71,6 +84,10 @@ export function CodeQuestHandoff() {
     const storedReturn = localStorage.getItem(RETURN_URL_KEY);
     if (storedReturn) {
       setReturnUrl(storedReturn);
+    }
+
+    if (!localStorage.getItem(FLOW_MODE_KEY)) {
+      localStorage.setItem(FLOW_MODE_KEY, 'ai');
     }
   }, []);
 

@@ -12,6 +12,7 @@
         "build": "tsc -b --noCheck && vite build",
         "lint": "eslint .",
         "qa:smoke": "node scripts/e2e-smoke.mjs",
+        "qa:auth-smoke": "python -m pip install -r backend/requirements.txt && python -m unittest backend/tests/test_auth_smoke.py -v",
         "health:check": "node scripts/health-check.mjs",
         "optimize": "vite optimize",
         "preview": "vite preview"

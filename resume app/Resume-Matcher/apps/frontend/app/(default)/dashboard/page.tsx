@@ -15,6 +15,7 @@ import Loader2 from 'lucide-react/dist/esm/icons/loader-2';
 import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle';
 import RefreshCw from 'lucide-react/dist/esm/icons/refresh-cw';
 import Plus from 'lucide-react/dist/esm/icons/plus';
+import Upload from 'lucide-react/dist/esm/icons/upload';
 import Settings from 'lucide-react/dist/esm/icons/settings';
 import AlertTriangle from 'lucide-react/dist/esm/icons/alert-triangle';
 
@@ -27,6 +28,7 @@ import {
   type ResumeListItem,
 } from '@/lib/api/resume';
 import { useStatusCache } from '@/lib/context/status-cache';
+import { getResumeFlowMode, type ResumeFlowMode } from '@/components/common/codequest-handoff';
 
 type ProcessingStatus = 'pending' | 'processing' | 'ready' | 'failed' | 'loading';
 
@@ -38,6 +40,7 @@ export default function DashboardPage() {
   const [tailoredResumes, setTailoredResumes] = useState<ResumeListItem[]>([]);
   const [isRetrying, setIsRetrying] = useState(false);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [flowMode, setFlowMode] = useState<ResumeFlowMode | 'unknown'>('unknown');
   const router = useRouter();
 
   // Status cache for optimistic counter updates and LLM status check
@@ -55,10 +58,32 @@ export default function DashboardPage() {
   const jobSnippetCacheRef = useRef<Record<string, string>>({});
 
   // Check if LLM is configured (API key is set)
-  const isLlmConfigured = !statusLoading && systemStatus?.llm_configured;
+  const isLlmConfigured = Boolean(!statusLoading && systemStatus?.llm_configured);
+  const isNoAiMode = flowMode === 'no_ai';
+  const canShowAiFeatures = flowMode === 'ai';
 
   const isTailorEnabled =
-    Boolean(masterResumeId) && processingStatus === 'ready' && isLlmConfigured;
+    canShowAiFeatures && Boolean(masterResumeId) && processingStatus === 'ready' && isLlmConfigured;
+  const isTailorBlockedByResume = !canShowAiFeatures || !masterResumeId || processingStatus !== 'ready';
+
+  useEffect(() => {
+    setFlowMode(getResumeFlowMode());
+  }, []);
+
+  const handleTailorAction = () => {
+    if (!canShowAiFeatures) {
+      return;
+    }
+
+    if (isTailorEnabled) {
+      router.push('/tailor');
+      return;
+    }
+
+    if (!isLlmConfigured && !isTailorBlockedByResume) {
+      router.push('/settings');
+    }
+  };
 
   const formatDate = (value: string) => {
     if (!value) return t('common.unknown');
@@ -175,14 +200,16 @@ export default function DashboardPage() {
     return () => window.removeEventListener('focus', handleFocus);
   }, [loadTailoredResumes, checkResumeStatus]);
 
-  const handleUploadComplete = (resumeId: string) => {
-    localStorage.setItem('master_resume_id', resumeId);
-    setMasterResumeId(resumeId);
-    // Check status after upload completes
-    checkResumeStatus(resumeId);
-    // Update cached counters
+  const handleUploadComplete = (resumeId: string, isMaster?: boolean) => {
+    if (isMaster) {
+      localStorage.setItem('master_resume_id', resumeId);
+      setMasterResumeId(resumeId);
+      checkResumeStatus(resumeId);
+      setHasMasterResume(true);
+    } else {
+      loadTailoredResumes();
+    }
     incrementResumes();
-    setHasMasterResume(true);
   };
 
   const handleRetryProcessing = async (e: React.MouseEvent) => {
@@ -286,7 +313,9 @@ export default function DashboardPage() {
     return Math.abs(hash);
   };
 
-  const totalCards = 1 + tailoredResumes.length + 1;
+  const showTailorCard = canShowAiFeatures;
+  const showUploadCard = Boolean(masterResumeId);
+  const totalCards = 1 + tailoredResumes.length + (showUploadCard ? 1 : 0) + (showTailorCard ? 1 : 0);
   const fillerCount = Math.max(0, (5 - (totalCards % 5)) % 5);
   const extraFillerCount = 5;
   // Use Tailwind classes for fillers now that we have them in config or use specific hex if needed
@@ -296,7 +325,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Configuration Warning Banner */}
-      {masterResumeId && !isLlmConfigured && !statusLoading && (
+      {masterResumeId && canShowAiFeatures && !isLlmConfigured && !statusLoading && (
         <div className="border-2 border-warning bg-amber-50 p-4 shadow-sw-default mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <AlertTriangle className="w-5 h-5 text-warning" />
@@ -322,7 +351,7 @@ export default function DashboardPage() {
         {/* 1. Master Resume Logic */}
         {!masterResumeId ? (
           // LLM Not Configured or Upload State
-          !isLlmConfigured && !statusLoading ? (
+          canShowAiFeatures && !isLlmConfigured && !statusLoading ? (
             <Link href="/settings" className="block h-full">
               <Card
                 variant="interactive"
@@ -411,12 +440,17 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <CardTitle className="text-lg group-hover:text-primary">
+              <CardTitle className="text-xl group-hover:text-primary">
                 {t('dashboard.masterResume')}
               </CardTitle>
+              <div className="mt-2">
+                <span className="inline-flex items-center rounded-full border border-slate-300 px-2.5 py-1 text-[11px] font-mono uppercase text-slate-600">
+                  No AI required
+                </span>
+              </div>
 
               <div
-                className={`text-xs font-mono mt-auto pt-4 flex flex-col gap-2 uppercase ${getStatusDisplay().color}`}
+                className={`text-sm font-mono mt-6 flex flex-col gap-2 uppercase ${getStatusDisplay().color}`}
               >
                 <div className="flex items-center gap-1">
                   {getStatusDisplay().icon}
@@ -470,7 +504,7 @@ export default function DashboardPage() {
                   >
                     <span className="font-mono font-bold">{getMonogram(title)}</span>
                   </div>
-                  <span className="font-mono text-xs text-gray-500 uppercase">
+                  <span className="font-mono text-sm text-gray-500 uppercase">
                     {resume.processing_status}
                   </span>
                 </div>
@@ -479,7 +513,7 @@ export default function DashboardPage() {
                     {title}
                   </span>
                 </CardTitle>
-                <CardDescription className="mt-auto pt-4 uppercase">
+                <CardDescription className="mt-4 uppercase">
                   {t('dashboard.edited', {
                     date: formatDate(resume.updated_at || resume.created_at),
                   })}{' '}
@@ -489,23 +523,57 @@ export default function DashboardPage() {
           );
         })}
 
-        {/* 3. Create Tailored Resume */}
-        <Card className="aspect-square h-full" variant="default">
-          <div className="flex-1 flex flex-col items-center justify-center text-center h-full">
-            <Button
-              onClick={() => router.push('/tailor')}
-              disabled={!isTailorEnabled}
-              className="w-20 h-20 bg-blue-700 text-white border-2 border-black shadow-sw-default hover:bg-blue-800 hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-none transition-all rounded-none"
-            >
-              <Plus className="w-8 h-8" />
-            </Button>
-            <p className="text-xs font-mono mt-4 uppercase text-green-700">
-              {t('dashboard.createResume')}
-            </p>
-          </div>
-        </Card>
+        {/* 3. Upload Additional Resume */}
+        {showUploadCard && (
+          <ResumeUploadDialog
+            open={isUploadDialogOpen}
+            onOpenChange={setIsUploadDialogOpen}
+            onUploadComplete={handleUploadComplete}
+            trigger={
+              <Card className="aspect-square h-full" variant="default">
+                <div className="flex-1 flex flex-col items-center justify-center text-center h-full">
+                  <Button
+                    className="w-20 h-20 bg-black text-white border-2 border-black shadow-sw-default hover:bg-neutral-800 hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-none transition-all rounded-none"
+                  >
+                    <Upload className="w-8 h-8" />
+                  </Button>
+                  <p className="text-sm font-mono mt-4 uppercase text-slate-700">
+                    Upload Resume
+                  </p>
+                  <p className="text-xs font-mono uppercase mt-1 text-slate-500">
+                    No AI required
+                  </p>
+                </div>
+              </Card>
+            }
+          />
+        )}
 
-        {/* 4. Fillers */}
+        {/* 4. Create Tailored Resume */}
+        {showTailorCard && (
+          <Card className="aspect-square h-full" variant="default">
+            <div className="flex-1 flex flex-col items-center justify-center text-center h-full">
+              <Button
+                onClick={handleTailorAction}
+                disabled={isTailorBlockedByResume || statusLoading}
+                className="w-20 h-20 bg-blue-700 text-white border-2 border-black shadow-sw-default hover:bg-blue-800 hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-none transition-all rounded-none"
+              >
+                <Plus className="w-8 h-8" />
+              </Button>
+              <p className="text-sm font-mono mt-4 uppercase text-green-700">
+                {t('dashboard.createResume')}
+              </p>
+              <p className="text-sm font-mono uppercase mt-1 text-blue-700">
+                AI required
+              </p>
+              {!isLlmConfigured && !isTailorBlockedByResume && (
+                <p className="text-sm mt-2 text-slate-600">Configure AI in Settings to continue</p>
+              )}
+            </div>
+          </Card>
+        )}
+
+        {/* 5. Fillers */}
         {Array.from({ length: fillerCount }).map((_, index) => (
           <Card
             key={`filler-${index}`}
