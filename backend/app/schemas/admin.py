@@ -180,3 +180,62 @@ class AdminUserActivityResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# ---------------------------------------------------------------------------
+# Platform overview
+# ---------------------------------------------------------------------------
+
+class AdminPlatformOverviewResponse(BaseModel):
+    total_users: int
+    active_users: int
+    total_admins: int
+    total_batches: int
+    active_batches: int
+    total_jobs_open: int
+    total_jobs_closed: int
+    total_job_applications: int
+    total_hires: int
+    catalog_quizzes: int
+    catalog_projects: int
+    waitlist_pending: int
+    waitlist_approved: int
+    waitlist_rejected: int
+
+
+# ---------------------------------------------------------------------------
+# Batch CRUD
+# ---------------------------------------------------------------------------
+
+class BatchCreateRequest(BaseModel):
+    name: str = Field(..., min_length=2, max_length=180)
+    track: str = Field(..., min_length=2, max_length=180)
+    days: str = Field(..., min_length=2, max_length=80)
+    time_ist: str = Field(..., min_length=2, max_length=80)
+    mode: str = Field(default="online", pattern="^(online|hybrid)$")
+    start_date: str = Field(..., min_length=10, max_length=10)
+    seats_total: int = Field(default=30, ge=1, le=500)
+
+
+class BatchUpdateRequest(BaseModel):
+    name: str | None = Field(default=None, min_length=2, max_length=180)
+    track: str | None = Field(default=None, min_length=2, max_length=180)
+    days: str | None = Field(default=None, min_length=2, max_length=80)
+    time_ist: str | None = Field(default=None, min_length=2, max_length=80)
+    mode: str | None = Field(default=None, pattern="^(online|hybrid)$")
+    start_date: str | None = Field(default=None, min_length=10, max_length=10)
+    seats_total: int | None = Field(default=None, ge=1, le=500)
+
+
+# ---------------------------------------------------------------------------
+# Job update
+# ---------------------------------------------------------------------------
+
+class JobPostUpdateRequest(BaseModel):
+    title: str | None = Field(default=None, min_length=2, max_length=200)
+    company_name: str | None = Field(default=None, min_length=2, max_length=180)
+    location: str | None = Field(default=None, min_length=2, max_length=120)
+    employment_type: str | None = Field(default=None, min_length=2, max_length=80)
+    description: str | None = Field(default=None, max_length=2000)
+    status: str | None = Field(default=None, pattern="^(open|closed)$")
+    eligible_batch_id: int | None = None

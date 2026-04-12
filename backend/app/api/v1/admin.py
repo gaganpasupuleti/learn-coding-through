@@ -17,7 +17,9 @@ from app.models.models import (
     JobPost,
     JobPostStatus,
     LearningBatch,
+    ProjectCatalog,
     ProjectWorkStatus,
+    QuizCatalog,
     RegistrationWaitlist,
     User,
     UserActivityLog,
@@ -27,17 +29,21 @@ from app.schemas.admin import (
     AdminActivityLogResponse,
     AdminMetricsResponse,
     AdminMonthlyKpiResponse,
+    AdminPlatformOverviewResponse,
     AdminRegistrationWaitlistResponse,
     AdminRegistrationWaitlistStatusUpdate,
     AdminStudentCreateRequest,
     AdminStudentResponse,
     AdminStudentUpdateRequest,
     AdminUserActivityResponse,
+    BatchCreateRequest,
     BatchListResponse,
+    BatchUpdateRequest,
     ClassInsightsResponse,
     ClassStudentDetailResponse,
     JobPostCreateRequest,
     JobPostResponse,
+    JobPostUpdateRequest,
     PieSliceResponse,
     RoleInsightItem,
     RoleSplitInsightsResponse,
@@ -677,3 +683,241 @@ def list_user_activity(
         .limit(limit)
         .all()
     )
+
+
+# ---------------------------------------------------------------------------
+# Platform overview
+# ---------------------------------------------------------------------------
+
+@router.get("/overview", response_model=AdminPlatformOverviewResponse)
+def get_platform_overview(
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    _ensure_learning_ops_demo_data(db, admin_user)
+
+    today = date.today()
+
+    total_users = db.query(User).count()
+    active_users = db.query(User).filter(User.is_active.is_(True)).count()
+    total_admins = db.query(User).filter(User.role == UserRole.ADMIN).count()
+
+    total_batches = db.query(LearningBatch).count()
+    active_batches = 0
+    for batch in db.query(LearningBatch).all():
+        if batch.start_date <= today <= batch.start_date + timedelta(days=120):
+            active_batches += 1
+
+    total_jobs_open = db.query(JobPost).filter(JobPost.status == JobPostStatus.OPEN).count()
+    total_jobs_closed = db.query(JobPost).filter(JobPost.status == JobPostStatus.CLOSED).count()
+    total_job_applications = db.query(JobApplication).count()
+    total_hires = db.query(JobApplication).filter(JobApplication.status == JobApplicationStatus.HIRED).count()
+
+    catalog_quizzes = db.query(QuizCatalog).count()
+    catalog_projects = db.query(ProjectCatalog).count()
+
+    waitlist_pending = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "pending").count()
+    waitlist_approved = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "approved").count()
+    waitlist_rejected = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "rejected").count()
+
+    return AdminPlatformOverviewResponse(
+        total_users=total_users,
+        active_users=active_users,
+        total_admins=total_admins,
+        total_batches=total_batches,
+        active_batches=active_batches,
+        total_jobs_open=total_jobs_open,
+        total_jobs_closed=total_jobs_closed,
+        total_job_applications=total_job_applications,
+        total_hires=total_hires,
+        catalog_quizzes=catalog_quizzes,
+        catalog_projects=catalog_projects,
+        waitlist_pending=waitlist_pending,
+        waitlist_approved=waitlist_approved,
+        waitlist_rejected=waitlist_rejected,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Batch CRUD
+# ---------------------------------------------------------------------------
+
+@router.post("/batches", response_model=BatchListResponse)
+def create_batch(
+    payload: BatchCreateRequest,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    try:
+        start = date.fromisoformat(payload.start_date)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid start_date (use YYYY-MM-DD)")
+
+    batch = LearningBatch(
+        name=payload.name,
+        track=payload.track,
+        days=payload.days,
+        time_ist=payload.time_ist,
+        mode=BatchMode(payload.mode),
+        mentor_user_id=admin_user.id,
+        start_date=start,
+        seats_total=payload.seats_total,
+        seats_filled=0,
+    )
+    db.add(batch)
+    db.flush()
+    _log_admin_action(db, admin_user.id, "batch_created", details=f"Created batch {batch.name}")
+    db.commit()
+    db.refresh(batch)
+    return _to_batch_response(batch)
+
+
+@router.patch("/batches/{batch_id}", response_model=BatchListResponse)
+def update_batch(
+    batch_id: int,
+    payload: BatchUpdateRequest,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    batch = db.query(LearningBatch).filter(LearningBatch.id == batch_id).first()
+    if not batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+
+    updates = payload.model_dump(exclude_unset=True)
+    changed: list[str] = []
+
+    if "mode" in updates and updates["mode"] is not None:
+        batch.mode = BatchMode(updates.pop("mode"))
+        changed.append("mode")
+
+    if "start_date" in updates and updates["start_date"] is not None:
+        try:
+            batch.start_date = date.fromisoformat(updates.pop("start_date"))
+            changed.append("start_date")
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid start_date (use YYYY-MM-DD)")
+
+    for field, value in updates.items():
+        if value is not None:
+            setattr(batch, field, value)
+            changed.append(field)
+
+    db.add(batch)
+    _log_admin_action(db, admin_user.id, "batch_updated", details=f"Updated batch {batch.name}: {', '.join(changed)}")
+    db.commit()
+    db.refresh(batch)
+    return _to_batch_response(batch)
+
+
+@router.delete("/batches/{batch_id}")
+def delete_batch(
+    batch_id: int,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    batch = db.query(LearningBatch).filter(LearningBatch.id == batch_id).first()
+    if not batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+
+    name = batch.name
+    db.delete(batch)
+    _log_admin_action(db, admin_user.id, "batch_deleted", details=f"Deleted batch {name}")
+    db.commit()
+    return {"detail": f"Batch '{name}' deleted"}
+
+
+# ---------------------------------------------------------------------------
+# Job update / delete
+# ---------------------------------------------------------------------------
+
+@router.patch("/jobs/{job_id}", response_model=JobPostResponse)
+def update_job(
+    job_id: int,
+    payload: JobPostUpdateRequest,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    job = db.query(JobPost).filter(JobPost.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    updates = payload.model_dump(exclude_unset=True)
+    changed: list[str] = []
+
+    if "status" in updates and updates["status"] is not None:
+        job.status = JobPostStatus(updates.pop("status"))
+        changed.append("status")
+
+    if "eligible_batch_id" in updates:
+        bid = updates.pop("eligible_batch_id")
+        if bid is not None:
+            if not db.query(LearningBatch).filter(LearningBatch.id == bid).first():
+                raise HTTPException(status_code=404, detail="Eligible batch not found")
+        job.eligible_batch_id = bid
+        changed.append("eligible_batch_id")
+
+    for field, value in updates.items():
+        if value is not None:
+            setattr(job, field, value)
+            changed.append(field)
+
+    db.add(job)
+    _log_admin_action(db, admin_user.id, "job_updated", details=f"Updated job {job.title}: {', '.join(changed)}")
+    db.commit()
+    db.refresh(job)
+
+    applications_count = db.query(JobApplication).filter(JobApplication.job_post_id == job.id).count()
+    return JobPostResponse(
+        id=job.id,
+        title=job.title,
+        company_name=job.company_name,
+        location=job.location,
+        employment_type=job.employment_type,
+        description=job.description,
+        status=job.status.value,
+        eligible_batch_id=job.eligible_batch_id,
+        eligible_batch_name=job.eligible_batch.name if job.eligible_batch else None,
+        applications_count=applications_count,
+        created_at=job.created_at,
+    )
+
+
+@router.delete("/jobs/{job_id}")
+def delete_job(
+    job_id: int,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    job = db.query(JobPost).filter(JobPost.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    title = job.title
+    db.delete(job)
+    _log_admin_action(db, admin_user.id, "job_deleted", details=f"Deleted job {title}")
+    db.commit()
+    return {"detail": f"Job '{title}' deleted"}
+
+
+# ---------------------------------------------------------------------------
+# Student delete
+# ---------------------------------------------------------------------------
+
+@router.delete("/students/{student_id}")
+def delete_student(
+    student_id: int,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    student = db.query(User).filter(User.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    if student.id == admin_user.id:
+        raise HTTPException(status_code=400, detail="Cannot delete yourself")
+
+    email = student.email
+    student.is_active = False
+    db.add(student)
+    _log_admin_action(db, admin_user.id, "student_deactivated", target_user_id=student.id, details=f"Deactivated {email}")
+    db.commit()
+    return {"detail": f"Student '{email}' deactivated"}

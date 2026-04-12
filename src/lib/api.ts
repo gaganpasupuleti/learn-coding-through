@@ -608,6 +608,119 @@ export async function fetchAdminUserActivity(token: string, limit = 50): Promise
   return parseOrThrow(response) as Promise<AdminUserActivity[]>
 }
 
+// ── Platform overview ──────────────────────────────────────────────────────────
+
+export interface AdminPlatformOverview {
+  total_users: number
+  active_users: number
+  total_admins: number
+  total_batches: number
+  active_batches: number
+  total_jobs_open: number
+  total_jobs_closed: number
+  total_job_applications: number
+  total_hires: number
+  catalog_quizzes: number
+  catalog_projects: number
+  waitlist_pending: number
+  waitlist_approved: number
+  waitlist_rejected: number
+}
+
+export async function fetchAdminPlatformOverview(token: string): Promise<AdminPlatformOverview> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/overview`, {
+    headers: buildAuthHeaders(token),
+  })
+  return parseOrThrow(response) as Promise<AdminPlatformOverview>
+}
+
+// ── Batch CRUD ─────────────────────────────────────────────────────────────────
+
+export interface AdminBatchCreatePayload {
+  name: string
+  track: string
+  days: string
+  time_ist: string
+  mode: string
+  start_date: string
+  seats_total: number
+}
+
+export interface AdminBatchUpdatePayload {
+  name?: string
+  track?: string
+  days?: string
+  time_ist?: string
+  mode?: string
+  start_date?: string
+  seats_total?: number
+}
+
+export async function createAdminBatch(token: string, payload: AdminBatchCreatePayload): Promise<AdminBatch> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/batches`, {
+    method: 'POST',
+    headers: buildAuthHeaders(token),
+    body: JSON.stringify(payload),
+  })
+  return parseOrThrow(response) as Promise<AdminBatch>
+}
+
+export async function updateAdminBatch(token: string, batchId: number, payload: AdminBatchUpdatePayload): Promise<AdminBatch> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/batches/${batchId}`, {
+    method: 'PATCH',
+    headers: buildAuthHeaders(token),
+    body: JSON.stringify(payload),
+  })
+  return parseOrThrow(response) as Promise<AdminBatch>
+}
+
+export async function deleteAdminBatch(token: string, batchId: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/batches/${batchId}`, {
+    method: 'DELETE',
+    headers: buildAuthHeaders(token),
+  })
+  await parseOrThrow(response)
+}
+
+// ── Job update / delete ────────────────────────────────────────────────────────
+
+export interface AdminJobUpdatePayload {
+  title?: string
+  company_name?: string
+  location?: string
+  employment_type?: string
+  description?: string
+  status?: 'open' | 'closed'
+  eligible_batch_id?: number | null
+}
+
+export async function updateAdminJob(token: string, jobId: number, payload: AdminJobUpdatePayload): Promise<AdminJobPost> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/jobs/${jobId}`, {
+    method: 'PATCH',
+    headers: buildAuthHeaders(token),
+    body: JSON.stringify(payload),
+  })
+  return parseOrThrow(response) as Promise<AdminJobPost>
+}
+
+export async function deleteAdminJob(token: string, jobId: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/jobs/${jobId}`, {
+    method: 'DELETE',
+    headers: buildAuthHeaders(token),
+  })
+  await parseOrThrow(response)
+}
+
+// ── Student delete ─────────────────────────────────────────────────────────────
+
+export async function deleteAdminStudent(token: string, studentId: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/students/${studentId}`, {
+    method: 'DELETE',
+    headers: buildAuthHeaders(token),
+  })
+  await parseOrThrow(response)
+}
+
 // ── Catalog types ──────────────────────────────────────────────────────────────
 
 export type CatalogQuizQuestionType =
