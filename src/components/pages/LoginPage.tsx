@@ -63,6 +63,7 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
   const [newPassword, setNewPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const googleButtonRef = useRef<HTMLDivElement | null>(null)
+  const googleButtonHostRef = useRef<HTMLDivElement | null>(null)
   const runtimeGoogleClientId =
     typeof window !== 'undefined'
       ? (window.__RUNTIME_CONFIG__?.VITE_GOOGLE_CLIENT_ID ?? '').trim()
@@ -221,7 +222,7 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
         size: 'large',
         text: 'continue_with',
         shape: 'pill',
-        width: 320,
+        width: Math.max(220, Math.min(360, googleButtonHostRef.current?.clientWidth ?? 320)),
       })
     }
 
@@ -270,7 +271,7 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm space-y-5">
+      <div className="w-full max-w-md space-y-5">
 
         {/* Brand mark */}
         <div className="text-center space-y-2">
@@ -282,12 +283,12 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
         </div>
 
         {/* Mode tabs */}
-        <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
+        <div className="grid grid-cols-2 gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
           {(['login', 'signup', 'demoRegister', 'forgotPassword'] as AuthMode[]).map((m) => (
             <button
               key={m}
               type="button"
-              className={`flex-1 text-sm py-1.5 rounded-md font-medium transition-all duration-150 ${
+              className={`text-sm py-2 rounded-md font-medium transition-all duration-150 ${
                 mode === m
                   ? 'bg-blue-600 text-white shadow-sm'
                   : 'text-slate-500 hover:text-slate-800'
@@ -300,7 +301,7 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6">
           {mode === 'demoRegister' ? (
             <div className="space-y-5">
               <div className="space-y-1">
@@ -497,7 +498,9 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
               {googleClientId ? (
                 <div className="space-y-2">
                   <p className="text-xs text-center text-slate-400 uppercase tracking-wide">or continue with</p>
-                  <div className="flex justify-center" ref={googleButtonRef} />
+                  <div className="flex justify-center w-full" ref={googleButtonHostRef}>
+                    <div ref={googleButtonRef} />
+                  </div>
                 </div>
               ) : (
                 <p className="text-xs text-center text-slate-400">
@@ -509,10 +512,10 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
                 <p className="text-xs text-center text-slate-400">
                   No account?{' '}
                   <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('signup')}>Sign up free</button>
-                  {' '}or{' '}
-                  <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('demoRegister')}>register for demo</button>
-                  {' '}or{' '}
-                  <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('forgotPassword')}>reset password</button>
+                  <span className="mx-1">|</span>
+                  <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('demoRegister')}>Demo</button>
+                  <span className="mx-1">|</span>
+                  <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('forgotPassword')}>Reset password</button>
                 </p>
               )}
             </div>
