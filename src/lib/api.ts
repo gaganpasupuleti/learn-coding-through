@@ -291,6 +291,29 @@ export interface AdminRoleSplitInsights {
   faculty_insights: AdminRoleInsightItem[]
 }
 
+export interface AdminRegistrationWaitlistEntry {
+  id: number
+  email: string
+  full_name: string | null
+  source: string
+  status: 'pending' | 'approved' | 'rejected'
+  attempt_count: number
+  first_attempted_at: string
+  last_attempted_at: string
+}
+
+export interface AdminUserActivity {
+  id: number
+  user_id: number | null
+  event_type: string
+  route: string
+  method: string | null
+  status_code: number | null
+  duration_ms: number | null
+  metadata_json: string | null
+  occurred_at: string
+}
+
 export interface DatabaseHealth {
   status: 'ok' | 'error'
   database: string
@@ -552,6 +575,37 @@ export async function updateAdminStudent(
     body: JSON.stringify(payload),
   })
   return parseOrThrow(response) as Promise<AdminStudent>
+}
+
+export async function fetchAdminRegistrationWaitlist(
+  token: string,
+  status?: 'pending' | 'approved' | 'rejected'
+): Promise<AdminRegistrationWaitlistEntry[]> {
+  const query = status ? `?status=${encodeURIComponent(status)}` : ''
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/registration-waitlist${query}`, {
+    headers: buildAuthHeaders(token),
+  })
+  return parseOrThrow(response) as Promise<AdminRegistrationWaitlistEntry[]>
+}
+
+export async function updateAdminRegistrationWaitlistStatus(
+  token: string,
+  entryId: number,
+  status: 'pending' | 'approved' | 'rejected'
+): Promise<AdminRegistrationWaitlistEntry> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/registration-waitlist/${entryId}`, {
+    method: 'PATCH',
+    headers: buildAuthHeaders(token),
+    body: JSON.stringify({ status }),
+  })
+  return parseOrThrow(response) as Promise<AdminRegistrationWaitlistEntry>
+}
+
+export async function fetchAdminUserActivity(token: string, limit = 50): Promise<AdminUserActivity[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/user-activity?limit=${limit}`, {
+    headers: buildAuthHeaders(token),
+  })
+  return parseOrThrow(response) as Promise<AdminUserActivity[]>
 }
 
 // ── Catalog types ──────────────────────────────────────────────────────────────

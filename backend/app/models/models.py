@@ -132,6 +132,7 @@ class User(Base):
         back_populates="target_user",
     )
     typing_attempts = relationship("TypingAttempt", back_populates="user", cascade="all,delete-orphan")
+    activity_logs = relationship("UserActivityLog", back_populates="user", cascade="all,delete-orphan")
 
 
 class Role(Base):
@@ -556,3 +557,39 @@ class TypingAttempt(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
     user = relationship("User", back_populates="typing_attempts")
+
+
+class RegistrationWaitlist(Base):
+    __tablename__ = "registration_waitlist"
+    __table_args__ = (
+        Index("ix_registration_waitlist_status_created", "status", "first_attempted_at"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
+    full_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    source: Mapped[str] = mapped_column(String(32), nullable=False, default="register")
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="pending")
+    attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    first_attempted_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    last_attempted_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class UserActivityLog(Base):
+    __tablename__ = "user_activity_logs"
+    __table_args__ = (
+        Index("ix_user_activity_logs_user_occurred", "user_id", "occurred_at"),
+        Index("ix_user_activity_logs_event_occurred", "event_type", "occurred_at"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    event_type: Mapped[str] = mapped_column(String(40), nullable=False)
+    route: Mapped[str] = mapped_column(String(300), nullable=False)
+    method: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    status_code: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    metadata_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("User", back_populates="activity_logs")

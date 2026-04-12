@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { LandingPage } from '@/components/pages/LandingPage'
 import { ProjectsPage } from '@/components/pages/ProjectsPage'
 import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
@@ -16,6 +16,7 @@ import { getStoredUser, isDemoUser, type AuthUser } from '@/lib/auth'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
 import { isRailwayPublicHost } from '@/lib/host-env'
+import { recordRouteVisit } from '@/lib/activity'
 import {
   canAttemptDemoQuiz,
   canStartDemoProject,
@@ -27,12 +28,13 @@ import {
 
 export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'typing' | 'quiz' | 'roadmapper' | 'resume'
 
-type AuthState = AuthUser | 'public' | null
+type AuthState = AuthUser | null
 
 function App() {
   const [authState, setAuthState] = useState<AuthState>(() => getStoredUser())
   const [studentPage, setStudentPage] = useState<StudentPage>('landing')
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+  const routeStartRef = useRef<{ route: string; startedAt: number } | null>(null)
 
   const handleAuthenticated = (user: AuthUser) => {
     setAuthState(user)
@@ -95,22 +97,31 @@ function App() {
 
   const wrapperClass = 'min-h-screen bg-background'
 
+  useEffect(() => {
+    if (!authState) {
+      routeStartRef.current = null
+      return
+    }
+
+    const user = authState as AuthUser
+    const route = user.role === 'admin'
+      ? 'admin'
+      : studentPage === 'learning' && selectedProjectId
+        ? `learning:${selectedProjectId}`
+        : studentPage
+
+    const now = Date.now()
+    const previous = routeStartRef.current
+    if (previous && previous.route !== route) {
+      void recordRouteVisit(previous.route, now - previous.startedAt)
+    }
+    routeStartRef.current = { route, startedAt: now }
+  }, [authState, studentPage, selectedProjectId])
+
   if (!authState) {
     return (
       <div className={wrapperClass}>
-        <LoginPage
-          onAuthenticated={handleAuthenticated}
-          onBrowsePublicly={() => setAuthState('public')}
-        />
-        <Toaster position="top-center" />
-      </div>
-    )
-  }
-
-  if (authState === 'public') {
-    return (
-      <div className={wrapperClass}>
-        <CareerMapperPage />
+        <LoginPage onAuthenticated={handleAuthenticated} />
         <Toaster position="top-center" />
       </div>
     )

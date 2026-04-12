@@ -1,21 +1,24 @@
 import socket
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from jose import JWTError, jwt
 from sqlalchemy import text
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
 
-from app.api.v1 import admin, auth, credits, interview, progress, projects, quiz, resume, roadmap, roles, execute, typing
+from app.api.v1 import activity, admin, auth, credits, interview, progress, projects, quiz, resume, roadmap, roles, execute, typing
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
-from app.models.models import TypingAttempt
-from app.services.seed import seed_admin_user, seed_catalog_data, seed_default_roles
+from app.core.security import ALGORITHM
+from app.models.models import TypingAttempt, User, UserActivityLog
+from app.services.seed import seed_admin_user, seed_catalog_data, seed_default_roles, seed_promoted_admins
 from executors.java_executor import verify_java_runtime_setup
 
 
@@ -131,6 +134,60 @@ app.add_middleware(
 )
 
 
+def _resolve_user_id_from_auth_header(authorization_header: str | None) -> int | None:
+    if not authorization_header or not authorization_header.startswith("Bearer "):
+        return None
+
+    token = authorization_header.replace("Bearer ", "", 1).strip()
+    if not token:
+        return None
+
+    try:
+        payload = jwt.decode(token, settings.secret_key, algorithms=[ALGORITHM])
+        subject = payload.get("sub")
+        return int(subject) if subject is not None else None
+    except (JWTError, ValueError, TypeError):
+        return None
+
+
+@app.middleware("http")
+async def log_api_request_activity(request, call_next):
+    started = time.perf_counter()
+    response = await call_next(request)
+
+    path = request.url.path
+    if not path.startswith("/api/v1"):
+        return response
+
+    elapsed_ms = max(0, int((time.perf_counter() - started) * 1000))
+    db = SessionLocal()
+    try:
+        user_id = _resolve_user_id_from_auth_header(request.headers.get("authorization"))
+        if user_id is not None:
+            user_exists = db.query(User.id).filter(User.id == user_id).first() is not None
+            if not user_exists:
+                user_id = None
+
+        activity_row = UserActivityLog(
+            user_id=user_id,
+            event_type="api_request",
+            route=path,
+            method=request.method,
+            status_code=response.status_code,
+            duration_ms=elapsed_ms,
+            metadata_json=request.headers.get("user-agent"),
+        )
+        db.add(activity_row)
+        db.commit()
+    except Exception as exc:
+        print(f"Warning: unable to persist API activity log: {exc}")
+        db.rollback()
+    finally:
+        db.close()
+
+    return response
+
+
 @app.on_event("startup")
 def startup_event():
     # Surface Java toolchain problems at boot time without blocking non-Java features.
@@ -155,6 +212,7 @@ def startup_event():
                 settings.bootstrap_admin_password,
                 settings.bootstrap_admin_full_name,
             )
+            seed_promoted_admins(db, settings.promote_admin_emails)
             seed_catalog_data(db)
         finally:
             db.close()
@@ -223,6 +281,7 @@ app.include_router(roles.router, prefix="/api/v1")
 app.include_router(roadmap.router, prefix="/api/v1")
 app.include_router(progress.router, prefix="/api/v1")
 app.include_router(typing.router, prefix="/api/v1")
+app.include_router(activity.router, prefix="/api/v1")
 app.include_router(credits.router, prefix="/api/v1")
 app.include_router(quiz.router, prefix="/api/v1")
 app.include_router(projects.router, prefix="/api/v1")

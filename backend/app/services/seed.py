@@ -132,12 +132,67 @@ def seed_default_roles(db: Session):
 
 
 def seed_admin_user(db: Session, email: str | None, password: str | None, full_name: str):
-    if not email or not password:
+    if not email:
         return
 
     normalized_email = email.strip().lower()
     if not normalized_email:
         return
+
+    existing = db.query(User).filter(User.email == normalized_email).first()
+    if existing:
+        changed = False
+        if existing.role != UserRole.ADMIN:
+            existing.role = UserRole.ADMIN
+            changed = True
+        if full_name and (not existing.full_name or not existing.full_name.strip()):
+            existing.full_name = full_name.strip()
+            changed = True
+        if password and password.strip():
+            existing.password_hash = get_password_hash(password.strip())
+            changed = True
+
+        if changed:
+            db.add(existing)
+            db.commit()
+            logger.info("Promoted existing user to admin: %s", normalized_email)
+        return
+
+    if not password or not password.strip():
+        logger.warning("Cannot create bootstrap admin '%s' without password", normalized_email)
+        return
+
+    admin_user = User(
+        email=normalized_email,
+        full_name=(full_name or "Platform Admin").strip() or "Platform Admin",
+        password_hash=get_password_hash(password.strip()),
+        role=UserRole.ADMIN,
+        is_active=True,
+    )
+    db.add(admin_user)
+    db.commit()
+    logger.info("Created bootstrap admin user: %s", normalized_email)
+
+
+def seed_promoted_admins(db: Session, emails: list[str] | None):
+    if not emails:
+        return
+
+    changed_count = 0
+    for email in emails:
+        normalized_email = (email or "").strip().lower()
+        if not normalized_email:
+            continue
+
+        user = db.query(User).filter(User.email == normalized_email).first()
+        if user and user.role != UserRole.ADMIN:
+            user.role = UserRole.ADMIN
+            db.add(user)
+            changed_count += 1
+
+    if changed_count:
+        db.commit()
+        logger.info("Promoted %d configured admin email(s)", changed_count)
 
 
 # ──────────────────────────────────────────────────────────────────────────────

@@ -50,8 +50,13 @@ def get_current_user(db: Session = Depends(get_db), token: Optional[str] = Depen
         user = _try_legacy_auth(token, db)
         if user is not None:
             return user
-    # No token or invalid token — fall back to the shared demo student account.
-    return _get_or_create_demo_user(db)
+
+    if settings.allow_unauthenticated_demo_user:
+        return _get_or_create_demo_user(db)
+
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    raise HTTPException(status_code=401, detail="Invalid or expired token")
 
 
 def require_admin(current_user: User = Depends(get_current_user)) -> User:

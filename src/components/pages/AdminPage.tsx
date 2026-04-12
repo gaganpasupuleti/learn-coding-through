@@ -22,8 +22,10 @@ import {
   AdminMetrics,
   AdminMonthlyKpis,
   AdminRoleSplitInsights,
+  AdminRegistrationWaitlistEntry,
   AdminStudent,
   AdminStudentCreatePayload,
+  AdminUserActivity,
   createAdminJob,
   createAdminStudent,
   fetchAdminActivity,
@@ -33,13 +35,16 @@ import {
   fetchAdminMetrics,
   fetchAdminMonthlyKpis,
   fetchAdminRoleSplitInsights,
+  fetchAdminRegistrationWaitlist,
+  fetchAdminUserActivity,
   fetchDatabaseHealth,
   fetchAdminStudents,
+  updateAdminRegistrationWaitlistStatus,
   updateAdminStudent,
 } from '@/lib/api'
 import { getAuthToken } from '@/lib/auth'
 
-type AdminSection = 'dashboard' | 'board' | 'students' | 'classes' | 'jobs' | 'activity'
+type AdminSection = 'dashboard' | 'board' | 'students' | 'classes' | 'jobs' | 'activity' | 'access'
 type StudentWorkflowStage = 'new' | 'enrolled' | 'in_progress' | 'needs_attention'
 
 const WORKFLOW_STAGE_STORAGE_KEY = 'admin-student-workflow-stages'
@@ -99,6 +104,7 @@ const sectionTitle: Record<AdminSection, string> = {
   classes: 'Classes & Timings',
   jobs: 'Job Portal',
   activity: 'Admin Activity',
+  access: 'Access Control',
 }
 
 export function AdminPage() {
@@ -124,6 +130,8 @@ export function AdminPage() {
   const [classInsights, setClassInsights] = useState<AdminClassInsights | null>(null)
 
   const [jobs, setJobs] = useState<AdminJobPost[]>([])
+  const [waitlistEntries, setWaitlistEntries] = useState<AdminRegistrationWaitlistEntry[]>([])
+  const [userActivityEntries, setUserActivityEntries] = useState<AdminUserActivity[]>([])
   const [jobPayload, setJobPayload] = useState<AdminJobCreatePayload>(defaultJobPayload)
   const [createPayload, setCreatePayload] = useState<AdminStudentCreatePayload>(defaultCreatePayload)
 
@@ -209,7 +217,17 @@ export function AdminPage() {
 
     try {
       setIsLoading(true)
-      const [studentList, adminMetrics, kpis, splitInsights, activity, batchList, jobList] = await Promise.all([
+      const [
+        studentList,
+        adminMetrics,
+        kpis,
+        splitInsights,
+        activity,
+        batchList,
+        jobList,
+        waitlist,
+        userActivity,
+      ] = await Promise.all([
         fetchAdminStudents(token, search),
         fetchAdminMetrics(token),
         fetchAdminMonthlyKpis(token),
@@ -217,6 +235,8 @@ export function AdminPage() {
         fetchAdminActivity(token, 30),
         fetchAdminBatches(token),
         fetchAdminJobs(token),
+        fetchAdminRegistrationWaitlist(token),
+        fetchAdminUserActivity(token, 80),
       ])
 
       setStudents(studentList)
@@ -226,6 +246,8 @@ export function AdminPage() {
       setActivityLogs(activity)
       setBatches(batchList)
       setJobs(jobList)
+      setWaitlistEntries(waitlist)
+      setUserActivityEntries(userActivity)
 
       if (studentList.length > 0 && !selectedStudentId) {
         setSelectedStudentId(studentList[0].id)
@@ -235,6 +257,25 @@ export function AdminPage() {
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to load admin data'
+      toast.error(message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleUpdateWaitlistStatus = async (entryId: number, status: 'pending' | 'approved' | 'rejected') => {
+    if (!token.trim()) {
+      toast.error('Paste an admin bearer token first.')
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      await updateAdminRegistrationWaitlistStatus(token, entryId, status)
+      setWaitlistEntries(await fetchAdminRegistrationWaitlist(token))
+      toast.success(`Waitlist updated to ${status}.`)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to update waitlist'
       toast.error(message)
     } finally {
       setIsLoading(false)
@@ -423,6 +464,7 @@ export function AdminPage() {
     { key: 'classes', label: 'Classes', icon: <CalendarBlank size={16} /> },
     { key: 'jobs', label: 'Jobs', icon: <Briefcase size={16} /> },
     { key: 'activity', label: 'Activity', icon: <ClockCounterClockwise size={16} /> },
+    { key: 'access', label: 'Access Control', icon: <UsersThree size={16} /> },
   ]
 
   return (
@@ -487,6 +529,8 @@ export function AdminPage() {
                       setJobs([])
                       setBatches([])
                       setActivityLogs([])
+                      setWaitlistEntries([])
+                      setUserActivityEntries([])
                       setClassInsights(null)
                     }}
                   >
@@ -733,6 +777,53 @@ export function AdminPage() {
                   {activityLogs.length === 0 && <p className="text-sm text-muted-foreground">No activity found.</p>}
                 </div>
               </Card>
+            )}
+
+            {section === 'access' && (
+              <div className="grid gap-4 xl:grid-cols-2">
+                <Card className="admin-surface p-4 space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-lg font-semibold">Registration Waitlist</h3>
+                    <p className="text-xs text-muted-foreground">Approve one-by-one to allow signup beyond cap</p>
+                  </div>
+                  <div className="space-y-2 max-h-[640px] overflow-auto pr-1">
+                    {waitlistEntries.map((entry) => (
+                      <div key={entry.id} className="rounded-md border p-3 space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="text-sm font-semibold">{entry.email}</p>
+                            <p className="text-xs text-muted-foreground">{entry.full_name || 'No name'} · {entry.source} · attempts {entry.attempt_count}</p>
+                            <p className="text-xs text-muted-foreground">Last tried: {new Date(entry.last_attempted_at).toLocaleString()}</p>
+                          </div>
+                          <span className="text-xs rounded bg-primary/10 px-2 py-1 text-primary font-semibold">{entry.status}</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <Button size="sm" variant="default" onClick={() => handleUpdateWaitlistStatus(entry.id, 'approved')} disabled={isLoading}>Approve</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleUpdateWaitlistStatus(entry.id, 'pending')} disabled={isLoading}>Mark Pending</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleUpdateWaitlistStatus(entry.id, 'rejected')} disabled={isLoading}>Reject</Button>
+                        </div>
+                      </div>
+                    ))}
+                    {waitlistEntries.length === 0 && <p className="text-sm text-muted-foreground">No waitlist entries found.</p>}
+                  </div>
+                </Card>
+
+                <Card className="admin-surface p-4 space-y-3">
+                  <h3 className="text-lg font-semibold">Recent User Activity</h3>
+                  <div className="space-y-2 max-h-[640px] overflow-auto pr-1">
+                    {userActivityEntries.map((entry) => (
+                      <div key={entry.id} className="rounded-md border p-3">
+                        <p className="text-sm font-semibold">{entry.event_type} · {entry.route}</p>
+                        <p className="text-xs text-muted-foreground">
+                          User #{entry.user_id ?? '-'} · {entry.method ?? '-'} · {entry.status_code ?? '-'} · {entry.duration_ms ?? 0}ms
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">{new Date(entry.occurred_at).toLocaleString()}</p>
+                      </div>
+                    ))}
+                    {userActivityEntries.length === 0 && <p className="text-sm text-muted-foreground">No user activity found.</p>}
+                  </div>
+                </Card>
+              </div>
             )}
           </div>
         </div>

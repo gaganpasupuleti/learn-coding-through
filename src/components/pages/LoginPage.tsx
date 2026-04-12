@@ -17,7 +17,6 @@ import {
 
 interface LoginPageProps {
   onAuthenticated: (user: AuthUser) => void
-  onBrowsePublicly?: () => void
 }
 
 type AuthMode = 'login' | 'signup' | 'demoRegister' | 'forgotPassword'
@@ -54,7 +53,7 @@ declare global {
   }
 }
 
-export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps) {
+export function LoginPage({ onAuthenticated }: LoginPageProps) {
   const [mode, setMode] = useState<AuthMode>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -123,21 +122,7 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
   }
 
   const handleDemoAccess = () => {
-    if (!email.trim() || !fullName.trim()) {
-      toast.error('Name and email are required for demo registration.')
-      return
-    }
-
-    const demoUser: AuthUser = {
-      id: -1,
-      email: email.trim().toLowerCase(),
-      full_name: fullName.trim(),
-      role: 'demo',
-    }
-    storeUser(demoUser)
-    setDemoFlag(true)
-    toast.success('Demo registration complete. You can start 2 projects and 2 quizzes.')
-    onAuthenticated(demoUser)
+    toast.error('Demo access is disabled. Please register to continue.')
   }
 
   const handleRequestPasswordReset = async () => {
@@ -432,8 +417,13 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
                 <p className="text-base text-blue-100/85 leading-relaxed">
                   {mode === 'login'
                     ? 'Sign in to continue your learning journey.'
-                    : 'Free demo access: try any 2 projects + 2 quizzes.'}
+                    : 'Create an account to unlock the full learning platform.'}
                 </p>
+                {mode === 'signup' && (
+                  <p className="text-sm text-amber-200/95">
+                    Registrations are temporarily capped at 1500 active users. If the limit is reached, your email will be waitlisted and approved one by one.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-3">
@@ -506,24 +496,11 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
                     Don't have an account?{' '}
                     <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('signup')}>Register</button>
                   </p>
-                  <p>
-                    Student exploring first?{' '}
-                    <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('demoRegister')}>Use Student Demo</button>
-                  </p>
                 </div>
               )}
             </div>
           )}
         </div>
-
-        {onBrowsePublicly && (
-          <p className="text-sm text-center text-blue-100/80">
-            Just exploring?{' '}
-            <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={onBrowsePublicly}>
-              Browse Career Mapper publicly
-            </button>
-          </p>
-        )}
       </div>
     </div>
   )

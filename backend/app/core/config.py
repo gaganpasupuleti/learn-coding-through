@@ -22,7 +22,13 @@ class Settings(BaseSettings):
     bootstrap_admin_email: str | None = None
     bootstrap_admin_password: str | None = None
     bootstrap_admin_full_name: str = "Platform Admin"
+    promote_admin_emails: Annotated[list[str], NoDecode] = Field(
+        default_factory=lambda: ["gaganpasupuleti@gmail.com"]
+    )
     google_oauth_client_id: str | None = None
+    registration_limit_enabled: bool = True
+    registration_user_limit: int = 1500
+    allow_unauthenticated_demo_user: bool = False
     auto_start_resume_backend: bool = False
     resume_backend_host: str = "127.0.0.1"
     resume_backend_port: int = 8001
@@ -49,6 +55,15 @@ class Settings(BaseSettings):
     def parse_cors_origins(cls, value):
         if isinstance(value, str):
             return [origin.strip() for origin in value.split(",") if origin.strip()]
+        return value
+
+    @field_validator("promote_admin_emails", mode="before")
+    @classmethod
+    def parse_promoted_admin_emails(cls, value):
+        if isinstance(value, str):
+            return [email.strip().lower() for email in value.split(",") if email.strip()]
+        if isinstance(value, list):
+            return [str(email).strip().lower() for email in value if str(email).strip()]
         return value
 
     @field_validator("environment", mode="before")

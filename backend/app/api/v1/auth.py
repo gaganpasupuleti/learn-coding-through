@@ -1,8 +1,10 @@
 import secrets
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token as google_id_token
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
@@ -15,7 +17,7 @@ from app.core.security import (
     verify_password,
     verify_password_reset_token,
 )
-from app.models.models import User, UserRole
+from app.models.models import RegistrationWaitlist, User, UserRole
 from app.schemas.auth import (
     ForgotPasswordRequest,
     ForgotPasswordResponse,
@@ -32,11 +34,75 @@ from app.schemas.auth import (
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
+def _active_user_count(db: Session) -> int:
+    return int(db.query(func.count(User.id)).filter(User.is_active.is_(True)).scalar() or 0)
+
+
+def _upsert_waitlist(db: Session, email: str, full_name: str | None, source: str) -> None:
+    normalized_email = email.strip().lower()
+    normalized_name = full_name.strip() if full_name else None
+
+    entry = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.email == normalized_email).first()
+    now = datetime.utcnow()
+    if entry is None:
+        entry = RegistrationWaitlist(
+            email=normalized_email,
+            full_name=normalized_name,
+            source=source,
+            status="pending",
+            attempt_count=1,
+            first_attempted_at=now,
+            last_attempted_at=now,
+        )
+        db.add(entry)
+    else:
+        entry.attempt_count += 1
+        entry.last_attempted_at = now
+        if normalized_name and not entry.full_name:
+            entry.full_name = normalized_name
+        entry.source = source
+        db.add(entry)
+    db.commit()
+
+
+def _enforce_registration_limit(db: Session, email: str, full_name: str | None, source: str) -> None:
+    normalized_email = email.strip().lower()
+    approved_entry = (
+        db.query(RegistrationWaitlist)
+        .filter(
+            RegistrationWaitlist.email == normalized_email,
+            RegistrationWaitlist.status == "approved",
+        )
+        .first()
+    )
+    if approved_entry is not None:
+        return
+
+    if not settings.registration_limit_enabled:
+        return
+
+    active_users = _active_user_count(db)
+    if active_users < settings.registration_user_limit:
+        return
+
+    _upsert_waitlist(db, email=normalized_email, full_name=full_name, source=source)
+    raise HTTPException(
+        status_code=429,
+        detail=(
+            "User limit reached. Current active users reached "
+            f"{active_users}. Registrations are closed at {settings.registration_user_limit}. "
+            "Your email has been saved. We will grant access one by one once capacity increases."
+        ),
+    )
+
+
 @router.post("/register", response_model=UserResponse)
 def register(payload: UserRegister, db: Session = Depends(get_db)):
     existing = db.query(User).filter(User.email == payload.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
+
+    _enforce_registration_limit(db, email=payload.email, full_name=payload.full_name, source="register")
 
     user = User(
         email=payload.email,
@@ -88,6 +154,7 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
 
     user = db.query(User).filter(User.email == email).first()
     if user is None:
+        _enforce_registration_limit(db, email=email, full_name=full_name, source="google")
         user = User(
             email=email,
             full_name=full_name,

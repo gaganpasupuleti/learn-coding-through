@@ -102,7 +102,7 @@ function resolveApiBaseUrl(): string {
   return normalized
 }
 
-const API_BASE_URL = resolveApiBaseUrl()
+export const API_BASE_URL = resolveApiBaseUrl()
 
 interface MeResponse {
   id: number

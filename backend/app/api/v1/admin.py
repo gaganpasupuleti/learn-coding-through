@@ -18,16 +18,21 @@ from app.models.models import (
     JobPostStatus,
     LearningBatch,
     ProjectWorkStatus,
+    RegistrationWaitlist,
     User,
+    UserActivityLog,
     UserRole,
 )
 from app.schemas.admin import (
     AdminActivityLogResponse,
     AdminMetricsResponse,
     AdminMonthlyKpiResponse,
+    AdminRegistrationWaitlistResponse,
+    AdminRegistrationWaitlistStatusUpdate,
     AdminStudentCreateRequest,
     AdminStudentResponse,
     AdminStudentUpdateRequest,
+    AdminUserActivityResponse,
     BatchListResponse,
     ClassInsightsResponse,
     ClassStudentDetailResponse,
@@ -606,4 +611,69 @@ def get_role_split_insights(
             RoleInsightItem(label="Avg Attendance %", value=round(float(avg_attendance))),
             RoleInsightItem(label="Projects Reviewed", value=projects_reviewed),
         ],
+    )
+
+
+@router.get("/registration-waitlist", response_model=list[AdminRegistrationWaitlistResponse])
+def list_registration_waitlist(
+    status: str | None = Query(default=None),
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=100, ge=1, le=500),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    query = db.query(RegistrationWaitlist)
+    if status:
+        normalized = status.strip().lower()
+        if normalized not in {"pending", "approved", "rejected"}:
+            raise HTTPException(status_code=400, detail="Invalid status filter")
+        query = query.filter(RegistrationWaitlist.status == normalized)
+
+    return (
+        query.order_by(RegistrationWaitlist.last_attempted_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+
+@router.patch("/registration-waitlist/{entry_id}", response_model=AdminRegistrationWaitlistResponse)
+def update_registration_waitlist_status(
+    entry_id: int,
+    payload: AdminRegistrationWaitlistStatusUpdate,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    entry = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.id == entry_id).first()
+    if not entry:
+        raise HTTPException(status_code=404, detail="Waitlist entry not found")
+
+    old_status = entry.status
+    new_status = payload.status.strip().lower()
+    entry.status = new_status
+    db.add(entry)
+    _log_admin_action(
+        db,
+        admin_user_id=admin_user.id,
+        action="waitlist_status_updated",
+        details=f"{entry.email}: {old_status} -> {new_status}",
+    )
+    db.commit()
+    db.refresh(entry)
+    return entry
+
+
+@router.get("/user-activity", response_model=list[AdminUserActivityResponse])
+def list_user_activity(
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=100, ge=1, le=500),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    return (
+        db.query(UserActivityLog)
+        .order_by(UserActivityLog.occurred_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
     )

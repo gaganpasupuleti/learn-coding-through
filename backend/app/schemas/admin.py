@@ -147,3 +147,36 @@ class RoleInsightItem(BaseModel):
 class RoleSplitInsightsResponse(BaseModel):
     student_insights: list[RoleInsightItem]
     faculty_insights: list[RoleInsightItem]
+
+
+class AdminRegistrationWaitlistResponse(BaseModel):
+    id: int
+    email: EmailStr
+    full_name: str | None
+    source: str
+    status: str
+    attempt_count: int
+    first_attempted_at: datetime
+    last_attempted_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class AdminRegistrationWaitlistStatusUpdate(BaseModel):
+    status: str = Field(..., pattern="^(pending|approved|rejected)$")
+
+
+class AdminUserActivityResponse(BaseModel):
+    id: int
+    user_id: int | None
+    event_type: str
+    route: str
+    method: str | None
+    status_code: int | None
+    duration_ms: int | None
+    metadata_json: str | None
+    occurred_at: datetime
+
+    class Config:
+        from_attributes = True

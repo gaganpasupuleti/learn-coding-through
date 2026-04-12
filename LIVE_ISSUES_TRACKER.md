@@ -1,6 +1,6 @@
 # Live Product Issues Tracker
 
-Last updated: 2026-04-08
+Last updated: 2026-04-13
 
 ## Current Status Snapshot (2026-04-05)
 
@@ -69,7 +69,7 @@ Last updated: 2026-04-08
   - Add startup diagnostics banner/log for active auth mode.
   - Add E2E tests for admin login, student login, signup, invalid credentials.
 
-### 13) [P0] Assessment integrity controls missing (no screenshot/screen-recording safeguards)
+### 13) [PARTIAL] Assessment integrity controls missing (no screenshot/screen-recording safeguards)
 - Problem: Quiz/typing assessments currently do not enforce integrity controls against easy answer capture and sharing.
 - Impact: Students can capture and redistribute answers; scoring reliability drops for evaluative use cases.
 - Required outcome: Add practical anti-cheat controls and explicit policy for assessment mode.
@@ -127,7 +127,7 @@ Last updated: 2026-04-08
   - Add student application flow and admin/recruiter review views.
   - Add metrics for conversion funnel (applied/shortlisted/hired).
 
-### 9) [PENDING] Typing test module missing (email writing + code typing)
+### 9) [PARTIAL] Typing test module missing (email writing + code typing)
 - Problem: No dedicated typing practice to improve speed and accuracy for real interview tasks.
 - Impact: Students cannot benchmark or improve practical typing performance over time.
 - Required outcome: Built-in typing tests for professional email writing and coding syntax typing with score tracking.
@@ -149,7 +149,7 @@ Last updated: 2026-04-08
   - Track per-user resource interactions (opened/read/bookmarked).
   - Add role/category tagging to map resources to career paths and syllabus weeks.
 
-### 14) [PENDING] Resume module split into two explicit flows (With AI / Without AI)
+### 14) [IMPLEMENTED] Resume module split into two explicit flows (With AI / Without AI)
 - Problem: Resume workflow currently mixes AI-required actions (tailor, enrichment, cover-letter generation) with non-AI actions (upload/edit/export), causing user confusion when LLM is not configured.
 - Impact: Students cannot clearly understand which resume actions are always available versus which require AI setup.
 - Required outcome: Two explicit resume tracks with clear UX boundaries:
@@ -233,7 +233,7 @@ Last updated: 2026-04-08
 - Exit criteria:
   - Distinct flows exist for production users, testers, and demo users with no ambiguity.
 
-### 20) [PENDING] Skill Gap Analyzer modal layout and responsiveness issues
+### 20) [PARTIAL] Skill Gap Analyzer modal layout and responsiveness issues
 - Problem: The Skill Gap Analyzer view in Career Map shows layout breakage (horizontal overflow, cramped cards, clipped labels/chips, and nested scrollbars) inside the modal on common desktop viewport sizes.
 - Impact: Readability and usability are degraded, roadmap details are hard to scan, and users may miss recommendations/actions.
 - Required outcome: A stable, fully responsive Skill Gap Analyzer modal with clean vertical flow and no unintended horizontal scroll.
