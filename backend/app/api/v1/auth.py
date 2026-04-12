@@ -89,9 +89,9 @@ def _enforce_registration_limit(db: Session, email: str, full_name: str | None, 
     raise HTTPException(
         status_code=429,
         detail=(
-            "User limit reached. Current active users reached "
-            f"{active_users}. Registrations are closed at {settings.registration_user_limit}. "
-            "Your email has been saved. We will grant access one by one once capacity increases."
+            f"We have reached {settings.registration_user_limit} active users. "
+            "Please wait for your turn to access the platform. Register below, and we will grant access very soon. "
+            "We are actively working to increase our capacity."
         ),
     )
 

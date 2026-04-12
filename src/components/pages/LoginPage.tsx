@@ -421,7 +421,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 </p>
                 {mode === 'signup' && (
                   <p className="text-sm text-amber-200/95">
-                    Registrations are temporarily capped at 1500 active users. If the limit is reached, your email will be waitlisted and approved one by one.
+                    We have reached 1500 users. Please wait for your turn to access the platform. Register below, and we will grant access very soon. We are actively working to increase our capacity.
                   </p>
                 )}
               </div>
