@@ -93,11 +93,18 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
         role: 'student',
       })
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Login failed. Check credentials.')
+      const msg = err instanceof Error ? err.message : ''
+      if (msg.toLowerCase().includes('pending admin approval')) {
+        setPendingApproval(true)
+      } else {
+        toast.error(msg || 'Login failed. Check credentials.')
+      }
     } finally {
       setIsLoading(false)
     }
   }
+
+  const [pendingApproval, setPendingApproval] = useState(false)
 
   const handleSignup = async () => {
     if (!email.trim() || !password.trim() || !fullName.trim()) {
@@ -115,7 +122,13 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
         role: 'student',
       })
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Sign-up failed. Try a different email.')
+      const msg = err instanceof Error ? err.message : ''
+      if (msg.toLowerCase().includes('pending admin approval') || msg.toLowerCase().includes('pending approval')) {
+        setPendingApproval(true)
+        toast.success('Registration submitted! Please wait for admin approval before logging in.')
+      } else {
+        toast.error(msg || 'Sign-up failed. Try a different email.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -408,6 +421,23 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 </button>
               </p>
             </div>
+          ) : pendingApproval ? (
+            <div className="space-y-5 text-center">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-green-500/20 text-green-400 mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+              </div>
+              <h2 className="text-xl font-semibold text-white">Registration Submitted</h2>
+              <p className="text-base text-blue-100/85 leading-relaxed">
+                Your account has been created and is now <span className="font-semibold text-amber-300">pending admin approval</span>. You will be able to log in once an admin approves your registration.
+              </p>
+              <button
+                type="button"
+                className="w-full flex items-center justify-center gap-2 bg-white/15 hover:bg-white/20 text-white font-semibold py-2.5 px-4 rounded-full transition-all duration-150 border border-white/30"
+                onClick={() => { setPendingApproval(false); setMode('login') }}
+              >
+                Go to Login
+              </button>
+            </div>
           ) : (
             <div className="space-y-5" onKeyDown={handleKeyDown}>
               <div className="space-y-1">
@@ -420,8 +450,8 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                     : 'Create an account to unlock the full learning platform.'}
                 </p>
                 {mode === 'signup' && (
-                  <p className="text-sm text-amber-200/95">
-                    We have reached 1500 users. Please wait for your turn to access the platform. Register below, and we will grant access very soon. We are actively working to increase our capacity.
+                  <p className="text-sm text-blue-200/95">
+                    All new registrations require admin approval. After signing up, please wait for an admin to approve your account before logging in.
                   </p>
                 )}
               </div>

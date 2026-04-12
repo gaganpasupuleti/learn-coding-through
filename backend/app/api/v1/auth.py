@@ -102,17 +102,35 @@ def register(payload: UserRegister, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    _enforce_registration_limit(db, email=payload.email, full_name=payload.full_name, source="register")
+    normalized_email = payload.email.strip().lower()
+    approved_entry = (
+        db.query(RegistrationWaitlist)
+        .filter(
+            RegistrationWaitlist.email == normalized_email,
+            RegistrationWaitlist.status == "approved",
+        )
+        .first()
+    )
+    is_pre_approved = approved_entry is not None
 
     user = User(
         email=payload.email,
         full_name=payload.full_name,
         password_hash=get_password_hash(payload.password),
         role=UserRole.STUDENT,
+        is_active=is_pre_approved,
     )
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    if not is_pre_approved:
+        _upsert_waitlist(db, email=normalized_email, full_name=payload.full_name, source="register")
+        raise HTTPException(
+            status_code=403,
+            detail="Registration received! Your account is pending admin approval. You will be able to log in once an admin approves your request.",
+        )
+
     return user
 
 
@@ -121,6 +139,12 @@ def login(payload: UserLogin, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == payload.email).first()
     if not user or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=403,
+            detail="Your account is pending admin approval. Please wait until an admin approves your registration.",
+        )
 
     token = create_access_token(str(user.id))
     return TokenResponse(access_token=token)
@@ -154,17 +178,34 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
 
     user = db.query(User).filter(User.email == email).first()
     if user is None:
-        _enforce_registration_limit(db, email=email, full_name=full_name, source="google")
+        approved_entry = (
+            db.query(RegistrationWaitlist)
+            .filter(
+                RegistrationWaitlist.email == email,
+                RegistrationWaitlist.status == "approved",
+            )
+            .first()
+        )
+        is_pre_approved = approved_entry is not None
+
         user = User(
             email=email,
             full_name=full_name,
             password_hash=get_password_hash(secrets.token_urlsafe(32)),
             role=UserRole.STUDENT,
             external_auth_uid=external_uid,
+            is_active=is_pre_approved,
         )
         db.add(user)
         db.commit()
         db.refresh(user)
+
+        if not is_pre_approved:
+            _upsert_waitlist(db, email=email, full_name=full_name, source="google")
+            raise HTTPException(
+                status_code=403,
+                detail="Registration received! Your account is pending admin approval. You will be able to log in once an admin approves your request.",
+            )
     else:
         if user.external_auth_uid and user.external_auth_uid != external_uid:
             raise HTTPException(status_code=409, detail="This email is linked to a different Google account")
@@ -175,6 +216,12 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
         db.add(user)
         db.commit()
         db.refresh(user)
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=403,
+            detail="Your account is pending admin approval. Please wait until an admin approves your registration.",
+        )
 
     token = create_access_token(str(user.id))
     return TokenResponse(access_token=token)

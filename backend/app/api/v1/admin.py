@@ -658,6 +658,17 @@ def update_registration_waitlist_status(
     new_status = payload.status.strip().lower()
     entry.status = new_status
     db.add(entry)
+
+    # Activate / deactivate the corresponding user account
+    linked_user = db.query(User).filter(User.email == entry.email).first()
+    if linked_user:
+        if new_status == "approved" and not linked_user.is_active:
+            linked_user.is_active = True
+            db.add(linked_user)
+        elif new_status == "rejected" and linked_user.is_active and linked_user.role != UserRole.ADMIN:
+            linked_user.is_active = False
+            db.add(linked_user)
+
     _log_admin_action(
         db,
         admin_user_id=admin_user.id,
