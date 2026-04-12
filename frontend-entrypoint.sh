@@ -3,10 +3,12 @@ set -eu
 
 PORT_TO_USE="${PORT:-8080}"
 API_URL="${VITE_API_URL:-${VITE_API_BASE_URL:-${VITE_API_PROXY_TARGET:-}}}"
+GOOGLE_CLIENT_ID="${VITE_GOOGLE_CLIENT_ID:-}"
 
 cat > /usr/share/nginx/html/runtime-config.js <<EOF
 window.__RUNTIME_CONFIG__ = {
-  VITE_API_URL: "${API_URL}"
+  VITE_API_URL: "${API_URL}",
+  VITE_GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
 };
 EOF
 

@@ -28,6 +28,9 @@ type GoogleCredentialResponse = {
 
 declare global {
   interface Window {
+    __RUNTIME_CONFIG__?: {
+      VITE_GOOGLE_CLIENT_ID?: string
+    }
     google?: {
       accounts: {
         id: {
@@ -60,7 +63,11 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
   const [newPassword, setNewPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const googleButtonRef = useRef<HTMLDivElement | null>(null)
-  const googleClientId = (import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '').trim()
+  const runtimeGoogleClientId =
+    typeof window !== 'undefined'
+      ? (window.__RUNTIME_CONFIG__?.VITE_GOOGLE_CLIENT_ID ?? '').trim()
+      : ''
+  const googleClientId = ((import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '').trim() || runtimeGoogleClientId)
 
   const finalizeLogin = async (accessToken: string, fallbackUser: AuthUser) => {
     storeAuthToken(accessToken)
