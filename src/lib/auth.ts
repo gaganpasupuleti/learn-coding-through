@@ -77,7 +77,14 @@ export function clearAuth() {
 // ---------- backend /auth/me ----------
 
 function resolveApiBaseUrl(): string {
-  const configured = (import.meta.env.VITE_API_BASE_URL ?? '').trim()
+  const runtimeConfigured =
+    typeof window !== 'undefined'
+      ? (((window as Window & { __RUNTIME_CONFIG__?: { VITE_API_URL?: string; VITE_API_BASE_URL?: string } }).__RUNTIME_CONFIG__?.VITE_API_URL ??
+          (window as Window & { __RUNTIME_CONFIG__?: { VITE_API_URL?: string; VITE_API_BASE_URL?: string } }).__RUNTIME_CONFIG__?.VITE_API_BASE_URL ??
+          '') as string).trim()
+      : ''
+
+  const configured = (runtimeConfigured || (import.meta.env.VITE_API_BASE_URL ?? '').trim()).trim()
   if (!configured) {
     return '/api/v1'
   }
