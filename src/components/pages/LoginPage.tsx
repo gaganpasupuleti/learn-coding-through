@@ -218,11 +218,11 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
         },
       })
       window.google.accounts.id.renderButton(googleButtonRef.current, {
-        theme: 'outline',
+        theme: 'filled_blue',
         size: 'large',
         text: 'continue_with',
         shape: 'pill',
-        width: Math.max(220, Math.min(360, googleButtonHostRef.current?.clientWidth ?? 320)),
+        width: Math.max(220, (googleButtonHostRef.current?.clientWidth ?? 320) - 24),
       })
     }
 
@@ -262,83 +262,63 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
     }
   }
 
-  const modeLabels: Record<AuthMode, string> = {
-    login: 'Log In',
-    signup: 'Sign Up',
-    demoRegister: 'Demo Register',
-    forgotPassword: 'Forgot Password',
-  }
+  const fieldClass = 'h-10 rounded-xl bg-white/12 border-white/25 text-[15px] placeholder-transparent focus-visible:border-blue-300/80 focus-visible:ring-2 focus-visible:ring-blue-400/20'
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-5">
+    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_18%_0%,rgba(59,130,246,0.28),transparent_42%),radial-gradient(circle_at_85%_100%,rgba(14,165,233,0.20),transparent_38%),linear-gradient(160deg,#020617_0%,#0b132b_52%,#020617_100%)] flex items-center justify-center p-4 sm:p-6">
+      <div className="pointer-events-none absolute inset-0 opacity-45" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.65) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+      <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 -right-20 h-80 w-80 rounded-full bg-sky-400/20 blur-3xl" />
+      <div className="relative w-full max-w-md space-y-5">
 
         {/* Brand mark */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-blue-600 text-white mx-auto shadow-sm">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-600 text-white mx-auto shadow-lg border border-blue-500/40">
             <Code2 size={22} strokeWidth={2.5} />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">CodeQuest</h1>
-          <p className="text-sm text-slate-500">Career Acceleration Platform</p>
-        </div>
-
-        {/* Mode tabs */}
-        <div className="grid grid-cols-2 gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
-          {(['login', 'signup', 'demoRegister', 'forgotPassword'] as AuthMode[]).map((m) => (
-            <button
-              key={m}
-              type="button"
-              className={`text-sm py-2 rounded-md font-medium transition-all duration-150 ${
-                mode === m
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-              onClick={() => setMode(m)}
-            >
-              {modeLabels[m]}
-            </button>
-          ))}
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">CodeQuest</h1>
+          <p className="text-sm text-blue-100/90">Career Acceleration Platform</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6">
+        <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-[0_24px_55px_rgba(2,6,23,0.6)] p-5 sm:p-6">
           {mode === 'demoRegister' ? (
             <div className="space-y-5">
               <div className="space-y-1">
-                <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
+                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                   <Sparkles size={16} className="text-blue-500" />
-                  Demo Registration
+                  Student Demo Access
                 </h2>
-                <p className="text-sm text-slate-500">Register for a limited demo account with guided access.</p>
+                <p className="text-base text-blue-100/85 leading-relaxed">Use a student demo profile to explore before full registration.</p>
               </div>
               <div className="space-y-3">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
                     <User size={12} /> Full Name
                   </label>
                   <Input
-                    placeholder="Your full name"
+                    className={fieldClass}
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     disabled={isLoading}
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
                     <User size={12} /> Email
                   </label>
                   <Input
+                    className={fieldClass}
                     type="email"
-                    placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
                   />
                 </div>
               </div>
-              <div className="rounded-lg border border-slate-100 bg-slate-50 p-4 space-y-2">
-                <p className="text-xs font-semibold text-slate-700 uppercase tracking-wide">What's included</p>
-                <ul className="space-y-1.5 text-sm text-slate-600">
+              <div className="rounded-lg border border-white/20 bg-white/10 p-4 space-y-2">
+                <p className="text-sm font-semibold text-blue-100 uppercase tracking-wide">What's included</p>
+                <ul className="space-y-1.5 text-[0.95rem] text-blue-50/95">
                   {[
                     'Browse all career paths & 4-month syllabus',
                     'Start any 2 projects of your choice',
@@ -355,14 +335,14 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
               <button
                 type="button"
                 onClick={handleDemoAccess}
-                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-150"
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-700 font-semibold py-2.5 px-4 rounded-full transition-all duration-150"
               >
-                Register Demo Access
+                Start Student Demo
                 <ArrowRight size={15} strokeWidth={2.5} />
               </button>
-              <p className="text-xs text-center text-slate-400">
+              <p className="text-sm text-center text-blue-100/80">
                 Want full access?{' '}
-                <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('signup')}>
+                <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('signup')}>
                   Create a free account
                 </button>
               </p>
@@ -370,20 +350,20 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
           ) : mode === 'forgotPassword' ? (
             <div className="space-y-5" onKeyDown={handleKeyDown}>
               <div className="space-y-1">
-                <h2 className="text-base font-semibold text-slate-900">Reset your password</h2>
-                <p className="text-sm text-slate-500">
+                <h2 className="text-xl font-semibold text-white">Reset your password</h2>
+                <p className="text-base text-blue-100/85 leading-relaxed">
                   Step 1: request reset with email. Step 2: submit reset token and new password.
                 </p>
               </div>
 
               <div className="space-y-3">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
                     <User size={12} /> Email
                   </label>
                   <Input
+                    className={fieldClass}
                     type="email"
-                    placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
@@ -391,11 +371,11 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
                     <Lock size={12} /> Reset Token
                   </label>
                   <Input
-                    placeholder="Paste reset token"
+                    className={fieldClass}
                     value={resetToken}
                     onChange={(e) => setResetToken(e.target.value)}
                     disabled={isLoading}
@@ -403,12 +383,12 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
                     <Lock size={12} /> New Password
                   </label>
                   <Input
+                    className={fieldClass}
                     type="password"
-                    placeholder="Choose a new password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     disabled={isLoading}
@@ -419,7 +399,7 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <button
                   type="button"
-                  className="w-full flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 disabled:opacity-60 text-slate-900 font-semibold py-2.5 px-4 rounded-lg transition-all duration-150"
+                  className="w-full flex items-center justify-center gap-2 bg-white/15 hover:bg-white/20 disabled:opacity-60 text-white font-semibold py-2.5 px-4 rounded-full transition-all duration-150 border border-white/30"
                   onClick={handleRequestPasswordReset}
                   disabled={isLoading}
                 >
@@ -427,7 +407,7 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
                 </button>
                 <button
                   type="button"
-                  className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-150"
+                  className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 font-semibold py-2.5 px-4 rounded-full transition-all duration-150"
                   onClick={handleResetPassword}
                   disabled={isLoading}
                 >
@@ -436,9 +416,9 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
                 </button>
               </div>
 
-              <p className="text-xs text-center text-slate-400">
+              <p className="text-sm text-center text-blue-100/80">
                 Remembered your password?{' '}
-                <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('login')}>
+                <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('login')}>
                   Go to login
                 </button>
               </p>
@@ -446,10 +426,10 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
           ) : (
             <div className="space-y-5" onKeyDown={handleKeyDown}>
               <div className="space-y-1">
-                <h2 className="text-base font-semibold text-slate-900">
+                <h2 className="text-xl font-semibold text-white">
                   {mode === 'login' ? 'Welcome back' : 'Create your account'}
                 </h2>
-                <p className="text-sm text-slate-500">
+                <p className="text-base text-blue-100/85 leading-relaxed">
                   {mode === 'login'
                     ? 'Sign in to continue your learning journey.'
                     : 'Free demo access: try any 2 projects + 2 quizzes.'}
@@ -459,25 +439,25 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
               <div className="space-y-3">
                 {mode === 'signup' && (
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                    <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
                       <User size={12} /> Full Name
                     </label>
-                    <Input placeholder="Your full name" value={fullName} onChange={(e) => setFullName(e.target.value)} disabled={isLoading} />
+                    <Input className={fieldClass} value={fullName} onChange={(e) => setFullName(e.target.value)} disabled={isLoading} />
                   </div>
                 )}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
                     <User size={12} /> Email
                   </label>
-                  <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} />
+                  <Input className={fieldClass} type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
                     <Lock size={12} /> Password
                   </label>
                   <Input
+                    className={fieldClass}
                     type="password"
-                    placeholder={mode === 'signup' ? 'Choose a strong password' : 'Your password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
@@ -487,7 +467,7 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
 
               <button
                 type="button"
-                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-150"
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 font-semibold py-2.5 px-4 rounded-full transition-all duration-150"
                 onClick={mode === 'login' ? handleLogin : handleSignup}
                 disabled={isLoading}
               >
@@ -495,37 +475,51 @@ export function LoginPage({ onAuthenticated, onBrowsePublicly }: LoginPageProps)
                 {!isLoading && <ArrowRight size={15} strokeWidth={2.5} />}
               </button>
 
+              {mode === 'login' && (
+                <div className="text-right -mt-2">
+                  <button
+                    type="button"
+                    className="text-sm underline text-blue-100 hover:text-blue-200"
+                    onClick={() => setMode('forgotPassword')}
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              )}
+
               {googleClientId ? (
                 <div className="space-y-2">
-                  <p className="text-xs text-center text-slate-400 uppercase tracking-wide">or continue with</p>
-                  <div className="flex justify-center w-full" ref={googleButtonHostRef}>
+                  <p className="text-sm text-center text-blue-100/80 uppercase tracking-wide">or continue with</p>
+                  <div className="w-full flex justify-center" ref={googleButtonHostRef}>
                     <div ref={googleButtonRef} />
                   </div>
                 </div>
               ) : (
-                <p className="text-xs text-center text-slate-400">
+                <p className="text-sm text-center text-blue-100/80">
                   Google login is disabled. Set VITE_GOOGLE_CLIENT_ID to enable it.
                 </p>
               )}
 
               {mode === 'login' && (
-                <p className="text-xs text-center text-slate-400">
-                  No account?{' '}
-                  <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('signup')}>Sign up free</button>
-                  <span className="mx-1">|</span>
-                  <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('demoRegister')}>Demo</button>
-                  <span className="mx-1">|</span>
-                  <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={() => setMode('forgotPassword')}>Reset password</button>
-                </p>
+                <div className="pt-1 text-sm text-center text-blue-100/80 space-y-1">
+                  <p>
+                    Don't have an account?{' '}
+                    <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('signup')}>Register</button>
+                  </p>
+                  <p>
+                    Student exploring first?{' '}
+                    <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('demoRegister')}>Use Student Demo</button>
+                  </p>
+                </div>
               )}
             </div>
           )}
         </div>
 
         {onBrowsePublicly && (
-          <p className="text-xs text-center text-slate-400">
+          <p className="text-sm text-center text-blue-100/80">
             Just exploring?{' '}
-            <button type="button" className="underline text-slate-600 hover:text-blue-600 transition-colors" onClick={onBrowsePublicly}>
+            <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={onBrowsePublicly}>
               Browse Career Mapper publicly
             </button>
           </p>

@@ -11,7 +11,6 @@ import { LoginPage } from '@/components/pages/LoginPage'
 import { ResumeModuleGatewayPage } from '@/components/pages/ResumeModuleGatewayPage'
 import { StudentShell } from '@/components/shells/StudentShell'
 import { AdminShell } from '@/components/shells/AdminShell'
-import { PortBanner } from '@/components/PortBanner'
 import { AssessmentGuard } from '@/components/assessment/AssessmentGuard'
 import { getStoredUser, isDemoUser, type AuthUser } from '@/lib/auth'
 import { Toaster } from '@/components/ui/sonner'
@@ -99,7 +98,6 @@ function App() {
   if (!authState) {
     return (
       <div className={wrapperClass}>
-        <PortBanner />
         <LoginPage
           onAuthenticated={handleAuthenticated}
           onBrowsePublicly={() => setAuthState('public')}
@@ -112,7 +110,6 @@ function App() {
   if (authState === 'public') {
     return (
       <div className={wrapperClass}>
-        <PortBanner />
         <CareerMapperPage />
         <Toaster position="top-center" />
       </div>
@@ -126,7 +123,6 @@ function App() {
   if (user.role === 'admin') {
     return (
       <div className={wrapperClass}>
-        <PortBanner />
         <AdminShell user={user} onLogout={handleLogout}>
           <AdminPage />
         </AdminShell>
@@ -137,7 +133,6 @@ function App() {
 
   return (
     <div className={wrapperClass}>
-      <PortBanner />
       <AssessmentGuard enabled={assessmentGuardEnabled && isAssessmentPage} user={user} page={studentPage} />
       <StudentShell
         currentPage={studentPage === 'learning' ? 'projects' : studentPage}
