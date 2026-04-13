@@ -547,7 +547,7 @@ export function ResumeBuilderPage() {
       setActiveResume(data)
       setDirty(false)
       setView('editor')
-      toast.success('Resume uploaded — extracted text is in the Summary section. Move content into the right sections to build your resume.')
+      toast.success('Resume uploaded and parsed! Review each section for accuracy.')
       await loadResumes()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Upload failed')
