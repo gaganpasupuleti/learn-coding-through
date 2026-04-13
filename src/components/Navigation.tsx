@@ -8,7 +8,7 @@ interface NavigationProps {
 
 export function Navigation({ currentPage, onNavigate }: NavigationProps) {
   return (
-    <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+    <nav className="border-b border-border bg-card sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap justify-end">
