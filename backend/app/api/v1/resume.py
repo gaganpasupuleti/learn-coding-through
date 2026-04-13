@@ -1,7 +1,8 @@
+import io
 import json
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -328,6 +329,75 @@ def duplicate_resume(
     db.commit()
     db.refresh(copy)
     return _serialize_resume(copy)
+
+
+# ── Upload & extract text ─────────────────────────────────────────────
+
+_MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB
+
+
+def _extract_text_from_pdf(data: bytes) -> str:
+    try:
+        from PyPDF2 import PdfReader
+        reader = PdfReader(io.BytesIO(data))
+        pages = [page.extract_text() or "" for page in reader.pages]
+        return "\n".join(pages).strip()
+    except Exception:
+        return ""
+
+
+def _extract_text_from_docx(data: bytes) -> str:
+    try:
+        from docx import Document
+        doc = Document(io.BytesIO(data))
+        return "\n".join(p.text for p in doc.paragraphs).strip()
+    except Exception:
+        return ""
+
+
+@router.post("/upload")
+def upload_resume(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No file provided")
+
+    ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else ""
+    if ext not in ("pdf", "docx"):
+        raise HTTPException(status_code=400, detail="Only PDF and DOCX files are supported")
+
+    data = file.file.read()
+    if len(data) > _MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=400, detail="File too large (max 5 MB)")
+
+    extracted = ""
+    if ext == "pdf":
+        extracted = _extract_text_from_pdf(data)
+    elif ext == "docx":
+        extracted = _extract_text_from_docx(data)
+
+    title = file.filename.rsplit(".", 1)[0] if "." in file.filename else file.filename
+
+    resume = Resume(
+        user_id=current_user.id,
+        title=title,
+        template="modern",
+        summary=extracted[:4000] if extracted else "",
+        personal_info="{}",
+        skills="[]",
+        experience="[]",
+        education="[]",
+        projects="[]",
+        certifications="[]",
+        languages="[]",
+        custom_sections="{}",
+    )
+    db.add(resume)
+    db.commit()
+    db.refresh(resume)
+    return _serialize_resume(resume)
 
 
 # Legacy compatibility

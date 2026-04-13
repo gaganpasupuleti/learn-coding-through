@@ -1035,6 +1035,17 @@ export async function setResumeAsPrimary(token: string, resumeId: number): Promi
   await parseOrThrow(response)
 }
 
+export async function uploadResume(token: string, file: File): Promise<ResumeData> {
+  const form = new FormData()
+  form.append('file', file)
+  const response = await fetch(`${API_BASE_URL}/api/v1/resume/upload`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  })
+  return parseOrThrow(response)
+}
+
 // Alias for TDD project fetching — same endpoint, richer return type.
 export const fetchProjectBySlug = fetchCatalogProject
 

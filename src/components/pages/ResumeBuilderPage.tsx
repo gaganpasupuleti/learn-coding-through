@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   FileText,
   Plus,
@@ -17,6 +17,7 @@ import {
   User,
   ChevronDown,
   ChevronUp,
+  Upload,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -42,6 +43,7 @@ import {
   deleteResume,
   duplicateResume,
   setResumeAsPrimary,
+  uploadResume,
 } from '@/lib/api'
 
 type View = 'list' | 'editor' | 'preview'
@@ -485,6 +487,7 @@ export function ResumeBuilderPage() {
   const [dirty, setDirty] = useState(false)
 
   const token = getAuthToken() ?? ''
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // ── Load list ──
   const loadResumes = useCallback(async () => {
@@ -528,6 +531,26 @@ export function ResumeBuilderPage() {
       await loadResumes()
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to create resume')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // ── Upload ──
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (fileInputRef.current) fileInputRef.current.value = ''
+    if (!file) return
+    try {
+      setIsLoading(true)
+      const data = await uploadResume(token, file)
+      setActiveResume(data)
+      setDirty(false)
+      setView('editor')
+      toast.success('Resume uploaded — extracted text is in the Summary section. Move content into the right sections to build your resume.')
+      await loadResumes()
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Upload failed')
     } finally {
       setIsLoading(false)
     }
@@ -647,24 +670,43 @@ export function ResumeBuilderPage() {
   if (view === 'list') {
     return (
       <div className="min-h-screen p-6 max-w-5xl mx-auto space-y-6">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2"><FileText size={24} /> Resume Builder</h1>
             <p className="text-sm text-muted-foreground mt-1">Create, edit, and manage your resumes</p>
           </div>
-          <Button onClick={handleCreate} disabled={isLoading}>
-            <Plus size={16} className="mr-1" /> New Resume
-          </Button>
+          <div className="flex gap-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.docx"
+              className="hidden"
+              onChange={handleUpload}
+            />
+            <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={isLoading}>
+              <Upload size={16} className="mr-1" /> Upload Resume
+            </Button>
+            <Button onClick={handleCreate} disabled={isLoading}>
+              <Plus size={16} className="mr-1" /> New Resume
+            </Button>
+          </div>
         </div>
 
         {isLoading && resumes.length === 0 ? (
           <p className="text-sm text-muted-foreground">Loading…</p>
         ) : resumes.length === 0 ? (
-          <Card className="p-8 text-center space-y-3">
+          <Card className="p-8 text-center space-y-4">
             <FileText size={40} className="mx-auto text-muted-foreground" />
             <h3 className="text-lg font-semibold">No resumes yet</h3>
-            <p className="text-sm text-muted-foreground">Create your first resume to get started</p>
-            <Button onClick={handleCreate}><Plus size={16} className="mr-1" /> Create Resume</Button>
+            <p className="text-sm text-muted-foreground">Create a new resume or upload an existing one (PDF / DOCX)</p>
+            <div className="flex justify-center gap-3">
+              <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                <Upload size={16} className="mr-1" /> Upload Resume
+              </Button>
+              <Button onClick={handleCreate}>
+                <Plus size={16} className="mr-1" /> Create Resume
+              </Button>
+            </div>
           </Card>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -686,6 +728,9 @@ export function ResumeBuilderPage() {
                 </div>
                 <p className="text-xs text-muted-foreground">Updated {new Date(r.updated_at).toLocaleDateString()}</p>
                 <div className="flex gap-1.5">
+                  <Button variant="default" size="sm" onClick={(e) => { e.stopPropagation(); openResume(r.id) }}>
+                    <Pencil size={14} className="mr-1" /> Edit
+                  </Button>
                   <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); handleSetPrimary(r.id) }} title="Set as primary">
                     <Star size={14} />
                   </Button>
