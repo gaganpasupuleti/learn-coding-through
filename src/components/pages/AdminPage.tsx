@@ -137,9 +137,10 @@ const sectionMeta: Record<AdminSection, { title: string; icon: React.ReactNode }
 
 /* ─────────────────────── tiny stat card ─────────────────────── */
 
-function StatCard({ label, value, icon, accent }: { label: string; value: string | number; icon?: React.ReactNode; accent?: string }) {
+function StatCard({ label, value, icon, accent, onClick }: { label: string; value: string | number; icon?: React.ReactNode; accent?: string; onClick?: () => void }) {
+  const cls = `p-4 flex items-start gap-3 ${accent ?? ''} ${onClick ? 'cursor-pointer hover:border-primary/50 hover:shadow-md transition-all duration-150' : ''}`
   return (
-    <Card className={`p-4 flex items-start gap-3 ${accent ?? ''}`}>
+    <Card className={cls} onClick={onClick}>
       {icon && <div className="mt-0.5 text-muted-foreground">{icon}</div>}
       <div className="min-w-0">
         <p className="text-xs text-muted-foreground truncate">{label}</p>
@@ -694,41 +695,41 @@ export function AdminPage() {
             {section === 'dashboard' && (
               <div className="space-y-4">
                 {/* Platform Overview */}
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-                  <StatCard label="Total Users" value={overview?.total_users ?? '-'} icon={<UsersThree size={20} />} />
-                  <StatCard label="Active Users" value={overview?.active_users ?? '-'} icon={<Lightning size={20} />} />
-                  <StatCard label="Admins" value={overview?.total_admins ?? '-'} icon={<ShieldCheck size={20} />} />
+                <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+                  <StatCard label="Total Users" value={overview?.total_users ?? '-'} icon={<UsersThree size={20} />} onClick={() => setSection('students')} />
+                  <StatCard label="Active Users" value={overview?.active_users ?? '-'} icon={<Lightning size={20} />} onClick={() => setSection('students')} />
+                  <StatCard label="Admins" value={overview?.total_admins ?? '-'} icon={<ShieldCheck size={20} />} onClick={() => setSection('access')} />
                   <StatCard label="Quizzes (Catalog)" value={overview?.catalog_quizzes ?? '-'} icon={<BookOpen size={20} />} />
                   <StatCard label="Projects (Catalog)" value={overview?.catalog_projects ?? '-'} icon={<Cube size={20} />} />
                 </div>
 
                 {/* KPIs Row */}
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  <StatCard label="Enrolled Students" value={monthlyKpis?.total_enrolled_students ?? '-'} />
-                  <StatCard label="Enquiries This Month" value={monthlyKpis?.enquiries_this_month ?? '-'} />
-                  <StatCard label="Classes Completing" value={monthlyKpis?.classes_completing_this_month ?? '-'} />
-                  <StatCard label="Hires This Month" value={monthlyKpis?.hires_this_month ?? '-'} />
+                <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+                  <StatCard label="Enrolled Students" value={monthlyKpis?.total_enrolled_students ?? '-'} onClick={() => setSection('students')} />
+                  <StatCard label="Enquiries This Month" value={monthlyKpis?.enquiries_this_month ?? '-'} onClick={() => setSection('activity')} />
+                  <StatCard label="Classes Completing" value={monthlyKpis?.classes_completing_this_month ?? '-'} onClick={() => setSection('classes')} />
+                  <StatCard label="Hires This Month" value={monthlyKpis?.hires_this_month ?? '-'} onClick={() => setSection('jobs')} />
                 </div>
 
                 {/* Batches & Jobs */}
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  <StatCard label="Total Batches" value={overview?.total_batches ?? '-'} icon={<CalendarBlank size={20} />} />
-                  <StatCard label="Active Batches" value={overview?.active_batches ?? '-'} icon={<CalendarBlank size={20} />} />
-                  <StatCard label="Open Jobs" value={overview?.total_jobs_open ?? '-'} icon={<Briefcase size={20} />} />
-                  <StatCard label="Total Job Apps" value={overview?.total_job_applications ?? '-'} icon={<Briefcase size={20} />} />
+                <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+                  <StatCard label="Total Batches" value={overview?.total_batches ?? '-'} icon={<CalendarBlank size={20} />} onClick={() => setSection('classes')} />
+                  <StatCard label="Active Batches" value={overview?.active_batches ?? '-'} icon={<CalendarBlank size={20} />} onClick={() => setSection('classes')} />
+                  <StatCard label="Open Jobs" value={overview?.total_jobs_open ?? '-'} icon={<Briefcase size={20} />} onClick={() => setSection('jobs')} />
+                  <StatCard label="Total Job Apps" value={overview?.total_job_applications ?? '-'} icon={<Briefcase size={20} />} onClick={() => setSection('jobs')} />
                 </div>
 
                 {/* Waitlist Summary */}
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <Card className="p-4 border-amber-200 dark:border-amber-900">
+                <div className="grid gap-3 grid-cols-3">
+                  <Card className="p-4 border-amber-200 dark:border-amber-900 cursor-pointer hover:border-amber-400 hover:shadow-md transition-all duration-150" onClick={() => setSection('access')}>
                     <p className="text-xs text-muted-foreground">Waitlist Pending</p>
                     <p className="text-2xl font-bold text-amber-600 mt-1">{overview?.waitlist_pending ?? '-'}</p>
                   </Card>
-                  <Card className="p-4 border-green-200 dark:border-green-900">
+                  <Card className="p-4 border-green-200 dark:border-green-900 cursor-pointer hover:border-green-400 hover:shadow-md transition-all duration-150" onClick={() => setSection('access')}>
                     <p className="text-xs text-muted-foreground">Waitlist Approved</p>
                     <p className="text-2xl font-bold text-green-600 mt-1">{overview?.waitlist_approved ?? '-'}</p>
                   </Card>
-                  <Card className="p-4 border-red-200 dark:border-red-900">
+                  <Card className="p-4 border-red-200 dark:border-red-900 cursor-pointer hover:border-red-400 hover:shadow-md transition-all duration-150" onClick={() => setSection('access')}>
                     <p className="text-xs text-muted-foreground">Waitlist Rejected</p>
                     <p className="text-2xl font-bold text-red-600 mt-1">{overview?.waitlist_rejected ?? '-'}</p>
                   </Card>
@@ -736,7 +737,7 @@ export function AdminPage() {
 
                 {/* Insights */}
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Card className="p-4 space-y-3">
+                  <Card className="p-4 space-y-3 cursor-pointer hover:border-primary/50 hover:shadow-md transition-all duration-150" onClick={() => setSection('students')}>
                     <h3 className="text-lg font-semibold">Student Insights</h3>
                     <div className="grid grid-cols-2 gap-3">
                       {(roleSplitInsights?.student_insights ?? []).map((item) => (
@@ -747,7 +748,7 @@ export function AdminPage() {
                       ))}
                     </div>
                   </Card>
-                  <Card className="p-4 space-y-3">
+                  <Card className="p-4 space-y-3 cursor-pointer hover:border-primary/50 hover:shadow-md transition-all duration-150" onClick={() => setSection('classes')}>
                     <h3 className="text-lg font-semibold">Faculty Insights</h3>
                     <div className="grid grid-cols-2 gap-3">
                       {(roleSplitInsights?.faculty_insights ?? []).map((item) => (
@@ -761,9 +762,9 @@ export function AdminPage() {
                 </div>
 
                 {/* Metrics */}
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  <Card className="p-4"><p className="text-xs text-muted-foreground">Avg Credits</p><p className="text-2xl font-semibold mt-1">{metrics?.average_credits ?? '-'}</p></Card>
-                  <Card className="p-4"><p className="text-xs text-muted-foreground">Avg XP</p><p className="text-2xl font-semibold mt-1">{metrics?.average_xp_points ?? '-'}</p></Card>
+                <div className="grid gap-3 grid-cols-3">
+                  <Card className="p-4 cursor-pointer hover:border-primary/50 hover:shadow-md transition-all duration-150" onClick={() => setSection('students')}><p className="text-xs text-muted-foreground">Avg Credits</p><p className="text-2xl font-semibold mt-1">{metrics?.average_credits ?? '-'}</p></Card>
+                  <Card className="p-4 cursor-pointer hover:border-primary/50 hover:shadow-md transition-all duration-150" onClick={() => setSection('students')}><p className="text-xs text-muted-foreground">Avg XP</p><p className="text-2xl font-semibold mt-1">{metrics?.average_xp_points ?? '-'}</p></Card>
                   <Card className="p-4"><p className="text-xs text-muted-foreground">KPI Month</p><p className="text-2xl font-semibold mt-1">{monthlyKpis?.month_label ?? '-'}</p></Card>
                 </div>
               </div>
