@@ -884,6 +884,157 @@ export async function fetchCatalogProject(slug: string): Promise<CatalogProject>
   }
 }
 
+// ── Resume Builder API ─────────────────────────────────────────────────────────
+
+export interface ResumePersonalInfo {
+  name: string
+  title: string
+  email: string
+  phone: string
+  location: string
+  website?: string | null
+  linkedin?: string | null
+  github?: string | null
+}
+
+export interface ResumeExperienceItem {
+  id?: number | null
+  job_title: string
+  company: string
+  location: string
+  start_date: string
+  end_date: string
+  bullets: string[]
+}
+
+export interface ResumeEducationItem {
+  id?: number | null
+  institution: string
+  degree: string
+  field: string
+  start_date: string
+  end_date: string
+  description: string
+}
+
+export interface ResumeProjectItem {
+  id?: number | null
+  name: string
+  role: string
+  dates: string
+  url: string
+  bullets: string[]
+}
+
+export interface ResumeCertificationItem {
+  id?: number | null
+  name: string
+  issuer: string
+  date: string
+  url: string
+}
+
+export interface ResumeData {
+  id: number
+  title: string
+  template: string
+  personal_info: ResumePersonalInfo
+  summary: string
+  skills: string[]
+  experience: ResumeExperienceItem[]
+  education: ResumeEducationItem[]
+  projects: ResumeProjectItem[]
+  certifications: ResumeCertificationItem[]
+  languages: string[]
+  custom_sections: Record<string, unknown>
+  role_id: number | null
+  ats_score: number
+  is_primary: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface ResumeListItem {
+  id: number
+  title: string
+  template: string
+  ats_score: number
+  is_primary: boolean
+  updated_at: string
+}
+
+export interface ResumeCreatePayload {
+  title?: string
+  template?: string
+  personal_info?: Partial<ResumePersonalInfo>
+  summary?: string
+  skills?: string[]
+  experience?: ResumeExperienceItem[]
+  education?: ResumeEducationItem[]
+  projects?: ResumeProjectItem[]
+  certifications?: ResumeCertificationItem[]
+  languages?: string[]
+  role_id?: number | null
+}
+
+export type ResumeUpdatePayload = ResumeCreatePayload & { is_primary?: boolean }
+
+export async function fetchResumeList(token: string): Promise<ResumeListItem[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/resume/list`, {
+    headers: buildAuthHeaders(token),
+  })
+  return parseOrThrow(response) as Promise<ResumeListItem[]>
+}
+
+export async function fetchResume(token: string, resumeId: number): Promise<ResumeData> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/resume/${resumeId}`, {
+    headers: buildAuthHeaders(token),
+  })
+  return parseOrThrow(response) as Promise<ResumeData>
+}
+
+export async function createResume(token: string, payload: ResumeCreatePayload): Promise<ResumeData> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/resume/create`, {
+    method: 'POST',
+    headers: buildAuthHeaders(token),
+    body: JSON.stringify(payload),
+  })
+  return parseOrThrow(response) as Promise<ResumeData>
+}
+
+export async function updateResume(token: string, resumeId: number, payload: ResumeUpdatePayload): Promise<ResumeData> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/resume/${resumeId}`, {
+    method: 'PATCH',
+    headers: buildAuthHeaders(token),
+    body: JSON.stringify(payload),
+  })
+  return parseOrThrow(response) as Promise<ResumeData>
+}
+
+export async function deleteResume(token: string, resumeId: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/resume/${resumeId}`, {
+    method: 'DELETE',
+    headers: buildAuthHeaders(token),
+  })
+  await parseOrThrow(response)
+}
+
+export async function duplicateResume(token: string, resumeId: number): Promise<ResumeData> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/resume/${resumeId}/duplicate`, {
+    method: 'POST',
+    headers: buildAuthHeaders(token),
+  })
+  return parseOrThrow(response) as Promise<ResumeData>
+}
+
+export async function setResumeAsPrimary(token: string, resumeId: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/resume/${resumeId}/set-primary`, {
+    method: 'POST',
+    headers: buildAuthHeaders(token),
+  })
+  await parseOrThrow(response)
+}
+
 // Alias for TDD project fetching — same endpoint, richer return type.
 export const fetchProjectBySlug = fetchCatalogProject
 

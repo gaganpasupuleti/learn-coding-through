@@ -1,9 +1,9 @@
 ﻿{
-    "startedAt":  "2026-04-10T04:01:28.8190974+05:30",
+    "startedAt":  "2026-04-13T00:02:16.2965081+05:30",
     "processes":  [
                       {
                           "name":  "main-backend",
-                          "pid":  19772,
+                          "pid":  35232,
                           "cwd":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\backend",
                           "command":  "python -m uvicorn app.main:app --host 127.0.0.1 --port 8000",
                           "stdout":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\main-backend.out.log",
@@ -11,7 +11,7 @@
                       },
                       {
                           "name":  "main-frontend",
-                          "pid":  5844,
+                          "pid":  37120,
                           "cwd":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through",
                           "command":  "npm run dev",
                           "stdout":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\main-frontend.out.log",
@@ -19,7 +19,7 @@
                       },
                       {
                           "name":  "resume-backend",
-                          "pid":  25716,
+                          "pid":  7556,
                           "cwd":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\resume app\\Resume-Matcher\\apps\\backend",
                           "command":  "\"C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\resume app\\Resume-Matcher\\apps\\backend\\.venv\\Scripts\\python.exe\" -m uvicorn app.main:app --host 127.0.0.1 --port 8001",
                           "stdout":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\resume-backend.out.log",
@@ -27,7 +27,7 @@
                       },
                       {
                           "name":  "resume-frontend",
-                          "pid":  7080,
+                          "pid":  11248,
                           "cwd":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\resume app\\Resume-Matcher\\apps\\frontend",
                           "command":  "set BACKEND_ORIGIN=http://127.0.0.1:8001\u0026\u0026 npx next dev --webpack --port 3000",
                           "stdout":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\resume-frontend.out.log",

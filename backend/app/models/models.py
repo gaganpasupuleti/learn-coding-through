@@ -271,13 +271,24 @@ class Resume(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"), nullable=False)
-    full_name: Mapped[str] = mapped_column(String(255), nullable=False)
-    summary: Mapped[str] = mapped_column(Text, nullable=False)
-    skills: Mapped[str] = mapped_column(Text, nullable=False)
-    experience: Mapped[str] = mapped_column(Text, nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False, default="Untitled Resume")
+    template: Mapped[str] = mapped_column(String(50), nullable=False, default="modern")
+    # Structured JSON sections
+    personal_info: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    summary: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    skills: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    experience: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    education: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    projects: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    certifications: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    languages: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    custom_sections: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    # Metadata
+    role_id: Mapped[int | None] = mapped_column(ForeignKey("roles.id"), nullable=True)
     ats_score: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    pdf_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    is_primary: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     user = relationship("User", back_populates="resumes")
 
