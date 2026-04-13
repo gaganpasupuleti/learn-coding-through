@@ -449,7 +449,6 @@ pre[class*="language-"] {
 }
 
 .app-v2 [data-slot='card'] {
-  backdrop-filter: blur(5px);
   box-shadow: 0 12px 34px rgba(15, 23, 42, 0.08);
   border-color: color-mix(in oklab, var(--primary) 12%, var(--border) 88%);
 }
@@ -464,7 +463,7 @@ pre[class*="language-"] {
 
 .app-v2 nav {
   border-bottom-color: color-mix(in oklab, var(--primary) 15%, var(--border) 85%);
-  background: color-mix(in oklab, var(--background) 80%, white 20%);
+  background: var(--background);
 }
 
 .app-v2 [data-v2-page] {
