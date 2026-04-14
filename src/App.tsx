@@ -128,7 +128,7 @@ function App() {
   }
 
   const user = authState as AuthUser
-  const assessmentGuardEnabled = (import.meta.env.VITE_ENABLE_ASSESSMENT_GUARD ?? 'true') !== 'false'
+  const assessmentGuardEnabled = false
   const isAssessmentPage = studentPage === 'quiz' || studentPage === 'typing'
 
   if (user.role === 'admin') {
