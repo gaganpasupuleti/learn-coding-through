@@ -1,9 +1,8 @@
-from datetime import date, datetime
+from datetime import datetime
 from enum import Enum
 
 from sqlalchemy import (
     Boolean,
-    Date,
     DateTime,
     Enum as SqlEnum,
     ForeignKey,
@@ -43,50 +42,6 @@ class ProjectReviewStatus(str, Enum):
     REJECTED = "rejected"
 
 
-class CreditTransactionType(str, Enum):
-    CREDIT = "credit"
-    DEBIT = "debit"
-
-
-class BatchMode(str, Enum):
-    ONLINE = "online"
-    HYBRID = "hybrid"
-
-
-class EnrollmentRole(str, Enum):
-    STUDENT = "student"
-    FACULTY = "faculty"
-
-
-class ProjectWorkStatus(str, Enum):
-    NOT_STARTED = "not_started"
-    IN_PROGRESS = "in_progress"
-    SUBMITTED = "submitted"
-    REVIEWED = "reviewed"
-
-
-class JobPostStatus(str, Enum):
-    OPEN = "open"
-    CLOSED = "closed"
-
-
-class JobApplicationStatus(str, Enum):
-    APPLIED = "applied"
-    SHORTLISTED = "shortlisted"
-    REJECTED = "rejected"
-    HIRED = "hired"
-
-
-class TypingMode(str, Enum):
-    SENTENCE = "sentence"
-    CODE = "code"
-
-
-class TypingTestType(str, Enum):
-    TIMED = "timed"
-    LENGTH = "length"
-
-
 class User(Base):
     __tablename__ = "users"
 
@@ -94,45 +49,17 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    # Optional external auth provider user id (provider-neutral field).
-    external_auth_uid: Mapped[str | None] = mapped_column(
-        String(64),
-        unique=True,
-        nullable=True,
-        index=True,
-        deferred=True,
-    )
     role: Mapped[UserRole] = mapped_column(SqlEnum(UserRole), default=UserRole.STUDENT, nullable=False)
     selected_role_id: Mapped[int | None] = mapped_column(ForeignKey("roles.id"), nullable=True)
     xp_points: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     streak_days: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    credit_balance: Mapped[int] = mapped_column(Integer, default=100, nullable=False)
-    cohort_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
-    batch_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     target_role = relationship("Role", foreign_keys=[selected_role_id])
     progress_records = relationship("ProgressTracking", back_populates="user", cascade="all,delete-orphan")
     submissions = relationship("Submission", back_populates="user", cascade="all,delete-orphan")
     projects = relationship("Project", back_populates="user", cascade="all,delete-orphan")
     resumes = relationship("Resume", back_populates="user", cascade="all,delete-orphan")
-    credit_transactions = relationship("CreditTransaction", back_populates="user", cascade="all,delete-orphan")
-    project_step_completions = relationship("ProjectStepCompletion", back_populates="user", cascade="all,delete-orphan")
-    admin_actions = relationship(
-        "AdminActivityLog",
-        foreign_keys="AdminActivityLog.admin_user_id",
-        back_populates="admin_user",
-        cascade="all,delete-orphan",
-    )
-    targeted_admin_actions = relationship(
-        "AdminActivityLog",
-        foreign_keys="AdminActivityLog.target_user_id",
-        back_populates="target_user",
-    )
-    typing_attempts = relationship("TypingAttempt", back_populates="user", cascade="all,delete-orphan")
-    activity_logs = relationship("UserActivityLog", back_populates="user", cascade="all,delete-orphan")
 
 
 class Role(Base):
@@ -271,24 +198,13 @@ class Resume(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    title: Mapped[str] = mapped_column(String(255), nullable=False, default="Untitled Resume")
-    template: Mapped[str] = mapped_column(String(50), nullable=False, default="modern")
-    # Structured JSON sections
-    personal_info: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
-    summary: Mapped[str] = mapped_column(Text, nullable=False, default="")
-    skills: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    experience: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    education: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    projects: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    certifications: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    languages: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    custom_sections: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
-    # Metadata
-    role_id: Mapped[int | None] = mapped_column(ForeignKey("roles.id"), nullable=True)
+    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"), nullable=False)
+    full_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    summary: Mapped[str] = mapped_column(Text, nullable=False)
+    skills: Mapped[str] = mapped_column(Text, nullable=False)
+    experience: Mapped[str] = mapped_column(Text, nullable=False)
     ats_score: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    is_primary: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    pdf_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     user = relationship("User", back_populates="resumes")
 
@@ -312,295 +228,3 @@ class ProgressTracking(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user = relationship("User", back_populates="progress_records")
-
-
-class CreditTransaction(Base):
-    __tablename__ = "credit_transactions"
-    __table_args__ = (Index("ix_credit_transactions_user_created", "user_id", "created_at"),)
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    transaction_type: Mapped[CreditTransactionType] = mapped_column(SqlEnum(CreditTransactionType), nullable=False)
-    amount: Mapped[int] = mapped_column(Integer, nullable=False)
-    balance_after: Mapped[int] = mapped_column(Integer, nullable=False)
-    reason: Mapped[str] = mapped_column(String(255), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-
-    user = relationship("User", back_populates="credit_transactions")
-
-
-class AdminActivityLog(Base):
-    __tablename__ = "admin_activity_logs"
-    __table_args__ = (
-        Index("ix_admin_activity_logs_created", "created_at"),
-        Index("ix_admin_activity_logs_admin_target", "admin_user_id", "target_user_id"),
-    )
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    admin_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    target_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    action: Mapped[str] = mapped_column(String(100), nullable=False)
-    details: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-
-    admin_user = relationship("User", foreign_keys=[admin_user_id], back_populates="admin_actions")
-    target_user = relationship("User", foreign_keys=[target_user_id], back_populates="targeted_admin_actions")
-
-
-class LearningBatch(Base):
-    __tablename__ = "learning_batches"
-    __table_args__ = (
-        Index("ix_learning_batches_start_date", "start_date"),
-        Index("ix_learning_batches_track_mode", "track", "mode"),
-    )
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String(180), nullable=False)
-    track: Mapped[str] = mapped_column(String(180), nullable=False)
-    days: Mapped[str] = mapped_column(String(80), nullable=False)
-    time_ist: Mapped[str] = mapped_column(String(80), nullable=False)
-    mode: Mapped[BatchMode] = mapped_column(SqlEnum(BatchMode), default=BatchMode.ONLINE, nullable=False)
-    mentor_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    start_date: Mapped[date] = mapped_column(Date, nullable=False)
-    seats_total: Mapped[int] = mapped_column(Integer, default=30, nullable=False)
-    seats_filled: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-
-    mentor = relationship("User", foreign_keys=[mentor_user_id])
-    enrollments = relationship("BatchEnrollment", back_populates="batch", cascade="all,delete-orphan")
-    jobs = relationship("JobPost", back_populates="eligible_batch")
-
-
-class BatchEnrollment(Base):
-    __tablename__ = "batch_enrollments"
-    __table_args__ = (
-        UniqueConstraint("batch_id", "user_id", name="uq_batch_enrollments_batch_user"),
-        Index("ix_batch_enrollments_batch_role", "batch_id", "enrollment_role"),
-    )
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    batch_id: Mapped[int] = mapped_column(ForeignKey("learning_batches.id"), nullable=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    enrollment_role: Mapped[EnrollmentRole] = mapped_column(SqlEnum(EnrollmentRole), default=EnrollmentRole.STUDENT, nullable=False)
-    attendance_pct: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    college_info: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    year_or_grad: Mapped[str | None] = mapped_column(String(80), nullable=True)
-    project_title: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    project_status: Mapped[ProjectWorkStatus] = mapped_column(SqlEnum(ProjectWorkStatus), default=ProjectWorkStatus.NOT_STARTED, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-
-    batch = relationship("LearningBatch", back_populates="enrollments")
-    user = relationship("User")
-
-
-class JobPost(Base):
-    __tablename__ = "job_posts"
-    __table_args__ = (
-        Index("ix_job_posts_status_created", "status", "created_at"),
-        Index("ix_job_posts_batch", "eligible_batch_id"),
-    )
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(200), nullable=False)
-    company_name: Mapped[str] = mapped_column(String(180), nullable=False)
-    location: Mapped[str] = mapped_column(String(120), nullable=False)
-    employment_type: Mapped[str] = mapped_column(String(80), nullable=False)
-    description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    status: Mapped[JobPostStatus] = mapped_column(SqlEnum(JobPostStatus), default=JobPostStatus.OPEN, nullable=False)
-    eligible_batch_id: Mapped[int | None] = mapped_column(ForeignKey("learning_batches.id"), nullable=True)
-    created_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-
-    eligible_batch = relationship("LearningBatch", back_populates="jobs")
-    created_by = relationship("User", foreign_keys=[created_by_user_id])
-    applications = relationship("JobApplication", back_populates="job", cascade="all,delete-orphan")
-
-
-class JobApplication(Base):
-    __tablename__ = "job_applications"
-    __table_args__ = (
-        UniqueConstraint("job_post_id", "student_user_id", name="uq_job_application_job_student"),
-        Index("ix_job_applications_status", "status"),
-    )
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    job_post_id: Mapped[int] = mapped_column(ForeignKey("job_posts.id"), nullable=False)
-    student_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    status: Mapped[JobApplicationStatus] = mapped_column(SqlEnum(JobApplicationStatus), default=JobApplicationStatus.APPLIED, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-
-    job = relationship("JobPost", back_populates="applications")
-    student = relationship("User", foreign_keys=[student_user_id])
-
-
-# ---------------------------------------------------------------------------
-# Catalog models — standalone learning content (quizzes & projects)
-# These are NOT linked to the Stage/Role hierarchy; they are the
-# self-contained modules shown on the frontend.
-# ---------------------------------------------------------------------------
-
-class QuizCatalog(Base):
-    __tablename__ = "quiz_catalog"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    slug: Mapped[str] = mapped_column(String(120), unique=True, nullable=False, index=True)
-    title: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[str] = mapped_column(Text, nullable=False)
-    difficulty: Mapped[str] = mapped_column(String(50), default="beginner", nullable=False)
-    estimated_time: Mapped[str] = mapped_column(String(80), nullable=False)
-
-    questions = relationship(
-        "QuizCatalogQuestion",
-        back_populates="quiz",
-        cascade="all,delete-orphan",
-        order_by="QuizCatalogQuestion.order",
-    )
-
-
-class QuizCatalogQuestion(Base):
-    __tablename__ = "quiz_catalog_questions"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    quiz_id: Mapped[int] = mapped_column(ForeignKey("quiz_catalog.id"), nullable=False, index=True)
-    order: Mapped[int] = mapped_column(Integer, nullable=False)
-    question_type: Mapped[str] = mapped_column(String(30), nullable=False)   # multiple-choice | true-false | code-completion | code-output
-    title: Mapped[str] = mapped_column(String(255), nullable=False)
-    prompt: Mapped[str] = mapped_column(Text, nullable=False)
-    # multiple-choice / true-false
-    options_json: Mapped[str | None] = mapped_column(Text, nullable=True)     # JSON array of strings
-    correct_index: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    # code-completion
-    answer: Mapped[str | None] = mapped_column(Text, nullable=True)
-    acceptable_answers_json: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON array
-    # code-output
-    expected_output: Mapped[str | None] = mapped_column(Text, nullable=True)
-    # shared optional fields
-    code_snippet: Mapped[str | None] = mapped_column(Text, nullable=True)
-    language: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    explanation: Mapped[str] = mapped_column(Text, nullable=False)
-
-    quiz = relationship("QuizCatalog", back_populates="questions")
-
-
-class ProjectCatalog(Base):
-    __tablename__ = "project_catalog"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    slug: Mapped[str] = mapped_column(String(120), unique=True, nullable=False, index=True)
-    title: Mapped[str] = mapped_column(String(255), nullable=False)
-    short_description: Mapped[str] = mapped_column(String(500), nullable=False)
-    description: Mapped[str] = mapped_column(Text, nullable=False)
-    difficulty: Mapped[str] = mapped_column(String(50), default="beginner", nullable=False)
-    estimated_time: Mapped[str] = mapped_column(String(80), nullable=False)
-
-    steps = relationship(
-        "ProjectCatalogStep",
-        back_populates="project",
-        cascade="all,delete-orphan",
-        order_by="ProjectCatalogStep.order",
-    )
-
-
-class ProjectCatalogStep(Base):
-    __tablename__ = "project_catalog_steps"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    project_id: Mapped[int] = mapped_column(ForeignKey("project_catalog.id"), nullable=False, index=True)
-    order: Mapped[int] = mapped_column(Integer, nullable=False)
-    step_type: Mapped[str] = mapped_column(String(30), nullable=False)  # understanding | logic | code | preview | challenge
-    title: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    points_json: Mapped[str | None] = mapped_column(Text, nullable=True)   # JSON array of strings
-    code: Mapped[str | None] = mapped_column(Text, nullable=True)
-    language: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    challenge: Mapped[str | None] = mapped_column(Text, nullable=True)
-    hint: Mapped[str | None] = mapped_column(Text, nullable=True)
-    walkthrough_gif: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    walkthrough_caption: Mapped[str | None] = mapped_column(Text, nullable=True)
-    # TDD fields
-    slug: Mapped[str | None] = mapped_column(String(120), nullable=True)
-    callable_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
-    initial_code: Mapped[str | None] = mapped_column(Text, nullable=True)
-    test_cases: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON array of TestCase objects
-
-    project = relationship("ProjectCatalog", back_populates="steps")
-
-
-class ProjectStepCompletion(Base):
-    """Tracks which catalog project steps a user has completed."""
-    __tablename__ = "project_step_completions"
-    __table_args__ = (
-        UniqueConstraint("user_id", "project_slug", "step_id", name="uq_psc_user_project_step"),
-        Index("ix_psc_user_project", "user_id", "project_slug"),
-    )
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    project_slug: Mapped[str] = mapped_column(String(120), nullable=False)
-    step_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    completed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-    code_snapshot: Mapped[str | None] = mapped_column(Text, nullable=True)
-    passed: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
-
-    user = relationship("User", back_populates="project_step_completions")
-
-
-class TypingAttempt(Base):
-    __tablename__ = "typing_attempts"
-    __table_args__ = (
-        Index("ix_typing_attempts_user_created", "user_id", "created_at"),
-        Index("ix_typing_attempts_mode_test", "mode", "test_type"),
-    )
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    mode: Mapped[TypingMode] = mapped_column(SqlEnum(TypingMode), nullable=False)
-    test_type: Mapped[TypingTestType] = mapped_column(SqlEnum(TypingTestType), nullable=False)
-    test_option: Mapped[str] = mapped_column(String(20), nullable=False)
-    language: Mapped[str | None] = mapped_column(String(30), nullable=True)
-    prompt_text: Mapped[str] = mapped_column(Text, nullable=False)
-    typed_text: Mapped[str] = mapped_column(Text, nullable=False)
-    wpm: Mapped[float] = mapped_column(Numeric(6, 2), nullable=False)
-    raw_wpm: Mapped[float] = mapped_column(Numeric(6, 2), nullable=False)
-    accuracy: Mapped[float] = mapped_column(Numeric(5, 2), nullable=False)
-    error_count: Mapped[int] = mapped_column(Integer, nullable=False)
-    elapsed_seconds: Mapped[int] = mapped_column(Integer, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-
-    user = relationship("User", back_populates="typing_attempts")
-
-
-class RegistrationWaitlist(Base):
-    __tablename__ = "registration_waitlist"
-    __table_args__ = (
-        Index("ix_registration_waitlist_status_created", "status", "first_attempted_at"),
-    )
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
-    full_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    source: Mapped[str] = mapped_column(String(32), nullable=False, default="register")
-    status: Mapped[str] = mapped_column(String(32), nullable=False, default="pending")
-    attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-    first_attempted_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-    last_attempted_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-
-
-class UserActivityLog(Base):
-    __tablename__ = "user_activity_logs"
-    __table_args__ = (
-        Index("ix_user_activity_logs_user_occurred", "user_id", "occurred_at"),
-        Index("ix_user_activity_logs_event_occurred", "event_type", "occurred_at"),
-    )
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    event_type: Mapped[str] = mapped_column(String(40), nullable=False)
-    route: Mapped[str] = mapped_column(String(300), nullable=False)
-    method: Mapped[str | None] = mapped_column(String(16), nullable=True)
-    status_code: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    metadata_json: Mapped[str | None] = mapped_column(Text, nullable=True)
-    occurred_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-
-    user = relationship("User", back_populates="activity_logs")

@@ -8,7 +8,7 @@ import { QuizPage } from '@/components/pages/QuizPage'
 import { CareerMapperPage } from '@/components/career-mapper'
 import { AdminPage } from '@/components/pages/AdminPage'
 import { LoginPage } from '@/components/pages/LoginPage'
-import { ResumeBuilderPage } from '@/components/pages/ResumeBuilderPage'
+import { ResumeModuleGatewayPage } from '@/components/pages/ResumeModuleGatewayPage'
 import { StudentShell } from '@/components/shells/StudentShell'
 import { AdminShell } from '@/components/shells/AdminShell'
 import { AssessmentGuard } from '@/components/assessment/AssessmentGuard'
@@ -167,7 +167,7 @@ function App() {
 
         {studentPage === 'roadmapper' && <CareerMapperPage />}
 
-        {studentPage === 'resume' && <ResumeBuilderPage />}
+        {studentPage === 'resume' && <ResumeModuleGatewayPage user={user} />}
 
         {studentPage === 'learning' && selectedProjectId && (
           <ProjectLearningPage projectId={selectedProjectId} onBack={handleBackToProjects} />

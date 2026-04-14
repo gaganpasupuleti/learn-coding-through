@@ -43,3 +43,6 @@ __pycache__
 *.egg
 *.egg-info
 backend/career_portal.db
+
+# Screenshots from smoke tests
+scripts/screenshots/
