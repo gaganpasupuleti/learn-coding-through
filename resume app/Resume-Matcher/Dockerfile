@@ -79,6 +79,9 @@ WORKDIR /app/backend
 # Install Python dependencies
 RUN pip install .
 
+# Download spaCy English language model for ATS analyzer
+RUN python -m spacy download en_core_web_sm
+
 # ============================================
 # Frontend Setup
 # ============================================

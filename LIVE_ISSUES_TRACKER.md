@@ -1,6 +1,6 @@
 # Live Product Issues Tracker
 
-Last updated: 2026-04-13
+Last updated: 2026-04-18
 
 ## Current Status Snapshot (2026-04-05)
 
@@ -33,6 +33,35 @@ Last updated: 2026-04-13
 - Still pending:
   - Formal migration playbook (backup, transform, verify, rollback).
   - Production environment cutover plan and post-migration verification suite.
+
+## Planned Feature Tracks (2026-04-18)
+
+### [FEATURE] Lean ATS Resume Analyzer Pipeline (Local Parsing + Hugging Face)
+
+- Status: COMPLETED (2026-04-18)
+- Objective: Replace the expensive, token-heavy LLM resume parser with a hybrid architecture: Local text extraction + Local algorithmic scoring + Lean AI improvement suggestions. Deploy safely to Railway.
+
+#### Phase 1: Local Parsing and Scoring (Shift Left)
+- [x] Install local dependencies: `pdfplumber`, `python-docx`, `spacy`.
+- [x] Build `local_extractor.py` to pull raw text from PDFs and DOCX files locally.
+- [x] Build `ats_scorer.py` using spaCy/Regex to calculate the ATS match percentage locally by comparing extracted resume text against the Job Description.
+- [x] Output a structured dictionary containing `ats_score`, `matching_skills`, and `missing_skills`.
+
+#### Phase 2: Prompt Minimization and Local AI Testing
+- [x] Design the Lean Prompt: completely eliminate sending full resume text. The prompt must only contain `job_role` and `missing_skills`.
+- [x] Build `ai_service.py` with an interface to test locally first (for example, pointing to a local Ollama instance running Mistral/Llama3).
+- [x] Validate that token usage is drastically reduced and suggestions are highly targeted (2-3 bullet points max).
+
+#### Phase 3: Hugging Face Integration
+- [x] Swap the local AI endpoint for the Hugging Face Serverless Inference API (`huggingface_hub`).
+- [x] Implement robust error handling (try/except) to catch HTTP 429 (Too Many Requests) from the free tier.
+- [x] Implement a graceful fallback message if the Hugging Face API is unavailable so the app does not crash.
+
+#### Phase 4: Railway Deployment Prep
+- [x] Update `apps/backend/requirements.txt` with the new lean dependencies.
+- [x] Add `HF_API_KEY` to `apps/backend/.env.example` and `apps/backend/.env.railway.example`.
+- [x] Document the requirement to add the `HF_API_KEY` environment variable in the Railway project dashboard before deployment.
+- [x] Verify Docker build passes with the new NLP dependencies.
 
 ## P0 - Critical (Blocks reliable production use)
 
