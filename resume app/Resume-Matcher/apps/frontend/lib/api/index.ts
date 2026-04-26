@@ -51,3 +51,11 @@ export {
   type PromptConfig,
   type PromptConfigUpdate,
 } from './config';
+
+// Extractor (deterministic resume parsing)
+export {
+  extractResumeData,
+  type FinalStructuredResume,
+  type ExperienceEntry,
+  type ProjectEntry,
+} from './extractor';

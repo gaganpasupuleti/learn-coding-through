@@ -59,7 +59,10 @@ export async function apiFetch(
   // Matches the backend's 240s hard limit (resumes.py wait_for timeout)
   const timeout = timeoutMs ?? 240_000;
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeout);
+  const timer = setTimeout(() => {
+    // Pass an explicit reason so browser errors are actionable.
+    controller.abort(new Error(`Request timed out after ${timeout}ms`));
+  }, timeout);
 
   const headers = new Headers(options?.headers ?? {});
   if (typeof window !== 'undefined' && !headers.has('Authorization')) {
@@ -71,6 +74,18 @@ export async function apiFetch(
 
   try {
     return await fetch(url, { ...options, headers, signal: controller.signal });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      const reason = controller.signal.reason;
+      const message =
+        reason instanceof Error
+          ? reason.message
+          : typeof reason === 'string'
+            ? reason
+            : `Request aborted: ${url}`;
+      throw new Error(message);
+    }
+    throw error;
   } finally {
     clearTimeout(timer);
   }

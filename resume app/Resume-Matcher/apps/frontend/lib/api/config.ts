@@ -1,7 +1,7 @@
 import { apiFetch } from './client';
 
 // Supported LLM providers
-export type LLMProvider = 'openai' | 'anthropic' | 'openrouter' | 'gemini' | 'deepseek' | 'ollama';
+export type LLMProvider = 'openai' | 'anthropic' | 'openrouter' | 'gemini' | 'deepseek' | 'ollama' | 'huggingface';
 
 export interface LLMConfig {
   provider: LLMProvider;
@@ -134,6 +134,7 @@ export const PROVIDER_INFO: Record<
   gemini: { name: 'Google Gemini', defaultModel: 'gemini-3-flash-preview', requiresKey: true },
   deepseek: { name: 'DeepSeek', defaultModel: 'deepseek-chat', requiresKey: true },
   ollama: { name: 'Ollama (Local)', defaultModel: 'gemma3:4b', requiresKey: false },
+  huggingface: { name: 'HuggingFace', defaultModel: 'HuggingFaceH4/zephyr-7b-beta', requiresKey: true },
 };
 
 // Feature configuration types

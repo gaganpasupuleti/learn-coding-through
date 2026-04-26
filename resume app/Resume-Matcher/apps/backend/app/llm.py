@@ -5,6 +5,7 @@ import logging
 import threading
 from typing import Any
 
+import httpx
 import litellm
 from litellm import Router
 from litellm.router import RetryPolicy
@@ -218,27 +219,36 @@ _PROVIDER_KEY_MAP: dict[str, str] = {
     "openrouter": "openrouter",
     "deepseek": "deepseek",
     "ollama": "ollama",
+    "huggingface": "huggingface",
 }
 
 
 def resolve_api_key(stored: dict, provider: str) -> str:
     """Resolve the effective API key from stored config.
 
-    Priority: top-level api_key > api_keys[provider] > env/settings default.
+    Priority: env/settings default > top-level api_key > api_keys[provider].
 
     This is the single source of truth for key resolution.  Every code path
     that needs an API key (runtime, config display, health check, test
     endpoint) must call this function instead of reading ``stored["api_key"]``
     directly.
     """
+    # Prefer environment-backed keys so local/dev overrides can recover from
+    # stale persisted keys without manual config file edits.
+    if provider == "huggingface" and settings.huggingface_api_key:
+        return settings.huggingface_api_key
+    if settings.llm_api_key:
+        return settings.llm_api_key
+
     api_key = stored.get("api_key", "")
-    if not api_key:
-        api_keys = stored.get("api_keys", {})
-        if not isinstance(api_keys, dict):
-            api_keys = {}
-        config_provider = _PROVIDER_KEY_MAP.get(provider, provider)
-        api_key = api_keys.get(config_provider, settings.llm_api_key)
-    return api_key
+    if api_key:
+        return api_key
+
+    api_keys = stored.get("api_keys", {})
+    if not isinstance(api_keys, dict):
+        api_keys = {}
+    config_provider = _PROVIDER_KEY_MAP.get(provider, provider)
+    return api_keys.get(config_provider, "")
 
 
 def get_llm_config() -> LLMConfig:
@@ -272,6 +282,7 @@ def get_model_name(config: LLMConfig) -> str:
         "gemini": "gemini/",
         "deepseek": "deepseek/",
         "ollama": "ollama/",
+        "huggingface": "huggingface/",
     }
 
     prefix = provider_prefixes.get(config.provider, "")
@@ -285,7 +296,7 @@ def get_model_name(config: LLMConfig) -> str:
 
     # For other providers, don't add prefix if model already has a known prefix
     known_prefixes = ["openrouter/", "anthropic/",
-                      "gemini/", "deepseek/", "ollama/"]
+                      "gemini/", "deepseek/", "ollama/", "huggingface/"]
     if any(config.model.startswith(p) for p in known_prefixes):
         return config.model
 
@@ -418,6 +429,55 @@ async def check_llm_health(
     model_name = get_model_name(config)
 
     prompt = test_prompt or "Hi"
+
+    # For routine status checks, avoid expensive completion calls on local Ollama.
+    # This prevents repeated 30s read timeouts from degrading upload reliability.
+    if config.provider == "ollama" and not include_details and test_prompt is None:
+        api_base = _normalize_api_base(config.provider, config.api_base)
+        if not api_base:
+            return {
+                "healthy": False,
+                "provider": config.provider,
+                "model": config.model,
+                "error_code": "ollama_api_base_missing",
+            }
+        try:
+            tags_url = f"{api_base.rstrip('/')}/api/tags"
+            async with httpx.AsyncClient(timeout=5.0) as client:
+                response = await client.get(tags_url)
+            response.raise_for_status()
+            payload = response.json() if response.content else {}
+            models = payload.get("models", []) if isinstance(payload, dict) else []
+            model_names: set[str] = {
+                str(item.get("name", "")).strip()
+                for item in models
+                if isinstance(item, dict)
+            }
+            configured_model = config.model.strip()
+            if configured_model and configured_model not in model_names:
+                return {
+                    "healthy": False,
+                    "provider": config.provider,
+                    "model": config.model,
+                    "error_code": "ollama_model_missing",
+                }
+            return {
+                "healthy": True,
+                "provider": config.provider,
+                "model": config.model,
+                "response_model": f"ollama/{config.model}",
+            }
+        except Exception:
+            logging.exception(
+                "Ollama connectivity check failed",
+                extra={"provider": config.provider, "model": config.model},
+            )
+            return {
+                "healthy": False,
+                "provider": config.provider,
+                "model": config.model,
+                "error_code": "ollama_unreachable",
+            }
 
     try:
         # Make a minimal test call with timeout

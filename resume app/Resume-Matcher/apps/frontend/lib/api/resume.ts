@@ -202,6 +202,18 @@ export async function fetchResumeList(includeMaster = false): Promise<ResumeList
   return payload.data;
 }
 
+export async function createResume(
+  resumeData: ProcessedResume
+): Promise<ResumeResponse['data']> {
+  const res = await apiPost('/resumes', resumeData as unknown as Record<string, unknown>);
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Failed to create resume (status ${res.status}): ${text}`);
+  }
+  const payload = (await res.json()) as ResumeResponse;
+  return payload.data;
+}
+
 export async function updateResume(
   resumeId: string,
   resumeData: ProcessedResume

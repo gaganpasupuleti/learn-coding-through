@@ -532,6 +532,42 @@ ALLOWED_TYPES = {
 MAX_FILE_SIZE = 4 * 1024 * 1024  # 4MB
 
 
+@router.post("", response_model=ResumeFetchResponse)
+async def create_resume_from_json(resume_data: ResumeData) -> ResumeFetchResponse:
+    """Create a new resume record from structured JSON data.
+
+    Used by the builder when saving a resume that has not yet been persisted.
+    """
+    data_dict = resume_data.model_dump()
+    content = json.dumps(data_dict, indent=2)
+
+    resume = await db.create_resume_atomic_master(
+        content=content,
+        content_type="json",
+        processed_data=data_dict,
+        processing_status="ready",
+    )
+
+    raw_resume = RawResume(
+        id=None,
+        content=resume["content"],
+        content_type=resume["content_type"],
+        created_at=resume["created_at"],
+        processing_status=resume.get("processing_status", "ready"),
+    )
+
+    processed_resume = ResumeData.model_validate(resume.get("processed_data"))
+
+    return ResumeFetchResponse(
+        request_id=str(uuid4()),
+        data=ResumeFetchData(
+            resume_id=resume["resume_id"],
+            raw_resume=raw_resume,
+            processed_resume=processed_resume,
+        ),
+    )
+
+
 @router.post("/upload", response_model=ResumeUploadResponse)
 async def upload_resume(file: UploadFile = File(...)) -> ResumeUploadResponse:
     """Upload and process a resume file (PDF/DOCX).

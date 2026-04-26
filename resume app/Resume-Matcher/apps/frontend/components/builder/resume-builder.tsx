@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { type ResumeData } from '@/components/dashboard/resume-component';
 import { ResumeForm } from './resume-form';
+import { ResumeUploadMapper } from './ResumeUploadMapper';
 import { FormattingControls } from './formatting-controls';
 import { CoverLetterEditor } from './cover-letter-editor';
 import { OutreachEditor } from './outreach-editor';
@@ -33,6 +34,7 @@ import {
   getResumePdfUrl,
   getCoverLetterPdfUrl,
   fetchResume,
+  createResume,
   updateResume,
   updateCoverLetter,
   updateOutreachMessage,
@@ -402,12 +404,19 @@ const ResumeBuilderContent = () => {
   }, []);
 
   const handleSave = async () => {
-    if (!resumeId) {
-      showNotification(t('builder.alerts.saveNotAvailable'), 'warning');
-      return;
-    }
     try {
       setIsSaving(true);
+      if (!resumeId) {
+        // No existing record — create one first, then update URL
+        const created = await createResume(resumeData);
+        const nextData = (created.processed_resume || resumeData) as ResumeData;
+        setResumeData(nextData);
+        setLastSavedData(nextData);
+        setHasUnsavedChanges(false);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextData));
+        router.replace(`/builder?id=${encodeURIComponent(created.resume_id)}`);
+        return;
+      }
       const updated = await updateResume(resumeId, resumeData);
       const nextData = (updated.processed_resume || resumeData) as ResumeData;
       setResumeData(nextData);
@@ -655,7 +664,7 @@ const ResumeBuilderContent = () => {
                     <RotateCcw className="w-4 h-4" />
                     {t('common.reset')}
                   </Button>
-                  <Button size="sm" onClick={handleSave} disabled={!resumeId || isSaving}>
+                  <Button size="sm" onClick={handleSave} disabled={isSaving}>
                     <Save className="w-4 h-4" />
                     {isSaving ? t('common.saving') : t('common.save')}
                   </Button>
@@ -752,6 +761,7 @@ const ResumeBuilderContent = () => {
               {/* Resume Editor */}
               {activeTab === 'resume' && (
                 <>
+                  <ResumeUploadMapper onImport={handleUpdate} />
                   <FormattingControls settings={templateSettings} onChange={handleSettingsChange} />
                   <ResumeForm resumeData={resumeData} onUpdate={handleUpdate} />
                 </>

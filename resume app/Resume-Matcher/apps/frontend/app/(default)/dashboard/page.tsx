@@ -107,13 +107,14 @@ export default function DashboardPage() {
       const status = data.raw_resume?.processing_status || 'pending';
       setProcessingStatus(status as ProcessingStatus);
     } catch (err: unknown) {
-      console.error('Failed to check resume status:', err);
       // If resume not found (404), clear the stale localStorage
       if (err instanceof Error && err.message.includes('404')) {
         localStorage.removeItem('master_resume_id');
         setMasterResumeId(null);
+        setProcessingStatus('loading');
         return;
       }
+      console.error('Failed to check resume status:', err);
       setProcessingStatus('failed');
     }
   }, []);
@@ -131,7 +132,8 @@ export default function DashboardPage() {
       const data = await fetchResumeList(true);
       const masterFromList = data.find((r) => r.is_master);
       const storedId = localStorage.getItem('master_resume_id');
-      const resolvedMasterId = masterFromList?.resume_id || storedId;
+      const hasStoredIdInList = storedId ? data.some((r) => r.resume_id === storedId) : false;
+      const resolvedMasterId = masterFromList?.resume_id || (hasStoredIdInList ? storedId : null);
 
       if (resolvedMasterId) {
         localStorage.setItem('master_resume_id', resolvedMasterId);

@@ -62,16 +62,36 @@ def extract_text(file_path: str, file_type: str | None = None) -> str:
         raise ExtractionError(f"Failed to extract text from {path.name}: {exc}") from exc
 
 
+def _sanitize_text(text: str) -> str:
+    """Replace common PDF bullet artifacts with standard hyphens and
+    collapse excessive whitespace from layout-mode extraction."""
+    import re as _re
+    text = (
+        text
+        .replace("\uf0b7", "-")
+        .replace("\u2022", "-")
+        .replace("\u2023", "-")
+        .replace("\u25e6", "-")
+        .replace("\u2043", "-")
+        .replace("\u2013", "-")   # en-dash
+        .replace("\u2014", "-")   # em-dash
+        .replace("???", "-")
+    )
+    # Collapse runs of spaces (from layout columns) into a single space
+    text = _re.sub(r"[ \t]{2,}", " ", text)
+    return text
+
+
 def _extract_pdf(path: Path) -> str:
     pages: list[str] = []
     with pdfplumber.open(path) as pdf:
         for page in pdf.pages:
-            text = page.extract_text()
+            text = page.extract_text(layout=True)
             if text:
                 pages.append(text)
     if not pages:
         raise ExtractionError(f"No extractable text found in PDF: {path.name}")
-    return "\n".join(pages)
+    return _sanitize_text("\n".join(pages))
 
 
 def _extract_docx(path: Path) -> str:

@@ -17,9 +17,12 @@ try:
     import spacy
 
     try:
-        _nlp = spacy.load("en_core_web_sm")
+        _nlp = spacy.load("en_core_web_md")
     except OSError:
-        _nlp = None
+        try:
+            _nlp = spacy.load("en_core_web_sm")
+        except OSError:
+            _nlp = None
 except ImportError:
     _nlp = None
 

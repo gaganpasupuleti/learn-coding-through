@@ -324,7 +324,7 @@ async def update_prompt_config(
 
 
 # Supported API key providers
-SUPPORTED_PROVIDERS = ["openai", "anthropic", "google", "openrouter", "deepseek"]
+SUPPORTED_PROVIDERS = ["openai", "anthropic", "google", "openrouter", "deepseek", "huggingface"]
 
 
 def _mask_key_short(key: str | None) -> str | None:
@@ -443,7 +443,7 @@ async def delete_api_key(provider: str) -> dict:
     """Delete API key for a specific provider.
 
     Args:
-        provider: The provider name (openai, anthropic, google, openrouter, deepseek)
+        provider: The provider name (openai, anthropic, google, openrouter, deepseek, huggingface)
 
     Returns:
         Success message

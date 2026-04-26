@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import Any, Literal
 
+from pydantic import Field
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -105,6 +106,7 @@ def _get_llm_api_key_with_fallback() -> str:
         "openrouter": "openrouter",
         "deepseek": "deepseek",
         "ollama": "ollama",
+        "huggingface": "huggingface",
     }
 
     config_provider = provider_map.get(provider, provider)
@@ -122,10 +124,11 @@ class Settings(BaseSettings):
 
     # LLM Configuration
     llm_provider: Literal[
-        "openai", "anthropic", "openrouter", "gemini", "deepseek", "ollama"
+        "openai", "anthropic", "openrouter", "gemini", "deepseek", "ollama", "huggingface"
     ] = "openai"
     llm_model: str = "gpt-5-nano-2025-08-07"
     llm_api_key: str = ""
+    huggingface_api_key: str = Field(default="", validation_alias="HUGGINGFACE_API_KEY")
     llm_api_base: str | None = None  # For Ollama or custom endpoints
     log_llm: Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"] = "WARNING"
 

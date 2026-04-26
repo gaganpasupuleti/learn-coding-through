@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { ArrowRight, Bot, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { buildResumeHandoffUrl } from '@/lib/resume-handoff'
-import { ResumeBuilderPage } from '@/components/pages/ResumeBuilderPage'
 import type { AuthUser } from '@/lib/auth'
 
 interface ResumeModuleGatewayPageProps {
@@ -10,7 +9,6 @@ interface ResumeModuleGatewayPageProps {
 }
 
 export function ResumeModuleGatewayPage({ user }: ResumeModuleGatewayPageProps) {
-  const [view, setView] = useState<'chooser' | 'builder'>('chooser')
   const [error, setError] = useState<string | null>(null)
 
   const aiHandoffUrl = useMemo(() => {
@@ -23,9 +21,13 @@ export function ResumeModuleGatewayPage({ user }: ResumeModuleGatewayPageProps) 
     }
   }, [user])
 
-  if (view === 'builder') {
-    return <ResumeBuilderPage onBack={() => setView('chooser')} />
-  }
+  const noAiHandoffUrl = useMemo(() => {
+    try {
+      return buildResumeHandoffUrl(user, 'dashboard', 'no_ai')
+    } catch {
+      return ''
+    }
+  }, [user])
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-8">
@@ -52,7 +54,7 @@ export function ResumeModuleGatewayPage({ user }: ResumeModuleGatewayPageProps) 
               </p>
               <Button
                 type="button"
-                onClick={() => setView('builder')}
+                onClick={() => window.location.assign(noAiHandoffUrl)}
                 className="w-full bg-blue-600 hover:bg-blue-700"
               >
                 Continue Without AI

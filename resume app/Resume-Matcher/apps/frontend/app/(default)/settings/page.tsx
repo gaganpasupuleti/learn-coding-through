@@ -62,6 +62,7 @@ const PROVIDERS: LLMProvider[] = [
   'gemini',
   'deepseek',
   'ollama',
+  'huggingface',
 ];
 
 const SEGMENTED_BUTTON_BASE =

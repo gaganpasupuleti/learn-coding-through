@@ -287,18 +287,24 @@ function TddStepView({
 function GifWalkthrough({ gifUrl, caption }: { gifUrl?: string; caption?: string }) {
   const [loadError, setLoadError] = useState(false)
 
-  const safeGifUrl = useMemo(() => {
+  const safeWalkthroughMedia = useMemo(() => {
     if (!gifUrl) return null
     try {
       const parsed = new URL(gifUrl)
       const allowedHosts = new Set(['media.giphy.com', 'i.giphy.com', 'giphy.com'])
-      return allowedHosts.has(parsed.hostname) ? gifUrl : null
+      if (!allowedHosts.has(parsed.hostname)) return null
+
+      const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(parsed.pathname)
+      return {
+        kind: isVideo ? 'video' : 'image',
+        url: gifUrl,
+      }
     } catch {
       return null
     }
   }, [gifUrl])
 
-  if (!safeGifUrl || loadError) return null
+  if (!safeWalkthroughMedia || loadError) return null
 
   return (
     <Card className="border-2 border-primary/20 bg-primary/5">
@@ -310,13 +316,29 @@ function GifWalkthrough({ gifUrl, caption }: { gifUrl?: string; caption?: string
           <span>Walkthrough</span>
         </div>
         <div className="rounded-lg overflow-hidden border border-primary/20 bg-background">
-          <img
-            src={safeGifUrl}
-            alt={caption || 'Step walkthrough'}
-            className="w-full h-auto object-cover"
-            loading="lazy"
-            onError={() => setLoadError(true)}
-          />
+          {safeWalkthroughMedia.kind === 'video' ? (
+            <video
+              src={safeWalkthroughMedia.url}
+              className="w-full h-auto object-cover"
+              playsInline
+              muted
+              loop
+              autoPlay
+              controls
+              preload="metadata"
+              onError={() => setLoadError(true)}
+            >
+              Your browser does not support the walkthrough video.
+            </video>
+          ) : (
+            <img
+              src={safeWalkthroughMedia.url}
+              alt={caption || 'Step walkthrough'}
+              className="w-full h-auto object-cover"
+              loading="lazy"
+              onError={() => setLoadError(true)}
+            />
+          )}
         </div>
         {caption && (
           <p className="text-sm text-muted-foreground leading-relaxed">

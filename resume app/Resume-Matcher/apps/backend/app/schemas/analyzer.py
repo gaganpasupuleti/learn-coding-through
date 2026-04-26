@@ -13,3 +13,40 @@ class ATSAnalyzeResponse(BaseModel):
         ...,
         description="AI-generated improvement suggestions or an optimized-resume message",
     )
+
+
+class ParsedResumeData(BaseModel):
+    """Structured resume data extracted by the hybrid heuristic parser."""
+
+    contact_info: str = ""
+    summary: str = ""
+    experience: str = ""
+    education: str = ""
+    projects: str = ""
+    skills: str = ""
+
+
+# ── Deterministically formatted output ───────────────────────────────
+
+class ExperienceEntry(BaseModel):
+    company: str = ""
+    role: str = ""
+    duration: str = ""
+    description: str = ""
+
+
+class ProjectEntry(BaseModel):
+    title: str = ""
+    description: str = ""
+
+
+class FinalStructuredResume(BaseModel):
+    """Fully array-structured resume returned by the deterministic
+    formatting layer.  No AI involved."""
+
+    contact_info: str = ""
+    summary: str = ""
+    skills: list[str] = Field(default_factory=list)
+    projects: list[ProjectEntry] = Field(default_factory=list)
+    experience: list[ExperienceEntry] = Field(default_factory=list)
+    education: list[ExperienceEntry] = Field(default_factory=list)

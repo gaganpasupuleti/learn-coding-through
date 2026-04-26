@@ -65,7 +65,7 @@ Last updated: 2026-04-18
 
 ## P0 - Critical (Blocks reliable production use)
 
-### 1) [PENDING] Sandbox is unstable / unreliable
+### 1) [PENDING] Sandbox is unstable / unreliable  c 
 - Problem: Current sandbox behavior is inconsistent and not production-safe.
 - Impact: Core learning workflows break, trust drops.
 - Required outcome: Stable execution pipeline with clear language boundaries and isolation.

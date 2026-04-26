@@ -8,10 +8,12 @@ from pathlib import Path
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
-from app.schemas.analyzer import ATSAnalyzeResponse
+from app.schemas.analyzer import ATSAnalyzeResponse, FinalStructuredResume
 from app.services.ats_scorer import score_resume
 from app.services.lean_ai_service import get_suggestions
+from app.services.llm_service import coerce_resume_json
 from app.services.local_extractor import ExtractionError, extract_text
+from app.services.structured_parser import parse_resume_structure
 
 logger = logging.getLogger(__name__)
 
@@ -74,3 +76,37 @@ async def analyze_resume(
         missing_skills=result.missing_skills,
         suggestions=suggestions,
     )
+
+
+@router.post("/extract-data", response_model=FinalStructuredResume)
+async def extract_data(
+    resume: UploadFile = File(...),
+):
+    """Extract structured sections from a resume and coerce them into
+    schema-aligned JSON via the LLM coercion layer."""
+
+    filename = resume.filename or ""
+    ext = Path(filename).suffix.lstrip(".").lower()
+    if ext not in _ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported file type '.{ext}'. Upload a PDF or DOCX file.",
+        )
+
+    tmp_path: str | None = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ext}") as tmp:
+            tmp_path = tmp.name
+            content = await resume.read()
+            tmp.write(content)
+
+        resume_text = extract_text(tmp_path, file_type=ext)
+    except ExtractionError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+    finally:
+        if tmp_path:
+            Path(tmp_path).unlink(missing_ok=True)
+
+    raw_parsed = parse_resume_structure(resume_text)
+    structured = await coerce_resume_json(raw_parsed)
+    return FinalStructuredResume(**structured)
