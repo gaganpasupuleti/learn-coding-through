@@ -1,4 +1,5 @@
 import { ArrowRight, Zap, Code2, Trophy } from 'lucide-react'
+import { LearningPathsShowcase } from '@/components/home/LearningPathsShowcase'
 
 interface LandingPageProps {
   onNavigate: (page: 'projects' | 'practice' | 'quiz' | 'roadmapper') => void
@@ -84,6 +85,9 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
           Quiz-gated stage progression · Job-focused learning · Build-to-selection flow
         </p>
       </div>
+
+      {/* Curated Learning Paths */}
+      <LearningPathsShowcase />
     </div>
   )
 }

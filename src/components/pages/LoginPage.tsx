@@ -362,6 +362,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   <Input
                     className={fieldClass}
                     type="email"
+                    autoComplete="username"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
@@ -387,6 +388,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   <Input
                     className={fieldClass}
                     type="password"
+                    autoComplete="new-password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     disabled={isLoading}
@@ -469,7 +471,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
                     <User size={12} /> Email
                   </label>
-                  <Input className={fieldClass} type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} />
+                  <Input className={fieldClass} type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
@@ -478,6 +480,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   <Input
                     className={fieldClass}
                     type="password"
+                    autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
