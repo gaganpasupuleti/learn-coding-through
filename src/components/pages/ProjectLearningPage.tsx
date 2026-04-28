@@ -16,9 +16,12 @@ import {
   Eye,
   Rocket,
   Trophy,
+  CaretDown,
+  CaretUp,
 } from '@phosphor-icons/react'
 import { CatalogProject, CatalogProjectStep, fetchCatalogProject, fetchUserProgress, saveProjectStepProgress, saveStepProgress } from '@/lib/api'
 import type { ProjectStep, TestCase } from '@/types/project'
+import { SkillVideoPlayer } from '@/components/common/SkillVideoPlayer'
 import { DigitalClockPreview } from '@/components/previews/DigitalClockPreview'
 import { CalculatorPreview } from '@/components/previews/CalculatorPreview'
 import { TemperatureConverterPreview } from '@/components/previews/TemperatureConverterPreview'
@@ -70,6 +73,8 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
   const [isStepValidated, setIsStepValidated] = useState(false)
   const [consoleOutput, setConsoleOutput] = useState('')
   const [isProjectCompleted, setIsProjectCompleted] = useState(false)
+  // ── Tutorial video accordion state ─────────────────────────────────────────
+  const [tutorialVideoOpen, setTutorialVideoOpen] = useState(false)
 
   // Derived: a project is TDD if its first step has test cases populated
   const isTddMode = !loading && !!project?.steps[0]?.content?.testCases?.length
@@ -225,6 +230,7 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
     initialCode: s.content.initialCode || '',
     testCases: (s.content.testCases || []) as TestCase[],
     callableName: s.content.callableName ?? undefined,
+    videoId: s.videoId ?? undefined,
   })
 
   // ── TDD project view (early return) ─────────────────────────────────────────
@@ -349,12 +355,14 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
         saveProjectStepProgress(projectId, currentStep.id).catch(() => {})
       }
       setCurrentStepIndex(currentStepIndex + 1)
+      setTutorialVideoOpen(false)
     }
   }
 
   const handlePrevious = () => {
     if (!isFirstStep) {
       setCurrentStepIndex(currentStepIndex - 1)
+      setTutorialVideoOpen(false)
     }
   }
 
@@ -379,51 +387,43 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
   // Render interactive builder if available and selected
   if (viewMode === 'builder' && hasInteractiveBuilder) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-        <div className="container mx-auto px-6 py-8">
-          <div className="max-w-5xl mx-auto space-y-6">
-            <div className="flex items-center justify-between">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={onBack}
-                className="hover:bg-secondary"
-              >
-                <ArrowLeft className="mr-2" size={18} />
-                Back to Projects
-              </Button>
-              
-              <div className="flex items-center gap-3">
-                <SandboxInfo />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setViewMode('tutorial')}
-                >
-                  <Eye className="mr-2" size={16} />
-                  View Tutorial
-                </Button>
-              </div>
-            </div>
+      <div className="h-[calc(100vh-56px)] flex flex-col overflow-hidden bg-background">
+        {/* ── Slim header bar ── */}
+        <div className="flex items-center justify-between px-4 py-2 border-b bg-background/95 backdrop-blur-sm flex-shrink-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="gap-1.5 h-8 text-xs"
+          >
+            <ArrowLeft size={15} />
+            Projects
+          </Button>
 
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                  <h1 className="text-3xl md:text-4xl font-bold">{project_.title}</h1>
-                <Badge variant="default" className="bg-primary">
-                  <Rocket size={14} className="mr-1" weight="duotone" />
-                  Interactive Mode
-                </Badge>
-              </div>
-              <p className="text-muted-foreground text-lg">{project_.description}</p>
-            </div>
+          <span className="text-sm font-semibold text-foreground">{project_.title}</span>
 
-            <InteractiveProjectBuilder
-              projectId={project_.id}
-              projectTitle={project_.title}
-              buildSteps={projectBuilderConfigs[project_.id]}
-              onComplete={handleComplete}
-            />
+          <div className="flex items-center gap-2">
+            <SandboxInfo />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setViewMode('tutorial')}
+              className="h-8 text-xs gap-1.5"
+            >
+              <Eye size={13} />
+              Tutorial
+            </Button>
           </div>
+        </div>
+
+        {/* ── Builder fills remaining height ── */}
+        <div className="flex-1 min-h-0">
+          <InteractiveProjectBuilder
+            projectId={project_.id}
+            projectTitle={project_.title}
+            buildSteps={projectBuilderConfigs[project_.id]}
+            onComplete={handleComplete}
+          />
         </div>
       </div>
     )
@@ -508,6 +508,35 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
               <Separator />
 
+              {/* ── Video accordion (tutorial view) ── */}
+              {currentStep.videoId && (
+                <div className="rounded-xl border border-indigo-200 bg-indigo-50/40 overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setTutorialVideoOpen(v => !v)}
+                    className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-indigo-700 hover:bg-indigo-100/70 transition-colors"
+                  >
+                    <span>📺 Watch Step Explanation</span>
+                    {tutorialVideoOpen
+                      ? <CaretUp size={14} weight="bold" className="text-indigo-400" />
+                      : <CaretDown size={14} weight="bold" className="text-indigo-400" />
+                    }
+                  </button>
+                  {tutorialVideoOpen && (
+                    <div className="px-4 pb-4">
+                      <SkillVideoPlayer
+                        videoId={currentStep.videoId}
+                        title={currentStep.title}
+                        desc="Watch this video explanation before starting the step."
+                        level="Beginner"
+                        channel="Tutorial"
+                        accentColor="bg-indigo-600"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-6 py-6 min-h-[400px]">
                 {currentStep.content.description && (
                   <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg p-6 border-2 border-primary/20">
@@ -564,10 +593,16 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
                             ))}
                           </ul>
                         )}
-                        <ProjectStepWalkthrough
-                          gifUrl={currentStep.content.walkthroughGif}
-                          caption={currentStep.content.walkthroughCaption}
-                        />
+                        {currentStep.videoId ? (
+                          <SkillVideoPlayer
+                            videoId={currentStep.videoId}
+                            title={currentStep.title}
+                            desc="Watch a walkthrough of the code before reading the reference solution."
+                            level="Beginner"
+                            channel="Tutorial"
+                            accentColor="bg-indigo-600"
+                          />
+                        ) : null}
                       </TabsContent>
 
                       <TabsContent value="reference" className="mt-4">

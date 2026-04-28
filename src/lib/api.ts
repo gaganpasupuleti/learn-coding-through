@@ -807,6 +807,8 @@ export interface CatalogProjectStep {
   title: string
   type: 'understanding' | 'logic' | 'code' | 'preview' | 'challenge'
   content: CatalogProjectStepContent
+  /** Optional YouTube video ID to show a step-specific tutorial in the builder. */
+  videoId?: string
 }
 
 export interface CatalogProject {
@@ -876,7 +878,17 @@ export async function fetchCatalogProject(slug: string): Promise<CatalogProject>
   try {
     const response = await fetch(`${API_BASE_URL}/api/v1/projects/catalog/${encodeURIComponent(slug)}`)
     if (!response.ok) throw new Error('not ok')
-    return (await response.json()) as CatalogProject
+    const data = (await response.json()) as CatalogProject
+    // Merge videoId from static catalog — this field is frontend-only and is
+    // not stored in the backend DB, so we inject it here after fetching.
+    const staticProject = CATALOG_PROJECTS.find((p) => p.id === slug)
+    if (staticProject) {
+      data.steps = data.steps.map((step, i) => ({
+        ...step,
+        videoId: staticProject.steps[i]?.videoId ?? step.videoId,
+      }))
+    }
+    return data
   } catch {
     const found = CATALOG_PROJECTS.find((p) => p.id === slug)
     if (!found) throw new Error(`Project "${slug}" not found`)

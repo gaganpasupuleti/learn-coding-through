@@ -9,6 +9,8 @@ export interface BuildStep {
   testCases: TestCase[]
   hints: Hint[]
   successMessage: string
+  /** Optional YouTube video ID shown in the left-panel video player. */
+  videoId?: string
 }
 
 export interface TestCase {
@@ -36,7 +38,7 @@ export const digitalClockBuildSteps: BuildStep[] = [
       'Create a variable called "now" using new Date()',
       'Log the time to the console to see it',
     ],
-    starterCode: '// TODO: Create a variable to store the current time\n// Hint: Use new Date() to get the current time\n\nconsole.log("Time:", now)',
+    starterCode: '// TODO: Create a variable to store the current time\n// Hint: Use new Date() to get the current time\n\n// const now = new Date()\n// console.log("Time:", now)',
     testCases: [
       {
         id: 1,
@@ -66,7 +68,8 @@ export const digitalClockBuildSteps: BuildStep[] = [
         codeSnippet: 'const now = new Date()'
       }
     ],
-    successMessage: 'Awesome! You\'ve learned how to get the current time!'
+    successMessage: 'Awesome! You\'ve learned how to get the current time!',
+    videoId: 'jNQXAC9IVRw',
   },
   {
     id: 2,
@@ -122,7 +125,8 @@ console.log("Seconds:", seconds)`,
         codeSnippet: 'const hours = now.getHours()\nconst minutes = now.getMinutes()\nconst seconds = now.getSeconds()'
       }
     ],
-    successMessage: 'Perfect! You can now extract individual time components!'
+    successMessage: 'Perfect! You can now extract individual time components!',
+    videoId: 'jNQXAC9IVRw',
   },
   {
     id: 3,
@@ -173,7 +177,8 @@ console.log(\`Time: \${formattedHours}:\${formattedMinutes}:\${formattedSeconds}
         codeSnippet: 'const formattedHours = hours.toString().padStart(2, "0")'
       }
     ],
-    successMessage: 'Excellent! Your time now looks professional with leading zeros!'
+    successMessage: 'Excellent! Your time now looks professional with leading zeros!',
+    videoId: 'jNQXAC9IVRw',
   }
 ]
 
@@ -238,7 +243,8 @@ console.log(add(10, 20)) // Should output: 30`,
         codeSnippet: 'function add(a, b) {\n  return a + b\n}'
       }
     ],
-    successMessage: 'Great! You\'ve created your first calculator function!'
+    successMessage: 'Great! You\'ve created your first calculator function!',
+    videoId: 'jNQXAC9IVRw',
   },
   {
     id: 2,
@@ -299,7 +305,8 @@ console.log(divide(20, 4)) // Should output: 5`,
         codeSnippet: 'function subtract(a, b) {\n  return a - b\n}\n\nfunction multiply(a, b) {\n  return a * b\n}\n\nfunction divide(a, b) {\n  return a / b\n}'
       }
     ],
-    successMessage: 'Awesome! Your calculator now has all basic operations!'
+    successMessage: 'Awesome! Your calculator now has all basic operations!',
+    videoId: 'jNQXAC9IVRw',
   },
   {
     id: 3,
@@ -374,7 +381,8 @@ console.log(calculate(10, '/', 5)) // Should output: 2`,
 }`
       }
     ],
-    successMessage: 'Perfect! You\'ve built a fully functional calculator!'
+    successMessage: 'Perfect! You\'ve built a fully functional calculator!',
+    videoId: 'jNQXAC9IVRw',
   }
 ]
 
@@ -426,7 +434,8 @@ console.log(celsiusToFahrenheit(100)) // Should output: 212`,
         codeSnippet: 'function celsiusToFahrenheit(celsius) {\n  return (celsius * 9/5) + 32\n}'
       }
     ],
-    successMessage: 'Excellent! You can now convert Celsius to Fahrenheit!'
+    successMessage: 'Excellent! You can now convert Celsius to Fahrenheit!',
+    videoId: 'jNQXAC9IVRw',
   },
   {
     id: 2,
@@ -477,7 +486,8 @@ console.log(fahrenheitToCelsius(212)) // Should output: 100`,
         codeSnippet: 'function fahrenheitToCelsius(fahrenheit) {\n  return (fahrenheit - 32) * 5/9\n}'
       }
     ],
-    successMessage: 'Perfect! Your temperature converter works both ways!'
+    successMessage: 'Perfect! Your temperature converter works both ways!',
+    videoId: 'jNQXAC9IVRw',
   }
 ]
 
@@ -527,7 +537,8 @@ console.log(buildProfile('Asha Patel', 'asha@mail.com', 'Frontend developer'))`,
         codeSnippet: "function buildProfile(fullName, email, summary) {\n  return { full_name: fullName, email, summary, skills: [], experience: [] }\n}",
       },
     ],
-    successMessage: 'Great start! Your base resume profile is ready.'
+    successMessage: 'Great start! Your base resume profile is ready.',
+    videoId: 'jNQXAC9IVRw',
   },
   {
     id: 2,
@@ -577,7 +588,8 @@ console.log(addSkills(profile, ['React', ' TypeScript ', 'react']))`,
         codeSnippet: 'const normalized = [...new Set(skills.map((s) => s.trim().toLowerCase()))]'
       }
     ],
-    successMessage: 'Nice! Skills are now clean and duplicate-free.'
+    successMessage: 'Nice! Skills are now clean and duplicate-free.',
+    videoId: 'jNQXAC9IVRw',
   },
   {
     id: 3,
@@ -625,7 +637,8 @@ console.log(addExperience(profile, 'Frontend Intern', 'Acme', 'Built reusable da
         text: 'The new object should include exactly title, company, and impact fields.',
       },
     ],
-    successMessage: 'Excellent! Your resume can now store project/work history.'
+    successMessage: 'Excellent! Your resume can now store project/work history.',
+    videoId: 'jNQXAC9IVRw',
   },
   {
     id: 4,
@@ -670,7 +683,8 @@ console.log(atsScore(['react', 'typescript', 'python'], ['React', 'TypeScript'])
         codeSnippet: 'return Math.floor((matched / required.size) * 100)'
       },
     ],
-    successMessage: 'Great! You now have a meaningful resume quality score.'
+    successMessage: 'Great! You now have a meaningful resume quality score.',
+    videoId: 'jNQXAC9IVRw',
   },
   {
     id: 5,
@@ -724,7 +738,8 @@ console.log(renderMarkdown(profile))`,
         text: 'Convert each experience object into a bullet line like: - Title at Company: Impact.',
       },
     ],
-    successMessage: 'Outstanding! You completed an end-to-end Resume Builder workflow.'
+    successMessage: 'Outstanding! You completed an end-to-end Resume Builder workflow.',
+    videoId: 'jNQXAC9IVRw',
   },
 ]
 

@@ -135,6 +135,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 1,
         title: 'Understanding the Problem',
         type: 'understanding',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: 'A digital clock shows the current time and updates automatically every second.',
           points: [
@@ -149,6 +150,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 2,
         title: 'Breaking Down the Logic',
         type: 'logic',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: "Let's break this down into simple steps:",
           points: [
@@ -165,6 +167,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 3,
         title: 'The Code',
         type: 'code',
+        videoId: 'jNQXAC9IVRw',
         content: {
           language: 'typescript',
           points: [
@@ -173,8 +176,6 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
             'Render the time inside a large, easy-to-read display',
           ],
           code: "import { useState, useEffect } from 'react'\n\nfunction DigitalClock() {\n  const [time, setTime] = useState(new Date())\n\n  useEffect(() => {\n    const timer = setInterval(() => setTime(new Date()), 1000)\n    return () => clearInterval(timer)\n  }, [])\n\n  const hours = time.getHours().toString().padStart(2, '0')\n  const minutes = time.getMinutes().toString().padStart(2, '0')\n  const seconds = time.getSeconds().toString().padStart(2, '0')\n\n  return <div className=\"text-6xl font-bold\">{hours}:{minutes}:{seconds}</div>\n}",
-          walkthroughGif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXo3N3NvNGxyZjdqbnZ0eHFmZzNyMDZmbWNzb2xvbTdhZ3ZxMTd0ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26tn33aiTi1jkl6H6/giphy.gif',
-          walkthroughCaption: 'Watch the clock component update every second as the state changes.',
         },
       },
       {
@@ -208,6 +209,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 1,
         title: 'Understanding the Problem',
         type: 'understanding',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: 'A calculator takes numbers and operations from the user, does the math, and shows the result.',
           points: [
@@ -223,6 +225,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 2,
         title: 'Breaking Down the Logic',
         type: 'logic',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: "Here's how the calculator thinks step-by-step:",
           points: [
@@ -240,11 +243,10 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 3,
         title: 'The Code',
         type: 'code',
+        videoId: 'jNQXAC9IVRw',
         content: {
           language: 'typescript',
           code: "import { useState } from 'react'\n\nfunction Calculator() {\n  const [display, setDisplay] = useState('0')\n  const [prev, setPrev] = useState<number | null>(null)\n  const [op, setOp] = useState<string | null>(null)\n  const [fresh, setFresh] = useState(true)\n\n  const handleNumber = (n: string) => {\n    setDisplay(fresh ? n : (display === '0' ? n : display + n))\n    setFresh(false)\n  }\n  const handleClear = () => { setDisplay('0'); setPrev(null); setOp(null); setFresh(true) }\n  // ... operator and equals handlers\n}",
-          walkthroughGif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXUwa2NlZ2g2NmJsbXYyMHltdnFzbWc5Z3B0d3NzMGQydnNraDhpOSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT0xeJpnrWC4XWblEk/giphy.gif',
-          walkthroughCaption: 'Follow the button presses to see how the calculator updates its display.',
         },
       },
       {
@@ -278,6 +280,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 1,
         title: 'Understanding the Problem',
         type: 'understanding',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: 'A temperature converter takes a temperature in one scale and converts it to another.',
           points: [
@@ -292,6 +295,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 2,
         title: 'Breaking Down the Logic',
         type: 'logic',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: "Here's how we'll convert temperatures:",
           points: [
@@ -308,6 +312,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 3,
         title: 'The Code',
         type: 'code',
+        videoId: 'jNQXAC9IVRw',
         content: {
           language: 'python',
           code: "def convert_temperature(value, from_scale, to_scale):\n    if from_scale == to_scale:\n        return value\n    if from_scale == 'F':\n        celsius = (value - 32) * 5/9\n    elif from_scale == 'K':\n        celsius = value - 273.15\n    else:\n        celsius = value\n    if to_scale == 'F':\n        return (celsius * 9/5) + 32\n    elif to_scale == 'K':\n        return celsius + 273.15\n    else:\n        return celsius\n\nprint(f\"25C = {convert_temperature(25, 'C', 'F')}F\")",
@@ -344,6 +349,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 1,
         title: 'Understanding the Problem',
         type: 'understanding',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: 'A password generator creates random, secure passwords.',
           points: [
@@ -358,6 +364,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 2,
         title: 'Breaking Down the Logic',
         type: 'logic',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: "Here's how we'll generate secure passwords:",
           points: [
@@ -374,6 +381,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 3,
         title: 'The Code',
         type: 'code',
+        videoId: 'jNQXAC9IVRw',
         content: {
           language: 'python',
           code: "import random, string\n\ndef generate_password(length=12):\n    chars = string.ascii_letters + string.digits + string.punctuation\n    required = [random.choice(string.ascii_uppercase), random.choice(string.ascii_lowercase), random.choice(string.digits), random.choice(string.punctuation)]\n    rest = [random.choice(chars) for _ in range(length - 4)]\n    pwd = required + rest\n    random.shuffle(pwd)\n    return ''.join(pwd)\n\nprint(generate_password(16))",
@@ -410,6 +418,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 1,
         title: 'Understanding the Problem',
         type: 'understanding',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: 'A student database stores information about students. SQL lets us organize and retrieve it easily.',
           points: [
@@ -425,6 +434,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 2,
         title: 'Breaking Down the Logic',
         type: 'logic',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: "Here's how we'll structure our database:",
           points: [
@@ -439,6 +449,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 3,
         title: 'The Code',
         type: 'code',
+        videoId: 'jNQXAC9IVRw',
         content: {
           language: 'sql',
           code: "CREATE TABLE Students (\n    student_id INT PRIMARY KEY,\n    first_name VARCHAR(50),\n    last_name VARCHAR(50),\n    email VARCHAR(100),\n    major VARCHAR(50)\n);\n\nINSERT INTO Students VALUES (1,'Alice','Johnson','alice@email.com','Computer Science'), (2,'Bob','Smith','bob@email.com','Mathematics');\n\nSELECT * FROM Students;\nSELECT first_name, last_name FROM Students WHERE major = 'Computer Science';",
@@ -475,6 +486,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 1,
         title: 'Understanding the Problem',
         type: 'understanding',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: 'A sales analytics system helps businesses understand performance through totals, averages, and trends.',
           points: [
@@ -489,6 +501,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 2,
         title: 'Breaking Down the Logic',
         type: 'logic',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: "Here's how we'll analyze sales:",
           points: [
@@ -505,6 +518,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 3,
         title: 'The Code',
         type: 'code',
+        videoId: 'jNQXAC9IVRw',
         content: {
           language: 'sql',
           code: "CREATE TABLE Sales (sale_id INT PRIMARY KEY, product_name VARCHAR(100), sale_amount DECIMAL(10,2), sale_date DATE, salesperson VARCHAR(50));\n\nINSERT INTO Sales VALUES (1,'Laptop',1200,'2024-01-15','John'),(2,'Mouse',25,'2024-01-15','Sarah'),(3,'Keyboard',75,'2024-01-16','John');\n\nSELECT SUM(sale_amount) total_revenue FROM Sales;\nSELECT salesperson, COUNT(*) sales, SUM(sale_amount) total FROM Sales GROUP BY salesperson ORDER BY total DESC;",
@@ -541,6 +555,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 1,
         title: 'Understanding the Problem',
         type: 'understanding',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: 'A grade calculator takes multiple test scores, computes the average, and assigns a letter grade.',
           points: [
@@ -555,6 +570,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 2,
         title: 'Breaking Down the Logic',
         type: 'logic',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: "Here's how we'll calculate grades:",
           points: [
@@ -570,6 +586,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 3,
         title: 'The Code',
         type: 'code',
+        videoId: 'jNQXAC9IVRw',
         content: {
           language: 'java',
           code: 'public class GradeCalculator {\n    public static double calculateAverage(double[] scores) {\n        double sum = 0;\n        for (double s : scores) sum += s;\n        return sum / scores.length;\n    }\n    public static String getLetterGrade(double avg) {\n        if (avg >= 90) return "A";\n        else if (avg >= 80) return "B";\n        else if (avg >= 70) return "C";\n        else if (avg >= 60) return "D";\n        else return "F";\n    }\n    public static void main(String[] args) {\n        double[] scores = {85.5, 92.0, 78.5, 88.0, 95.0};\n        double avg = calculateAverage(scores);\n        System.out.println("Average: " + String.format("%.2f", avg));\n        System.out.println("Grade: " + getLetterGrade(avg));\n    }\n}',
@@ -606,6 +623,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 1,
         title: 'Understanding the Problem',
         type: 'understanding',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: 'A number guessing game generates a random number and challenges the player with hints.',
           points: [
@@ -621,6 +639,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 2,
         title: 'Breaking Down the Logic',
         type: 'logic',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: "Here's how the game works:",
           points: [
@@ -637,6 +656,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 3,
         title: 'The Code',
         type: 'code',
+        videoId: 'jNQXAC9IVRw',
         content: {
           language: 'java',
           code: 'import java.util.Random;\nimport java.util.Scanner;\n\npublic class NumberGuessingGame {\n    public static void main(String[] args) {\n        int secret = new Random().nextInt(100) + 1;\n        Scanner sc = new Scanner(System.in);\n        int attempts = 0;\n        System.out.println("Guess a number between 1 and 100!");\n        while (true) {\n            int guess = sc.nextInt();\n            attempts++;\n            if (guess < secret) System.out.println("Too low!");\n            else if (guess > secret) System.out.println("Too high!");\n            else { System.out.println("Correct in " + attempts + " attempts!"); break; }\n        }\n        sc.close();\n    }\n}',
@@ -673,6 +693,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 1,
         title: 'Understanding the Problem',
         type: 'understanding',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: 'A resume builder captures user data and outputs a structured, readable resume.',
           points: [
@@ -688,6 +709,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 2,
         title: 'Breaking Down the Logic',
         type: 'logic',
+        videoId: 'jNQXAC9IVRw',
         content: {
           description: "We'll split the builder into small reusable functions:",
           points: [
@@ -703,6 +725,7 @@ export const CATALOG_PROJECTS: CatalogProject[] = [
         id: 3,
         title: 'The Code',
         type: 'code',
+        videoId: 'jNQXAC9IVRw',
         content: {
           language: 'python',
           code: "def build_profile(full_name, email, summary):\n    return {\n        'full_name': full_name.strip(),\n        'email': email.strip().lower(),\n        'summary': summary.strip(),\n        'skills': [],\n        'experience': [],\n    }\n\ndef add_skills(profile, skills):\n    clean = {s.strip().lower() for s in skills if s.strip()}\n    profile['skills'] = sorted(clean)\n    return profile\n\ndef add_experience(profile, title, company, impact):\n    profile['experience'].append({\n        'title': title.strip(),\n        'company': company.strip(),\n        'impact': impact.strip(),\n    })\n    return profile\n\ndef ats_score(required_skills, candidate_skills):\n    req = {s.strip().lower() for s in required_skills if s.strip()}\n    got = {s.strip().lower() for s in candidate_skills if s.strip()}\n    if not req:\n        return 0\n    return int((len(req & got) / len(req)) * 100)\n\nprofile = build_profile('Asha Patel', 'ASHA@MAIL.COM', 'Frontend developer with strong UI focus')\nprofile = add_skills(profile, ['React', 'TypeScript', 'Tailwind', 'React'])\nprofile = add_experience(profile, 'Frontend Intern', 'Acme', 'Built reusable dashboard components')\nprint(profile)\nprint('ATS:', ats_score(['react', 'typescript', 'python'], profile['skills']))",

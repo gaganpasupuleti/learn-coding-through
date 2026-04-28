@@ -28,6 +28,8 @@ export interface ProjectStep {
    * input_data defined.
    */
   callableName?: string
+  /** Optional YouTube video ID to show the "📺 Watch Step Explanation" accordion. */
+  videoId?: string
 }
 
 export interface ProjectConfig {

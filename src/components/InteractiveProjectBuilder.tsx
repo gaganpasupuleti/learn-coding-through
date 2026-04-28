@@ -1,19 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable'
+import { SkillVideoPlayer } from '@/components/common/SkillVideoPlayer'
 import { 
   CheckCircle, 
   XCircle, 
   Lightbulb, 
   Play,
-  Eye,
   Code as CodeIcon,
   Trophy,
   Target,
   ArrowRight,
-  Sparkle
 } from '@phosphor-icons/react'
 import { CodeEditor } from '@/components/CodeEditor'
 import { toast } from 'sonner'
@@ -45,6 +43,7 @@ interface BuildStep {
   testCases: TestCase[]
   hints: Hint[]
   successMessage: string
+  videoId?: string
 }
 
 interface InteractiveProjectBuilderProps {
@@ -258,247 +257,289 @@ export function InteractiveProjectBuilder({
   const canProceed = isStepComplete || passedTests === totalTests
 
   return (
-    <div className="space-y-6">
-      {/* Progress Header */}
-      <Card className="border-2">
-        <div className="p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="text-sm text-muted-foreground font-medium">
-                Step {currentStepIndex + 1} of {buildSteps.length}
-              </div>
-              <div className="text-xs uppercase tracking-wide text-muted-foreground/80">
-                {projectTitle}
-              </div>
-              <h2 className="text-2xl font-bold">{currentStep.title}</h2>
-            </div>
-            <div className="text-right">
-              <div className="text-3xl font-bold text-primary">
-                {passedTests}/{totalTests}
-              </div>
-              <div className="text-sm text-muted-foreground">Tests Passed</div>
-            </div>
-          </div>
-          
-          <Progress value={progressPercentage} className="h-2" />
-          
-          <p className="text-muted-foreground leading-relaxed">
-            {currentStep.description}
-          </p>
-        </div>
-      </Card>
+    <div className="h-full flex flex-col bg-background">
 
-      {/* Requirements */}
-      <Card className="border-2 border-accent/30">
-        <div className="p-6 space-y-3">
-          <div className="flex items-center gap-2 text-accent font-semibold">
-            <Target size={20} weight="duotone" />
-            <span>Requirements</span>
-          </div>
-          <ul className="space-y-2">
-            {currentStep.requirements.map((req, index) => {
-              const relatedTest = currentStep.testCases[index]
-              const isPassed = relatedTest && testResults.get(relatedTest.id)
-              
-              return (
-                <li key={index} className="flex gap-3 items-start">
-                  {isPassed ? (
-                    <CheckCircle size={20} weight="fill" className="text-primary mt-0.5 flex-shrink-0" />
-                  ) : (
-                    <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0 mt-0.5" />
-                  )}
-                  <span className={isPassed ? 'text-foreground' : 'text-muted-foreground'}>
-                    {req}
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      </Card>
-
-      {/* Code Editor and Preview */}
-      <Tabs defaultValue="editor" className="w-full">
-        <TabsList className="grid w-full max-w-[400px] grid-cols-2">
-          <TabsTrigger value="editor" className="gap-2">
-            <CodeIcon size={16} />
-            Code Editor
-          </TabsTrigger>
-          <TabsTrigger value="preview" className="gap-2">
-            <Eye size={16} />
-            Live Preview
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="editor" className="mt-4 space-y-4">
-          <CodeEditor
-            code={code}
-            onChange={setCode}
-            language="javascript"
-            projectId={projectId}
-          />
-          
-          <div className="flex gap-3">
-            <Button 
-              onClick={runTests}
-              disabled={isRunning}
-              size="lg"
-              className="flex-1 bg-primary hover:bg-primary/90"
-            >
-              <Play className="mr-2" size={18} weight="fill" />
-              {isRunning ? 'Running Tests...' : 'Run Tests'}
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={showNextHint}
-              disabled={currentHintLevel >= currentStep.hints.length - 1 && showHints}
-            >
-              <Lightbulb className="mr-2" size={18} weight="duotone" />
-              Hint
-            </Button>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="preview" className="mt-4">
-          <Card className="border-2">
-            <div className="p-6">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Sparkle size={18} weight="duotone" />
-                Live Output
-              </h3>
-              {previewError ? (
-                <div className="bg-destructive/10 border-2 border-destructive/30 rounded-lg p-4">
-                  <p className="text-destructive font-mono text-sm">{previewError}</p>
-                </div>
-              ) : livePreview ? (
-                <div className="bg-secondary/50 rounded-lg p-4">
-                  <pre className="font-mono text-sm whitespace-pre-wrap">{livePreview}</pre>
-                </div>
-              ) : (
-                <p className="text-muted-foreground italic">
-                  Write code in the editor to see live output...
-                </p>
-              )}
-            </div>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      {/* Test Results */}
-      {testResults.size > 0 && (
-        <Card className="border-2">
-          <div className="p-6 space-y-4">
-            <h3 className="font-semibold flex items-center gap-2">
-              <Target size={20} weight="duotone" />
-              Test Results
-            </h3>
-            <div className="space-y-3">
-              {currentStep.testCases.map((testCase) => {
-                const result = testResults.get(testCase.id)
-                const passed = result === true
-                const failed = result === false
-                
-                return (
-                  <div
-                    key={testCase.id}
-                    className={`flex items-start gap-3 p-4 rounded-lg border-2 ${
-                      passed 
-                        ? 'bg-primary/5 border-primary/30' 
-                        : failed 
-                          ? 'bg-destructive/5 border-destructive/30'
-                          : 'bg-muted/30 border-muted'
-                    }`}
-                  >
-                    {passed ? (
-                      <CheckCircle size={24} weight="fill" className="text-primary flex-shrink-0" />
-                    ) : failed ? (
-                      <XCircle size={24} weight="fill" className="text-destructive flex-shrink-0" />
-                    ) : (
-                      <div className="w-6 h-6 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
-                    )}
-                    <div className="flex-1">
-                      <div className="font-medium">{testCase.description}</div>
-                      {testCase.expected && (
-                        <div className="text-sm text-muted-foreground mt-1">
-                          Expected: <code className="text-xs bg-muted px-1 py-0.5 rounded">{JSON.stringify(testCase.expected)}</code>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {/* Hints */}
-      {showHints && currentStep.hints.length > 0 && (
-        <Card className="border-2 border-accent/30 bg-accent/5">
-          <div className="p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-accent font-semibold">
-                <Lightbulb size={20} weight="fill" />
-                <span>Hint {currentHintLevel + 1} of {currentStep.hints.length}</span>
-              </div>
-              {currentHintLevel < currentStep.hints.length - 1 && (
-                <Button variant="ghost" size="sm" onClick={showNextHint}>
-                  Next Hint
-                  <ArrowRight className="ml-2" size={14} />
-                </Button>
-              )}
-            </div>
-            {currentStep.hints.slice(0, currentHintLevel + 1).map((hint) => (
-              <div key={hint.level} className="space-y-2">
-                <p className="text-foreground leading-relaxed">{hint.text}</p>
-                {hint.codeSnippet && (
-                  <pre className="bg-background/50 border border-accent/20 rounded-lg p-3 text-sm font-mono overflow-x-auto">
-                    <code>{hint.codeSnippet}</code>
-                  </pre>
-                )}
-              </div>
+      {/* ── Top bar: step breadcrumb + progress ── */}
+      <div className="flex items-center justify-between gap-4 px-4 py-2 border-b bg-background/95 backdrop-blur-sm flex-shrink-0">
+        {/* Left: step pills + title */}
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="flex gap-1">
+            {buildSteps.map((step, i) => (
+              <button
+                key={step.id}
+                type="button"
+                onClick={() => (completedSteps.includes(step.id) || i <= currentStepIndex) && setCurrentStepIndex(i)}
+                title={step.title}
+                className={[
+                  'w-7 h-7 rounded-full text-xs font-bold transition-all',
+                  i === currentStepIndex
+                    ? 'bg-primary text-primary-foreground shadow-sm scale-110'
+                    : completedSteps.includes(step.id)
+                      ? 'bg-green-500 text-white'
+                      : 'bg-muted text-muted-foreground opacity-60',
+                ].join(' ')}
+              >
+                {i + 1}
+              </button>
             ))}
           </div>
-        </Card>
-      )}
-
-      {/* Success Message & Navigation */}
-      {canProceed && (
-        <Card className="border-2 border-primary bg-primary/5 animate-slide-in-bottom">
-          <div className="p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <Trophy size={32} weight="duotone" className="text-primary" />
-              <div>
-                <h3 className="font-bold text-lg">Step Complete!</h3>
-                <p className="text-muted-foreground">
-                  {currentStepIndex === buildSteps.length - 1 
-                    ? 'Congratulations! You\'ve completed the entire project!' 
-                    : 'Great work! Ready for the next challenge?'}
-                </p>
-              </div>
-            </div>
-            <Button 
-              onClick={handleNextStep}
-              size="lg"
-              className="w-full bg-primary hover:bg-primary/90"
-            >
-              {currentStepIndex === buildSteps.length - 1 ? (
-                <>
-                  <Trophy className="mr-2" size={18} weight="fill" />
-                  Complete Project
-                </>
-              ) : (
-                <>
-                  Continue to Next Step
-                  <ArrowRight className="ml-2" size={18} />
-                </>
-              )}
-            </Button>
+          <div className="min-w-0">
+            <p className="text-[11px] text-muted-foreground leading-none mb-0.5">
+              {projectTitle} · Step {currentStepIndex + 1} of {buildSteps.length}
+            </p>
+            <h2 className="text-sm font-bold truncate">{currentStep.title}</h2>
           </div>
-        </Card>
-      )}
+        </div>
+
+        {/* Right: test score + progress bar */}
+        <div className="flex items-center gap-2.5 flex-shrink-0">
+          <span className="text-sm font-semibold tabular-nums">
+            <span className="text-primary">{passedTests}</span>
+            <span className="text-muted-foreground">/{totalTests}</span>
+          </span>
+          <Progress value={progressPercentage} className="w-20 h-1.5" />
+          {canProceed && (
+            <span className="text-[11px] font-semibold text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full">
+              ✓ Ready
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* ── Resizable main area ── */}
+      <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0">
+
+        {/* ════ LEFT PANEL (35 %): video + instructions ════ */}
+        <ResizablePanel defaultSize={35} minSize={22} maxSize={52}>
+          <div className="flex flex-col h-full">
+
+            {/* Video player — top, fixed */}
+            {currentStep.videoId && (
+              <div className="p-3 border-b flex-shrink-0 bg-background/80">
+                <SkillVideoPlayer
+                  videoId={currentStep.videoId}
+                  title={currentStep.title}
+                  desc="Watch the walkthrough, then write the code yourself."
+                  level="Beginner"
+                  channel="Tutorial"
+                  accentColor="bg-indigo-600"
+                />
+              </div>
+            )}
+
+            {/* Scrollable instructions */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {currentStep.description}
+              </p>
+
+              {/* Requirements */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-accent uppercase tracking-wide">
+                  <Target size={13} weight="duotone" />
+                  Requirements
+                </div>
+                <ul className="space-y-2">
+                  {currentStep.requirements.map((req, i) => {
+                    const relatedTest = currentStep.testCases[i]
+                    const isPassed = relatedTest && testResults.get(relatedTest.id)
+                    return (
+                      <li key={i} className="flex gap-2 items-start text-sm">
+                        {isPassed ? (
+                          <CheckCircle size={15} weight="fill" className="text-primary mt-0.5 flex-shrink-0" />
+                        ) : (
+                          <div className="w-3.5 h-3.5 rounded-full border-2 border-muted-foreground/30 flex-shrink-0 mt-0.5" />
+                        )}
+                        <span className={isPassed ? 'text-foreground' : 'text-muted-foreground'}>
+                          {req}
+                        </span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+
+              {/* Hints */}
+              {showHints && currentStep.hints.length > 0 && (
+                <div className="rounded-lg border-2 border-accent/30 bg-accent/5 p-3 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-accent font-semibold text-xs">
+                      <Lightbulb size={14} weight="fill" />
+                      Hint {currentHintLevel + 1} / {currentStep.hints.length}
+                    </div>
+                    {currentHintLevel < currentStep.hints.length - 1 && (
+                      <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={showNextHint}>
+                        Next Hint
+                      </Button>
+                    )}
+                  </div>
+                  {currentStep.hints.slice(0, currentHintLevel + 1).map((hint) => (
+                    <div key={hint.level} className="space-y-1.5">
+                      <p className="text-sm leading-relaxed">{hint.text}</p>
+                      {hint.codeSnippet && (
+                        <pre className="bg-background/70 border border-accent/20 rounded-md p-2 text-xs font-mono overflow-x-auto">
+                          {hint.codeSnippet}
+                        </pre>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Step-complete banner */}
+              {canProceed && (
+                <div className="rounded-lg border-2 border-primary/40 bg-primary/5 p-3 flex items-center gap-2">
+                  <Trophy size={20} weight="duotone" className="text-primary flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-bold">Step Complete!</p>
+                    <p className="text-xs text-muted-foreground">
+                      {currentStepIndex === buildSteps.length - 1
+                        ? "You've finished the whole project!"
+                        : 'Great work — move to the next step.'}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom action bar */}
+            <div className="flex items-center justify-between gap-2 px-4 py-2.5 border-t flex-shrink-0 bg-background/80">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={showNextHint}
+                disabled={currentHintLevel >= currentStep.hints.length - 1 && showHints}
+                className="h-8 text-xs gap-1.5"
+              >
+                <Lightbulb size={13} weight="duotone" />
+                Hint
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleNextStep}
+                disabled={!canProceed}
+                className="h-8 text-xs gap-1.5 bg-primary hover:bg-primary/90 disabled:opacity-40"
+              >
+                {currentStepIndex === buildSteps.length - 1 ? (
+                  <>
+                    <Trophy size={13} weight="fill" />
+                    Finish Project
+                  </>
+                ) : (
+                  <>
+                    Next Step
+                    <ArrowRight size={13} />
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        {/* ════ RIGHT PANEL (65 %): code editor + terminal ════ */}
+        <ResizablePanel defaultSize={65}>
+          <ResizablePanelGroup direction="vertical">
+
+            {/* Code editor (70%) */}
+            <ResizablePanel defaultSize={70} minSize={40}>
+              <div className="flex flex-col h-full">
+                {/* Editor header bar */}
+                <div className="flex items-center justify-between px-4 py-2 border-b bg-background/95 flex-shrink-0">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <CodeIcon size={13} />
+                    <span className="text-xs font-medium">JavaScript</span>
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={runTests}
+                    disabled={isRunning}
+                    className="h-7 px-3 text-xs gap-1.5 bg-primary hover:bg-primary/90"
+                  >
+                    <Play size={12} weight="fill" />
+                    {isRunning ? 'Running…' : 'Run Tests'}
+                  </Button>
+                </div>
+                {/* Monaco editor fills the rest */}
+                <div className="flex-1 overflow-hidden">
+                  <CodeEditor
+                    code={code}
+                    onChange={setCode}
+                    language="javascript"
+                    projectId={projectId}
+                    showExecutionControls={false}
+                    showOutputPanel={false}
+                  />
+                </div>
+              </div>
+            </ResizablePanel>
+
+            <ResizableHandle />
+
+            {/* Terminal / console output (30%) */}
+            <ResizablePanel defaultSize={30} minSize={15}>
+              <div className="flex flex-col h-full overflow-hidden">
+                {/* Terminal chrome */}
+                <div className="bg-zinc-800 px-3 py-1.5 flex items-center gap-2 flex-shrink-0">
+                  <div className="flex gap-1">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+                  </div>
+                  <span className="text-zinc-400 text-[11px] font-mono ml-1">Output</span>
+                </div>
+
+                {/* Scrollable output area */}
+                <div className="flex-1 overflow-y-auto bg-zinc-950">
+                  {/* Live preview / error output */}
+                  {previewError ? (
+                    <pre className="p-3 font-mono text-xs text-red-400 whitespace-pre-wrap">
+                      {previewError.split('\n').find(l => l.trim() && !l.startsWith('    at ')) ?? previewError.split('\n')[0]}
+                    </pre>
+                  ) : livePreview ? (
+                    <pre className="p-3 font-mono text-xs text-green-400 whitespace-pre-wrap">{livePreview}</pre>
+                  ) : (
+                    <p className="p-4 text-zinc-500 text-[11px] font-mono italic">
+                      Output appears here after running tests…
+                    </p>
+                  )}
+
+                  {/* Test results */}
+                  {testResults.size > 0 && (
+                    <div className="border-t border-zinc-800 px-3 py-2 space-y-1.5">
+                      {currentStep.testCases.map((tc) => {
+                        const result = testResults.get(tc.id)
+                        const passed = result === true
+                        const failed = result === false
+                        return (
+                          <div
+                            key={tc.id}
+                            className={[
+                              'flex items-center gap-2 text-[11px] font-mono',
+                              passed ? 'text-green-400' : failed ? 'text-red-400' : 'text-zinc-500',
+                            ].join(' ')}
+                          >
+                            {passed
+                              ? <CheckCircle size={11} weight="fill" className="flex-shrink-0" />
+                              : failed
+                                ? <XCircle size={11} weight="fill" className="flex-shrink-0" />
+                                : <div className="w-2.5 h-2.5 rounded-full border border-zinc-600 flex-shrink-0" />
+                            }
+                            <span>{tc.description}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </ResizablePanel>
+
+          </ResizablePanelGroup>
+        </ResizablePanel>
+
+      </ResizablePanelGroup>
     </div>
   )
 }

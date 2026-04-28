@@ -13,6 +13,7 @@ import {
 } from '@phosphor-icons/react'
 import { CodeEditor } from '@/components/CodeEditor'
 import type { ProjectStep } from '@/types/project'
+import { SkillVideoPlayer } from '@/components/common/SkillVideoPlayer'
 
 // ── Legacy GIF walkthrough props (tutorial flow) ──────────────────────────────
 
@@ -109,6 +110,20 @@ function TddStepView({
           </Badge>
         )}
       </div>
+
+      {/* ── Sticky video player ── */}
+      {step.videoId && (
+        <div className="sticky top-0 z-20 bg-background pt-2 pb-4 border-b border-border/60 shadow-[0_4px_12px_-2px_hsl(var(--border)/0.5)]">
+          <SkillVideoPlayer
+            videoId={step.videoId}
+            title={step.title}
+            desc="Watch this explanation as you work through the step."
+            level="Beginner"
+            channel="Tutorial"
+            accentColor="bg-indigo-600"
+          />
+        </div>
+      )}
 
       {/* ── Instructions ── */}
       <Card className="border-2 border-primary/20 bg-primary/5">
