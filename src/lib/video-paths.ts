@@ -20,7 +20,7 @@ export const LEARNING_PATHS: Record<string, LearningPath> = {
     color: 'bg-blue-600',
     videos: [
       { id: 'HXV3zeQKqGY', title: 'SQL Full Course', desc: 'SELECT, JOINs, GROUP BY, subqueries — complete beginner to advanced', level: 'Beginner', channel: 'freeCodeCamp' },
-      { id: 'vmEHCJofvqE', title: 'Pandas for Data Analysis', desc: 'DataFrames, filtering, merging, groupby and real-world data cleaning', level: 'Beginner', channel: 'freeCodeCamp' },
+      { id: 'r-uOLxNrNk8', title: 'Data Analysis with Python', desc: 'Numpy, Pandas, Matplotlib, Seaborn — complete data analysis for beginners', level: 'Beginner', channel: 'freeCodeCamp' },
       { id: 'xxpc-HPKN28', title: 'Statistics for Data Science', desc: 'Distributions, hypothesis testing, p-values and statistical thinking', level: 'Intermediate', channel: 'StatQuest' },
       { id: 'TmhQCQr_cAo', title: 'Power BI Full Tutorial', desc: 'Connect data sources, build dashboards, DAX basics and sharing reports', level: 'Intermediate', channel: 'Kevin Stratvert' },
     ],
@@ -30,7 +30,7 @@ export const LEARNING_PATHS: Record<string, LearningPath> = {
     emoji: '🐍',
     color: 'bg-emerald-600',
     videos: [
-      { id: '_uQrJ0TkZlc', title: 'Python Full Course', desc: 'Variables to OOP — the complete foundation for backend development', level: 'Beginner', channel: 'Programming with Mosh' },
+      { id: 'YMP5itrPBk4', title: 'The Fundamentals of Python', desc: 'Variables to OOP — the complete foundation for backend development', level: 'Beginner', channel: 'Pasupuleti Gagan' },
       { id: '0sOvCWFmrtA', title: 'FastAPI Full Course', desc: 'Build production APIs with path params, Pydantic, auth and OpenAPI docs', level: 'Intermediate', channel: 'freeCodeCamp' },
       { id: 'qw--VYLpxG4', title: 'PostgreSQL for Beginners', desc: 'Schemas, relationships, indexing, transactions and real SQL queries', level: 'Beginner', channel: 'freeCodeCamp' },
       { id: '3c-iBn73dDE', title: 'Docker Full Course', desc: 'Containers, Dockerfiles, volumes, networks and docker-compose', level: 'Intermediate', channel: 'TechWorld with Nana' },
@@ -55,7 +55,7 @@ export const LEARNING_PATHS: Record<string, LearningPath> = {
       { id: 'i_LwzRVP7bg', title: 'Machine Learning with Python', desc: 'Regression, classification, clustering and scikit-learn from scratch', level: 'Beginner', channel: 'Sentdex' },
       { id: 'V_xro1ggaQo', title: 'PyTorch for Deep Learning', desc: 'Tensors, neural networks, CNNs and model training full course', level: 'Intermediate', channel: 'freeCodeCamp' },
       { id: 'MqI8vt3-cag', title: 'MLflow Tutorial', desc: 'Track experiments, package models and deploy ML pipelines', level: 'Intermediate', channel: 'freeCodeCamp' },
-      { id: 'pqNCD_5r0fd', title: 'Hugging Face Transformers', desc: 'NLP with BERT, fine-tuning pre-trained models and the Transformers library', level: 'Advanced', channel: 'Hugging Face' },
+      { id: 'B2q5cRJvqI8', title: 'NLP with Deep Learning', desc: 'Natural language processing with TensorFlow — text classification, sequences and transformers', level: 'Advanced', channel: 'freeCodeCamp' },
     ],
   },
   fullstack: {
@@ -65,8 +65,8 @@ export const LEARNING_PATHS: Record<string, LearningPath> = {
     videos: [
       { id: 'bMknfKXIFA8', title: 'React Full Course', desc: 'Components, hooks, state, context and building a complete React app', level: 'Beginner', channel: 'freeCodeCamp' },
       { id: 'Oe421EPjeBE', title: 'Node.js & Express Full Course', desc: 'REST APIs, middleware, authentication and PostgreSQL with Node', level: 'Intermediate', channel: 'freeCodeCamp' },
-      { id: 'BwuLxPi-BtI', title: 'TypeScript Full Course', desc: 'Types, interfaces, generics, decorators — write safer JavaScript', level: 'Intermediate', channel: 'Traversy Media' },
-      { id: '1WmNXgmsbck', title: 'Next.js 14 Full Course', desc: 'App router, server components, data fetching, deployment and full stack patterns', level: 'Advanced', channel: 'freeCodeCamp' },
+      { id: 'SpwzRDUQ1GI', title: 'TypeScript Full Course', desc: 'Types, interfaces, generics, decorators — write safer JavaScript', level: 'Intermediate', channel: 'freeCodeCamp' },
+      { id: 'ZVnjOPwW4ZA', title: 'Next.js Full Course', desc: 'App router, server components, data fetching, deployment and full stack patterns', level: 'Advanced', channel: 'Programming with Mosh' },
     ],
   },
   devops: {

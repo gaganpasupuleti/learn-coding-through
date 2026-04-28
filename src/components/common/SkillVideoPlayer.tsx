@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import YouTube from 'react-youtube'
 
 const LEVEL_COLORS: Record<string, string> = {
   Beginner: 'bg-emerald-100 text-emerald-700',
@@ -24,15 +23,12 @@ export function SkillVideoPlayer({ videoId, title, desc, level, channel, accentC
       {/* Video area */}
       <div className="relative w-full aspect-video bg-slate-900 cursor-pointer group" onClick={() => setPlaying(true)}>
         {playing ? (
-          <YouTube
-            videoId={videoId}
-            opts={{
-              height: '100%',
-              width: '100%',
-              playerVars: { autoplay: 1, modestbranding: 1, rel: 0 },
-            }}
+          <iframe
             className="absolute inset-0 w-full h-full"
-            iframeClassName="w-full h-full"
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`}
+            title={title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
           />
         ) : (
           <>
