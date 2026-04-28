@@ -1,6 +1,6 @@
 # Live Product Issues Tracker
 
-Last updated: 2026-04-18
+Last updated: 2026-04-28
 
 ## Current Status Snapshot (2026-04-05)
 
@@ -35,6 +35,28 @@ Last updated: 2026-04-18
   - Production environment cutover plan and post-migration verification suite.
 
 ## Planned Feature Tracks (2026-04-18)
+
+### [FEATURE] YouTube Learning Paths — Inline Video Playback
+
+- Status: COMPLETED (2026-04-28)
+- Objective: Embed curated YouTube tutorial videos for each career track directly in the student landing page, with thumbnail-first loading and inline iframe playback.
+
+#### What was built
+- [x] `src/lib/video-paths.ts` — type definitions and curated video data for 6 career tracks (currently in single-video test mode; full paths ready to restore).
+- [x] `src/components/common/SkillVideoPlayer.tsx` — thumbnail-first card with click-to-play `youtube.com/embed/` iframe. Includes level badge (Beginner / Intermediate / Advanced), channel credit, and fallback thumbnail.
+- [x] `src/components/home/LearningPathsShowcase.tsx` — 6-tab selector (emoji + label) with 4-column grid layout on xl screens.
+- [x] Confirmed embeddable URL format: `https://www.youtube.com/embed/{id}` — `watch?v=` links are rejected by iframes and must not be used.
+- [x] Validated inline playback working on `localhost:5000` (Chrome).
+
+#### Dev Note — Testing Constraint
+> ⚠️ YouTube iframe playback **only works in real browsers** (Chrome, Edge, Firefox) accessed via `localhost`.
+> The VS Code built-in Simple Browser blocks YouTube media codecs by design.
+> Raw IP access (`127.0.0.1`) is also rejected by YouTube's player — always use `http://localhost:5000` for local testing.
+
+#### Known restriction
+- YouTube's pre-play overlay ("Watch on YouTube" button) cannot be removed — it is part of YouTube's mandatory embedded player branding and is outside the control of the app.
+
+---
 
 ### [FEATURE] Lean ATS Resume Analyzer Pipeline (Local Parsing + Hugging Face)
 
@@ -338,8 +360,10 @@ Last updated: 2026-04-18
 - Ship complete student-facing core modules needed for placements and measurable practice progress.
 
 ### Sprint 1 Focus (Immediate)
-1. Learning library module (books, PDFs, articles).
-2. Typing tester module (email + code) with scoring and history.
+1. **[IN PROGRESS]** Populate `src/lib/video-paths.ts` with full 6-path curriculum video list (all custom YouTube IDs per track).
+2. **[IN PROGRESS]** Player enhancements — add "Mark as Complete" state per video and duration badges to `SkillVideoPlayer`.
+3. Learning library module (books, PDFs, articles).
+4. Typing tester module (email + code) with scoring and history.
 
 ### Build Order (Do in sequence)
 1. Learning library module for books, PDFs, and articles.
@@ -423,6 +447,20 @@ Last updated: 2026-04-18
   - Search and filter by topic, role, type, and difficulty.
 - Exit criteria:
   - Students can reliably discover and open shared learning resources from within the app.
+
+### Milestone B6 - Project Builder Video Integration
+- Objective: Embed short, step-specific micro-tutorial videos directly inside the Interactive Project Builder so students can watch a relevant clip without leaving the coding workspace.
+- Data model:
+  - Add optional `videoId?: string` property to the `ProjectStep` interface in `src/types/project.ts`.
+- UI integration:
+  - Update `src/components/project/ProjectStepWalkthrough.tsx` to render `SkillVideoPlayer` when `videoId` is present.
+  - Wrap the player in a toggleable accordion labelled **"📺 Watch Step Explanation"** — collapsed by default so it does not crowd the coding area.
+- Exit criteria:
+  - Steps with a `videoId` show the accordion toggle; steps without it show nothing.
+  - Player expands/collapses cleanly without layout shift in the builder workspace.
+  - Accordion state resets when navigating to a new step.
+
+---
 
 ### Sprint B Definition of Done
 - Typing test, resume maker, and job flow are usable in production paths.

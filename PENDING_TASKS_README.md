@@ -12,6 +12,28 @@ Ship a testable, secure MVP by Sunday with:
 
 ## Priority Order (Most Important First)
 
+### Stage 0 — Learning Paths Video Feature (IN PROGRESS)
+**Goal:** Complete the YouTube video learning paths feature and extend it into the Project Builder.
+
+- [x] Build `SkillVideoPlayer` component with thumbnail-first + click-to-play iframe
+- [x] Create `video-paths.ts` type definitions and single-video test configuration
+- [x] Validate inline playback working on `localhost:5000` in Chrome
+- [x] Confirm `youtube.com/embed/{id}` format required (not `watch?v=`)
+- [x] Merge `feature/video-learning-paths` → `main` and deploy to Railway
+- [ ] Populate full 6-track video list in `src/lib/video-paths.ts` (bulk update with all curriculum video IDs)
+- [ ] Add "Mark as Complete" state tracking per video in `SkillVideoPlayer`
+- [ ] Add video duration badges to `SkillVideoPlayer` cards
+- [ ] Add optional `videoId?: string` to `ProjectStep` interface in `src/types/project.ts`
+- [ ] Update `src/components/project/ProjectStepWalkthrough.tsx` to render `SkillVideoPlayer` inside a toggleable accordion ("📺 Watch Step Explanation") when `videoId` is present
+
+> **Dev Note:** Always test video playback at `http://localhost:5000` in Chrome. The VS Code built-in browser blocks YouTube iframes. Raw IP (`127.0.0.1`) is also rejected by YouTube's player.
+
+**Definition of Done**
+- Full curriculum video paths populated and visible across all 6 career tracks.
+- Project Builder steps with a `videoId` show the accordion video player; steps without it are unaffected.
+
+---
+
 ### Stage 1 — Demo-Critical Foundation (P0)
 **Goal:** Get stable login, credits storage, and deployable backend/frontend connectivity.
 
