@@ -75,7 +75,7 @@ export const LEARNING_PATHS: Record<string, LearningPath> = {
     color: 'bg-amber-600',
     videos: [
       { id: 'pg19Z8LL06w', title: 'Docker & Kubernetes Full Course', desc: 'From containers to orchestration — full practical course', level: 'Intermediate', channel: 'TechWorld with Nana' },
-      { id: 'X48VuDVv0do', title: 'Kubernetes Tutorial', desc: 'Pods, services, deployments, ingress and Helm in one complete course', level: 'Intermediate', channel: 'TechWorld with Nana' },
+      { id: 'd6WC5n9G_sM', title: 'Kubernetes Full Course', desc: 'Pods, services, deployments, ingress and Helm in one complete course', level: 'Intermediate', channel: 'freeCodeCamp' },
       { id: 'R8_veQiYBjI', title: 'GitHub Actions CI/CD', desc: 'Automate builds, tests and deployments with GitHub Actions workflows', level: 'Intermediate', channel: 'TechWorld with Nana' },
       { id: 'l5k1ai6LLOW', title: 'Terraform Full Course', desc: 'Infrastructure as code, providers, modules and state management', level: 'Beginner', channel: 'freeCodeCamp' },
     ],
