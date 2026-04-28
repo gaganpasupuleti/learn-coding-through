@@ -1,10 +1,83 @@
-export const LEARNING_PATHS: Record<string, { id: string; title: string; desc: string }[]> = {
-  python: [
-    { id: 'YMP5itrPBk4', title: 'Python Basics', desc: 'Start here' },
-    { id: 'kqtD5dpn9C8', title: 'Python Data Structures', desc: 'Lists & Dicts' },
-  ],
-  web: [
-    { id: 'mU6anWqZJcc', title: 'HTML & CSS', desc: 'The foundation' },
-    { id: 'W6NZfCO5SIk', title: 'JavaScript Crash Course', desc: 'Make it interactive' },
-  ],
+export type VideoEntry = {
+  id: string
+  title: string
+  desc: string
+  level: 'Beginner' | 'Intermediate' | 'Advanced'
+  channel: string
+}
+
+export type LearningPath = {
+  label: string
+  emoji: string
+  color: string   // Tailwind bg class for accent
+  videos: VideoEntry[]
+}
+
+export const LEARNING_PATHS: Record<string, LearningPath> = {
+  data_analyst: {
+    label: 'Data Analyst',
+    emoji: '📊',
+    color: 'bg-blue-600',
+    videos: [
+      { id: 'HXV3zeQKqGY', title: 'SQL Full Course', desc: 'SELECT, JOINs, GROUP BY, subqueries — complete beginner to advanced', level: 'Beginner', channel: 'freeCodeCamp' },
+      { id: 'vmEHCJofvqE', title: 'Pandas for Data Analysis', desc: 'DataFrames, filtering, merging, groupby and real-world data cleaning', level: 'Beginner', channel: 'freeCodeCamp' },
+      { id: 'xxpc-HPKN28', title: 'Statistics for Data Science', desc: 'Distributions, hypothesis testing, p-values and statistical thinking', level: 'Intermediate', channel: 'StatQuest' },
+      { id: 'TmhQCQr_cAo', title: 'Power BI Full Tutorial', desc: 'Connect data sources, build dashboards, DAX basics and sharing reports', level: 'Intermediate', channel: 'Kevin Stratvert' },
+    ],
+  },
+  python_backend: {
+    label: 'Python Backend',
+    emoji: '🐍',
+    color: 'bg-emerald-600',
+    videos: [
+      { id: '_uQrJ0TkZlc', title: 'Python Full Course', desc: 'Variables to OOP — the complete foundation for backend development', level: 'Beginner', channel: 'Programming with Mosh' },
+      { id: '0sOvCWFmrtA', title: 'FastAPI Full Course', desc: 'Build production APIs with path params, Pydantic, auth and OpenAPI docs', level: 'Intermediate', channel: 'freeCodeCamp' },
+      { id: 'qw--VYLpxG4', title: 'PostgreSQL for Beginners', desc: 'Schemas, relationships, indexing, transactions and real SQL queries', level: 'Beginner', channel: 'freeCodeCamp' },
+      { id: '3c-iBn73dDE', title: 'Docker Full Course', desc: 'Containers, Dockerfiles, volumes, networks and docker-compose', level: 'Intermediate', channel: 'TechWorld with Nana' },
+    ],
+  },
+  data_engineer: {
+    label: 'Data Engineer',
+    emoji: '⚙️',
+    color: 'bg-violet-600',
+    videos: [
+      { id: 'S2MUhGA3lEw', title: 'Apache Spark Tutorial', desc: 'Distributed data processing, RDDs, DataFrames and Spark SQL', level: 'Intermediate', channel: 'Simplilearn' },
+      { id: 'B5j3uNBH8X4', title: 'Apache Kafka Full Course', desc: 'Event streaming, producers, consumers, topics and real-time pipelines', level: 'Intermediate', channel: 'freeCodeCamp' },
+      { id: '5rNquRnNb4E', title: 'dbt (data build tool) Crash Course', desc: 'Transform data in your warehouse with SQL, tests and documentation', level: 'Intermediate', channel: 'freeCodeCamp' },
+      { id: 'K9AnJ9_ZAXE', title: 'Apache Airflow Tutorial', desc: 'Build, schedule and monitor data pipelines with DAGs', level: 'Advanced', channel: 'TechWorld with Nana' },
+    ],
+  },
+  ml_engineer: {
+    label: 'ML Engineer',
+    emoji: '🤖',
+    color: 'bg-rose-600',
+    videos: [
+      { id: 'i_LwzRVP7bg', title: 'Machine Learning with Python', desc: 'Regression, classification, clustering and scikit-learn from scratch', level: 'Beginner', channel: 'Sentdex' },
+      { id: 'V_xro1ggaQo', title: 'PyTorch for Deep Learning', desc: 'Tensors, neural networks, CNNs and model training full course', level: 'Intermediate', channel: 'freeCodeCamp' },
+      { id: 'MqI8vt3-cag', title: 'MLflow Tutorial', desc: 'Track experiments, package models and deploy ML pipelines', level: 'Intermediate', channel: 'freeCodeCamp' },
+      { id: 'pqNCD_5r0fd', title: 'Hugging Face Transformers', desc: 'NLP with BERT, fine-tuning pre-trained models and the Transformers library', level: 'Advanced', channel: 'Hugging Face' },
+    ],
+  },
+  fullstack: {
+    label: 'Full Stack',
+    emoji: '🌐',
+    color: 'bg-sky-600',
+    videos: [
+      { id: 'bMknfKXIFA8', title: 'React Full Course', desc: 'Components, hooks, state, context and building a complete React app', level: 'Beginner', channel: 'freeCodeCamp' },
+      { id: 'Oe421EPjeBE', title: 'Node.js & Express Full Course', desc: 'REST APIs, middleware, authentication and PostgreSQL with Node', level: 'Intermediate', channel: 'freeCodeCamp' },
+      { id: 'BwuLxPi-BtI', title: 'TypeScript Full Course', desc: 'Types, interfaces, generics, decorators — write safer JavaScript', level: 'Intermediate', channel: 'Traversy Media' },
+      { id: '1WmNXgmsbck', title: 'Next.js 14 Full Course', desc: 'App router, server components, data fetching, deployment and full stack patterns', level: 'Advanced', channel: 'freeCodeCamp' },
+    ],
+  },
+  devops: {
+    label: 'DevOps',
+    emoji: '🚀',
+    color: 'bg-amber-600',
+    videos: [
+      { id: 'pg19Z8LL06w', title: 'Docker & Kubernetes Full Course', desc: 'From containers to orchestration — full practical course', level: 'Intermediate', channel: 'TechWorld with Nana' },
+      { id: 'X48VuDVv0do', title: 'Kubernetes Tutorial', desc: 'Pods, services, deployments, ingress and Helm in one complete course', level: 'Intermediate', channel: 'TechWorld with Nana' },
+      { id: 'R8_veQiYBjI', title: 'GitHub Actions CI/CD', desc: 'Automate builds, tests and deployments with GitHub Actions workflows', level: 'Intermediate', channel: 'TechWorld with Nana' },
+      { id: 'l5k1ai6LLOW', title: 'Terraform Full Course', desc: 'Infrastructure as code, providers, modules and state management', level: 'Beginner', channel: 'freeCodeCamp' },
+    ],
+  },
 }

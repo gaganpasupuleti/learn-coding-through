@@ -44,31 +44,8 @@ function App() {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
   const routeStartRef = useRef<{ route: string; startedAt: number } | null>(null)
 
-  // ── Dev-only auto-login ────────────────────────────────────────────────────
-  // When running `npm run dev`, if no session is stored yet, silently log in
-  // with the seeded admin account so you land straight in the app.
-  useEffect(() => {
-    if (!import.meta.env.DEV) return
-    if (getStoredUser()) return // already have a session
-
-    const DEV_EMAIL = 'admin@example.com'
-    const DEV_PASSWORD = 'Admin@12345'
-
-    ;(async () => {
-      try {
-        const token = await loginWithBackend(DEV_EMAIL, DEV_PASSWORD)
-        const user = await fetchCurrentUser(token)
-        if (!user) return
-        storeAuthToken(token)
-        storeUser(user)
-        setAuthState(user)
-        toast.success(`Dev auto-login: signed in as ${user.email}`)
-      } catch {
-        // Backend unreachable — stay on login page, no noise
-      }
-    })()
+  // ── Dev-only auto-login (disabled — use login form to test as student/admin)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const handleAuthenticated = (user: AuthUser) => {
     setAuthState(user)
