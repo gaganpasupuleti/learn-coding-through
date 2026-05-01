@@ -3,7 +3,7 @@ import { House, Cube, Code, ListChecks, MapTrifold, ShieldCheck } from '@phospho
 
 interface NavigationProps {
   currentPage: string
-  onNavigate: (page: 'landing' | 'projects' | 'practice' | 'quiz' | 'roadmapper' | 'admin') => void
+  onNavigate: (page: 'landing' | 'projects' | 'practice' | 'quiz' | 'roadmapper' | 'flow-roadmap' | 'admin') => void
 }
 
 export function Navigation({ currentPage, onNavigate }: NavigationProps) {
@@ -63,6 +63,15 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
             >
               <MapTrifold size={18} className="mr-2" weight={currentPage === 'roadmapper' ? 'fill' : 'regular'} />
               Career Mapper
+            </Button>
+            <Button
+              variant={currentPage === 'flow-roadmap' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => onNavigate('flow-roadmap')}
+              className={currentPage === 'flow-roadmap' ? 'bg-primary' : ''}
+            >
+              <MapTrifold size={18} className="mr-2" weight={currentPage === 'flow-roadmap' ? 'fill' : 'regular'} />
+              Path
             </Button>
             <Button
               variant={currentPage === 'admin' ? 'default' : 'ghost'}

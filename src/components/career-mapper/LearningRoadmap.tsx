@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   AirplaneTakeoff,
   AirplaneLanding,
@@ -76,6 +76,34 @@ export function LearningRoadmap({
   const [noteDialogOpen, setNoteDialogOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState<SyllabusItem | null>(null)
   const { hasNote, getNote } = useMilestoneNotes()
+  const [masteryStatuses, setMasteryStatuses] = useState<Record<string, boolean>>({})
+
+  // Fetch mastery status from the backend
+  useEffect(() => {
+    const fetchMasteries = async () => {
+      const statuses: Record<string, boolean> = {}
+      for (const item of role.syllabus) {
+        if (item.quizId || item.projectId) {
+          let url = `/api/v1/progress/mastery/${item.id}?`
+          if (item.quizId) url += `quiz_slug=${item.quizId}&`
+          if (item.projectId) url += `project_slug=${item.projectId}`
+          try {
+            const res = await fetch(url)
+            if (res.ok) {
+              const data = await res.json()
+              if (data.status === 'completed') {
+                statuses[item.id] = true
+              }
+            }
+          } catch (e) {
+            console.error('Failed to fetch mastery status', e)
+          }
+        }
+      }
+      setMasteryStatuses(statuses)
+    }
+    fetchMasteries()
+  }, [role.syllabus])
 
   const syllabusByMonth = {
     1: role.syllabus.filter(i => i.month === 1).sort((a, b) => a.sortOrder - b.sortOrder),
@@ -138,15 +166,14 @@ export function LearningRoadmap({
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {items.map((item) => {
-                  const isDone    = completedItems.has(item.id)
+                  const isDone = (item.quizId || item.projectId) ? !!masteryStatuses[item.id] : completedItems.has(item.id)
                   const unlocked  = isUnlocked(item, items)
                   const itemHasNote = hasNote(role.id, item.id)
                   return (
                       <div
                         key={item.id}
                         onClick={() => {
-                          const isInteractive = item.quizId || item.projectId;
-                          if (unlocked && onToggleItem && !isInteractive) onToggleItem(item.id)
+                          // Removed local onClick completion toggle to enforce backend mastery check
                         }}
                         style={{
                           padding: '6px 10px',
@@ -286,7 +313,7 @@ export function LearningRoadmap({
                 {/* Items */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20 }}>
                   {items.map((item, itemIdx) => {
-                    const isDone    = completedItems.has(item.id)
+                    const isDone = (item.quizId || item.projectId) ? !!masteryStatuses[item.id] : completedItems.has(item.id)
                     const unlocked  = isUnlocked(item, items)
                     const isLast    = itemIdx === items.length - 1
                     const itemHasNote = hasNote(role.id, item.id)
@@ -304,8 +331,7 @@ export function LearningRoadmap({
                       <div key={item.id} style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                         <div
                           onClick={() => {
-                            const isInteractive = item.quizId || item.projectId;
-                            if (unlocked && onToggleItem && !isInteractive) onToggleItem(item.id)
+                            // Removed local onClick completion toggle to enforce backend mastery check
                           }}
                           style={{
                             border: `1px solid ${bdColor}`,

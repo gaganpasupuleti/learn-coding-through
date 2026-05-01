@@ -42,6 +42,7 @@ def get_role_roadmap(role_id: int, db: Session = Depends(get_db), current_user: 
                 unlock_quiz_score=stage.unlock_quiz_score,
                 unlock_exercise_completion=stage.unlock_exercise_completion,
                 unlocked=unlocked,
+                completed=stage_completed,
             )
         )
 

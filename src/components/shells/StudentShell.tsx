@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { LayoutDashboard, Map, Boxes, Code2, ClipboardList, LogOut, User, FileText, Keyboard } from 'lucide-react'
 import { type AuthUser, clearAuth, isDemoUser } from '@/lib/auth'
 
-type StudentPage = 'landing' | 'projects' | 'practice' | 'typing' | 'quiz' | 'roadmapper' | 'resume'
+type StudentPage = 'landing' | 'projects' | 'practice' | 'typing' | 'quiz' | 'roadmapper' | 'flow-roadmap' | 'resume'
 
 interface StudentShellProps {
   currentPage: StudentPage
@@ -24,6 +24,7 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
   const navItems: { page: StudentPage; label: string; icon: React.ReactNode }[] = [
     { page: 'landing', label: 'Home', icon: <LayoutDashboard size={15} /> },
     { page: 'roadmapper', label: 'Career Map', icon: <Map size={15} /> },
+    { page: 'flow-roadmap', label: 'Flow Path', icon: <Map size={15} /> },
     { page: 'projects', label: 'Projects', icon: <Boxes size={15} /> },
     { page: 'practice', label: 'Practice', icon: <Code2 size={15} /> },
     { page: 'typing', label: 'Typing', icon: <Keyboard size={15} /> },

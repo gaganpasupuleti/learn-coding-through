@@ -9,6 +9,7 @@ class StageResponse(BaseModel):
     unlock_quiz_score: int
     unlock_exercise_completion: int
     unlocked: bool = False
+    completed: bool = False
 
 
 class RoleRoadmapResponse(BaseModel):

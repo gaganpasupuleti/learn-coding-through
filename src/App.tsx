@@ -12,6 +12,7 @@ import { ResumeModuleGatewayPage } from '@/components/pages/ResumeModuleGatewayP
 import { StudentShell } from '@/components/shells/StudentShell'
 import { AdminShell } from '@/components/shells/AdminShell'
 import { AssessmentGuard } from '@/components/assessment/AssessmentGuard'
+import { FlowRoadmapPage } from '@/components/pages/FlowRoadmapPage'
 import {
   getStoredUser,
   isDemoUser,
@@ -34,7 +35,7 @@ import {
   triggerQuizLockedError,
 } from '@/lib/demo-limits'
 
-export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'typing' | 'quiz' | 'roadmapper' | 'resume'
+export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'typing' | 'quiz' | 'roadmapper' | 'flow-roadmap' | 'resume'
 
 type AuthState = AuthUser | null
 
@@ -177,6 +178,8 @@ function App() {
         {studentPage === 'quiz' && <QuizPage onBeforeSelect={handleBeforeSelectQuiz} />}
 
         {studentPage === 'roadmapper' && <CareerMapperPage />}
+
+        {studentPage === 'flow-roadmap' && <FlowRoadmapPage />}
 
         {studentPage === 'resume' && <ResumeModuleGatewayPage user={user} />}
 
