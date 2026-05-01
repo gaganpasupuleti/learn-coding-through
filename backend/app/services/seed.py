@@ -33,28 +33,12 @@ def seed_default_roles(db: Session):
             "duration": 24,
         },
         {
-            "name": "Backend Developer",
-            "skills_required": ["Python", "Databases", "APIs", "Docker", "System Design"],
-            "salary_range": "$70k - $140k",
+            "name": "SQL Developer",
+            "skills_required": ["SQL", "PostgreSQL", "Database Design", "Performance Tuning", "Data Warehousing"],
+            "salary_range": "$65k - $130k",
             "companies_hiring": ["PayPal", "Swiggy", "Razorpay", "Zoho"],
             "difficulty": DifficultyLevel.INTERMEDIATE,
-            "duration": 28,
-        },
-        {
-            "name": "Data Engineer",
-            "skills_required": ["SQL", "Python", "Spark", "Airflow", "Data Warehousing"],
-            "salary_range": "$85k - $165k",
-            "companies_hiring": ["Google", "Uber", "Flipkart", "Walmart"],
-            "difficulty": DifficultyLevel.INTERMEDIATE,
-            "duration": 32,
-        },
-        {
-            "name": "ML Engineer",
-            "skills_required": ["Python", "Machine Learning", "MLOps", "TensorFlow", "Feature Engineering"],
-            "salary_range": "$95k - $190k",
-            "companies_hiring": ["NVIDIA", "Microsoft", "OpenAI", "Infosys"],
-            "difficulty": DifficultyLevel.ADVANCED,
-            "duration": 36,
+            "duration": 24,
         },
         {
             "name": "Full Stack Developer",
@@ -63,14 +47,6 @@ def seed_default_roles(db: Session):
             "companies_hiring": ["Meta", "Atlassian", "Freshworks", "CRED"],
             "difficulty": DifficultyLevel.INTERMEDIATE,
             "duration": 30,
-        },
-        {
-            "name": "DevOps Engineer",
-            "skills_required": ["Linux", "Docker", "Kubernetes", "CI/CD", "Cloud"],
-            "salary_range": "$90k - $175k",
-            "companies_hiring": ["Adobe", "IBM", "Oracle", "ServiceNow"],
-            "difficulty": DifficultyLevel.ADVANCED,
-            "duration": 34,
         },
     ]
 

@@ -1,5 +1,4 @@
 export { CareerMapperPage } from './CareerMapperPage'
-export { NodeGraph } from './NodeGraph'
 export { RoleCardSelector } from './RoleCardSelector'
 export { NodeDetailDrawer } from './NodeDetailDrawer'
 export { LearningRoadmap } from './LearningRoadmap'

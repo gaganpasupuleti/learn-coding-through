@@ -16,29 +16,29 @@ import type { CareerRole, SyllabusItem } from '@/types/career'
 
 // ── Design tokens for the Flight Plan ───────────────────────────────────────
 const T = {
-  bg:          '#0b0b0b',
-  surface:     '#111118',
-  surfaceHover:'#16161e',
-  border:      'rgba(255,255,255,0.08)',
-  borderFocus: 'rgba(255,255,255,0.12)',
-  done:        '#052e16',
-  doneBorder:  '#166534',
-  locked:      '#0a0a0a',
-  lockedBorder:'rgba(255,255,255,0.04)',
-  skip:        '#052e0f',
-  skipBorder:  '#166534',
-  focus:       '#1a120a',
-  focusBorder: '#78350f',
-  textPrimary: '#d1d5db',
-  textSub:     '#6b7280',
-  textDone:    '#4ade80',
-  textLocked:  '#374151',
-  accent:      '#818cf8',
-  accentDim:   '#3730a3',
-  lineColor:   'rgba(255,255,255,0.08)',
-  lineDone:    '#166534',
-  fontMono:    "'JetBrains Mono', monospace",
-  fontSans:    "'Inter', system-ui, sans-serif",
+  bg:          'transparent',
+  surface:     'hsl(var(--card))',
+  surfaceHover:'hsl(var(--muted))',
+  border:      'hsl(var(--border))',
+  borderFocus: 'hsl(var(--ring))',
+  done:        '#f0fdf4',
+  doneBorder:  '#bbf7d0',
+  locked:      'hsl(var(--muted))',
+  lockedBorder:'hsl(var(--border))',
+  skip:        '#f0fdf4',
+  skipBorder:  '#bbf7d0',
+  focus:       '#fffbeb',
+  focusBorder: '#fde68a',
+  textPrimary: 'hsl(var(--foreground))',
+  textSub:     'hsl(var(--muted-foreground))',
+  textDone:    '#15803d',
+  textLocked:  '#94a3b8',
+  accent:      'hsl(var(--primary))',
+  accentDim:   'hsl(var(--secondary))',
+  lineColor:   'hsl(var(--border))',
+  lineDone:    '#22c55e',
+  fontMono:    'var(--font-mono)',
+  fontSans:    'var(--font-inter)',
 } as const
 
 interface LearningRoadmapProps {
@@ -130,7 +130,7 @@ export function LearningRoadmap({
                   M{month} · {MONTH_NAMES[month - 1].toUpperCase()}
                 </span>
                 {status === 'skip'  && <span style={{ fontSize: 9, color: T.textDone, border: `1px solid ${T.doneBorder}`, borderRadius: 3, padding: '1px 5px' }}>SKIP</span>}
-                {status === 'focus' && <span style={{ fontSize: 9, color: '#fbbf24', border: '1px solid #78350f', borderRadius: 3, padding: '1px 5px' }}>FOCUS</span>}
+                {status === 'focus' && <span style={{ fontSize: 9, color: '#d97706', border: '1px solid #fde68a', borderRadius: 3, padding: '1px 5px' }}>FOCUS</span>}
                 <span style={{ marginLeft: 'auto', fontSize: 9, color: T.textSub }}>{pct}%</span>
               </div>
               <div style={{ height: 1, background: T.border, marginBottom: 8 }}>
@@ -142,15 +142,19 @@ export function LearningRoadmap({
                   const unlocked  = isUnlocked(item, items)
                   const itemHasNote = hasNote(role.id, item.id)
                   return (
-                    <div
-                      key={item.id}
-                      onClick={() => unlocked && onToggleItem?.(item.id)}
-                      style={{
-                        padding: '6px 10px',
-                        border: `1px solid ${isDone ? T.doneBorder : unlocked ? T.border : T.lockedBorder}`,
-                        borderRadius: 6,
-                        background: isDone ? T.done : unlocked ? T.surface : T.locked,
-                        cursor: unlocked && onToggleItem ? 'pointer' : 'default',
+                      <div
+                        key={item.id}
+                        onClick={() => {
+                          const isInteractive = item.quizId || item.projectId;
+                          if (unlocked && onToggleItem && !isInteractive) onToggleItem(item.id)
+                        }}
+                        style={{
+                          padding: '6px 10px',
+                          border: `1px solid ${isDone ? T.doneBorder : unlocked ? T.border : T.lockedBorder}`,
+                          borderRadius: 6,
+                          background: isDone ? T.done : unlocked ? T.surface : T.locked,
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                          cursor: unlocked && onToggleItem && !(item.quizId || item.projectId) ? 'pointer' : 'default',
                         opacity: unlocked ? 1 : 0.3,
                         filter: unlocked ? 'none' : 'grayscale(1)',
                         pointerEvents: unlocked ? 'auto' : 'none',
@@ -220,7 +224,7 @@ export function LearningRoadmap({
             && !syllabusByMonth[prevMonth].every(i => completedItems.has(i.id))
           const phaseAccent = allDone ? T.textDone
             : moduleLocked ? T.textLocked
-            : status === 'focus' ? '#fbbf24'
+            : status === 'focus' ? '#d97706'
             : T.accent
 
           return (
@@ -265,7 +269,7 @@ export function LearningRoadmap({
                     </span>
                   )}
                   {status === 'focus' && (
-                    <span style={{ fontSize: 9, color: '#fbbf24', border: '1px solid #78350f', borderRadius: 3, padding: '1px 6px', letterSpacing: '0.05em' }}>
+                    <span style={{ fontSize: 9, color: '#d97706', border: '1px solid #fde68a', borderRadius: 3, padding: '1px 6px', letterSpacing: '0.05em' }}>
                       FOCUS AREA
                     </span>
                   )}
@@ -290,8 +294,8 @@ export function LearningRoadmap({
 
                     const bgColor  = isDone ? T.done : unlocked ? T.surface : T.locked
                     const bdColor  = isDone ? T.doneBorder
-                      : item.type === 'deliverable' ? '#7f1d1d'
-                      : item.type === 'milestone'   ? '#78350f'
+                      : item.type === 'deliverable' ? '#fecaca'
+                      : item.type === 'milestone'   ? '#fde68a'
                       : unlocked ? T.border : T.lockedBorder
                     const txtColor = isDone ? T.textDone : unlocked ? T.textPrimary : T.textLocked
                     const metaColor= isDone ? T.textDone : T.textSub
@@ -299,13 +303,17 @@ export function LearningRoadmap({
                     return (
                       <div key={item.id} style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                         <div
-                          onClick={() => unlocked && onToggleItem?.(item.id)}
+                          onClick={() => {
+                            const isInteractive = item.quizId || item.projectId;
+                            if (unlocked && onToggleItem && !isInteractive) onToggleItem(item.id)
+                          }}
                           style={{
                             border: `1px solid ${bdColor}`,
                             borderRadius: 8,
                             background: bgColor,
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
                             padding: '10px 14px',
-                            cursor: unlocked && onToggleItem ? 'pointer' : 'default',
+                            cursor: unlocked && onToggleItem && !(item.quizId || item.projectId) ? 'pointer' : 'default',
                             opacity: unlocked ? 1 : 0.3,
                             filter: unlocked ? 'none' : 'grayscale(1)',
                             pointerEvents: unlocked ? 'auto' : 'none',
@@ -336,12 +344,12 @@ export function LearningRoadmap({
                                   W{item.week}
                                 </span>
                                 {item.type === 'deliverable' && (
-                                  <span style={{ fontSize: 9, color: '#f87171', border: '1px solid #7f1d1d', borderRadius: 3, padding: '1px 5px', letterSpacing: '0.04em' }}>
+                                  <span style={{ fontSize: 9, color: '#dc2626', border: '1px solid #fecaca', borderRadius: 3, padding: '1px 5px', letterSpacing: '0.04em' }}>
                                     PROJECT
                                   </span>
                                 )}
                                 {item.type === 'milestone' && (
-                                  <span style={{ fontSize: 9, color: '#fbbf24', border: '1px solid #78350f', borderRadius: 3, padding: '1px 5px', letterSpacing: '0.04em' }}>
+                                  <span style={{ fontSize: 9, color: '#d97706', border: '1px solid #fde68a', borderRadius: 3, padding: '1px 5px', letterSpacing: '0.04em' }}>
                                     MILESTONE
                                   </span>
                                 )}
@@ -383,9 +391,9 @@ export function LearningRoadmap({
                               <button
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); onOpenProject(item.projectId!, item.id) }}
-                                style={{ background: 'transparent', border: '1px solid #7f1d1d', borderRadius: 5, padding: '3px 7px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' }}
+                                style={{ background: 'transparent', border: '1px solid #fecaca', borderRadius: 5, padding: '3px 7px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' }}
                               >
-                                <span style={{ fontSize: 9, color: '#f87171', letterSpacing: '0.03em' }}>BUILD →</span>
+                                <span style={{ fontSize: 9, color: '#dc2626', letterSpacing: '0.03em' }}>BUILD →</span>
                               </button>
                             )}
                             {isAuthenticated && (
