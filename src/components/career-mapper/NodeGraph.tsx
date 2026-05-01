@@ -54,6 +54,7 @@ interface GNode {
   cx: number; cy: number; w: number; h: number
   side?: 'left' | 'right'
   isHighlight?: boolean
+  floatDelay: number
 }
 interface GEdge {
   id: string
@@ -96,6 +97,7 @@ function buildLayout(role: CareerRole, completedItems: Set<string>) {
       item: { id: `month-hdr-${month}`, month: month as any, week: 0, title: `Month ${month} — ${MONTH_NAMES[month] ?? ''}`, description: '', type: 'topic', sortOrder: 0 },
       kind: 'month-hdr',
       cx: SPINE_X, cy: y, w: 240, h: 48,
+      floatDelay: 0,
     }
     nodes.push(hdr)
 
@@ -180,6 +182,7 @@ function buildLayout(role: CareerRole, completedItems: Set<string>) {
       const capNode: GNode = {
         id: cap.id, item: cap, kind: 'capstone',
         cx: SPINE_X, cy: y + CAH / 2, w: CAW, h: CAH,
+        floatDelay: Math.random() * 1.5,
       }
       nodes.push(capNode)
       if (prevSpineNode) {
@@ -353,7 +356,7 @@ export function NodeGraph({ role, completedItems, onNodeClick, selectedNodeId }:
             const lx = node.cx - node.w / 2
             const ty = node.cy - node.h / 2
             const titleTrunc = node.item.title.length > 28 ? node.item.title.slice(0, 26) + '…' : node.item.title
-            const floatDelay = useMemo(() => Math.random() * 1.5, [node.id])
+            const floatDelay = node.floatDelay
 
             return (
               <motion.g
