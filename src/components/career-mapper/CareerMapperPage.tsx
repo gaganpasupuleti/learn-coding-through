@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   ArrowLeft,
   Brain,
@@ -17,7 +17,7 @@ import { useCareerProgress } from '@/hooks/use-career-progress'
 import { useSkillAssessments } from '@/hooks/use-skill-assessments'
 import { useMLRecommendations } from '@/hooks/use-ml-recommendations'
 import type { CareerRole } from '@/types/career'
-import { FlowChart3D } from './FlowChart3D'
+import { NodeGraph } from './NodeGraph'
 import { LearningRoadmap } from './LearningRoadmap'
 import { SkillGapAnalyzer } from './SkillGapAnalyzer'
 import { MLCareerRecommendationCard } from './MLRecommendationCard'
@@ -448,19 +448,21 @@ export function CareerMapperPage() {
         <SkillGapAnalyzer role={selectedRole} open={analyzerOpen} onOpenChange={handleAnalyzerClose} />
       </div>
 
-      {/* 3D Flowchart full-screen modal */}
+      {/* Visual Roadmap Map full-screen modal */}
       {flowModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#0b0b0b', overflow: 'auto', padding: 24 }}>
-          <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-            <button type="button" onClick={() => setFlowModalOpen(false)}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none',
-                color: '#64748b', fontSize: 11, cursor: 'pointer', marginBottom: 20, padding: 0 }}>
-              <ArrowLeft size={13} /> Back to Roadmap
-            </button>
-            <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.02em', color: '#e2e8f0', marginBottom: 20 }}>
-              {selectedRole.title} · 3D Course Map
+        <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#0f172a', overflow: 'auto' }}>
+          <div style={{ padding: '24px', maxWidth: 1400, margin: '0 auto', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <button type="button" onClick={() => setFlowModalOpen(false)}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none',
+                  color: '#94a3b8', fontSize: 13, fontWeight: 600, cursor: 'pointer', padding: 0 }}>
+                <ArrowLeft size={16} /> Back to Learning Path
+              </button>
             </div>
-            <FlowChart3D role={selectedRole} completedItems={completedSet} />
+            
+            <div style={{ flex: 1, position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+              <NodeGraph role={selectedRole} completedItems={completedSet} onToggleItem={toggleItem} />
+            </div>
           </div>
         </div>
       )}
