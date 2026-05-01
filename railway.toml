@@ -3,7 +3,7 @@ builder = "NIXPACKS"
 buildCommand = "pip install -r backend/requirements.txt"
 
 [deploy]
-startCommand = "bash backend/scripts/railway_start.sh"
+startCommand = "bash scripts/railway_start.sh"
 healthcheckPath = "/health"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
