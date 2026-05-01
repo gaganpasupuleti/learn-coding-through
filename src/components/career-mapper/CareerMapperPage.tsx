@@ -21,6 +21,7 @@ import { FlowChart3D } from './FlowChart3D'
 import { LearningRoadmap } from './LearningRoadmap'
 import { SkillGapAnalyzer } from './SkillGapAnalyzer'
 import { MLCareerRecommendationCard } from './MLRecommendationCard'
+import { RoleCardSelector } from './RoleCardSelector'
 import { QuizPage } from '@/components/pages/QuizPage'
 import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
 
@@ -293,7 +294,13 @@ export function CareerMapperPage() {
           <ArrowLeft size={13} /> All Roles
         </button>
 
-        {/* Role header */}
+        {/* Role Card Selector - Horizontal scrolling */}
+        <RoleCardSelector
+          roles={roles}
+          selectedRoleId={selectedRole.id}
+          onSelectRole={chooseRole}
+          completedItems={completedSet}
+        />
         <div style={{ border: `1px solid ${STYLE.border}`, borderRadius: 10, padding: '16px 20px', marginBottom: 24, background: STYLE.surface }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10, marginBottom: 8 }}>
             <h1 style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.02em', color: STYLE.txt }}>{selectedRole.title}</h1>

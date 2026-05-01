@@ -11,6 +11,8 @@ import {
   Flag,
 } from '@phosphor-icons/react'
 import { MilestoneNoteDialog } from './MilestoneNoteDialog'
+import { NodeGraph } from './NodeGraph'
+import { NodeDetailDrawer } from './NodeDetailDrawer'
 import { useMilestoneNotes } from '@/hooks/use-milestone-notes'
 import type { CareerRole, SyllabusItem } from '@/types/career'
 
@@ -75,6 +77,8 @@ export function LearningRoadmap({
 }: LearningRoadmapProps) {
   const [noteDialogOpen, setNoteDialogOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState<SyllabusItem | null>(null)
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const { hasNote, getNote } = useMilestoneNotes()
 
   const syllabusByMonth = {
@@ -103,6 +107,15 @@ export function LearningRoadmap({
     e.stopPropagation()
     setSelectedItem(item)
     setNoteDialogOpen(true)
+  }
+
+  const handleNodeClick = (nodeId: string) => {
+    const item = role.syllabus.find(i => i.id === nodeId)
+    if (item) {
+      setSelectedItem(item)
+      setSelectedNodeId(nodeId)
+      setDrawerOpen(true)
+    }
   }
 
   const getMonthStatus = (month: number) => {
@@ -437,6 +450,41 @@ export function LearningRoadmap({
       {selectedItem && (
         <MilestoneNoteDialog open={noteDialogOpen} onOpenChange={setNoteDialogOpen} roleId={role.id} item={selectedItem} />
       )}
+
+      {/* Node Graph View */}
+      <div style={{ marginTop: 32, marginBottom: 32 }}>
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 700,
+            letterSpacing: '-0.01em',
+            color: T.textPrimary,
+            marginBottom: 16,
+          }}
+        >
+          Node-Based Learning Path
+        </div>
+        <NodeGraph
+          role={role}
+          completedItems={completedItems}
+          onNodeClick={handleNodeClick}
+          selectedNodeId={selectedNodeId}
+        />
+      </div>
+
+      {/* Node Detail Drawer */}
+      <NodeDetailDrawer
+        isOpen={drawerOpen}
+        nodeItem={selectedItem}
+        role={role}
+        isCompleted={selectedItem ? completedItems.has(selectedItem.id) : false}
+        onClose={() => {
+          setDrawerOpen(false)
+          setSelectedNodeId(null)
+        }}
+        onLaunchProject={onOpenProject}
+        onOpenQuiz={onOpenQuiz}
+      />
     </div>
   )
 }

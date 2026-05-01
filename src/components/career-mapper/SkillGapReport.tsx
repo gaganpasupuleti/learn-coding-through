@@ -4,13 +4,15 @@ import { Progress } from '@/components/ui/progress'
 import { ArrowRight, Brain, CheckCircle, Warning, XCircle } from '@phosphor-icons/react'
 import type { SkillGapReport as SkillGapReportType, CareerRole } from '@/types/career'
 import { useMemo } from 'react'
+import type { NodeSkillGap, CareerRecommendation } from '@/lib/node-mastery-tracker'
 
 interface SkillGapReportProps {
   report: SkillGapReportType
   role: CareerRole
+  recommendations: CareerRecommendation[]
 }
 
-export function SkillGapReport({ report, role }: SkillGapReportProps) {
+export function SkillGapReport({ report, role, recommendations }: SkillGapReportProps) {
   const skillsByLevel = useMemo(() => {
     const proficient: string[] = []
     const partial: string[] = []
@@ -55,6 +57,8 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
     })
   }, [report])
 
+  const { masteredNodes, missingNodes, completionPercentage, missingProjectSuggestions } = report
+
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
       <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '40ms' }}>
@@ -67,168 +71,70 @@ export function SkillGapReport({ report, role }: SkillGapReportProps) {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <div className={`text-4xl font-bold ${getReadinessColor(report.overallReadiness)}`}>
-                {report.overallReadiness}%
+              <div className={`text-4xl font-bold ${getReadinessColor(completionPercentage)}`}>
+                {completionPercentage}%
               </div>
               <div className="text-sm text-muted-foreground">
-                {getReadinessMessage(report.overallReadiness)}
+                {completionPercentage >= 75 ? 'You are well-prepared!' : 'Keep progressing to master more nodes.'}
               </div>
             </div>
             <div className="text-right text-sm space-y-1">
               <div className="flex items-center gap-2 text-green-500">
                 <CheckCircle weight="fill" />
-                <span>{skillsByLevel.proficient.length} Proficient</span>
+                <span>{masteredNodes.size} Mastered</span>
               </div>
               <div className="flex items-center gap-2 text-yellow-500">
                 <Warning weight="fill" />
-                <span>{skillsByLevel.partial.length} Partial</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <XCircle />
-                <span>{skillsByLevel.none.length} Need to Learn</span>
+                <span>{missingNodes.size} Missing</span>
               </div>
             </div>
           </div>
-          <Progress value={report.overallReadiness} className="h-3" />
+          <Progress value={completionPercentage} className="h-3" />
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '90ms' }}>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ArrowRight className="text-primary" weight="duotone" />
-            Your Personalized Roadmap
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {monthsByFocus.map(({ month, status }) => {
-              const monthSyllabus = role.syllabus.filter(item => item.month === month)
-              
-              return (
-                <Card 
-                  key={month} 
-                  className={
-                    status === 'skip' 
-                      ? 'border-green-500/40 bg-green-500/10 backdrop-blur-sm hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-200' 
-                      : status === 'focus' 
-                      ? 'border-primary/50 bg-primary/10 backdrop-blur-sm hover:border-primary/60 hover:-translate-y-0.5 transition-all duration-200' 
-                      : 'border-border/50 bg-background/30 backdrop-blur-sm hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-200'
-                  }
-                  style={{ animationDelay: `${month * 60}ms` }}
-                >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">Month {month}</CardTitle>
-                      {status === 'skip' && (
-                        <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/40">
-                          Can Skip
-                        </Badge>
-                      )}
-                      {status === 'focus' && (
-                        <Badge className="bg-primary/30 text-primary border border-primary/40">
-                          Focus Here
-                        </Badge>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="text-sm text-muted-foreground">
-                      {monthSyllabus.length} topics
-                    </div>
-                    {status === 'skip' && (
-                      <div className="text-sm text-green-400">
-                        You already have the skills covered in this month
-                      </div>
-                    )}
-                    {status === 'focus' && (
-                      <div className="text-sm text-primary">
-                        Spend extra time mastering these concepts
-                      </div>
-                    )}
-                    {status === 'normal' && (
-                      <div className="text-sm text-muted-foreground">
-                        Follow the standard timeline
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-green-500/40 bg-green-500/10 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '130ms' }}>
+      {missingProjectSuggestions.length > 0 && (
+        <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '90ms' }}>
           <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <CheckCircle className="text-green-400" weight="fill" />
-              Proficient Skills
+            <CardTitle className="flex items-center gap-2">
+              <ArrowRight className="text-primary" weight="duotone" />
+              Recommended Next Project
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {skillsByLevel.proficient.length > 0 ? (
-              <ul className="space-y-2">
-                {skillsByLevel.proficient.map(skill => (
-                  <li key={skill} className="flex items-center gap-2 text-sm">
-                    <CheckCircle size={16} className="text-green-400" weight="fill" />
-                    <Badge variant="secondary" className="border-green-500/30 bg-green-500/20 text-green-300 hover:border-primary/50 transition-colors">{skill}</Badge>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="text-sm text-muted-foreground">No proficient skills yet</div>
-            )}
+            <div className="text-sm text-muted-foreground">
+              To master more nodes, try the following project:
+            </div>
+            <div className="mt-2 text-base font-semibold text-foreground">
+              {missingProjectSuggestions[0].projectName}
+            </div>
           </CardContent>
         </Card>
+      )}
 
-        <Card className="border-yellow-500/40 bg-yellow-500/10 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '170ms' }}>
+      {recommendations.length > 0 && (
+        <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '140ms' }}>
           <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Warning className="text-yellow-400" weight="fill" />
-              Partial Skills
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="text-primary" weight="duotone" />
+              Career Recommendations
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {skillsByLevel.partial.length > 0 ? (
-              <ul className="space-y-2">
-                {skillsByLevel.partial.map(skill => (
-                  <li key={skill} className="flex items-center gap-2 text-sm">
-                    <Warning size={16} className="text-yellow-400" weight="fill" />
-                    <Badge variant="secondary" className="border-yellow-500/30 bg-yellow-500/20 text-yellow-300 hover:border-primary/50 transition-colors">{skill}</Badge>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="text-sm text-muted-foreground">No partial skills</div>
-            )}
+            <div className="space-y-2">
+              {recommendations.slice(0, 3).map(rec => (
+                <div key={rec.roleId} className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-foreground">{rec.roleName}</div>
+                    <div className="text-xs text-muted-foreground">{rec.suggestion}</div>
+                  </div>
+                  <Badge variant="secondary">{rec.matchScore}%</Badge>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
-
-        <Card className="border-orange-500/40 bg-orange-500/10 backdrop-blur-sm hover:border-primary/50 transition-colors animate-in fade-in" style={{ animationDelay: '210ms' }}>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <ArrowRight className="text-orange-400" weight="duotone" />
-              Need to Learn
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {skillsByLevel.none.length > 0 ? (
-              <ul className="space-y-2">
-                {skillsByLevel.none.map(skill => (
-                  <li key={skill} className="flex items-center gap-2 text-sm">
-                    <ArrowRight size={16} className="text-orange-400" weight="duotone" />
-                    <Badge variant="secondary" className="border-orange-500/30 bg-orange-500/20 text-orange-300 hover:border-primary/50 transition-colors">{skill}</Badge>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="text-sm text-muted-foreground">All skills covered!</div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+      )}
     </div>
   )
 }

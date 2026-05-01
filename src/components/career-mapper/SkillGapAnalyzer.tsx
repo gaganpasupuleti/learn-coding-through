@@ -1,15 +1,19 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { Brain, Gauge, Sparkle } from '@phosphor-icons/react'
-import type { CareerRole, SkillAssessment } from '@/types/career'
-import { useSkillAssessments } from '@/hooks/use-skill-assessments'
+import { Brain, Sparkle, Trophy, Target } from '@phosphor-icons/react'
+import type { CareerRole } from '@/types/career'
+import { useCareerProgress } from '@/hooks/use-career-progress'
 import { toast } from 'sonner'
 import { SkillGapReport as SkillGapReportComponent } from './SkillGapReport'
+import {
+  calculateNodeSkillGap,
+  getCareerRecommendations,
+  type NodeSkillGap,
+  type CareerRecommendation,
+} from '@/lib/node-mastery-tracker'
 
 interface SkillGapAnalyzerProps {
   role: CareerRole
@@ -18,73 +22,58 @@ interface SkillGapAnalyzerProps {
 }
 
 export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerProps) {
-  const [currentSkillIndex, setCurrentSkillIndex] = useState(0)
-  const [assessments, setAssessments] = useState<SkillAssessment[]>([])
   const [showReport, setShowReport] = useState(false)
-  const { calculateGapReport, saveReport, getReport } = useSkillAssessments()
+  const { progress } = useCareerProgress(role.id)
 
-  const existingReport = getReport(role.id)
+  // Get completed projects from syllabus
+  const completedProjects = useMemo(() => {
+    const items = role.syllabus.filter(i => i.type === 'deliverable' && i.projectId)
+    const completed = items
+      .filter(i => (progress?.completedItems?.[i.id] || false))
+      .map(i => i.projectId!)
+    return completed
+  }, [role.syllabus, progress])
 
-  const currentSkill = role.skills[currentSkillIndex]
-  const isLastSkill = currentSkillIndex === role.skills.length - 1
-  const progress = ((currentSkillIndex + 1) / role.skills.length) * 100
+  // Calculate node skill gap
+  const nodeGap = useMemo(() => {
+    return calculateNodeSkillGap(role.id, completedProjects)
+  }, [role.id, completedProjects])
 
-  const handleAssessment = (level: 'none' | 'partial' | 'proficient') => {
-    const newAssessment: SkillAssessment = {
-      skill: currentSkill,
-      level
-    }
-
-    const updatedAssessments = [...assessments, newAssessment]
-    setAssessments(updatedAssessments)
-
-    if (isLastSkill) {
-      const report = calculateGapReport(role.id, role.skills, updatedAssessments)
-      saveReport(report)
-      setShowReport(true)
-      toast.success('Skill assessment complete!')
-    } else {
-      setCurrentSkillIndex(prev => prev + 1)
-    }
-  }
-
-  const handleReset = () => {
-    setCurrentSkillIndex(0)
-    setAssessments([])
-    setShowReport(false)
-  }
+  // Get career recommendations
+  const recommendations = useMemo(() => {
+    return getCareerRecommendations(completedProjects)
+  }, [completedProjects])
 
   const handleClose = () => {
-    handleReset()
+    setShowReport(false)
     onOpenChange(false)
   }
 
-  const handleStartNew = () => {
-    handleReset()
+  const handleStartAnalysis = () => {
+    setShowReport(true)
+    toast.success('Analysis complete! Analyzing your progress...')
   }
 
-  if (showReport) {
-    const report = getReport(role.id)
-    if (!report) return null
-
+  if (showReport && nodeGap) {
     return (
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto border-border/50 bg-card/50 backdrop-blur-sm animate-in fade-in duration-700">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-foreground">
               <Sparkle className="text-primary" weight="fill" />
-              Your Skill Gap Analysis
+              Your Node-Based Skill Analysis
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Based on your assessment, here's your personalized learning roadmap for {role.title}
+              Based on your completed projects, here's your personalized learning roadmap for {role.title}
             </DialogDescription>
           </DialogHeader>
-          <SkillGapReportComponent report={report} role={role} />
+          <SkillGapReportComponent 
+            nodeGap={nodeGap} 
+            role={role}
+            recommendations={recommendations}
+          />
           <div className="flex gap-3 justify-end mt-4">
-            <Button variant="outline" className="border-border/60 hover:border-primary/50 transition-colors" onClick={handleStartNew}>
-              Retake Assessment
-            </Button>
-            <Button onClick={handleClose}>
+            <Button variant="outline" className="border-border/60 hover:border-primary/50 transition-colors" onClick={handleClose}>
               Close
             </Button>
           </div>
@@ -93,129 +82,105 @@ export function SkillGapAnalyzer({ role, open, onOpenChange }: SkillGapAnalyzerP
     )
   }
 
-  if (existingReport && currentSkillIndex === 0 && assessments.length === 0) {
-    return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl border-border/50 bg-card/50 backdrop-blur-sm animate-in fade-in duration-700">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-foreground">
-              <Gauge className="text-primary" weight="duotone" />
-              Skill Gap Analyzer
-            </DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              You've already completed an assessment for {role.title}. Would you like to view your existing report or start a new assessment?
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex gap-3 justify-end mt-6">
-            <Button variant="outline" className="border-border/60 hover:border-primary/50 transition-colors" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button variant="secondary" onClick={handleStartNew}>
-              Start New Assessment
-            </Button>
-            <Button onClick={() => setShowReport(true)}>
-              View Existing Report
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl border-border/50 bg-card/50 backdrop-blur-sm animate-in fade-in duration-700">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-foreground">
-            <Gauge className="text-primary" weight="duotone" />
-            Skill Gap Analyzer
+            <Brain className="text-primary" weight="fill" />
+            Node-Based Skill Analysis
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Calibrate your current level so we can generate a sharper learning flight plan.
+            Analyze your mastered nodes based on completed projects and get personalized recommendations.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4 animate-in fade-in duration-700">
-          <div className="rounded-xl border border-border/50 bg-gradient-to-br from-primary/10 to-transparent p-4">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-              <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary">
-                <Brain className="mr-1.5" size={12} weight="duotone" />
-                Assessment Session
-              </Badge>
-              <Badge variant="secondary" className="bg-secondary/50 text-foreground animate-pulse [animation-duration:2.8s]">
-                Question {currentSkillIndex + 1} / {role.skills.length}
-              </Badge>
-            </div>
+          {/* Summary Card */}
+          <div className="rounded-xl border border-border/50 bg-gradient-to-br from-primary/10 to-transparent p-6">
+            <div className="space-y-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="text-sm font-medium text-muted-foreground">Completed Projects</div>
+                  <div className="text-3xl font-bold text-foreground mt-1">{completedProjects.length}</div>
+                </div>
+                <Trophy className="text-primary" size={28} weight="duotone" />
+              </div>
 
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <span>Progress</span>
-              <span>{Math.round(progress)}%</span>
+              {nodeGap && (
+                <>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Nodes Mastered</span>
+                      <span className="font-semibold text-foreground">{nodeGap.masteredNodes.size} / {nodeGap.requiredNodes.size}</span>
+                    </div>
+                    <Progress value={nodeGap.completionPercentage} className="h-2" />
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 pt-2">
+                    <div className="rounded-lg bg-card/50 p-2 text-center">
+                      <div className="text-2xl font-bold text-green-500">{nodeGap.masteredNodes.size}</div>
+                      <div className="text-xs text-muted-foreground">Mastered</div>
+                    </div>
+                    <div className="rounded-lg bg-card/50 p-2 text-center">
+                      <div className="text-2xl font-bold text-yellow-500">{nodeGap.missingNodes.size}</div>
+                      <div className="text-xs text-muted-foreground">Missing</div>
+                    </div>
+                    <div className="rounded-lg bg-card/50 p-2 text-center">
+                      <div className="text-2xl font-bold text-primary">{nodeGap.completionPercentage}%</div>
+                      <div className="text-xs text-muted-foreground">Ready</div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
-            <Progress value={progress} className="mt-2 h-2" />
           </div>
 
-          <div className="space-y-4">
-            <div className="text-lg font-semibold text-foreground tracking-tight">
-              How proficient are you with <span className="text-primary">{currentSkill}</span>?
+          {/* Next Steps */}
+          {nodeGap && nodeGap.missingProjectSuggestions.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Target size={16} className="text-primary" />
+                <span className="font-medium text-foreground">Recommended Next Step</span>
+              </div>
+              <div className="rounded-lg border border-border/50 bg-card/50 p-3">
+                <div className="text-sm text-muted-foreground">Try the next project to master more nodes:</div>
+                <div className="mt-2 text-base font-semibold text-foreground">
+                  {nodeGap.missingProjectSuggestions[0].projectName}
+                </div>
+              </div>
             </div>
-
-            <RadioGroup className="space-y-3">
-              <div 
-                onClick={() => handleAssessment('none')}
-                className="flex items-center space-x-3 rounded-xl border border-border/50 bg-card/50 p-4 cursor-pointer hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-200 animate-in fade-in"
-                style={{ animationDelay: '40ms' }}
-              >
-                <RadioGroupItem value="none" id={`none-${currentSkillIndex}`} />
-                <Label htmlFor={`none-${currentSkillIndex}`} className="flex-1 cursor-pointer">
-                  <div className="font-medium text-foreground">Not familiar</div>
-                  <div className="text-sm text-muted-foreground">
-                    I haven't used this skill or need to learn it from scratch
-                  </div>
-                </Label>
-              </div>
-
-              <div 
-                onClick={() => handleAssessment('partial')}
-                className="flex items-center space-x-3 rounded-xl border border-border/50 bg-card/50 p-4 cursor-pointer hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-200 animate-in fade-in"
-                style={{ animationDelay: '90ms' }}
-              >
-                <RadioGroupItem value="partial" id={`partial-${currentSkillIndex}`} />
-                <Label htmlFor={`partial-${currentSkillIndex}`} className="flex-1 cursor-pointer">
-                  <div className="font-medium text-foreground">Some experience</div>
-                  <div className="text-sm text-muted-foreground">
-                    I've used this skill before but need more practice
-                  </div>
-                </Label>
-              </div>
-
-              <div 
-                onClick={() => handleAssessment('proficient')}
-                className="flex items-center space-x-3 rounded-xl border border-border/50 bg-card/50 p-4 cursor-pointer hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-200 animate-in fade-in"
-                style={{ animationDelay: '140ms' }}
-              >
-                <RadioGroupItem value="proficient" id={`proficient-${currentSkillIndex}`} />
-                <Label htmlFor={`proficient-${currentSkillIndex}`} className="flex-1 cursor-pointer">
-                  <div className="font-medium text-foreground">Proficient</div>
-                  <div className="text-sm text-muted-foreground">
-                    I'm comfortable using this skill in real projects
-                  </div>
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {currentSkillIndex > 0 && (
-            <Button
-              variant="outline"
-              onClick={() => {
-                setCurrentSkillIndex(prev => prev - 1)
-                setAssessments(prev => prev.slice(0, -1))
-              }}
-              className="w-full border-border/60 hover:border-primary/50 transition-colors"
-            >
-              Back to Previous Question
-            </Button>
           )}
+
+          {/* Career Recommendations */}
+          {recommendations.length > 0 && (
+            <div className="space-y-3">
+              <div className="text-sm font-medium text-foreground">
+                Top Career Matches
+              </div>
+              <div className="space-y-2">
+                {recommendations.slice(0, 3).map(rec => (
+                  <div key={rec.roleId} className="rounded-lg border border-border/50 bg-card/50 p-3 flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-foreground">{rec.roleName}</div>
+                      <div className="text-xs text-muted-foreground">{rec.suggestion}</div>
+                    </div>
+                    <Badge variant="secondary" className="ml-2">{rec.matchScore}%</Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex gap-3 justify-end mt-6">
+          <Button variant="outline" className="border-border/60 hover:border-primary/50 transition-colors" onClick={handleClose}>
+            Close
+          </Button>
+          <Button onClick={handleStartAnalysis} className="bg-primary hover:bg-primary/90">
+            <Sparkle className="mr-2" size={16} />
+            Generate Detailed Report
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
