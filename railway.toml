@@ -9,9 +9,10 @@ healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 
-# Temporary wildcard — replace with your Railway frontend URL once known:
-#   https://<your-frontend>.railway.app
-# In production also set ENVIRONMENT=production to enable safety checks.
+# ENVIRONMENT must NOT be 'production' unless you have set a strong SECRET_KEY
+# and a proper CORS_ORIGINS list — the production validator will reject '*' and
+# crash the app before uvicorn can bind, causing the healthcheck to fail.
 [variables]
+ENVIRONMENT = "development"
 CORS_ORIGINS = "*"
 
