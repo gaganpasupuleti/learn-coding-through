@@ -33,8 +33,8 @@ def seed_default_roles(db: Session):
             "duration": 24,
         },
         {
-            "name": "Python Backend Developer",
-            "skills_required": ["Python", "FastAPI", "PostgreSQL", "REST APIs", "Testing"],
+            "name": "Backend Developer",
+            "skills_required": ["Python", "Databases", "APIs", "Docker", "System Design"],
             "salary_range": "$70k - $140k",
             "companies_hiring": ["PayPal", "Swiggy", "Razorpay", "Zoho"],
             "difficulty": DifficultyLevel.INTERMEDIATE,
