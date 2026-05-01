@@ -17,7 +17,7 @@ import { useCareerProgress } from '@/hooks/use-career-progress'
 import { useSkillAssessments } from '@/hooks/use-skill-assessments'
 import { useMLRecommendations } from '@/hooks/use-ml-recommendations'
 import type { CareerRole } from '@/types/career'
-import { NodeGraph } from './NodeGraph'
+
 import { LearningRoadmap } from './LearningRoadmap'
 import { SkillGapAnalyzer } from './SkillGapAnalyzer'
 import { MLCareerRecommendationCard } from './MLRecommendationCard'
@@ -58,7 +58,7 @@ export function CareerMapperPage() {
       return s ? (JSON.parse(s) as CareerRole) : null
     } catch { return null }
   })
-  const [flowModalOpen, setFlowModalOpen]         = useState(false)
+
   const [insightsPanelOpen, setInsightsPanelOpen] = useState(false)
   const [analyzerOpen, setAnalyzerOpen]           = useState(false)
   const [isLoading, setIsLoading]                 = useState(true)
@@ -110,7 +110,6 @@ export function CareerMapperPage() {
     setSelectedRole(role)
     localStorage.setItem(SELECTED_ROLE_KEY, JSON.stringify(role))
     setInsightsPanelOpen(false)
-    setFlowModalOpen(false)
     setSubView('roadmap')
     setActiveQuizId(null)
     setActiveProjectId(null)
@@ -324,23 +323,7 @@ export function CareerMapperPage() {
         </div>
 
         {/* View mode toggle row */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, gap: 12, flexWrap: 'wrap' }}>
-          {/* Pill toggle */}
-          <div style={{ display: 'flex', background: STYLE.surface, border: `1px solid ${STYLE.border}`, borderRadius: 8, padding: 3, gap: 2 }}>
-            <button type="button"
-              style={{ padding: '6px 14px', borderRadius: 6, border: 'none', cursor: 'default',
-                background: STYLE.accent, color: '#fff',
-                fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
-              <MapTrifold size={12} /> Roadmap
-            </button>
-            <button type="button" onClick={() => setFlowModalOpen(true)}
-              style={{ padding: '6px 14px', borderRadius: 6, border: 'none', cursor: 'pointer',
-                background: 'transparent', color: STYLE.sub,
-                fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5,
-                transition: 'color 0.15s' }}>
-              <ChartLine size={12} /> 3D Map ↗
-            </button>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: 20, gap: 12, flexWrap: 'wrap' }}>
           {/* AI Insights toggle */}
           <button type="button" onClick={() => setInsightsPanelOpen(v => !v)}
             style={{ border: `1px solid ${insightsPanelOpen ? STYLE.accent : STYLE.border}`, borderRadius: 6,
@@ -448,24 +431,6 @@ export function CareerMapperPage() {
         <SkillGapAnalyzer role={selectedRole} open={analyzerOpen} onOpenChange={handleAnalyzerClose} />
       </div>
 
-      {/* Visual Roadmap Map full-screen modal */}
-      {flowModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#0f172a', overflow: 'auto' }}>
-          <div style={{ padding: '24px', maxWidth: 1400, margin: '0 auto', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <button type="button" onClick={() => setFlowModalOpen(false)}
-                style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', border: 'none',
-                  color: '#94a3b8', fontSize: 13, fontWeight: 600, cursor: 'pointer', padding: 0 }}>
-                <ArrowLeft size={16} /> Back to Learning Path
-              </button>
-            </div>
-            
-            <div style={{ flex: 1, position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
-              <NodeGraph role={selectedRole} completedItems={completedSet} onToggleItem={toggleItem} />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
