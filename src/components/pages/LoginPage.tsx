@@ -135,7 +135,16 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
   }
 
   const handleDemoAccess = () => {
-    toast.error('Demo access is disabled. Please register to continue.')
+    setDemoFlag(true)
+    const demoUser: AuthUser = {
+      id: -1,
+      email: email.trim() || 'demo@codequest.local',
+      full_name: fullName.trim() || 'Demo Student',
+      role: 'student',
+    }
+    storeUser(demoUser)
+    toast.success('Entering demo mode...')
+    onAuthenticated(demoUser)
   }
 
   const handleRequestPasswordReset = async () => {
@@ -528,6 +537,9 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   <p>
                     Don't have an account?{' '}
                     <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('signup')}>Register</button>
+                  </p>
+                  <p>
+                    Or try it out: <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('demoRegister')}>Enter Demo Mode</button>
                   </p>
                 </div>
               )}
