@@ -10,8 +10,12 @@ export function FlowRoadmapPage() {
   )
 
   return (
-    <div className="min-h-screen py-8 bg-background">
-      <div className="container mx-auto px-4 max-w-full">
+    <div className="min-h-screen py-8 bg-background relative overflow-hidden">
+      {/* Ambient Glows */}
+      <div className="absolute top-[-10%] right-[-10%] w-[30%] h-[30%] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="container mx-auto px-4 max-w-full relative z-10">
         <header className="mb-12 text-center">
           <h1 className="text-4xl font-extrabold text-foreground mb-4">Interactive Learning Paths</h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -26,8 +30,8 @@ export function FlowRoadmapPage() {
                   onClick={() => setSelectedRoadmap(opt)}
                   className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 border-2 ${
                     selectedRoadmap.id === opt.id 
-                      ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-600/20 scale-105' 
-                      : 'bg-white border-slate-200 text-slate-600 hover:border-blue-400 hover:text-blue-600 shadow-sm'
+                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-600/20 scale-105' 
+                      : 'bg-card border-border/50 text-muted-foreground hover:border-indigo-400 hover:text-indigo-400 shadow-sm'
                   }`}
                 >
                   {opt.title}
@@ -35,8 +39,8 @@ export function FlowRoadmapPage() {
               ))}
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-sm">
-              <label htmlFor="roadmap-select" className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+            <div className="flex flex-col sm:flex-row items-center gap-4 bg-card/50 backdrop-blur-sm p-4 rounded-2xl border border-border/50 shadow-sm">
+              <label htmlFor="roadmap-select" className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                 Full Roadmap Catalog:
               </label>
               <select
@@ -46,7 +50,7 @@ export function FlowRoadmapPage() {
                   const found = ROADMAP_OPTIONS.find(opt => opt.id === e.target.value)
                   if (found) setSelectedRoadmap(found)
                 }}
-                className="bg-white border-2 border-slate-200 text-slate-800 text-sm font-bold rounded-xl focus:ring-blue-500 focus:border-blue-500 block px-4 py-2.5 min-w-[280px] shadow-sm cursor-pointer hover:border-slate-300 transition-colors"
+                className="bg-card border-2 border-border/50 text-card-foreground text-sm font-bold rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block px-4 py-2.5 min-w-[280px] shadow-sm cursor-pointer hover:border-indigo-500/50 transition-colors"
               >
                 {ROADMAP_OPTIONS.map(opt => (
                   <option key={opt.id} value={opt.id}>
@@ -67,3 +71,4 @@ export function FlowRoadmapPage() {
     </div>
   )
 }
+
