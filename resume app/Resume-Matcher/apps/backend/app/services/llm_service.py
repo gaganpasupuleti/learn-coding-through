@@ -8,10 +8,15 @@ import os
 
 from huggingface_hub import InferenceClient
 
+from app.config import settings
 from app.services.deterministic_formatter import format_parsed_data
 
 
-client = InferenceClient(token=os.getenv("HUGGINGFACE_API_KEY"))
+# Initialize lazily to ensure settings are fully loaded, or just get from settings
+def _get_hf_client():
+    token = settings.huggingface_api_key or os.getenv("HF_API_KEY")
+    return InferenceClient(token=token)
+
 
 
 def _normalize_coercion_output(candidate: object, raw_text_dict: dict) -> dict:
@@ -121,7 +126,7 @@ RETURN ONLY VALID JSON. DO NOT INCLUDE MARKDOWN FORMATTING OR BACKTICKS. DO NOT 
 
     try:
         response = await asyncio.to_thread(
-            client.text_generation,
+            _get_hf_client().text_generation,
             prompt,
             max_new_tokens=2000,
             model=model,

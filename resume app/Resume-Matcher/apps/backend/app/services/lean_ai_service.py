@@ -89,8 +89,13 @@ def _get_suggestions_ollama(prompt: str) -> str:
 def _get_suggestions_huggingface(prompt: str) -> str:
     try:
         from huggingface_hub import InferenceClient
+        from app.config import settings
 
-        hf_token = os.getenv("HF_API_KEY")
+        hf_token = settings.huggingface_api_key or os.getenv("HF_API_KEY")
+        if not hf_token:
+            logger.warning("Hugging Face API key is missing. Using fallback message.")
+            return _HF_FALLBACK_MESSAGE
+            
         client = InferenceClient(token=hf_token)
         response = client.text_generation(
             prompt,
