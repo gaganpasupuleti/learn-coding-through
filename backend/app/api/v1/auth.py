@@ -188,32 +188,41 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
         )
         is_pre_approved = approved_entry is not None
 
-        # Google has already verified the email — auto-approve new Google sign-ins
+        # Create new user, but don't auto-activate unless pre-approved
         user = User(
             email=email,
             full_name=full_name,
             password_hash=get_password_hash(secrets.token_urlsafe(32)),
             role=UserRole.STUDENT,
             external_auth_uid=external_uid,
-            is_active=True,
+            is_active=is_pre_approved,
         )
         db.add(user)
         db.commit()
         db.refresh(user)
+
+        if not is_pre_approved:
+            _upsert_waitlist(db, email=email, full_name=full_name, source="google-login")
+            raise HTTPException(
+                status_code=403,
+                detail="Registration via Google received! Your account is pending admin approval. You will be able to log in once an admin approves your request.",
+            )
     else:
         if user.external_auth_uid and user.external_auth_uid != external_uid:
             raise HTTPException(status_code=409, detail="This email is linked to a different Google account")
+        
+        # Link Google UID if not already linked
         if not user.external_auth_uid:
             user.external_auth_uid = external_uid
+        
         if not user.full_name.strip() and full_name:
             user.full_name = full_name
-        # Auto-activate existing accounts that sign in via Google
-        if not user.is_active:
-            user.is_active = True
+            
         db.add(user)
         db.commit()
         db.refresh(user)
 
+    # Final check: is the user active? (Covers both new and existing users)
     if not user.is_active:
         raise HTTPException(
             status_code=403,
