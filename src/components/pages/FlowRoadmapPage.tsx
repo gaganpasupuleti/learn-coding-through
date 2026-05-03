@@ -10,7 +10,7 @@ export function FlowRoadmapPage() {
   )
 
   return (
-    <div className="min-h-screen py-8 bg-background relative overflow-hidden">
+    <div className="min-h-screen py-8 bg-background relative">
       {/* Ambient Glows */}
       <div className="absolute top-[-10%] right-[-10%] w-[30%] h-[30%] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />

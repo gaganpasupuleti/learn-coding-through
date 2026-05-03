@@ -111,8 +111,18 @@ export function RoadmapFlow({ roadmapPath }: RoadmapFlowProps) {
     async function loadRoadmap() {
       try {
         setLoading(true);
+        setError(null);
         const response = await fetch(`/roadmaps/${roadmapPath}`);
-        if (!response.ok) throw new Error('Failed to load roadmap data');
+        
+        if (!response.ok) {
+          throw new Error(`Roadmap file not found (${response.status})`);
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Received non-JSON response from server. The roadmap file might be missing or invalid.");
+        }
+
         const data = await response.json();
         
         const rfNodes = (data.nodes || []).map((node: any) => ({
@@ -135,6 +145,7 @@ export function RoadmapFlow({ roadmapPath }: RoadmapFlowProps) {
         setNodes(rfNodes);
         setEdges(rfEdges);
       } catch (err: any) {
+        console.error('Roadmap Load Error:', err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -150,7 +161,7 @@ export function RoadmapFlow({ roadmapPath }: RoadmapFlowProps) {
   if (error) return <div className="flex items-center justify-center h-[600px] text-destructive">Error: {error}</div>;
 
   return (
-    <div className="w-full h-[calc(100vh-100px)] min-h-[600px] bg-transparent border-none overflow-hidden relative">
+    <div className="w-full h-[70vh] md:h-[calc(100vh-100px)] min-h-[500px] md:min-h-[600px] bg-transparent border-none overflow-hidden relative">
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes flowingLine {
           from { stroke-dashoffset: 20; }
@@ -172,9 +183,16 @@ export function RoadmapFlow({ roadmapPath }: RoadmapFlowProps) {
         minZoom={0.05}
         maxZoom={2}
         colorMode="dark"
+        preventScrolling={false}
+        paneMoveable={true}
+        zoomOnPinch={true}
+        zoomOnDoubleClick={false}
+        elementsSelectable={true}
+        nodesConnectable={false}
+        nodesDraggable={true}
       >
         <Background color="currentColor" className="opacity-10" gap={25} size={1} variant="dots" />
-        <Controls className="bg-card border-border fill-foreground" />
+        <Controls className="bg-card border-border fill-foreground" showInteractive={false} />
         <MiniMap 
           nodeColor={(n) => {
             if (n.type === 'topic') return '#ffcc00';
@@ -182,7 +200,12 @@ export function RoadmapFlow({ roadmapPath }: RoadmapFlowProps) {
             return '#f1f5f9';
           }}
           maskColor="rgba(0, 0, 0, 0.3)"
-          style={{ backgroundColor: 'hsl(var(--card))', borderRadius: '12px', border: '1px solid hsl(var(--border))' }}
+          style={{ 
+            backgroundColor: 'hsl(var(--card))', 
+            borderRadius: '12px', 
+            border: '1px solid hsl(var(--border))',
+            display: window.innerWidth < 768 ? 'none' : 'block' 
+          }}
         />
       </ReactFlow>
     </div>
