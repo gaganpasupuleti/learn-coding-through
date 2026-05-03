@@ -1,37 +1,37 @@
 ﻿{
-    "startedAt":  "2026-04-13T00:02:16.2965081+05:30",
+    "startedAt":  "2026-05-02T00:15:51.8143869+05:30",
     "processes":  [
                       {
                           "name":  "main-backend",
-                          "pid":  35232,
-                          "cwd":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\backend",
+                          "pid":  32268,
+                          "cwd":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\backend",
                           "command":  "python -m uvicorn app.main:app --host 127.0.0.1 --port 8000",
-                          "stdout":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\main-backend.out.log",
-                          "stderr":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\main-backend.err.log"
+                          "stdout":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\main-backend.out.log",
+                          "stderr":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\main-backend.err.log"
                       },
                       {
                           "name":  "main-frontend",
-                          "pid":  37120,
-                          "cwd":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through",
+                          "pid":  19488,
+                          "cwd":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through",
                           "command":  "npm run dev",
-                          "stdout":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\main-frontend.out.log",
-                          "stderr":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\main-frontend.err.log"
+                          "stdout":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\main-frontend.out.log",
+                          "stderr":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\main-frontend.err.log"
                       },
                       {
                           "name":  "resume-backend",
-                          "pid":  7556,
-                          "cwd":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\resume app\\Resume-Matcher\\apps\\backend",
-                          "command":  "\"C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\resume app\\Resume-Matcher\\apps\\backend\\.venv\\Scripts\\python.exe\" -m uvicorn app.main:app --host 127.0.0.1 --port 8001",
-                          "stdout":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\resume-backend.out.log",
-                          "stderr":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\resume-backend.err.log"
+                          "pid":  7876,
+                          "cwd":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\resume app\\Resume-Matcher\\apps\\backend",
+                          "command":  "\"python\" -m uvicorn app.main:app --host 127.0.0.1 --port 8001",
+                          "stdout":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\resume-backend.out.log",
+                          "stderr":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\resume-backend.err.log"
                       },
                       {
                           "name":  "resume-frontend",
-                          "pid":  11248,
-                          "cwd":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\resume app\\Resume-Matcher\\apps\\frontend",
+                          "pid":  17556,
+                          "cwd":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\resume app\\Resume-Matcher\\apps\\frontend",
                           "command":  "set BACKEND_ORIGIN=http://127.0.0.1:8001\u0026\u0026 npx next dev --webpack --port 3000",
-                          "stdout":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\resume-frontend.out.log",
-                          "stderr":  "C:\\Users\\Admin\\Documents\\GitHub\\learn-coding-through\\.run\\logs\\resume-frontend.err.log"
+                          "stdout":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\resume-frontend.out.log",
+                          "stderr":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\resume-frontend.err.log"
                       }
                   ]
 }

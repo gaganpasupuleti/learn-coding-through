@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { CheckCircle, Lock, CaretDown, CaretUp } from '@phosphor-icons/react'
-import { StageResponse } from '@/types/roadmap' // Wait, I should define this in the file or look it up
+import { StageResponse } from '@/types/roadmap'
+import { getAuthToken, API_BASE_URL } from '@/lib/auth'
 
 export interface Stage {
   id: number
@@ -30,10 +31,22 @@ export function RoadmapCanvas({ roleId }: RoadmapCanvasProps) {
   useEffect(() => {
     async function fetchRoadmap() {
       try {
-        const res = await fetch(`/api/v1/roadmap/${roleId}`)
+        const token = getAuthToken()
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+        }
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`
+        }
+
+        const res = await fetch(`${API_BASE_URL}/roadmap/${roleId}`, {
+          headers
+        })
         if (res.ok) {
           const data = await res.json()
           setStages(data.stages)
+        } else {
+          console.error('Roadmap fetch failed', res.status)
         }
       } catch (err) {
         console.error('Failed to fetch roadmap', err)
