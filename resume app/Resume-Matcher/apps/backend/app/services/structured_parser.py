@@ -16,33 +16,49 @@ import spacy
 
 logger = logging.getLogger(__name__)
 
-# ── Load spaCy model (md required for word vectors) ─────────────────
+_nlp = None
+_TARGETS = None
 
-try:
-    _nlp = spacy.load("en_core_web_md")
-except OSError:
+def _get_nlp():
+    global _nlp
+    if _nlp is not None:
+        return _nlp
+    
     try:
-        _nlp = spacy.load("en_core_web_sm")
-        logger.warning(
-            "en_core_web_md not found; falling back to en_core_web_sm "
-            "(semantic similarity will be degraded)"
-        )
-    except OSError:
+        import spacy
+        try:
+            _nlp = spacy.load("en_core_web_md")
+        except OSError:
+            try:
+                _nlp = spacy.load("en_core_web_sm")
+                logger.warning("en_core_web_md not found; falling back to en_core_web_sm")
+            except OSError:
+                _nlp = None
+                logger.error("No spaCy model available")
+    except ImportError:
         _nlp = None
-        logger.error("No spaCy model available – structured parsing will be limited")
+    return _nlp
 
-# ── Baseline target vectors for semantic similarity ──────────────────
-
-_TARGETS: dict[str, object] = {}
-if _nlp is not None:
+def _get_targets():
+    global _TARGETS
+    if _TARGETS is not None:
+        return _TARGETS
+    
+    nlp = _get_nlp()
+    if nlp is None:
+        _TARGETS = {}
+        return _TARGETS
+    
     _TARGETS = {
-        "contact_info": _nlp("contact information phone email address"),
-        "summary": _nlp("summary profile objective about me"),
-        "experience": _nlp("experience employment work history professional background"),
-        "education": _nlp("education academic qualifications degree university"),
-        "projects": _nlp("projects portfolio personal projects student projects"),
-        "skills": _nlp("skills competencies technologies technical skills tools"),
+        "contact_info": nlp("contact information phone email address"),
+        "summary": nlp("summary profile objective about me"),
+        "experience": nlp("experience employment work history professional background"),
+        "education": nlp("education academic qualifications degree university"),
+        "projects": nlp("projects portfolio personal projects student projects"),
+        "skills": nlp("skills competencies technologies technical skills tools"),
     }
+    return _TARGETS
+
 
 # ── Pass 1: Regex patterns for standard headers ─────────────────────
 
@@ -99,14 +115,16 @@ def _regex_match(line: str) -> str | None:
 
 def _similarity_match(line: str) -> str | None:
     """Return the section key if *line* is semantically close to a target."""
-    if _nlp is None or not _TARGETS:
+    nlp = _get_nlp()
+    targets = _get_targets()
+    if nlp is None or not targets:
         return None
-    doc = _nlp(line.strip())
+    doc = nlp(line.strip())
     if not doc.vector_norm:
         return None
     best_key: str | None = None
     best_score = _SIMILARITY_THRESHOLD
-    for key, target_doc in _TARGETS.items():
+    for key, target_doc in targets.items():
         score = doc.similarity(target_doc)
         if score > best_score:
             best_score = score

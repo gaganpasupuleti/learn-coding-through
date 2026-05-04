@@ -5,7 +5,7 @@
  */
 
 const DEFAULT_PUBLIC_API_URL = '/';
-const INTERNAL_API_ORIGIN = 'http://127.0.0.1:8000';
+const INTERNAL_API_ORIGIN = 'http://127.0.0.1:8001';
 
 function normalizeApiUrl(value: string): string {
   const trimmed = value.trim();

@@ -13,18 +13,26 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-try:
-    import spacy
+_nlp = None
 
+def _get_nlp():
+    global _nlp
+    if _nlp is not None:
+        return _nlp
+    
     try:
-        _nlp = spacy.load("en_core_web_md")
-    except OSError:
+        import spacy
         try:
-            _nlp = spacy.load("en_core_web_sm")
+            _nlp = spacy.load("en_core_web_md")
         except OSError:
-            _nlp = None
-except ImportError:
-    _nlp = None
+            try:
+                _nlp = spacy.load("en_core_web_sm")
+            except OSError:
+                _nlp = None
+    except ImportError:
+        _nlp = None
+    return _nlp
+
 
 
 # ── Helpers ──────────────────────────────────────────────────────────
@@ -46,8 +54,9 @@ _STOP_WORDS: set[str] = {
 
 def _tokenise(text: str) -> set[str]:
     """Extract meaningful lowercase tokens from *text*."""
-    if _nlp is not None:
-        doc = _nlp(text)
+    nlp = _get_nlp()
+    if nlp is not None:
+        doc = nlp(text)
         return {
             token.lemma_.lower()
             for token in doc
