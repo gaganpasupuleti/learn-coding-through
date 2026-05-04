@@ -62,20 +62,9 @@ Stop-ListenerOnPort -Port 8001
 
 $mainFrontendDir = $repoRoot
 $mainBackendDir = Join-Path $repoRoot "backend"
-$resumeFrontendDir = Join-Path $repoRoot "resume app\Resume-Matcher\apps\frontend"
-$resumeBackendDir = Join-Path $repoRoot "resume app\Resume-Matcher\apps\backend"
-
-$resumeBackendPython = Join-Path $resumeBackendDir ".venv\Scripts\python.exe"
-if (-not (Test-Path $resumeBackendPython)) {
-    $resumeBackendPython = "python"
-}
-
 $started = @()
 $started += Start-ServiceProcess -Name "main-backend" -WorkingDirectory $mainBackendDir -Command "python -m uvicorn app.main:app --host 127.0.0.1 --port 8000"
 $started += Start-ServiceProcess -Name "main-frontend" -WorkingDirectory $mainFrontendDir -Command "npm run dev"
-$resumeBackendCommand = "`"$resumeBackendPython`" -m uvicorn app.main:app --host 127.0.0.1 --port 8001"
-$started += Start-ServiceProcess -Name "resume-backend" -WorkingDirectory $resumeBackendDir -Command $resumeBackendCommand
-$started += Start-ServiceProcess -Name "resume-frontend" -WorkingDirectory $resumeFrontendDir -Command "set BACKEND_ORIGIN=http://127.0.0.1:8001&& npx next dev --webpack --port 3000"
 
 $state = [pscustomobject]@{
     startedAt = (Get-Date).ToString("o")
@@ -87,7 +76,5 @@ $state | ConvertTo-Json -Depth 6 | Set-Content -Path $stateFile -Encoding UTF8
 Write-Output "Combined dev stack started."
 Write-Output "Main app:    http://localhost:5000"
 Write-Output "Main API:    http://127.0.0.1:8000"
-Write-Output "Resume app:  http://localhost:3000"
-Write-Output "Resume API:  http://127.0.0.1:8001"
 Write-Output "Logs dir:    $logDir"
 Write-Output "Stop stack:  npm run dev:all:stop"
