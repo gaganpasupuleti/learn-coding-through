@@ -10,7 +10,6 @@ import {
 } from '../../lib/resource-progress';
 import { httpGet } from '../../lib/http';
 import { getUrlParams } from '../../lib/browser.ts';
-import { RoadmapFloatingChat } from '../FrameRenderer/RoadmapFloatingChat.tsx';
 
 type EditorRoadmapProps = {
   resourceId: string;
@@ -105,7 +104,6 @@ export function EditorRoadmap(props: EditorRoadmapProps) {
         dimensions={dimensions}
         resourceId={resourceId}
       />
-      {hasChat && <RoadmapFloatingChat roadmapId={resourceId} />}
     </div>
   );
 }

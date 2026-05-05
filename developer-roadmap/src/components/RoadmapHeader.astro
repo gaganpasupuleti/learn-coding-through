@@ -29,7 +29,6 @@ export interface Props {
   hasSearch?: boolean;
   projectCount?: number;
   coursesCount?: number;
-  hasAIChat?: boolean;
   isForkable?: boolean;
   isNew?: boolean;
   activeTab?: 'roadmap' | 'projects' | 'courses';
@@ -40,7 +39,6 @@ const {
   description,
   roadmapId,
   partner,
-  hasAIChat = false,
   projectCount = 0,
   activeTab = 'roadmap',
   coursesCount = 0,
@@ -148,15 +146,6 @@ const hasProjects = projectCount > 0;
                 text='Courses'
                 isActive={activeTab === 'courses'}
                 className='hidden md:flex'
-              />
-            )}
-            {hasAIChat && (
-              <TabLink
-                url={`/ai/roadmap-chat/${roadmapId}`}
-                icon={Bot}
-                text='AI Tutor'
-                mobileText='AI'
-                isActive={false}
               />
             )}
           </div>
