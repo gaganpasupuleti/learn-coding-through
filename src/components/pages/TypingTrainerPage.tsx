@@ -27,7 +27,7 @@ const PAGE_OPTIONS = [1, 2, 3] as const
 
 const SENTENCE_PARAGRAPHS = [
   'Thank you for sharing your application materials. I reviewed your project portfolio and was impressed by the clarity of your documentation and the measurable impact of your final capstone.',
-  'I am writing to confirm your interview slot for Monday at 10:30 AM. Please join ten minutes early and keep your resume, project links, and a short self introduction ready.',
+  'I am writing to confirm your interview slot for Monday at 10:30 AM. Please join ten minutes early and keep your project links and a short self introduction ready.',
   'During the internship you will collaborate with design, product, and engineering teams. Strong communication and consistent delivery will be important for success in this role.',
   'Your next goal is to improve writing speed while maintaining professional quality. Focus on punctuation, sentence rhythm, and correcting mistakes without stopping your flow.',
 ]

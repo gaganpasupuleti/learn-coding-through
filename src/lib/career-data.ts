@@ -1,62 +1,41 @@
 import type { CareerRole, SyllabusItem } from '@/types/career'
 
-/**
- * Career Role Definition Structure
- * Extends CareerRole with additional architecture fields for building personalized learning paths
- */
 export interface CareerRoleData extends CareerRole {
   focus: string
   roadmapNodes: string[]
   requiredProjects: string[]
 }
 
-/**
- * Roadmap Nodes - Core learning components from the curriculum
- * These represent discrete learning concepts that form the foundation
- */
 const ROADMAP_NODES = {
-  // Foundation
   internet: 'Understanding the Internet',
   html: 'HTML Fundamentals',
   css: 'CSS & Styling',
   jsBasics: 'JavaScript Basics',
   dom: 'DOM Manipulation',
-  
-  // Frontend
   responsive: 'Responsive Design',
   accessibility: 'Web Accessibility',
   performance: 'Frontend Performance',
   react: 'React Framework',
   state: 'State Management',
-  
-  // Backend
   node: 'Node.js Runtime',
   express: 'Express.js',
   databases: 'Database Design',
   sql: 'SQL & Queries',
   apis: 'REST API Design',
-  
-  // DevOps & Cloud
   docker: 'Docker & Containers',
   kubernetes: 'Kubernetes Orchestration',
   cicd: 'CI/CD Pipelines',
   aws: 'AWS Cloud Platform',
   monitoring: 'System Monitoring',
-  
-  // Security
   authentication: 'Authentication & Authorization',
   encryption: 'Encryption & Cryptography',
   owasp: 'OWASP Security',
   testing: 'Security Testing',
-  
-  // Data & AI
   python: 'Python Programming',
   numpy: 'NumPy & Pandas',
   visualization: 'Data Visualization',
   ml: 'Machine Learning Basics',
   nlp: 'NLP & LLMs',
-  
-  // Advanced
   microservices: 'Microservices Architecture',
   distributed: 'Distributed Systems',
   design: 'System Design',
@@ -64,9 +43,6 @@ const ROADMAP_NODES = {
   testing_advanced: 'Advanced Testing',
 }
 
-/**
- * Helper function to create a syllabus from roadmap nodes and required projects
- */
 function createSyllabus(
   nodes: (keyof typeof ROADMAP_NODES)[],
   projectMilestones: { month: number; project: string }[]
@@ -74,13 +50,11 @@ function createSyllabus(
   const syllabus: SyllabusItem[] = []
   let sortOrder = 0
 
-  // Distribute nodes across 4 months
   const nodesPerMonth = Math.ceil(nodes.length / 4)
 
   nodes.forEach((nodeKey, idx) => {
     const month = Math.min(Math.floor(idx / nodesPerMonth) + 1, 4) as 1 | 2 | 3 | 4
     const week = (idx % nodesPerMonth) + 1
-
     syllabus.push({
       id: `${nodeKey}-item`,
       month,
@@ -92,7 +66,6 @@ function createSyllabus(
     })
   })
 
-  // Add project milestones
   projectMilestones.forEach((milestone, idx) => {
     syllabus.push({
       id: `project-${milestone.project}-${idx}`,
@@ -112,10 +85,6 @@ function createSyllabus(
   })
 }
 
-/**
- * CAREER_ROLES - 10 distinct professional career paths
- * Each role defines a unique learning journey tailored to career goals
- */
 export const CAREER_ROLES: CareerRoleData[] = [
   {
     id: 'backend-architect',
@@ -131,7 +100,7 @@ export const CAREER_ROLES: CareerRoleData[] = [
     icon: '⚙️',
     skills: ['Node.js', 'Express', 'SQL', 'API Design', 'Database Architecture', 'Microservices'],
     roadmapNodes: ['node', 'express', 'databases', 'sql', 'apis', 'microservices', 'design', 'testing'],
-    requiredProjects: ['calculator', 'resume-builder'],
+    requiredProjects: ['calculator'],
     sortOrder: 1,
     isActive: true,
     syllabus: createSyllabus(
@@ -139,11 +108,10 @@ export const CAREER_ROLES: CareerRoleData[] = [
       [
         { month: 1, project: 'digital-clock' },
         { month: 2, project: 'calculator' },
-        { month: 3, project: 'resume-builder' },
+        { month: 3, project: 'temperature-converter' },
       ]
     ),
   },
-
   {
     id: 'data-analyst',
     title: 'Data Analyst',
@@ -169,7 +137,6 @@ export const CAREER_ROLES: CareerRoleData[] = [
       ]
     ),
   },
-
   {
     id: 'frontend-specialist',
     title: 'Frontend Specialist',
@@ -196,7 +163,6 @@ export const CAREER_ROLES: CareerRoleData[] = [
       ]
     ),
   },
-
   {
     id: 'automation-engineer',
     title: 'Automation Engineer',
@@ -211,7 +177,7 @@ export const CAREER_ROLES: CareerRoleData[] = [
     icon: '🤖',
     skills: ['CI/CD', 'Docker', 'Kubernetes', 'Python', 'Scripting', 'Test Automation'],
     roadmapNodes: ['docker', 'kubernetes', 'cicd', 'testing', 'python', 'node', 'monitoring'],
-    requiredProjects: ['calculator', 'resume-builder'],
+    requiredProjects: ['calculator'],
     sortOrder: 4,
     isActive: true,
     syllabus: createSyllabus(
@@ -222,7 +188,6 @@ export const CAREER_ROLES: CareerRoleData[] = [
       ]
     ),
   },
-
   {
     id: 'cybersecurity-analyst',
     title: 'Cybersecurity Analyst',
@@ -248,7 +213,6 @@ export const CAREER_ROLES: CareerRoleData[] = [
       ]
     ),
   },
-
   {
     id: 'ai-prompt-engineer',
     title: 'AI/Prompt Engineer',
@@ -263,18 +227,16 @@ export const CAREER_ROLES: CareerRoleData[] = [
     icon: '🧠',
     skills: ['Prompt Engineering', 'LLMs', 'Python', 'NLP', 'API Integration', 'Data Processing'],
     roadmapNodes: ['python', 'nlp', 'ml', 'apis', 'numpy', 'node', 'jsBasics'],
-    requiredProjects: ['resume-builder', 'digital-clock'],
+    requiredProjects: ['digital-clock'],
     sortOrder: 6,
     isActive: true,
     syllabus: createSyllabus(
       ['jsBasics', 'python', 'numpy', 'nlp', 'ml', 'apis'],
       [
         { month: 1, project: 'digital-clock' },
-        { month: 3, project: 'resume-builder' },
       ]
     ),
   },
-
   {
     id: 'cloud-devops-engineer',
     title: 'Cloud DevOps Engineer',
@@ -289,7 +251,7 @@ export const CAREER_ROLES: CareerRoleData[] = [
     icon: '☁️',
     skills: ['AWS', 'Kubernetes', 'Docker', 'CI/CD', 'Infrastructure as Code', 'System Design'],
     roadmapNodes: ['aws', 'docker', 'kubernetes', 'cicd', 'monitoring', 'design', 'scaling'],
-    requiredProjects: ['calculator', 'resume-builder'],
+    requiredProjects: ['calculator'],
     sortOrder: 7,
     isActive: true,
     syllabus: createSyllabus(
@@ -297,11 +259,10 @@ export const CAREER_ROLES: CareerRoleData[] = [
       [
         { month: 1, project: 'digital-clock' },
         { month: 2, project: 'calculator' },
-        { month: 3, project: 'resume-builder' },
+        { month: 3, project: 'temperature-converter' },
       ]
     ),
   },
-
   {
     id: 'full-stack-developer',
     title: 'Full-Stack Developer',
@@ -325,11 +286,9 @@ export const CAREER_ROLES: CareerRoleData[] = [
         { month: 1, project: 'digital-clock' },
         { month: 2, project: 'calculator' },
         { month: 3, project: 'temperature-converter' },
-        { month: 4, project: 'resume-builder' },
       ]
     ),
   },
-
   {
     id: 'game-developer',
     title: 'Game Developer',
@@ -355,7 +314,6 @@ export const CAREER_ROLES: CareerRoleData[] = [
       ]
     ),
   },
-
   {
     id: 'product-manager',
     title: 'Product Manager',
@@ -370,41 +328,28 @@ export const CAREER_ROLES: CareerRoleData[] = [
     icon: '📱',
     skills: ['Product Strategy', 'User Research', 'Data Analysis', 'Technical Fundamentals', 'Leadership', 'Analytics'],
     roadmapNodes: ['jsBasics', 'apis', 'databases', 'design', 'sql', 'testing'],
-    requiredProjects: ['resume-builder', 'calculator'],
+    requiredProjects: ['calculator'],
     sortOrder: 10,
     isActive: true,
     syllabus: createSyllabus(
       ['jsBasics', 'databases', 'apis', 'design', 'testing'],
       [
         { month: 1, project: 'calculator' },
-        { month: 2, project: 'resume-builder' },
       ]
     ),
   },
 ]
 
-/**
- * Utility: Get a career role by ID
- */
 export function getCareerRoleById(id: string): CareerRoleData | undefined {
   return CAREER_ROLES.find(role => role.id === id)
 }
 
-/**
- * Utility: Get all active career roles
- */
 export function getActiveCareerRoles(): CareerRoleData[] {
   return CAREER_ROLES.filter(role => role.isActive)
 }
 
-/**
- * Utility: Get roles by domain
- */
 export function getRolesByDomain(domain: string): CareerRoleData[] {
   return CAREER_ROLES.filter(role => role.domain === domain)
 }
 
-/**
- * Type export for use in UI components
- */
 export type { CareerRoleData as CareerRole }

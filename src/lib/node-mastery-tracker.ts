@@ -20,14 +20,7 @@ export const PROJECT_NODE_MASTERY: Record<string, string[]> = {
     'dom-item',           // DOM manipulation
     'responsive-item',    // Responsive design
   ],
-  'resume-builder': [
-    'html-item',          // HTML fundamentals
-    'css-item',           // CSS & Styling
-    'jsBasics-item',      // JavaScript
-    'react-item',         // React framework
-    'state-item',         // State management
-    'sql-item',           // Database queries (if backend included)
-  ],
+  
 }
 
 /**
@@ -153,7 +146,6 @@ function getProjectDisplayName(projectId: string): string {
     'digital-clock': 'Digital Clock',
     'calculator': 'Calculator',
     'temperature-converter': 'Temperature Converter',
-    'resume-builder': 'Resume Builder',
   }
   return names[projectId] || projectId
 }

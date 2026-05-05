@@ -8,7 +8,6 @@ import { QuizPage } from '@/components/pages/QuizPage'
 import { CareerMapperPage } from '@/components/career-mapper'
 import { AdminPage } from '@/components/pages/AdminPage'
 import { LoginPage } from '@/components/pages/LoginPage'
-import { ResumeModuleGatewayPage } from '@/components/pages/ResumeModuleGatewayPage'
 import { StudentShell } from '@/components/shells/StudentShell'
 import { AdminShell } from '@/components/shells/AdminShell'
 import { AssessmentGuard } from '@/components/assessment/AssessmentGuard'
@@ -35,7 +34,7 @@ import {
   triggerQuizLockedError,
 } from '@/lib/demo-limits'
 
-export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'typing' | 'quiz' | 'roadmapper' | 'flow-roadmap' | 'resume'
+export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'typing' | 'quiz' | 'roadmapper' | 'flow-roadmap'
 
 type AuthState = AuthUser | null
 
@@ -63,11 +62,6 @@ function App() {
   }
 
   const handleStudentNavigate = (page: StudentPage) => {
-    if (page === 'resume' && isDemoUser() && isRailwayPublicHost()) {
-      toast.error('Resume module is locked for demo users on hosted Railway. Please use local mode or log in with a full account.')
-      return
-    }
-
     setStudentPage(page)
     setSelectedProjectId(null)
   }
@@ -181,7 +175,7 @@ function App() {
 
         {studentPage === 'flow-roadmap' && <FlowRoadmapPage />}
 
-        {studentPage === 'resume' && <ResumeModuleGatewayPage user={user} />}
+        {/* Resume module removed from this build */}
 
         {studentPage === 'learning' && selectedProjectId && (
           <ProjectLearningPage projectId={selectedProjectId} onBack={handleBackToProjects} />

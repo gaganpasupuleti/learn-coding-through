@@ -117,7 +117,6 @@ class User(Base):
     progress_records = relationship("ProgressTracking", back_populates="user", cascade="all,delete-orphan")
     submissions = relationship("Submission", back_populates="user", cascade="all,delete-orphan")
     projects = relationship("Project", back_populates="user", cascade="all,delete-orphan")
-    resumes = relationship("Resume", back_populates="user", cascade="all,delete-orphan")
     credit_transactions = relationship("CreditTransaction", back_populates="user", cascade="all,delete-orphan")
     project_step_completions = relationship("ProjectStepCompletion", back_populates="user", cascade="all,delete-orphan")
     admin_actions = relationship(
@@ -266,31 +265,8 @@ class Project(Base):
     stage = relationship("Stage", back_populates="projects")
 
 
-class Resume(Base):
-    __tablename__ = "resumes"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    role_id: Mapped[int | None] = mapped_column(ForeignKey("roles.id"), nullable=True)
-    title: Mapped[str] = mapped_column(String(255), default="Untitled Resume", nullable=False)
-    template: Mapped[str] = mapped_column(String(50), default="modern", nullable=False)
-    full_name: Mapped[str] = mapped_column(String(255), nullable=False)
-    email: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    phone: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    location: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    website: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    summary: Mapped[str] = mapped_column(Text, nullable=False, default="")
-    skills: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    experience: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    education: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    projects: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    certifications: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
-    ats_score: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    pdf_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
-    user = relationship("User", back_populates="resumes")
 
 
 class ProgressTracking(Base):

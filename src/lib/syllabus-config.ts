@@ -72,11 +72,11 @@ export const syllabusConfig: RoleSyllabus[] = [
       {
         month: 4,
         title: 'Interview & Portfolio',
-        theme: 'Case studies, resume, and mock interviews',
+        theme: 'Case studies and mock interviews',
         weeks: [
           { week: 1, topic: 'Case Study Practice', activities: ['Business problem → data approach', 'Present findings', 'Q&A prep'] },
           { week: 2, topic: 'Portfolio Projects', activities: ['GitHub README', 'Project write-up', 'Kaggle notebook'] },
-          { week: 3, topic: 'Resume & LinkedIn', activities: ['Keyword optimisation', 'Quantifying impact', 'LinkedIn audit'] },
+          { week: 3, topic: 'LinkedIn & Career Materials', activities: ['Keyword optimisation', 'Quantifying impact', 'LinkedIn audit'] },
           { week: 4, topic: 'Mock Interviews', activities: ['SQL rounds', 'Analytics take-home', 'Behavioural prep'] },
         ],
         capstone: 'Capstone: end-to-end analytics project with presentation',
@@ -175,7 +175,7 @@ export const syllabusConfig: RoleSyllabus[] = [
         weeks: [
           { week: 1, topic: 'System Design', activities: ['DB design', 'Caching strategies', 'API versioning'] },
           { week: 2, topic: 'Real-time Features', activities: ['WebSockets', 'Optimistic UI', 'Rate limiting'] },
-          { week: 3, topic: 'Portfolio & Resume', activities: ['3 polished projects', 'README best practices', 'LinkedIn'] },
+          { week: 3, topic: 'Portfolio & Career Materials', activities: ['3 polished projects', 'README best practices', 'LinkedIn'] },
           { week: 4, topic: 'Mock Interviews', activities: ['Coding rounds', 'System design mock', 'Behavioural'] },
         ],
         capstone: 'Capstone: production full-stack SaaS product with real users',
@@ -222,10 +222,10 @@ export const defaultSyllabus: RoleSyllabus = {
     {
       month: 4,
       title: 'Job Readiness',
-      theme: 'Portfolio, resume, and interview prep',
+      theme: 'Portfolio and interview prep',
       weeks: [
         { week: 1, topic: 'Portfolio Building', activities: ['3 showcased projects', 'GitHub profile cleanup', 'Netlify/Vercel deploy'] },
-        { week: 2, topic: 'Resume & LinkedIn', activities: ['Bullet-point impact statements', 'Keyword research', 'Endorsements'] },
+        { week: 2, topic: 'LinkedIn & Career Materials', activities: ['Bullet-point impact statements', 'Keyword research', 'Endorsements'] },
         { week: 3, topic: 'Interview Practice', activities: ['Technical screen prep', 'Live coding drills', 'Behavioural STAR framework'] },
         { week: 4, topic: 'Mock Interview Day', activities: ['Full mock session', 'Feedback incorporation', 'Offer negotiation basics'] },
       ],

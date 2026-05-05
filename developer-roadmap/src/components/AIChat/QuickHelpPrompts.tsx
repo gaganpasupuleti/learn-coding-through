@@ -23,8 +23,8 @@ export function QuickHelpPrompts(props: QuickHelpPromptsProps) {
     {
       label: 'Help me find a job',
       questions: [
-        'How can I improve my resume?',
-        'How to make a tech resume?',
+        'How can I improve my LinkedIn profile?',
+        'How to present projects on GitHub?',
         'What’s asked in coding interviews?',
         'Where to find remote dev jobs?',
       ],

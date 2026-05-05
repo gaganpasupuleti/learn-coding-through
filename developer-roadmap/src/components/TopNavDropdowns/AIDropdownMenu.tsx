@@ -24,7 +24,7 @@ const links = [
   {
     link: '/ai/chat',
     label: 'Ask AI Tutor',
-    description: 'Career, resume guidance, and more',
+    description: 'Career guidance and more',
     Icon: MessageCircle,
   },
   {

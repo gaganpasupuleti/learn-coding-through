@@ -46,8 +46,8 @@ const commonStages: RoleStage[] = [
   {
     id: 4,
     title: 'Selection Prep Stage',
-    description: 'Capstone, resume optimization, and interview simulation.',
-    topics: ['Capstone Project', 'Resume Builder', 'Interview Simulation'],
+    description: 'Capstone and interview simulation.',
+    topics: ['Capstone Project', 'Interview Simulation'],
     quizPassThreshold: 70,
     exerciseCompletionThreshold: 80,
   },

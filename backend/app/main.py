@@ -13,7 +13,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
 
-from app.api.v1 import activity, admin, auth, credits, interview, progress, projects, quiz, resume, roadmap, roles, execute, typing
+from app.api.v1 import activity, admin, auth, credits, interview, progress, projects, quiz, roadmap, roles, execute, typing
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import ALGORITHM
@@ -31,83 +31,7 @@ def _is_port_open(host: str, port: int) -> bool:
         return sock.connect_ex((host, port)) == 0
 
 
-def _resolve_resume_python_executable(resume_backend_dir: Path) -> str:
-    if settings.resume_backend_python:
-        return settings.resume_backend_python
-
-    if sys.platform.startswith("win"):
-        candidate = resume_backend_dir / ".venv" / "Scripts" / "python.exe"
-    else:
-        candidate = resume_backend_dir / ".venv" / "bin" / "python"
-
-    if candidate.exists():
-        return str(candidate)
-
-    return sys.executable
-
-
-def _start_resume_backend_if_enabled() -> None:
-    app.state.resume_backend_process = None
-
-    if not settings.auto_start_resume_backend:
-        return
-
-    if _is_port_open(settings.resume_backend_host, settings.resume_backend_port):
-        print(
-            "Resume backend auto-start skipped: "
-            f"{settings.resume_backend_host}:{settings.resume_backend_port} already in use"
-        )
-        return
-
-    repo_root = Path(__file__).resolve().parents[2]
-    resume_backend_dir = repo_root / "resume app" / "Resume-Matcher" / "apps" / "backend"
-    if not resume_backend_dir.exists():
-        print(f"Resume backend auto-start skipped: directory not found at {resume_backend_dir}")
-        return
-
-    python_executable = _resolve_resume_python_executable(resume_backend_dir)
-    command = [
-        python_executable,
-        "-m",
-        "uvicorn",
-        "app.main:app",
-        "--host",
-        settings.resume_backend_host,
-        "--port",
-        str(settings.resume_backend_port),
-    ]
-
-    try:
-        process = subprocess.Popen(
-            command,
-            cwd=resume_backend_dir,
-            stdout=None,
-            stderr=None,
-        )
-        app.state.resume_backend_process = process
-        print(
-            "Resume backend auto-started "
-            f"(pid={process.pid}) at {settings.resume_backend_host}:{settings.resume_backend_port}"
-        )
-    except Exception as exc:
-        print(f"Warning: failed to auto-start resume backend: {exc}")
-
-
-def _stop_resume_backend_if_started() -> None:
-    process = getattr(app.state, "resume_backend_process", None)
-    if process is None:
-        return
-
-    if process.poll() is not None:
-        return
-
-    try:
-        process.terminate()
-        process.wait(timeout=5)
-    except subprocess.TimeoutExpired:
-        process.kill()
-    except Exception as exc:
-        print(f"Warning: failed to stop auto-started resume backend: {exc}")
+ 
 
 
 def _ensure_typing_attempts_table() -> None:
@@ -222,12 +146,11 @@ def startup_event():
 
     _ensure_typing_attempts_table()
 
-    _start_resume_backend_if_enabled()
 
 
 @app.on_event("shutdown")
 def shutdown_event():
-    _stop_resume_backend_if_started()
+    pass
 
 
 @app.get("/health")
@@ -285,6 +208,5 @@ app.include_router(activity.router, prefix="/api/v1")
 app.include_router(credits.router, prefix="/api/v1")
 app.include_router(quiz.router, prefix="/api/v1")
 app.include_router(projects.router, prefix="/api/v1")
-app.include_router(resume.router, prefix="/api/v1")
 app.include_router(interview.router, prefix="/api/v1")
 app.include_router(execute.router, prefix="/api/v1")

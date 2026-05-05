@@ -491,254 +491,147 @@ console.log(fahrenheitToCelsius(212)) // Should output: 100`,
   }
 ]
 
-/* =============== RESUME BUILDER PROJECT =============== */
+/* =============== STUDENT DATABASE PROJECT =============== */
 
-export const resumeBuilderBuildSteps: BuildStep[] = [
+export const studentDatabaseSteps: BuildStep[] = [
   {
     id: 1,
-    title: 'Step 1: Build Base Profile',
-    description: 'Start by creating a function that initializes a resume profile dictionary.',
+    title: 'Step 1: Define the Dictionary',
+    description: 'First, let\'s create a Python dictionary to store student names and their corresponding grades.',
     requirements: [
-      'Create a function named buildProfile',
-      'Accept fullName, email, and summary parameters',
-      'Return an object with keys: full_name, email, summary, skills, experience',
+      'Create a dictionary named "student_grades".',
+      'Add at least three students with their names as keys (strings) and grades as values (integers).',
     ],
-    starterCode: `// TODO: Create buildProfile(fullName, email, summary)
-// It should return an object with empty skills and experience arrays
+    starterCode: `# TODO: Create a dictionary named student_grades
+# Add at least three students with names (strings) as keys and grades (integers) as values
 
-
-console.log(buildProfile('Asha Patel', 'asha@mail.com', 'Frontend developer'))`,
+# Example:
+# student_grades = {
+#     "Alice": 90,
+#     "Bob": 85,
+#     "Charlie": 92
+# }`,
     testCases: [
       {
         id: 1,
-        description: 'Should define buildProfile function',
-        expected: 'Function exists',
+        description: 'Should define "student_grades" dictionary',
+        expected: 'student_grades dictionary',
         test: async (code: string) => {
-          return code.includes('function buildProfile') || code.includes('const buildProfile')
+          return code.includes('student_grades = {') || code.includes('student_grades = dict(')
         },
       },
       {
         id: 2,
-        description: 'Should return profile shape',
-        expected: 'Object with required keys',
+        description: 'Should contain at least 3 key-value pairs',
+        expected: '3+ key-value pairs',
         test: async (code: string) => {
-          return ['full_name', 'email', 'summary', 'skills', 'experience'].every((key) => code.includes(key))
+          const matches = code.match(/:/g)
+          return matches ? matches.length >= 3 : false
+        },
+      },
+      {
+        id: 3,
+        description: 'Should use string keys',
+        expected: 'string keys',
+        test: async (code: string) => {
+          return /"\w+":/.test(code) || /'\w+':/.test(code)
+        },
+      },
+      {
+        id: 4,
+        description: 'Should use integer values',
+        expected: 'integer values',
+        test: async (code: string) => {
+          const matches = code.match(/:\s*\d+/g)
+          return matches ? matches.length >= 3 : false // At least 3 integer values
         },
       },
     ],
     hints: [
       {
         level: 0,
-        text: 'Return one object literal that stores all profile fields.',
+        text: 'In Python, dictionaries are defined using curly braces `{}` with key-value pairs.',
       },
       {
         level: 1,
-        text: 'Initialize skills and experience as empty arrays so we can append data later.',
-        codeSnippet: "function buildProfile(fullName, email, summary) {\n  return { full_name: fullName, email, summary, skills: [], experience: [] }\n}",
-      },
+        text: 'Example: `my_dict = {"key1": value1, "key2": value2}`',
+        codeSnippet: 'student_grades = {\n    "Alice": 90,\n    "Bob": 85,\n    "Charlie": 92\n}'
+      }
     ],
-    successMessage: 'Great start! Your base resume profile is ready.',
+    successMessage: 'Great! You\'ve successfully defined your student grades dictionary.',
     videoId: 'jNQXAC9IVRw',
   },
   {
     id: 2,
-    title: 'Step 2: Normalize Skills',
-    description: 'Add a helper that cleans skill input and removes duplicates.',
+    title: 'Step 2: Create the Lookup Function',
+    description: 'Now, let\'s write a function to look up a student\'s grade from the dictionary.',
     requirements: [
-      'Create a function called addSkills(profile, skills)',
-      'Trim and lowercase each skill',
-      'Remove duplicates before storing them in profile.skills',
+      'Define a function `get_student_grade` that takes two arguments: `grades_dict` and `student_name`.',
+      'The function should return the grade if the student exists in the dictionary.',
+      'If the student is not found, return `None`.',
     ],
-    starterCode: `function buildProfile(fullName, email, summary) {
-  return { full_name: fullName, email, summary, skills: [], experience: [] }
-}
+    starterCode: `# TODO: Define a function get_student_grade(grades_dict, student_name)
+# It should return the grade if the student exists, otherwise None
 
-// TODO: Create addSkills(profile, skills)
-// skills will be an array like ['React', ' TypeScript ', 'react']
-
-
-const profile = buildProfile('Asha', 'asha@mail.com', 'Frontend dev')
-console.log(addSkills(profile, ['React', ' TypeScript ', 'react']))`,
+# Example usage (after defining student_grades in Step 1):
+# student_grades = {
+#     "Alice": 90,
+#     "Bob": 85,
+#     "Charlie": 92
+# }
+#
+# def get_student_grade(grades_dict, student_name):
+#     # Your code here
+#     pass
+#
+# # print(get_student_grade(student_grades, "Alice")) # Should output: 90
+# # print(get_student_grade(student_grades, "David")) # Should output: None`,
     testCases: [
       {
         id: 1,
-        description: 'Should create addSkills function',
-        expected: 'Function exists',
+        description: 'Should define "get_student_grade" function',
+        expected: 'function definition',
         test: async (code: string) => {
-          return code.includes('function addSkills') || code.includes('const addSkills')
+          return code.includes('def get_student_grade(')
         },
       },
       {
         id: 2,
-        description: 'Should normalize and deduplicate',
-        expected: 'trim/lowercase + unique',
+        description: 'Should check for student existence (e.g., using "in" or "get")',
+        expected: '"in" operator or ".get()" method',
         test: async (code: string) => {
-          return code.includes('trim') && (code.includes('toLowerCase') || code.includes('toLowerCase()'))
+          return code.includes(' in ') || code.includes('.get(')
+        },
+      },
+      {
+        id: 3,
+        description: 'Should return grade if found',
+        expected: 'return grades_dict[student_name] or grades_dict.get(student_name)',
+        test: async (code: string) => {
+          return code.includes('return grades_dict[') || code.includes('return grades_dict.get(')
+        },
+      },
+      {
+        id: 4,
+        description: 'Should return None if not found',
+        expected: 'return None',
+        test: async (code: string) => {
+          return code.includes('return None')
         },
       },
     ],
     hints: [
       {
         level: 0,
-        text: 'A Set is useful when you want unique values.',
+        text: 'You can check if a key exists in a dictionary using the `in` operator or the `get()` method.',
       },
       {
         level: 1,
-        text: 'Map each skill through trim and toLowerCase before adding to Set.',
-        codeSnippet: 'const normalized = [...new Set(skills.map((s) => s.trim().toLowerCase()))]'
+        text: 'The `get()` method allows you to specify a default value if the key is not found, e.g., `grades_dict.get(student_name, None)`',
+        codeSnippet: 'def get_student_grade(grades_dict, student_name):\n    if student_name in grades_dict:\n        return grades_dict[student_name]\n    else:\n        return None'
       }
     ],
-    successMessage: 'Nice! Skills are now clean and duplicate-free.',
-    videoId: 'jNQXAC9IVRw',
-  },
-  {
-    id: 3,
-    title: 'Step 3: Add Experience Entries',
-    description: 'Now add a function to push work experience items into the profile.',
-    requirements: [
-      'Create addExperience(profile, title, company, impact)',
-      'Push a new object with title, company, and impact into profile.experience',
-      'Return the updated profile',
-    ],
-    starterCode: `function buildProfile(fullName, email, summary) {
-  return { full_name: fullName, email, summary, skills: [], experience: [] }
-}
-
-// TODO: Create addExperience(profile, title, company, impact)
-
-
-const profile = buildProfile('Asha', 'asha@mail.com', 'Frontend dev')
-console.log(addExperience(profile, 'Frontend Intern', 'Acme', 'Built reusable dashboard widgets'))`,
-    testCases: [
-      {
-        id: 1,
-        description: 'Should create addExperience function',
-        expected: 'Function exists',
-        test: async (code: string) => {
-          return code.includes('function addExperience') || code.includes('const addExperience')
-        },
-      },
-      {
-        id: 2,
-        description: 'Should push into experience list',
-        expected: 'push call',
-        test: async (code: string) => {
-          return code.includes('experience') && code.includes('push')
-        },
-      },
-    ],
-    hints: [
-      {
-        level: 0,
-        text: 'Create one object for the new experience and push it into profile.experience.',
-      },
-      {
-        level: 1,
-        text: 'The new object should include exactly title, company, and impact fields.',
-      },
-    ],
-    successMessage: 'Excellent! Your resume can now store project/work history.',
-    videoId: 'jNQXAC9IVRw',
-  },
-  {
-    id: 4,
-    title: 'Step 4: Compute ATS Score',
-    description: 'Implement an ATS score function by matching required vs candidate skills.',
-    requirements: [
-      'Create atsScore(requiredSkills, candidateSkills)',
-      'Compare skills case-insensitively',
-      'Return percentage match as an integer from 0 to 100',
-    ],
-    starterCode: `// TODO: Create atsScore(requiredSkills, candidateSkills)
-// Example: ['react', 'typescript'] vs ['React', 'TypeScript', 'css'] should return 100
-
-
-console.log(atsScore(['react', 'typescript', 'python'], ['React', 'TypeScript'])) // Expected around 66`,
-    testCases: [
-      {
-        id: 1,
-        description: 'Should define atsScore function',
-        expected: 'Function exists',
-        test: async (code: string) => {
-          return code.includes('function atsScore') || code.includes('const atsScore')
-        },
-      },
-      {
-        id: 2,
-        description: 'Should use intersection logic',
-        expected: 'matching sets',
-        test: async (code: string) => {
-          return code.includes('Set') || code.includes('filter')
-        },
-      },
-    ],
-    hints: [
-      {
-        level: 0,
-        text: 'Convert both arrays to lowercase sets before comparison.',
-      },
-      {
-        level: 1,
-        text: 'Use matched/required length times 100, then Math.floor or Math.round.',
-        codeSnippet: 'return Math.floor((matched / required.size) * 100)'
-      },
-    ],
-    successMessage: 'Great! You now have a meaningful resume quality score.',
-    videoId: 'jNQXAC9IVRw',
-  },
-  {
-    id: 5,
-    title: 'Step 5: Render Markdown Resume',
-    description: 'Finish by generating a markdown version that can be copied to a CV document.',
-    requirements: [
-      'Create renderMarkdown(profile) function',
-      'Include full name, summary, skills, and experience sections',
-      'Return one markdown string',
-    ],
-    starterCode: `// TODO: Create renderMarkdown(profile)
-// Return markdown with sections: Name, Summary, Skills, Experience
-
-
-const profile = {
-  full_name: 'Asha Patel',
-  email: 'asha@mail.com',
-  summary: 'Frontend developer with strong UI focus',
-  skills: ['react', 'typescript', 'tailwind'],
-  experience: [
-    { title: 'Frontend Intern', company: 'Acme', impact: 'Built reusable dashboard widgets' }
-  ]
-}
-
-console.log(renderMarkdown(profile))`,
-    testCases: [
-      {
-        id: 1,
-        description: 'Should define renderMarkdown function',
-        expected: 'Function exists',
-        test: async (code: string) => {
-          return code.includes('function renderMarkdown') || code.includes('const renderMarkdown')
-        },
-      },
-      {
-        id: 2,
-        description: 'Should include markdown heading structure',
-        expected: '# and section markers',
-        test: async (code: string) => {
-          return code.includes('#') && (code.includes('Skills') || code.includes('Experience'))
-        },
-      },
-    ],
-    hints: [
-      {
-        level: 0,
-        text: 'Build the markdown with template literals and array joins.',
-      },
-      {
-        level: 1,
-        text: 'Convert each experience object into a bullet line like: - Title at Company: Impact.',
-      },
-    ],
-    successMessage: 'Outstanding! You completed an end-to-end Resume Builder workflow.',
+    successMessage: 'Excellent! Your lookup function works perfectly.',
     videoId: 'jNQXAC9IVRw',
   },
 ]
@@ -747,6 +640,5 @@ export const projectBuilderConfigs: Record<string, BuildStep[]> = {
   'digital-clock': digitalClockBuildSteps,
   'calculator': calculatorBuildSteps,
   'temperature-converter': temperatureConverterBuildSteps,
-  'resume-builder': resumeBuilderBuildSteps,
+  'student-database': studentDatabaseSteps,
 }
-

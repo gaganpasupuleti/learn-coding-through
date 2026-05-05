@@ -39,7 +39,7 @@ question:
 
     A few example DevOps tools and technologies to learn may include programming languages like Python or JavaScript for scripting, AWS, Ansible for configuration management, Terraform for managing your infrastructure as code, Docker, Kubernetes, Jenkins, and Git for source control, and monitoring and logging tools. 
 
-    Slowly start gaining experience by working on DevOps projects, developing a DevOps mindset, getting certified, and applying for DevOps Engineer positions by highlighting your skills and experience in your resume. 
+    Slowly start gaining experience by working on DevOps projects, developing a DevOps mindset, getting certified, and applying for DevOps Engineer positions by highlighting your skills and experience in your career materials. 
 
     Start your [career path in DevOps engineering](https://roadmap.sh/devops/career-path) by working on some [DevOps projects](https://roadmap.sh/devops/projects).
 dimensions:

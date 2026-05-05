@@ -25,7 +25,6 @@ REQUIRED_TABLES = {
     "quiz_questions",
     "submissions",
     "projects",
-    "resumes",
     "progress_tracking",
     "credit_transactions",
 }

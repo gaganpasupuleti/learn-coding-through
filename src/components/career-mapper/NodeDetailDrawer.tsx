@@ -1,5 +1,6 @@
-import { X, Rocket, Flashcard } from '@phosphor-icons/react'
+import { X, Rocket, Flashcard, Note } from '@phosphor-icons/react'
 import type { SyllabusItem, CareerRole } from '@/types/career'
+import { useMilestoneNotes } from '@/hooks/use-milestone-notes'
 
 interface NodeDetailDrawerProps {
   isOpen: boolean
@@ -7,8 +8,8 @@ interface NodeDetailDrawerProps {
   role: CareerRole | null
   isCompleted: boolean
   onClose: () => void
-  onLaunchProject?: (projectId: string) => void
-  onOpenQuiz?: (quizId: string) => void
+  onLaunchProject?: (projectId: string, itemId: string) => void
+  onOpenQuiz?: (quizId: string, itemId: string) => void
 }
 
 const TYPE_STYLES: Record<string, { icon: JSX.Element; label: string; color: string }> = {
@@ -38,238 +39,110 @@ export function NodeDetailDrawer({
   onLaunchProject,
   onOpenQuiz,
 }: NodeDetailDrawerProps) {
+  const { getNote } = useMilestoneNotes()
+
   if (!isOpen || !nodeItem || !role) return null
 
   const typeStyle = TYPE_STYLES[nodeItem.type] || TYPE_STYLES.topic
   const isProject = nodeItem.type === 'deliverable' && nodeItem.projectId
+  const note = getNote(role.id, nodeItem.id)
 
   return (
     <>
       {/* Backdrop */}
       <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(2px)',
-          zIndex: 39,
-          animation: 'fadeIn 0.2s',
-        }}
+        className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-[39] animate-in fade-in duration-200"
         onClick={onClose}
       />
 
       {/* Drawer */}
       <div
-        style={{
-          position: 'fixed',
-          right: 0,
-          top: 0,
-          bottom: 0,
-          width: 400,
-          maxWidth: '100%',
-          background: '#111118',
-          borderLeft: '1px solid rgba(255,255,255,0.08)',
-          zIndex: 40,
-          display: 'flex',
-          flexDirection: 'column',
-          animation: 'slideInRight 0.3s',
-          boxShadow: '-4px 0 16px rgba(0,0,0,0.4)',
-        }}
+        className="fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-[#111118] border-l border-white/10 z-[40] flex flex-col shadow-2xl animate-in slide-in-from-right duration-300"
       >
         {/* Header */}
-        <div
-          style={{
-            padding: '20px',
-            borderBottom: '1px solid rgba(255,255,255,0.08)',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: 12,
-          }}
-        >
+        <div className="p-5 border-b border-white/10 flex items-start justify-between gap-3">
           <div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                marginBottom: 8,
-              }}
-            >
+            <div className="flex items-center gap-2 mb-2">
               <span style={{ color: typeStyle.color }}>{typeStyle.icon}</span>
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: '0.05em',
-                  color: typeStyle.color,
-                  textTransform: 'uppercase',
-                }}
-              >
+              <span className="text-[11px] font-bold tracking-wider uppercase" style={{ color: typeStyle.color }}>
                 {typeStyle.label}
               </span>
               {isCompleted && (
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 700,
-                    color: '#4ade80',
-                    background: 'rgba(74, 222, 128, 0.1)',
-                    border: '1px solid #4ade80',
-                    padding: '1px 6px',
-                    borderRadius: 3,
-                  }}
-                >
+                <span className="text-[10px] font-bold text-[#4ade80] bg-[#4ade80]/10 border border-[#4ade80] px-1.5 py-0.5 rounded">
                   ✓ COMPLETE
                 </span>
               )}
             </div>
-            <h2
-              style={{
-                fontSize: 18,
-                fontWeight: 700,
-                letterSpacing: '-0.02em',
-                color: '#e2e8f0',
-                margin: 0,
-              }}
-            >
+            <h2 className="text-lg font-bold tracking-tight text-[#e2e8f0]">
               {nodeItem.title}
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#9ca3af',
-              cursor: 'pointer',
-              padding: 4,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'color 0.2s',
-            }}
-            onMouseEnter={e => ((e.target as HTMLButtonElement).style.color = '#e2e8f0')}
-            onMouseLeave={e => ((e.target as HTMLButtonElement).style.color = '#9ca3af')}
+            className="p-1 text-gray-400 hover:text-[#e2e8f0] transition-colors"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Content */}
-        <div
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            padding: '20px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-          }}
-        >
+        <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-5">
           {/* Description */}
           <div>
-            <h3
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: '-0.01em',
-                color: '#e2e8f0',
-                marginBottom: 8,
-                marginTop: 0,
-              }}
-            >
+            <h3 className="text-[12px] font-bold tracking-tight text-[#e2e8f0] mb-2 uppercase">
               Overview
             </h3>
-            <p
-              style={{
-                fontSize: 12,
-                color: '#9ca3af',
-                lineHeight: 1.6,
-                margin: 0,
-              }}
-            >
+            <p className="text-[12px] text-gray-400 leading-relaxed">
               {nodeItem.description}
             </p>
           </div>
 
           {/* Meta information */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: 12,
-              padding: '12px',
-              background: 'rgba(255,255,255,0.03)',
-              borderRadius: 8,
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}
-          >
+          <div className="grid grid-cols-2 gap-3 p-3 bg-white/5 rounded-lg border border-white/10">
             <div>
-              <span
-                style={{
-                  fontSize: 10,
-                  color: '#6b7280',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                }}
-              >
+              <span className="text-[10px] text-gray-500 tracking-wider uppercase">
                 Month
               </span>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#e2e8f0', marginTop: 4 }}>
+              <div className="text-[14px] font-bold text-[#e2e8f0] mt-1">
                 Month {nodeItem.month}
               </div>
             </div>
             <div>
-              <span
-                style={{
-                  fontSize: 10,
-                  color: '#6b7280',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                }}
-              >
+              <span className="text-[10px] text-gray-500 tracking-wider uppercase">
                 Week
               </span>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#e2e8f0', marginTop: 4 }}>
+              <div className="text-[14px] font-bold text-[#e2e8f0] mt-1">
                 Week {nodeItem.week}
               </div>
             </div>
           </div>
 
+          {/* Personal Note */}
+          {note && (
+            <div className="p-3 bg-indigo-500/5 rounded-lg border border-indigo-500/20">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Note size={14} className="text-[#818cf8]" weight="fill" />
+                <span className="text-[11px] font-bold text-[#818cf8] uppercase tracking-wider">
+                  Your Note
+                </span>
+              </div>
+              <p className="text-[12px] text-gray-300 leading-relaxed italic">
+                "{note.content}"
+              </p>
+            </div>
+          )}
+
           {/* Action buttons */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div className="flex flex-col gap-3">
             {isProject && nodeItem.projectId && (
               <button
                 type="button"
                 onClick={() => {
-                  onLaunchProject?.(nodeItem.projectId!)
+                  onLaunchProject?.(nodeItem.projectId!, nodeItem.id)
                   onClose()
                 }}
-                style={{
-                  padding: '10px 14px',
-                  background: '#4ade80',
-                  color: '#0a0a0a',
-                  border: 'none',
-                  borderRadius: 6,
-                  fontSize: 12,
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLButtonElement
-                  el.style.background = '#22c55e'
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLButtonElement
-                  el.style.background = '#4ade80'
-                }}
+                className="px-4 py-2.5 bg-[#4ade80] hover:bg-[#22c55e] text-[#0a0a0a] rounded-md text-[12px] font-bold flex items-center justify-center gap-2 transition-colors shadow-lg"
               >
                 <Rocket size={14} />
                 Launch Project
@@ -280,32 +153,10 @@ export function NodeDetailDrawer({
               <button
                 type="button"
                 onClick={() => {
-                  onOpenQuiz?.(nodeItem.quizId!)
+                  onOpenQuiz?.(nodeItem.quizId!, nodeItem.id)
                   onClose()
                 }}
-                style={{
-                  padding: '10px 14px',
-                  background: '#818cf8',
-                  color: '#ffffff',
-                  border: 'none',
-                  borderRadius: 6,
-                  fontSize: 12,
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLButtonElement
-                  el.style.background = '#a78bfa'
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLButtonElement
-                  el.style.background = '#818cf8'
-                }}
+                className="px-4 py-2.5 bg-[#818cf8] hover:bg-[#a78bfa] text-white rounded-md text-[12px] font-bold flex items-center justify-center gap-2 transition-colors shadow-lg"
               >
                 <Flashcard size={14} />
                 Take Quiz
@@ -315,80 +166,33 @@ export function NodeDetailDrawer({
 
           {/* Related Resources */}
           <div>
-            <h3
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: '-0.01em',
-                color: '#e2e8f0',
-                marginBottom: 8,
-                marginTop: 0,
-              }}
-            >
+            <h3 className="text-[12px] font-bold tracking-tight text-[#e2e8f0] mb-2 uppercase">
               Learning Path
             </h3>
-            <div style={{ fontSize: 11, color: '#9ca3af', lineHeight: 1.6 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                <span style={{ fontSize: 10, fontWeight: 700, color: '#818cf8' }}>Role:</span>
+            <div className="text-[11px] text-gray-400 leading-relaxed">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-[10px] font-bold text-[#818cf8]">Role:</span>
                 <span>{role.title}</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 10, fontWeight: 700, color: '#818cf8' }}>Difficulty:</span>
-                <span style={{ textTransform: 'capitalize', color: '#fbbf24' }}>{role.difficulty}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-[#818cf8]">Difficulty:</span>
+                <span className="capitalize text-[#fbbf24]">{role.difficulty}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div
-          style={{
-            padding: '16px 20px',
-            borderTop: '1px solid rgba(255,255,255,0.08)',
-            background: 'rgba(0,0,0,0.2)',
-          }}
-        >
+        <div className="p-5 border-t border-white/10 bg-black/20">
           <button
             type="button"
             onClick={onClose}
-            style={{
-              width: '100%',
-              padding: '8px 14px',
-              background: 'transparent',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: 6,
-              color: '#9ca3af',
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={e => {
-              const el = e.currentTarget as HTMLButtonElement
-              el.style.borderColor = 'rgba(255,255,255,0.2)'
-              el.style.color = '#e2e8f0'
-            }}
-            onMouseLeave={e => {
-              const el = e.currentTarget as HTMLButtonElement
-              el.style.borderColor = 'rgba(255,255,255,0.08)'
-              el.style.color = '#9ca3af'
-            }}
+            className="w-full px-4 py-2 bg-transparent border border-white/10 rounded-md text-gray-400 hover:text-[#e2e8f0] hover:border-white/20 text-[12px] font-bold transition-all"
           >
             Close
           </button>
         </div>
       </div>
-
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slideInRight {
-          from { transform: translateX(100%); }
-          to { transform: translateX(0); }
-        }
-      `}</style>
     </>
   )
 }

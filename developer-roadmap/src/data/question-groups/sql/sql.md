@@ -165,6 +165,6 @@ You’ve probably heard the saying, “Failure to prepare is preparing to fail.�
 
 Before exploring technical questions, some interviewers might start with general ones like “How long have you been working with SQL?”, “How would you rate your proficiency in SQL on a scale?”, or “What are some common SQL syntax used for data manipulation?” These questions often help start the conversation and make you feel more comfortable.
 
-Even if this information is already in your CV or resume, be ready to speak about it. Practice giving crisp and honest answers that capture your SQL experience.
+Even if this information is already in your career materials, be ready to speak about it. Practice giving crisp and honest answers that capture your SQL experience.
 
 With that covered, let’s explore the questions you need to get familiar with as you prepare for your interview.
