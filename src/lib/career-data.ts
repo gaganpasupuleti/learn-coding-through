@@ -89,7 +89,7 @@ export const CAREER_ROLES: CareerRoleData[] = [
   {
     id: 'backend-architect',
     title: 'Backend Architect',
-    slug: 'backend-architect',
+    slug: 'backend',
     focus: 'Efficiency & Logic',
     description: 'Build scalable server-side systems with robust architecture and database design',
     domain: 'Web',

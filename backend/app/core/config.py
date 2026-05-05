@@ -29,10 +29,6 @@ class Settings(BaseSettings):
     registration_limit_enabled: bool = True
     registration_user_limit: int = 1500
     allow_unauthenticated_demo_user: bool = False
-    auto_start_resume_backend: bool = False
-    resume_backend_host: str = "127.0.0.1"
-    resume_backend_port: int = 8001
-    resume_backend_python: str | None = None
     cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["http://localhost:5000", "http://localhost:5173"]
     )
