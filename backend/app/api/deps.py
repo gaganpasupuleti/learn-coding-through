@@ -60,6 +60,6 @@ def get_current_user(db: Session = Depends(get_db), token: Optional[str] = Depen
 
 
 def require_admin(current_user: User = Depends(get_current_user)) -> User:
-    if current_user.role != UserRole.ADMIN:
+    if current_user.role not in (UserRole.ADMIN, UserRole.SUPER_ADMIN):
         raise HTTPException(status_code=403, detail="Admin access required")
     return current_user

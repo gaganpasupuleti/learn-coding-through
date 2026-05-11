@@ -308,10 +308,12 @@ export function TypingTrainerPage() {
   }, [history])
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-7xl mx-auto px-6 py-10 space-y-6">
       <div className="space-y-1">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">Typing Trainer</h1>
         <p className="text-slate-500">Practice sentence and code typing with live speed metrics and history.</p>
+        <p className="text-sm text-slate-400">Saving attempts to your profile requires a signed-in session and the CodeQuest API.</p>
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -549,6 +551,7 @@ export function TypingTrainerPage() {
             <p className="text-sm text-slate-500 py-3">No attempts yet. Start your first typing test.</p>
           )}
         </div>
+      </div>
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { ArrowRight, Clock, BarChart2, Lock } from 'lucide-react'
 import { canStartDemoProject, recordDemoProjectStart, triggerProjectLockedError } from '@/lib/demo-limits'
 import { CatalogProjectSummary, fetchCatalogProjects } from '@/lib/api'
@@ -12,14 +12,26 @@ interface ProjectsPageProps {
 export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
   const [projects, setProjects] = useState<CatalogProjectSummary[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const demoMode = isDemoUser()
 
-  useEffect(() => {
+  const loadProjects = useCallback(() => {
+    setLoading(true)
+    setLoadError(false)
     fetchCatalogProjects()
-      .then(setProjects)
-      .catch(() => setProjects([]))
+      .then((data) => {
+        setProjects(data)
+      })
+      .catch(() => {
+        setProjects([])
+        setLoadError(true)
+      })
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    loadProjects()
+  }, [loadProjects])
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -41,8 +53,21 @@ export function ProjectsPage({ onSelectProject }: ProjectsPageProps) {
               <div key={i} className="rounded-xl border border-border/50 bg-card/50 h-52 animate-pulse" />
             ))}
           </div>
+        ) : loadError ? (
+          <div className="text-center py-20 space-y-4 rounded-xl border border-destructive/20 bg-destructive/5 px-6">
+            <p className="text-muted-foreground">Could not load projects. Check that the API is running and try again.</p>
+            <button
+              type="button"
+              onClick={loadProjects}
+              className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+            >
+              Retry
+            </button>
+          </div>
         ) : projects.length === 0 ? (
-          <div className="text-center py-20 text-muted-foreground">No projects available yet. Check back soon!</div>
+          <div className="text-center py-20 text-muted-foreground">
+            No projects in the catalog yet. Seed the backend or check back soon.
+          </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-5">
             {projects.map((project, idx) => {

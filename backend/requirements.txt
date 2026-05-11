@@ -1,3 +1,24 @@
+# ---------------------------------------------------------------------------
+# Local setup (humans & agents): use a virtual environment before pip install
+# ---------------------------------------------------------------------------
+# Windows (PowerShell), from repo root:
+#   cd backend
+#   py -3 -m venv .venv
+#   .\.venv\Scripts\Activate.ps1
+#   python -m pip install --upgrade pip
+#   pip install -r requirements.txt
+#
+# macOS / Linux:
+#   cd backend
+#   python3 -m venv .venv
+#   source .venv/bin/activate
+#   pip install --upgrade pip
+#   pip install -r requirements.txt
+#
+# Run API:  python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+# (or use `npm run dev:all` from repo root for frontend + API)
+# ---------------------------------------------------------------------------
+
 fastapi==0.128.4
 uvicorn[standard]==0.40.0
 sqlalchemy==2.0.41
@@ -12,3 +33,4 @@ email-validator==2.2.0
 slowapi==0.1.9
 google-auth==2.40.3
 requests==2.32.3
+openpyxl==3.1.5

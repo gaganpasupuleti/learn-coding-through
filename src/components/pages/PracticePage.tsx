@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { CodeEditor } from '@/components/CodeEditor'
-import { Play, Eraser } from 'lucide-react'
-import { CodeSandbox } from '@/lib/sandbox'
+import { Play, Eraser, ChevronDown, Download } from 'lucide-react'
+import { sandbox } from '@/lib/sandboxInstance'
 import { getAllTestsForLanguage } from '@/lib/test-cases'
 import { fetchSqlPracticeSchema, SqlSchemaTable } from '@/lib/api'
 import { toast } from 'sonner'
@@ -78,6 +79,64 @@ const parseSqlTableOutput = (rawOutput: string): ParsedSqlTable | null => {
   return { headers, rows, notes }
 }
 
+const LANGUAGE_FOCUS_MAP: Record<Language, PracticeTopic[]> = {
+  python: [
+    { label: 'Loops & conditions', exerciseKey: 'loops' },
+    { label: 'Functions', exerciseKey: 'functions' },
+    { label: 'List operations', exerciseKey: 'lists' },
+  ],
+  sql: [
+    { label: 'SELECT + WHERE', exerciseKey: 'basic' },
+    { label: 'JOINs', exerciseKey: 'join' },
+    { label: 'Table updates', exerciseKey: 'update' },
+  ],
+  java: [
+    { label: 'Classes & methods', exerciseKey: 'methods' },
+    { label: 'Loops', exerciseKey: 'loops' },
+    { label: 'Input/output', exerciseKey: 'basic' },
+  ],
+}
+
+const DIFFICULTY_MAP: Record<Language, Record<Difficulty, string[]>> = {
+  python: {
+    easy: ['basic', 'loops'],
+    medium: ['functions', 'lists'],
+    hard: ['lists'],
+  },
+  sql: {
+    easy: ['basic', 'insert'],
+    medium: ['update', 'join'],
+    hard: ['join', 'createTable', 'delete'],
+  },
+  java: {
+    easy: ['basic', 'loops'],
+    medium: ['methods'],
+    hard: ['numberGuesser'],
+  },
+}
+
+function downloadSampleRowsCsv(table: SqlSchemaTable) {
+  const rows = table.sample_rows ?? []
+  if (rows.length === 0) return
+  const cols = table.columns
+  const escapeCell = (value: string | number | null | undefined) => {
+    const s = value === null || value === undefined ? '' : String(value)
+    if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`
+    return s
+  }
+  const lines = [
+    cols.map(escapeCell).join(','),
+    ...rows.map((row) => cols.map((c) => escapeCell(row[c] as string | number | null | undefined)).join(',')),
+  ]
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = `${table.name}-sample.csv`
+  anchor.click()
+  URL.revokeObjectURL(url)
+}
+
 const defaultCode: Record<Language, string> = {
   python: `# Write your Python code here
 print("Hello, World!")
@@ -132,6 +191,26 @@ export function PracticePage() {
   const [isSchemaLoading, setIsSchemaLoading] = useState(false)
   const [schemaError, setSchemaError] = useState<string | null>(null)
   const outputRef = useRef<HTMLDivElement | null>(null)
+
+  const availableExercises = getAllTestsForLanguage(selectedLanguage)
+  const allowedExerciseNames = DIFFICULTY_MAP[selectedLanguage][selectedDifficulty]
+  const visibleTopicPills = useMemo(() => {
+    const allowed = DIFFICULTY_MAP[selectedLanguage][selectedDifficulty]
+    return LANGUAGE_FOCUS_MAP[selectedLanguage].filter(
+      (topic) => allowed.includes(topic.exerciseKey) && Boolean(availableExercises[topic.exerciseKey]),
+    )
+  }, [selectedLanguage, selectedDifficulty, availableExercises])
+
+  const [activeTopic, setActiveTopic] = useState(LANGUAGE_FOCUS_MAP.python[0].label)
+
+  useEffect(() => {
+    if (visibleTopicPills.length === 0) {
+      return
+    }
+    setActiveTopic((previous) =>
+      visibleTopicPills.some((topic) => topic.label === previous) ? previous : visibleTopicPills[0].label,
+    )
+  }, [selectedLanguage, selectedDifficulty, visibleTopicPills])
 
   useEffect(() => {
     if (output) {
@@ -190,8 +269,7 @@ export function PracticePage() {
     setExecutionTime(null)
 
     try {
-      const executor = new CodeSandbox()
-      const result = await executor.execute(code, selectedLanguage)
+      const result = await sandbox.execute(code, selectedLanguage)
 
       const javaRuntimeMissing =
         selectedLanguage === 'java' &&
@@ -256,47 +334,6 @@ export function PracticePage() {
     java: 'Java'
   }
 
-  const languageFocusMap: Record<Language, PracticeTopic[]> = {
-    python: [
-      { label: 'Loops & conditions', exerciseKey: 'loops' },
-      { label: 'Functions', exerciseKey: 'functions' },
-      { label: 'List operations', exerciseKey: 'lists' },
-    ],
-    sql: [
-      { label: 'SELECT + WHERE', exerciseKey: 'basic' },
-      { label: 'JOINs', exerciseKey: 'join' },
-      { label: 'Table updates', exerciseKey: 'update' },
-    ],
-    java: [
-      { label: 'Classes & methods', exerciseKey: 'methods' },
-      { label: 'Loops', exerciseKey: 'loops' },
-      { label: 'Input/output', exerciseKey: 'basic' },
-    ],
-  }
-
-  const [activeTopic, setActiveTopic] = useState(languageFocusMap.python[0].label)
-
-  const availableExercises = getAllTestsForLanguage(selectedLanguage)
-
-  const difficultyMap: Record<Language, Record<Difficulty, string[]>> = {
-    python: {
-      easy: ['basic', 'loops'],
-      medium: ['functions', 'lists'],
-      hard: ['lists'],
-    },
-    sql: {
-      easy: ['basic', 'insert'],
-      medium: ['update', 'join'],
-      hard: ['join', 'createTable', 'delete'],
-    },
-    java: {
-      easy: ['basic', 'loops'],
-      medium: ['methods'],
-      hard: ['numberGuesser'],
-    },
-  }
-
-  const allowedExerciseNames = difficultyMap[selectedLanguage][selectedDifficulty]
   const exerciseEntries = Object.entries(availableExercises).filter(([name]) =>
     allowedExerciseNames.includes(name)
   )
@@ -312,6 +349,9 @@ export function PracticePage() {
             <p className="text-slate-500">
               Pick a language, load a quick exercise, and practice with instant output.
             </p>
+            <p className="text-sm text-slate-400">
+              Running code requires the CodeQuest API (local or deployed). SQL practice loads schema from the backend when you select SQL.
+            </p>
           </div>
 
           <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -319,7 +359,7 @@ export function PracticePage() {
               <div>
                 <h2 className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Common practice topics</h2>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {languageFocusMap[selectedLanguage].map((topic) => (
+                  {visibleTopicPills.map((topic) => (
                     <button
                       key={topic.label}
                       type="button"
@@ -327,10 +367,9 @@ export function PracticePage() {
                         setActiveTopic(topic.label)
                         handleLoadExercise(topic.exerciseKey)
                       }}
-                      disabled={!availableExercises[topic.exerciseKey]}
                       className={`rounded-full border px-3 py-1 text-xs font-medium transition-all duration-150 ${activeTopic === topic.label
                         ? 'border-blue-600 bg-blue-50 text-blue-700'
-                        : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'} disabled:cursor-not-allowed disabled:opacity-50`}
+                        : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-100'}`}
                     >
                       {topic.label}
                     </button>
@@ -375,7 +414,6 @@ export function PracticePage() {
             onValueChange={(value) => {
               const nextLanguage = value as Language
               setSelectedLanguage(nextLanguage)
-              setActiveTopic(languageFocusMap[nextLanguage][0].label)
               setOutput('')
               setExecutionTime(null)
             }}
@@ -432,28 +470,108 @@ export function PracticePage() {
                 {isSchemaLoading && <p className="text-xs text-slate-400 p-4">Loading schema…</p>}
                 {schemaError && <p className="text-xs text-red-500 p-4">{schemaError}</p>}
                 {!isSchemaLoading && !schemaError && sqlSchemaTables.length > 0 && (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-slate-100 bg-slate-50">
-                          <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-4 py-3 w-32">Table</th>
-                          <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-4 py-3 w-28">Primary Key</th>
-                          <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-4 py-3">Columns</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sqlSchemaTables.map((table) => (
-                          <tr key={table.name} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors duration-100">
-                            <td className="px-4 py-3">
-                              <span className="font-semibold text-slate-800 text-xs">{table.name}</span>
-                              {table.description && <p className="text-xs text-slate-400 mt-0.5">{table.description}</p>}
-                            </td>
-                            <td className="px-4 py-3 font-mono text-xs text-slate-600">{table.primary_key}</td>
-                            <td className="px-4 py-3 font-mono text-xs text-slate-500">{table.columns.join(', ')}</td>
+                  <div className="divide-y divide-slate-100">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-slate-100 bg-slate-50">
+                            <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-4 py-3 w-32">Table</th>
+                            <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-4 py-3 w-28">Primary Key</th>
+                            <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-4 py-3">Columns</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {sqlSchemaTables.map((table) => (
+                            <tr key={table.name} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors duration-100">
+                              <td className="px-4 py-3">
+                                <span className="font-semibold text-slate-800 text-xs">{table.name}</span>
+                                {table.description && <p className="text-xs text-slate-400 mt-0.5">{table.description}</p>}
+                              </td>
+                              <td className="px-4 py-3 font-mono text-xs text-slate-600">{table.primary_key}</td>
+                              <td className="px-4 py-3 font-mono text-xs text-slate-500">{table.columns.join(', ')}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {sqlSchemaTables.some((table) => (table.sample_rows?.length ?? 0) > 0) && (
+                      <div className="p-4 space-y-3 bg-slate-50/80">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <h4 className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Sample data</h4>
+                          <p className="text-xs text-slate-500">Preview rows from the in-memory practice database (Excel-friendly CSV per table).</p>
+                        </div>
+                        <div className="space-y-2">
+                          {sqlSchemaTables.map((table) => {
+                            const samples = table.sample_rows ?? []
+                            if (samples.length === 0) {
+                              return null
+                            }
+                            return (
+                              <Collapsible key={`sample-${table.name}`} className="rounded-lg border border-slate-200 bg-white overflow-hidden">
+                                <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm font-medium text-slate-800 hover:bg-slate-50 [&[data-state=open]>svg]:rotate-180">
+                                  <span>Preview rows: <span className="font-mono text-xs text-slate-600">{table.name}</span></span>
+                                  <ChevronDown className="h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200" />
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
+                                  <div className="border-t border-slate-200 px-3 py-2 flex justify-end">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        downloadSampleRowsCsv(table)
+                                        toast.success(`Downloaded ${table.name} sample as CSV`)
+                                      }}
+                                      className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                                    >
+                                      <Download className="h-3.5 w-3.5" />
+                                      Download CSV
+                                    </button>
+                                  </div>
+                                  <div className="max-h-64 overflow-auto border-t border-slate-200">
+                                    <table className="w-full border-collapse text-xs">
+                                      <thead className="sticky top-0 z-[1] bg-slate-100 shadow-[0_1px_0_0_rgb(226_232_240)]">
+                                        <tr>
+                                          {table.columns.map((col) => (
+                                            <th
+                                              key={col}
+                                              className="border border-slate-300 px-2 py-2 text-left font-semibold text-slate-700 whitespace-nowrap"
+                                            >
+                                              {col}
+                                            </th>
+                                          ))}
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {samples.map((row, rowIndex) => (
+                                          <tr
+                                            key={rowIndex}
+                                            className={rowIndex % 2 === 1 ? 'bg-slate-50/90' : 'bg-white'}
+                                          >
+                                            {table.columns.map((col) => (
+                                              <td
+                                                key={col}
+                                                className="border border-slate-300 px-2 py-1.5 font-mono text-slate-800 whitespace-nowrap max-w-[14rem] truncate"
+                                                title={String(row[col] ?? '')}
+                                              >
+                                                {row[col] === null || row[col] === undefined ? (
+                                                  <span className="text-slate-400">NULL</span>
+                                                ) : (
+                                                  String(row[col])
+                                                )}
+                                              </td>
+                                            ))}
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </CollapsibleContent>
+                              </Collapsible>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

@@ -17,9 +17,9 @@ export function FlowRoadmapPage() {
 
       <div className="container mx-auto px-4 max-w-full relative z-10">
         <header className="mb-12 text-center">
-          <h1 className="text-4xl font-extrabold text-foreground mb-4">Interactive Learning Paths</h1>
+          <h1 className="text-4xl font-extrabold text-foreground mb-4">Flow Path</h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Explore {ROADMAP_OPTIONS.length} industry-standard roadmaps merged from the Developer Roadmap project.
+            Interactive skill graphs—explore {ROADMAP_OPTIONS.length} industry roadmaps (Developer Roadmap–style topics). For role-first timelines and your 4-month syllabus, use <strong className="text-foreground font-semibold">Career Map</strong> in the nav.
           </p>
           
           <div className="mt-8 flex flex-col items-center justify-center gap-6">
@@ -62,8 +62,43 @@ export function FlowRoadmapPage() {
           </div>
         </header>
 
+        <div className="mx-auto mb-4 max-w-4xl rounded-xl border border-slate-200 bg-slate-50/90 px-4 py-3 text-left text-sm text-slate-600 shadow-sm md:text-center">
+          <span className="font-semibold text-slate-800">How to use:</span>{' '}
+          <span className="text-slate-600">
+            Drag the canvas to pan. Use the <strong className="text-slate-800">+ / −</strong> controls (bottom-left) to zoom.
+            On desktop, the <strong className="text-slate-800">minimap</strong> helps you jump around large graphs. Drag nodes to
+            rearrange if needed.
+          </span>
+        </div>
+
+        <div className="mx-auto mb-6 max-w-4xl rounded-xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-600 shadow-sm">
+          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide mb-3">Map legend</h2>
+          <ul className="grid sm:grid-cols-3 gap-3 text-left">
+            <li className="flex gap-2 items-start">
+              <span className="mt-0.5 h-6 w-6 shrink-0 rounded bg-[#ffcc00] border-2 border-black" aria-hidden />
+              <span>
+                <strong className="text-slate-800">Topic</strong> — main skill area (yellow). Start here when you are new to a track.
+              </span>
+            </li>
+            <li className="flex gap-2 items-start">
+              <span className="mt-0.5 h-6 w-6 shrink-0 rounded-full bg-[#9b51e0] border-2 border-black" aria-hidden />
+              <span>
+                <strong className="text-slate-800">Subtopic</strong> — deeper focus (purple). Follow edges top-to-bottom like a syllabus.
+              </span>
+            </li>
+            <li className="flex gap-2 items-start">
+              <span className="mt-0.5 text-xs font-black text-slate-900 uppercase tracking-widest leading-tight" aria-hidden>
+                T
+              </span>
+              <span>
+                <strong className="text-slate-800">Title</strong> — roadmap header. Use the catalog above to switch tracks; graphs are read-only guides (progress lives in Career Map, Projects, and Quiz).
+              </span>
+            </li>
+          </ul>
+        </div>
+
         {/* Roadmap Flow Renderer */}
-        <div className="px-2">
+        <div className="px-0 sm:px-2">
           <RoadmapFlow roadmapPath={selectedRoadmap.path} />
         </div>
         

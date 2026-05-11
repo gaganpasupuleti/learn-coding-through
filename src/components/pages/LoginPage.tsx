@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
-import { Code2, User, Lock, ArrowRight, Sparkles } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Code2, User, Lock, ArrowRight } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import {
+  API_BASE_URL,
+  fetchAuthPublicConfig,
+  type AuthPublicConfig,
   fetchCurrentUser,
   loginWithBackend,
   loginWithGoogleIdToken,
@@ -19,7 +22,7 @@ interface LoginPageProps {
   onAuthenticated: (user: AuthUser) => void
 }
 
-type AuthMode = 'login' | 'signup' | 'demoRegister' | 'forgotPassword'
+type AuthMode = 'login' | 'signup' | 'forgotPassword'
 
 type GoogleCredentialResponse = {
   credential?: string
@@ -67,7 +70,34 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     typeof window !== 'undefined'
       ? (window.__RUNTIME_CONFIG__?.VITE_GOOGLE_CLIENT_ID ?? '').trim()
       : ''
-  const googleClientId = ((import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '').trim() || runtimeGoogleClientId)
+
+  const bootstrapGoogleClientId = useMemo(
+    () =>
+      (import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '').trim() ||
+      runtimeGoogleClientId,
+    [runtimeGoogleClientId],
+  )
+
+  /** Loaded from GET /api/v1/auth/config (includes public google_client_id when backend is configured). */
+  const [authPublic, setAuthPublic] = useState<AuthPublicConfig | null>(null)
+  const [authPublicReady, setAuthPublicReady] = useState(false)
+  const [authPublicFetchFailed, setAuthPublicFetchFailed] = useState(false)
+
+  const googleClientId = useMemo(
+    () =>
+      bootstrapGoogleClientId ||
+      (authPublic?.google_client_id ?? '').trim(),
+    [bootstrapGoogleClientId, authPublic],
+  )
+
+  const googleBackendEnabled =
+    !authPublicReady ? null : authPublicFetchFailed ? false : authPublic?.google_auth_enabled ?? false
+
+  /** Show Google when the server enables it, or when the SPA has a Web client ID locally (backend must still set GOOGLE_OAUTH_CLIENT_ID or token exchange returns 503). */
+  const googleButtonAllowed =
+    authPublicReady &&
+    !!googleClientId &&
+    (googleBackendEnabled === true || !!bootstrapGoogleClientId)
 
   const finalizeLogin = async (accessToken: string, fallbackUser: AuthUser) => {
     storeAuthToken(accessToken)
@@ -106,6 +136,24 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
 
   const [pendingApproval, setPendingApproval] = useState(false)
 
+  useEffect(() => {
+    let cancelled = false
+    void fetchAuthPublicConfig().then((cfg) => {
+      if (cancelled) return
+      setAuthPublicReady(true)
+      if (cfg === null) {
+        setAuthPublicFetchFailed(true)
+        setAuthPublic(null)
+      } else {
+        setAuthPublicFetchFailed(false)
+        setAuthPublic(cfg)
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const handleSignup = async () => {
     if (!email.trim() || !password.trim() || !fullName.trim()) {
       toast.error('Name, email and password are required.')
@@ -132,19 +180,6 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleDemoAccess = () => {
-    setDemoFlag(true)
-    const demoUser: AuthUser = {
-      id: -1,
-      email: email.trim() || 'demo@codequest.local',
-      full_name: fullName.trim() || 'Demo Student',
-      role: 'student',
-    }
-    storeUser(demoUser)
-    toast.success('Entering demo mode...')
-    onAuthenticated(demoUser)
   }
 
   const handleRequestPasswordReset = async () => {
@@ -190,7 +225,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
   }
 
   useEffect(() => {
-    if (mode === 'demoRegister' || !googleClientId || !googleButtonRef.current) {
+    if ((mode !== 'login' && mode !== 'signup') || !googleClientId || !googleButtonAllowed || !googleButtonRef.current) {
       return
     }
 
@@ -218,7 +253,12 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
               role: 'student',
             })
           } catch (err) {
-            toast.error(err instanceof Error ? err.message : 'Google login failed.')
+            const msg = err instanceof Error ? err.message : ''
+            if (msg.toLowerCase().includes('pending admin approval') || msg.toLowerCase().includes('pending approval')) {
+              setPendingApproval(true)
+            } else {
+              toast.error(msg || 'Google login failed.')
+            }
           } finally {
             setIsLoading(false)
           }
@@ -253,7 +293,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     document.head.appendChild(script)
 
     return () => script.removeEventListener('load', initializeGoogleButton)
-  }, [mode, googleClientId, email, fullName])
+  }, [mode, googleClientId, googleButtonAllowed, email, fullName])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -269,249 +309,231 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     }
   }
 
-  const fieldClass = 'h-10 rounded-xl bg-white/12 border-white/25 text-[15px] placeholder-transparent focus-visible:border-blue-300/80 focus-visible:ring-2 focus-visible:ring-blue-400/20'
+  const inputClassName =
+    'h-11 rounded-2xl bg-background border-border/60 text-[15px] text-foreground placeholder:text-muted-foreground shadow-sm focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20'
+
+  const primaryButtonClass =
+    'w-full flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60 font-semibold py-3 px-4 transition-all shadow-md shadow-primary/25 active:scale-[0.98]'
+
+  const secondaryButtonClass =
+    'w-full flex items-center justify-center gap-2 rounded-full border border-border bg-card text-foreground hover:bg-muted/50 disabled:opacity-60 font-semibold py-3 px-4 transition-all active:scale-[0.98]'
+
+  const labelClass = 'text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5'
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_18%_0%,rgba(59,130,246,0.28),transparent_42%),radial-gradient(circle_at_85%_100%,rgba(14,165,233,0.20),transparent_38%),linear-gradient(160deg,#020617_0%,#0b132b_52%,#020617_100%)] flex items-center justify-center p-4 sm:p-6">
-      <div className="pointer-events-none absolute inset-0 opacity-45" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.65) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
-      <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-28 -right-20 h-80 w-80 rounded-full bg-sky-400/20 blur-3xl" />
-      <div className="relative w-full max-w-md space-y-5">
+    <main
+      className="relative min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 p-4 sm:p-8"
+      aria-label="Sign in to CodeQuest"
+    >
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(37,99,235,0.12),transparent)]"
+        aria-hidden
+      />
 
-        {/* Brand mark */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-600 text-white mx-auto shadow-lg border border-blue-500/40">
-            <Code2 size={22} strokeWidth={2.5} />
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">CodeQuest</h1>
-          <p className="text-sm text-blue-100/90">Career Acceleration Platform</p>
-        </div>
-
-        {/* Card */}
-        <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-[0_24px_55px_rgba(2,6,23,0.6)] p-5 sm:p-6">
-          {mode === 'demoRegister' ? (
-            <div className="space-y-5">
-              <div className="space-y-1">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                  <Sparkles size={16} className="text-blue-500" />
-                  Student Demo Access
-                </h2>
-                <p className="text-base text-blue-100/85 leading-relaxed">Use a student demo profile to explore before full registration.</p>
-              </div>
-              <div className="space-y-3">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
-                    <User size={12} /> Full Name
-                  </label>
-                  <Input
-                    className={fieldClass}
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
-                    <User size={12} /> Email
-                  </label>
-                  <Input
-                    className={fieldClass}
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </div>
-              </div>
-              <div className="rounded-lg border border-white/20 bg-white/10 p-4 space-y-2">
-                <p className="text-sm font-semibold text-blue-100 uppercase tracking-wide">What's included</p>
-                <ul className="space-y-1.5 text-[0.95rem] text-blue-50/95">
-                  {[
-                    'Browse all career paths & 4-month syllabus',
-                    'Start any 2 projects of your choice',
-                    'Attempt any 2 quizzes of your choice',
-                    'Full practice module access',
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <span className="text-blue-500 mt-0.5 font-bold text-xs">✓</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <button
-                type="button"
-                onClick={handleDemoAccess}
-                className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-700 font-semibold py-2.5 px-4 rounded-full transition-all duration-150"
-              >
-                Start Student Demo
-                <ArrowRight size={15} strokeWidth={2.5} />
-              </button>
-              <p className="text-sm text-center text-blue-100/80">
-                Want full access?{' '}
-                <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('signup')}>
-                  Create a free account
-                </button>
-              </p>
+      <div className="relative z-10 w-full max-w-md">
+        <div className="rounded-3xl border border-border/60 bg-card p-6 sm:p-8 space-y-6 shadow-[0_10px_50px_-12px_rgba(15,23,42,0.12)]">
+          <div className="text-center space-y-3">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary text-primary-foreground mx-auto shadow-md shadow-primary/30">
+              <Code2 size={22} strokeWidth={2.5} />
             </div>
-          ) : mode === 'forgotPassword' ? (
-            <div className="space-y-5" onKeyDown={handleKeyDown}>
-              <div className="space-y-1">
-                <h2 className="text-xl font-semibold text-white">Reset your password</h2>
-                <p className="text-base text-blue-100/85 leading-relaxed">
-                  Step 1: request reset with email. Step 2: submit reset token and new password.
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">System Access</p>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">Authenticate</h1>
+            <p className="text-sm text-muted-foreground leading-relaxed">CodeQuest · learning platform</p>
+            <p className="text-[11px] text-muted-foreground max-w-sm mx-auto leading-relaxed">
+              Trouble signing in? Ensure the API is running, <span className="font-mono text-foreground/80">VITE_*</span> / proxy settings match{' '}
+              <span className="font-mono text-foreground/80">docs/LAUNCH.md</span>, and for Google set{' '}
+              <span className="font-mono text-foreground/80">GOOGLE_OAUTH_CLIENT_ID</span> in <span className="font-mono text-foreground/80">backend/.env</span>{' '}
+              (same Web client ID as the frontend).
+            </p>
+          </div>
+
+          {mode === 'forgotPassword' ? (
+            <div className="space-y-6" onKeyDown={handleKeyDown}>
+              <div className="space-y-2">
+                <h2 className="text-xl font-bold tracking-tight text-foreground">Credential recovery</h2>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Two-phase flow: request a reset with email, then submit token and new password.
                 </p>
               </div>
 
-              <div className="space-y-3">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
-                    <User size={12} /> Email
-                  </label>
-                  <Input
-                    className={fieldClass}
-                    type="email"
-                    autoComplete="username"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={isLoading}
-                  />
+              <div className="space-y-5">
+                <div className="space-y-3">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">Phase 1 — Identity</p>
+                  <div className="space-y-1.5">
+                    <label className={labelClass}>
+                      <User size={12} /> Email
+                    </label>
+                    <Input
+                      className={inputClassName}
+                      type="email"
+                      autoComplete="username"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
-                    <Lock size={12} /> Reset Token
-                  </label>
-                  <Input
-                    className={fieldClass}
-                    value={resetToken}
-                    onChange={(e) => setResetToken(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </div>
+                <div className="h-px bg-border/40" />
 
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
-                    <Lock size={12} /> New Password
-                  </label>
-                  <Input
-                    className={fieldClass}
-                    type="password"
-                    autoComplete="new-password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    disabled={isLoading}
-                  />
+                <div className="space-y-3">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">Phase 2 — New secret</p>
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <label className={labelClass}>
+                        <Lock size={12} /> Reset Token
+                      </label>
+                      <Input
+                        className={inputClassName}
+                        value={resetToken}
+                        onChange={(e) => setResetToken(e.target.value)}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className={labelClass}>
+                        <Lock size={12} /> New Password
+                      </label>
+                      <Input
+                        className={inputClassName}
+                        type="password"
+                        autoComplete="new-password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  className="w-full flex items-center justify-center gap-2 bg-white/15 hover:bg-white/20 disabled:opacity-60 text-white font-semibold py-2.5 px-4 rounded-full transition-all duration-150 border border-white/30"
-                  onClick={handleRequestPasswordReset}
-                  disabled={isLoading}
-                >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button type="button" className={secondaryButtonClass} onClick={handleRequestPasswordReset} disabled={isLoading}>
                   Request Token
                 </button>
-                <button
-                  type="button"
-                  className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 font-semibold py-2.5 px-4 rounded-full transition-all duration-150"
-                  onClick={handleResetPassword}
-                  disabled={isLoading}
-                >
+                <button type="button" className={primaryButtonClass} onClick={handleResetPassword} disabled={isLoading}>
                   {isLoading ? 'Please wait…' : 'Reset Password'}
                   {!isLoading && <ArrowRight size={15} strokeWidth={2.5} />}
                 </button>
               </div>
 
-              <p className="text-sm text-center text-blue-100/80">
+              <p className="text-sm text-center text-muted-foreground">
                 Remembered your password?{' '}
-                <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('login')}>
+                <button
+                  type="button"
+                  className="text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
+                  onClick={() => setMode('login')}
+                >
                   Go to login
                 </button>
               </p>
             </div>
           ) : pendingApproval ? (
-            <div className="space-y-5 text-center">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-green-500/20 text-green-400 mx-auto">
+            <div className="space-y-6 text-center">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/15 text-emerald-400 mx-auto ring-1 ring-emerald-500/30 shadow-[0_0_24px_rgba(52,211,153,0.15)]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>
               </div>
-              <h2 className="text-xl font-semibold text-white">Registration Submitted</h2>
-              <p className="text-base text-blue-100/85 leading-relaxed">
-                Your account has been created and is now <span className="font-semibold text-amber-300">pending admin approval</span>. You will be able to log in once an admin approves your registration.
+              <h2 className="text-xl font-bold tracking-tight text-foreground">Registration Submitted</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Your account has been created and is now{' '}
+                <span className="font-semibold text-amber-600">pending admin approval</span>. You will be able to log in once an admin approves your registration.
               </p>
               <button
                 type="button"
-                className="w-full flex items-center justify-center gap-2 bg-white/15 hover:bg-white/20 text-white font-semibold py-2.5 px-4 rounded-full transition-all duration-150 border border-white/30"
+                className={secondaryButtonClass}
                 onClick={() => { setPendingApproval(false); setMode('login') }}
               >
                 Go to Login
               </button>
             </div>
           ) : (
-            <div className="space-y-5" onKeyDown={handleKeyDown}>
-              <div className="space-y-1">
-                <h2 className="text-xl font-semibold text-white">
-                  {mode === 'login' ? 'Welcome back' : 'Create your account'}
+            <div className="space-y-6" onKeyDown={handleKeyDown}>
+              <div className="space-y-2">
+                <h2 className="text-xl font-bold tracking-tight text-foreground">
+                  {mode === 'login' ? 'Session sign-in' : 'Provision account'}
                 </h2>
-                <p className="text-base text-blue-100/85 leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {mode === 'login'
-                    ? 'Sign in to continue your learning journey.'
+                    ? 'Identify yourself, then confirm your secret — one submit completes authentication.'
                     : 'Create an account to unlock the full learning platform.'}
                 </p>
                 {mode === 'signup' && (
-                  <p className="text-sm text-blue-200/95">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     All new registrations require admin approval. After signing up, please wait for an admin to approve your account before logging in.
                   </p>
                 )}
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-5">
                 {mode === 'signup' && (
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
-                      <User size={12} /> Full Name
-                    </label>
-                    <Input className={fieldClass} value={fullName} onChange={(e) => setFullName(e.target.value)} disabled={isLoading} />
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">Step 1 — Profile</p>
+                    <div className="space-y-1.5">
+                      <label className={labelClass}>
+                        <User size={12} /> Full Name
+                      </label>
+                      <Input className={inputClassName} value={fullName} onChange={(e) => setFullName(e.target.value)} disabled={isLoading} />
+                    </div>
                   </div>
                 )}
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
-                    <User size={12} /> Email
-                  </label>
-                  <Input className={fieldClass} type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} />
+
+                <div className="space-y-3">
+                  {mode === 'signup' && <div className="h-px bg-border/40" />}
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">
+                    {mode === 'signup' ? 'Step 2 — Identity' : 'Step 1 — Identity'}
+                  </p>
+                  <div className="space-y-1.5">
+                    <label className={labelClass}>
+                      <User size={12} /> Email
+                    </label>
+                    <Input
+                      className={inputClassName}
+                      type="email"
+                      autoComplete="username"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-blue-100 flex items-center gap-1.5">
-                    <Lock size={12} /> Password
-                  </label>
-                  <Input
-                    className={fieldClass}
-                    type="password"
-                    autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={isLoading}
-                  />
+
+                <div className="h-px bg-border/40" />
+
+                <div className="space-y-3">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">
+                    {mode === 'signup' ? 'Step 3 — Secret' : 'Step 2 — Secret'}
+                  </p>
+                  <div className="space-y-1.5">
+                    <label className={labelClass}>
+                      <Lock size={12} /> Password
+                    </label>
+                    <Input
+                      className={inputClassName}
+                      type="password"
+                      autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
                 </div>
               </div>
 
               <button
                 type="button"
-                className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 font-semibold py-2.5 px-4 rounded-full transition-all duration-150"
+                className={primaryButtonClass}
                 onClick={mode === 'login' ? handleLogin : handleSignup}
                 disabled={isLoading}
               >
-                {isLoading ? 'Please wait…' : mode === 'login' ? 'Log In' : 'Create Account'}
+                {isLoading ? 'Please wait…' : mode === 'login' ? 'Authenticate' : 'Create Account'}
                 {!isLoading && <ArrowRight size={15} strokeWidth={2.5} />}
               </button>
 
               {mode === 'login' && (
-                <div className="text-right -mt-2">
+                <div className="text-right -mt-1">
                   <button
                     type="button"
-                    className="text-sm underline text-blue-100 hover:text-blue-200"
+                    className="text-xs text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
                     onClick={() => setMode('forgotPassword')}
                   >
                     Forgot password?
@@ -519,27 +541,52 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 </div>
               )}
 
-              {googleClientId ? (
-                <div className="space-y-2">
-                  <p className="text-sm text-center text-blue-100/80 uppercase tracking-wide">or continue with</p>
+              {googleBackendEnabled === null ? (
+                <p className="text-sm text-center text-muted-foreground">Checking sign-in options…</p>
+              ) : authPublicFetchFailed && !googleClientId ? (
+                <p className="text-sm text-center text-amber-400/90 leading-relaxed">
+                  Could not load sign-in options (request to <span className="font-mono text-xs break-all">{API_BASE_URL}/auth/config</span> failed). Start the API on port <span className="font-mono text-xs">8000</span>, or remove/empty <span className="font-mono text-xs">VITE_API_URL</span> and <span className="font-mono text-xs">VITE_API_BASE_URL</span> in root <span className="font-mono text-xs">.env</span> so the app uses the Vite dev proxy. To show Google Sign-In even when this check fails, set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and restart Vite.
+                </p>
+              ) : googleButtonAllowed ? (
+                <div className="space-y-3">
+                  {authPublicFetchFailed && bootstrapGoogleClientId ? (
+                    <p className="text-xs text-center text-amber-400/85 leading-snug">
+                      Server config request failed — using your local Web client ID. Google sign-in still needs the API at{' '}
+                      <span className="font-mono">{API_BASE_URL}</span>; start the backend or fix the URL.
+                    </p>
+                  ) : null}
+                  {!authPublicFetchFailed && !googleBackendEnabled && bootstrapGoogleClientId ? (
+                    <p className="text-xs text-center text-amber-400/85 leading-snug">
+                      The API reports Google login disabled — add <span className="font-mono">GOOGLE_OAUTH_CLIENT_ID</span> to{' '}
+                      <span className="font-mono">backend/.env</span> (same Web client ID as here) and restart the backend, or sign-in will fail.
+                    </p>
+                  ) : null}
+                  <p className="text-[10px] font-bold text-center text-muted-foreground uppercase tracking-[0.2em]">Or federate</p>
                   <div className="w-full flex justify-center" ref={googleButtonHostRef}>
                     <div ref={googleButtonRef} />
                   </div>
                 </div>
+              ) : googleBackendEnabled && !googleClientId ? (
+                <p className="text-sm text-center text-muted-foreground leading-relaxed">
+                  Google login is enabled on the server, but the API did not return a client id. Check <span className="font-mono text-xs">GOOGLE_OAUTH_CLIENT_ID</span> in <span className="font-mono text-xs">backend/.env</span> and restart the backend, or set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and restart Vite.
+                </p>
               ) : (
-                <p className="text-sm text-center text-blue-100/80">
-                  Google login is disabled. Set VITE_GOOGLE_CLIENT_ID to enable it.
+                <p className="text-sm text-center text-muted-foreground leading-relaxed">
+                  Google login is disabled. Set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and <span className="font-mono text-xs">GOOGLE_OAUTH_CLIENT_ID</span> to enable it.
                 </p>
               )}
 
               {mode === 'login' && (
-                <div className="pt-1 text-sm text-center text-blue-100/80 space-y-1">
+                <div className="pt-0 text-sm text-center text-muted-foreground">
                   <p>
-                    Don't have an account?{' '}
-                    <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('signup')}>Register</button>
-                  </p>
-                  <p>
-                    Or try it out: <button type="button" className="underline text-white hover:text-blue-200 transition-colors" onClick={() => setMode('demoRegister')}>Enter Demo Mode</button>
+                    Don&apos;t have an account?{' '}
+                    <button
+                      type="button"
+                      className="text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
+                      onClick={() => setMode('signup')}
+                    >
+                      Register
+                    </button>
                   </p>
                 </div>
               )}
@@ -547,6 +594,6 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
           )}
         </div>
       </div>
-    </div>
+    </main>
   )
 }

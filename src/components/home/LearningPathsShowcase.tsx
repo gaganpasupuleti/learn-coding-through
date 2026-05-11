@@ -8,15 +8,15 @@ export function LearningPathsShowcase() {
   const path = LEARNING_PATHS[activeTab]
 
   return (
-    <section className="py-16 bg-slate-50 border-t border-slate-100">
+    <section className="py-20 md:py-24 bg-slate-50 border-t border-slate-100">
       <div className="max-w-6xl mx-auto px-6">
 
         {/* Header */}
-        <div className="mb-10">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">
+        <div className="mb-12 md:mb-14">
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900 mb-3">
             Curated Learning Paths
           </h2>
-          <p className="text-slate-500 text-sm max-w-xl">
+          <p className="text-slate-600 text-base max-w-2xl leading-relaxed">
             Hand-picked tutorials for every career track on the platform — beginner to job-ready.
           </p>
         </div>

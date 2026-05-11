@@ -1,0 +1,22 @@
+import {
+  Briefcase,
+  CalendarBlank,
+  ChartBar,
+  ClockCounterClockwise,
+  Kanban,
+  ShieldCheck,
+  UsersThree,
+} from '@phosphor-icons/react'
+import type { ReactNode } from 'react'
+
+import type { AdminSection } from './types'
+
+export const sectionMeta: Record<AdminSection, { title: string; icon: ReactNode }> = {
+  dashboard: { title: 'Executive Dashboard', icon: <ChartBar size={18} weight="bold" /> },
+  board: { title: 'Workflow Board', icon: <Kanban size={18} weight="bold" /> },
+  students: { title: 'Students', icon: <UsersThree size={18} weight="bold" /> },
+  classes: { title: 'Classes & Batches', icon: <CalendarBlank size={18} weight="bold" /> },
+  jobs: { title: 'Job Portal', icon: <Briefcase size={18} weight="bold" /> },
+  activity: { title: 'Activity Log', icon: <ClockCounterClockwise size={18} weight="bold" /> },
+  access: { title: 'Access Control', icon: <ShieldCheck size={18} weight="bold" /> },
+}

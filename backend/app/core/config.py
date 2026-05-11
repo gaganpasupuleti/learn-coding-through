@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     promote_admin_emails: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["gaganpasupuleti@gmail.com"]
     )
+    # Comma-separated in env: ADMIN_PRO_JOB_TIER_EMAILS=a@x.com,b@y.com — unlimited job posts (same as super_admin).
+    admin_pro_job_tier_emails: Annotated[list[str], NoDecode] = Field(default_factory=list)
     google_oauth_client_id: str | None = None
     registration_limit_enabled: bool = True
     registration_user_limit: int = 1500
@@ -34,7 +36,12 @@ class Settings(BaseSettings):
     resume_backend_port: int = 8001
     resume_backend_python: str | None = None
     cors_origins: Annotated[list[str], NoDecode] = Field(
-        default_factory=lambda: ["http://localhost:5000", "http://localhost:5173"]
+        default_factory=lambda: [
+            "http://localhost:5000",
+            "http://127.0.0.1:5000",
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+        ]
     )
     cors_origin_regex: str | None = None
 
@@ -60,6 +67,15 @@ class Settings(BaseSettings):
     @field_validator("promote_admin_emails", mode="before")
     @classmethod
     def parse_promoted_admin_emails(cls, value):
+        if isinstance(value, str):
+            return [email.strip().lower() for email in value.split(",") if email.strip()]
+        if isinstance(value, list):
+            return [str(email).strip().lower() for email in value if str(email).strip()]
+        return value
+
+    @field_validator("admin_pro_job_tier_emails", mode="before")
+    @classmethod
+    def parse_admin_pro_job_tier_emails(cls, value):
         if isinstance(value, str):
             return [email.strip().lower() for email in value.split(",") if email.strip()]
         if isinstance(value, list):

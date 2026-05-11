@@ -19,6 +19,8 @@ from app.core.security import (
 )
 from app.models.models import RegistrationWaitlist, User, UserRole
 from app.schemas.auth import (
+    AuthPublicConfigResponse,
+    CompletePasswordSetupRequest,
     ForgotPasswordRequest,
     ForgotPasswordResponse,
     GoogleLoginPayload,
@@ -32,6 +34,16 @@ from app.schemas.auth import (
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
+
+
+@router.get("/config", response_model=AuthPublicConfigResponse)
+def auth_public_config():
+    """Tell the SPA whether Google Sign-In is supported and which Web Client ID to use."""
+    client_id = (settings.google_oauth_client_id or "").strip()
+    return AuthPublicConfigResponse(
+        google_auth_enabled=bool(client_id),
+        google_client_id=client_id or None,
+    )
 
 
 def _active_user_count(db: Session) -> int:
@@ -196,6 +208,7 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
             role=UserRole.STUDENT,
             external_auth_uid=external_uid,
             is_active=is_pre_approved,
+            password_setup_required=True,
         )
         db.add(user)
         db.commit()
@@ -262,6 +275,22 @@ def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db))
     db.commit()
 
     return MessageResponse(message="Password updated successfully")
+
+
+@router.post("/complete-password-setup", response_model=UserResponse)
+def complete_password_setup(
+    payload: CompletePasswordSetupRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not current_user.password_setup_required:
+        raise HTTPException(status_code=400, detail="Password is already set for this account")
+    current_user.password_hash = get_password_hash(payload.password)
+    current_user.password_setup_required = False
+    db.add(current_user)
+    db.commit()
+    db.refresh(current_user)
+    return current_user
 
 
 @router.get("/me", response_model=UserResponse)

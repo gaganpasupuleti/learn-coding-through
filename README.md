@@ -4,6 +4,8 @@
 
 ---
 
+**Launch checklist:** see [docs/LAUNCH.md](docs/LAUNCH.md) for environment matrix, smoke tests, polish status, and known limitations.
+
 ## Table of Contents
 
 1. [Project Overview](#project-overview)

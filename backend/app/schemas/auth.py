@@ -42,6 +42,13 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class AuthPublicConfigResponse(BaseModel):
+    """Public auth flags for the frontend. Web Client ID is public (not a secret)."""
+
+    google_auth_enabled: bool
+    google_client_id: str | None = None
+
+
 class GoogleLoginPayload(BaseModel):
     id_token: str
 
@@ -98,6 +105,18 @@ class UserResponse(BaseModel):
     full_name: str
     role: str
     credit_balance: int
+    password_setup_required: bool = False
 
     class Config:
         from_attributes = True
+
+
+class CompletePasswordSetupRequest(BaseModel):
+    password: str
+
+    @field_validator("password")
+    @classmethod
+    def validate_password_length(cls, value: str) -> str:
+        if len(value.strip()) < 8:
+            raise ValueError("Password must be at least 8 characters")
+        return value

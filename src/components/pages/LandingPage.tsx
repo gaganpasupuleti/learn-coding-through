@@ -1,8 +1,20 @@
-import { ArrowRight, Zap, Code2, Trophy } from 'lucide-react'
+import { ArrowRight, Zap, Code2, Trophy, GitBranch, Keyboard } from 'lucide-react'
 import { LearningPathsShowcase } from '@/components/home/LearningPathsShowcase'
+import { LandingProgressStrip } from '@/components/home/LandingProgressStrip'
+
+/** Destinations available from the home hero (subset of student nav). */
+export type LandingNavTarget =
+  | 'projects'
+  | 'practice'
+  | 'quiz'
+  | 'roadmapper'
+  | 'flow-roadmap'
+  | 'typing'
+  | 'hub'
+  | 'jobs'
 
 interface LandingPageProps {
-  onNavigate: (page: 'projects' | 'practice' | 'quiz' | 'roadmapper') => void
+  onNavigate: (page: LandingNavTarget) => void
 }
 
 export function LandingPage({ onNavigate }: LandingPageProps) {
@@ -20,7 +32,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             Go from student to{' '}
             <span className="text-blue-600">job-ready engineer</span>
           </h1>
-          <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
             See career paths, choose your target role, build skills through hands-on projects and practice, and track your progress to job readiness.
           </p>
           <div className="flex flex-wrap justify-center gap-3 pt-2">
@@ -28,9 +40,19 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
               type="button"
               onClick={() => onNavigate('roadmapper')}
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-6 py-3 rounded-lg shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              aria-label="Open Career Map — role-focused paths and syllabus"
             >
-              Start Career Mapping
+              Career Map
               <ArrowRight size={16} strokeWidth={2.5} />
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate('flow-roadmap')}
+              className="inline-flex items-center gap-2 bg-white hover:bg-indigo-50 text-indigo-700 font-semibold px-6 py-3 rounded-lg border-2 border-indigo-200 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md"
+              aria-label="Open Flow Path — interactive skill roadmaps"
+            >
+              <GitBranch size={16} strokeWidth={2.5} aria-hidden />
+              Flow Path
             </button>
             <button
               type="button"
@@ -39,7 +61,20 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             >
               Explore Projects
             </button>
+            <button
+              type="button"
+              onClick={() => onNavigate('typing')}
+              className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-semibold px-5 py-3 rounded-lg border border-slate-200 shadow-sm transition-all duration-200"
+              aria-label="Open typing trainer"
+            >
+              <Keyboard size={16} strokeWidth={2.5} aria-hidden />
+              Typing
+            </button>
           </div>
+          <p className="text-sm text-slate-500 max-w-xl mx-auto pt-1 leading-relaxed">
+            <strong className="text-slate-600">Career Map</strong> is role-first (timeline, projects, quizzes).{' '}
+            <strong className="text-slate-600">Flow Path</strong> is topic graphs from the Developer Roadmap set.
+          </p>
         </div>
 
         {/* Feature cards */}
@@ -74,8 +109,8 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
               <div className={`w-10 h-10 ${iconBg} rounded-lg flex items-center justify-center`}>
                 {icon}
               </div>
-              <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">{description}</p>
+              <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+              <p className="text-base text-slate-500 leading-relaxed">{description}</p>
             </div>
           ))}
         </div>
@@ -85,6 +120,12 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
           Quiz-gated stage progression · Job-focused learning · Build-to-selection flow
         </p>
       </div>
+
+      <LandingProgressStrip
+        onOpenHub={() => onNavigate('hub')}
+        onOpenCareerMap={() => onNavigate('roadmapper')}
+        onOpenLiveJobs={() => onNavigate('jobs')}
+      />
 
       {/* Curated Learning Paths */}
       <LearningPathsShowcase />

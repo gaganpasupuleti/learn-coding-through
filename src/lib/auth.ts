@@ -12,6 +12,8 @@ export interface AuthUser {
   email: string
   full_name: string
   role: UserRole
+  /** True until the user sets a password (e.g. after first Google sign-in). */
+  password_setup_required?: boolean
 }
 
 const TOKEN_KEY = 'career-portal-token'
@@ -84,7 +86,10 @@ function resolveApiBaseUrl(): string {
           '') as string).trim()
       : ''
 
-  const configured = (runtimeConfigured || (import.meta.env.VITE_API_BASE_URL ?? '').trim()).trim()
+  const configured = (
+    runtimeConfigured ||
+    (import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL ?? '').trim()
+  ).trim()
   if (!configured) {
     return '/api/v1'
   }
@@ -104,6 +109,23 @@ function resolveApiBaseUrl(): string {
 
 export const API_BASE_URL = resolveApiBaseUrl()
 
+/**
+ * Public auth flags (no login required). Used to align Google button with backend config.
+ */
+export async function fetchAuthPublicConfig(): Promise<AuthPublicConfig | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/config`)
+    // Older deployments without this route — still allow Google if env supplies client id.
+    if (response.status === 404) {
+      return { google_auth_enabled: true, google_client_id: null }
+    }
+    if (!response.ok) return null
+    return (await response.json()) as AuthPublicConfig
+  } catch {
+    return null
+  }
+}
+
 interface MeResponse {
   id: number
   email: string
@@ -111,11 +133,18 @@ interface MeResponse {
   role: string
   /** Included for backend compatibility; not currently used client-side. */
   is_active?: boolean
+  password_setup_required?: boolean
 }
 
 interface BackendLoginResponse {
   access_token: string
   token_type?: string
+}
+
+export interface AuthPublicConfig {
+  google_auth_enabled: boolean
+  /** Same as backend GOOGLE_OAUTH_CLIENT_ID; safe to expose (public OAuth Web client id). */
+  google_client_id?: string | null
 }
 
 interface ForgotPasswordApiResponse {
@@ -150,7 +179,17 @@ export async function loginWithGoogleIdToken(idToken: string): Promise<string> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id_token: idToken }),
   })
-  const payload = (await parseOrThrow(response)) as BackendLoginResponse
+  const payload = (await response.json().catch(() => ({}))) as BackendLoginResponse & { detail?: unknown }
+  const rawDetail = (payload as { detail?: unknown })?.detail
+  if (!response.ok) {
+    const msg =
+      typeof rawDetail === 'string'
+        ? rawDetail
+        : rawDetail != null
+          ? JSON.stringify(rawDetail)
+          : `HTTP error ${response.status}`
+    throw new Error(msg)
+  }
   if (!payload?.access_token) {
     throw new Error('Google login did not return an access token.')
   }
@@ -212,8 +251,30 @@ export async function fetchCurrentUser(token: string): Promise<AuthUser | null> 
       email: data.email,
       full_name: data.full_name,
       role,
+      password_setup_required: Boolean(data.password_setup_required),
     }
   } catch {
     return null
+  }
+}
+
+export async function completePasswordSetup(token: string, password: string): Promise<AuthUser | null> {
+  const response = await fetch(`${API_BASE_URL}/auth/complete-password-setup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ password }),
+  })
+  const payload = (await parseOrThrow(response)) as MeResponse & { credit_balance?: number }
+  const role: UserRole =
+    payload.role === 'admin' ? 'admin' : payload.role === 'demo' ? 'demo' : 'student'
+  return {
+    id: payload.id,
+    email: payload.email,
+    full_name: payload.full_name,
+    role,
+    password_setup_required: Boolean(payload.password_setup_required),
   }
 }

@@ -121,6 +121,10 @@ def seed_admin_user(db: Session, email: str | None, password: str | None, full_n
         if existing.role != UserRole.ADMIN:
             existing.role = UserRole.ADMIN
             changed = True
+        # Bootstrap admin must be able to sign in (avoids inactive student stuck on waitlist).
+        if not existing.is_active:
+            existing.is_active = True
+            changed = True
         if full_name and (not existing.full_name or not existing.full_name.strip()):
             existing.full_name = full_name.strip()
             changed = True

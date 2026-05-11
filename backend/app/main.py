@@ -8,12 +8,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from jose import JWTError, jwt
-from sqlalchemy import text
+from sqlalchemy import inspect, text
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
 
-from app.api.v1 import activity, admin, auth, credits, interview, progress, projects, quiz, roadmap, roles, execute, typing
+from app.api.v1 import activity, admin, auth, credits, interview, jobs, progress, projects, quiz, roadmap, roles, execute, typing
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import ALGORITHM
@@ -39,6 +39,51 @@ def _ensure_typing_attempts_table() -> None:
         TypingAttempt.__table__.create(bind=engine, checkfirst=True)
     except Exception as exc:
         print(f"Warning: unable to ensure typing_attempts table exists: {exc}")
+
+
+def _ensure_job_posts_linkedin_columns() -> None:
+    try:
+        inspector = inspect(engine)
+        if not inspector.has_table("job_posts"):
+            return
+        cols = {c["name"] for c in inspector.get_columns("job_posts")}
+        dialect = engine.dialect.name
+        with engine.begin() as conn:
+            if "external_apply_url" not in cols:
+                conn.execute(text("ALTER TABLE job_posts ADD COLUMN external_apply_url VARCHAR(2048)"))
+            if "listing_metadata" not in cols:
+                if dialect == "sqlite":
+                    conn.execute(text("ALTER TABLE job_posts ADD COLUMN listing_metadata TEXT"))
+                else:
+                    conn.execute(text("ALTER TABLE job_posts ADD COLUMN listing_metadata JSON"))
+    except Exception as exc:
+        print(f"Warning: unable to ensure job_posts external/metadata columns: {exc}")
+
+
+def _ensure_user_password_setup_column() -> None:
+    try:
+        inspector = inspect(engine)
+        if not inspector.has_table("users"):
+            return
+        cols = {c["name"] for c in inspector.get_columns("users")}
+        if "password_setup_required" in cols:
+            return
+        dialect = engine.dialect.name
+        with engine.begin() as conn:
+            if dialect == "sqlite":
+                conn.execute(
+                    text(
+                        "ALTER TABLE users ADD COLUMN password_setup_required BOOLEAN NOT NULL DEFAULT 0"
+                    )
+                )
+            else:
+                conn.execute(
+                    text(
+                        "ALTER TABLE users ADD COLUMN password_setup_required BOOLEAN NOT NULL DEFAULT false"
+                    )
+                )
+    except Exception as exc:
+        print(f"Warning: unable to ensure users.password_setup_required column: {exc}")
 
 # Initialize the rate limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -145,6 +190,8 @@ def startup_event():
         print("Code execution endpoints will still work without database")
 
     _ensure_typing_attempts_table()
+    _ensure_user_password_setup_column()
+    _ensure_job_posts_linkedin_columns()
 
 
 
@@ -203,6 +250,7 @@ app.include_router(admin.router, prefix="/api/v1")
 app.include_router(roles.router, prefix="/api/v1")
 app.include_router(roadmap.router, prefix="/api/v1")
 app.include_router(progress.router, prefix="/api/v1")
+app.include_router(jobs.router, prefix="/api/v1")
 app.include_router(typing.router, prefix="/api/v1")
 app.include_router(activity.router, prefix="/api/v1")
 app.include_router(credits.router, prefix="/api/v1")

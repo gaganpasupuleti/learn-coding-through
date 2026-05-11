@@ -9,6 +9,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    JSON,
     Numeric,
     String,
     Text,
@@ -22,6 +23,7 @@ from app.core.database import Base
 class UserRole(str, Enum):
     STUDENT = "student"
     ADMIN = "admin"
+    SUPER_ADMIN = "super_admin"
 
 
 class DifficultyLevel(str, Enum):
@@ -110,6 +112,8 @@ class User(Base):
     cohort_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
     batch_name: Mapped[str | None] = mapped_column(String(120), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    # True until the user sets a known password (e.g. after first Google sign-in).
+    password_setup_required: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
@@ -382,6 +386,8 @@ class JobPost(Base):
     location: Mapped[str] = mapped_column(String(120), nullable=False)
     employment_type: Mapped[str] = mapped_column(String(80), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    external_apply_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
+    listing_metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     status: Mapped[JobPostStatus] = mapped_column(SqlEnum(JobPostStatus), default=JobPostStatus.OPEN, nullable=False)
     eligible_batch_id: Mapped[int | None] = mapped_column(ForeignKey("learning_batches.id"), nullable=True)
     created_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)

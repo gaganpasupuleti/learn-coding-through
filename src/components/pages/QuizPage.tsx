@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -14,7 +14,7 @@ import {
   fetchCatalogQuizzes,
   fetchCatalogQuiz,
 } from '@/lib/api'
-import { ArrowLeft, ArrowRight, CheckCircle, ListChecks, Lock, XCircle } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, CheckCircle, Clock, ListChecks, Lock, XCircle } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { isDemoUser } from '@/lib/auth'
 import {
@@ -94,6 +94,9 @@ const getWhyWrongText = (question: QuizQuestion, answer: string | number | undef
   return question.explanation
 }
 
+/** Challenge countdown length (HackerRank-style timer); does not auto-submit when it hits zero. */
+const QUIZ_CHALLENGE_SECONDS = 15 * 60
+
 const getWhyRightText = (question: QuizQuestion) => {
   if (question.type === 'multiple-choice' || question.type === 'true-false') {
     return `${getCorrectAnswerText(question)} is correct because ${question.explanation.charAt(0).toLowerCase()}${question.explanation.slice(1)}`
@@ -118,20 +121,47 @@ interface QuizPageProps {
 export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, onComplete, onBack }: QuizPageProps = {}) {
   const [quizList, setQuizList] = useState<CatalogQuizSummary[]>([])
   const [quizzesLoading, setQuizzesLoading] = useState(true)
+  const [quizListError, setQuizListError] = useState(false)
   const [selectedQuizId, setSelectedQuizId] = useState<string | null>(initialQuizId ?? null)
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null)
   const [quizLoading, setQuizLoading] = useState(false)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [draftAnswers, setDraftAnswers] = useState<Record<number, string | number>>({})
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, boolean>>({})
+  /** Elapsed seconds for the active quiz; starts when the quiz payload is ready (not when the list is shown). Resets per quiz id. */
+  const [elapsedSec, setElapsedSec] = useState(0)
   const demoMode = isDemoUser()
 
   useEffect(() => {
+    if (!selectedQuiz) {
+      setElapsedSec(0)
+      return
+    }
+    setElapsedSec(0)
+    const t0 = Date.now()
+    const id = window.setInterval(() => {
+      setElapsedSec(Math.floor((Date.now() - t0) / 1000))
+    }, 1000)
+    return () => clearInterval(id)
+  }, [selectedQuiz?.id])
+
+  const loadQuizList = useCallback(() => {
+    setQuizzesLoading(true)
+    setQuizListError(false)
     fetchCatalogQuizzes()
-      .then(setQuizList)
-      .catch(() => setQuizList([]))
+      .then((list) => {
+        setQuizList(list)
+      })
+      .catch(() => {
+        setQuizList([])
+        setQuizListError(true)
+      })
       .finally(() => setQuizzesLoading(false))
   }, [])
+
+  useEffect(() => {
+    loadQuizList()
+  }, [loadQuizList])
 
   useEffect(() => {
     if (!selectedQuizId) return
@@ -233,6 +263,20 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
               <div className="text-center py-12 text-muted-foreground">
                 {quizLoading ? 'Loading quiz...' : 'Loading quizzes...'}
               </div>
+            ) : quizListError ? (
+              <div className="text-center py-16 space-y-4 rounded-xl border border-destructive/20 bg-destructive/5 px-6">
+                <p className="text-muted-foreground">Could not load quizzes. Check the API and try again.</p>
+                <Button type="button" onClick={loadQuizList} variant="default">
+                  Retry
+                </Button>
+              </div>
+            ) : quizList.length === 0 ? (
+              <div className="text-center py-16 space-y-3 text-muted-foreground">
+                <p>No quizzes are published yet.</p>
+                <Button type="button" variant="outline" onClick={loadQuizList}>
+                  Refresh
+                </Button>
+              </div>
             ) : (
             <div className="grid md:grid-cols-2 gap-6 pt-4">
               {quizList.map((quiz) => {
@@ -310,274 +354,283 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
   const progressValue = (answeredCount / selectedQuiz.questions.length) * 100
   const draftAnswer = draftAnswers[question.id]
   const isLastQuestion = currentQuestionIndex === selectedQuiz.questions.length - 1
+  const remainingSec = Math.max(0, QUIZ_CHALLENGE_SECONDS - elapsedSec)
+  const challengeTimeLabel = `${String(Math.floor(remainingSec / 60)).padStart(2, '0')}:${String(remainingSec % 60).padStart(2, '0')}`
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto px-6 py-8">
-        <div className="max-w-5xl mx-auto space-y-6">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" size="sm" onClick={handleBackToList} className="hover:bg-secondary">
-              <ArrowLeft className="mr-2" size={18} />
-              Back to Quizzes
-            </Button>
-
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="px-3 py-1">
-                {correctCount} / {selectedQuiz.questions.length} Correct
+      <header className="sticky top-0 z-30 border-b border-border/80 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 shadow-sm">
+        <div className="container mx-auto px-4 md:px-6 max-w-6xl py-3 space-y-3">
+          <div className="flex flex-wrap items-center gap-3 justify-between">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <Button variant="ghost" size="sm" onClick={handleBackToList} className="shrink-0 hover:bg-secondary -ml-2">
+                <ArrowLeft className="mr-1" size={18} />
+                <span className="hidden sm:inline">Back</span>
+              </Button>
+              <div className="min-w-0">
+                <h1 className="text-base md:text-lg font-bold tracking-tight truncate">{selectedQuiz.title}</h1>
+                <p className="text-xs text-muted-foreground truncate md:max-w-md">{selectedQuiz.description}</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
+              <Badge className="px-2.5 py-1 text-xs font-semibold bg-amber-500/15 text-amber-900 border border-amber-400/50">
+                Challenge
               </Badge>
-              <Badge className="px-3 py-1 bg-primary/10 text-primary">
-                {answeredCount} Answered
+              <Badge variant="secondary" className="px-2.5 py-1 text-xs font-medium tabular-nums">
+                Q{currentQuestionIndex + 1} / {selectedQuiz.questions.length}
+              </Badge>
+              <Badge variant="outline" className="px-2.5 py-1 text-xs tabular-nums gap-1" title="Time remaining for this attempt (optional pacing aid; quiz does not auto-submit).">
+                <Clock size={14} weight="duotone" className="opacity-80" />
+                {challengeTimeLabel}
+              </Badge>
+              <Badge variant="secondary" className="px-2.5 py-1 text-xs hidden md:inline-flex">
+                {correctCount}/{selectedQuiz.questions.length} correct
+              </Badge>
+              <Badge className="px-2.5 py-1 text-xs bg-primary/10 text-primary hidden md:inline-flex">
+                {answeredCount} answered
               </Badge>
             </div>
           </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <h1 className="text-3xl md:text-4xl font-bold">{selectedQuiz.title}</h1>
-              <Badge variant="default" className="bg-primary">
-                <ListChecks size={14} className="mr-1" weight="duotone" />
-                Quiz
-              </Badge>
-            </div>
-            <p className="text-muted-foreground text-lg">{selectedQuiz.description}</p>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>Progress</span>
-              <span>
-                Question {currentQuestionIndex + 1} of {selectedQuiz.questions.length}
-              </span>
+              <span className="tabular-nums">{Math.round(progressValue)}%</span>
             </div>
             <Progress value={progressValue} className="h-2" />
           </div>
+        </div>
+      </header>
 
-          <div className="flex flex-wrap gap-2">
-            {selectedQuiz.questions.map((item, index) => {
-              const submitted = submittedAnswers[item.id] !== undefined
-              const isCurrent = index === currentQuestionIndex
-              const isCorrectAnswer = submittedAnswers[item.id] === true
+      <div className="container mx-auto px-4 md:px-6 py-6 max-w-6xl space-y-5">
+        <div className="flex flex-wrap gap-2 overflow-x-auto pb-1">
+          {selectedQuiz.questions.map((item, index) => {
+            const submitted = submittedAnswers[item.id] !== undefined
+            const isCurrent = index === currentQuestionIndex
+            const isCorrectAnswer = submittedAnswers[item.id] === true
 
-              return (
-                <Badge
-                  key={item.id}
-                  variant={isCurrent ? 'default' : 'secondary'}
-                  className={`px-3 py-2 text-sm transition-all cursor-pointer ${
-                    isCurrent
-                      ? 'bg-accent text-accent-foreground scale-105'
-                      : submitted
-                        ? isCorrectAnswer
-                          ? 'bg-emerald-500/15 text-emerald-700'
-                          : 'bg-rose-500/15 text-rose-700'
-                        : 'bg-secondary'
-                  }`}
-                  onClick={() => setCurrentQuestionIndex(index)}
-                >
-                  Q{item.id}
-                </Badge>
-              )
-            })}
-          </div>
+            return (
+              <Badge
+                key={item.id}
+                variant={isCurrent ? 'default' : 'secondary'}
+                className={`px-3 py-2 text-sm transition-all cursor-pointer shrink-0 ${
+                  isCurrent
+                    ? 'bg-accent text-accent-foreground scale-105'
+                    : submitted
+                      ? isCorrectAnswer
+                        ? 'bg-emerald-500/15 text-emerald-700'
+                        : 'bg-rose-500/15 text-rose-700'
+                      : 'bg-secondary'
+                }`}
+                onClick={() => setCurrentQuestionIndex(index)}
+              >
+                Q{item.id}
+              </Badge>
+            )
+          })}
+        </div>
 
-          <Card className="border-2 animate-slide-in-right">
-            <div className="p-6 md:p-8 space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+        <Card className="border-2 animate-slide-in-right overflow-hidden">
+          <div className="grid md:grid-cols-2 md:divide-x md:divide-border">
+            {/* Stem: prompt, type, reference code */}
+            <div className="p-6 md:p-8 space-y-5 md:pr-8 bg-muted/10">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary shrink-0">
                   <ListChecks size={20} weight="duotone" />
                 </div>
-                <div>
-                  <div className="text-sm text-muted-foreground font-medium">
+                <div className="min-w-0 space-y-1">
+                  <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
                     Question {currentQuestionIndex + 1} of {selectedQuiz.questions.length}
                   </div>
-                  <h2 className="text-2xl font-bold">{question.title}</h2>
+                  <h2 className="text-xl md:text-2xl font-bold leading-snug">{question.title}</h2>
                 </div>
               </div>
+              <Separator className="md:hidden" />
+              <div className="space-y-3">
+                <Badge variant="outline" className="px-3 py-1">
+                  {getQuestionTypeLabel(question.type)}
+                </Badge>
+                <p className="text-base md:text-lg leading-relaxed text-foreground">{question.prompt}</p>
+              </div>
+              {question.code ? (
+                <CodeDisplay
+                  code={question.code}
+                  language={question.language ?? 'javascript'}
+                  title="Code"
+                  maxHeight="280px"
+                />
+              ) : null}
+            </div>
 
-              <Separator />
-
-              <div className="space-y-5">
-                <div className="space-y-2">
-                  <Badge variant="outline" className="px-3 py-1">
-                    {getQuestionTypeLabel(question.type)}
-                  </Badge>
-                  <p className="text-lg leading-relaxed">{question.prompt}</p>
+            {/* Answer controls + feedback */}
+            <div className="p-6 md:p-8 space-y-5 md:pl-8">
+              {question.type === 'multiple-choice' || question.type === 'true-false' ? (
+                <div className="grid gap-3">
+                  {question.options.map((option, index) => {
+                    const isSelected = draftAnswer === index
+                    const isCorrectOption = index === question.correctIndex
+                    return (
+                      <Button
+                        key={option}
+                        variant={isSelected ? 'default' : 'outline'}
+                        className={`justify-start text-left h-auto py-3 ${
+                          isSubmitted && isCorrectOption ? 'ring-2 ring-emerald-500/40' : ''
+                        }`}
+                        onClick={() =>
+                          setDraftAnswers((prev) => ({
+                            ...prev,
+                            [question.id]: index,
+                          }))
+                        }
+                        disabled={isSubmitted}
+                      >
+                        <span className="mr-3 text-xs font-semibold text-muted-foreground">
+                          {getLetter(index)}
+                        </span>
+                        {option}
+                      </Button>
+                    )
+                  })}
                 </div>
+              ) : null}
 
-                {question.code && (
-                  <CodeDisplay
-                    code={question.code}
-                    language={question.language ?? 'javascript'}
-                    title="Code"
-                    maxHeight="300px"
+              {question.type === 'code-completion' ? (
+                <div className="space-y-2">
+                  <Input
+                    value={typeof draftAnswer === 'string' ? draftAnswer : ''}
+                    onChange={(event) =>
+                      setDraftAnswers((prev) => ({
+                        ...prev,
+                        [question.id]: event.target.value,
+                      }))
+                    }
+                    placeholder="Type the missing line"
+                    disabled={isSubmitted}
                   />
-                )}
+                  <p className="text-sm text-muted-foreground">Keep the answer short and exact.</p>
+                </div>
+              ) : null}
 
-                {question.type === 'multiple-choice' || question.type === 'true-false' ? (
-                  <div className="grid gap-3">
-                    {question.options.map((option, index) => {
-                      const isSelected = draftAnswer === index
-                      const isCorrectOption = index === question.correctIndex
-                      return (
-                        <Button
-                          key={option}
-                          variant={isSelected ? 'default' : 'outline'}
-                          className={`justify-start text-left h-auto py-3 ${
-                            isSubmitted && isCorrectOption ? 'ring-2 ring-emerald-500/40' : ''
-                          }`}
-                          onClick={() =>
-                            setDraftAnswers((prev) => ({
-                              ...prev,
-                              [question.id]: index,
-                            }))
-                          }
-                          disabled={isSubmitted}
-                        >
-                          <span className="mr-3 text-xs font-semibold text-muted-foreground">
-                            {getLetter(index)}
-                          </span>
-                          {option}
-                        </Button>
-                      )
-                    })}
+              {question.type === 'code-output' ? (
+                <div className="space-y-2">
+                  <Textarea
+                    value={typeof draftAnswer === 'string' ? draftAnswer : ''}
+                    onChange={(event) =>
+                      setDraftAnswers((prev) => ({
+                        ...prev,
+                        [question.id]: event.target.value,
+                      }))
+                    }
+                    placeholder="Type the exact output"
+                    rows={4}
+                    disabled={isSubmitted}
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Match the output exactly, including line breaks if any.
+                  </p>
+                </div>
+              ) : null}
+
+              {isSubmitted && (
+                <div
+                  className={`rounded-lg border-2 p-4 ${
+                    isCorrect
+                      ? 'border-emerald-300 bg-emerald-500/10'
+                      : 'border-rose-300 bg-rose-500/10'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 font-semibold">
+                    {isCorrect ? (
+                      <CheckCircle size={20} weight="fill" className="text-emerald-600" />
+                    ) : (
+                      <XCircle size={20} weight="fill" className="text-rose-600" />
+                    )}
+                    {isCorrect ? 'Correct!' : 'Not quite.'}
                   </div>
-                ) : null}
+                  <p className="text-sm text-muted-foreground mt-2">{question.explanation}</p>
 
-                {question.type === 'code-completion' ? (
-                  <div className="space-y-2">
-                    <Input
-                      value={typeof draftAnswer === 'string' ? draftAnswer : ''}
-                      onChange={(event) =>
-                        setDraftAnswers((prev) => ({
-                          ...prev,
-                          [question.id]: event.target.value,
-                        }))
-                      }
-                      placeholder="Type the missing line"
-                      disabled={isSubmitted}
-                    />
-                    <p className="text-sm text-muted-foreground">
-                      Keep the answer short and exact.
-                    </p>
-                  </div>
-                ) : null}
-
-                {question.type === 'code-output' ? (
-                  <div className="space-y-2">
-                    <Textarea
-                      value={typeof draftAnswer === 'string' ? draftAnswer : ''}
-                      onChange={(event) =>
-                        setDraftAnswers((prev) => ({
-                          ...prev,
-                          [question.id]: event.target.value,
-                        }))
-                      }
-                      placeholder="Type the exact output"
-                      rows={4}
-                      disabled={isSubmitted}
-                    />
-                    <p className="text-sm text-muted-foreground">
-                      Match the output exactly, including line breaks if any.
-                    </p>
-                  </div>
-                ) : null}
-
-                {isSubmitted && (
-                  <div
-                    className={`rounded-lg border-2 p-4 ${
-                      isCorrect
-                        ? 'border-emerald-300 bg-emerald-500/10'
-                        : 'border-rose-300 bg-rose-500/10'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 font-semibold">
-                      {isCorrect ? (
-                        <CheckCircle size={20} weight="fill" className="text-emerald-600" />
-                      ) : (
-                        <XCircle size={20} weight="fill" className="text-rose-600" />
-                      )}
-                      {isCorrect ? 'Correct!' : 'Not quite.'}
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-2">{question.explanation}</p>
-
-                    {!isCorrect && (
-                      <div className="mt-3">
-                        <div className="grid gap-3 md:grid-cols-2">
-                          <div className="rounded-md border border-rose-300 bg-rose-500/10 p-3">
-                            <div className="text-xs font-semibold text-rose-700">Your answer</div>
-                            {question.type === 'code-output' || question.type === 'code-completion' ? (
-                              <pre className="mt-2 whitespace-pre-wrap text-sm text-rose-900">
-                                {getUserAnswerText(question, draftAnswer)}
-                              </pre>
-                            ) : (
-                              <p className="mt-2 text-sm text-rose-900">
-                                {getUserAnswerText(question, draftAnswer)}
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="rounded-md border border-emerald-300 bg-emerald-500/10 p-3">
-                            <div className="text-xs font-semibold text-emerald-700">Correct answer</div>
-                            {question.type === 'code-output' || question.type === 'code-completion' ? (
-                              <pre className="mt-2 whitespace-pre-wrap text-sm text-emerald-900">
-                                {getCorrectAnswerText(question)}
-                              </pre>
-                            ) : (
-                              <p className="mt-2 text-sm text-emerald-900">
-                                {getCorrectAnswerText(question)}
-                              </p>
-                            )}
-                          </div>
+                  {!isCorrect && (
+                    <div className="mt-3">
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="rounded-md border border-rose-300 bg-rose-500/10 p-3">
+                          <div className="text-xs font-semibold text-rose-700">Your answer</div>
+                          {question.type === 'code-output' || question.type === 'code-completion' ? (
+                            <pre className="mt-2 whitespace-pre-wrap text-sm text-rose-900">
+                              {getUserAnswerText(question, draftAnswer)}
+                            </pre>
+                          ) : (
+                            <p className="mt-2 text-sm text-rose-900">
+                              {getUserAnswerText(question, draftAnswer)}
+                            </p>
+                          )}
                         </div>
+
+                        <div className="rounded-md border border-emerald-300 bg-emerald-500/10 p-3">
+                          <div className="text-xs font-semibold text-emerald-700">Correct answer</div>
+                          {question.type === 'code-output' || question.type === 'code-completion' ? (
+                            <pre className="mt-2 whitespace-pre-wrap text-sm text-emerald-900">
+                              {getCorrectAnswerText(question)}
+                            </pre>
+                          ) : (
+                            <p className="mt-2 text-sm text-emerald-900">
+                              {getCorrectAnswerText(question)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    {!isCorrect && (
+                      <div className="rounded-md border border-rose-300 bg-rose-500/10 p-3">
+                        <div className="text-xs font-semibold text-rose-700">Why this answer is wrong</div>
+                        <p className="mt-2 text-sm text-rose-900">
+                          {getWhyWrongText(question, draftAnswer)}
+                        </p>
                       </div>
                     )}
 
-                    <div className="mt-3 grid gap-3 md:grid-cols-2">
-                      {!isCorrect && (
-                        <div className="rounded-md border border-rose-300 bg-rose-500/10 p-3">
-                          <div className="text-xs font-semibold text-rose-700">Why this answer is wrong</div>
-                          <p className="mt-2 text-sm text-rose-900">
-                            {getWhyWrongText(question, draftAnswer)}
-                          </p>
-                        </div>
-                      )}
-
-                      <div className="rounded-md border border-emerald-300 bg-emerald-500/10 p-3">
-                        <div className="text-xs font-semibold text-emerald-700">Why the correct answer is right</div>
-                        <p className="mt-2 text-sm text-emerald-900">
-                          {getWhyRightText(question)}
-                        </p>
-                      </div>
+                    <div className="rounded-md border border-emerald-300 bg-emerald-500/10 p-3">
+                      <div className="text-xs font-semibold text-emerald-700">Why the correct answer is right</div>
+                      <p className="mt-2 text-sm text-emerald-900">
+                        {getWhyRightText(question)}
+                      </p>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
               <Separator />
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
                 <Button
                   variant="outline"
                   onClick={() => handleSubmitAnswer(question)}
                   disabled={isSubmitted}
+                  className="w-full sm:w-auto"
                 >
                   Check Answer
                 </Button>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-stretch sm:justify-end">
                   {!isLastQuestion ? (
                     <Button
                       onClick={() => handleNext(selectedQuiz)}
                       disabled={currentQuestionIndex >= selectedQuiz.questions.length - 1}
+                      className="flex-1 sm:flex-initial"
                     >
                       Next Question
                       <ArrowRight className="ml-2" size={16} />
                     </Button>
                   ) : (
-                    <Button onClick={() => {
-                      const passed = correctCount >= Math.ceil(selectedQuiz.questions.length * 0.6)
-                      onComplete?.(passed)
-                      handleBackToList()
-                    }} className="bg-primary hover:bg-primary/90">
+                    <Button
+                      onClick={() => {
+                        const passed = correctCount >= Math.ceil(selectedQuiz.questions.length * 0.6)
+                        onComplete?.(passed)
+                        handleBackToList()
+                      }}
+                      className="bg-primary hover:bg-primary/90 flex-1 sm:flex-initial"
+                    >
                       Finish Quiz
                       <ArrowRight className="ml-2" size={16} />
                     </Button>
@@ -585,8 +638,8 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
                 </div>
               </div>
             </div>
-          </Card>
-        </div>
+          </div>
+        </Card>
       </div>
     </div>
   )

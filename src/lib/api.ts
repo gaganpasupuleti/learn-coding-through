@@ -5,7 +5,6 @@
 type RuntimeConfig = {
   VITE_API_URL?: string
   VITE_API_BASE_URL?: string
-  VITE_API_PROXY_TARGET?: string
 }
 
 const runtimeConfig: RuntimeConfig =
@@ -13,13 +12,14 @@ const runtimeConfig: RuntimeConfig =
     ? (window as Window & { __RUNTIME_CONFIG__?: RuntimeConfig }).__RUNTIME_CONFIG__!
     : {}
 
+// Never use VITE_API_PROXY_TARGET here: it is dev-server-only (see vite.config.ts proxy target).
+// If the browser used it as API_BASE_URL, requests would bypass same-origin /api and hit CORS or
+// wrong fallbacks; local .env often sets PROXY_TARGET while leaving VITE_API_URL empty on purpose.
 const RAW_API_BASE_URL =
   runtimeConfig.VITE_API_URL ||
   runtimeConfig.VITE_API_BASE_URL ||
-  runtimeConfig.VITE_API_PROXY_TARGET ||
   import.meta.env.VITE_API_URL ||
   import.meta.env.VITE_API_BASE_URL ||
-  import.meta.env.VITE_API_PROXY_TARGET ||
   ''
 
 function normalizeConfiguredApiBase(raw: string): string {
@@ -73,10 +73,23 @@ function isNetworkFetchError(error: unknown): boolean {
   return message.includes('failed to fetch') || message.includes('networkerror')
 }
 
-async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<Response> {
+function getApiFallbackCandidates(path: string): string[] {
   const candidateUrls: string[] = []
+  const seenResolved = new Set<string>()
+
   const addCandidate = (url: string) => {
-    if (!url || candidateUrls.includes(url)) return
+    if (!url) return
+    if (typeof window !== 'undefined') {
+      try {
+        const resolved = new URL(url, window.location.href).href
+        if (seenResolved.has(resolved)) return
+        seenResolved.add(resolved)
+      } catch {
+        if (candidateUrls.includes(url)) return
+      }
+    } else if (candidateUrls.includes(url)) {
+      return
+    }
     candidateUrls.push(url)
   }
 
@@ -84,14 +97,17 @@ async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<R
     addCandidate(`${API_BASE_URL}${path}`)
   }
 
+  // Same-origin `/api` (Vite proxy, nginx, or platform routing). Always try in the browser
+  // so a wrong absolute API_BASE_URL (e.g. frontend host that returns 405 on POST) can fall back.
   if (typeof window !== 'undefined') {
-    const host = window.location.hostname
-    const isLocalHost = host === 'localhost' || host === '127.0.0.1'
-    if (!API_BASE_URL || isLocalHost) {
-      addCandidate(path)
-    }
+    addCandidate(path)
   }
 
+  return candidateUrls
+}
+
+async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<Response> {
+  const candidateUrls = getApiFallbackCandidates(path)
   let lastError: unknown = null
 
   for (let index = 0; index < candidateUrls.length; index += 1) {
@@ -100,6 +116,51 @@ async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<R
 
     try {
       const response = await fetch(candidate, init)
+
+      if (response.ok) {
+        return response
+      }
+
+      if (hasMoreCandidates && [404, 405, 502, 503].includes(response.status)) {
+        continue
+      }
+
+      return response
+    } catch (error) {
+      lastError = error
+
+      if (!hasMoreCandidates || !isNetworkFetchError(error)) {
+        throw error
+      }
+    }
+  }
+
+  if (lastError) {
+    throw lastError
+  }
+
+  throw new Error('Failed to execute API request')
+}
+
+/** Multipart uploads must use a fresh FormData per attempt (body may not be reusable after a failed fetch). */
+async function fetchWithApiFallbackMultipart(
+  path: string,
+  token: string,
+  buildFormData: () => FormData,
+): Promise<Response> {
+  const candidateUrls = getApiFallbackCandidates(path)
+  let lastError: unknown = null
+
+  for (let index = 0; index < candidateUrls.length; index += 1) {
+    const candidate = candidateUrls[index]
+    const hasMoreCandidates = index < candidateUrls.length - 1
+
+    try {
+      const response = await fetch(candidate, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: buildFormData(),
+      })
 
       if (response.ok) {
         return response
@@ -145,6 +206,8 @@ export interface SqlSchemaTable {
   primary_key: string
   columns: string[]
   description?: string
+  /** Sample rows matching the in-memory practice DB (for spreadsheet-style preview). */
+  sample_rows?: Record<string, string | number | null>[]
 }
 
 export interface SqlPracticeSchemaResponse {
@@ -265,6 +328,8 @@ export interface AdminJobPost {
   location: string
   employment_type: string
   description: string | null
+  external_apply_url?: string | null
+  listing_metadata?: Record<string, unknown> | null
   status: string
   eligible_batch_id: number | null
   eligible_batch_name: string | null
@@ -711,6 +776,97 @@ export async function deleteAdminJob(token: string, jobId: number): Promise<void
   await parseOrThrow(response)
 }
 
+export interface JobImportRowError {
+  row: number
+  detail: string
+}
+
+export interface JobImportResult {
+  created: number
+  skipped: number
+  closed_previous?: number
+  errors: JobImportRowError[]
+}
+
+export async function downloadAdminJobImportTemplate(token: string): Promise<Blob> {
+  const response = await fetchWithApiFallback('/api/v1/admin/jobs/import-template', {
+    headers: buildAuthHeaders(token),
+  })
+  if (!response.ok) {
+    const text = await response.text()
+    let message = `Failed to download job import template (HTTP ${response.status})`
+    try {
+      const data = JSON.parse(text) as { detail?: unknown }
+      if (data.detail !== undefined) {
+        const d = data.detail
+        message = typeof d === 'string' ? d : JSON.stringify(d).slice(0, 500)
+      }
+    } catch {
+      if (text.trim()) {
+        message = text.slice(0, 500)
+      }
+    }
+    throw new Error(message)
+  }
+  return response.blob()
+}
+
+function parseJobImportJsonBody(text: string, response: Response): JobImportResult {
+  try {
+    return JSON.parse(text) as JobImportResult
+  } catch {
+    throw new Error(
+      `Import failed (HTTP ${response.status}). The server response was not JSON. Check that the backend is running and the admin API URL matches your dev proxy.`,
+    )
+  }
+}
+
+function throwIfJobImportHttpFailed(response: Response, data: unknown): void {
+  if (response.ok) return
+  const p = data as { errors?: { row: number; detail: string }[]; detail?: unknown }
+  if (p.errors?.length) {
+    throw new Error(p.errors.map((e) => `Row ${e.row}: ${e.detail}`).join('; '))
+  }
+  if (p.detail !== undefined) {
+    const d = p.detail
+    throw new Error(typeof d === 'string' ? d : JSON.stringify(d).slice(0, 500))
+  }
+  throw new Error(`Import failed (HTTP ${response.status})`)
+}
+
+export async function importAdminJobsFromExcel(token: string, file: File): Promise<JobImportResult> {
+  const response = await fetchWithApiFallbackMultipart('/api/v1/admin/jobs/import', token, () => {
+    const formData = new FormData()
+    formData.append('file', file, file.name || 'jobs.xlsx')
+    return formData
+  })
+  const text = await response.text()
+  const data = parseJobImportJsonBody(text, response)
+  throwIfJobImportHttpFailed(response, data)
+  return data
+}
+
+export async function importAdminJobsFromLinkedInJson(
+  token: string,
+  file: File,
+  replaceOpenJobs: boolean,
+): Promise<JobImportResult> {
+  const response = await fetchWithApiFallbackMultipart(
+    '/api/v1/admin/jobs/import-linkedin-json',
+    token,
+    () => {
+      const formData = new FormData()
+      formData.append('file', file, file.name || 'linkedin-jobs.json')
+      formData.append('replace_open_jobs', replaceOpenJobs ? 'true' : 'false')
+      return formData
+    },
+  )
+  const text = await response.text()
+  const data = parseJobImportJsonBody(text, response)
+  throwIfJobImportHttpFailed(response, data)
+  return data
+}
+
 // ── Student delete ─────────────────────────────────────────────────────────────
 
 export async function deleteAdminStudent(token: string, studentId: number): Promise<void> {
@@ -910,9 +1066,71 @@ export interface UserCatalogProgress {
   completedSteps: CompletedStep[]
 }
 
+export interface StageProgressRecord {
+  stage_id: number
+  lessons_completed: number
+  total_lessons: number
+  exercises_completed_pct: number
+  latest_quiz_score: number
+  unlocked: boolean
+}
+
+function studentAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('career-portal-token')
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
 export async function fetchUserProgress(): Promise<UserCatalogProgress> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/progress/catalog`)
+  const response = await fetchWithApiFallback('/api/v1/progress/catalog', {
+    headers: { ...studentAuthHeaders() },
+  })
   return parseOrThrow(response) as Promise<UserCatalogProgress>
+}
+
+export async function fetchMyStageProgress(): Promise<StageProgressRecord[]> {
+  const response = await fetchWithApiFallback('/api/v1/progress/me', {
+    headers: { ...studentAuthHeaders() },
+  })
+  return parseOrThrow(response) as Promise<StageProgressRecord[]>
+}
+
+export interface StudentJobOpen {
+  id: number
+  title: string
+  company_name: string
+  location: string
+  employment_type: string
+  description: string | null
+  external_apply_url?: string | null
+  listing_metadata?: Record<string, unknown> | null
+  eligible_batch_id: number | null
+  eligible_batch_name: string | null
+  created_at: string
+}
+
+export interface JobApplyResult {
+  job_id: number
+  status: string
+  message: string
+}
+
+export async function fetchOpenJobs(): Promise<StudentJobOpen[]> {
+  const response = await fetchWithApiFallback('/api/v1/jobs/open', {
+    headers: { ...studentAuthHeaders() },
+  })
+  return parseOrThrow(response) as Promise<StudentJobOpen[]>
+}
+
+export async function applyToJob(jobId: number): Promise<JobApplyResult> {
+  const token = localStorage.getItem('career-portal-token')
+  if (!token) {
+    throw new Error('Sign in to apply to jobs.')
+  }
+  const response = await fetchWithApiFallback(`/api/v1/jobs/${jobId}/apply`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return parseOrThrow(response) as Promise<JobApplyResult>
 }
 
 export async function saveProjectStepProgress(projectSlug: string, stepId: number): Promise<void> {

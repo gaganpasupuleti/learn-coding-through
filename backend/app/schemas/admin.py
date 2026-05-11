@@ -132,6 +132,8 @@ class JobPostResponse(BaseModel):
     location: str
     employment_type: str
     description: str | None
+    external_apply_url: str | None = None
+    listing_metadata: dict | None = None
     status: str
     eligible_batch_id: int | None
     eligible_batch_name: str | None

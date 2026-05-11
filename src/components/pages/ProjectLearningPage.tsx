@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -208,16 +207,24 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center">
-        <p className="text-muted-foreground">Loading project...</p>
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 px-6 py-12">
+        <div className="max-w-3xl mx-auto space-y-4 animate-pulse">
+          <div className="h-10 w-2/3 rounded-lg bg-muted" />
+          <div className="h-4 w-full rounded bg-muted" />
+          <div className="h-4 w-5/6 rounded bg-muted" />
+          <div className="h-64 rounded-xl bg-muted/80 mt-8" />
+        </div>
       </div>
     )
   }
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center">
-        <p className="text-muted-foreground">Project not found.</p>
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex flex-col items-center justify-center gap-4 px-6">
+        <p className="text-muted-foreground text-center">This project could not be loaded. It may have been removed or the catalog is unavailable.</p>
+        <Button type="button" variant="default" onClick={onBack}>
+          Back to projects
+        </Button>
       </div>
     )
   }
@@ -562,69 +569,23 @@ export function ProjectLearningPage({ projectId, onBack, onComplete }: ProjectLe
                   </div>
                 )}
 
-                 {currentStep.content.code && (
+                {currentStep.content.code && (
                   <div className="space-y-3">
-                    <Tabs defaultValue="why" className="w-full">
-                      <TabsList className="grid w-full max-w-[600px] grid-cols-3">
-                        <TabsTrigger value="why" className="gap-2">
-                          <Lightbulb size={16} />
-                          Why & How
-                        </TabsTrigger>
-                        <TabsTrigger value="reference" className="gap-2">
-                          <Eye size={16} />
-                          See It
-                        </TabsTrigger>
-                        <TabsTrigger value="editor" className="gap-2">
-                          <CodeIcon size={16} />
-                          Try It
-                        </TabsTrigger>
-                      </TabsList>
-                      
-                      <TabsContent value="why" className="mt-4 space-y-4">
-                        {currentStep.content.points && (
-                          <ul className="space-y-3">
-                            {currentStep.content.points.map((point, index) => (
-                              <li key={index} className="flex gap-3 items-start">
-                                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                  <span className="text-primary text-sm font-semibold">{index + 1}</span>
-                                </div>
-                                <span className="text-foreground leading-relaxed flex-1">{point}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                        {currentStep.videoId ? (
-                          <SkillVideoPlayer
-                            videoId={currentStep.videoId}
-                            title={currentStep.title}
-                            desc="Watch a walkthrough of the code before reading the reference solution."
-                            level="Beginner"
-                            channel="Tutorial"
-                            accentColor="bg-indigo-600"
-                          />
-                        ) : null}
-                      </TabsContent>
-
-                      <TabsContent value="reference" className="mt-4">
-                        <CodeDisplay
-                          code={currentStep.content.code}
-                          language={currentStep.content.language || 'typescript'}
-                          title="Reference Code"
-                          maxHeight="500px"
-                        />
-                      </TabsContent>
-                      
-                      <TabsContent value="editor" className="mt-4">
-                        <CodeDisplay
-                          code={currentStep.content.code}
-                          language={currentStep.content.language || 'typescript'}
-                          title="TypeScript Editor"
-                          maxHeight="600px"
-                        />
-                      </TabsContent>
-                    </Tabs>
+                    <h3 className="flex items-center gap-2 font-semibold text-foreground">
+                      <CodeIcon size={20} className="text-primary" />
+                      Reference solution
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Read-only sample for this step. Use the builder or TDD panel when you are ready to implement.
+                    </p>
+                    <CodeDisplay
+                      code={currentStep.content.code}
+                      language={currentStep.content.language || 'typescript'}
+                      title="Reference code"
+                      maxHeight="560px"
+                    />
                   </div>
-                 )}
+                )}
 
                 {currentStep.type === 'preview' && (
                   <div className="space-y-3">

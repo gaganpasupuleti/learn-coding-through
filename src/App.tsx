@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
 import { LandingPage } from '@/components/pages/LandingPage'
 import { ProjectsPage } from '@/components/pages/ProjectsPage'
 import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
@@ -9,9 +10,11 @@ import { CareerMapperPage } from '@/components/career-mapper'
 import { AdminPage } from '@/components/pages/AdminPage'
 import { LoginPage } from '@/components/pages/LoginPage'
 import { StudentShell } from '@/components/shells/StudentShell'
-import { AdminShell } from '@/components/shells/AdminShell'
 import { AssessmentGuard } from '@/components/assessment/AssessmentGuard'
 import { FlowRoadmapPage } from '@/components/pages/FlowRoadmapPage'
+import { StudentHubPage } from '@/components/pages/StudentHubPage'
+import { OpenJobsPage } from '@/components/pages/OpenJobsPage'
+import { PasswordSetupGate } from '@/components/auth/PasswordSetupGate'
 import {
   getStoredUser,
   isDemoUser,
@@ -34,9 +37,39 @@ import {
   triggerQuizLockedError,
 } from '@/lib/demo-limits'
 
-export type StudentPage = 'landing' | 'projects' | 'learning' | 'practice' | 'typing' | 'quiz' | 'roadmapper' | 'flow-roadmap'
+export type StudentPage =
+  | 'landing'
+  | 'projects'
+  | 'learning'
+  | 'practice'
+  | 'typing'
+  | 'quiz'
+  | 'roadmapper'
+  | 'flow-roadmap'
+  | 'hub'
+  | 'jobs'
 
 type AuthState = AuthUser | null
+
+function PracticeRouteErrorFallback({ resetErrorBoundary }: FallbackProps) {
+  return (
+    <div className="min-h-[40vh] flex items-center justify-center p-6">
+      <div className="max-w-md rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
+        <p className="text-slate-800 font-medium mb-1">Practice couldn&apos;t load</p>
+        <p className="text-sm text-slate-500 mb-4">
+          Something went wrong in the playground. Try again without reloading the whole app.
+        </p>
+        <button
+          type="button"
+          onClick={resetErrorBoundary}
+          className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100"
+        >
+          Reload practice
+        </button>
+      </div>
+    </div>
+  )
+}
 
 function App() {
   const [authState, setAuthState] = useState<AuthState>(() => getStoredUser())
@@ -140,16 +173,24 @@ function App() {
   if (user.role === 'admin') {
     return (
       <div className={wrapperClass}>
-        <AdminShell user={user} onLogout={handleLogout}>
-          <AdminPage />
-        </AdminShell>
+        <AdminPage user={user} onLogout={handleLogout} />
         <Toaster position="top-center" />
       </div>
     )
   }
 
+  const needsPasswordSetup = Boolean(user.password_setup_required)
+
   return (
     <div className={wrapperClass}>
+      {needsPasswordSetup && (
+        <PasswordSetupGate
+          user={user}
+          onSuccess={(u) => {
+            setAuthState(u)
+          }}
+        />
+      )}
       <AssessmentGuard enabled={assessmentGuardEnabled && isAssessmentPage} user={user} page={studentPage} />
       <StudentShell
         currentPage={studentPage === 'learning' ? 'projects' : studentPage}
@@ -161,11 +202,19 @@ function App() {
           <LandingPage onNavigate={handleStudentNavigate} />
         )}
 
+        {studentPage === 'hub' && <StudentHubPage onOpenJobBoard={() => handleStudentNavigate('jobs')} />}
+
+        {studentPage === 'jobs' && <OpenJobsPage />}
+
         {studentPage === 'projects' && (
           <ProjectsPage onSelectProject={handleSelectProject} />
         )}
 
-        {studentPage === 'practice' && <PracticePage />}
+        {studentPage === 'practice' && (
+          <ErrorBoundary FallbackComponent={PracticeRouteErrorFallback}>
+            <PracticePage />
+          </ErrorBoundary>
+        )}
 
         {studentPage === 'typing' && <TypingTrainerPage />}
 

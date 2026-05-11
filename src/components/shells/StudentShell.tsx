@@ -1,9 +1,25 @@
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { LayoutDashboard, Map, Boxes, Code2, ClipboardList, LogOut, User, FileText, Keyboard } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { LayoutDashboard, Map, GitBranch, Boxes, Code2, ClipboardList, LogOut, User, Keyboard, ChevronDown, Briefcase, Building2 } from 'lucide-react'
 import { type AuthUser, clearAuth, isDemoUser } from '@/lib/auth'
 
-type StudentPage = 'landing' | 'projects' | 'practice' | 'typing' | 'quiz' | 'roadmapper' | 'flow-roadmap'
+type StudentPage =
+  | 'landing'
+  | 'projects'
+  | 'practice'
+  | 'typing'
+  | 'quiz'
+  | 'roadmapper'
+  | 'flow-roadmap'
+  | 'hub'
+  | 'jobs'
 
 interface StudentShellProps {
   currentPage: StudentPage
@@ -22,20 +38,25 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
   }
 
   const navItems: { page: StudentPage; label: string; icon: React.ReactNode }[] = [
-    { page: 'landing', label: 'Home', icon: <LayoutDashboard size={15} /> },
-    { page: 'roadmapper', label: 'Career Map', icon: <Map size={15} /> },
-    { page: 'flow-roadmap', label: 'Flow Path', icon: <Map size={15} /> },
-    { page: 'projects', label: 'Projects', icon: <Boxes size={15} /> },
-    { page: 'practice', label: 'Practice', icon: <Code2 size={15} /> },
-    { page: 'typing', label: 'Typing', icon: <Keyboard size={15} /> },
-    { page: 'quiz', label: 'Quiz', icon: <ClipboardList size={15} /> },
+    { page: 'landing', label: 'Home', icon: <LayoutDashboard size={15} aria-hidden /> },
+    { page: 'hub', label: 'Progress & jobs', icon: <Briefcase size={15} aria-hidden /> },
+    { page: 'jobs', label: 'Live jobs', icon: <Building2 size={15} aria-hidden /> },
+    { page: 'roadmapper', label: 'Career Map', icon: <Map size={15} aria-hidden /> },
+    { page: 'flow-roadmap', label: 'Flow Path', icon: <GitBranch size={15} aria-hidden /> },
+    { page: 'projects', label: 'Projects', icon: <Boxes size={15} aria-hidden /> },
+    { page: 'practice', label: 'Practice', icon: <Code2 size={15} aria-hidden /> },
+    { page: 'typing', label: 'Typing', icon: <Keyboard size={15} aria-hidden /> },
+    { page: 'quiz', label: 'Quiz', icon: <ClipboardList size={15} aria-hidden /> },
     
   ]
 
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <nav
+        className="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50"
+        aria-label="Primary"
+      >
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-0">
           <div className="h-10 md:h-14 flex items-center justify-between gap-3 md:gap-4">
             {/* Brand */}
@@ -43,6 +64,7 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
               type="button"
               onClick={() => onNavigate('landing')}
               className="flex items-center gap-2.5 flex-shrink-0 group"
+              aria-label="CodeQuest home"
             >
               <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm group-hover:bg-blue-700 transition-colors duration-150">
                 <Code2 size={15} className="text-white" strokeWidth={2.5} />
@@ -62,6 +84,7 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
                   key={page}
                   type="button"
                   onClick={() => onNavigate(page)}
+                  aria-current={currentPage === page ? 'page' : undefined}
                   className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-150 ${
                     currentPage === page
                       ? 'bg-blue-600 text-white shadow-sm'
@@ -74,20 +97,37 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
               ))}
             </div>
 
-            {/* User area */}
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500">
-                <User size={12} />
-                {user.full_name}
-              </span>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-150"
-              >
-                <LogOut size={14} />
-                <span className="hidden sm:inline">Log out</span>
-              </button>
+            {/* Account + logout */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  type="button"
+                  className="flex items-center gap-1.5 px-2 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+                  aria-label="Account menu"
+                >
+                  <User size={14} className="flex-shrink-0 sm:hidden" aria-hidden />
+                  <span className="hidden sm:inline max-w-[10rem] md:max-w-[14rem] truncate">{user.full_name}</span>
+                  <ChevronDown size={14} className="text-slate-400 flex-shrink-0" aria-hidden />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-sm font-medium text-slate-900 truncate">{user.full_name}</span>
+                      <span className="text-xs text-slate-500 truncate">{user.email}</span>
+                      {isDemo && (
+                        <Badge variant="outline" className="mt-1 w-fit text-[10px] border-amber-400/70 text-amber-700 bg-amber-50">
+                          Demo session
+                        </Badge>
+                      )}
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
+                    <LogOut size={14} className="mr-2" />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -99,6 +139,7 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
                   key={page}
                   type="button"
                   onClick={() => onNavigate(page)}
+                  aria-current={currentPage === page ? 'page' : undefined}
                   className={`flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg transition-all duration-150 ${
                     currentPage === page
                       ? 'bg-blue-600 text-white shadow-sm'
@@ -114,8 +155,9 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
         </div>
       </nav>
 
-      {/* Page content */}
-      {children}
+      <main id="main-content" className="outline-none" tabIndex={-1}>
+        {children}
+      </main>
     </div>
   )
 }

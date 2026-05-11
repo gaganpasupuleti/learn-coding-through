@@ -2,9 +2,50 @@
 
 import sqlite3
 import time
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from .common import build_result
+
+# Preview rows for API / UI (must match _bootstrap_practice_schema seed data).
+PRACTICE_SAMPLE_ROWS: Dict[str, List[Dict[str, Any]]] = {
+    "users": [
+        {"id": 1, "name": "John Doe", "email": "john@example.com", "age": 25},
+        {"id": 2, "name": "Priya Shah", "email": "priya@example.com", "age": 22},
+        {"id": 3, "name": "Rahul Verma", "email": "rahul@example.com", "age": 28},
+    ],
+    "customers": [
+        {"id": 1, "name": "Alice Johnson", "city": "New York"},
+        {"id": 2, "name": "Bob Smith", "city": "Los Angeles"},
+        {"id": 3, "name": "Charlie Brown", "city": "Chicago"},
+    ],
+    "orders": [
+        {"id": 101, "customer_id": 1, "total": 150.0, "order_date": "2024-01-15"},
+        {"id": 102, "customer_id": 2, "total": 75.5, "order_date": "2024-01-16"},
+        {"id": 103, "customer_id": 1, "total": 200.0, "order_date": "2024-01-17"},
+        {"id": 104, "customer_id": 3, "total": 125.75, "order_date": "2024-01-18"},
+    ],
+    "products": [
+        {"id": 1, "name": "Laptop", "category": "Electronics", "price": 899.99, "stock": 12},
+        {"id": 2, "name": "Mouse", "category": "Electronics", "price": 19.99, "stock": 120},
+        {"id": 3, "name": "Notebook", "category": "Stationery", "price": 3.99, "stock": 250},
+    ],
+    "students": [
+        {"id": 1, "full_name": "Ananya Reddy", "cohort": "2026-A", "score": 88},
+        {"id": 2, "full_name": "Kiran Patel", "cohort": "2026-A", "score": 74},
+        {"id": 3, "full_name": "Meera Nair", "cohort": "2026-B", "score": 92},
+    ],
+    "courses": [
+        {"id": 1, "title": "Python Foundations", "level": "beginner", "duration_weeks": 4},
+        {"id": 2, "title": "SQL for Analysts", "level": "intermediate", "duration_weeks": 3},
+        {"id": 3, "title": "Java OOP", "level": "intermediate", "duration_weeks": 5},
+    ],
+    "enrollments": [
+        {"id": 1, "student_id": 1, "course_id": 1, "status": "active"},
+        {"id": 2, "student_id": 1, "course_id": 2, "status": "completed"},
+        {"id": 3, "student_id": 2, "course_id": 1, "status": "active"},
+        {"id": 4, "student_id": 3, "course_id": 3, "status": "active"},
+    ],
+}
 
 
 PRACTICE_SCHEMA = {
@@ -56,8 +97,12 @@ PRACTICE_SCHEMA = {
 
 
 def get_practice_schema() -> Dict[str, Any]:
-    """Return SQL practice schema metadata for frontend display."""
-    return PRACTICE_SCHEMA
+    """Return SQL practice schema metadata and sample rows (Excel/CSV-friendly preview)."""
+    tables_out: List[Dict[str, Any]] = []
+    for table in PRACTICE_SCHEMA["tables"]:
+        name = table["name"]
+        tables_out.append({**table, "sample_rows": PRACTICE_SAMPLE_ROWS.get(name, [])})
+    return {"tables": tables_out}
 
 
 def _bootstrap_practice_schema(cursor: sqlite3.Cursor):
