@@ -3,8 +3,8 @@ builder = "NIXPACKS"
 buildCommand = "pip install -r backend/requirements.txt"
 
 [deploy]
-# Repo root on Railway; backend API lives under backend/
-startCommand = "bash backend/scripts/railway_start.sh"
+# Railway service root is backend/, so paths here are relative to backend/.
+startCommand = "bash scripts/railway_start.sh"
 healthcheckPath = "/health"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
