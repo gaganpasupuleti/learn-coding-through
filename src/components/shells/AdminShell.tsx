@@ -30,9 +30,9 @@ export function AdminShell({
   const hasPillNav = Boolean(sectionNav?.length && onSectionChange)
 
   return (
-    <div className="admin-theme flex min-h-screen flex-col bg-background">
+    <div className="admin-theme flex h-dvh max-h-dvh min-h-0 flex-col overflow-hidden bg-background">
       {/* Navigation — white topbar + segmented pill track */}
-      <nav className="sticky top-0 z-50 shrink-0 bg-white border-b border-slate-200" aria-label="Admin">
+      <nav className="z-50 shrink-0 border-b border-slate-200 bg-white" aria-label="Admin">
         <div className="container mx-auto px-4 sm:px-6 py-3">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             {/* Brand */}

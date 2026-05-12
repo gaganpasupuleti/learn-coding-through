@@ -19,7 +19,6 @@ import { DashboardView } from '@/components/admin/views/DashboardView'
 import { JobsView } from '@/components/admin/views/JobsView'
 import { StudentsView } from '@/components/admin/views/StudentsView'
 import type { AuthUser } from '@/lib/auth'
-import { cn } from '@/lib/utils'
 
 import type { AdminSection } from '@/components/admin/types'
 
@@ -40,7 +39,7 @@ export function AdminPage({ user, onLogout }: AdminPageProps) {
         sectionNav={adminNavItems.map((item) => ({ id: item.key, label: item.label }))}
         onSectionChange={(id) => ws.setSection(id as AdminSection)}
       >
-        <>
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <CommandDialog
             open={ws.commandOpen}
             onOpenChange={ws.setCommandOpen}
@@ -89,17 +88,11 @@ export function AdminPage({ user, onLogout }: AdminPageProps) {
             </CommandList>
           </CommandDialog>
 
-          <div
-            className={cn(
-              'flex min-h-0 flex-1 flex-col bg-background',
-              ws.section === 'dashboard' &&
-                'bg-gradient-to-b from-slate-200/80 via-slate-200/70 to-slate-200/85 dark:bg-background',
-            )}
-          >
+          <div className="flex min-h-0 flex-1 flex-col bg-gradient-to-b from-slate-200/80 via-slate-200/70 to-slate-200/85 dark:bg-background">
             <AdminHeroBar
               user={user}
               section={ws.section}
-              compact={ws.section === 'dashboard'}
+              compact
               isLoading={ws.isLoading}
               search={ws.search}
               onSearchChange={(v) => ws.setSearch(v)}
@@ -107,13 +100,8 @@ export function AdminPage({ user, onLogout }: AdminPageProps) {
               onOpenCommand={() => ws.setCommandOpen(true)}
             />
 
-            <div
-              className={cn(
-                'mx-auto flex w-full max-w-[1680px] flex-1 min-h-0 flex-col px-3 pb-3 pt-2 md:px-4 md:pb-4',
-                ws.section === 'dashboard' ? 'overflow-hidden' : 'overflow-auto',
-              )}
-            >
-              <div className={cn(ws.section === 'dashboard' ? 'min-h-0 flex-1 overflow-auto' : 'space-y-4')}>
+            <div className="mx-auto flex min-h-0 w-full max-w-[1680px] flex-1 flex-col overflow-hidden px-3 pb-3 pt-2 md:px-4 md:pb-4">
+              <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 {ws.section === 'dashboard' && <DashboardView />}
                 {ws.section === 'board' && <BoardView />}
                 {ws.section === 'students' && <StudentsView />}
@@ -124,7 +112,7 @@ export function AdminPage({ user, onLogout }: AdminPageProps) {
               </div>
             </div>
           </div>
-        </>
+        </div>
       </AdminShell>
     </AdminWorkspaceProvider>
   )

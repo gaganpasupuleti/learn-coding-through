@@ -7,19 +7,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LayoutDashboard, Map, GitBranch, Boxes, Code2, ClipboardList, LogOut, User, Keyboard, ChevronDown, Briefcase, Building2 } from 'lucide-react'
+import {
+  LayoutDashboard,
+  Map,
+  GitBranch,
+  Boxes,
+  Code2,
+  ClipboardList,
+  LogOut,
+  User,
+  Keyboard,
+  ChevronDown,
+} from 'lucide-react'
 import { type AuthUser, clearAuth, isDemoUser } from '@/lib/auth'
 
 type StudentPage =
   | 'landing'
+  | 'dashboard'
   | 'projects'
   | 'practice'
   | 'typing'
   | 'quiz'
   | 'roadmapper'
   | 'flow-roadmap'
-  | 'hub'
-  | 'jobs'
 
 interface StudentShellProps {
   currentPage: StudentPage
@@ -38,25 +48,20 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
   }
 
   const navItems: { page: StudentPage; label: string; icon: React.ReactNode }[] = [
-    { page: 'landing', label: 'Home', icon: <LayoutDashboard size={15} aria-hidden /> },
-    { page: 'hub', label: 'Progress & jobs', icon: <Briefcase size={15} aria-hidden /> },
-    { page: 'jobs', label: 'Live jobs', icon: <Building2 size={15} aria-hidden /> },
+    { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} aria-hidden /> },
+    { page: 'landing', label: 'Home', icon: <Boxes size={15} aria-hidden /> },
     { page: 'roadmapper', label: 'Career Map', icon: <Map size={15} aria-hidden /> },
     { page: 'flow-roadmap', label: 'Flow Path', icon: <GitBranch size={15} aria-hidden /> },
     { page: 'projects', label: 'Projects', icon: <Boxes size={15} aria-hidden /> },
     { page: 'practice', label: 'Practice', icon: <Code2 size={15} aria-hidden /> },
     { page: 'typing', label: 'Typing', icon: <Keyboard size={15} aria-hidden /> },
     { page: 'quiz', label: 'Quiz', icon: <ClipboardList size={15} aria-hidden /> },
-    
   ]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex h-dvh max-h-dvh min-h-0 flex-col overflow-hidden bg-white">
       {/* Navigation */}
-      <nav
-        className="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50"
-        aria-label="Primary"
-      >
+      <nav className="z-50 border-b border-slate-200 bg-white/80 backdrop-blur-sm" aria-label="Primary">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-0">
           <div className="h-10 md:h-14 flex items-center justify-between gap-3 md:gap-4">
             {/* Brand */}
@@ -155,7 +160,11 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
         </div>
       </nav>
 
-      <main id="main-content" className="outline-none" tabIndex={-1}>
+      <main
+        id="main-content"
+        className="flex min-h-0 flex-1 flex-col overflow-hidden bg-slate-50"
+        tabIndex={-1}
+      >
         {children}
       </main>
     </div>

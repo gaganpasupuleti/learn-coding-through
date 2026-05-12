@@ -1,32 +1,43 @@
 import { Card } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 import { useAdminWorkspaceContext } from '../AdminWorkspaceContext'
 import { StatusBadge } from '../widgets/StatusBadge'
+
+import {
+  adminPaneCardClass,
+  adminPaneHeaderClass,
+  adminPaneScrollBodyClass,
+  adminSectionRootClass,
+} from './dashboardPolish'
 
 export function ActivityView() {
   const { activityLogs } = useAdminWorkspaceContext()
 
   return (
-    <Card className="admin-surface p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Recent Admin Activity</h3>
-        <span className="text-xs text-muted-foreground">{activityLogs.length} entries</span>
-      </div>
-      <div className="space-y-2 max-h-[700px] overflow-auto pr-1">
-        {activityLogs.map((entry) => (
-          <div key={entry.id} className="rounded-md border p-3">
-            <div className="flex items-center gap-2">
-              <StatusBadge text={entry.action} />
-              <p className="text-xs text-muted-foreground">{new Date(entry.created_at).toLocaleString()}</p>
+    <div className={adminSectionRootClass}>
+      <Card className={cn(adminPaneCardClass, 'min-h-0 flex-1 p-0')}>
+        <div className={cn(adminPaneHeaderClass, 'flex items-center justify-between')}>
+          <span>Admin activity</span>
+          <span className="text-[10px] font-normal normal-case tracking-normal text-muted-foreground">{activityLogs.length} entries</span>
+        </div>
+        <div className={cn(adminPaneScrollBodyClass, 'space-y-2')}>
+          {activityLogs.map((entry) => (
+            <div key={entry.id} className="rounded-md border p-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <StatusBadge text={entry.action} />
+                <p className="text-[10px] text-muted-foreground">{new Date(entry.created_at).toLocaleString()}</p>
+              </div>
+              <p className="mt-1 text-[11px] leading-snug">{entry.details || 'No details'}</p>
+              <p className="mt-1 text-[10px] text-muted-foreground">
+                Admin #{entry.admin_user_id}
+                {entry.target_user_id ? ` → User #${entry.target_user_id}` : ''}
+              </p>
             </div>
-            <p className="text-sm mt-1">{entry.details || 'No details'}</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Admin #{entry.admin_user_id} {entry.target_user_id ? `→ User #${entry.target_user_id}` : ''}
-            </p>
-          </div>
-        ))}
-        {activityLogs.length === 0 && <p className="text-sm text-muted-foreground">No activity found.</p>}
-      </div>
-    </Card>
+          ))}
+          {activityLogs.length === 0 && <p className="text-[11px] text-muted-foreground">No activity.</p>}
+        </div>
+      </Card>
+    </div>
   )
 }

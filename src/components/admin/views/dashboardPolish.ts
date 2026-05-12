@@ -7,3 +7,18 @@ export const vizTileClass =
 
 export const vizTileInteractiveClass =
   `${vizTileClass} hover:border-slate-300 hover:shadow-[0_2px_8px_-2px_rgba(15,23,42,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-1 dark:hover:border-border`
+
+/** Root wrapper for non-dashboard admin sections (Power View canvas). */
+export const adminSectionRootClass = `${reportCanvasClass} flex min-h-0 flex-1 flex-col gap-2 overflow-hidden`
+
+/** Slim header strip above panes (title, counts, actions). */
+export const adminToolbarClass = `${vizTileClass} flex shrink-0 flex-wrap items-center justify-between gap-2 px-2.5 py-2`
+
+/** Card pane: column with optional header + scroll body. */
+export const adminPaneCardClass = `${vizTileClass} flex min-h-0 min-w-0 flex-col overflow-hidden`
+
+export const adminPaneHeaderClass =
+  'shrink-0 border-b border-slate-200/80 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:border-border dark:text-muted-foreground'
+
+/** Scrollable body inside a pane (flex child). */
+export const adminPaneScrollBodyClass = 'min-h-0 flex-1 overflow-auto p-2'

@@ -26,6 +26,19 @@ class JobApplyResponse(BaseModel):
     message: str = ""
 
 
+class StudentJobApplicationItem(BaseModel):
+    job_id: int
+    title: str
+    company_name: str
+    status: str
+    created_at: datetime
+
+
+class StudentJobApplicationsMeResponse(BaseModel):
+    count: int
+    items: list[StudentJobApplicationItem]
+
+
 class JobImportRowError(BaseModel):
     row: int
     detail: str

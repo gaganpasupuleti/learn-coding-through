@@ -12,8 +12,7 @@ import { LoginPage } from '@/components/pages/LoginPage'
 import { StudentShell } from '@/components/shells/StudentShell'
 import { AssessmentGuard } from '@/components/assessment/AssessmentGuard'
 import { FlowRoadmapPage } from '@/components/pages/FlowRoadmapPage'
-import { StudentHubPage } from '@/components/pages/StudentHubPage'
-import { OpenJobsPage } from '@/components/pages/OpenJobsPage'
+import { StudentDashboardPage } from '@/components/pages/StudentDashboardPage'
 import { PasswordSetupGate } from '@/components/auth/PasswordSetupGate'
 import {
   getStoredUser,
@@ -39,6 +38,7 @@ import {
 
 export type StudentPage =
   | 'landing'
+  | 'dashboard'
   | 'projects'
   | 'learning'
   | 'practice'
@@ -73,7 +73,7 @@ function PracticeRouteErrorFallback({ resetErrorBoundary }: FallbackProps) {
 
 function App() {
   const [authState, setAuthState] = useState<AuthState>(() => getStoredUser())
-  const [studentPage, setStudentPage] = useState<StudentPage>('landing')
+  const [studentPage, setStudentPage] = useState<StudentPage>('dashboard')
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
   const routeStartRef = useRef<{ route: string; startedAt: number } | null>(null)
 
@@ -83,13 +83,13 @@ function App() {
   const handleAuthenticated = (user: AuthUser) => {
     setAuthState(user)
     if (user.role !== 'admin') {
-      setStudentPage('landing')
+      setStudentPage('dashboard')
     }
   }
 
   const handleLogout = () => {
     setAuthState(null)
-    setStudentPage('landing')
+    setStudentPage('dashboard')
     setSelectedProjectId(null)
     toast.success('Logged out successfully.')
   }
@@ -172,7 +172,7 @@ function App() {
 
   if (user.role === 'admin') {
     return (
-      <div className={wrapperClass}>
+      <div className="flex h-dvh max-h-dvh min-h-0 flex-col overflow-hidden bg-background">
         <AdminPage user={user} onLogout={handleLogout} />
         <Toaster position="top-center" />
       </div>
@@ -202,9 +202,12 @@ function App() {
           <LandingPage onNavigate={handleStudentNavigate} />
         )}
 
-        {studentPage === 'hub' && <StudentHubPage onOpenJobBoard={() => handleStudentNavigate('jobs')} />}
-
-        {studentPage === 'jobs' && <OpenJobsPage />}
+        {(studentPage === 'dashboard' || studentPage === 'hub' || studentPage === 'jobs') && (
+          <StudentDashboardPage
+            user={user}
+            initialTab={studentPage === 'jobs' ? 'jobs' : 'progress'}
+          />
+        )}
 
         {studentPage === 'projects' && (
           <ProjectsPage onSelectProject={handleSelectProject} />

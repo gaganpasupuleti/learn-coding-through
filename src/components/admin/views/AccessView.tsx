@@ -1,94 +1,108 @@
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 import { useAdminWorkspaceContext } from '../AdminWorkspaceContext'
 import { StatusBadge } from '../widgets/StatusBadge'
+
+import {
+  adminPaneCardClass,
+  adminPaneHeaderClass,
+  adminPaneScrollBodyClass,
+  adminSectionRootClass,
+} from './dashboardPolish'
 
 export function AccessView() {
   const { waitlistEntries, userActivityEntries, isLoading, handleUpdateWaitlistStatus } = useAdminWorkspaceContext()
 
   return (
-    <div className="grid gap-4 xl:grid-cols-2">
-      <Card className="admin-surface p-4 space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="text-lg font-semibold">Registration Waitlist</h3>
-          <span className="text-xs text-muted-foreground">{waitlistEntries.length} entries</span>
-        </div>
-        <p className="text-xs text-muted-foreground">Approve one-by-one to allow sign-up beyond the 1500-user cap</p>
-        <div className="space-y-2 max-h-[640px] overflow-auto pr-1">
-          {waitlistEntries.map((entry) => (
-            <div key={entry.id} className="rounded-md border p-3 space-y-2">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="text-sm font-semibold">{entry.email}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {entry.full_name || 'No name'} · {entry.source} · attempts {entry.attempt_count}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Last tried: {new Date(entry.last_attempted_at).toLocaleString()}
+    <div className={adminSectionRootClass}>
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-hidden xl:grid-cols-2 xl:grid-rows-1">
+        <Card className={cn(adminPaneCardClass, 'min-h-0 p-0')}>
+          <div className={cn(adminPaneHeaderClass, 'flex items-center justify-between gap-2')}>
+            <span>Waitlist</span>
+            <span className="text-[10px] font-normal normal-case tracking-normal text-muted-foreground">{waitlistEntries.length}</span>
+          </div>
+          <p className="shrink-0 border-b border-slate-200/80 px-2 py-1 text-[10px] text-muted-foreground dark:border-border">
+            Approve beyond the 1500-user cap.
+          </p>
+          <div className={cn(adminPaneScrollBodyClass, 'space-y-2')}>
+            {waitlistEntries.map((entry) => (
+              <div key={entry.id} className="space-y-2 rounded-md border p-2">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="truncate text-xs font-semibold">{entry.email}</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {entry.full_name || 'No name'} · {entry.source} · tries {entry.attempt_count}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">{new Date(entry.last_attempted_at).toLocaleString()}</p>
+                  </div>
+                  <StatusBadge
+                    text={entry.status}
+                    variant={entry.status === 'approved' ? 'success' : entry.status === 'rejected' ? 'danger' : 'warning'}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="h-7 text-[10px]"
+                    onClick={() => handleUpdateWaitlistStatus(entry.id, 'approved')}
+                    disabled={isLoading || entry.status === 'approved'}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="h-7 text-[10px]"
+                    onClick={() => handleUpdateWaitlistStatus(entry.id, 'pending')}
+                    disabled={isLoading || entry.status === 'pending'}
+                  >
+                    Pending
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="h-7 text-[10px] text-red-500"
+                    onClick={() => handleUpdateWaitlistStatus(entry.id, 'rejected')}
+                    disabled={isLoading || entry.status === 'rejected'}
+                  >
+                    Reject
+                  </Button>
+                </div>
+              </div>
+            ))}
+            {waitlistEntries.length === 0 && <p className="text-[11px] text-muted-foreground">No waitlist entries.</p>}
+          </div>
+        </Card>
+
+        <Card className={cn(adminPaneCardClass, 'min-h-0 p-0')}>
+          <div className={cn(adminPaneHeaderClass, 'flex items-center justify-between gap-2')}>
+            <span>User activity</span>
+            <span className="text-[10px] font-normal normal-case tracking-normal text-muted-foreground">{userActivityEntries.length}</span>
+          </div>
+          <div className={cn(adminPaneScrollBodyClass, 'space-y-2')}>
+            {userActivityEntries.map((entry) => (
+              <div key={entry.id} className="rounded-md border p-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <StatusBadge text={entry.event_type} variant={entry.status_code && entry.status_code >= 400 ? 'danger' : 'default'} />
+                  <p className="min-w-0 truncate font-mono text-[10px] text-muted-foreground">
+                    {entry.method ?? ''} {entry.route}
                   </p>
                 </div>
-                <StatusBadge
-                  text={entry.status}
-                  variant={entry.status === 'approved' ? 'success' : entry.status === 'rejected' ? 'danger' : 'warning'}
-                />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  size="sm"
-                  variant="default"
-                  onClick={() => handleUpdateWaitlistStatus(entry.id, 'approved')}
-                  disabled={isLoading || entry.status === 'approved'}
-                >
-                  Approve
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleUpdateWaitlistStatus(entry.id, 'pending')}
-                  disabled={isLoading || entry.status === 'pending'}
-                >
-                  Pending
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="text-red-500"
-                  onClick={() => handleUpdateWaitlistStatus(entry.id, 'rejected')}
-                  disabled={isLoading || entry.status === 'rejected'}
-                >
-                  Reject
-                </Button>
-              </div>
-            </div>
-          ))}
-          {waitlistEntries.length === 0 && <p className="text-sm text-muted-foreground">No waitlist entries found.</p>}
-        </div>
-      </Card>
-
-      <Card className="admin-surface p-4 space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="text-lg font-semibold">Recent User Activity</h3>
-          <span className="text-xs text-muted-foreground">{userActivityEntries.length} entries</span>
-        </div>
-        <div className="space-y-2 max-h-[640px] overflow-auto pr-1">
-          {userActivityEntries.map((entry) => (
-            <div key={entry.id} className="rounded-md border p-3">
-              <div className="flex items-center gap-2">
-                <StatusBadge text={entry.event_type} variant={entry.status_code && entry.status_code >= 400 ? 'danger' : 'default'} />
-                <p className="text-xs font-mono text-muted-foreground truncate">
-                  {entry.method ?? ''} {entry.route}
+                <p className="mt-1 text-[10px] text-muted-foreground">
+                  User #{entry.user_id ?? 'anon'} · {entry.status_code ?? '-'} · {entry.duration_ms ?? 0}ms ·{' '}
+                  {new Date(entry.occurred_at).toLocaleString()}
                 </p>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                User #{entry.user_id ?? 'anon'} · {entry.status_code ?? '-'} · {entry.duration_ms ?? 0}ms ·{' '}
-                {new Date(entry.occurred_at).toLocaleString()}
-              </p>
-            </div>
-          ))}
-          {userActivityEntries.length === 0 && <p className="text-sm text-muted-foreground">No user activity found.</p>}
-        </div>
-      </Card>
+            ))}
+            {userActivityEntries.length === 0 && <p className="text-[11px] text-muted-foreground">No user activity.</p>}
+          </div>
+        </Card>
+      </div>
     </div>
   )
 }

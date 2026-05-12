@@ -1133,6 +1133,53 @@ export async function applyToJob(jobId: number): Promise<JobApplyResult> {
   return parseOrThrow(response) as Promise<JobApplyResult>
 }
 
+export interface StudentJobApplicationItem {
+  job_id: number
+  title: string
+  company_name: string
+  status: string
+  created_at: string
+}
+
+export interface StudentJobApplicationsMe {
+  count: number
+  items: StudentJobApplicationItem[]
+}
+
+export async function fetchStudentJobApplications(): Promise<StudentJobApplicationsMe> {
+  const response = await fetchWithApiFallback('/api/v1/jobs/applications/me', {
+    headers: { ...studentAuthHeaders() },
+  })
+  return parseOrThrow(response) as Promise<StudentJobApplicationsMe>
+}
+
+export interface EnrollmentMe {
+  attendance_pct: number | null
+  batch_names: string[]
+}
+
+export async function fetchMyEnrollment(): Promise<EnrollmentMe> {
+  const response = await fetchWithApiFallback('/api/v1/enrollment/me', {
+    headers: { ...studentAuthHeaders() },
+  })
+  return parseOrThrow(response) as Promise<EnrollmentMe>
+}
+
+export interface MySubmittedProject {
+  id: number
+  stage_id: number
+  title: string
+  status: string
+  github_link: string | null
+}
+
+export async function fetchMySubmittedProjects(): Promise<MySubmittedProject[]> {
+  const response = await fetchWithApiFallback('/api/v1/projects/me', {
+    headers: { ...studentAuthHeaders() },
+  })
+  return parseOrThrow(response) as Promise<MySubmittedProject[]>
+}
+
 export async function saveProjectStepProgress(projectSlug: string, stepId: number): Promise<void> {
   const response = await fetch(
     `${API_BASE_URL}/api/v1/progress/project/${encodeURIComponent(projectSlug)}/step/${stepId}`,

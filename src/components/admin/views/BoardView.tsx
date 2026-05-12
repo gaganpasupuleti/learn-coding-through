@@ -2,12 +2,19 @@ import { MagnifyingGlass } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 
 import { useAdminWorkspaceContext } from '../AdminWorkspaceContext'
 import { WORKFLOW_STAGE_STORAGE_KEY, workflowStageMeta } from '../constants'
 import type { StudentWorkflowStage } from '../types'
+
+import {
+  adminPaneScrollBodyClass,
+  adminSectionRootClass,
+  adminToolbarClass,
+  vizTileClass,
+} from './dashboardPolish'
 
 const BOARD_STAGES: StudentWorkflowStage[] = ['new', 'enrolled', 'in_progress', 'needs_attention']
 
@@ -32,7 +39,11 @@ export function BoardView() {
     return (
       <div
         key={stage}
-        className={`rounded-lg border p-3 space-y-3 transition ${dragOverStage === stage ? 'bg-primary/10 border-primary' : 'bg-muted/20'}`}
+        className={cn(
+          vizTileClass,
+          'flex min-h-0 min-w-0 flex-col overflow-hidden p-2 transition',
+          dragOverStage === stage ? 'border-primary bg-primary/5 ring-1 ring-primary/30' : '',
+        )}
         onDragOver={(event) => {
           event.preventDefault()
           setDragOverStage(stage)
@@ -43,13 +54,15 @@ export function BoardView() {
           handleDropToStage(stage)
         }}
       >
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold tracking-tight">{meta.title}</p>
-          <span className="text-xs text-muted-foreground font-medium">{column.length}</span>
+        <div className="shrink-0 space-y-0.5 border-b border-slate-200/80 pb-2 dark:border-border">
+          <div className="flex items-center justify-between gap-1">
+            <p className="truncate text-xs font-semibold tracking-tight text-slate-900 dark:text-foreground">{meta.title}</p>
+            <span className="shrink-0 text-[10px] font-medium tabular-nums text-muted-foreground">{column.length}</span>
+          </div>
+          <p className="line-clamp-2 text-[10px] leading-snug text-muted-foreground">{meta.hint}</p>
         </div>
-        <p className="text-xs text-muted-foreground">{meta.hint}</p>
 
-        <div className="space-y-2 max-h-[420px] overflow-auto pr-1">
+        <div className={cn(adminPaneScrollBodyClass, 'space-y-2')}>
           {column.map((student) => (
             <button
               key={student.id}
@@ -65,41 +78,51 @@ export function BoardView() {
                 setDraggedStudentId(null)
                 setDragOverStage(null)
               }}
-              className={`w-full rounded-md border bg-background p-3 text-left transition cursor-move ${selectedStudentId === student.id ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/30'}`}
+              className={cn(
+                'w-full cursor-move rounded-md border bg-background p-2 text-left text-xs transition',
+                selectedStudentId === student.id ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/30',
+              )}
             >
-              <p className="text-sm font-semibold tracking-tight">{student.full_name}</p>
-              <p className="text-xs text-muted-foreground truncate">{student.email}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Batch: {student.batch_name || student.cohort_name || 'Unassigned'} · XP: {student.xp_points}
+              <p className="truncate font-semibold tracking-tight text-slate-900 dark:text-foreground">{student.full_name}</p>
+              <p className="truncate text-[10px] text-muted-foreground">{student.email}</p>
+              <p className="mt-1 text-[10px] text-muted-foreground">
+                {student.batch_name || student.cohort_name || 'Unassigned'} · XP {student.xp_points}
               </p>
             </button>
           ))}
-          {column.length === 0 && <p className="text-xs text-muted-foreground">Drop student cards here</p>}
+          {column.length === 0 && <p className="text-[10px] text-muted-foreground">Drop student cards here</p>}
         </div>
       </div>
     )
   }
 
   return (
-    <Card className="admin-surface admin-bento-tile space-y-4 rounded-3xl p-4 md:p-5">
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">Student Workflow Board</h3>
-          <p className="text-sm text-muted-foreground">Jira-style board with drag-and-drop columns</p>
+    <div className={adminSectionRootClass}>
+      <div className={adminToolbarClass}>
+        <div className="min-w-0">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-muted-foreground">Workflow</p>
+          <h2 className="truncate text-sm font-semibold text-slate-900 dark:text-foreground">Student board</h2>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           <div className="relative">
-            <MagnifyingGlass size={16} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <MagnifyingGlass
+              size={14}
+              className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
             <Input
               value={boardQuery}
               onChange={(event) => setBoardQuery(event.target.value)}
-              placeholder="Filter students"
-              className="pl-8 w-[220px]"
+              placeholder="Filter…"
+              className="h-8 w-[11rem] pl-7 text-xs sm:w-[14rem]"
             />
           </div>
           <Button
+            type="button"
             variant="outline"
+            size="sm"
+            className="h-8 text-xs"
             onClick={() => {
               setManualWorkflowStages({})
               localStorage.removeItem(WORKFLOW_STAGE_STORAGE_KEY)
@@ -111,7 +134,9 @@ export function BoardView() {
         </div>
       </div>
 
-      <div className="grid gap-3 xl:grid-cols-4">{BOARD_STAGES.map(renderBoardColumn)}</div>
-    </Card>
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-hidden sm:grid-cols-2 xl:grid-cols-4 xl:grid-rows-1">
+        {BOARD_STAGES.map(renderBoardColumn)}
+      </div>
+    </div>
   )
 }
