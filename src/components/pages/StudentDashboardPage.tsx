@@ -212,6 +212,10 @@ export function StudentDashboardPage({
 }: StudentDashboardPageProps & { user: AuthUser }) {
   const [tab, setTab] = useState<StudentDashboardTab>(initialTab)
 
+  useEffect(() => {
+    setTab(initialTab)
+  }, [initialTab])
+
   const {
     stageRows,
     catalogSteps,
@@ -318,15 +322,17 @@ export function StudentDashboardPage({
           </div>
         </div>
 
-        <DashboardKpisAndCharts
-          loading={dashboardLoading}
-          stageRows={stageRows}
-          careerLocal={careerLocal}
-          typingAttempts={typingAttempts}
-          applications={applications}
-          enrollment={enrollment}
-          submittedProjects={submittedProjects}
-        />
+        {tab === 'progress' ? (
+          <DashboardKpisAndCharts
+            loading={dashboardLoading}
+            stageRows={stageRows}
+            careerLocal={careerLocal}
+            typingAttempts={typingAttempts}
+            applications={applications}
+            enrollment={enrollment}
+            submittedProjects={submittedProjects}
+          />
+        ) : null}
 
         {/* Content */}
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">

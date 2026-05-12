@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import {
   LayoutDashboard,
+  Briefcase,
   Map,
   GitBranch,
   Boxes,
@@ -30,6 +31,8 @@ type StudentPage =
   | 'quiz'
   | 'roadmapper'
   | 'flow-roadmap'
+  | 'hub'
+  | 'jobs'
 
 interface StudentShellProps {
   currentPage: StudentPage
@@ -49,6 +52,7 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
 
   const navItems: { page: StudentPage; label: string; icon: React.ReactNode }[] = [
     { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} aria-hidden /> },
+    { page: 'jobs', label: 'Jobs', icon: <Briefcase size={15} aria-hidden /> },
     { page: 'landing', label: 'Home', icon: <Boxes size={15} aria-hidden /> },
     { page: 'roadmapper', label: 'Career Map', icon: <Map size={15} aria-hidden /> },
     { page: 'flow-roadmap', label: 'Flow Path', icon: <GitBranch size={15} aria-hidden /> },
