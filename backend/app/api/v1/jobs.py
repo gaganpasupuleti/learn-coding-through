@@ -17,7 +17,6 @@ router = APIRouter(prefix="/jobs", tags=["Jobs"])
 @router.get("/open", response_model=list[StudentJobOpenResponse])
 def list_open_jobs(
     db: Session = Depends(get_db),
-    _user: User = Depends(get_current_user),
 ):
     jobs = (
         db.query(JobPost)
