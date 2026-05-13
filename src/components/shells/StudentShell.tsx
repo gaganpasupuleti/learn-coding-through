@@ -52,16 +52,16 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
   }
 
   const navItems: { page: StudentPage; label: string; icon: React.ReactNode }[] = [
-    { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} aria-hidden /> },
-    { page: 'hub', label: 'Hub', icon: <LayoutGrid size={15} aria-hidden /> },
-    { page: 'jobs', label: 'Jobs', icon: <Briefcase size={15} aria-hidden /> },
-    { page: 'landing', label: 'Home', icon: <Boxes size={15} aria-hidden /> },
-    { page: 'roadmapper', label: 'Career Map', icon: <Map size={15} aria-hidden /> },
-    { page: 'flow-roadmap', label: 'Flow Path', icon: <GitBranch size={15} aria-hidden /> },
-    { page: 'projects', label: 'Projects', icon: <Boxes size={15} aria-hidden /> },
-    { page: 'practice', label: 'Practice', icon: <Code2 size={15} aria-hidden /> },
-    { page: 'typing', label: 'Typing', icon: <Keyboard size={15} aria-hidden /> },
-    { page: 'quiz', label: 'Quiz', icon: <ClipboardList size={15} aria-hidden /> },
+    { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={14} aria-hidden /> },
+    { page: 'hub', label: 'Hub', icon: <LayoutGrid size={14} aria-hidden /> },
+    { page: 'jobs', label: 'Jobs', icon: <Briefcase size={14} aria-hidden /> },
+    { page: 'roadmapper', label: 'Career Map', icon: <Map size={14} aria-hidden /> },
+    { page: 'flow-roadmap', label: 'Flow Path', icon: <GitBranch size={14} aria-hidden /> },
+    { page: 'projects', label: 'Projects', icon: <Boxes size={14} aria-hidden /> },
+    { page: 'practice', label: 'Practice', icon: <Code2 size={14} aria-hidden /> },
+    { page: 'quiz', label: 'Quiz', icon: <ClipboardList size={14} aria-hidden /> },
+    { page: 'typing', label: 'Typing', icon: <Keyboard size={14} aria-hidden /> },
+    { page: 'landing', label: 'Home', icon: <Boxes size={14} aria-hidden /> },
   ]
 
   return (
@@ -89,14 +89,14 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
             </button>
 
             {/* Desktop nav links */}
-            <div className="hidden md:flex items-center gap-0.5 flex-wrap">
+            <div className="hidden md:flex items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {navItems.map(({ page, label, icon }) => (
                 <button
                   key={page}
                   type="button"
                   onClick={() => onNavigate(page)}
                   aria-current={currentPage === page ? 'page' : undefined}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-150 ${
+                  className={`flex items-center gap-1 px-2.5 py-1.5 text-[13px] font-medium rounded-lg whitespace-nowrap transition-all duration-150 ${
                     currentPage === page
                       ? 'bg-blue-600 text-white shadow-sm'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
