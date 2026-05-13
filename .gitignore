@@ -43,6 +43,8 @@ __pycache__
 *.egg
 *.egg-info
 backend/career_portal.db
+backend/fixture_portal.db
+backend/fixture_cohort_logins.json
 
 # Screenshots from smoke tests
 scripts/screenshots/

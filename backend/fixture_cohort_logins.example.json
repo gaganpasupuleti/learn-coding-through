@@ -1,0 +1,17 @@
+{
+  "fixture_domain": "codequest-fixture.test",
+  "student_count": 20,
+  "shared_password_note": "Set FIXTURE_COHORT_PASSWORD or use default FixtureStudent@123",
+  "password_used_from_env": false,
+  "students": [
+    {
+      "index": 1,
+      "email": "fixture01@codequest-fixture.test",
+      "full_name": "Fixture Topper 1",
+      "archetype": "topper",
+      "password_env": "FIXTURE_COHORT_PASSWORD (or CLI default)",
+      "batch": "[Fixture] Cohort Alpha",
+      "in_app_credits_after_seed": 520
+    }
+  ]
+}
