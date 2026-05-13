@@ -1,20 +1,36 @@
 import json
 import logging
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from sqlalchemy.orm import Session
 
 from app.core.security import get_password_hash
 from app.models.models import (
+    BatchEnrollment,
+    BatchMode,
     DifficultyLevel,
+    EnrollmentRole,
+    JobApplication,
+    JobApplicationStatus,
+    JobPost,
+    JobPostStatus,
+    LearningBatch,
+    ProgressTracking,
+    Project,
     ProjectCatalog,
     ProjectCatalogStep,
+    ProjectReviewStatus,
+    ProjectStepCompletion,
     Quiz,
     QuizCatalog,
     QuizCatalogQuestion,
     QuizQuestion,
     Role,
     Stage,
+    TypingAttempt,
+    TypingMode,
+    TypingTestType,
     User,
     UserRole,
 )
@@ -686,3 +702,208 @@ def seed_catalog_data(db: Session) -> None:
         _upsert_project(db, project_data)
     db.commit()
     logger.info("Catalog seed complete.")
+
+
+KPI_DEMO_STUDENT_EMAIL = "kundetiriya@gmail.com"
+
+
+def seed_student_dashboard_demo(db: Session) -> None:
+    """
+    Idempotent sample rows so a known student account can see populated KPIs.
+    Only touches that user when they already exist; does not overwrite non-empty progress rows.
+    """
+    email = KPI_DEMO_STUDENT_EMAIL.strip().lower()
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        logger.info("Demo dashboard seed skipped (no user): %s", email)
+        return
+    if user.role != UserRole.STUDENT:
+        logger.info("Demo dashboard seed skipped (not a student): %s", email)
+        return
+
+    role = db.query(Role).order_by(Role.id.asc()).first()
+    if not role:
+        return
+    stages = db.query(Stage).filter(Stage.role_id == role.id).order_by(Stage.order_number.asc()).all()
+    if not stages:
+        return
+
+    demo_prefix = "[KPI demo seed]"
+    payload_rows = [
+        (6, 12, 78, 72, True),
+        (7, 12, 84, 76, True),
+        (5, 10, 72, 68, True),
+        (4, 12, 91, 82, True),
+    ]
+    for stage, (lc, tl, quiz, ex_pct, unlocked) in zip(stages[:4], payload_rows):
+        row = (
+            db.query(ProgressTracking)
+            .filter(
+                ProgressTracking.user_id == user.id,
+                ProgressTracking.role_id == role.id,
+                ProgressTracking.stage_id == stage.id,
+            )
+            .first()
+        )
+        if row is None:
+            db.add(
+                ProgressTracking(
+                    user_id=user.id,
+                    role_id=role.id,
+                    stage_id=stage.id,
+                    lessons_completed=lc,
+                    total_lessons=tl,
+                    latest_quiz_score=quiz,
+                    exercises_completed_pct=ex_pct,
+                    unlocked=unlocked,
+                )
+            )
+        elif row.total_lessons == 0 and row.lessons_completed == 0 and row.latest_quiz_score == 0:
+            row.lessons_completed = lc
+            row.total_lessons = tl
+            row.latest_quiz_score = quiz
+            row.exercises_completed_pct = ex_pct
+            row.unlocked = unlocked
+            db.add(row)
+
+    existing_typing = db.query(TypingAttempt).filter(TypingAttempt.user_id == user.id).count()
+    need_typing = max(0, 8 - existing_typing)
+    if need_typing:
+        wpms = [38.0, 44.0, 41.0, 52.0, 48.0, 61.0, 55.0, 67.0]
+        base_time = datetime.utcnow()
+        for i in range(need_typing):
+            wpm = wpms[i % len(wpms)]
+            db.add(
+                TypingAttempt(
+                    user_id=user.id,
+                    mode=TypingMode.SENTENCE,
+                    test_type=TypingTestType.TIMED,
+                    test_option="60",
+                    language="en",
+                    prompt_text="Demo sentence for dashboard KPI seed data.",
+                    typed_text="Demo sentence for dashboard KPI seed data.",
+                    wpm=wpm,
+                    raw_wpm=wpm + 3.0,
+                    accuracy=96.5,
+                    error_count=1,
+                    elapsed_seconds=60,
+                    created_at=base_time - timedelta(minutes=20 * (i + 1)),
+                )
+            )
+
+    stage0 = stages[0]
+    seed_projects = (
+        (f"{demo_prefix} Portfolio A (approved)", ProjectReviewStatus.APPROVED),
+        (f"{demo_prefix} Portfolio B (submitted)", ProjectReviewStatus.SUBMITTED),
+    )
+    for title, status in seed_projects:
+        exists = db.query(Project).filter(Project.user_id == user.id, Project.title == title).first()
+        if not exists:
+            db.add(
+                Project(
+                    user_id=user.id,
+                    stage_id=stage0.id,
+                    title=title,
+                    description="Seeded portfolio row for student dashboard KPI preview.",
+                    github_link="https://github.com/example/demo-portfolio",
+                    review_status=status,
+                )
+            )
+
+    batch_name = f"{demo_prefix} Spring cohort"
+    batch = db.query(LearningBatch).filter(LearningBatch.name == batch_name).first()
+    if not batch:
+        batch = LearningBatch(
+            name=batch_name,
+            track="Full Stack",
+            days="Mon–Fri",
+            time_ist="10:00–13:00 IST",
+            mode=BatchMode.ONLINE,
+            start_date=date.today(),
+            seats_total=40,
+            seats_filled=1,
+        )
+        db.add(batch)
+        db.flush()
+
+    enr = (
+        db.query(BatchEnrollment)
+        .filter(BatchEnrollment.user_id == user.id, BatchEnrollment.batch_id == batch.id)
+        .first()
+    )
+    if not enr:
+        db.add(
+            BatchEnrollment(
+                batch_id=batch.id,
+                user_id=user.id,
+                enrollment_role=EnrollmentRole.STUDENT,
+                attendance_pct=88,
+            )
+        )
+    elif enr.attendance_pct == 0:
+        enr.attendance_pct = 88
+        db.add(enr)
+
+    job_title = f"{demo_prefix} Junior Backend Engineer"
+    job = db.query(JobPost).filter(JobPost.title == job_title).first()
+    if not job:
+        job = JobPost(
+            title=job_title,
+            company_name="CodeQuest Demo Labs",
+            location="Remote (India)",
+            employment_type="full_time",
+            description="Seeded opening for dashboard / QA — safe to delete.",
+            status=JobPostStatus.OPEN,
+            eligible_batch_id=batch.id,
+            created_by_user_id=user.id,
+        )
+        db.add(job)
+        db.flush()
+
+    app_row = (
+        db.query(JobApplication)
+        .filter(JobApplication.job_post_id == job.id, JobApplication.student_user_id == user.id)
+        .first()
+    )
+    if not app_row:
+        db.add(
+            JobApplication(
+                job_post_id=job.id,
+                student_user_id=user.id,
+                status=JobApplicationStatus.APPLIED,
+            )
+        )
+
+    job2_title = f"{demo_prefix} Frontend internship"
+    if not db.query(JobPost).filter(JobPost.title == job2_title).first():
+        db.add(
+            JobPost(
+                title=job2_title,
+                company_name="CodeQuest Demo Labs",
+                location="Hybrid — Bengaluru",
+                employment_type="internship",
+                description="Second seeded listing (no auto-application).",
+                status=JobPostStatus.OPEN,
+                eligible_batch_id=batch.id,
+                created_by_user_id=user.id,
+            )
+        )
+
+    slug = "frontend-foundations"
+    cat = db.query(ProjectCatalog).filter(ProjectCatalog.slug == slug).first()
+    if cat:
+        for step_id in (1, 2, 3):
+            psc = (
+                db.query(ProjectStepCompletion)
+                .filter(
+                    ProjectStepCompletion.user_id == user.id,
+                    ProjectStepCompletion.project_slug == slug,
+                    ProjectStepCompletion.step_id == step_id,
+                )
+                .first()
+            )
+            if not psc:
+                db.add(ProjectStepCompletion(user_id=user.id, project_slug=slug, step_id=step_id))
+
+    db.commit()
+    logger.info("Demo dashboard snapshot seeded for %s", email)

@@ -15,6 +15,7 @@ import {
   Boxes,
   Code2,
   ClipboardList,
+  LayoutGrid,
   LogOut,
   User,
   Keyboard,
@@ -25,14 +26,14 @@ import { type AuthUser, clearAuth, isDemoUser } from '@/lib/auth'
 type StudentPage =
   | 'landing'
   | 'dashboard'
+  | 'hub'
+  | 'jobs'
   | 'projects'
   | 'practice'
   | 'typing'
   | 'quiz'
   | 'roadmapper'
   | 'flow-roadmap'
-  | 'hub'
-  | 'jobs'
 
 interface StudentShellProps {
   currentPage: StudentPage
@@ -52,6 +53,7 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
 
   const navItems: { page: StudentPage; label: string; icon: React.ReactNode }[] = [
     { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} aria-hidden /> },
+    { page: 'hub', label: 'Hub', icon: <LayoutGrid size={15} aria-hidden /> },
     { page: 'jobs', label: 'Jobs', icon: <Briefcase size={15} aria-hidden /> },
     { page: 'landing', label: 'Home', icon: <Boxes size={15} aria-hidden /> },
     { page: 'roadmapper', label: 'Career Map', icon: <Map size={15} aria-hidden /> },

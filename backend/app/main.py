@@ -18,7 +18,7 @@ from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import ALGORITHM
 from app.models.models import TypingAttempt, User, UserActivityLog
-from app.services.seed import seed_admin_user, seed_catalog_data, seed_default_roles, seed_promoted_admins
+from app.services.seed import seed_admin_user, seed_catalog_data, seed_default_roles, seed_promoted_admins, seed_student_dashboard_demo
 from executors.java_executor import verify_java_runtime_setup
 
 
@@ -183,6 +183,7 @@ def startup_event():
             )
             seed_promoted_admins(db, settings.promote_admin_emails)
             seed_catalog_data(db)
+            seed_student_dashboard_demo(db)
         finally:
             db.close()
     except Exception as e:

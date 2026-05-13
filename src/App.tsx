@@ -13,6 +13,8 @@ import { StudentShell } from '@/components/shells/StudentShell'
 import { AssessmentGuard } from '@/components/assessment/AssessmentGuard'
 import { FlowRoadmapPage } from '@/components/pages/FlowRoadmapPage'
 import { StudentDashboardPage } from '@/components/pages/StudentDashboardPage'
+import { StudentHubPage } from '@/components/pages/StudentHubPage'
+import { StudentJobsPage } from '@/components/pages/StudentJobsPage'
 import { PasswordSetupGate } from '@/components/auth/PasswordSetupGate'
 import {
   getStoredUser,
@@ -202,12 +204,13 @@ function App() {
           <LandingPage onNavigate={handleStudentNavigate} />
         )}
 
-        {(studentPage === 'dashboard' || studentPage === 'hub' || studentPage === 'jobs') && (
-          <StudentDashboardPage
-            user={user}
-            initialTab={studentPage === 'jobs' ? 'jobs' : 'progress'}
-          />
+        {studentPage === 'dashboard' && <StudentDashboardPage user={user} />}
+
+        {studentPage === 'hub' && (
+          <StudentHubPage onOpenJobBoard={() => handleStudentNavigate('jobs')} />
         )}
+
+        {studentPage === 'jobs' && <StudentJobsPage />}
 
         {studentPage === 'projects' && (
           <ProjectsPage onSelectProject={handleSelectProject} />
