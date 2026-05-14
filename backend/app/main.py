@@ -13,7 +13,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
 
-from app.api.v1 import activity, admin, auth, credits, enrollment, interview, jobs, progress, projects, quiz, roadmap, roles, execute, typing
+from app.api.v1 import activity, admin, auth, credits, enrollment, interview, jobs, progress, projects, quiz, roadmap, roles, execute, schedule, typing
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import ALGORITHM
@@ -259,4 +259,5 @@ app.include_router(credits.router, prefix="/api/v1")
 app.include_router(quiz.router, prefix="/api/v1")
 app.include_router(projects.router, prefix="/api/v1")
 app.include_router(interview.router, prefix="/api/v1")
+app.include_router(schedule.router, prefix="/api/v1")
 app.include_router(execute.router, prefix="/api/v1")

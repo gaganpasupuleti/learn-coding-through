@@ -1,4 +1,4 @@
-﻿from datetime import date, datetime
+﻿from datetime import date, datetime, time
 from enum import Enum
 
 from sqlalchemy import (
@@ -13,6 +13,7 @@ from sqlalchemy import (
     Numeric,
     String,
     Text,
+    Time,
     UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -77,6 +78,12 @@ class JobApplicationStatus(str, Enum):
     SHORTLISTED = "shortlisted"
     REJECTED = "rejected"
     HIRED = "hired"
+
+
+class ClassSessionStatus(str, Enum):
+    SCHEDULED = "scheduled"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
 
 
 class TypingMode(str, Enum):
@@ -166,6 +173,7 @@ class Stage(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False)
     unlock_quiz_score: Mapped[int] = mapped_column(Integer, default=70, nullable=False)
     unlock_exercise_completion: Mapped[int] = mapped_column(Integer, default=80, nullable=False)
+    due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
 
     role = relationship("Role", back_populates="stages")
     topics = relationship("Topic", back_populates="stage", cascade="all,delete-orphan")
@@ -221,6 +229,7 @@ class Quiz(Base):
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     timer_seconds: Mapped[int] = mapped_column(Integer, default=900, nullable=False)
     pass_percentage: Mapped[int] = mapped_column(Integer, default=70, nullable=False)
+    due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
 
     stage = relationship("Stage", back_populates="quizzes")
     questions = relationship("QuizQuestion", back_populates="quiz", cascade="all,delete-orphan")
@@ -349,6 +358,31 @@ class LearningBatch(Base):
     mentor = relationship("User", foreign_keys=[mentor_user_id])
     enrollments = relationship("BatchEnrollment", back_populates="batch", cascade="all,delete-orphan")
     jobs = relationship("JobPost", back_populates="eligible_batch")
+    sessions = relationship("ClassSession", back_populates="batch", cascade="all,delete-orphan")
+
+
+class ClassSession(Base):
+    __tablename__ = "class_sessions"
+    __table_args__ = (
+        Index("ix_class_sessions_batch_date", "batch_id", "session_date"),
+        Index("ix_class_sessions_status_date", "status", "session_date"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    batch_id: Mapped[int] = mapped_column(ForeignKey("learning_batches.id"), nullable=False)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    topic: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    session_date: Mapped[date] = mapped_column(Date, nullable=False)
+    start_time: Mapped[time] = mapped_column(Time, nullable=False)
+    end_time: Mapped[time] = mapped_column(Time, nullable=False)
+    status: Mapped[ClassSessionStatus] = mapped_column(
+        SqlEnum(ClassSessionStatus), default=ClassSessionStatus.SCHEDULED, nullable=False
+    )
+    created_by_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    batch = relationship("LearningBatch", back_populates="sessions")
+    created_by = relationship("User", foreign_keys=[created_by_user_id])
 
 
 class BatchEnrollment(Base):

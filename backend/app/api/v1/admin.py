@@ -15,6 +15,8 @@ from app.models.models import (
     AdminActivityLog,
     BatchEnrollment,
     BatchMode,
+    ClassSession,
+    ClassSessionStatus,
     EnrollmentRole,
     JobApplication,
     JobApplicationStatus,
@@ -30,6 +32,7 @@ from app.models.models import (
     UserRole,
 )
 from app.schemas.jobs import JobImportResult, JobImportRowError
+from app.schemas.schedule import ClassSessionCreate, ClassSessionResponse, ClassSessionUpdate
 from app.schemas.admin import (
     AdminActivityLogResponse,
     AdminMetricsResponse,
@@ -1184,3 +1187,84 @@ def delete_student(
     _log_admin_action(db, admin_user.id, "student_deactivated", target_user_id=student.id, details=f"Deactivated {email}")
     db.commit()
     return {"detail": f"Student '{email}' deactivated"}
+
+
+# ---------------------------------------------------------------------------
+# Class session management
+# ---------------------------------------------------------------------------
+
+@router.post("/batches/{batch_id}/sessions", response_model=ClassSessionResponse, status_code=201)
+def create_session(
+    batch_id: int,
+    payload: ClassSessionCreate,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    batch = db.query(LearningBatch).filter(LearningBatch.id == batch_id).first()
+    if not batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+    session = ClassSession(
+        batch_id=batch_id,
+        title=payload.title,
+        topic=payload.topic,
+        session_date=payload.session_date,
+        start_time=payload.start_time,
+        end_time=payload.end_time,
+        status=ClassSessionStatus.SCHEDULED,
+        created_by_user_id=admin_user.id,
+    )
+    db.add(session)
+    db.commit()
+    db.refresh(session)
+    return session
+
+
+@router.get("/batches/{batch_id}/sessions", response_model=list[ClassSessionResponse])
+def list_sessions(
+    batch_id: int,
+    db: Session = Depends(get_db),
+    _admin: User = Depends(require_admin),
+):
+    return (
+        db.query(ClassSession)
+        .filter(ClassSession.batch_id == batch_id)
+        .order_by(ClassSession.session_date.asc(), ClassSession.start_time.asc())
+        .all()
+    )
+
+
+@router.patch("/sessions/{session_id}", response_model=ClassSessionResponse)
+def update_session(
+    session_id: int,
+    payload: ClassSessionUpdate,
+    db: Session = Depends(get_db),
+    _admin: User = Depends(require_admin),
+):
+    session = db.query(ClassSession).filter(ClassSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    for field in ("title", "topic", "session_date", "start_time", "end_time"):
+        val = getattr(payload, field, None)
+        if val is not None:
+            setattr(session, field, val)
+    if payload.status is not None:
+        try:
+            session.status = ClassSessionStatus(payload.status)
+        except ValueError:
+            raise HTTPException(status_code=422, detail=f"Invalid status: {payload.status}")
+    db.commit()
+    db.refresh(session)
+    return session
+
+
+@router.delete("/sessions/{session_id}", status_code=204)
+def delete_session(
+    session_id: int,
+    db: Session = Depends(get_db),
+    _admin: User = Depends(require_admin),
+):
+    session = db.query(ClassSession).filter(ClassSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    db.delete(session)
+    db.commit()

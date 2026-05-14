@@ -1296,6 +1296,52 @@ export async function saveStepProgress(projectSlug: string, payload: StepProgres
   }
 }
 
+// ── Schedule & Deadlines ───────────────────────────────────────────────────────
+
+export interface UpcomingSession {
+  id: number
+  batch_name: string
+  title: string
+  topic: string | null
+  session_date: string
+  start_time: string
+  end_time: string
+  status: string
+}
+
+export interface DeadlineQuizItem {
+  quiz_id: number
+  title: string
+  due_date: string
+  passed: boolean
+}
+
+export interface DeadlineStageItem {
+  stage_id: number
+  title: string
+  due_date: string
+  unlocked: boolean
+}
+
+export interface UpcomingDeadlines {
+  quizzes: DeadlineQuizItem[]
+  stages: DeadlineStageItem[]
+}
+
+export async function fetchUpcomingSchedule(limit = 5): Promise<UpcomingSession[]> {
+  const response = await fetchWithApiFallback(`/api/v1/schedule/upcoming?limit=${limit}`, {
+    headers: { ...studentAuthHeaders() },
+  })
+  return parseOrThrow(response) as Promise<UpcomingSession[]>
+}
+
+export async function fetchUpcomingDeadlines(): Promise<UpcomingDeadlines> {
+  const response = await fetchWithApiFallback('/api/v1/schedule/deadlines', {
+    headers: { ...studentAuthHeaders() },
+  })
+  return parseOrThrow(response) as Promise<UpcomingDeadlines>
+}
+
 // ── Career Mapper ──────────────────────────────────────────────────────────────
 
 import type { CareerRole } from '@/types/career'

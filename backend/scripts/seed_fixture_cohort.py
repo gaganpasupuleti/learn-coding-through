@@ -21,7 +21,7 @@ import json
 import logging
 import os
 import sys
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from pathlib import Path
 
 from sqlalchemy import create_engine
@@ -36,6 +36,8 @@ from app.core.security import get_password_hash
 from app.models.models import (
     BatchEnrollment,
     BatchMode,
+    ClassSession,
+    ClassSessionStatus,
     CreditTransaction,
     EnrollmentRole,
     JobApplication,
@@ -136,6 +138,10 @@ def _purge_fixture_users(db: Session) -> None:
         synchronize_session=False
     )
     db.query(CreditTransaction).filter(CreditTransaction.user_id.in_(uids)).delete(synchronize_session=False)
+    for bname in BATCH_NAMES:
+        fb = db.query(LearningBatch).filter(LearningBatch.name == bname).first()
+        if fb:
+            db.query(ClassSession).filter(ClassSession.batch_id == fb.id).delete(synchronize_session=False)
     db.query(User).filter(User.id.in_(uids)).delete(synchronize_session=False)
     db.commit()
     logger.info("Purged %d prior fixture user(s) and dependent rows.", len(uids))
@@ -511,8 +517,56 @@ def run_seed(db: Session, password: str, purge: bool) -> list[dict[str, str | in
     for i, u in enumerate(users, start=1):
         _seed_job_apps(db, u.id, posts, archetype_for(i), i)
 
+    _seed_fixture_class_sessions(db, batches)
+    _seed_fixture_due_dates(db, stages, role)
+
     db.commit()
     return manifest
+
+
+def _seed_fixture_class_sessions(db: Session, batches: list[LearningBatch]) -> None:
+    today = date.today()
+    session_templates = [
+        ("Session 1: Intro & Setup", "Environment setup, tooling overview", 1),
+        ("Session 2: Core Concepts", "Variables, types, control flow", 3),
+        ("Session 3: Functions & Modules", "Reusable code patterns", 5),
+        ("Session 4: Data Structures", "Lists, dicts, sets, complexity", 8),
+        ("Session 5: Project Kickoff", "Capstone project planning", 10),
+    ]
+    for batch in batches:
+        existing = db.query(ClassSession).filter(ClassSession.batch_id == batch.id).count()
+        if existing >= 5:
+            continue
+        for title, topic, offset in session_templates:
+            exists = (
+                db.query(ClassSession)
+                .filter(ClassSession.batch_id == batch.id, ClassSession.title == title)
+                .first()
+            )
+            if not exists:
+                db.add(
+                    ClassSession(
+                        batch_id=batch.id,
+                        title=title,
+                        topic=topic,
+                        session_date=today + timedelta(days=offset),
+                        start_time=time(10, 0),
+                        end_time=time(13, 0),
+                        status=ClassSessionStatus.SCHEDULED,
+                    )
+                )
+
+
+def _seed_fixture_due_dates(db: Session, stages: list[Stage], role: Role) -> None:
+    today = date.today()
+    for i, stage in enumerate(stages[:4]):
+        target = today + timedelta(days=7 * (i + 1))
+        if stage.due_date is None:
+            stage.due_date = target
+        quizzes = db.query(Quiz).filter(Quiz.stage_id == stage.id).all()
+        for q in quizzes:
+            if q.due_date is None:
+                q.due_date = target - timedelta(days=2)
 
 
 def parse_args() -> argparse.Namespace:

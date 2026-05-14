@@ -1,6 +1,6 @@
 import json
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -10,6 +10,8 @@ from app.core.security import get_password_hash
 from app.models.models import (
     BatchEnrollment,
     BatchMode,
+    ClassSession,
+    ClassSessionStatus,
     DifficultyLevel,
     EnrollmentRole,
     JobApplication,
@@ -776,25 +778,17 @@ def _apply_student_dashboard_kpi_seed(db: Session, user: User) -> None:
             .first()
         )
         if row is None:
-            db.add(
-                ProgressTracking(
-                    user_id=user.id,
-                    role_id=role.id,
-                    stage_id=stage.id,
-                    lessons_completed=lc,
-                    total_lessons=tl,
-                    latest_quiz_score=quiz,
-                    exercises_completed_pct=ex_pct,
-                    unlocked=unlocked,
-                )
+            row = ProgressTracking(
+                user_id=user.id,
+                role_id=role.id,
+                stage_id=stage.id,
             )
-        elif row.total_lessons == 0 and row.lessons_completed == 0 and row.latest_quiz_score == 0:
-            row.lessons_completed = lc
-            row.total_lessons = tl
-            row.latest_quiz_score = quiz
-            row.exercises_completed_pct = ex_pct
-            row.unlocked = unlocked
             db.add(row)
+        row.lessons_completed = lc
+        row.total_lessons = tl
+        row.latest_quiz_score = quiz
+        row.exercises_completed_pct = ex_pct
+        row.unlocked = unlocked
 
     existing_typing = db.query(TypingAttempt).filter(TypingAttempt.user_id == user.id).count()
     need_typing = max(0, 8 - existing_typing)
@@ -870,9 +864,8 @@ def _apply_student_dashboard_kpi_seed(db: Session, user: User) -> None:
                 attendance_pct=88,
             )
         )
-    elif enr.attendance_pct == 0:
+    else:
         enr.attendance_pct = 88
-        db.add(enr)
 
     job_title = f"{demo_prefix} Junior Backend Engineer"
     job = db.query(JobPost).filter(JobPost.title == job_title).first()
@@ -935,6 +928,9 @@ def _apply_student_dashboard_kpi_seed(db: Session, user: User) -> None:
             if not psc:
                 db.add(ProjectStepCompletion(user_id=user.id, project_slug=slug, step_id=step_id))
 
+    _seed_demo_class_sessions(db, batch)
+    _seed_demo_due_dates(db, stages, role)
+
 
 def seed_student_dashboard_demo(db: Session) -> None:
     """
@@ -962,3 +958,48 @@ def seed_student_dashboard_demo(db: Session) -> None:
         logger.info("Applied demo dashboard KPI seed for %s", email)
 
     db.commit()
+
+
+def _seed_demo_class_sessions(db: Session, batch: LearningBatch) -> None:
+    existing = db.query(ClassSession).filter(ClassSession.batch_id == batch.id).count()
+    if existing >= 5:
+        return
+    today = date.today()
+    sessions_data = [
+        ("Session 1: HTML & CSS Basics", "Box model, selectors, flexbox", 1),
+        ("Session 2: JavaScript Fundamentals", "Variables, functions, DOM manipulation", 3),
+        ("Session 3: React Introduction", "Components, JSX, props and state", 5),
+        ("Session 4: REST APIs with FastAPI", "GET/POST endpoints, request validation", 8),
+        ("Session 5: Database & SQL", "Tables, queries, joins, migrations", 10),
+    ]
+    for title, topic, day_offset in sessions_data:
+        session_date = today + timedelta(days=day_offset)
+        exists = (
+            db.query(ClassSession)
+            .filter(ClassSession.batch_id == batch.id, ClassSession.title == title)
+            .first()
+        )
+        if not exists:
+            db.add(
+                ClassSession(
+                    batch_id=batch.id,
+                    title=title,
+                    topic=topic,
+                    session_date=session_date,
+                    start_time=time(10, 0),
+                    end_time=time(13, 0),
+                    status=ClassSessionStatus.SCHEDULED,
+                )
+            )
+
+
+def _seed_demo_due_dates(db: Session, stages: list[Stage], role: Role) -> None:
+    today = date.today()
+    for i, stage in enumerate(stages[:4]):
+        target = today + timedelta(days=7 * (i + 1))
+        if stage.due_date is None:
+            stage.due_date = target
+        quizzes = db.query(Quiz).filter(Quiz.stage_id == stage.id).all()
+        for q in quizzes:
+            if q.due_date is None:
+                q.due_date = target - timedelta(days=2)
