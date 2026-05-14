@@ -11,9 +11,10 @@ restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 5
 
 [variables]
-# Replace the placeholders with real service values in Railway dashboard after deploy
-# Backend URL used by frontend to call APIs; update to your backend Railway service URL
-VITE_API_URL = "https://<backend-railway-url>"
+# HTTPS origin of the FastAPI service (no trailing path). The frontend container uses this
+# at runtime to nginx-proxy same-origin /api/* and /health to the backend and exposes an
+# empty VITE_API_URL to the browser so JSON requests never hit the SPA index.html shell.
+VITE_API_URL = "https://your-backend-service.up.railway.app"
 NODE_ENV = "production"
 
 # Optional: Add any other frontend-specific env values the project expects (VITE_*, REACT_APP_*, etc.)

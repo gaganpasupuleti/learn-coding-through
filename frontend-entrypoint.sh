@@ -2,17 +2,63 @@
 set -eu
 
 PORT_TO_USE="${PORT:-8080}"
-API_URL="${VITE_API_URL:-${VITE_API_BASE_URL:-${VITE_API_PROXY_TARGET:-}}}"
+RAW_API="${VITE_API_URL:-${VITE_API_BASE_URL:-${VITE_API_PROXY_TARGET:-}}}"
+RAW_API=$(printf '%s' "$RAW_API" | sed 's|[[:space:]]||g')
 GOOGLE_CLIENT_ID="${VITE_GOOGLE_CLIENT_ID:-}"
+
+ENABLE_PROXY=false
+CLIENT_VISIBLE_API_URL="$RAW_API"
+API_ORIGIN=""
+HOST_HEADER=""
+
+if [ -n "$RAW_API" ] && printf '%s' "$RAW_API" | grep -qE '^https?://' && ! printf '%s' "$RAW_API" | grep -q '<'; then
+  ENABLE_PROXY=true
+  API_ORIGIN=$(printf '%s' "$RAW_API" | sed 's|/*$||')
+  HOST_HEADER=$(printf '%s' "$API_ORIGIN" | sed -e 's|^https\?://||' -e 's|/.*$||')
+  # Browser calls same-origin /api and /health; nginx forwards to FastAPI (avoids SPA index.html on /api/*).
+  CLIENT_VISIBLE_API_URL=""
+fi
 
 cat > /usr/share/nginx/html/runtime-config.js <<EOF
 window.__RUNTIME_CONFIG__ = {
-  VITE_API_URL: "${API_URL}",
+  VITE_API_URL: "${CLIENT_VISIBLE_API_URL}",
   VITE_GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
 };
 EOF
 
-cat > /etc/nginx/conf.d/default.conf <<EOF
+if [ "$ENABLE_PROXY" = true ]; then
+  cat > /etc/nginx/conf.d/default.conf <<EOF
+server {
+  listen ${PORT_TO_USE};
+  server_name _;
+  root /usr/share/nginx/html;
+  index index.html;
+
+  location /api/ {
+    proxy_pass ${API_ORIGIN};
+    proxy_http_version 1.1;
+    proxy_set_header Host ${HOST_HEADER};
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_ssl_server_name on;
+  }
+
+  location /health {
+    proxy_pass ${API_ORIGIN};
+    proxy_http_version 1.1;
+    proxy_set_header Host ${HOST_HEADER};
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_ssl_server_name on;
+  }
+
+  location / {
+    try_files \$uri \$uri/ /index.html;
+  }
+}
+EOF
+else
+  cat > /etc/nginx/conf.d/default.conf <<EOF
 server {
   listen ${PORT_TO_USE};
   server_name _;
@@ -24,5 +70,8 @@ server {
   }
 }
 EOF
+fi
+
+nginx -t
 
 exec nginx -g 'daemon off;'

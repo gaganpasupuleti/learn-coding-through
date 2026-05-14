@@ -106,6 +106,16 @@ function getApiFallbackCandidates(path: string): string[] {
   return candidateUrls
 }
 
+function isJsonApiPath(path: string): boolean {
+  return path.startsWith('/api/') || path.startsWith('/health')
+}
+
+/** SPA shells often return 200 + text/html for /api/* when nginx is not proxying to FastAPI. */
+function responseLooksLikeHtml(response: Response): boolean {
+  const ct = (response.headers.get('content-type') || '').toLowerCase()
+  return ct.includes('text/html')
+}
+
 async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<Response> {
   const candidateUrls = getApiFallbackCandidates(path)
   let lastError: unknown = null
@@ -118,6 +128,14 @@ async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<R
       const response = await fetch(candidate, init)
 
       if (response.ok) {
+        if (isJsonApiPath(path) && responseLooksLikeHtml(response)) {
+          if (hasMoreCandidates) {
+            continue
+          }
+          throw new Error(
+            'This URL returned a web page (HTML) instead of API JSON. Set VITE_API_URL on the frontend service to your backend HTTPS URL so nginx can proxy /api and /health (see frontend-entrypoint.sh), or fix your reverse proxy.',
+          )
+        }
         return response
       }
 
@@ -163,6 +181,14 @@ async function fetchWithApiFallbackMultipart(
       })
 
       if (response.ok) {
+        if (isJsonApiPath(path) && responseLooksLikeHtml(response)) {
+          if (hasMoreCandidates) {
+            continue
+          }
+          throw new Error(
+            'This URL returned HTML instead of an API response. Check /api proxy and VITE_API_URL on the frontend container.',
+          )
+        }
         return response
       }
 
@@ -570,11 +596,40 @@ function getOptionalAuthHeaders(): HeadersInit {
 }
 
 async function parseOrThrow(response: Response) {
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+  const raw = await response.text()
+  const trimmed = raw.trim()
+
+  if (trimmed.startsWith('<')) {
+    throw new Error(
+      !response.ok
+        ? `HTTP ${response.status}: received HTML instead of a JSON error. Likely /api is not proxied to FastAPI.`
+        : 'Received HTML instead of JSON (the SPA shell is answering /api). Set VITE_API_URL on the Railway frontend service to your backend HTTPS URL so nginx proxies /api and /health — see frontend-entrypoint.sh.',
+    )
   }
-  return response.json()
+
+  if (!response.ok) {
+    if (!trimmed) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    let errorData: { detail?: unknown }
+    try {
+      errorData = JSON.parse(trimmed) as { detail?: unknown }
+    } catch {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const d = errorData.detail
+    throw new Error(typeof d === 'string' && d ? d : `HTTP error! status: ${response.status}`)
+  }
+
+  if (!trimmed) {
+    return null
+  }
+
+  try {
+    return JSON.parse(trimmed) as unknown
+  } catch {
+    throw new Error('Invalid JSON from server')
+  }
 }
 
 export async function fetchAdminStudents(token: string, search?: string): Promise<AdminStudent[]> {
