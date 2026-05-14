@@ -496,16 +496,24 @@ export async function fetchSqlPracticeSchema(): Promise<SqlPracticeSchemaRespons
 }
 
 export async function fetchDatabaseHealth(): Promise<DatabaseHealth> {
-  const response = await fetch(`${API_BASE_URL}/health/db`)
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}))
+  try {
+    const response = await fetchWithApiFallback('/health/db')
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}))
+      return {
+        status: 'error',
+        database: payload.database ?? 'unreachable',
+        detail: payload.detail ?? `HTTP error ${response.status}`,
+      }
+    }
+    return response.json() as Promise<DatabaseHealth>
+  } catch {
     return {
       status: 'error',
-      database: payload.database ?? 'unreachable',
-      detail: payload.detail ?? `HTTP error ${response.status}`,
+      database: 'unreachable',
+      detail: 'Network error — check that the API is running and reachable.',
     }
   }
-  return response.json() as Promise<DatabaseHealth>
 }
 
 export async function createTypingAttempt(
@@ -535,6 +543,21 @@ function buildAuthHeaders(token: string): HeadersInit {
   }
 }
 
+/** Bearer-authenticated requests with same-origin `/api` fallback (matches student execute/progress). */
+async function fetchWithAuthApiFallback(
+  path: string,
+  token: string,
+  init: RequestInit = {},
+): Promise<Response> {
+  const merged = new Headers(buildAuthHeaders(token))
+  if (init.headers !== undefined) {
+    new Headers(init.headers as HeadersInit).forEach((value, key) => {
+      merged.set(key, value)
+    })
+  }
+  return fetchWithApiFallback(path, { ...init, headers: merged })
+}
+
 function getOptionalAuthHeaders(): HeadersInit {
   const token = localStorage.getItem('career-portal-token')
   if (!token) {
@@ -556,74 +579,56 @@ async function parseOrThrow(response: Response) {
 
 export async function fetchAdminStudents(token: string, search?: string): Promise<AdminStudent[]> {
   const query = search?.trim() ? `?search=${encodeURIComponent(search.trim())}` : ''
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/students${query}`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/students${query}`, token)
   return parseOrThrow(response) as Promise<AdminStudent[]>
 }
 
 export async function fetchAdminMetrics(token: string): Promise<AdminMetrics> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/metrics`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/metrics', token)
   return parseOrThrow(response) as Promise<AdminMetrics>
 }
 
 export async function fetchAdminMonthlyKpis(token: string): Promise<AdminMonthlyKpis> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/kpis/monthly`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/kpis/monthly', token)
   return parseOrThrow(response) as Promise<AdminMonthlyKpis>
 }
 
 export async function fetchAdminActivity(token: string, limit = 20): Promise<AdminActivityLog[]> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/activity?limit=${limit}`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/activity?limit=${limit}`, token)
   return parseOrThrow(response) as Promise<AdminActivityLog[]>
 }
 
 export async function fetchAdminBatches(token: string): Promise<AdminBatch[]> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/batches`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/batches', token)
   return parseOrThrow(response) as Promise<AdminBatch[]>
 }
 
 export async function fetchAdminClassInsights(token: string, batchId: number): Promise<AdminClassInsights> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/batches/${batchId}/insights`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/batches/${batchId}/insights`, token)
   return parseOrThrow(response) as Promise<AdminClassInsights>
 }
 
 export async function fetchAdminJobs(token: string): Promise<AdminJobPost[]> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/jobs`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/jobs', token)
   return parseOrThrow(response) as Promise<AdminJobPost[]>
 }
 
 export async function createAdminJob(token: string, payload: AdminJobCreatePayload): Promise<AdminJobPost> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/jobs`, {
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/jobs', token, {
     method: 'POST',
-    headers: buildAuthHeaders(token),
     body: JSON.stringify(payload),
   })
   return parseOrThrow(response) as Promise<AdminJobPost>
 }
 
 export async function fetchAdminRoleSplitInsights(token: string): Promise<AdminRoleSplitInsights> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/role-split-insights`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/role-split-insights', token)
   return parseOrThrow(response) as Promise<AdminRoleSplitInsights>
 }
 
 export async function createAdminStudent(token: string, payload: AdminStudentCreatePayload): Promise<AdminStudent> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/students`, {
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/students', token, {
     method: 'POST',
-    headers: buildAuthHeaders(token),
     body: JSON.stringify(payload),
   })
   return parseOrThrow(response) as Promise<AdminStudent>
@@ -634,9 +639,8 @@ export async function updateAdminStudent(
   studentId: number,
   payload: AdminStudentUpdatePayload
 ): Promise<AdminStudent> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/students/${studentId}`, {
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/students/${studentId}`, token, {
     method: 'PATCH',
-    headers: buildAuthHeaders(token),
     body: JSON.stringify(payload),
   })
   return parseOrThrow(response) as Promise<AdminStudent>
@@ -647,9 +651,7 @@ export async function fetchAdminRegistrationWaitlist(
   status?: 'pending' | 'approved' | 'rejected'
 ): Promise<AdminRegistrationWaitlistEntry[]> {
   const query = status ? `?status=${encodeURIComponent(status)}` : ''
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/registration-waitlist${query}`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/registration-waitlist${query}`, token)
   return parseOrThrow(response) as Promise<AdminRegistrationWaitlistEntry[]>
 }
 
@@ -658,18 +660,15 @@ export async function updateAdminRegistrationWaitlistStatus(
   entryId: number,
   status: 'pending' | 'approved' | 'rejected'
 ): Promise<AdminRegistrationWaitlistEntry> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/registration-waitlist/${entryId}`, {
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/registration-waitlist/${entryId}`, token, {
     method: 'PATCH',
-    headers: buildAuthHeaders(token),
     body: JSON.stringify({ status }),
   })
   return parseOrThrow(response) as Promise<AdminRegistrationWaitlistEntry>
 }
 
 export async function fetchAdminUserActivity(token: string, limit = 50): Promise<AdminUserActivity[]> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/user-activity?limit=${limit}`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/user-activity?limit=${limit}`, token)
   return parseOrThrow(response) as Promise<AdminUserActivity[]>
 }
 
@@ -693,9 +692,7 @@ export interface AdminPlatformOverview {
 }
 
 export async function fetchAdminPlatformOverview(token: string): Promise<AdminPlatformOverview> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/overview`, {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/overview', token)
   return parseOrThrow(response) as Promise<AdminPlatformOverview>
 }
 
@@ -722,27 +719,24 @@ export interface AdminBatchUpdatePayload {
 }
 
 export async function createAdminBatch(token: string, payload: AdminBatchCreatePayload): Promise<AdminBatch> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/batches`, {
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/batches', token, {
     method: 'POST',
-    headers: buildAuthHeaders(token),
     body: JSON.stringify(payload),
   })
   return parseOrThrow(response) as Promise<AdminBatch>
 }
 
 export async function updateAdminBatch(token: string, batchId: number, payload: AdminBatchUpdatePayload): Promise<AdminBatch> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/batches/${batchId}`, {
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/batches/${batchId}`, token, {
     method: 'PATCH',
-    headers: buildAuthHeaders(token),
     body: JSON.stringify(payload),
   })
   return parseOrThrow(response) as Promise<AdminBatch>
 }
 
 export async function deleteAdminBatch(token: string, batchId: number): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/batches/${batchId}`, {
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/batches/${batchId}`, token, {
     method: 'DELETE',
-    headers: buildAuthHeaders(token),
   })
   await parseOrThrow(response)
 }
@@ -760,18 +754,16 @@ export interface AdminJobUpdatePayload {
 }
 
 export async function updateAdminJob(token: string, jobId: number, payload: AdminJobUpdatePayload): Promise<AdminJobPost> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/jobs/${jobId}`, {
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/jobs/${jobId}`, token, {
     method: 'PATCH',
-    headers: buildAuthHeaders(token),
     body: JSON.stringify(payload),
   })
   return parseOrThrow(response) as Promise<AdminJobPost>
 }
 
 export async function deleteAdminJob(token: string, jobId: number): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/jobs/${jobId}`, {
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/jobs/${jobId}`, token, {
     method: 'DELETE',
-    headers: buildAuthHeaders(token),
   })
   await parseOrThrow(response)
 }
@@ -789,9 +781,7 @@ export interface JobImportResult {
 }
 
 export async function downloadAdminJobImportTemplate(token: string): Promise<Blob> {
-  const response = await fetchWithApiFallback('/api/v1/admin/jobs/import-template', {
-    headers: buildAuthHeaders(token),
-  })
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/jobs/import-template', token)
   if (!response.ok) {
     const text = await response.text()
     let message = `Failed to download job import template (HTTP ${response.status})`
@@ -870,9 +860,8 @@ export async function importAdminJobsFromLinkedInJson(
 // ── Student delete ─────────────────────────────────────────────────────────────
 
 export async function deleteAdminStudent(token: string, studentId: number): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/students/${studentId}`, {
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/students/${studentId}`, token, {
     method: 'DELETE',
-    headers: buildAuthHeaders(token),
   })
   await parseOrThrow(response)
 }
