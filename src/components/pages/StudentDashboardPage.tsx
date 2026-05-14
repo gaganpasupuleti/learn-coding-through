@@ -27,6 +27,7 @@ import {
   type TypingAttempt,
 } from '@/lib/api'
 import { readCareerMapLocalSummary } from '@/lib/career-local-summary'
+import { blendStudentDashboardDummyIfNeeded } from '@/lib/student-dashboard-dummy'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import type { AuthUser } from '@/lib/auth'
@@ -46,7 +47,7 @@ function computeTypingAvg(attempts: TypingAttempt[]): number | null {
   return Math.round(attempts.reduce((s, a) => s + a.wpm, 0) / attempts.length)
 }
 
-function useStudentDashboardSnapshot() {
+function useStudentDashboardSnapshot(user: AuthUser) {
   const [stageRows, setStageRows] = useState<StageProgressRecord[] | null>(null)
   const [catalogSteps, setCatalogSteps] = useState<number | null>(null)
   const [careerLocal, setCareerLocal] = useState<{ title: string; pct: number } | null>(null)
@@ -70,24 +71,41 @@ function useStudentDashboardSnapshot() {
         ),
         fetchMySubmittedProjects().catch(() => [] as MySubmittedProject[]),
       ])
-      setStageRows(stages)
-      setCatalogSteps(catalog.completedSteps?.length ?? 0)
-      setTypingAttempts(typing)
-      setApplications(apps)
-      setEnrollment(enr)
-      setSubmittedProjects(projs)
+      const catalogCount = catalog.completedSteps?.length ?? 0
+      const blended = blendStudentDashboardDummyIfNeeded(user, {
+        stageRows: stages,
+        catalogSteps: catalogCount,
+        typingAttempts: typing,
+        applications: apps,
+        enrollment: enr,
+        submittedProjects: projs,
+      })
+      setStageRows(blended.stageRows)
+      setCatalogSteps(blended.catalogSteps)
+      setTypingAttempts(blended.typingAttempts)
+      setApplications(blended.applications)
+      setEnrollment(blended.enrollment)
+      setSubmittedProjects(blended.submittedProjects)
     } catch {
       toast.error('Could not load dashboard data. Is the API running?')
-      setStageRows([])
-      setCatalogSteps(0)
-      setTypingAttempts([])
-      setApplications({ count: 0, items: [] })
-      setEnrollment({ attendance_pct: null, batch_names: [] })
-      setSubmittedProjects([])
+      const blended = blendStudentDashboardDummyIfNeeded(user, {
+        stageRows: [],
+        catalogSteps: 0,
+        typingAttempts: [],
+        applications: { count: 0, items: [] },
+        enrollment: { attendance_pct: null, batch_names: [] },
+        submittedProjects: [],
+      })
+      setStageRows(blended.stageRows)
+      setCatalogSteps(blended.catalogSteps)
+      setTypingAttempts(blended.typingAttempts)
+      setApplications(blended.applications)
+      setEnrollment(blended.enrollment)
+      setSubmittedProjects(blended.submittedProjects)
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   useEffect(() => {
     void load()
@@ -117,7 +135,7 @@ export function StudentDashboardPage({ user }: StudentDashboardPageProps) {
     submittedProjects,
     loading: dashboardLoading,
     reload: reloadDashboard,
-  } = useStudentDashboardSnapshot()
+  } = useStudentDashboardSnapshot(user)
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-slate-50/80">

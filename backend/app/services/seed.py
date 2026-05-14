@@ -5,6 +5,7 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.security import get_password_hash
 from app.models.models import (
     BatchEnrollment,
@@ -704,23 +705,52 @@ def seed_catalog_data(db: Session) -> None:
     logger.info("Catalog seed complete.")
 
 
-KPI_DEMO_STUDENT_EMAIL = "kundetiriya@gmail.com"
+DEMO_STUDENT_SEED_EMAIL = "demo@student.com"
 
 
-def seed_student_dashboard_demo(db: Session) -> None:
+def ensure_demo_student_account(db: Session) -> User | None:
     """
-    Idempotent sample rows so a known student account can see populated KPIs.
-    Only touches that user when they already exist; does not overwrite non-empty progress rows.
+    Ensure demo@student.com exists as an active student so KPI seeding can attach rows.
+    Password is set only on first create (see settings.demo_student_seed_password).
     """
-    email = KPI_DEMO_STUDENT_EMAIL.strip().lower()
+    email = DEMO_STUDENT_SEED_EMAIL
     user = db.query(User).filter(User.email == email).first()
-    if not user:
-        logger.info("Demo dashboard seed skipped (no user): %s", email)
-        return
-    if user.role != UserRole.STUDENT:
-        logger.info("Demo dashboard seed skipped (not a student): %s", email)
-        return
+    if user is None:
+        user = User(
+            email=email,
+            full_name="Demo Student",
+            password_hash=get_password_hash(settings.demo_student_seed_password),
+            role=UserRole.STUDENT,
+            is_active=True,
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        logger.info(
+            "Created %s for dashboard KPI preview (password from DEMO_STUDENT_SEED_PASSWORD env or default).",
+            email,
+        )
+        return user
 
+    changed = False
+    if user.role != UserRole.STUDENT:
+        user.role = UserRole.STUDENT
+        changed = True
+    if not user.is_active:
+        user.is_active = True
+        changed = True
+    if changed:
+        db.add(user)
+        db.commit()
+        logger.info("Normalized role/active flags for %s", email)
+    return user
+
+
+def _apply_student_dashboard_kpi_seed(db: Session, user: User) -> None:
+    """
+    Idempotent sample rows for one student. Does not commit.
+    Only inserts or fills empty progress rows; does not overwrite non-zero progress.
+    """
     role = db.query(Role).order_by(Role.id.asc()).first()
     if not role:
         return
@@ -905,5 +935,30 @@ def seed_student_dashboard_demo(db: Session) -> None:
             if not psc:
                 db.add(ProjectStepCompletion(user_id=user.id, project_slug=slug, step_id=step_id))
 
+
+def seed_student_dashboard_demo(db: Session) -> None:
+    """
+    Idempotent KPI preview data for configured student accounts (see settings.kpi_demo_student_emails).
+    Ensures demo@student.com exists so local / preview dashboards always have a loginable target.
+    """
+    ensure_demo_student_account(db)
+
+    seen: set[str] = set()
+    for raw in settings.kpi_demo_student_emails:
+        email = (raw or "").strip().lower()
+        if not email or email in seen:
+            continue
+        seen.add(email)
+
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            logger.info("Demo dashboard seed skipped (no user): %s", email)
+            continue
+        if user.role != UserRole.STUDENT:
+            logger.info("Demo dashboard seed skipped (not a student): %s", email)
+            continue
+
+        _apply_student_dashboard_kpi_seed(db, user)
+        logger.info("Applied demo dashboard KPI seed for %s", email)
+
     db.commit()
-    logger.info("Demo dashboard snapshot seeded for %s", email)
