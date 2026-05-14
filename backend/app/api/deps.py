@@ -6,6 +6,7 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import ALGORITHM, get_password_hash
 from app.models.models import User, UserRole
@@ -24,7 +25,7 @@ def _get_or_create_demo_user(db: Session) -> User:
         user = User(
             email=_DEMO_EMAIL,
             full_name="Demo Student",
-            password_hash=get_password_hash("demo-password-not-for-login"),
+            password_hash=get_password_hash(settings.demo_student_seed_password),
             role=UserRole.STUDENT,
         )
         db.add(user)

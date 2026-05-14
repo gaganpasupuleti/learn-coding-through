@@ -31,6 +31,13 @@ class Settings(BaseSettings):
     registration_limit_enabled: bool = True
     registration_user_limit: int = 1500
     allow_unauthenticated_demo_user: bool = False
+    # Comma-separated student emails that receive idempotent dashboard KPI seed data on startup.
+    # Always includes demo@student.com via ensure in seed when that account is auto-created.
+    kpi_demo_student_emails: Annotated[list[str], NoDecode] = Field(
+        default_factory=lambda: ["demo@student.com", "kundetiriya@gmail.com"]
+    )
+    # Password assigned only when the demo student account is first created (see seed_student_dashboard_demo).
+    demo_student_seed_password: str = "DemoStudent@123"
     auto_start_resume_backend: bool = False
     resume_backend_host: str = "127.0.0.1"
     resume_backend_port: int = 8001
@@ -67,6 +74,15 @@ class Settings(BaseSettings):
     @field_validator("promote_admin_emails", mode="before")
     @classmethod
     def parse_promoted_admin_emails(cls, value):
+        if isinstance(value, str):
+            return [email.strip().lower() for email in value.split(",") if email.strip()]
+        if isinstance(value, list):
+            return [str(email).strip().lower() for email in value if str(email).strip()]
+        return value
+
+    @field_validator("kpi_demo_student_emails", mode="before")
+    @classmethod
+    def parse_kpi_demo_student_emails(cls, value):
         if isinstance(value, str):
             return [email.strip().lower() for email in value.split(",") if email.strip()]
         if isinstance(value, list):
