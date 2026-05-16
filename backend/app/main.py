@@ -16,8 +16,13 @@ from slowapi.middleware import SlowAPIMiddleware
 from app.api.v1 import activity, admin, auth, credits, enrollment, interview, jobs, progress, projects, quiz, roadmap, roles, execute, schedule, typing
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
+from app.core.schema_ensure import (
+    ensure_job_posts_fixture_columns,
+    ensure_schedule_schema,
+    ensure_typing_attempts_table,
+)
 from app.core.security import ALGORITHM
-from app.models.models import ClassSession, TypingAttempt, User, UserActivityLog
+from app.models.models import User, UserActivityLog
 from app.services.seed import seed_admin_user, seed_catalog_data, seed_default_roles, seed_promoted_admins, seed_student_dashboard_demo
 from executors.java_executor import verify_java_runtime_setup
 
@@ -32,13 +37,6 @@ def _is_port_open(host: str, port: int) -> bool:
 
 
  
-
-
-def _ensure_typing_attempts_table() -> None:
-    try:
-        TypingAttempt.__table__.create(bind=engine, checkfirst=True)
-    except Exception as exc:
-        print(f"Warning: unable to ensure typing_attempts table exists: {exc}")
 
 
 def _ensure_job_posts_linkedin_columns() -> None:
@@ -85,66 +83,6 @@ def _ensure_user_password_setup_column() -> None:
     except Exception as exc:
         print(f"Warning: unable to ensure users.password_setup_required column: {exc}")
 
-
-def _ensure_job_posts_fixture_columns() -> None:
-    try:
-        inspector = inspect(engine)
-        if not inspector.has_table("job_posts"):
-            return
-        cols = {c["name"] for c in inspector.get_columns("job_posts")}
-        dialect = engine.dialect.name
-        with engine.begin() as conn:
-            if "is_fixture" not in cols:
-                if dialect == "sqlite":
-                    conn.execute(
-                        text(
-                            "ALTER TABLE job_posts ADD COLUMN is_fixture BOOLEAN NOT NULL DEFAULT 0"
-                        )
-                    )
-                else:
-                    conn.execute(
-                        text(
-                            "ALTER TABLE job_posts ADD COLUMN is_fixture BOOLEAN NOT NULL DEFAULT false"
-                        )
-                    )
-            if "sort_order" not in cols:
-                conn.execute(
-                    text("ALTER TABLE job_posts ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 0")
-                )
-    except Exception as exc:
-        print(f"Warning: unable to ensure job_posts fixture/sort columns: {exc}")
-
-
-def _ensure_schedule_schema() -> None:
-    """Ensure class_sessions + due_date columns exist when Alembic did not run on deploy."""
-    try:
-        ClassSession.__table__.create(bind=engine, checkfirst=True)
-        inspector = inspect(engine)
-        dialect = engine.dialect.name
-        with engine.begin() as conn:
-            if inspector.has_table("stages"):
-                stage_cols = {c["name"] for c in inspector.get_columns("stages")}
-                if "due_date" not in stage_cols:
-                    conn.execute(text("ALTER TABLE stages ADD COLUMN due_date DATE"))
-            if inspector.has_table("quizzes"):
-                quiz_cols = {c["name"] for c in inspector.get_columns("quizzes")}
-                if "due_date" not in quiz_cols:
-                    conn.execute(text("ALTER TABLE quizzes ADD COLUMN due_date DATE"))
-            if dialect == "postgresql":
-                conn.execute(
-                    text(
-                        "CREATE INDEX IF NOT EXISTS ix_class_sessions_batch_date "
-                        "ON class_sessions (batch_id, session_date)"
-                    )
-                )
-                conn.execute(
-                    text(
-                        "CREATE INDEX IF NOT EXISTS ix_class_sessions_status_date "
-                        "ON class_sessions (status, session_date)"
-                    )
-                )
-    except Exception as exc:
-        print(f"Warning: unable to ensure schedule schema (class_sessions / due_date): {exc}")
 
 # Initialize the rate limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -233,8 +171,8 @@ def startup_event():
     try:
         if settings.auto_create_tables:
             Base.metadata.create_all(bind=engine)
-        _ensure_schedule_schema()
-        _ensure_job_posts_fixture_columns()
+        ensure_schedule_schema()
+        ensure_job_posts_fixture_columns()
         db = SessionLocal()
         try:
             seed_default_roles(db)
@@ -253,9 +191,10 @@ def startup_event():
         print(f"Warning: Database initialization failed: {e}")
         print("Code execution endpoints will still work without database")
 
-    _ensure_typing_attempts_table()
+    ensure_typing_attempts_table()
     _ensure_user_password_setup_column()
     _ensure_job_posts_linkedin_columns()
+    ensure_job_posts_fixture_columns()
 
 
 

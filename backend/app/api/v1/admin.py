@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse, Response
 from app.api.deps import require_admin
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.schema_ensure import ensure_admin_api_schema
 from app.core.security import get_password_hash
 from app.services.job_fixture_seed import seed_fixture_job_board
 from app.services.job_import import build_job_template_xlsx, parse_job_import_xlsx, parse_linkedin_jobs_json
@@ -61,7 +62,15 @@ from app.schemas.admin import (
 )
 
 
-router = APIRouter(prefix="/admin", tags=["Admin"])
+def _admin_schema_guard() -> None:
+    ensure_admin_api_schema()
+
+
+router = APIRouter(
+    prefix="/admin",
+    tags=["Admin"],
+    dependencies=[Depends(_admin_schema_guard)],
+)
 
 # Job post tier caps (per uploading admin user, counting all rows in job_posts they created).
 MAX_FREE_TIER_JOBS: Final[int] = 100
@@ -171,6 +180,14 @@ def _ensure_learning_ops_demo_data(db: Session, admin_user: User) -> None:
     if not student_users:
         return
 
+    try:
+        _seed_learning_ops_demo_data(db, admin_user, student_users)
+    except Exception as exc:
+        db.rollback()
+        print(f"Warning: learning ops demo seed skipped: {exc}")
+
+
+def _seed_learning_ops_demo_data(db: Session, admin_user: User, student_users: list[User]) -> None:
     today = date.today()
     batches = [
         LearningBatch(
@@ -238,20 +255,22 @@ def _ensure_learning_ops_demo_data(db: Session, admin_user: User) -> None:
     db.add_all(enrollments)
     db.flush()
 
-    seed_fixture_job_board(
-        db,
-        created_by_user_id=admin_user.id,
-        eligible_batch_id=batches[0].id,
-    )
+    try:
+        seed_fixture_job_board(
+            db,
+            created_by_user_id=admin_user.id,
+            eligible_batch_id=batches[0].id,
+        )
+    except Exception as exc:
+        print(f"Warning: fixture job board seed skipped in learning ops demo: {exc}")
+
     jobs = (
         db.query(JobPost)
-        .filter(JobPost.is_fixture.is_(True), JobPost.status == JobPostStatus.OPEN)
-        .order_by(JobPost.sort_order.asc())
+        .filter(JobPost.status == JobPostStatus.OPEN)
+        .order_by(JobPost.created_at.desc())
         .limit(2)
         .all()
     )
-    if len(jobs) < 2:
-        jobs = db.query(JobPost).filter(JobPost.status == JobPostStatus.OPEN).limit(2).all()
     db.flush()
 
     if jobs:

@@ -188,18 +188,7 @@ export function useAdminWorkspace() {
 
     try {
       setIsLoading(true)
-      const [
-        studentList,
-        adminMetrics,
-        kpis,
-        splitInsights,
-        activity,
-        batchList,
-        jobList,
-        waitlist,
-        userActivity,
-        platformOverview,
-      ] = await Promise.all([
+      const results = await Promise.allSettled([
         fetchAdminStudents(t, search),
         fetchAdminMetrics(t),
         fetchAdminMonthlyKpis(t),
@@ -212,22 +201,64 @@ export function useAdminWorkspace() {
         fetchAdminPlatformOverview(t),
       ])
 
+      const label = [
+        'students',
+        'metrics',
+        'monthly KPIs',
+        'role insights',
+        'activity',
+        'batches',
+        'jobs',
+        'waitlist',
+        'user activity',
+        'overview',
+      ]
+
+      const failed: string[] = []
+      const pick = <T,>(index: number, fallback: T): T => {
+        const result = results[index]
+        if (result.status === 'fulfilled') return result.value as T
+        failed.push(label[index])
+        console.warn(`[Admin] ${label[index]} failed:`, result.reason)
+        return fallback
+      }
+
+      const studentList = pick(0, [] as AdminStudent[])
+      const adminMetrics = pick(1, null)
+      const kpis = pick(2, null)
+      const splitInsights = pick(3, null)
+      const activity = pick(4, [] as AdminActivityLog[])
+      const batchList = pick(5, [] as AdminBatch[])
+      const jobList = pick(6, [] as AdminJobPost[])
+      const waitlist = pick(7, [] as AdminRegistrationWaitlistEntry[])
+      const userActivity = pick(8, [] as AdminUserActivity[])
+      const platformOverview = pick(9, null)
+
       setStudents(studentList)
-      setMetrics(adminMetrics)
-      setMonthlyKpis(kpis)
-      setRoleSplitInsights(splitInsights)
+      if (adminMetrics) setMetrics(adminMetrics)
+      if (kpis) setMonthlyKpis(kpis)
+      if (splitInsights) setRoleSplitInsights(splitInsights)
       setActivityLogs(activity)
       setBatches(batchList)
       setJobs(jobList)
       setWaitlistEntries(waitlist)
       setUserActivityEntries(userActivity)
-      setOverview(platformOverview)
+      if (platformOverview) setOverview(platformOverview)
 
       if (studentList.length > 0 && !selectedStudentId) {
         setSelectedStudentId(studentList[0].id)
       }
       if (batchList.length > 0 && !selectedBatchId) {
         setSelectedBatchId(batchList[0].id)
+      }
+
+      if (failed.length > 0) {
+        const critical = failed.filter((f) => f === 'overview' || f === 'metrics' || f === 'students')
+        if (critical.length > 0) {
+          toast.error(`Admin data partially failed (${failed.length}): ${failed.join(', ')}`)
+        } else {
+          toast.message(`Some admin sections did not load: ${failed.join(', ')}`)
+        }
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to load admin data'

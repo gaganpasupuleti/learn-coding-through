@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
 from app.core.database import get_db
+from app.core.schema_ensure import ensure_job_posts_fixture_columns
 from app.models.models import JobApplication, JobApplicationStatus, JobPost, JobPostStatus, User, UserRole
 from app.schemas.jobs import (
     JobApplyResponse,
@@ -19,6 +20,7 @@ def list_open_jobs(
     db: Session = Depends(get_db),
     _user: User = Depends(get_current_user),
 ):
+    ensure_job_posts_fixture_columns()
     jobs = (
         db.query(JobPost)
         .filter(JobPost.status == JobPostStatus.OPEN)
