@@ -347,6 +347,8 @@ export interface AdminClassInsights {
   students: AdminClassStudent[]
 }
 
+export type AdminJobListFilter = 'all' | 'fixture' | 'live'
+
 export interface AdminJobPost {
   id: number
   title: string
@@ -357,6 +359,8 @@ export interface AdminJobPost {
   external_apply_url?: string | null
   listing_metadata?: Record<string, unknown> | null
   status: string
+  is_fixture: boolean
+  sort_order: number
   eligible_batch_id: number | null
   eligible_batch_name: string | null
   applications_count: number
@@ -663,9 +667,33 @@ export async function fetchAdminClassInsights(token: string, batchId: number): P
   return parseOrThrow(response) as Promise<AdminClassInsights>
 }
 
-export async function fetchAdminJobs(token: string): Promise<AdminJobPost[]> {
-  const response = await fetchWithAuthApiFallback('/api/v1/admin/jobs', token)
+export async function fetchAdminJobs(
+  token: string,
+  filter: AdminJobListFilter = 'all',
+): Promise<AdminJobPost[]> {
+  const response = await fetchWithAuthApiFallback(
+    `/api/v1/admin/jobs?filter=${encodeURIComponent(filter)}`,
+    token,
+  )
   return parseOrThrow(response) as Promise<AdminJobPost[]>
+}
+
+export async function reorderAdminJobs(
+  token: string,
+  orderedJobIds: number[],
+): Promise<AdminJobPost[]> {
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/jobs/reorder', token, {
+    method: 'PUT',
+    body: JSON.stringify({ ordered_job_ids: orderedJobIds }),
+  })
+  return parseOrThrow(response) as Promise<AdminJobPost[]>
+}
+
+export async function seedAdminFixtureJobs(token: string): Promise<{ upserted: number; message: string }> {
+  const response = await fetchWithAuthApiFallback('/api/v1/admin/jobs/seed-fixture', token, {
+    method: 'POST',
+  })
+  return parseOrThrow(response) as Promise<{ upserted: number; message: string }>
 }
 
 export async function createAdminJob(token: string, payload: AdminJobCreatePayload): Promise<AdminJobPost> {
@@ -805,6 +833,8 @@ export interface AdminJobUpdatePayload {
   employment_type?: string
   description?: string
   status?: 'open' | 'closed'
+  is_fixture?: boolean
+  sort_order?: number
   eligible_batch_id?: number | null
 }
 

@@ -135,6 +135,8 @@ class JobPostResponse(BaseModel):
     external_apply_url: str | None = None
     listing_metadata: dict | None = None
     status: str
+    is_fixture: bool = False
+    sort_order: int = 0
     eligible_batch_id: int | None
     eligible_batch_name: str | None
     applications_count: int
@@ -240,4 +242,15 @@ class JobPostUpdateRequest(BaseModel):
     employment_type: str | None = Field(default=None, min_length=2, max_length=80)
     description: str | None = Field(default=None, max_length=2000)
     status: str | None = Field(default=None, pattern="^(open|closed)$")
+    is_fixture: bool | None = None
+    sort_order: int | None = None
     eligible_batch_id: int | None = None
+
+
+class JobReorderRequest(BaseModel):
+    ordered_job_ids: list[int] = Field(..., min_length=1)
+
+
+class JobFixtureSeedResult(BaseModel):
+    upserted: int
+    message: str

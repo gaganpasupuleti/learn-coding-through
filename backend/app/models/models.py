@@ -423,6 +423,8 @@ class JobPost(Base):
     external_apply_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
     listing_metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     status: Mapped[JobPostStatus] = mapped_column(SqlEnum(JobPostStatus), default=JobPostStatus.OPEN, nullable=False)
+    is_fixture: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     eligible_batch_id: Mapped[int | None] = mapped_column(ForeignKey("learning_batches.id"), nullable=True)
     created_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)

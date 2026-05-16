@@ -42,8 +42,8 @@ export const DUMMY_STUDENT_APPLICATIONS: StudentJobApplicationsMe = {
   items: [
     {
       job_id: 9001,
-      title: '[KPI demo seed] Junior Backend Engineer',
-      company_name: 'CodeQuest Demo Labs',
+      title: 'Junior Backend Engineer',
+      company_name: 'TechMahindra Digital',
       status: 'applied',
       created_at: isoMinutesAgo(120),
     },

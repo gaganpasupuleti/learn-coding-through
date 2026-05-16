@@ -185,8 +185,11 @@ def _ensure_job_posts(db: Session, batches: list[LearningBatch], creator_id: int
             employment_type="full_time" if i < 2 else "internship",
             description="Synthetic job listing for fixture cohort testing.",
             status=JobPostStatus.OPEN,
+            is_fixture=True,
+            sort_order=i,
             eligible_batch_id=batch.id,
             created_by_user_id=creator_id,
+            listing_metadata={"fixture_key": f"cohort-{i}", "source": "fixture_cohort"},
         )
         db.add(p)
         db.flush()

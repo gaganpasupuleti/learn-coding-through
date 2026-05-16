@@ -10,6 +10,7 @@ from app.api.deps import require_admin
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import get_password_hash
+from app.services.job_fixture_seed import seed_fixture_job_board
 from app.services.job_import import build_job_template_xlsx, parse_job_import_xlsx, parse_linkedin_jobs_json
 from app.models.models import (
     AdminActivityLog,
@@ -49,9 +50,11 @@ from app.schemas.admin import (
     BatchUpdateRequest,
     ClassInsightsResponse,
     ClassStudentDetailResponse,
+    JobFixtureSeedResult,
     JobPostCreateRequest,
     JobPostResponse,
     JobPostUpdateRequest,
+    JobReorderRequest,
     PieSliceResponse,
     RoleInsightItem,
     RoleSplitInsightsResponse,
@@ -90,6 +93,29 @@ def _admin_job_quota_cap(admin_user: User) -> int | None:
 def _count_jobs_created_by_admin(db: Session, admin_user_id: int) -> int:
     total = db.query(func.count(JobPost.id)).filter(JobPost.created_by_user_id == admin_user_id).scalar()
     return int(total or 0)
+
+
+def _job_post_response(db: Session, job: JobPost) -> JobPostResponse:
+    applications_count = (
+        db.query(JobApplication).filter(JobApplication.job_post_id == job.id).count()
+    )
+    return JobPostResponse(
+        id=job.id,
+        title=job.title,
+        company_name=job.company_name,
+        location=job.location,
+        employment_type=job.employment_type,
+        description=job.description,
+        external_apply_url=job.external_apply_url,
+        listing_metadata=job.listing_metadata,
+        status=job.status.value,
+        is_fixture=job.is_fixture,
+        sort_order=job.sort_order,
+        eligible_batch_id=job.eligible_batch_id,
+        eligible_batch_name=job.eligible_batch.name if job.eligible_batch else None,
+        applications_count=applications_count,
+        created_at=job.created_at,
+    )
 
 
 def ensure_admin_job_create_quota(db: Session, admin_user: User, *, additional_jobs: int) -> None:
@@ -212,44 +238,36 @@ def _ensure_learning_ops_demo_data(db: Session, admin_user: User) -> None:
     db.add_all(enrollments)
     db.flush()
 
-    jobs = [
-        JobPost(
-            title="Junior Python Developer",
-            company_name="TechWave Labs",
-            location="Hyderabad",
-            employment_type="Full-time",
-            description="Backend API and SQL fundamentals",
-            status=JobPostStatus.OPEN,
-            eligible_batch_id=batches[0].id,
-            created_by_user_id=admin_user.id,
-        ),
-        JobPost(
-            title="Data Analyst Intern",
-            company_name="InsightStack",
-            location="Bengaluru",
-            employment_type="Internship",
-            description="SQL, dashboards and reporting",
-            status=JobPostStatus.OPEN,
-            eligible_batch_id=batches[1].id,
-            created_by_user_id=admin_user.id,
-        ),
-    ]
-    db.add_all(jobs)
+    seed_fixture_job_board(
+        db,
+        created_by_user_id=admin_user.id,
+        eligible_batch_id=batches[0].id,
+    )
+    jobs = (
+        db.query(JobPost)
+        .filter(JobPost.is_fixture.is_(True), JobPost.status == JobPostStatus.OPEN)
+        .order_by(JobPost.sort_order.asc())
+        .limit(2)
+        .all()
+    )
+    if len(jobs) < 2:
+        jobs = db.query(JobPost).filter(JobPost.status == JobPostStatus.OPEN).limit(2).all()
     db.flush()
 
-    for index, student in enumerate(student_users[:4]):
-        db.add(
-            JobApplication(
-                job_post_id=jobs[index % len(jobs)].id,
-                student_user_id=student.id,
-                status=[
-                    JobApplicationStatus.APPLIED,
-                    JobApplicationStatus.SHORTLISTED,
-                    JobApplicationStatus.REJECTED,
-                    JobApplicationStatus.HIRED,
-                ][index],
+    if jobs:
+        for index, student in enumerate(student_users[:4]):
+            db.add(
+                JobApplication(
+                    job_post_id=jobs[index % len(jobs)].id,
+                    student_user_id=student.id,
+                    status=[
+                        JobApplicationStatus.APPLIED,
+                        JobApplicationStatus.SHORTLISTED,
+                        JobApplicationStatus.REJECTED,
+                        JobApplicationStatus.HIRED,
+                    ][index],
+                )
             )
-        )
 
     _log_admin_action(db, admin_user.id, "learning_ops_seeded", details="Seeded batch and job portal demo data")
     db.commit()
@@ -565,33 +583,18 @@ def get_batch_insights(
 
 @router.get("/jobs", response_model=list[JobPostResponse])
 def list_jobs(
+    fixture_filter: Literal["all", "fixture", "live"] = Query(default="all", alias="filter"),
     db: Session = Depends(get_db),
     admin_user: User = Depends(require_admin),
 ):
     _ensure_learning_ops_demo_data(db, admin_user)
-    jobs = db.query(JobPost).order_by(JobPost.created_at.desc()).all()
-
-    responses: list[JobPostResponse] = []
-    for job in jobs:
-        applications_count = db.query(JobApplication).filter(JobApplication.job_post_id == job.id).count()
-        responses.append(
-            JobPostResponse(
-                id=job.id,
-                title=job.title,
-                company_name=job.company_name,
-                location=job.location,
-                employment_type=job.employment_type,
-                description=job.description,
-                external_apply_url=job.external_apply_url,
-                listing_metadata=job.listing_metadata,
-                status=job.status.value,
-                eligible_batch_id=job.eligible_batch_id,
-                eligible_batch_name=job.eligible_batch.name if job.eligible_batch else None,
-                applications_count=applications_count,
-                created_at=job.created_at,
-            )
-        )
-    return responses
+    query = db.query(JobPost)
+    if fixture_filter == "fixture":
+        query = query.filter(JobPost.is_fixture.is_(True))
+    elif fixture_filter == "live":
+        query = query.filter(JobPost.is_fixture.is_(False))
+    jobs = query.order_by(JobPost.sort_order.asc(), JobPost.created_at.desc()).all()
+    return [_job_post_response(db, job) for job in jobs]
 
 
 @router.post("/jobs", response_model=JobPostResponse)
@@ -607,6 +610,7 @@ def create_job(
 
     ensure_admin_job_create_quota(db, admin_user, additional_jobs=1)
 
+    max_order = db.query(func.max(JobPost.sort_order)).scalar() or 0
     job = JobPost(
         title=payload.title,
         company_name=payload.company_name,
@@ -614,6 +618,8 @@ def create_job(
         employment_type=payload.employment_type,
         description=payload.description,
         status=JobPostStatus.OPEN,
+        is_fixture=False,
+        sort_order=int(max_order) + 1,
         eligible_batch_id=payload.eligible_batch_id,
         created_by_user_id=admin_user.id,
     )
@@ -623,21 +629,7 @@ def create_job(
     db.commit()
     db.refresh(job)
 
-    return JobPostResponse(
-        id=job.id,
-        title=job.title,
-        company_name=job.company_name,
-        location=job.location,
-        employment_type=job.employment_type,
-        description=job.description,
-        external_apply_url=job.external_apply_url,
-        listing_metadata=job.listing_metadata,
-        status=job.status.value,
-        eligible_batch_id=job.eligible_batch_id,
-        eligible_batch_name=job.eligible_batch.name if job.eligible_batch else None,
-        applications_count=0,
-        created_at=job.created_at,
-    )
+    return _job_post_response(db, job)
 
 
 @router.get("/jobs/import-template")
@@ -1120,6 +1112,14 @@ def update_job(
         job.eligible_batch_id = bid
         changed.append("eligible_batch_id")
 
+    if "is_fixture" in updates:
+        job.is_fixture = bool(updates.pop("is_fixture"))
+        changed.append("is_fixture")
+
+    if "sort_order" in updates and updates["sort_order"] is not None:
+        job.sort_order = int(updates.pop("sort_order"))
+        changed.append("sort_order")
+
     for field, value in updates.items():
         if value is not None:
             setattr(job, field, value)
@@ -1130,21 +1130,47 @@ def update_job(
     db.commit()
     db.refresh(job)
 
-    applications_count = db.query(JobApplication).filter(JobApplication.job_post_id == job.id).count()
-    return JobPostResponse(
-        id=job.id,
-        title=job.title,
-        company_name=job.company_name,
-        location=job.location,
-        employment_type=job.employment_type,
-        description=job.description,
-        external_apply_url=job.external_apply_url,
-        listing_metadata=job.listing_metadata,
-        status=job.status.value,
-        eligible_batch_id=job.eligible_batch_id,
-        eligible_batch_name=job.eligible_batch.name if job.eligible_batch else None,
-        applications_count=applications_count,
-        created_at=job.created_at,
+    return _job_post_response(db, job)
+
+
+@router.put("/jobs/reorder", response_model=list[JobPostResponse])
+def reorder_jobs(
+    payload: JobReorderRequest,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    for index, job_id in enumerate(payload.ordered_job_ids):
+        job = db.query(JobPost).filter(JobPost.id == job_id).first()
+        if not job:
+            raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+        job.sort_order = index
+
+    _log_admin_action(
+        db,
+        admin_user.id,
+        "jobs_reordered",
+        details=f"Reordered {len(payload.ordered_job_ids)} jobs",
+    )
+    db.commit()
+    jobs = (
+        db.query(JobPost)
+        .order_by(JobPost.sort_order.asc(), JobPost.created_at.desc())
+        .all()
+    )
+    return [_job_post_response(db, job) for job in jobs]
+
+
+@router.post("/jobs/seed-fixture", response_model=JobFixtureSeedResult)
+def admin_seed_fixture_jobs(
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    upserted = seed_fixture_job_board(db, created_by_user_id=admin_user.id)
+    _log_admin_action(db, admin_user.id, "fixture_jobs_seeded", details=f"Upserted {upserted} fixture jobs")
+    db.commit()
+    return JobFixtureSeedResult(
+        upserted=upserted,
+        message=f"Loaded {upserted} fixture job listings (students see them as normal roles).",
     )
 
 

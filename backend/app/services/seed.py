@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.security import get_password_hash
+from app.services.job_fixture_seed import seed_fixture_job_board
 from app.models.models import (
     BatchEnrollment,
     BatchMode,
@@ -867,50 +868,28 @@ def _apply_student_dashboard_kpi_seed(db: Session, user: User) -> None:
     else:
         enr.attendance_pct = 88
 
-    job_title = f"{demo_prefix} Junior Backend Engineer"
-    job = db.query(JobPost).filter(JobPost.title == job_title).first()
-    if not job:
-        job = JobPost(
-            title=job_title,
-            company_name="CodeQuest Demo Labs",
-            location="Remote (India)",
-            employment_type="full_time",
-            description="Seeded opening for dashboard / QA — safe to delete.",
-            status=JobPostStatus.OPEN,
-            eligible_batch_id=batch.id,
-            created_by_user_id=user.id,
-        )
-        db.add(job)
-        db.flush()
-
-    app_row = (
-        db.query(JobApplication)
-        .filter(JobApplication.job_post_id == job.id, JobApplication.student_user_id == user.id)
+    seed_fixture_job_board(db, created_by_user_id=user.id, eligible_batch_id=batch.id)
+    job = (
+        db.query(JobPost)
+        .filter(JobPost.status == JobPostStatus.OPEN, JobPost.is_fixture.is_(True))
+        .order_by(JobPost.sort_order.asc())
         .first()
     )
-    if not app_row:
-        db.add(
-            JobApplication(
-                job_post_id=job.id,
-                student_user_id=user.id,
-                status=JobApplicationStatus.APPLIED,
-            )
-        )
 
-    job2_title = f"{demo_prefix} Frontend internship"
-    if not db.query(JobPost).filter(JobPost.title == job2_title).first():
-        db.add(
-            JobPost(
-                title=job2_title,
-                company_name="CodeQuest Demo Labs",
-                location="Hybrid — Bengaluru",
-                employment_type="internship",
-                description="Second seeded listing (no auto-application).",
-                status=JobPostStatus.OPEN,
-                eligible_batch_id=batch.id,
-                created_by_user_id=user.id,
-            )
+    if job:
+        app_row = (
+            db.query(JobApplication)
+            .filter(JobApplication.job_post_id == job.id, JobApplication.student_user_id == user.id)
+            .first()
         )
+        if not app_row:
+            db.add(
+                JobApplication(
+                    job_post_id=job.id,
+                    student_user_id=user.id,
+                    status=JobApplicationStatus.APPLIED,
+                )
+            )
 
     slug = "frontend-foundations"
     cat = db.query(ProjectCatalog).filter(ProjectCatalog.slug == slug).first()

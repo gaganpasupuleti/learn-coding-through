@@ -22,7 +22,7 @@ def list_open_jobs(
     jobs = (
         db.query(JobPost)
         .filter(JobPost.status == JobPostStatus.OPEN)
-        .order_by(JobPost.created_at.desc())
+        .order_by(JobPost.sort_order.asc(), JobPost.created_at.desc())
         .all()
     )
     return [

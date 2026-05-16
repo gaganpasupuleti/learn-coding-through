@@ -86,6 +86,35 @@ def _ensure_user_password_setup_column() -> None:
         print(f"Warning: unable to ensure users.password_setup_required column: {exc}")
 
 
+def _ensure_job_posts_fixture_columns() -> None:
+    try:
+        inspector = inspect(engine)
+        if not inspector.has_table("job_posts"):
+            return
+        cols = {c["name"] for c in inspector.get_columns("job_posts")}
+        dialect = engine.dialect.name
+        with engine.begin() as conn:
+            if "is_fixture" not in cols:
+                if dialect == "sqlite":
+                    conn.execute(
+                        text(
+                            "ALTER TABLE job_posts ADD COLUMN is_fixture BOOLEAN NOT NULL DEFAULT 0"
+                        )
+                    )
+                else:
+                    conn.execute(
+                        text(
+                            "ALTER TABLE job_posts ADD COLUMN is_fixture BOOLEAN NOT NULL DEFAULT false"
+                        )
+                    )
+            if "sort_order" not in cols:
+                conn.execute(
+                    text("ALTER TABLE job_posts ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 0")
+                )
+    except Exception as exc:
+        print(f"Warning: unable to ensure job_posts fixture/sort columns: {exc}")
+
+
 def _ensure_schedule_schema() -> None:
     """Ensure class_sessions + due_date columns exist when Alembic did not run on deploy."""
     try:
@@ -205,6 +234,7 @@ def startup_event():
         if settings.auto_create_tables:
             Base.metadata.create_all(bind=engine)
         _ensure_schedule_schema()
+        _ensure_job_posts_fixture_columns()
         db = SessionLocal()
         try:
             seed_default_roles(db)
