@@ -17,7 +17,7 @@ from app.api.v1 import activity, admin, auth, credits, enrollment, interview, jo
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import ALGORITHM
-from app.models.models import TypingAttempt, User, UserActivityLog
+from app.models.models import ClassSession, TypingAttempt, User, UserActivityLog
 from app.services.seed import seed_admin_user, seed_catalog_data, seed_default_roles, seed_promoted_admins, seed_student_dashboard_demo
 from executors.java_executor import verify_java_runtime_setup
 
@@ -84,6 +84,38 @@ def _ensure_user_password_setup_column() -> None:
                 )
     except Exception as exc:
         print(f"Warning: unable to ensure users.password_setup_required column: {exc}")
+
+
+def _ensure_schedule_schema() -> None:
+    """Ensure class_sessions + due_date columns exist when Alembic did not run on deploy."""
+    try:
+        ClassSession.__table__.create(bind=engine, checkfirst=True)
+        inspector = inspect(engine)
+        dialect = engine.dialect.name
+        with engine.begin() as conn:
+            if inspector.has_table("stages"):
+                stage_cols = {c["name"] for c in inspector.get_columns("stages")}
+                if "due_date" not in stage_cols:
+                    conn.execute(text("ALTER TABLE stages ADD COLUMN due_date DATE"))
+            if inspector.has_table("quizzes"):
+                quiz_cols = {c["name"] for c in inspector.get_columns("quizzes")}
+                if "due_date" not in quiz_cols:
+                    conn.execute(text("ALTER TABLE quizzes ADD COLUMN due_date DATE"))
+            if dialect == "postgresql":
+                conn.execute(
+                    text(
+                        "CREATE INDEX IF NOT EXISTS ix_class_sessions_batch_date "
+                        "ON class_sessions (batch_id, session_date)"
+                    )
+                )
+                conn.execute(
+                    text(
+                        "CREATE INDEX IF NOT EXISTS ix_class_sessions_status_date "
+                        "ON class_sessions (status, session_date)"
+                    )
+                )
+    except Exception as exc:
+        print(f"Warning: unable to ensure schedule schema (class_sessions / due_date): {exc}")
 
 # Initialize the rate limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -172,6 +204,7 @@ def startup_event():
     try:
         if settings.auto_create_tables:
             Base.metadata.create_all(bind=engine)
+        _ensure_schedule_schema()
         db = SessionLocal()
         try:
             seed_default_roles(db)

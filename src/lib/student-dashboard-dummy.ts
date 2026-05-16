@@ -5,6 +5,8 @@ import type {
   StageProgressRecord,
   StudentJobApplicationsMe,
   TypingAttempt,
+  UpcomingDeadlines,
+  UpcomingSession,
 } from '@/lib/api'
 
 const now = new Date()
@@ -72,11 +74,64 @@ export const DUMMY_STUDENT_PROJECTS: MySubmittedProject[] = [
 
 export const DUMMY_CATALOG_STEP_COUNT = 3
 
+const KPI_DEMO_EMAILS = new Set(['demo@student.com', 'kundetiriya@gmail.com'])
+
+function addDaysIso(days: number): string {
+  const d = new Date()
+  d.setDate(d.getDate() + days)
+  return d.toISOString().slice(0, 10)
+}
+
+export const DUMMY_UPCOMING_SESSIONS: UpcomingSession[] = [
+  {
+    id: 9001,
+    batch_name: '[KPI demo seed] Spring cohort',
+    title: 'Session 1: HTML & CSS Basics',
+    topic: 'Box model, selectors, flexbox',
+    session_date: addDaysIso(1),
+    start_time: '10:00:00',
+    end_time: '13:00:00',
+    status: 'scheduled',
+  },
+  {
+    id: 9002,
+    batch_name: '[KPI demo seed] Spring cohort',
+    title: 'Session 2: JavaScript Fundamentals',
+    topic: 'Variables, functions, DOM manipulation',
+    session_date: addDaysIso(3),
+    start_time: '10:00:00',
+    end_time: '13:00:00',
+    status: 'scheduled',
+  },
+  {
+    id: 9003,
+    batch_name: '[KPI demo seed] Spring cohort',
+    title: 'Session 3: React Introduction',
+    topic: 'Components, JSX, props and state',
+    session_date: addDaysIso(5),
+    start_time: '10:00:00',
+    end_time: '13:00:00',
+    status: 'scheduled',
+  },
+]
+
+export const DUMMY_UPCOMING_DEADLINES: UpcomingDeadlines = {
+  quizzes: [
+    { quiz_id: 9001, title: 'Stage 1 quiz', due_date: addDaysIso(5), passed: false },
+    { quiz_id: 9002, title: 'Stage 2 quiz', due_date: addDaysIso(12), passed: false },
+  ],
+  stages: [
+    { stage_id: 1, title: 'Stage 1', due_date: addDaysIso(7), unlocked: true },
+    { stage_id: 2, title: 'Stage 2', due_date: addDaysIso(14), unlocked: true },
+  ],
+}
+
 export function shouldBlendStudentDashboardDummy(user: AuthUser): boolean {
   if (import.meta.env.VITE_DUMMY_STUDENT_DASHBOARD === 'true') {
     return true
   }
-  return user.email?.toLowerCase() === 'demo@student.com'
+  const email = user.email?.toLowerCase() ?? ''
+  return KPI_DEMO_EMAILS.has(email)
 }
 
 export function isStudentDashboardSnapshotEmpty(
@@ -132,5 +187,22 @@ export function blendStudentDashboardDummyIfNeeded(
     applications: DUMMY_STUDENT_APPLICATIONS,
     enrollment: DUMMY_STUDENT_ENROLLMENT,
     submittedProjects: DUMMY_STUDENT_PROJECTS,
+  }
+}
+
+export function blendStudentScheduleDummyIfNeeded(
+  user: AuthUser,
+  sessions: UpcomingSession[],
+  deadlines: UpcomingDeadlines,
+): { sessions: UpcomingSession[]; deadlines: UpcomingDeadlines } {
+  if (!shouldBlendStudentDashboardDummy(user)) {
+    return { sessions, deadlines }
+  }
+  return {
+    sessions: sessions.length > 0 ? sessions : DUMMY_UPCOMING_SESSIONS,
+    deadlines:
+      deadlines.quizzes.length > 0 || deadlines.stages.length > 0
+        ? deadlines
+        : DUMMY_UPCOMING_DEADLINES,
   }
 }

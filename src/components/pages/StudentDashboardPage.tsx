@@ -40,7 +40,10 @@ import {
   type UpcomingSession,
 } from '@/lib/api'
 import { readCareerMapLocalSummary } from '@/lib/career-local-summary'
-import { blendStudentDashboardDummyIfNeeded } from '@/lib/student-dashboard-dummy'
+import {
+  blendStudentDashboardDummyIfNeeded,
+  blendStudentScheduleDummyIfNeeded,
+} from '@/lib/student-dashboard-dummy'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import type { AuthUser } from '@/lib/auth'
@@ -105,13 +108,26 @@ function useStudentDashboardSnapshot(user: AuthUser) {
       setApplications(blended.applications)
       setEnrollment(blended.enrollment)
       setSubmittedProjects(blended.submittedProjects)
-      setUpcomingSessions(sessions ?? [])
-      setDeadlines(dl ?? { quizzes: [], stages: [] })
+      const scheduleBlend = blendStudentScheduleDummyIfNeeded(
+        user,
+        sessions ?? [],
+        dl ?? { quizzes: [], stages: [] },
+      )
+      setUpcomingSessions(scheduleBlend.sessions)
+      setDeadlines(scheduleBlend.deadlines)
       const failCount = [stages, catalog, typing, apps, enr, projs, sessions, dl].filter(
         (v) => v === undefined,
       ).length
-      if (failCount > 0) {
-        toast.error(`${failCount} dashboard request(s) failed — check console for details.`)
+      const hasCoreData =
+        blended.stageRows.length > 0 ||
+        blended.catalogSteps > 0 ||
+        blended.typingAttempts.length > 0
+      if (failCount > 0 && !hasCoreData) {
+        toast.error(
+          'Could not load dashboard data. Check that the API is running and you are signed in.',
+        )
+      } else if (failCount > 0) {
+        console.warn(`[Dashboard] ${failCount} request(s) failed; showing available data.`)
       }
     } catch {
       toast.error('Could not load dashboard data. Is the API running?')
@@ -129,8 +145,9 @@ function useStudentDashboardSnapshot(user: AuthUser) {
       setApplications(blended.applications)
       setEnrollment(blended.enrollment)
       setSubmittedProjects(blended.submittedProjects)
-      setUpcomingSessions([])
-      setDeadlines({ quizzes: [], stages: [] })
+      const scheduleBlend = blendStudentScheduleDummyIfNeeded(user, [], { quizzes: [], stages: [] })
+      setUpcomingSessions(scheduleBlend.sessions)
+      setDeadlines(scheduleBlend.deadlines)
     } finally {
       setLoading(false)
     }

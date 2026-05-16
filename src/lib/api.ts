@@ -139,7 +139,7 @@ async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<R
         return response
       }
 
-      if (hasMoreCandidates && [404, 405, 502, 503].includes(response.status)) {
+      if (hasMoreCandidates && [404, 405, 500, 502, 503].includes(response.status)) {
         continue
       }
 
@@ -192,7 +192,7 @@ async function fetchWithApiFallbackMultipart(
         return response
       }
 
-      if (hasMoreCandidates && [404, 405, 502, 503].includes(response.status)) {
+      if (hasMoreCandidates && [404, 405, 500, 502, 503].includes(response.status)) {
         continue
       }
 
@@ -545,7 +545,7 @@ export async function fetchDatabaseHealth(): Promise<DatabaseHealth> {
 export async function createTypingAttempt(
   payload: CreateTypingAttemptPayload,
 ): Promise<TypingAttempt> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/typing/attempts`, {
+  const response = await fetchWithApiFallback('/api/v1/typing/attempts', {
     method: 'POST',
     headers: getOptionalAuthHeaders(),
     body: JSON.stringify(payload),
@@ -555,7 +555,7 @@ export async function createTypingAttempt(
 }
 
 export async function fetchTypingAttempts(limit = 20): Promise<TypingAttempt[]> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/typing/attempts?limit=${limit}`, {
+  const response = await fetchWithApiFallback(`/api/v1/typing/attempts?limit=${limit}`, {
     headers: getOptionalAuthHeaders(),
   })
 
