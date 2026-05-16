@@ -168,7 +168,7 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
 
       <main
         id="main-content"
-        className="flex min-h-0 flex-1 flex-col overflow-hidden bg-slate-50"
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden overscroll-y-contain bg-slate-50 pb-[max(1rem,env(safe-area-inset-bottom))]"
         tabIndex={-1}
       >
         {children}
