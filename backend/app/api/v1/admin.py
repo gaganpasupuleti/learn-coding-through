@@ -969,8 +969,6 @@ def get_platform_overview(
     db: Session = Depends(get_db),
     admin_user: User = Depends(require_admin),
 ):
-    _ensure_learning_ops_demo_data(db, admin_user)
-
     today = date.today()
 
     total_users = db.query(User).count()
@@ -988,8 +986,14 @@ def get_platform_overview(
     total_job_applications = db.query(JobApplication).count()
     total_hires = db.query(JobApplication).filter(JobApplication.status == JobApplicationStatus.HIRED).count()
 
-    catalog_quizzes = db.query(QuizCatalog).count()
-    catalog_projects = db.query(ProjectCatalog).count()
+    try:
+        catalog_quizzes = db.query(QuizCatalog).count()
+    except Exception:
+        catalog_quizzes = 0
+    try:
+        catalog_projects = db.query(ProjectCatalog).count()
+    except Exception:
+        catalog_projects = 0
 
     waitlist_pending = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "pending").count()
     waitlist_approved = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "approved").count()

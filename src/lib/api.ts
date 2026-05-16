@@ -636,8 +636,11 @@ async function parseOrThrow(response: Response) {
   }
 }
 
-export async function fetchAdminStudents(token: string, search?: string): Promise<AdminStudent[]> {
-  const query = search?.trim() ? `?search=${encodeURIComponent(search.trim())}` : ''
+export async function fetchAdminStudents(token: string, search?: string, limit = 500): Promise<AdminStudent[]> {
+  const params = new URLSearchParams()
+  params.set('limit', String(limit))
+  if (search?.trim()) params.set('search', search.trim())
+  const query = `?${params.toString()}`
   const response = await fetchWithAuthApiFallback(`/api/v1/admin/students${query}`, token)
   return parseOrThrow(response) as Promise<AdminStudent[]>
 }

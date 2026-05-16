@@ -54,6 +54,7 @@ import {
   defaultCreatePayload,
   defaultJobPayload,
 } from "../constants"
+import { blendAdminDashboardData } from "../utils/dashboardKpiBlend"
 import { resolveStudentWorkflowStage } from "../workflow"
 import type { AdminSection, StudentWorkflowStage } from "../types"
 
@@ -234,16 +235,27 @@ export function useAdminWorkspace() {
       const userActivity = pick(8, [] as AdminUserActivity[])
       const platformOverview = pick(9, null)
 
+      const blended = blendAdminDashboardData({
+        overview: platformOverview,
+        metrics: adminMetrics,
+        monthlyKpis: kpis,
+        students: studentList,
+        batches: batchList,
+        jobs: jobList,
+        waitlist,
+        roleSplit: splitInsights,
+      })
+
       setStudents(studentList)
-      if (adminMetrics) setMetrics(adminMetrics)
-      if (kpis) setMonthlyKpis(kpis)
-      if (splitInsights) setRoleSplitInsights(splitInsights)
+      setMetrics(blended.metrics)
+      setMonthlyKpis(blended.monthlyKpis)
+      setRoleSplitInsights(splitInsights)
       setActivityLogs(activity)
       setBatches(batchList)
       setJobs(jobList)
       setWaitlistEntries(waitlist)
       setUserActivityEntries(userActivity)
-      if (platformOverview) setOverview(platformOverview)
+      setOverview(blended.overview)
 
       if (studentList.length > 0 && !selectedStudentId) {
         setSelectedStudentId(studentList[0].id)
