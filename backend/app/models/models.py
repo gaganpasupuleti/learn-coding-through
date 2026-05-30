@@ -96,6 +96,18 @@ class TypingTestType(str, Enum):
     LENGTH = "length"
 
 
+class FeedbackCategory(str, Enum):
+    GENERAL = "general"
+    CONCERN = "concern"
+    BUG = "bug"
+    SUGGESTION = "suggestion"
+
+
+class FeedbackStatus(str, Enum):
+    PENDING = "pending"
+    REVIEWED = "reviewed"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -143,6 +155,17 @@ class User(Base):
     )
     typing_attempts = relationship("TypingAttempt", back_populates="user", cascade="all,delete-orphan")
     activity_logs = relationship("UserActivityLog", back_populates="user", cascade="all,delete-orphan")
+    feedback_submissions = relationship(
+        "StudentFeedback",
+        foreign_keys="StudentFeedback.user_id",
+        back_populates="user",
+        cascade="all,delete-orphan",
+    )
+    feedback_reviews = relationship(
+        "StudentFeedback",
+        foreign_keys="StudentFeedback.reviewed_by_user_id",
+        back_populates="reviewed_by",
+    )
 
 
 class Role(Base):
@@ -622,4 +645,27 @@ class UserActivityLog(Base):
     occurred_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
     user = relationship("User", back_populates="activity_logs")
+
+
+class StudentFeedback(Base):
+    __tablename__ = "student_feedback"
+    __table_args__ = (
+        Index("ix_student_feedback_status_created", "status", "created_at"),
+        Index("ix_student_feedback_user_created", "user_id", "created_at"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    category: Mapped[FeedbackCategory] = mapped_column(SqlEnum(FeedbackCategory), nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[FeedbackStatus] = mapped_column(
+        SqlEnum(FeedbackStatus), default=FeedbackStatus.PENDING, nullable=False
+    )
+    admin_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reviewed_by_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("User", foreign_keys=[user_id], back_populates="feedback_submissions")
+    reviewed_by = relationship("User", foreign_keys=[reviewed_by_user_id], back_populates="feedback_reviews")
 

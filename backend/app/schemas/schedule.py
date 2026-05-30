@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from datetime import date, time
-from pydantic import BaseModel
+from typing import Literal
+
+from pydantic import BaseModel, Field
 
 
 class UpcomingSessionResponse(BaseModel):
@@ -35,6 +37,29 @@ class DeadlineStageItem(BaseModel):
 class UpcomingDeadlinesResponse(BaseModel):
     quizzes: list[DeadlineQuizItem]
     stages: list[DeadlineStageItem]
+
+
+CalendarEventType = Literal["class", "quiz", "project"]
+
+
+class CalendarEventResponse(BaseModel):
+    """Unified event for the expanded week calendar (classes, quizzes, stage milestones)."""
+
+    id: str
+    event_type: CalendarEventType
+    title: str
+    subtitle: str | None = None
+    event_date: date
+    start_time: time
+    end_time: time
+    batch_name: str | None = None
+    status: str | None = None
+
+
+class CalendarEventsResponse(BaseModel):
+    start_date: date
+    end_date: date
+    events: list[CalendarEventResponse] = Field(default_factory=list)
 
 
 class ClassSessionCreate(BaseModel):

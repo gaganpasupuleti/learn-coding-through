@@ -4,6 +4,7 @@ import { toast } from "sonner"
 
 import {
   type AdminActivityLog,
+  type AdminFeedbackItem,
   type AdminBatch,
   type AdminBatchCreatePayload,
   type AdminClassInsights,
@@ -26,6 +27,7 @@ import {
   deleteAdminStudent,
   downloadAdminJobImportTemplate,
   fetchAdminActivity,
+  fetchAdminFeedback,
   fetchAdminBatches,
   fetchAdminClassInsights,
   fetchAdminJobs,
@@ -45,6 +47,7 @@ import {
   updateAdminJob,
   updateAdminRegistrationWaitlistStatus,
   updateAdminStudent,
+  reviewAdminFeedback,
 } from "@/lib/api"
 import { getAuthToken } from "@/lib/auth"
 
@@ -83,6 +86,7 @@ export function useAdminWorkspace() {
   const [monthlyKpis, setMonthlyKpis] = useState<AdminMonthlyKpis | null>(null)
   const [roleSplitInsights, setRoleSplitInsights] = useState<AdminRoleSplitInsights | null>(null)
   const [activityLogs, setActivityLogs] = useState<AdminActivityLog[]>([])
+  const [feedbackEntries, setFeedbackEntries] = useState<AdminFeedbackItem[]>([])
   const [overview, setOverview] = useState<AdminPlatformOverview | null>(null)
 
   const [batches, setBatches] = useState<AdminBatch[]>([])
@@ -200,6 +204,7 @@ export function useAdminWorkspace() {
         fetchAdminRegistrationWaitlist(t),
         fetchAdminUserActivity(t, 500),
         fetchAdminPlatformOverview(t),
+        fetchAdminFeedback(t, { status: 'all', limit: 200 }),
       ])
 
       const label = [
@@ -213,6 +218,7 @@ export function useAdminWorkspace() {
         'waitlist',
         'user activity',
         'overview',
+        'feedback',
       ]
 
       const failed: string[] = []
@@ -234,6 +240,7 @@ export function useAdminWorkspace() {
       const waitlist = pick(7, [] as AdminRegistrationWaitlistEntry[])
       const userActivity = pick(8, [] as AdminUserActivity[])
       const platformOverview = pick(9, null)
+      const feedbackList = pick(10, [] as AdminFeedbackItem[])
 
       const blended = blendAdminDashboardData({
         overview: platformOverview,
@@ -251,6 +258,7 @@ export function useAdminWorkspace() {
       setMonthlyKpis(blended.monthlyKpis)
       setRoleSplitInsights(splitInsights)
       setActivityLogs(activity)
+      setFeedbackEntries(feedbackList)
       setBatches(batchList)
       setJobs(jobList)
       setWaitlistEntries(waitlist)
@@ -746,6 +754,16 @@ export function useAdminWorkspace() {
     }
   }
 
+  const reviewFeedback = async (feedbackId: number, adminNotes: string | null) => {
+    const t = token.trim() || getAuthToken() || ''
+    if (!t) {
+      toast.error('No admin token available.')
+      return
+    }
+    const updated = await reviewAdminFeedback(t, feedbackId, { admin_notes: adminNotes })
+    setFeedbackEntries((prev) => prev.map((e) => (e.id === feedbackId ? updated : e)))
+  }
+
   const checkDbHealth = handleDatabaseCheck
 
   return {
@@ -774,6 +792,8 @@ export function useAdminWorkspace() {
     monthlyKpis,
     roleSplitInsights,
     activityLogs,
+    feedbackEntries,
+    reviewFeedback,
     overview,
     batches,
     selectedBatchId,

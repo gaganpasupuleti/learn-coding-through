@@ -908,6 +908,7 @@ def _apply_student_dashboard_kpi_seed(db: Session, user: User) -> None:
                 db.add(ProjectStepCompletion(user_id=user.id, project_slug=slug, step_id=step_id))
 
     _seed_demo_class_sessions(db, batch)
+    _seed_calendar_week_class_sessions(db, batch)
     _seed_demo_due_dates(db, stages, role)
 
 
@@ -967,6 +968,42 @@ def _seed_demo_class_sessions(db: Session, batch: LearningBatch) -> None:
                     session_date=session_date,
                     start_time=time(10, 0),
                     end_time=time(13, 0),
+                    status=ClassSessionStatus.SCHEDULED,
+                )
+            )
+
+
+def _seed_calendar_week_class_sessions(db: Session, batch: LearningBatch) -> None:
+    """Spread classes across the current Mon–Fri week for expanded calendar preview."""
+    today = date.today()
+    monday = today - timedelta(days=today.weekday())
+    week_specs = [
+        ("Django Backend", "Models, views, ORM", 0, time(10, 0), time(12, 0)),
+        ("Live Lab: APIs", "Pair programming", 1, time(14, 0), time(16, 0)),
+        ("Capstone Workshop", "Sprint planning", 2, time(9, 0), time(11, 0)),
+        ("Office Hours", "Q&A", 3, time(16, 0), time(17, 0)),
+        ("Demo Day Prep", "Presentations", 4, time(11, 0), time(12, 0)),
+    ]
+    for title, topic, day_offset, start_t, end_t in week_specs:
+        session_date = monday + timedelta(days=day_offset)
+        exists = (
+            db.query(ClassSession)
+            .filter(
+                ClassSession.batch_id == batch.id,
+                ClassSession.title == title,
+                ClassSession.session_date == session_date,
+            )
+            .first()
+        )
+        if not exists:
+            db.add(
+                ClassSession(
+                    batch_id=batch.id,
+                    title=title,
+                    topic=topic,
+                    session_date=session_date,
+                    start_time=start_t,
+                    end_time=end_t,
                     status=ClassSessionStatus.SCHEDULED,
                 )
             )

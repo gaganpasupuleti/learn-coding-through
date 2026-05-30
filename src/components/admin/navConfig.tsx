@@ -2,6 +2,7 @@ import {
   Briefcase,
   CalendarBlank,
   ChartBar,
+  ChatCircle,
   ClockCounterClockwise,
   Kanban,
   ShieldCheck,
@@ -18,5 +19,6 @@ export const adminNavItems: Array<{ key: AdminSection; label: string; icon: Reac
   { key: 'classes', label: 'Classes', icon: <CalendarBlank size={16} /> },
   { key: 'jobs', label: 'Jobs', icon: <Briefcase size={16} /> },
   { key: 'activity', label: 'Activity', icon: <ClockCounterClockwise size={16} /> },
+  { key: 'feedback', label: 'Feedback', icon: <ChatCircle size={16} /> },
   { key: 'access', label: 'Access Control', icon: <ShieldCheck size={16} /> },
 ]

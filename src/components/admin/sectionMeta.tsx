@@ -2,6 +2,7 @@ import {
   Briefcase,
   CalendarBlank,
   ChartBar,
+  ChatCircle,
   ClockCounterClockwise,
   Kanban,
   ShieldCheck,
@@ -18,5 +19,6 @@ export const sectionMeta: Record<AdminSection, { title: string; icon: ReactNode 
   classes: { title: 'Classes & Batches', icon: <CalendarBlank size={18} weight="bold" /> },
   jobs: { title: 'Job Portal', icon: <Briefcase size={18} weight="bold" /> },
   activity: { title: 'Activity Log', icon: <ClockCounterClockwise size={18} weight="bold" /> },
+  feedback: { title: 'Student Feedback', icon: <ChatCircle size={18} weight="bold" /> },
   access: { title: 'Access Control', icon: <ShieldCheck size={18} weight="bold" /> },
 }

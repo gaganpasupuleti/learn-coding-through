@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useState } from 'react'
 import {
   LayoutDashboard,
   Briefcase,
@@ -20,7 +21,10 @@ import {
   User,
   Keyboard,
   ChevronDown,
+  BookOpen,
+  MessageSquare,
 } from 'lucide-react'
+import { SubmitFeedbackDialog } from '@/components/feedback/SubmitFeedbackDialog'
 import { type AuthUser, clearAuth, isDemoUser } from '@/lib/auth'
 
 type StudentPage =
@@ -43,26 +47,106 @@ interface StudentShellProps {
   children: React.ReactNode
 }
 
+type NavItem = { page: StudentPage; label: string; icon: React.ReactNode }
+
+const PRIMARY_NAV: NavItem[] = [
+  { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={14} aria-hidden /> },
+  { page: 'hub', label: 'Hub', icon: <LayoutGrid size={14} aria-hidden /> },
+  { page: 'jobs', label: 'Jobs', icon: <Briefcase size={14} aria-hidden /> },
+  { page: 'roadmapper', label: 'Career Map', icon: <Map size={14} aria-hidden /> },
+]
+
+const LEARNING_NAV: NavItem[] = [
+  { page: 'projects', label: 'Projects', icon: <Boxes size={14} aria-hidden /> },
+  { page: 'practice', label: 'Practice', icon: <Code2 size={14} aria-hidden /> },
+  { page: 'quiz', label: 'Quiz', icon: <ClipboardList size={14} aria-hidden /> },
+  { page: 'typing', label: 'Typing', icon: <Keyboard size={14} aria-hidden /> },
+  { page: 'flow-roadmap', label: 'Flow Path', icon: <GitBranch size={14} aria-hidden /> },
+]
+
+const LEARNING_PAGES = new Set<StudentPage>(LEARNING_NAV.map((item) => item.page))
+
+function navLinkClass(active: boolean, compact = false) {
+  return `flex items-center gap-1 ${compact ? 'gap-1.5 px-2.5 py-1.5 text-sm' : 'px-2.5 py-1.5 text-[13px]'} font-medium rounded-lg whitespace-nowrap transition-all duration-150 ${
+    active
+      ? 'bg-blue-600 text-white shadow-sm'
+      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+  }`
+}
+
+function NavLinkButton({
+  page,
+  label,
+  icon,
+  currentPage,
+  onNavigate,
+  compact = false,
+}: NavItem & {
+  currentPage: StudentPage
+  onNavigate: (page: StudentPage) => void
+  compact?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onNavigate(page)}
+      aria-current={currentPage === page ? 'page' : undefined}
+      className={navLinkClass(currentPage === page, compact)}
+    >
+      {icon}
+      {label}
+    </button>
+  )
+}
+
+function LearningNavDropdown({
+  currentPage,
+  onNavigate,
+  compact = false,
+}: {
+  currentPage: StudentPage
+  onNavigate: (page: StudentPage) => void
+  compact?: boolean
+}) {
+  const learningActive = LEARNING_PAGES.has(currentPage)
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        type="button"
+        aria-label="Learning menu"
+        className={navLinkClass(learningActive, compact)}
+      >
+        <BookOpen size={14} aria-hidden />
+        Learning
+        <ChevronDown size={12} className="opacity-70" aria-hidden />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-48">
+        <DropdownMenuLabel className="text-xs text-slate-500">Learning</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {LEARNING_NAV.map(({ page, label, icon }) => (
+          <DropdownMenuItem
+            key={page}
+            onClick={() => onNavigate(page)}
+            className={`cursor-pointer gap-2 ${currentPage === page ? 'bg-slate-100 font-medium text-slate-900' : ''}`}
+          >
+            {icon}
+            {label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 export function StudentShell({ currentPage, user, onNavigate, onLogout, children }: StudentShellProps) {
   const isDemo = isDemoUser()
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   const handleLogout = () => {
     clearAuth()
     onLogout()
   }
-
-  const navItems: { page: StudentPage; label: string; icon: React.ReactNode }[] = [
-    { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={14} aria-hidden /> },
-    { page: 'hub', label: 'Hub', icon: <LayoutGrid size={14} aria-hidden /> },
-    { page: 'jobs', label: 'Jobs', icon: <Briefcase size={14} aria-hidden /> },
-    { page: 'roadmapper', label: 'Career Map', icon: <Map size={14} aria-hidden /> },
-    { page: 'flow-roadmap', label: 'Flow Path', icon: <GitBranch size={14} aria-hidden /> },
-    { page: 'projects', label: 'Projects', icon: <Boxes size={14} aria-hidden /> },
-    { page: 'practice', label: 'Practice', icon: <Code2 size={14} aria-hidden /> },
-    { page: 'quiz', label: 'Quiz', icon: <ClipboardList size={14} aria-hidden /> },
-    { page: 'typing', label: 'Typing', icon: <Keyboard size={14} aria-hidden /> },
-    { page: 'landing', label: 'Home', icon: <Boxes size={14} aria-hidden /> },
-  ]
 
   return (
     <div className="flex h-dvh max-h-dvh min-h-0 flex-col overflow-hidden bg-white">
@@ -73,9 +157,9 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
             {/* Brand */}
             <button
               type="button"
-              onClick={() => onNavigate('landing')}
+              onClick={() => onNavigate('dashboard')}
               className="flex items-center gap-2.5 flex-shrink-0 group"
-              aria-label="CodeQuest home"
+              aria-label="CodeQuest dashboard"
             >
               <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm group-hover:bg-blue-700 transition-colors duration-150">
                 <Code2 size={15} className="text-white" strokeWidth={2.5} />
@@ -90,26 +174,28 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
 
             {/* Desktop nav links */}
             <div className="hidden md:flex items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {navItems.map(({ page, label, icon }) => (
-                <button
-                  key={page}
-                  type="button"
-                  onClick={() => onNavigate(page)}
-                  aria-current={currentPage === page ? 'page' : undefined}
-                  className={`flex items-center gap-1 px-2.5 py-1.5 text-[13px] font-medium rounded-lg whitespace-nowrap transition-all duration-150 ${
-                    currentPage === page
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                  }`}
-                >
-                  {icon}
-                  {label}
-                </button>
+              {PRIMARY_NAV.map((item) => (
+                <NavLinkButton
+                  key={item.page}
+                  {...item}
+                  currentPage={currentPage}
+                  onNavigate={onNavigate}
+                />
               ))}
+              <LearningNavDropdown currentPage={currentPage} onNavigate={onNavigate} />
             </div>
 
-            {/* Account + logout */}
+            {/* Feedback + account */}
             <div className="flex items-center gap-1 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => setFeedbackOpen(true)}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 text-[13px] font-medium text-slate-600 transition-colors hover:text-slate-900 rounded-lg hover:bg-slate-100"
+                aria-label="Send feedback"
+              >
+                <MessageSquare size={14} aria-hidden />
+                <span className="hidden sm:inline">Feedback</span>
+              </button>
               <DropdownMenu>
                 <DropdownMenuTrigger
                   type="button"
@@ -118,7 +204,7 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
                 >
                   <User size={14} className="flex-shrink-0 sm:hidden" aria-hidden />
                   <span className="hidden sm:inline max-w-[10rem] md:max-w-[14rem] truncate">{user.full_name}</span>
-                  <ChevronDown size={14} className="text-slate-400 flex-shrink-0" aria-hidden />
+                  <ChevronDown size={14} className="text-slate-500 flex-shrink-0" aria-hidden />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel className="font-normal">
@@ -145,26 +231,22 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
           {/* Mobile nav links */}
           <div className="md:hidden -mx-4 px-4 pb-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div className="flex items-center gap-1 min-w-max">
-              {navItems.map(({ page, label, icon }) => (
-                <button
-                  key={page}
-                  type="button"
-                  onClick={() => onNavigate(page)}
-                  aria-current={currentPage === page ? 'page' : undefined}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg transition-all duration-150 ${
-                    currentPage === page
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                  }`}
-                >
-                  {icon}
-                  {label}
-                </button>
+              {PRIMARY_NAV.map((item) => (
+                <NavLinkButton
+                  key={item.page}
+                  {...item}
+                  currentPage={currentPage}
+                  onNavigate={onNavigate}
+                  compact
+                />
               ))}
+              <LearningNavDropdown currentPage={currentPage} onNavigate={onNavigate} compact />
             </div>
           </div>
         </div>
       </nav>
+
+      <SubmitFeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
 
       <main
         id="main-content"

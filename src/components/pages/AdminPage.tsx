@@ -12,6 +12,7 @@ import { adminNavItems } from '@/components/admin/navConfig'
 import { useAdminWorkspace } from '@/components/admin/hooks/useAdminWorkspace'
 import { AdminHeroBar } from '@/components/admin/layout/AdminHeroBar'
 import { ActivityView } from '@/components/admin/views/ActivityView'
+import { FeedbackView } from '@/components/admin/views/FeedbackView'
 import { AccessView } from '@/components/admin/views/AccessView'
 import { BoardView } from '@/components/admin/views/BoardView'
 import { ClassesView } from '@/components/admin/views/ClassesView'
@@ -108,6 +109,7 @@ export function AdminPage({ user, onLogout }: AdminPageProps) {
                 {ws.section === 'classes' && <ClassesView />}
                 {ws.section === 'jobs' && <JobsView />}
                 {ws.section === 'activity' && <ActivityView />}
+                {ws.section === 'feedback' && <FeedbackView />}
                 {ws.section === 'access' && <AccessView />}
               </div>
             </div>

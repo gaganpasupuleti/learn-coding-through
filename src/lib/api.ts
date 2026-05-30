@@ -1375,6 +1375,118 @@ export async function fetchUpcomingDeadlines(): Promise<UpcomingDeadlines> {
   return parseOrThrow(response) as Promise<UpcomingDeadlines>
 }
 
+export type CalendarEventType = 'class' | 'quiz' | 'project'
+
+export interface CalendarEvent {
+  id: string
+  event_type: CalendarEventType
+  title: string
+  subtitle: string | null
+  event_date: string
+  start_time: string
+  end_time: string
+  batch_name: string | null
+  status: string | null
+}
+
+export interface CalendarEventsResponse {
+  start_date: string
+  end_date: string
+  events: CalendarEvent[]
+}
+
+export interface FetchCalendarEventsParams {
+  startDate?: string
+  endDate?: string
+  includeClasses?: boolean
+  includeQuizzes?: boolean
+  includeProjects?: boolean
+}
+
+export async function fetchCalendarEvents(
+  params: FetchCalendarEventsParams = {},
+): Promise<CalendarEventsResponse> {
+  const qs = new URLSearchParams()
+  if (params.startDate) qs.set('start_date', params.startDate)
+  if (params.endDate) qs.set('end_date', params.endDate)
+  if (params.includeClasses === false) qs.set('include_classes', 'false')
+  if (params.includeQuizzes === false) qs.set('include_quizzes', 'false')
+  if (params.includeProjects === false) qs.set('include_projects', 'false')
+  const query = qs.toString()
+  const path = `/api/v1/schedule/calendar${query ? `?${query}` : ''}`
+  const response = await fetchWithApiFallback(path, {
+    headers: { ...studentAuthHeaders() },
+  })
+  return parseOrThrow(response) as Promise<CalendarEventsResponse>
+}
+
+// ── Student feedback ───────────────────────────────────────────────────────────
+
+export type FeedbackCategory = 'general' | 'concern' | 'bug' | 'suggestion'
+export type FeedbackStatus = 'pending' | 'reviewed'
+
+export interface FeedbackCreatePayload {
+  category: FeedbackCategory
+  message: string
+}
+
+export interface StudentFeedbackSubmission {
+  id: number
+  category: string
+  message: string
+  status: string
+  created_at: string
+}
+
+export interface AdminFeedbackItem {
+  id: number
+  user_id: number
+  student_name: string
+  student_email: string
+  category: string
+  message: string
+  status: FeedbackStatus
+  admin_notes: string | null
+  reviewed_by_user_id: number | null
+  reviewed_at: string | null
+  created_at: string
+}
+
+export async function submitStudentFeedback(
+  payload: FeedbackCreatePayload,
+): Promise<StudentFeedbackSubmission> {
+  const response = await fetchWithApiFallback('/api/v1/feedback', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...studentAuthHeaders() },
+    body: JSON.stringify(payload),
+  })
+  return parseOrThrow(response) as Promise<StudentFeedbackSubmission>
+}
+
+export async function fetchAdminFeedback(
+  token: string,
+  params: { status?: 'pending' | 'all'; limit?: number } = {},
+): Promise<AdminFeedbackItem[]> {
+  const qs = new URLSearchParams()
+  qs.set('status', params.status ?? 'all')
+  qs.set('limit', String(params.limit ?? 100))
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/feedback?${qs}`, token)
+  return parseOrThrow(response) as Promise<AdminFeedbackItem[]>
+}
+
+export async function reviewAdminFeedback(
+  token: string,
+  feedbackId: number,
+  payload: { admin_notes?: string | null } = {},
+): Promise<AdminFeedbackItem> {
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/feedback/${feedbackId}`, token, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'reviewed', ...payload }),
+  })
+  return parseOrThrow(response) as Promise<AdminFeedbackItem>
+}
+
 // ── Career Mapper ──────────────────────────────────────────────────────────────
 
 import type { CareerRole } from '@/types/career'

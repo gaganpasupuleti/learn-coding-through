@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
@@ -20,11 +20,13 @@ from app.models.models import (
     User,
 )
 from app.schemas.schedule import (
+    CalendarEventsResponse,
     DeadlineQuizItem,
     DeadlineStageItem,
     UpcomingDeadlinesResponse,
     UpcomingSessionResponse,
 )
+from app.services.calendar_events import get_calendar_events
 
 router = APIRouter(prefix="/schedule", tags=["Schedule"])
 
@@ -137,3 +139,43 @@ def upcoming_deadlines(
     ]
 
     return UpcomingDeadlinesResponse(quizzes=quiz_items, stages=stage_items)
+
+
+@router.get("/calendar", response_model=CalendarEventsResponse)
+def calendar_events(
+    start_date: date | None = Query(None, description="Inclusive range start (defaults to Monday of current week)"),
+    end_date: date | None = Query(None, description="Inclusive range end (defaults to start + 6 days)"),
+    include_classes: bool = Query(True),
+    include_quizzes: bool = Query(True),
+    include_projects: bool = Query(True),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Week-view calendar feed for the expanded schedule drawer.
+
+    Aggregates existing rows — no separate calendar table:
+    - class → class_sessions (enrolled batches)
+    - quiz → quizzes.due_date (selected role)
+    - project → stages.due_date milestones (selected role)
+    """
+    today = date.today()
+    if start_date is None:
+        weekday = today.weekday()
+        start_date = today - timedelta(days=weekday)
+    if end_date is None:
+        end_date = start_date + timedelta(days=6)
+
+    if end_date < start_date:
+        raise HTTPException(status_code=400, detail="end_date must be on or after start_date")
+
+    events = get_calendar_events(
+        db,
+        current_user,
+        start_date,
+        end_date,
+        include_classes=include_classes,
+        include_quizzes=include_quizzes,
+        include_projects=include_projects,
+    )
+    return CalendarEventsResponse(start_date=start_date, end_date=end_date, events=events)

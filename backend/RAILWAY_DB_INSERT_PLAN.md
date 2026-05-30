@@ -77,3 +77,5 @@ Move to Railway-first database workflow and insert baseline data safely.
 - `POST /api/v1/auth/login`
 - `GET /api/v1/projects/catalog`
 - `GET /api/v1/quiz/catalog`
+- `GET /api/v1/schedule/calendar` (expanded calendar drawer; see `backend/docs/CALENDAR_SCHEDULE_RAILWAY.md`)
+- `GET /api/v1/admin/feedback` (student feedback inbox; requires admin token)

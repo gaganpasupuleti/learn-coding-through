@@ -1,23 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  AlertCircle,
-  BookOpen,
-  Calendar,
-  CheckCircle2,
-  Clock,
-  Loader2,
-} from 'lucide-react'
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { Maximize2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import {
@@ -29,8 +11,6 @@ import {
   fetchUpcomingDeadlines,
   fetchUpcomingSchedule,
   fetchUserProgress,
-  type DeadlineQuizItem,
-  type DeadlineStageItem,
   type EnrollmentMe,
   type MySubmittedProject,
   type StageProgressRecord,
@@ -44,12 +24,41 @@ import {
   blendStudentDashboardDummyIfNeeded,
   blendStudentScheduleDummyIfNeeded,
 } from '@/lib/student-dashboard-dummy'
+import { ExpandedCalendarDrawer } from '@/components/calendar/ExpandedCalendarDrawer'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import type { AuthUser } from '@/lib/auth'
+import { cn } from '@/lib/utils'
+
+const CARD_SURFACE =
+  'bg-white shadow-sm border border-gray-200 rounded-xl gap-0 py-0'
+
+const SCROLL_BODY =
+  'overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgb(203_213_225)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300'
+
+const DUMMY_JOBS = [
+  { id: '1', title: 'Junior Data Analyst', company: 'Acme Corp' },
+  { id: '2', title: 'Backend Developer', company: 'Nova Labs' },
+  { id: '3', title: 'SQL Engineer Intern', company: 'DataFlow' },
+] as const
+
+const WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as const
 
 interface StudentDashboardPageProps {
   user: AuthUser
+}
+
+interface DashboardDataProps {
+  loading: boolean
+  stageRows: StageProgressRecord[] | null
+  catalogSteps: number | null
+  careerLocal: { title: string; pct: number } | null
+  typingAttempts: TypingAttempt[]
+  applications: StudentJobApplicationsMe
+  enrollment: EnrollmentMe | null
+  submittedProjects: MySubmittedProject[]
+  upcomingSessions: UpcomingSession[]
+  deadlines: UpcomingDeadlines
 }
 
 function computeQuizAvg(stageRows: StageProgressRecord[]): number | null {
@@ -61,6 +70,13 @@ function computeQuizAvg(stageRows: StageProgressRecord[]): number | null {
 function computeTypingAvg(attempts: TypingAttempt[]): number | null {
   if (attempts.length === 0) return null
   return Math.round(attempts.reduce((s, a) => s + a.wpm, 0) / attempts.length)
+}
+
+function toIsoDate(d: Date): string {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
 }
 
 function useStudentDashboardSnapshot(user: AuthUser) {
@@ -173,205 +189,422 @@ function useStudentDashboardSnapshot(user: AuthUser) {
 }
 
 export function StudentDashboardPage({ user }: StudentDashboardPageProps) {
-  const {
-    stageRows,
-    catalogSteps,
-    careerLocal,
-    typingAttempts,
-    applications,
-    enrollment,
-    submittedProjects,
-    upcomingSessions,
-    deadlines,
-    loading: dashboardLoading,
-    reload: reloadDashboard,
-  } = useStudentDashboardSnapshot(user)
+  const [isCalendarExpanded, setIsCalendarExpanded] = useState(false)
+  const snapshot = useStudentDashboardSnapshot(user)
+  const data: DashboardDataProps = {
+    loading: snapshot.loading,
+    stageRows: snapshot.stageRows,
+    catalogSteps: snapshot.catalogSteps,
+    careerLocal: snapshot.careerLocal,
+    typingAttempts: snapshot.typingAttempts,
+    applications: snapshot.applications,
+    enrollment: snapshot.enrollment,
+    submittedProjects: snapshot.submittedProjects,
+    upcomingSessions: snapshot.upcomingSessions,
+    deadlines: snapshot.deadlines,
+  }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-slate-50/80">
-      <div className="mx-auto w-full max-w-6xl space-y-4 px-4 pb-6 pt-3 md:px-6">
-        {/* Header */}
-        <header className="shrink-0 rounded-2xl bg-gradient-to-r from-indigo-50 via-indigo-100/80 to-slate-50 px-4 py-4 shadow-sm ring-1 ring-indigo-100/70">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-500">
-                Dashboard
-              </p>
-              <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-                Hello {user.full_name.split(' ')[0] ?? user.full_name},
-              </h1>
-              <p className="text-[13px] text-slate-600">
-                Here&apos;s a quick view of your progress and learning signals.
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="mt-1 h-8 gap-1 self-start rounded-full border-indigo-200 bg-white/90 px-3 text-xs text-slate-700 shadow-sm hover:bg-white sm:self-auto"
-              onClick={() => void reloadDashboard()}
-              disabled={dashboardLoading}
-            >
-              <Loader2
-                className={`h-3.5 w-3.5 ${dashboardLoading ? 'animate-spin text-blue-600' : 'text-slate-400'}`}
-                aria-hidden
-              />
-              Refresh
-            </Button>
-          </div>
-        </header>
-
-        {/* KPI Tiles */}
-        <KpiTilesRow
-          loading={dashboardLoading}
-          stageRows={stageRows}
-          careerLocal={careerLocal}
-          typingAttempts={typingAttempts}
-          applications={applications}
-          enrollment={enrollment}
-          submittedProjects={submittedProjects}
-        />
-
-        {/* Schedule + Deadlines row */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
-          <div className="lg:col-span-3">
-            <UpcomingClassesCard sessions={upcomingSessions} loading={dashboardLoading} />
-          </div>
-          <div className="space-y-4 lg:col-span-2">
-            <DeadlinesCard deadlines={deadlines} loading={dashboardLoading} />
-            <TopicsToLearnCard stageRows={stageRows} loading={dashboardLoading} />
-          </div>
-        </div>
-
-        {/* Charts */}
-        <ChartsRow
-          loading={dashboardLoading}
-          typingAttempts={typingAttempts}
-          stageRows={stageRows}
-        />
-
-        {/* Stage details table */}
-        <StageDetailsTable stageRows={stageRows} loading={dashboardLoading} />
-
-        {/* Quick stats footer */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <MiniStat label="Catalog steps" value={catalogSteps ?? 0} loading={dashboardLoading} />
-          <MiniStat
-            label="Stage records"
-            value={stageRows?.length ?? 0}
-            loading={dashboardLoading}
-          />
-          <MiniStat
-            label="Completion"
-            value={careerLocal ? `${careerLocal.pct}%` : '0%'}
-            loading={dashboardLoading}
-          />
-          <MiniStat
-            label="Role focus"
-            value={careerLocal?.title ?? '—'}
-            loading={dashboardLoading}
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-slate-100 p-6 lg:max-h-[calc(100vh-80px)]">
+      <ExpandedCalendarDrawer
+        open={isCalendarExpanded}
+        onClose={() => setIsCalendarExpanded(false)}
+      />
+      <div className="hidden min-h-0 flex-1 lg:grid lg:grid-cols-12 lg:grid-rows-[auto_minmax(0,1fr)] lg:gap-5 lg:overflow-hidden">
+        <div className="col-span-12 shrink-0">
+          <DashboardHeader
+            firstName={user.full_name.split(' ')[0] ?? user.full_name}
+            loading={snapshot.loading}
+            onRefresh={() => void snapshot.reload()}
           />
         </div>
+        <CommandCenterColumn {...data} />
+        <ActionCenterColumn {...data} />
+        <AttractionCenterColumn {...data} onExpand={() => setIsCalendarExpanded(true)} />
+      </div>
+
+      <div className={cn('min-h-0 flex-1 space-y-4 overflow-y-auto lg:hidden')}>
+        <DashboardHeader
+          firstName={user.full_name.split(' ')[0] ?? user.full_name}
+          loading={snapshot.loading}
+          onRefresh={() => void snapshot.reload()}
+        />
+        <CommandCenterColumn {...data} stacked />
+        <ActionCenterColumn {...data} stacked />
+        <AttractionCenterColumn {...data} stacked onExpand={() => setIsCalendarExpanded(true)} />
       </div>
     </div>
   )
 }
 
-/* ─────────────────────────────── KPI tiles ─────────────────────────────── */
+/* ───────────────────────────── Layout helpers ───────────────────────────── */
 
-function KpiTile({
-  label,
-  value,
-  sub,
-  loading: tileLoading,
+function BentoCard({
+  title,
+  children,
+  className,
+  bodyClassName,
 }: {
-  label: string
-  value: string
-  sub?: string
-  loading: boolean
+  title?: string
+  children: React.ReactNode
+  className?: string
+  bodyClassName?: string
 }) {
   return (
-    <Card className="flex min-h-0 flex-col justify-between rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      {tileLoading ? (
-        <div className="mt-2 h-7 w-20 max-w-full animate-pulse rounded-md bg-slate-100" />
-      ) : (
-        <p className="mt-1 line-clamp-2 text-base font-bold leading-tight text-slate-900 tabular-nums">
-          {value}
-        </p>
+    <Card
+      className={cn(
+        CARD_SURFACE,
+        'flex min-h-0 flex-col overflow-hidden bg-white text-gray-900',
+        className,
       )}
-      {sub && !tileLoading ? (
-        <p className="mt-1 line-clamp-2 text-[10px] text-slate-500">{sub}</p>
+    >
+      {title ? (
+        <div className="shrink-0 border-b border-gray-100 px-4 py-2">
+          <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
+        </div>
       ) : null}
+      <div className={cn('min-h-0 flex-1 p-4', bodyClassName)}>{children}</div>
     </Card>
   )
 }
 
-function KpiTilesRow({
+function DashboardHeader({
+  firstName,
   loading,
-  stageRows,
-  careerLocal,
-  typingAttempts,
-  applications,
-  enrollment,
-  submittedProjects,
+  onRefresh,
 }: {
+  firstName: string
   loading: boolean
-  stageRows: StageProgressRecord[] | null
-  careerLocal: { title: string; pct: number } | null
-  typingAttempts: TypingAttempt[]
-  applications: StudentJobApplicationsMe
-  enrollment: EnrollmentMe | null
-  submittedProjects: MySubmittedProject[]
+  onRefresh: () => void
 }) {
-  const stages = stageRows ?? []
+  return (
+    <header className={cn(CARD_SURFACE, 'px-4 py-2')}>
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-base font-semibold text-gray-900">Hello {firstName},</h1>
+          <p className="text-sm text-gray-600">Your learning snapshot at a glance.</p>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-7 shrink-0 px-2.5 text-xs"
+          onClick={onRefresh}
+          disabled={loading}
+        >
+          {loading ? (
+            <span className="text-gray-500">Refreshing…</span>
+          ) : (
+            'Refresh'
+          )}
+        </Button>
+      </div>
+    </header>
+  )
+}
+
+function useCommandCenterStats(props: DashboardDataProps) {
+  const stages = props.stageRows ?? []
   const quizAvg = useMemo(() => computeQuizAvg(stages), [stages])
-  const typingAvg = useMemo(() => computeTypingAvg(typingAttempts), [typingAttempts])
-  const approvedCount = submittedProjects.filter((p) => p.status === 'approved').length
-  const submittedCount = submittedProjects.length
+  const typingAvg = useMemo(() => computeTypingAvg(props.typingAttempts), [props.typingAttempts])
+  const approvedCount = props.submittedProjects.filter((p) => p.status === 'approved').length
   const unlocked = stages.filter((r) => r.unlocked).length
   const totalTracked = stages.length
-  const courseLine =
-    totalTracked > 0 ? `${unlocked}/${totalTracked} stages` : 'No data yet'
-  const courseSub = careerLocal ? `Roadmap ${careerLocal.pct}%` : undefined
+  const courseLine = totalTracked > 0 ? `${unlocked}/${totalTracked}` : '—'
   const attendanceLine =
-    !enrollment || enrollment.attendance_pct === null ? 'Not enrolled' : `${enrollment.attendance_pct}%`
-  const attendanceSub =
-    enrollment && enrollment.batch_names.length > 0 ? enrollment.batch_names.join(', ') : undefined
+    !props.enrollment || props.enrollment.attendance_pct === null
+      ? '—'
+      : `${props.enrollment.attendance_pct}%`
 
+  return [
+    { label: 'Typing speed', value: typingAvg !== null ? `${typingAvg} WPM` : '—' },
+    { label: 'Quiz avg', value: quizAvg !== null ? `${quizAvg}%` : '—' },
+    { label: 'Projects done', value: String(approvedCount) },
+    { label: 'Course status', value: courseLine },
+    { label: 'Jobs applied', value: String(props.applications.count) },
+    { label: 'Attendance', value: attendanceLine },
+    { label: 'Catalog steps', value: String(props.catalogSteps ?? 0) },
+    { label: 'Stage records', value: String(props.stageRows?.length ?? 0) },
+    { label: 'Completion', value: props.careerLocal ? `${props.careerLocal.pct}%` : '0%' },
+    { label: 'Role focus', value: props.careerLocal?.title ?? '—' },
+  ]
+}
+
+function StatCell({
+  label,
+  value,
+  loading,
+}: {
+  label: string
+  value: string
+  loading: boolean
+}) {
   return (
-    <div className="grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-      <KpiTile
-        label="Typing speed"
-        value={typingAvg !== null ? `${typingAvg} WPM` : '—'}
-        sub="Avg of recent attempts"
-        loading={loading}
-      />
-      <KpiTile
-        label="Quiz avg"
-        value={quizAvg !== null ? `${quizAvg}%` : '—'}
-        sub="Across tracked stages"
-        loading={loading}
-      />
-      <KpiTile
-        label="Projects done"
-        value={String(approvedCount)}
-        sub={submittedCount > 0 ? `${submittedCount} submitted` : 'Portfolio submissions'}
-        loading={loading}
-      />
-      <KpiTile label="Course status" value={courseLine} sub={courseSub} loading={loading} />
-      <KpiTile
-        label="Jobs applied"
-        value={String(applications.count)}
-        sub="Total applications"
-        loading={loading}
-      />
-      <KpiTile label="Attendance" value={attendanceLine} sub={attendanceSub} loading={loading} />
+    <div className="flex min-w-0 flex-col gap-1">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">{label}</p>
+      {loading ? (
+        <div className="h-6 w-16 animate-pulse rounded bg-gray-100" />
+      ) : (
+        <p className="text-xl font-bold tabular-nums text-gray-900">{value}</p>
+      )}
     </div>
   )
 }
 
-/* ─────────────────────────── Upcoming classes ──────────────────────────── */
+/* ───────────────────────────── Command Center ───────────────────────────── */
+
+function CommandCenterColumn({
+  stacked,
+  ...props
+}: DashboardDataProps & { stacked?: boolean }) {
+  const stats = useCommandCenterStats(props)
+
+  return (
+    <aside className={stacked ? undefined : 'col-span-3 flex min-h-0 flex-col overflow-hidden'}>
+      <BentoCard title="Command Center" className="h-full min-h-0" bodyClassName="p-0">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6 p-5">
+          {stats.map((s) => (
+            <StatCell
+              key={s.label}
+              label={s.label}
+              value={s.value}
+              loading={props.loading}
+            />
+          ))}
+        </div>
+      </BentoCard>
+    </aside>
+  )
+}
+
+/* ───────────────────────────── Action Center ────────────────────────────── */
+
+function ActionCenterColumn({
+  stacked,
+  ...props
+}: DashboardDataProps & { stacked?: boolean }) {
+  const scrollBody = cn('p-4', SCROLL_BODY)
+  const colClass = stacked
+    ? 'flex flex-col gap-4'
+    : cn(
+        'col-span-6 flex h-full max-h-[85vh] flex-col gap-4 overflow-y-auto pr-2',
+        SCROLL_BODY,
+      )
+
+  return (
+    <section className={colClass}>
+      <BentoCard title="Upcoming Classes" bodyClassName={scrollBody}>
+        <UpcomingClassesContent sessions={props.upcomingSessions} loading={props.loading} />
+      </BentoCard>
+      <BentoCard title="Deadlines" bodyClassName={scrollBody}>
+        <DeadlinesContent deadlines={props.deadlines} loading={props.loading} />
+      </BentoCard>
+      <BentoCard title="Topics to Learn" bodyClassName={scrollBody}>
+        <TopicsToLearnContent stageRows={props.stageRows} loading={props.loading} />
+      </BentoCard>
+    </section>
+  )
+}
+
+/* ───────────────────────────── Attraction Center ────────────────────────── */
+
+function AttractionCenterColumn({
+  stacked,
+  onExpand,
+  ...props
+}: DashboardDataProps & { stacked?: boolean; onExpand: () => void }) {
+  const colClass = stacked
+    ? 'flex flex-col gap-4'
+    : 'col-span-3 flex min-h-0 flex-col gap-3 overflow-hidden'
+
+  return (
+    <aside className={colClass}>
+      <BentoCard
+        className={stacked ? undefined : 'min-h-0 flex-1'}
+        bodyClassName={cn('p-4 pt-3', SCROLL_BODY)}
+      >
+        <AttendanceCalendarWidget sessions={props.upcomingSessions} onExpand={onExpand} />
+      </BentoCard>
+      <BentoCard title="Live Job Radar" className="shrink-0" bodyClassName="p-3">
+        <LiveJobRadarWidget />
+      </BentoCard>
+      <BentoCard
+        title="Job Readiness Score"
+        className={stacked ? undefined : 'min-h-0 flex-1'}
+        bodyClassName="p-4"
+      >
+        <JobReadinessWidget careerLocal={props.careerLocal} />
+      </BentoCard>
+    </aside>
+  )
+}
+
+function AttendanceCalendarWidget({
+  sessions,
+  onExpand,
+}: {
+  sessions: UpcomingSession[]
+  onExpand: () => void
+}) {
+  const [viewDate, setViewDate] = useState(() => new Date())
+  const [selectedDay, setSelectedDay] = useState<string | null>(null)
+
+  const attendedDates = useMemo(() => {
+    const set = new Set<string>()
+    for (const s of sessions) {
+      set.add(s.session_date)
+    }
+    const today = new Date()
+    for (let i = 1; i <= 5; i++) {
+      const d = new Date(today)
+      d.setDate(today.getDate() - i * 2)
+      set.add(toIsoDate(d))
+    }
+    return set
+  }, [sessions])
+
+  const { year, month, cells } = useMemo(() => {
+    const y = viewDate.getFullYear()
+    const m = viewDate.getMonth()
+    const first = new Date(y, m, 1)
+    const startPad = first.getDay()
+    const daysInMonth = new Date(y, m + 1, 0).getDate()
+    const grid: { iso: string; day: number; inMonth: boolean }[] = []
+
+    const prevMonthDays = new Date(y, m, 0).getDate()
+    for (let i = startPad - 1; i >= 0; i--) {
+      const day = prevMonthDays - i
+      const d = new Date(y, m - 1, day)
+      grid.push({ iso: toIsoDate(d), day, inMonth: false })
+    }
+    for (let day = 1; day <= daysInMonth; day++) {
+      const d = new Date(y, m, day)
+      grid.push({ iso: toIsoDate(d), day, inMonth: true })
+    }
+    while (grid.length < 35) {
+      const day = grid.length - startPad - daysInMonth + 1
+      const d = new Date(y, m + 1, day)
+      grid.push({ iso: toIsoDate(d), day, inMonth: false })
+    }
+    return { year: y, month: m, cells: grid.slice(0, 35) }
+  }, [viewDate])
+
+  const monthLabel = new Date(year, month, 1).toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric',
+  })
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-2 border-b border-gray-100 pb-2">
+        <h3 className="text-sm font-semibold text-gray-700">Attendance Calendar</h3>
+        <button
+          type="button"
+          onClick={onExpand}
+          className="shrink-0 text-gray-400 transition-colors hover:text-gray-900"
+          aria-label="Expand calendar"
+        >
+          <Maximize2 className="h-4 w-4" />
+        </button>
+      </div>
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          className="text-xs font-medium text-gray-600 hover:text-gray-900"
+          onClick={() => setViewDate((d) => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
+        >
+          Prev
+        </button>
+        <span className="text-xs font-semibold text-gray-800">{monthLabel}</span>
+        <button
+          type="button"
+          className="text-xs font-medium text-gray-600 hover:text-gray-900"
+          onClick={() => setViewDate((d) => new Date(d.getFullYear(), d.getMonth() + 1, 1))}
+        >
+          Next
+        </button>
+      </div>
+      <div className="grid grid-cols-7 gap-1 text-center">
+        {WEEKDAYS.map((wd) => (
+          <span key={wd} className="py-1 text-[9px] font-medium uppercase text-gray-400">
+            {wd}
+          </span>
+        ))}
+        {cells.map((cell, idx) => {
+          const attended = attendedDates.has(cell.iso)
+          const selected = selectedDay === cell.iso
+          return (
+            <button
+              key={`${cell.iso}-${idx}`}
+              type="button"
+              onClick={() => setSelectedDay((prev) => (prev === cell.iso ? null : cell.iso))}
+              className={cn(
+                'mx-auto flex aspect-square w-full max-w-[2rem] flex-col items-center justify-center gap-1 rounded text-[11px] tabular-nums leading-none',
+                !cell.inMonth && 'text-gray-300',
+                cell.inMonth && 'text-gray-700',
+                selected && 'bg-teal-50 ring-1 ring-teal-400',
+              )}
+            >
+              <span className="flex h-4 items-center justify-center">{cell.day}</span>
+              <span className="flex h-1.5 w-full items-center justify-center" aria-hidden>
+                {attended ? (
+                  <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
+                ) : null}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function LiveJobRadarWidget() {
+  return (
+    <ul className={cn('space-y-2', SCROLL_BODY, 'max-h-32')}>
+      {DUMMY_JOBS.map((job) => (
+        <li
+          key={job.id}
+          className="flex items-start justify-between gap-2 border-b border-gray-50 pb-2 last:border-0 last:pb-0"
+        >
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-gray-900">{job.title}</p>
+            <p className="text-xs text-gray-500">{job.company}</p>
+          </div>
+          <button
+            type="button"
+            className="shrink-0 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700"
+          >
+            Apply
+          </button>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function JobReadinessWidget({
+  careerLocal,
+}: {
+  careerLocal: { title: string; pct: number } | null
+}) {
+  const pct = careerLocal?.pct ?? 85
+  const displayPct = `${pct}%`
+
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <div className="min-w-0">
+        <p className="text-sm font-semibold text-gray-900">Job Readiness</p>
+        <p className="text-xs text-gray-500">Ready for next role</p>
+      </div>
+      <p className="shrink-0 text-3xl font-bold tabular-nums leading-none text-gray-900">
+        {displayPct}
+      </p>
+    </div>
+  )
+}
+
+/* ─────────────────────────── Content: upcoming classes ────────────────── */
 
 function formatSessionDate(iso: string): string {
   const d = new Date(iso + 'T00:00:00')
@@ -389,64 +622,70 @@ function formatTime(t: string): string {
   return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${ampm}`
 }
 
-function UpcomingClassesCard({
+function UpcomingClassesContent({
   sessions,
   loading,
 }: {
   sessions: UpcomingSession[]
   loading: boolean
 }) {
+  if (loading) {
+    return <p className="text-sm text-gray-500">Loading schedule…</p>
+  }
+  if (sessions.length === 0) {
+    return <p className="py-4 text-center text-sm text-gray-500">No upcoming classes scheduled.</p>
+  }
+
   return (
-    <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3">
-        <Calendar className="h-4 w-4 text-indigo-500" aria-hidden />
-        <p className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">
-          Upcoming Classes
-        </p>
-      </div>
-      <div className="divide-y divide-slate-50 px-4">
-        {loading ? (
-          <div className="flex items-center gap-2 py-6 text-[13px] text-slate-400">
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            Loading schedule…
-          </div>
-        ) : sessions.length === 0 ? (
-          <div className="py-8 text-center text-[13px] text-slate-500">
-            No upcoming classes scheduled.
-          </div>
-        ) : (
-          sessions.map((s) => (
-            <div key={s.id} className="flex items-start gap-3 py-3">
-              <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
-                <BookOpen className="h-4 w-4" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-semibold text-slate-800">{s.title}</p>
-                {s.topic && (
-                  <p className="mt-0.5 truncate text-[11px] text-slate-500">{s.topic}</p>
-                )}
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-0.5 font-medium text-indigo-700">
-                    {formatSessionDate(s.session_date)}
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <Clock className="h-3 w-3" aria-hidden />
-                    {formatTime(s.start_time)} – {formatTime(s.end_time)}
-                  </span>
-                  <span className="text-slate-400">{s.batch_name}</span>
-                </div>
-              </div>
+    <ol className="ml-1 space-y-3 border-l-2 border-gray-200 pl-5">
+      {sessions.map((s) => {
+        const dateLabel = formatSessionDate(s.session_date)
+        const timeRange = `${formatTime(s.start_time)} – ${formatTime(s.end_time)}`
+        return (
+          <li
+            key={s.id}
+            className="relative flex items-start justify-between gap-4 before:absolute before:-left-[calc(1.25rem+1px)] before:top-1.5 before:h-2 before:w-2 before:rounded-full before:bg-gray-300 before:ring-2 before:ring-white"
+          >
+            <div className="min-w-0 flex-1 pr-2">
+              <p className="truncate text-sm font-medium text-gray-800">{s.title}</p>
+              {s.topic && <p className="mt-0.5 truncate text-xs text-gray-600">{s.topic}</p>}
             </div>
-          ))
-        )}
-      </div>
-    </Card>
+            <div className="shrink-0 text-right text-xs leading-snug">
+              {dateLabel === 'Today' ? (
+                <span className="inline-flex rounded-full bg-amber-50 px-2 py-0.5 font-medium text-amber-800 ring-1 ring-amber-200/80">
+                  Today
+                </span>
+              ) : (
+                <span className="block font-medium text-gray-500">{dateLabel}</span>
+              )}
+              <span className="mt-0.5 block tabular-nums text-gray-500">{timeRange}</span>
+            </div>
+          </li>
+        )
+      })}
+    </ol>
   )
 }
 
-/* ──────────────────────────── Deadlines card ──────────────────────────── */
+/* ─────────────────────────── Content: deadlines ─────────────────────────── */
 
-function DeadlinesCard({
+function DeadlineCheckbox({ checked }: { checked: boolean }) {
+  return (
+    <span
+      className={cn(
+        'flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] font-bold leading-none',
+        checked
+          ? 'border-gray-700 bg-gray-800 text-white'
+          : 'border-gray-300 bg-white text-transparent',
+      )}
+      aria-hidden
+    >
+      ✓
+    </span>
+  )
+}
+
+function DeadlinesContent({
   deadlines,
   loading,
 }: {
@@ -454,12 +693,12 @@ function DeadlinesCard({
   loading: boolean
 }) {
   const items = useMemo(() => {
-    const all: { key: string; title: string; due: string; done: boolean; type: 'quiz' | 'stage' }[] = []
+    const all: { key: string; title: string; due: string; done: boolean }[] = []
     for (const q of deadlines.quizzes) {
-      all.push({ key: `q-${q.quiz_id}`, title: q.title, due: q.due_date, done: q.passed, type: 'quiz' })
+      all.push({ key: `q-${q.quiz_id}`, title: q.title, due: q.due_date, done: q.passed })
     }
     for (const s of deadlines.stages) {
-      all.push({ key: `s-${s.stage_id}`, title: s.title, due: s.due_date, done: s.unlocked, type: 'stage' })
+      all.push({ key: `s-${s.stage_id}`, title: s.title, due: s.due_date, done: s.unlocked })
     }
     all.sort((a, b) => a.due.localeCompare(b.due))
     return all
@@ -467,67 +706,55 @@ function DeadlinesCard({
 
   const today = new Date().toISOString().slice(0, 10)
 
+  if (loading) {
+    return <p className="text-sm text-gray-500">Loading…</p>
+  }
+  if (items.length === 0) {
+    return <p className="py-4 text-center text-sm text-gray-500">No deadlines set yet.</p>
+  }
+
   return (
-    <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3">
-        <AlertCircle className="h-4 w-4 text-amber-500" aria-hidden />
-        <p className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">
-          Deadlines
-        </p>
-      </div>
-      <div className="px-4 py-2">
-        {loading ? (
-          <div className="flex items-center gap-2 py-4 text-[13px] text-slate-400">
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            Loading…
-          </div>
-        ) : items.length === 0 ? (
-          <p className="py-4 text-center text-[12px] text-slate-500">No deadlines set yet.</p>
-        ) : (
-          <ul className="space-y-2">
-            {items.map((it) => {
-              const overdue = !it.done && it.due < today
-              const dueToday = !it.done && it.due === today
-              return (
-                <li key={it.key} className="flex items-center gap-2 text-[13px]">
-                  {it.done ? (
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
-                  ) : overdue ? (
-                    <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
-                  ) : (
-                    <Clock className="h-4 w-4 shrink-0 text-slate-400" />
+    <ul className="space-y-4" role="list">
+      {items.map((it) => {
+        const overdue = !it.done && it.due < today
+        const dueLabel = formatSessionDate(it.due)
+        return (
+          <li key={it.key} className="flex items-start gap-3">
+            <DeadlineCheckbox checked={it.done} />
+            <div className="flex min-w-0 flex-1 items-start justify-between gap-4">
+              <span
+                className={cn(
+                  'min-w-0 truncate text-sm',
+                  it.done
+                    ? 'text-gray-400 line-through'
+                    : overdue
+                      ? 'font-medium text-red-700'
+                      : 'text-gray-700',
+                )}
+              >
+                {it.title}
+              </span>
+              {!it.done && (
+                <span
+                  className={cn(
+                    'shrink-0 text-xs tabular-nums',
+                    overdue ? 'font-medium text-red-600' : 'text-gray-500',
                   )}
-                  <span
-                    className={`min-w-0 flex-1 truncate ${it.done ? 'text-slate-400 line-through' : overdue ? 'font-medium text-red-700' : 'text-slate-700'}`}
-                  >
-                    {it.title}
-                  </span>
-                  <span
-                    className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                      it.done
-                        ? 'bg-emerald-50 text-emerald-700'
-                        : overdue
-                          ? 'bg-red-50 text-red-700'
-                          : dueToday
-                            ? 'bg-amber-50 text-amber-700'
-                            : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    {it.done ? 'Done' : formatSessionDate(it.due)}
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
-        )}
-      </div>
-    </Card>
+                >
+                  {dueLabel}
+                </span>
+              )}
+            </div>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 
-/* ───────────────────────── Topics to learn card ───────────────────────── */
+/* ─────────────────────────── Content: topics to learn ───────────────────── */
 
-function TopicsToLearnCard({
+function TopicsToLearnContent({
   stageRows,
   loading,
 }: {
@@ -543,236 +770,49 @@ function TopicsToLearnCard({
     return [...inProgress, ...locked].slice(0, 3)
   }, [stageRows])
 
-  return (
-    <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3">
-        <BookOpen className="h-4 w-4 text-violet-500" aria-hidden />
-        <p className="text-[12px] font-semibold uppercase tracking-wide text-slate-600">
-          Topics to Learn
-        </p>
-      </div>
-      <div className="px-4 py-2">
-        {loading ? (
-          <div className="flex items-center gap-2 py-4 text-[13px] text-slate-400">
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            Loading…
-          </div>
-        ) : upcoming.length === 0 ? (
-          <p className="py-4 text-center text-[12px] text-slate-500">
-            No upcoming topics — all stages are complete or no data yet.
-          </p>
-        ) : (
-          <ul className="space-y-3 py-1">
-            {upcoming.map((row) => {
-              const pct =
-                row.total_lessons > 0
-                  ? Math.round((row.lessons_completed / row.total_lessons) * 100)
-                  : 0
-              return (
-                <li key={row.stage_id}>
-                  <div className="flex items-center justify-between text-[13px]">
-                    <span className="truncate font-medium text-slate-700">
-                      Stage {row.stage_id}
-                    </span>
-                    <span className="shrink-0 text-[11px] tabular-nums text-slate-500">
-                      {row.lessons_completed}/{row.total_lessons}
-                    </span>
-                  </div>
-                  <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                    <div
-                      className="h-full rounded-full bg-violet-500 transition-all"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                  <div className="mt-1 flex items-center justify-between text-[10px] text-slate-400">
-                    <span>{pct}% complete</span>
-                    {!row.unlocked && (
-                      <span className="rounded-full bg-amber-50 px-1.5 py-0.5 font-medium text-amber-600">
-                        Locked — pass quiz to unlock
-                      </span>
-                    )}
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        )}
-      </div>
-    </Card>
-  )
-}
-
-/* ──────────────────────────── Charts row ───────────────────────────────── */
-
-function ChartsRow({
-  loading,
-  typingAttempts,
-  stageRows,
-}: {
-  loading: boolean
-  typingAttempts: TypingAttempt[]
-  stageRows: StageProgressRecord[] | null
-}) {
-  const stages = stageRows ?? []
-  const typingSeries = useMemo(
-    () => [...typingAttempts].reverse().map((a, i) => ({ idx: i + 1, wpm: a.wpm })),
-    [typingAttempts],
-  )
-  const quizBars = useMemo(() => {
-    const tracked = stages.filter((r) => r.total_lessons > 0)
-    const source = tracked.length > 0 ? tracked : stages
-    return source.map((r) => ({ stage: String(r.stage_id), score: r.latest_quiz_score }))
-  }, [stages])
+  if (loading) {
+    return <p className="text-sm text-gray-500">Loading…</p>
+  }
+  if (upcoming.length === 0) {
+    return (
+      <p className="py-4 text-center text-sm text-gray-500">
+        No upcoming topics — all stages are complete or no data yet.
+      </p>
+    )
+  }
 
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      <Card className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-          Typing WPM trend
-        </p>
-        <p className="text-[10px] text-slate-400">Recent attempts, oldest to newest</p>
-        <div className="mt-2 h-44 w-full min-w-0">
-          {loading ? (
-            <div className="flex h-full items-center justify-center text-[12px] text-slate-400">
-              Loading…
+    <ul className="space-y-3">
+      {upcoming.map((row) => {
+        const pct =
+          row.total_lessons > 0
+            ? Math.round((row.lessons_completed / row.total_lessons) * 100)
+            : 0
+        return (
+          <li key={row.stage_id}>
+            <div className="flex items-center justify-between text-sm">
+              <span className="truncate font-medium text-gray-700">Stage {row.stage_id}</span>
+              <span className="shrink-0 text-xs tabular-nums text-gray-500">
+                {row.lessons_completed}/{row.total_lessons}
+              </span>
             </div>
-          ) : typingSeries.length === 0 ? (
-            <div className="flex h-full items-center justify-center text-center text-[12px] text-slate-500">
-              No typing data yet. Practice in Typing Trainer to see a trend.
+            <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-gray-100">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all"
+                style={{ width: `${pct}%` }}
+              />
             </div>
-          ) : (
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={typingSeries} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200" />
-                <XAxis dataKey="idx" tick={{ fontSize: 10 }} tickLine={false} />
-                <YAxis width={36} tick={{ fontSize: 10 }} tickLine={false} />
-                <Tooltip
-                  contentStyle={{ fontSize: 12 }}
-                  formatter={(v: number) => [`${v} WPM`, 'Speed']}
-                  labelFormatter={(idx) => `Attempt ${idx}`}
-                />
-                <Line type="monotone" dataKey="wpm" stroke="#4f46e5" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          )}
-        </div>
-      </Card>
-
-      <Card className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-          Quiz score by stage
-        </p>
-        <p className="text-[10px] text-slate-400">Latest quiz score per stage</p>
-        <div className="mt-2 h-44 w-full min-w-0">
-          {loading ? (
-            <div className="flex h-full items-center justify-center text-[12px] text-slate-400">
-              Loading…
+            <div className="mt-1 flex items-center justify-between text-xs text-gray-500">
+              <span>{pct}% complete</span>
+              {!row.unlocked && (
+                <span className="rounded-full bg-amber-50 px-1.5 py-0.5 font-medium text-amber-600">
+                  Locked
+                </span>
+              )}
             </div>
-          ) : quizBars.length === 0 ? (
-            <div className="flex h-full items-center justify-center text-center text-[12px] text-slate-500">
-              No stage progress yet.
-            </div>
-          ) : (
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={quizBars} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  className="stroke-slate-200"
-                  vertical={false}
-                />
-                <XAxis dataKey="stage" tick={{ fontSize: 10 }} tickLine={false} />
-                <YAxis width={36} tick={{ fontSize: 10 }} tickLine={false} domain={[0, 100]} />
-                <Tooltip
-                  contentStyle={{ fontSize: 12 }}
-                  formatter={(v: number) => [`${v}%`, 'Score']}
-                />
-                <Bar dataKey="score" fill="#6366f1" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-        </div>
-      </Card>
-    </div>
-  )
-}
-
-/* ─────────────────────── Stage details table ──────────────────────────── */
-
-function StageDetailsTable({
-  stageRows,
-  loading,
-}: {
-  stageRows: StageProgressRecord[] | null
-  loading: boolean
-}) {
-  const [expanded, setExpanded] = useState(false)
-  if (loading || !stageRows || stageRows.length === 0) return null
-
-  return (
-    <Card className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <button
-        type="button"
-        onClick={() => setExpanded((v) => !v)}
-        className="flex w-full items-center justify-between border-b border-slate-100 px-4 py-2.5 text-left"
-      >
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-          Stage details
-        </p>
-        <span className="text-[11px] text-slate-500">
-          {stageRows.length} rows — {expanded ? 'collapse' : 'expand'}
-        </span>
-      </button>
-      {expanded && (
-        <div className="overflow-auto">
-          <table className="w-full text-[13px]">
-            <thead className="bg-slate-50 text-left text-[11px] uppercase tracking-wide text-slate-500">
-              <tr>
-                <th className="px-4 py-2 font-semibold">Stage</th>
-                <th className="px-4 py-2 font-semibold">Lessons</th>
-                <th className="px-4 py-2 font-semibold">Quiz</th>
-                <th className="px-4 py-2 font-semibold">Unlocked</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stageRows.map((row) => (
-                <tr key={row.stage_id} className="border-b border-slate-50 last:border-0">
-                  <td className="px-4 py-2 font-mono text-xs text-slate-800">{row.stage_id}</td>
-                  <td className="px-4 py-2 text-slate-600">
-                    {row.lessons_completed}/{row.total_lessons}
-                  </td>
-                  <td className="px-4 py-2 tabular-nums text-slate-600">
-                    {row.latest_quiz_score}%
-                  </td>
-                  <td className="px-4 py-2 text-slate-600">{row.unlocked ? 'Yes' : 'No'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </Card>
-  )
-}
-
-/* ──────────────────────────── Mini stat card ───────────────────────────── */
-
-function MiniStat({
-  label,
-  value,
-  loading,
-}: {
-  label: string
-  value: string | number
-  loading: boolean
-}) {
-  return (
-    <Card className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      {loading ? (
-        <div className="mt-2 h-5 w-16 animate-pulse rounded bg-slate-100" />
-      ) : (
-        <p className="mt-1 text-lg font-bold tabular-nums text-slate-900">{value}</p>
-      )}
-    </Card>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
