@@ -204,7 +204,9 @@ function App() {
           <LandingPage onNavigate={handleStudentNavigate} />
         )}
 
-        {studentPage === 'dashboard' && <StudentDashboardPage user={user} />}
+        {studentPage === 'dashboard' && (
+          <StudentDashboardPage user={user} onNavigate={handleStudentNavigate} />
+        )}
 
         {studentPage === 'hub' && (
           <StudentHubPage onOpenJobBoard={() => handleStudentNavigate('jobs')} />

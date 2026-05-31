@@ -1,6 +1,13 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { X } from 'lucide-react'
 
+import { fetchCalendarEvents } from '@/lib/api'
+import {
+  mapCalendarToGridEvents,
+  toIsoDate,
+  weekDateRange,
+  type ScheduleGridEvent,
+} from '@/lib/calendar-events'
 import { cn } from '@/lib/utils'
 
 /* ───────────────────────────── Constants ───────────────────────────── */
@@ -41,80 +48,13 @@ interface CalendarCell {
   inMonth: boolean
 }
 
-interface ScheduleEvent {
-  id: string
-  title: string
-  time: string
-  type: EventType
-  dayIndex: number
-  startMinutes: number
-  endMinutes: number
-}
+interface ScheduleEvent extends ScheduleGridEvent {}
 
 interface EventFilters {
   classes: boolean
   quizzes: boolean
   projects: boolean
 }
-
-/* ───────────────────────────── Dummy data ───────────────────────────── */
-
-const DUMMY_EVENTS: ScheduleEvent[] = [
-  {
-    id: '1',
-    title: 'Django Backend',
-    time: '10 AM - 12 PM',
-    type: 'class',
-    dayIndex: 0,
-    startMinutes: 10 * 60,
-    endMinutes: 12 * 60,
-  },
-  {
-    id: '2',
-    title: 'SQL Quiz',
-    time: '2 PM - 3 PM',
-    type: 'quiz',
-    dayIndex: 1,
-    startMinutes: 14 * 60,
-    endMinutes: 15 * 60,
-  },
-  {
-    id: '3',
-    title: 'Capstone Sprint',
-    time: '9 AM - 11 AM',
-    type: 'project',
-    dayIndex: 2,
-    startMinutes: 9 * 60,
-    endMinutes: 11 * 60,
-  },
-  {
-    id: '4',
-    title: 'Office Hours',
-    time: '4 PM - 5 PM',
-    type: 'class',
-    dayIndex: 3,
-    startMinutes: 16 * 60,
-    endMinutes: 17 * 60,
-  },
-  {
-    id: '5',
-    title: 'React Patterns',
-    time: '11 AM - 12 PM',
-    type: 'class',
-    dayIndex: 4,
-    startMinutes: 11 * 60,
-    endMinutes: 12 * 60,
-  },
-  {
-    id: '6',
-    title: 'Portfolio Review',
-    time: '1 PM - 2 PM',
-    type: 'project',
-    dayIndex: 5,
-    startMinutes: 13 * 60,
-    endMinutes: 14 * 60,
-  },
-]
 
 const EVENT_TYPE_STYLES: Record<EventType, string> = {
   class: 'bg-indigo-100 text-indigo-900',
@@ -123,13 +63,6 @@ const EVENT_TYPE_STYLES: Record<EventType, string> = {
 }
 
 /* ───────────────────────────── Helpers ───────────────────────────── */
-
-function toIsoDate(d: Date): string {
-  const y = d.getFullYear()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${y}-${m}-${day}`
-}
 
 function parseIsoDate(iso: string): Date {
   const [y, m, d] = iso.split('-').map(Number)
@@ -335,10 +268,12 @@ function WeekTimeGrid({
   weekStart,
   events,
   filters,
+  loading,
 }: {
   weekStart: Date
   events: ScheduleEvent[]
   filters: EventFilters
+  loading?: boolean
 }) {
   const weekDays = useMemo(() => {
     return Array.from({ length: 7 }, (_, i) => {
@@ -360,7 +295,12 @@ function WeekTimeGrid({
   )
 
   return (
-    <div className="flex min-h-0 w-[70%] min-w-0 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div className="relative flex min-h-0 w-[70%] min-w-0 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      {loading ? (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 text-sm text-gray-500">
+          Loading schedule…
+        </div>
+      ) : null}
       <div className={cn(MASTER_GRID, 'shrink-0')}>
         <div aria-hidden />
         {weekDays.map((d, i) => (
@@ -426,11 +366,7 @@ function WeekTimeGrid({
 /* ───────────────────────────── Main drawer ───────────────────────────── */
 
 /**
- * Preview locally (not wired to dashboard):
- * ```tsx
- * const [open, setOpen] = useState(true)
- * <ExpandedCalendarDrawer open={open} onClose={() => setOpen(false)} />
- * ```
+ * Expanded week calendar drawer — loads events from GET /api/v1/schedule/calendar.
  */
 export function ExpandedCalendarDrawer({ open, onClose }: ExpandedCalendarDrawerProps) {
   const [viewDate, setViewDate] = useState(() => new Date())
@@ -440,11 +376,42 @@ export function ExpandedCalendarDrawer({ open, onClose }: ExpandedCalendarDrawer
     quizzes: true,
     projects: true,
   })
+  const [events, setEvents] = useState<ScheduleGridEvent[]>([])
+  const [loadingEvents, setLoadingEvents] = useState(false)
 
   const weekStart = useMemo(
     () => getMondayOfWeek(parseIsoDate(selectedDay)),
     [selectedDay],
   )
+
+  useEffect(() => {
+    if (!open) return
+    const { startDate, endDate } = weekDateRange(weekStart)
+    let cancelled = false
+    setLoadingEvents(true)
+    void fetchCalendarEvents({
+      startDate,
+      endDate,
+      includeClasses: filters.classes,
+      includeQuizzes: filters.quizzes,
+      includeProjects: filters.projects,
+    })
+      .then((res) => {
+        if (cancelled) return
+        setEvents(mapCalendarToGridEvents(res.events, weekStart))
+      })
+      .catch((err) => {
+        if (cancelled) return
+        console.warn('[Calendar] fetch failed:', err)
+        setEvents([])
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingEvents(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [open, weekStart, filters.classes, filters.quizzes, filters.projects])
 
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
@@ -500,7 +467,12 @@ export function ExpandedCalendarDrawer({ open, onClose }: ExpandedCalendarDrawer
           <ScheduleFilters filters={filters} onChange={setFilters} />
         </div>
 
-        <WeekTimeGrid weekStart={weekStart} events={DUMMY_EVENTS} filters={filters} />
+        <WeekTimeGrid
+          weekStart={weekStart}
+          events={events}
+          filters={filters}
+          loading={loadingEvents}
+        />
       </div>
     </>
   )

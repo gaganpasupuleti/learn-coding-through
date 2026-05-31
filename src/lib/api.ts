@@ -622,7 +622,21 @@ async function parseOrThrow(response: Response) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
     const d = errorData.detail
-    throw new Error(typeof d === 'string' && d ? d : `HTTP error! status: ${response.status}`)
+    if (typeof d === 'string' && d) {
+      throw new Error(d)
+    }
+    if (Array.isArray(d) && d.length > 0) {
+      const msg = d
+        .map((item) => {
+          if (typeof item === 'object' && item !== null && 'msg' in item) {
+            return String((item as { msg: unknown }).msg)
+          }
+          return String(item)
+        })
+        .join('; ')
+      throw new Error(msg || `HTTP error! status: ${response.status}`)
+    }
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
 
   if (!trimmed) {
@@ -636,13 +650,27 @@ async function parseOrThrow(response: Response) {
   }
 }
 
-export async function fetchAdminStudents(token: string, search?: string, limit = 500): Promise<AdminStudent[]> {
-  const params = new URLSearchParams()
-  params.set('limit', String(limit))
-  if (search?.trim()) params.set('search', search.trim())
-  const query = `?${params.toString()}`
-  const response = await fetchWithAuthApiFallback(`/api/v1/admin/students${query}`, token)
-  return parseOrThrow(response) as Promise<AdminStudent[]>
+const ADMIN_STUDENTS_PAGE_SIZE = 200
+
+export async function fetchAdminStudents(token: string, search?: string): Promise<AdminStudent[]> {
+  const all: AdminStudent[] = []
+  let skip = 0
+
+  while (true) {
+    const params = new URLSearchParams()
+    params.set('limit', String(ADMIN_STUDENTS_PAGE_SIZE))
+    params.set('skip', String(skip))
+    if (search?.trim()) params.set('search', search.trim())
+
+    const response = await fetchWithAuthApiFallback(`/api/v1/admin/students?${params}`, token)
+    const page = (await parseOrThrow(response)) as AdminStudent[]
+    all.push(...page)
+
+    if (page.length < ADMIN_STUDENTS_PAGE_SIZE) break
+    skip += ADMIN_STUDENTS_PAGE_SIZE
+  }
+
+  return all
 }
 
 export async function fetchAdminMetrics(token: string): Promise<AdminMetrics> {
