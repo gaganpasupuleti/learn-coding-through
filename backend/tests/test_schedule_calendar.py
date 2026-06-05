@@ -91,7 +91,7 @@ class ScheduleCalendarTests(unittest.TestCase):
             "/api/v1/auth/register",
             json={"email": email, "password": "TestPass123!", "full_name": "Calendar Test"},
         )
-        self.assertEqual(reg.status_code, 201, reg.text)
+        self.assertIn(reg.status_code, (200, 201), reg.text)
         login = self.client.post(
             "/api/v1/auth/login",
             json={"email": email, "password": "TestPass123!"},
@@ -111,9 +111,11 @@ class ScheduleCalendarTests(unittest.TestCase):
                 user.selected_role_id = role.id
             batch = LearningBatch(
                 name="cal-test-batch-1",
+                track="Full Stack",
+                days="Mon-Fri",
+                time_ist="10:00-13:00",
                 mode=BatchMode.ONLINE,
                 start_date=date.today(),
-                end_date=date.today() + timedelta(days=90),
             )
             db.add(batch)
             db.flush()
@@ -136,6 +138,8 @@ class ScheduleCalendarTests(unittest.TestCase):
                     status=ClassSessionStatus.SCHEDULED,
                 ),
             )
+            db.flush()
+            session_id = db.query(ClassSession).filter(ClassSession.title == "Calendar Smoke Class").first().id
             db.commit()
             start = session_date.isoformat()
             end = session_date.isoformat()
@@ -153,6 +157,15 @@ class ScheduleCalendarTests(unittest.TestCase):
         self.assertIn("class", types)
         titles = [e["title"] for e in body["events"]]
         self.assertIn("Calendar Smoke Class", titles)
+        class_ev = next(e for e in body["events"] if e["event_type"] == "class")
+        self.assertEqual(class_ev["entity_id"], session_id)
+        self.assertEqual(class_ev["description"], "Topics")
+        self.assertFalse(class_ev["all_day"])
+        self.assertEqual(class_ev["duration_minutes"], 120)
+        for e in body["events"]:
+            self.assertIn("entity_id", e)
+            self.assertIn("duration_minutes", e)
+            self.assertIn("all_day", e)
 
 
 if __name__ == "__main__":

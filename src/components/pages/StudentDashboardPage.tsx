@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
-import { ExpandedCalendarDrawer } from '@/components/calendar/ExpandedCalendarDrawer'
-import { CompactCalendarWidget } from '@/components/student-dashboard/CompactCalendarWidget'
+import { PlannerPreviewWidget } from '@/components/student-dashboard/PlannerPreviewWidget'
 import { DashboardHero, resolveNextLessonTitle } from '@/components/student-dashboard/DashboardHero'
 import { DeadlinesTaskBoard } from '@/components/student-dashboard/DeadlinesTaskBoard'
 import { JobReadinessCard } from '@/components/student-dashboard/JobReadinessCard'
@@ -9,10 +8,12 @@ import { JobRecommendationsCard } from '@/components/student-dashboard/JobRecomm
 import { LearningJourneyCard } from '@/components/student-dashboard/LearningJourneyCard'
 import { UpcomingClassesTimeline } from '@/components/student-dashboard/UpcomingClassesTimeline'
 import { useStudentDashboardSnapshot } from '@/components/student-dashboard/useStudentDashboardSnapshot'
+import { useLearningPlanner } from '@/components/learning-planner/useLearningPlanner'
 import type { AuthUser } from '@/lib/auth'
 import { computeDaysRemaining, computeReadinessBreakdown } from '@/lib/dashboard-derive'
+import { storeSelectedDateForPlanner } from '@/lib/learning-planner-derive'
 
-type DashboardNavTarget = 'roadmapper' | 'jobs'
+type DashboardNavTarget = 'roadmapper' | 'jobs' | 'learning-planner'
 
 interface StudentDashboardPageProps {
   user: AuthUser
@@ -22,19 +23,31 @@ interface StudentDashboardPageProps {
 function RightSidebar({
   snapshot,
   readiness,
-  onExpandCalendar,
+  plannerPreview,
   onNavigate,
 }: {
   snapshot: ReturnType<typeof useStudentDashboardSnapshot>
   readiness: ReturnType<typeof computeReadinessBreakdown>
-  onExpandCalendar: () => void
+  plannerPreview: ReturnType<typeof useLearningPlanner>
   onNavigate: (page: DashboardNavTarget) => void
 }) {
   return (
     <div className="space-y-6">
-      <CompactCalendarWidget
-        sessions={snapshot.upcomingSessions}
-        onExpand={onExpandCalendar}
+      <PlannerPreviewWidget
+        dayPlan={plannerPreview.dayPlan}
+        viewMonth={plannerPreview.viewMonth}
+        onViewMonthChange={plannerPreview.setViewMonth}
+        selectedDate={plannerPreview.selectedDate}
+        markedDates={plannerPreview.markedDates}
+        loading={plannerPreview.loading}
+        onSelectDate={(date) => {
+          storeSelectedDateForPlanner(date)
+          plannerPreview.setSelectedDate(date)
+        }}
+        onOpenPlanner={() => {
+          storeSelectedDateForPlanner(plannerPreview.selectedDate)
+          onNavigate('learning-planner')
+        }}
       />
       <JobReadinessCard breakdown={readiness} loading={snapshot.loading} />
       <JobRecommendationsCard
@@ -49,8 +62,8 @@ function RightSidebar({
 }
 
 export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageProps) {
-  const [isCalendarExpanded, setIsCalendarExpanded] = useState(false)
   const snapshot = useStudentDashboardSnapshot(user)
+  const plannerPreview = useLearningPlanner(user)
   const firstName = user.full_name.split(' ')[0] ?? user.full_name
 
   const daysRemaining = useMemo(
@@ -83,11 +96,6 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
 
   return (
     <div className="min-h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/40 p-4 md:p-6">
-      <ExpandedCalendarDrawer
-        open={isCalendarExpanded}
-        onClose={() => setIsCalendarExpanded(false)}
-      />
-
       {/* Desktop layout */}
       <div className="mx-auto hidden max-w-7xl lg:grid lg:grid-cols-12 lg:gap-6">
         <div className="col-span-12">
@@ -113,7 +121,7 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           <RightSidebar
             snapshot={snapshot}
             readiness={readiness}
-            onExpandCalendar={() => setIsCalendarExpanded(true)}
+            plannerPreview={plannerPreview}
             onNavigate={onNavigate}
           />
         </div>
@@ -158,9 +166,21 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           loading={snapshot.loading}
           onViewAll={() => onNavigate('jobs')}
         />
-        <CompactCalendarWidget
-          sessions={snapshot.upcomingSessions}
-          onExpand={() => setIsCalendarExpanded(true)}
+        <PlannerPreviewWidget
+          dayPlan={plannerPreview.dayPlan}
+          viewMonth={plannerPreview.viewMonth}
+          onViewMonthChange={plannerPreview.setViewMonth}
+          selectedDate={plannerPreview.selectedDate}
+          markedDates={plannerPreview.markedDates}
+          loading={plannerPreview.loading}
+          onSelectDate={(date) => {
+            storeSelectedDateForPlanner(date)
+            plannerPreview.setSelectedDate(date)
+          }}
+          onOpenPlanner={() => {
+            storeSelectedDateForPlanner(plannerPreview.selectedDate)
+            onNavigate('learning-planner')
+          }}
         />
       </div>
     </div>

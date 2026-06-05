@@ -12,6 +12,7 @@ import { LoginPage } from '@/components/pages/LoginPage'
 import { StudentShell } from '@/components/shells/StudentShell'
 import { AssessmentGuard } from '@/components/assessment/AssessmentGuard'
 import { FlowRoadmapPage } from '@/components/pages/FlowRoadmapPage'
+import { LearningPlannerPage } from '@/components/pages/LearningPlannerPage'
 import { StudentDashboardPage } from '@/components/pages/StudentDashboardPage'
 import { StudentHubPage } from '@/components/pages/StudentHubPage'
 import { StudentJobsPage } from '@/components/pages/StudentJobsPage'
@@ -50,6 +51,7 @@ export type StudentPage =
   | 'flow-roadmap'
   | 'hub'
   | 'jobs'
+  | 'learning-planner'
 
 type AuthState = AuthUser | null
 
@@ -213,6 +215,10 @@ function App() {
         )}
 
         {studentPage === 'jobs' && <StudentJobsPage />}
+
+        {studentPage === 'learning-planner' && (
+          <LearningPlannerPage user={user} onNavigate={handleStudentNavigate} />
+        )}
 
         {studentPage === 'projects' && (
           <ProjectsPage onSelectProject={handleSelectProject} />

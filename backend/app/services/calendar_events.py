@@ -29,6 +29,12 @@ DEFAULT_PROJECT_END = time(11, 0)
 MAX_RANGE_DAYS = 93
 
 
+def _duration_minutes(start: time, end: time) -> int:
+    start_m = start.hour * 60 + start.minute
+    end_m = end.hour * 60 + end.minute
+    return max(0, end_m - start_m)
+
+
 def _enrolled_batch_ids(db: Session, user_id: int) -> list[int]:
     return [
         row.batch_id
@@ -71,6 +77,11 @@ def _class_events(
             end_time=s.end_time,
             batch_name=batch_map.get(s.batch_id),
             status=s.status.value,
+            entity_id=s.id,
+            stage_id=None,
+            all_day=False,
+            description=s.topic,
+            duration_minutes=_duration_minutes(s.start_time, s.end_time),
         )
         for s in rows
     ]
@@ -113,6 +124,11 @@ def _quiz_events(
                 start_time=DEFAULT_QUIZ_START,
                 end_time=DEFAULT_QUIZ_END,
                 status="passed" if q.id in passed_quiz_ids else "due",
+                entity_id=q.id,
+                stage_id=q.stage_id,
+                all_day=True,
+                description=f"Stage quiz — {q.title}",
+                duration_minutes=_duration_minutes(DEFAULT_QUIZ_START, DEFAULT_QUIZ_END),
             )
         )
     return events
@@ -161,6 +177,11 @@ def _project_events(
                 start_time=DEFAULT_PROJECT_START,
                 end_time=DEFAULT_PROJECT_END,
                 status="unlocked" if progress_map.get(stage.id, False) else "locked",
+                entity_id=stage.id,
+                stage_id=stage.id,
+                all_day=True,
+                description=stage.description,
+                duration_minutes=_duration_minutes(DEFAULT_PROJECT_START, DEFAULT_PROJECT_END),
             )
         )
     return events

@@ -5,7 +5,7 @@ from __future__ import annotations
 from sqlalchemy import inspect, text
 
 from app.core.database import engine
-from app.models.models import ClassSession, TypingAttempt
+from app.models.models import ClassSession, StudentFeedback, TypingAttempt
 
 
 def ensure_job_posts_fixture_columns() -> None:
@@ -78,3 +78,10 @@ def ensure_typing_attempts_table() -> None:
         TypingAttempt.__table__.create(bind=engine, checkfirst=True)
     except Exception as exc:
         print(f"Warning: unable to ensure typing_attempts table exists: {exc}")
+
+
+def ensure_student_feedback_table() -> None:
+    try:
+        StudentFeedback.__table__.create(bind=engine, checkfirst=True)
+    except Exception as exc:
+        print(f"Warning: unable to ensure student_feedback table exists: {exc}")

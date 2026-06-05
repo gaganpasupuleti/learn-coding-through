@@ -53,6 +53,8 @@ export const DUMMY_STUDENT_APPLICATIONS: StudentJobApplicationsMe = {
 export const DUMMY_STUDENT_ENROLLMENT: EnrollmentMe = {
   attendance_pct: 88,
   batch_names: ['[KPI demo seed] Spring cohort'],
+  batch_start_date: new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10),
+  selected_role_id: 1,
 }
 
 export const DUMMY_STUDENT_PROJECTS: MySubmittedProject[] = [

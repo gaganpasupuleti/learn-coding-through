@@ -54,6 +54,11 @@ class CalendarEventResponse(BaseModel):
     end_time: time
     batch_name: str | None = None
     status: str | None = None
+    entity_id: int
+    stage_id: int | None = None
+    all_day: bool = False
+    description: str | None = None
+    duration_minutes: int = 60
 
 
 class CalendarEventsResponse(BaseModel):

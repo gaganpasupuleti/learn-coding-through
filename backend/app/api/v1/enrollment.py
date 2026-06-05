@@ -13,6 +13,8 @@ router = APIRouter(prefix="/enrollment", tags=["Enrollment"])
 class EnrollmentMeResponse(BaseModel):
     attendance_pct: int | None
     batch_names: list[str]
+    batch_start_date: str | None = None
+    selected_role_id: int | None = None
 
 
 @router.get("/me", response_model=EnrollmentMeResponse)
@@ -29,15 +31,28 @@ def my_enrollment(
         .all()
     )
     if not rows:
-        return EnrollmentMeResponse(attendance_pct=None, batch_names=[])
+        return EnrollmentMeResponse(
+            attendance_pct=None,
+            batch_names=[],
+            batch_start_date=None,
+            selected_role_id=current_user.selected_role_id,
+        )
 
     batch_names = []
     seen: set[str] = set()
+    start_dates: list = []
     for row in rows:
-        name = row.batch.name if row.batch else ""
-        if name and name not in seen:
-            seen.add(name)
-            batch_names.append(name)
+        if row.batch:
+            if row.batch.name and row.batch.name not in seen:
+                seen.add(row.batch.name)
+                batch_names.append(row.batch.name)
+            start_dates.append(row.batch.start_date)
 
     avg_pct = round(sum(r.attendance_pct for r in rows) / len(rows))
-    return EnrollmentMeResponse(attendance_pct=avg_pct, batch_names=batch_names)
+    earliest_start = min(start_dates).isoformat() if start_dates else None
+    return EnrollmentMeResponse(
+        attendance_pct=avg_pct,
+        batch_names=batch_names,
+        batch_start_date=earliest_start,
+        selected_role_id=current_user.selected_role_id,
+    )

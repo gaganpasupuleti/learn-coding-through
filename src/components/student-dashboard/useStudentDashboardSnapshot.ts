@@ -83,7 +83,7 @@ export function useStudentDashboardSnapshot(user: AuthUser): StudentDashboardSna
         catalogSteps: catalogCount,
         typingAttempts: typing ?? [],
         applications: apps ?? { count: 0, items: [] },
-        enrollment: enr ?? { attendance_pct: null, batch_names: [] },
+        enrollment: enr ?? { attendance_pct: null, batch_names: [], batch_start_date: null, selected_role_id: null },
         submittedProjects: projs ?? [],
       })
       setStageRows(blended.stageRows)
@@ -121,7 +121,7 @@ export function useStudentDashboardSnapshot(user: AuthUser): StudentDashboardSna
         catalogSteps: 0,
         typingAttempts: [],
         applications: { count: 0, items: [] },
-        enrollment: { attendance_pct: null, batch_names: [] },
+        enrollment: { attendance_pct: null, batch_names: [], batch_start_date: null, selected_role_id: null },
         submittedProjects: [],
       })
       setStageRows(blended.stageRows)

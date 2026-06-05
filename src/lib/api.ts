@@ -1261,6 +1261,8 @@ export async function fetchStudentJobApplications(): Promise<StudentJobApplicati
 export interface EnrollmentMe {
   attendance_pct: number | null
   batch_names: string[]
+  batch_start_date: string | null
+  selected_role_id: number | null
 }
 
 export async function fetchMyEnrollment(): Promise<EnrollmentMe> {
@@ -1415,6 +1417,11 @@ export interface CalendarEvent {
   end_time: string
   batch_name: string | null
   status: string | null
+  entity_id: number
+  stage_id: number | null
+  all_day: boolean
+  description: string | null
+  duration_minutes: number
 }
 
 export interface CalendarEventsResponse {

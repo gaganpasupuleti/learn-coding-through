@@ -995,9 +995,15 @@ def get_platform_overview(
     except Exception:
         catalog_projects = 0
 
-    waitlist_pending = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "pending").count()
-    waitlist_approved = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "approved").count()
-    waitlist_rejected = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "rejected").count()
+    waitlist_pending = 0
+    waitlist_approved = 0
+    waitlist_rejected = 0
+    try:
+        waitlist_pending = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "pending").count()
+        waitlist_approved = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "approved").count()
+        waitlist_rejected = db.query(RegistrationWaitlist).filter(RegistrationWaitlist.status == "rejected").count()
+    except Exception:
+        db.rollback()
 
     return AdminPlatformOverviewResponse(
         total_users=total_users,

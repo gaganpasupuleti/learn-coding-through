@@ -1,8 +1,10 @@
-import type { CareerRole } from '@/types/career'
+import type { CareerRole, SyllabusItem } from '@/types/career'
 
 const SELECTED_ROLE_KEY = 'career-mapper-selected-role'
 
 export interface CareerJourneySummary {
+  roleId: string
+  slug: string
   title: string
   pct: number
   nextLessonTitle: string | null
@@ -10,6 +12,8 @@ export interface CareerJourneySummary {
   completedTopics: string[]
   remainingTopics: string[]
   skills: string[]
+  syllabus: SyllabusItem[]
+  completedItems: Record<string, boolean>
 }
 
 /** Best-effort syllabus % from localStorage (same keys as Career Map / useKV). */
@@ -55,6 +59,8 @@ export function readCareerJourneySummary(): CareerJourneySummary | null {
     const pct = total === 0 ? 0 : Math.round((doneCount / total) * 100)
 
     return {
+      roleId: role.id,
+      slug: role.slug,
       title: role.title,
       pct,
       nextLessonTitle,
@@ -62,6 +68,8 @@ export function readCareerJourneySummary(): CareerJourneySummary | null {
       completedTopics,
       remainingTopics,
       skills: role.skills ?? [],
+      syllabus,
+      completedItems,
     }
   } catch {
     return null

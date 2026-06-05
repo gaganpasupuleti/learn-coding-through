@@ -19,6 +19,7 @@ from app.core.database import Base, SessionLocal, engine
 from app.core.schema_ensure import (
     ensure_job_posts_fixture_columns,
     ensure_schedule_schema,
+    ensure_student_feedback_table,
     ensure_typing_attempts_table,
 )
 from app.core.security import ALGORITHM
@@ -192,6 +193,7 @@ def startup_event():
         print("Code execution endpoints will still work without database")
 
     ensure_typing_attempts_table()
+    ensure_student_feedback_table()
     _ensure_user_password_setup_column()
     _ensure_job_posts_linkedin_columns()
     ensure_job_posts_fixture_columns()
