@@ -16,10 +16,12 @@ export interface ExecutorConfig {
 export class CodeSandbox {
   private timeout: number
   private maxOutputLength: number
+  private executionTimeoutSeconds: number
 
   constructor(config?: ExecutorConfig) {
-    this.timeout = config?.timeout ?? 5000
+    this.timeout = config?.timeout ?? 6000
     this.maxOutputLength = config?.maxOutputLength ?? 10000
+    this.executionTimeoutSeconds = Math.max(1, Math.floor(this.timeout / 1000) - 1)
   }
 
   private truncate(output: string) {

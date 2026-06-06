@@ -20,10 +20,6 @@ async function runCheck(name, fn) {
   }
 }
 
-function stepTimeout(ms = 60000) {
-  return { timeout: ms }
-}
-
 async function loginAsDemoStudent(page) {
   await page.goto(WEB_BASE, { waitUntil: 'commit', timeout: NAV_TIMEOUT_MS })
   await page.getByRole('heading', { name: 'Sign in' }).waitFor({ state: 'visible', timeout: NAV_TIMEOUT_MS })

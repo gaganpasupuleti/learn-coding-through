@@ -11,7 +11,7 @@ import {
 } from '@/lib/practice-mistakes'
 import { cn } from '@/lib/utils'
 
-import type { CodePracticeLanguage, PracticeGroundSection } from './practice-ground-types'
+import type { CodePracticeLanguage } from './practice-ground-types'
 
 const LANG_LABEL: Record<CodePracticeLanguage, string> = {
   python: 'Python',
