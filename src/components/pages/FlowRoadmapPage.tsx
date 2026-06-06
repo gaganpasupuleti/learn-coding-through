@@ -1,13 +1,20 @@
-import { useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 import { RoadmapFlow } from '@/components/roadmap/RoadmapFlow'
 import { ROADMAP_OPTIONS } from '@/lib/roadmap-options'
+
+const MemoRoadmapFlow = memo(RoadmapFlow)
 
 const FEATURED = ['frontend', 'backend', 'devops', 'python', 'ai-engineer']
 
 export function FlowRoadmapPage() {
   const [selectedRoadmap, setSelectedRoadmap] = useState(
-    ROADMAP_OPTIONS.find(r => r.id === 'frontend') || ROADMAP_OPTIONS[0]
+    ROADMAP_OPTIONS.find((r) => r.id === 'frontend') || ROADMAP_OPTIONS[0],
   )
+
+  const handleSelectRoadmap = useCallback((id: string) => {
+    const found = ROADMAP_OPTIONS.find((opt) => opt.id === id)
+    if (found) setSelectedRoadmap(found)
+  }, [])
 
   return (
     <div className="min-h-screen py-8 bg-background relative">
@@ -27,7 +34,7 @@ export function FlowRoadmapPage() {
               {ROADMAP_OPTIONS.filter(opt => FEATURED.includes(opt.id)).map(opt => (
                 <button
                   key={opt.id}
-                  onClick={() => setSelectedRoadmap(opt)}
+                  onClick={() => handleSelectRoadmap(opt.id)}
                   className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 border-2 ${
                     selectedRoadmap.id === opt.id 
                       ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-600/20 scale-105' 
@@ -46,10 +53,7 @@ export function FlowRoadmapPage() {
               <select
                 id="roadmap-select"
                 value={selectedRoadmap.id}
-                onChange={(e) => {
-                  const found = ROADMAP_OPTIONS.find(opt => opt.id === e.target.value)
-                  if (found) setSelectedRoadmap(found)
-                }}
+                onChange={(e) => handleSelectRoadmap(e.target.value)}
                 className="bg-card border-2 border-border/50 text-card-foreground text-sm font-bold rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block px-4 py-2.5 min-w-[280px] shadow-sm cursor-pointer hover:border-indigo-500/50 transition-colors"
               >
                 {ROADMAP_OPTIONS.map(opt => (
@@ -99,7 +103,7 @@ export function FlowRoadmapPage() {
 
         {/* Roadmap Flow Renderer */}
         <div className="px-0 sm:px-2">
-          <RoadmapFlow roadmapPath={selectedRoadmap.path} />
+          <MemoRoadmapFlow roadmapPath={selectedRoadmap.path} />
         </div>
         
       </div>
