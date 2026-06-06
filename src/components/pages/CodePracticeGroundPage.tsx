@@ -34,6 +34,7 @@ interface CodePracticeGroundPageProps {
   section: PracticeGroundSection
   onSectionChange: (section: PracticeGroundSection) => void
   retryCode: string | null
+  onRetryFromMistakes: (language: CodePracticeLanguage, code: string) => void
   onRetryConsumed: () => void
 }
 
@@ -41,6 +42,7 @@ export function CodePracticeGroundPage({
   section,
   onSectionChange,
   retryCode,
+  onRetryFromMistakes,
   onRetryConsumed,
 }: CodePracticeGroundPageProps) {
   const [mistakeCount, setMistakeCount] = useState(() => listPracticeMistakes().length)
@@ -64,13 +66,6 @@ export function CodePracticeGroundPage({
     () => PRACTICE_GROUND_SECTIONS.find((item) => item.id === section) ?? PRACTICE_GROUND_SECTIONS[0],
     [section],
   )
-
-  const handleRetry = (language: CodePracticeLanguage, code: string) => {
-    onSectionChange(language)
-    if (code.trim()) {
-      sessionStorage.setItem(`practice-retry-code-${language}`, code)
-    }
-  }
 
   return (
     <div className="min-h-full bg-gradient-to-br from-slate-50 via-white to-violet-50/30">
@@ -115,6 +110,7 @@ export function CodePracticeGroundPage({
                   <li key={item.id}>
                     <button
                       type="button"
+                      data-testid={`practice-section-${item.id}`}
                       onClick={() => onSectionChange(item.id)}
                       aria-current={active ? 'page' : undefined}
                       className={cn(
@@ -159,7 +155,7 @@ export function CodePracticeGroundPage({
             {section === 'mistakes' ? (
               <MistakesReviewPanel
                 onRetry={(language, code) => {
-                  handleRetry(language, code)
+                  onRetryFromMistakes(language, code)
                   refreshMistakeCount()
                 }}
               />
@@ -167,6 +163,7 @@ export function CodePracticeGroundPage({
 
             {isCodeSection(section) ? (
               <PracticePage
+                key={section}
                 embedded
                 initialLanguage={section}
                 retryCode={retryCode}

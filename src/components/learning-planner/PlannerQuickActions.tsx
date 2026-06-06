@@ -20,7 +20,7 @@ interface PlannerQuickActionsProps {
 
 const ACTIONS = [
   { key: 'lesson' as const, label: 'Start Lesson', icon: BookOpen, kind: 'syllabus' as const },
-  { key: 'practice' as const, label: 'Practice', icon: FlaskConical, kind: 'practice' as const },
+  { key: 'practice' as const, label: 'Practice Ground', icon: FlaskConical, kind: 'practice' as const },
   { key: 'quiz' as const, label: 'Quiz', icon: ClipboardList, kind: 'quiz' as const },
   { key: 'project' as const, label: 'Project', icon: GraduationCap, kind: 'project' as const },
 ]

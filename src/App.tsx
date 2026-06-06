@@ -111,6 +111,11 @@ function App() {
       setSelectedProjectId(null)
       return
     }
+    if (page === 'practice-ground') {
+      setStudentPage('practice-ground')
+      setSelectedProjectId(null)
+      return
+    }
     setStudentPage(page)
     setSelectedProjectId(null)
   }
@@ -244,6 +249,10 @@ function App() {
               section={practiceGroundSection}
               onSectionChange={setPracticeGroundSection}
               retryCode={practiceRetryCode}
+              onRetryFromMistakes={(language, code) => {
+                setPracticeGroundSection(language)
+                setPracticeRetryCode(code.trim() ? code : null)
+              }}
               onRetryConsumed={() => setPracticeRetryCode(null)}
             />
           </ErrorBoundary>

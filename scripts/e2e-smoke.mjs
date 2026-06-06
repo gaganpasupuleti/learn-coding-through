@@ -160,11 +160,11 @@ async function runUiChecks() {
     })
 
     await runCheck('ui_demo_entry', async () => {
-      await page.getByRole('button', { name: 'Try Demo', exact: true }).click()
-      await page.getByRole('button', { name: 'Start Demo Access', exact: true }).click()
-      await page.waitForTimeout(900)
-      const visible = await page.getByRole('button', { name: 'Projects', exact: true }).isVisible()
-      if (!visible) throw new Error('Student shell not visible after demo entry')
+      await page.getByRole('heading', { name: 'Sign in' }).waitFor({ state: 'visible', timeout: 15000 })
+      await page.locator('#email').fill('demo@student.com')
+      await page.locator('#password').fill('DemoStudent@123')
+      await page.getByRole('button', { name: 'Sign In', exact: true }).click()
+      await page.getByRole('button', { name: 'Learning menu' }).waitFor({ state: 'visible', timeout: 15000 })
       return 'student shell loaded'
     })
 
@@ -177,11 +177,14 @@ async function runUiChecks() {
     }, { maxDurationMs: MAX_UI_NAV_MS })
 
     await runCheck('ui_practice_flow', async () => {
-      await page.getByRole('button', { name: 'Practice', exact: true }).click()
+      await page.getByRole('button', { name: 'Learning menu' }).click()
+      await page.getByRole('menuitem', { name: 'Code Practice Ground' }).click()
+      await page.getByRole('heading', { name: 'Code Practice Ground' }).waitFor({ state: 'visible', timeout: 10000 })
+      await page.getByTestId('practice-section-python').click()
       await page.getByRole('button', { name: 'Run Code', exact: true }).waitFor({ state: 'visible', timeout: 10000 })
       const visible = await page.getByRole('button', { name: 'Run Code', exact: true }).isVisible()
       if (!visible) throw new Error('Run Code button not visible')
-      return 'practice loaded'
+      return 'practice ground loaded'
     }, { maxDurationMs: MAX_UI_NAV_MS })
 
     await runCheck('ui_quiz_flow', async () => {

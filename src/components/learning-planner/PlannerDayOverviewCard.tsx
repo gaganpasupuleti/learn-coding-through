@@ -33,7 +33,7 @@ function formatDateLine(iso: string): string {
 
 const COUNT_LABELS: { key: keyof EventCounts; label: string; chip: string }[] = [
   { key: 'classes', label: 'Classes', chip: COUNT_CHIP.class },
-  { key: 'practice', label: 'Practice', chip: COUNT_CHIP.practice },
+  { key: 'practice', label: 'Practice Ground', chip: COUNT_CHIP.practice },
   { key: 'quizzes', label: 'Quizzes', chip: COUNT_CHIP.quiz },
   { key: 'projects', label: 'Projects', chip: COUNT_CHIP.project },
 ]

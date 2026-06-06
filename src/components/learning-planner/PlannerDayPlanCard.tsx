@@ -66,7 +66,7 @@ export function PlannerDayPlanCard({ dayPlan, loading }: PlannerDayPlanCardProps
 
         {dayPlan.practiceTasks.length > 0 && (
           <section>
-            <p className={cn(PLANNER_SECTION_TITLE, 'mb-1')}>Practice</p>
+            <p className={cn(PLANNER_SECTION_TITLE, 'mb-1')}>Code Practice Ground</p>
             <p className="text-sm text-slate-700">
               {dayPlan.practiceTasks.slice(0, 3).join(' · ')}
               {extraPractice > 0 && (

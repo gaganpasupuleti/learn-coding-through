@@ -5,6 +5,7 @@ import { LandingProgressStrip } from '@/components/home/LandingProgressStrip'
 /** Destinations available from the home hero (subset of student nav). */
 export type LandingNavTarget =
   | 'projects'
+  | 'practice-ground'
   | 'practice'
   | 'quiz'
   | 'roadmapper'
@@ -63,12 +64,12 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             </button>
             <button
               type="button"
-              onClick={() => onNavigate('typing')}
+              onClick={() => onNavigate('practice-ground')}
               className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-semibold px-5 py-3 rounded-lg border border-slate-200 shadow-sm transition-all duration-200"
-              aria-label="Open typing trainer"
+              aria-label="Open Code Practice Ground"
             >
               <Keyboard size={16} strokeWidth={2.5} aria-hidden />
-              Typing
+              Code Practice Ground
             </button>
           </div>
           <p className="text-sm text-slate-500 max-w-xl mx-auto pt-1 leading-relaxed">

@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useKV } from '@github/spark/hooks'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { CodeEditor } from '@/components/CodeEditor'
@@ -147,6 +146,30 @@ function downloadSampleRowsCsv(table: SqlSchemaTable) {
   URL.revokeObjectURL(url)
 }
 
+function usePracticeCode(storageKey: string, fallback: string) {
+  const [code, setCode] = useState(() => {
+    try {
+      return localStorage.getItem(storageKey) ?? fallback
+    } catch {
+      return fallback
+    }
+  })
+
+  const updateCode = useCallback(
+    (next: string) => {
+      setCode(next)
+      try {
+        localStorage.setItem(storageKey, next)
+      } catch {
+        /* ignore quota errors */
+      }
+    },
+    [storageKey],
+  )
+
+  return [code, updateCode] as const
+}
+
 const defaultCode: Record<Language, string> = {
   python: `# Write your Python code here
 print("Hello, World!")
@@ -197,9 +220,9 @@ export function PracticePage({
 }: PracticePageProps = {}) {
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(initialLanguage)
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('easy')
-  const [pythonCode, setPythonCode] = useKV('practice-python-code', defaultCode.python)
-  const [sqlCode, setSqlCode] = useKV('practice-sql-code', defaultCode.sql)
-  const [javaCode, setJavaCode] = useKV('practice-java-code', defaultCode.java)
+  const [pythonCode, setPythonCode] = usePracticeCode('practice-python-code', defaultCode.python)
+  const [sqlCode, setSqlCode] = usePracticeCode('practice-sql-code', defaultCode.sql)
+  const [javaCode, setJavaCode] = usePracticeCode('practice-java-code', defaultCode.java)
   const [output, setOutput] = useState<string>('')
   const [isRunning, setIsRunning] = useState(false)
   const [executionTime, setExecutionTime] = useState<number | null>(null)
@@ -289,19 +312,6 @@ export function PracticePage({
     onRetryConsumed?.()
     toast.message('Loaded code from Mistakes Review.')
   }, [retryCode, onRetryConsumed, selectedLanguage])
-
-  useEffect(() => {
-    if (!embedded) return
-    const stored = sessionStorage.getItem(`practice-retry-code-${initialLanguage}`)
-    if (!stored?.trim()) return
-    switch (initialLanguage) {
-      case 'python': setPythonCode(stored); break
-      case 'sql': setSqlCode(stored); break
-      case 'java': setJavaCode(stored); break
-    }
-    sessionStorage.removeItem(`practice-retry-code-${initialLanguage}`)
-    toast.message('Loaded code from Mistakes Review.')
-  }, [embedded, initialLanguage, setPythonCode, setSqlCode, setJavaCode])
 
   const handleRunCode = async () => {
     const code = getCurrentCode()
