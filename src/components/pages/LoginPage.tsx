@@ -1,7 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Code2, User, Lock, ArrowRight } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Code2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
+
+import { AuthPromoPanel } from '@/components/auth/AuthPromoPanel'
 import {
   API_BASE_URL,
   fetchAuthPublicConfig,
@@ -17,6 +20,7 @@ import {
   setDemoFlag,
   type AuthUser,
 } from '@/lib/auth'
+import { cn } from '@/lib/utils'
 
 interface LoginPageProps {
   onAuthenticated: (user: AuthUser) => void
@@ -27,6 +31,9 @@ type AuthMode = 'login' | 'signup' | 'forgotPassword'
 type GoogleCredentialResponse = {
   credential?: string
 }
+
+const REMEMBER_ME_KEY = 'codequest-remember-me'
+const REMEMBER_EMAIL_KEY = 'codequest-remember-email'
 
 declare global {
   interface Window {
@@ -56,44 +63,72 @@ declare global {
   }
 }
 
+function readRememberedEmail(): { email: string; remember: boolean } {
+  try {
+    const remember = localStorage.getItem(REMEMBER_ME_KEY) === 'true'
+    const email = localStorage.getItem(REMEMBER_EMAIL_KEY) ?? ''
+    return { email: remember ? email : '', remember }
+  } catch {
+    return { email: '', remember: false }
+  }
+}
+
+function persistRememberMe(remember: boolean, email: string) {
+  try {
+    if (remember && email.trim()) {
+      localStorage.setItem(REMEMBER_ME_KEY, 'true')
+      localStorage.setItem(REMEMBER_EMAIL_KEY, email.trim())
+    } else {
+      localStorage.removeItem(REMEMBER_ME_KEY)
+      localStorage.removeItem(REMEMBER_EMAIL_KEY)
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
 export function LoginPage({ onAuthenticated }: LoginPageProps) {
+  const remembered = useMemo(() => readRememberedEmail(), [])
   const [mode, setMode] = useState<AuthMode>('login')
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(remembered.email)
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [resetToken, setResetToken] = useState('')
   const [newPassword, setNewPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(remembered.remember)
   const [isLoading, setIsLoading] = useState(false)
+  const [pendingApproval, setPendingApproval] = useState(false)
   const googleButtonRef = useRef<HTMLDivElement | null>(null)
   const googleButtonHostRef = useRef<HTMLDivElement | null>(null)
+  const [googleButtonMount, setGoogleButtonMount] = useState<HTMLDivElement | null>(null)
+
+  const attachGoogleButtonRef = useCallback((node: HTMLDivElement | null) => {
+    googleButtonRef.current = node
+    setGoogleButtonMount(node)
+  }, [])
+
   const runtimeGoogleClientId =
     typeof window !== 'undefined'
       ? (window.__RUNTIME_CONFIG__?.VITE_GOOGLE_CLIENT_ID ?? '').trim()
       : ''
 
   const bootstrapGoogleClientId = useMemo(
-    () =>
-      (import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '').trim() ||
-      runtimeGoogleClientId,
+    () => (import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '').trim() || runtimeGoogleClientId,
     [runtimeGoogleClientId],
   )
 
-  /** Loaded from GET /api/v1/auth/config (includes public google_client_id when backend is configured). */
   const [authPublic, setAuthPublic] = useState<AuthPublicConfig | null>(null)
   const [authPublicReady, setAuthPublicReady] = useState(false)
   const [authPublicFetchFailed, setAuthPublicFetchFailed] = useState(false)
 
   const googleClientId = useMemo(
-    () =>
-      bootstrapGoogleClientId ||
-      (authPublic?.google_client_id ?? '').trim(),
+    () => bootstrapGoogleClientId || (authPublic?.google_client_id ?? '').trim(),
     [bootstrapGoogleClientId, authPublic],
   )
 
   const googleBackendEnabled =
-    !authPublicReady ? null : authPublicFetchFailed ? false : authPublic?.google_auth_enabled ?? false
+    !authPublicReady ? null : authPublicFetchFailed ? false : (authPublic?.google_auth_enabled ?? false)
 
-  /** Show Google when the server enables it, or when the SPA has a Web client ID locally (backend must still set GOOGLE_OAUTH_CLIENT_ID or token exchange returns 503). */
   const googleButtonAllowed =
     authPublicReady &&
     !!googleClientId &&
@@ -115,6 +150,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     }
     try {
       setIsLoading(true)
+      persistRememberMe(rememberMe, email)
       const token = await loginWithBackend(email.trim(), password)
       await finalizeLogin(token, {
         id: 0,
@@ -133,8 +169,6 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
       setIsLoading(false)
     }
   }
-
-  const [pendingApproval, setPendingApproval] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -171,7 +205,10 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
       })
     } catch (err) {
       const msg = err instanceof Error ? err.message : ''
-      if (msg.toLowerCase().includes('pending admin approval') || msg.toLowerCase().includes('pending approval')) {
+      if (
+        msg.toLowerCase().includes('pending admin approval') ||
+        msg.toLowerCase().includes('pending approval')
+      ) {
         setPendingApproval(true)
         toast.success('Registration submitted! Please wait for admin approval before logging in.')
       } else {
@@ -187,7 +224,6 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
       toast.error('Email is required.')
       return
     }
-
     try {
       setIsLoading(true)
       const result = await requestPasswordReset(email.trim())
@@ -209,7 +245,6 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
       toast.error('Reset token and new password are required.')
       return
     }
-
     try {
       setIsLoading(true)
       await resetPasswordWithToken(resetToken.trim(), newPassword)
@@ -225,7 +260,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
   }
 
   useEffect(() => {
-    if ((mode !== 'login' && mode !== 'signup') || !googleClientId || !googleButtonAllowed || !googleButtonRef.current) {
+    if ((mode !== 'login' && mode !== 'signup') || !googleClientId || !googleButtonAllowed || !googleButtonMount) {
       return
     }
 
@@ -242,7 +277,6 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
             toast.error('Google login failed. No credential returned.')
             return
           }
-
           try {
             setIsLoading(true)
             const token = await loginWithGoogleIdToken(credential)
@@ -254,7 +288,10 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
             })
           } catch (err) {
             const msg = err instanceof Error ? err.message : ''
-            if (msg.toLowerCase().includes('pending admin approval') || msg.toLowerCase().includes('pending approval')) {
+            if (
+              msg.toLowerCase().includes('pending admin approval') ||
+              msg.toLowerCase().includes('pending approval')
+            ) {
               setPendingApproval(true)
             } else {
               toast.error(msg || 'Google login failed.')
@@ -267,7 +304,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
       window.google.accounts.id.renderButton(googleButtonRef.current, {
         theme: 'filled_blue',
         size: 'large',
-        text: 'continue_with',
+        text: mode === 'signup' ? 'signup_with' : 'continue_with',
         shape: 'pill',
         width: Math.max(220, (googleButtonHostRef.current?.clientWidth ?? 320) - 24),
       })
@@ -291,231 +328,279 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     script.defer = true
     script.addEventListener('load', initializeGoogleButton)
     document.head.appendChild(script)
-
     return () => script.removeEventListener('load', initializeGoogleButton)
-  }, [mode, googleClientId, googleButtonAllowed, email, fullName])
+  }, [mode, googleClientId, googleButtonAllowed, googleButtonMount, email, fullName])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      if (mode === 'login') handleLogin()
-      else if (mode === 'signup') handleSignup()
-      else if (mode === 'forgotPassword') {
-        if (resetToken.trim() && newPassword.trim()) {
-          handleResetPassword()
-        } else {
-          handleRequestPasswordReset()
-        }
-      }
+    if (e.key !== 'Enter') return
+    if (mode === 'login') handleLogin()
+    else if (mode === 'signup') handleSignup()
+    else if (mode === 'forgotPassword') {
+      if (resetToken.trim() && newPassword.trim()) handleResetPassword()
+      else handleRequestPasswordReset()
     }
   }
 
+  const handleRememberChange = (checked: boolean) => {
+    setRememberMe(checked)
+    persistRememberMe(checked, email)
+  }
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value)
+    if (rememberMe) persistRememberMe(true, value)
+  }
+
   const inputClassName =
-    'h-11 rounded-2xl bg-background border-border/60 text-[15px] text-foreground placeholder:text-muted-foreground shadow-sm focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20'
+    'h-11 rounded-md border-slate-200 bg-white text-[15px] text-slate-900 placeholder:text-slate-400 focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/20'
 
   const primaryButtonClass =
-    'w-full flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60 font-semibold py-3 px-4 transition-all shadow-md shadow-primary/25 active:scale-[0.98]'
+    'w-full rounded-md bg-[#4A69E2] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#3d58c4] disabled:opacity-60'
 
   const secondaryButtonClass =
-    'w-full flex items-center justify-center gap-2 rounded-full border border-border bg-card text-foreground hover:bg-muted/50 disabled:opacity-60 font-semibold py-3 px-4 transition-all active:scale-[0.98]'
+    'w-full rounded-md border border-slate-200 bg-white py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-60'
 
-  const labelClass = 'text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5'
+  const labelClass = 'text-sm font-medium text-slate-700'
+
+  const linkClass = 'font-semibold text-[#4A69E2] hover:text-[#3d58c4] hover:underline'
+
+  const renderGoogleSection = () => {
+    if (mode !== 'login' && mode !== 'signup') return null
+
+    if (googleBackendEnabled === null) {
+      return <p className="text-center text-sm text-slate-500">Checking sign-in options…</p>
+    }
+
+    if (authPublicFetchFailed && !googleClientId) {
+      return (
+        <p className="text-center text-sm leading-relaxed text-amber-700">
+          Could not load sign-in options (request to{' '}
+          <span className="font-mono text-xs break-all">{API_BASE_URL}/auth/config</span> failed). Start the API on
+          port <span className="font-mono text-xs">8000</span>, or leave{' '}
+          <span className="font-mono text-xs">VITE_API_URL</span> empty so the app uses the Vite dev proxy. To show
+          Google Sign-In when this check fails, set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span>{' '}
+          and restart Vite.
+        </p>
+      )
+    }
+
+    if (googleButtonAllowed) {
+      return (
+        <div className="space-y-3">
+          {authPublicFetchFailed && bootstrapGoogleClientId ? (
+            <p className="text-center text-xs leading-snug text-amber-700">
+              Server config request failed — using your local Web client ID. Google sign-in still needs the API at{' '}
+              <span className="font-mono">{API_BASE_URL}</span>; start the backend or fix the URL.
+            </p>
+          ) : null}
+          {!authPublicFetchFailed && !googleBackendEnabled && bootstrapGoogleClientId ? (
+            <p className="text-center text-xs leading-snug text-amber-700">
+              The API reports Google login disabled — add{' '}
+              <span className="font-mono">GOOGLE_OAUTH_CLIENT_ID</span> to{' '}
+              <span className="font-mono">backend/.env</span> (same Web client ID as the frontend) and restart the
+              backend, or sign-in will fail.
+            </p>
+          ) : null}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase tracking-wide">
+              <span className="bg-white px-2 text-slate-400">or continue with</span>
+            </div>
+          </div>
+          <div className="flex w-full justify-center" ref={googleButtonHostRef}>
+            <div ref={attachGoogleButtonRef} />
+          </div>
+        </div>
+      )
+    }
+
+    if (googleBackendEnabled && !googleClientId) {
+      return (
+        <p className="text-center text-sm leading-relaxed text-slate-500">
+          Google login is enabled on the server, but no client id was returned. Check{' '}
+          <span className="font-mono text-xs">GOOGLE_OAUTH_CLIENT_ID</span> in{' '}
+          <span className="font-mono text-xs">backend/.env</span> and restart the backend, or set{' '}
+          <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and restart Vite.
+        </p>
+      )
+    }
+
+    return (
+      <p className="text-center text-sm leading-relaxed text-slate-500">
+        Google login is disabled. Set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and{' '}
+        <span className="font-mono text-xs">GOOGLE_OAUTH_CLIENT_ID</span> to enable it.
+      </p>
+    )
+  }
 
   return (
-    <main
-      className="relative min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 p-4 sm:p-8"
-      aria-label="Sign in to CodeQuest"
-    >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(37,99,235,0.12),transparent)]"
-        aria-hidden
-      />
-
-      <div className="relative z-10 w-full max-w-md">
-        <div className="rounded-3xl border border-border/60 bg-card p-6 sm:p-8 space-y-6 shadow-[0_10px_50px_-12px_rgba(15,23,42,0.12)]">
-          <div className="text-center space-y-3">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary text-primary-foreground mx-auto shadow-md shadow-primary/30">
-              <Code2 size={22} strokeWidth={2.5} />
+    <main className="min-h-screen lg:grid lg:grid-cols-2" aria-label="Sign in to CodeQuest">
+      {/* Left: form panel */}
+      <section className="flex min-h-screen items-center justify-center bg-white px-6 py-10 sm:px-12 lg:px-16">
+        <div className="w-full max-w-[420px] space-y-8">
+          {/* Logo */}
+          <div className="flex items-center justify-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md">
+              <Code2 size={20} strokeWidth={2.5} />
             </div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">System Access</p>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">Authenticate</h1>
-            <p className="text-sm text-muted-foreground leading-relaxed">CodeQuest · learning platform</p>
-            <p className="text-[11px] text-muted-foreground max-w-sm mx-auto leading-relaxed">
-              Trouble signing in? Ensure the API is running, <span className="font-mono text-foreground/80">VITE_*</span> / proxy settings match{' '}
-              <span className="font-mono text-foreground/80">docs/LAUNCH.md</span>, and for Google set{' '}
-              <span className="font-mono text-foreground/80">GOOGLE_OAUTH_CLIENT_ID</span> in <span className="font-mono text-foreground/80">backend/.env</span>{' '}
-              (same Web client ID as the frontend).
-            </p>
+            <span className="text-xl font-bold tracking-tight text-slate-900">CodeQuest</span>
           </div>
 
           {mode === 'forgotPassword' ? (
             <div className="space-y-6" onKeyDown={handleKeyDown}>
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold tracking-tight text-foreground">Credential recovery</h2>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Two-phase flow: request a reset with email, then submit token and new password.
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900">Reset password</h1>
+                <p className="mt-1 text-sm text-slate-500">
+                  Enter your email to request a reset, then set a new password with your token.
                 </p>
               </div>
 
-              <div className="space-y-5">
-                <div className="space-y-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">Phase 1 — Identity</p>
-                  <div className="space-y-1.5">
-                    <label className={labelClass}>
-                      <User size={12} /> Email
-                    </label>
-                    <Input
-                      className={inputClassName}
-                      type="email"
-                      autoComplete="username"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      disabled={isLoading}
-                    />
-                  </div>
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <label htmlFor="reset-email" className={labelClass}>
+                    Email
+                  </label>
+                  <Input
+                    id="reset-email"
+                    className={inputClassName}
+                    type="email"
+                    autoComplete="username"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
+                  />
                 </div>
-
-                <div className="h-px bg-border/40" />
-
-                <div className="space-y-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">Phase 2 — New secret</p>
-                  <div className="space-y-3">
-                    <div className="space-y-1.5">
-                      <label className={labelClass}>
-                        <Lock size={12} /> Reset Token
-                      </label>
-                      <Input
-                        className={inputClassName}
-                        value={resetToken}
-                        onChange={(e) => setResetToken(e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className={labelClass}>
-                        <Lock size={12} /> New Password
-                      </label>
-                      <Input
-                        className={inputClassName}
-                        type="password"
-                        autoComplete="new-password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-                  </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="reset-token" className={labelClass}>
+                    Reset token
+                  </label>
+                  <Input
+                    id="reset-token"
+                    className={inputClassName}
+                    value={resetToken}
+                    onChange={(e) => setResetToken(e.target.value)}
+                    disabled={isLoading}
+                    placeholder="Paste token from email"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="new-password" className={labelClass}>
+                    New password
+                  </label>
+                  <Input
+                    id="new-password"
+                    className={inputClassName}
+                    type="password"
+                    autoComplete="new-password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    disabled={isLoading}
+                  />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <button type="button" className={secondaryButtonClass} onClick={handleRequestPasswordReset} disabled={isLoading}>
-                  Request Token
+                  {isLoading ? 'Please wait…' : 'Send reset link'}
                 </button>
                 <button type="button" className={primaryButtonClass} onClick={handleResetPassword} disabled={isLoading}>
-                  {isLoading ? 'Please wait…' : 'Reset Password'}
-                  {!isLoading && <ArrowRight size={15} strokeWidth={2.5} />}
+                  {isLoading ? 'Please wait…' : 'Reset password'}
                 </button>
               </div>
 
-              <p className="text-sm text-center text-muted-foreground">
+              <p className="text-center text-sm text-slate-500">
                 Remembered your password?{' '}
-                <button
-                  type="button"
-                  className="text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
-                  onClick={() => setMode('login')}
-                >
-                  Go to login
+                <button type="button" className={linkClass} onClick={() => setMode('login')}>
+                  Sign in
                 </button>
               </p>
             </div>
           ) : pendingApproval ? (
             <div className="space-y-6 text-center">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/15 text-emerald-400 mx-auto ring-1 ring-emerald-500/30 shadow-[0_0_24px_rgba(52,211,153,0.15)]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
+                </svg>
               </div>
-              <h2 className="text-xl font-bold tracking-tight text-foreground">Registration Submitted</h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Your account has been created and is now{' '}
-                <span className="font-semibold text-amber-600">pending admin approval</span>. You will be able to log in once an admin approves your registration.
-              </p>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900">Registration submitted</h1>
+                <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                  Your account is{' '}
+                  <span className="font-semibold text-amber-600">pending admin approval</span>. You
+                  can sign in once an admin approves your registration.
+                </p>
+              </div>
               <button
                 type="button"
                 className={secondaryButtonClass}
-                onClick={() => { setPendingApproval(false); setMode('login') }}
+                onClick={() => {
+                  setPendingApproval(false)
+                  setMode('login')
+                }}
               >
-                Go to Login
+                Back to sign in
               </button>
             </div>
           ) : (
             <div className="space-y-6" onKeyDown={handleKeyDown}>
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold tracking-tight text-foreground">
-                  {mode === 'login' ? 'Session sign-in' : 'Provision account'}
-                </h2>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {mode === 'login'
-                    ? 'Identify yourself, then confirm your secret — one submit completes authentication.'
-                    : 'Create an account to unlock the full learning platform.'}
-                </p>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900">
+                  {mode === 'login' ? 'Sign in' : 'Create account'}
+                </h1>
                 {mode === 'signup' && (
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    All new registrations require admin approval. After signing up, please wait for an admin to approve your account before logging in.
+                  <p className="mt-1 text-sm text-slate-500">
+                    New accounts require admin approval before you can sign in.
                   </p>
                 )}
               </div>
 
-              <div className="space-y-5">
+              <div className="space-y-4">
                 {mode === 'signup' && (
-                  <div className="space-y-3">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">Step 1 — Profile</p>
-                    <div className="space-y-1.5">
-                      <label className={labelClass}>
-                        <User size={12} /> Full Name
-                      </label>
-                      <Input className={inputClassName} value={fullName} onChange={(e) => setFullName(e.target.value)} disabled={isLoading} />
-                    </div>
+                  <div className="space-y-1.5">
+                    <label htmlFor="full-name" className={labelClass}>
+                      Full name
+                    </label>
+                    <Input
+                      id="full-name"
+                      className={inputClassName}
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      disabled={isLoading}
+                      autoComplete="name"
+                    />
                   </div>
                 )}
 
-                <div className="space-y-3">
-                  {mode === 'signup' && <div className="h-px bg-border/40" />}
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">
-                    {mode === 'signup' ? 'Step 2 — Identity' : 'Step 1 — Identity'}
-                  </p>
-                  <div className="space-y-1.5">
-                    <label className={labelClass}>
-                      <User size={12} /> Email
-                    </label>
-                    <Input
-                      className={inputClassName}
-                      type="email"
-                      autoComplete="username"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      disabled={isLoading}
-                    />
-                  </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="email" className={labelClass}>
+                    Email
+                  </label>
+                  <Input
+                    id="email"
+                    className={inputClassName}
+                    type="email"
+                    autoComplete="username"
+                    value={email}
+                    onChange={(e) => handleEmailChange(e.target.value)}
+                    disabled={isLoading}
+                  />
                 </div>
 
-                <div className="h-px bg-border/40" />
-
-                <div className="space-y-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/80">
-                    {mode === 'signup' ? 'Step 3 — Secret' : 'Step 2 — Secret'}
-                  </p>
-                  <div className="space-y-1.5">
-                    <label className={labelClass}>
-                      <Lock size={12} /> Password
-                    </label>
-                    <Input
-                      className={inputClassName}
-                      type="password"
-                      autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      disabled={isLoading}
-                    />
-                  </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="password" className={labelClass}>
+                    Password
+                  </label>
+                  <Input
+                    id="password"
+                    className={inputClassName}
+                    type="password"
+                    autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading}
+                  />
                 </div>
               </div>
 
@@ -525,75 +610,69 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 onClick={mode === 'login' ? handleLogin : handleSignup}
                 disabled={isLoading}
               >
-                {isLoading ? 'Please wait…' : mode === 'login' ? 'Authenticate' : 'Create Account'}
-                {!isLoading && <ArrowRight size={15} strokeWidth={2.5} />}
+                {isLoading ? 'Please wait…' : mode === 'login' ? 'Sign In' : 'Create Account'}
               </button>
 
               {mode === 'login' && (
-                <div className="text-right -mt-1">
+                <div className="flex items-center justify-between gap-3">
+                  <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+                    <Checkbox
+                      checked={rememberMe}
+                      onCheckedChange={(v) => handleRememberChange(v === true)}
+                      disabled={isLoading}
+                    />
+                    Remember me
+                  </label>
                   <button
                     type="button"
-                    className="text-xs text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
+                    className={cn('text-sm', linkClass)}
                     onClick={() => setMode('forgotPassword')}
                   >
-                    Forgot password?
+                    Forgot Password?
                   </button>
                 </div>
               )}
 
-              {googleBackendEnabled === null ? (
-                <p className="text-sm text-center text-muted-foreground">Checking sign-in options…</p>
-              ) : authPublicFetchFailed && !googleClientId ? (
-                <p className="text-sm text-center text-amber-400/90 leading-relaxed">
-                  Could not load sign-in options (request to <span className="font-mono text-xs break-all">{API_BASE_URL}/auth/config</span> failed). Start the API on port <span className="font-mono text-xs">8000</span>, or remove/empty <span className="font-mono text-xs">VITE_API_URL</span> and <span className="font-mono text-xs">VITE_API_BASE_URL</span> in root <span className="font-mono text-xs">.env</span> so the app uses the Vite dev proxy. To show Google Sign-In even when this check fails, set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and restart Vite.
-                </p>
-              ) : googleButtonAllowed ? (
-                <div className="space-y-3">
-                  {authPublicFetchFailed && bootstrapGoogleClientId ? (
-                    <p className="text-xs text-center text-amber-400/85 leading-snug">
-                      Server config request failed — using your local Web client ID. Google sign-in still needs the API at{' '}
-                      <span className="font-mono">{API_BASE_URL}</span>; start the backend or fix the URL.
-                    </p>
-                  ) : null}
-                  {!authPublicFetchFailed && !googleBackendEnabled && bootstrapGoogleClientId ? (
-                    <p className="text-xs text-center text-amber-400/85 leading-snug">
-                      The API reports Google login disabled — add <span className="font-mono">GOOGLE_OAUTH_CLIENT_ID</span> to{' '}
-                      <span className="font-mono">backend/.env</span> (same Web client ID as here) and restart the backend, or sign-in will fail.
-                    </p>
-                  ) : null}
-                  <p className="text-[10px] font-bold text-center text-muted-foreground uppercase tracking-[0.2em]">Or federate</p>
-                  <div className="w-full flex justify-center" ref={googleButtonHostRef}>
-                    <div ref={googleButtonRef} />
-                  </div>
-                </div>
-              ) : googleBackendEnabled && !googleClientId ? (
-                <p className="text-sm text-center text-muted-foreground leading-relaxed">
-                  Google login is enabled on the server, but the API did not return a client id. Check <span className="font-mono text-xs">GOOGLE_OAUTH_CLIENT_ID</span> in <span className="font-mono text-xs">backend/.env</span> and restart the backend, or set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and restart Vite.
+              {renderGoogleSection()}
+
+              {mode === 'login' ? (
+                <p className="text-center text-sm text-slate-500">
+                  Don&apos;t have an account yet?{' '}
+                  <button type="button" className={linkClass} onClick={() => setMode('signup')}>
+                    Register
+                  </button>
                 </p>
               ) : (
-                <p className="text-sm text-center text-muted-foreground leading-relaxed">
-                  Google login is disabled. Set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and <span className="font-mono text-xs">GOOGLE_OAUTH_CLIENT_ID</span> to enable it.
+                <p className="text-center text-sm text-slate-500">
+                  Already have an account?{' '}
+                  <button type="button" className={linkClass} onClick={() => setMode('login')}>
+                    Sign in
+                  </button>
                 </p>
-              )}
-
-              {mode === 'login' && (
-                <div className="pt-0 text-sm text-center text-muted-foreground">
-                  <p>
-                    Don&apos;t have an account?{' '}
-                    <button
-                      type="button"
-                      className="text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
-                      onClick={() => setMode('signup')}
-                    >
-                      Register
-                    </button>
-                  </p>
-                </div>
               )}
             </div>
           )}
+
+          <p className="text-center text-xs text-slate-400">
+            <a
+              href="https://github.com/gaganpasupuleti/learn-coding-through/blob/main/docs/LAUNCH.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-slate-600 hover:underline"
+            >
+              Need help signing in?
+            </a>
+            {authPublicFetchFailed && !googleClientId && (
+              <span className="mt-1 block text-amber-600">
+                API unavailable at {API_BASE_URL}
+              </span>
+            )}
+          </p>
         </div>
-      </div>
+      </section>
+
+      {/* Right: promo carousel (desktop) */}
+      <AuthPromoPanel />
     </main>
   )
 }
