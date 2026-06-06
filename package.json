@@ -14,6 +14,7 @@
         "lint": "eslint .",
         "qa:smoke": "node scripts/e2e-smoke.mjs",
         "qa:practice-smoke": "node scripts/practice-ground-smoke.mjs",
+        "qa:quiz-smoke": "node scripts/quiz-smoke.mjs",
         "qa:auth-smoke": "python -m pip install -r backend/requirements.txt && python -m unittest backend/tests/test_auth_smoke.py -v",
         "health:check": "node scripts/health-check.mjs",
         "optimize": "vite optimize",

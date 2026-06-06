@@ -15,6 +15,12 @@ from app.models.models import (
     SubmissionStatus,
     User,
 )
+from app.schemas.quiz import (
+    QuizAttemptStartResponse,
+    QuizAttemptSubmitRequest,
+    QuizAttemptSubmitResponse,
+)
+from app.services.quiz_engine import start_catalog_attempt, submit_catalog_attempt
 
 
 router = APIRouter(prefix="/quiz", tags=["Quiz"])
@@ -162,3 +168,38 @@ def submit_quiz(
     db.commit()
 
     return QuizSubmitResponse(score=score, passed=passed)
+
+
+@router.post("/catalog/{slug}/attempts/start", response_model=QuizAttemptStartResponse)
+def start_quiz_attempt(
+    slug: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    try:
+        payload = start_catalog_attempt(db, user_id=current_user.id, quiz_slug=slug)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return QuizAttemptStartResponse(**payload)
+
+
+@router.post("/catalog/attempts/{attempt_id}/submit", response_model=QuizAttemptSubmitResponse)
+def submit_quiz_attempt(
+    attempt_id: str,
+    payload: QuizAttemptSubmitRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    try:
+        answers = [item.model_dump() for item in payload.answers]
+        return submit_catalog_attempt(
+            db,
+            attempt_id=attempt_id,
+            user_id=current_user.id,
+            answers=answers,
+            time_taken_seconds=payload.time_taken_seconds,
+        )
+    except ValueError as exc:
+        message = str(exc)
+        status = 409 if "already submitted" in message else 404
+        raise HTTPException(status_code=status, detail=message) from exc

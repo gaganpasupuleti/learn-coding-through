@@ -5,6 +5,7 @@ import {
   ChatCircle,
   ClockCounterClockwise,
   Kanban,
+  ListChecks,
   ShieldCheck,
   UsersThree,
 } from '@phosphor-icons/react'
@@ -18,6 +19,7 @@ export const adminNavItems: Array<{ key: AdminSection; label: string; icon: Reac
   { key: 'students', label: 'Students', icon: <UsersThree size={16} /> },
   { key: 'classes', label: 'Classes', icon: <CalendarBlank size={16} /> },
   { key: 'jobs', label: 'Jobs', icon: <Briefcase size={16} /> },
+  { key: 'quizzes', label: 'Quizzes', icon: <ListChecks size={16} /> },
   { key: 'activity', label: 'Activity', icon: <ClockCounterClockwise size={16} /> },
   { key: 'feedback', label: 'Feedback', icon: <ChatCircle size={16} /> },
   { key: 'access', label: 'Access Control', icon: <ShieldCheck size={16} /> },

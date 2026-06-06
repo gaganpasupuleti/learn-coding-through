@@ -993,6 +993,10 @@ export type CatalogQuizQuestionType =
   | 'true-false'
   | 'code-completion'
   | 'code-output'
+  | 'fill-blank'
+  | 'sql-query'
+  | 'python-debug'
+  | 'scenario'
 
 interface CatalogBaseQuestion {
   id: number
@@ -1011,8 +1015,16 @@ export interface CatalogChoiceQuestion extends CatalogBaseQuestion {
 }
 
 export interface CatalogCodeCompletionQuestion extends CatalogBaseQuestion {
-  type: 'code-completion'
+  type: 'code-completion' | 'fill-blank' | 'sql-query' | 'python-debug'
   answer: string
+  acceptableAnswers?: string[] | null
+}
+
+export interface CatalogScenarioQuestion extends CatalogBaseQuestion {
+  type: 'scenario'
+  options?: string[] | null
+  correctIndex?: number | null
+  answer?: string | null
   acceptableAnswers?: string[] | null
 }
 
@@ -1025,6 +1037,47 @@ export type CatalogQuizQuestion =
   | CatalogChoiceQuestion
   | CatalogCodeCompletionQuestion
   | CatalogCodeOutputQuestion
+  | CatalogScenarioQuestion
+
+export interface QuizAttemptStart {
+  attempt_id: string
+  quiz_slug: string
+  question_order: number[]
+  option_orders: Record<string, number[]>
+}
+
+export interface QuizAttemptAnswerPayload {
+  question_id: number
+  answer: string | number
+}
+
+export interface QuizWrongAnswer {
+  question_id: number
+  question_type: string
+  title: string
+  prompt: string
+  user_answer: string
+  correct_answer: string
+  explanation: string
+  code_snippet?: string | null
+  language?: string | null
+}
+
+export interface QuizAttemptSubmitResult {
+  attempt_id: string
+  score: number
+  passed: boolean
+  correct_count: number
+  total_questions: number
+  time_taken_seconds: number
+  wrong_answers: QuizWrongAnswer[]
+}
+
+export interface QuizBankImportResult {
+  inserted: number
+  rejected: number
+  errors: { row: number; detail: string }[]
+}
 
 export interface CatalogQuiz {
   id: string
@@ -1127,6 +1180,64 @@ export async function fetchCatalogQuiz(slug: string): Promise<CatalogQuiz> {
     if (!found) throw new Error(`Quiz "${slug}" not found`)
     return found
   }
+}
+
+export async function startCatalogQuizAttempt(slug: string): Promise<QuizAttemptStart | null> {
+  try {
+    const token = localStorage.getItem('career-portal-token')
+    if (!token) return null
+    const response = await fetchWithAuthApiFallback(
+      `/api/v1/quiz/catalog/${encodeURIComponent(slug)}/attempts/start`,
+      token,
+      { method: 'POST' },
+    )
+    if (!response.ok) return null
+    const data = (await response.json()) as QuizAttemptStart
+    return data
+  } catch {
+    return null
+  }
+}
+
+export async function submitCatalogQuizAttempt(
+  attemptId: string,
+  answers: QuizAttemptAnswerPayload[],
+  timeTakenSeconds: number,
+): Promise<QuizAttemptSubmitResult | null> {
+  try {
+    const token = localStorage.getItem('career-portal-token')
+    if (!token) return null
+    const response = await fetchWithAuthApiFallback(
+      `/api/v1/quiz/catalog/attempts/${encodeURIComponent(attemptId)}/submit`,
+      token,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          answers,
+          time_taken_seconds: timeTakenSeconds,
+        }),
+      },
+    )
+    if (!response.ok) return null
+    return (await response.json()) as QuizAttemptSubmitResult
+  } catch {
+    return null
+  }
+}
+
+export async function importAdminQuizBank(token: string, file: File): Promise<QuizBankImportResult> {
+  const response = await fetchWithApiFallbackMultipart('/api/v1/admin/quiz-bank/import', token, () => {
+    const formData = new FormData()
+    formData.append('file', file, file.name || 'quiz-bank.csv')
+    return formData
+  })
+  const data = (await response.json()) as QuizBankImportResult
+  if (!response.ok) {
+    const message = data.errors?.map((e) => `Row ${e.row}: ${e.detail}`).join('; ') || 'Quiz bank import failed'
+    throw new Error(message)
+  }
+  return data
 }
 
 export async function fetchCatalogProjects(): Promise<CatalogProjectSummary[]> {

@@ -523,6 +523,25 @@ class QuizCatalogQuestion(Base):
     quiz = relationship("QuizCatalog", back_populates="questions")
 
 
+class QuizCatalogAttempt(Base):
+    __tablename__ = "quiz_catalog_attempts"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    quiz_id: Mapped[int] = mapped_column(ForeignKey("quiz_catalog.id"), nullable=False, index=True)
+    quiz_slug: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
+    score: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    passed: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    time_taken_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    question_order_json: Mapped[str] = mapped_column(Text, nullable=False)
+    option_orders_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    answers_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    wrong_answers_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(20), default="in_progress", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    submitted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
 class ProjectCatalog(Base):
     __tablename__ = "project_catalog"
 

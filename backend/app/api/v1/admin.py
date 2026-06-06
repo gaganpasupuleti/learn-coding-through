@@ -34,6 +34,8 @@ from app.models.models import (
     UserRole,
 )
 from app.schemas.jobs import JobImportResult, JobImportRowError
+from app.schemas.quiz import QuizBankImportResult, QuizBankRowError
+from app.services.quiz_bank_import import import_quiz_bank_rows, parse_quiz_bank_file
 from app.schemas.schedule import ClassSessionCreate, ClassSessionResponse, ClassSessionUpdate
 from app.schemas.admin import (
     AdminActivityLogResponse,
@@ -1323,3 +1325,44 @@ def delete_session(
         raise HTTPException(status_code=404, detail="Session not found")
     db.delete(session)
     db.commit()
+
+
+@router.post("/quiz-bank/import", response_model=QuizBankImportResult)
+async def import_quiz_bank(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(require_admin),
+):
+    raw = await file.read()
+    filename = (file.filename or "quiz-bank.csv").strip().lower()
+    if not filename.endswith((".csv", ".xlsx", ".xls")):
+        return JSONResponse(
+            status_code=400,
+            content=QuizBankImportResult(
+                inserted=0,
+                rejected=1,
+                errors=[QuizBankRowError(row=0, detail="Upload a .csv or .xlsx quiz bank file")],
+            ).model_dump(mode="json"),
+        )
+
+    try:
+        rows = parse_quiz_bank_file(raw, filename)
+    except ValueError as exc:
+        return JSONResponse(
+            status_code=400,
+            content=QuizBankImportResult(
+                inserted=0,
+                rejected=1,
+                errors=[QuizBankRowError(row=0, detail=str(exc))],
+            ).model_dump(mode="json"),
+        )
+
+    result = import_quiz_bank_rows(db, rows)
+    if result.inserted:
+        _log_admin_action(
+            db,
+            admin_user.id,
+            "quiz_bank_imported",
+            details=f"Quiz bank import: {result.inserted} questions inserted, {result.rejected} rejected",
+        )
+    return result

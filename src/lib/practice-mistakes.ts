@@ -1,4 +1,4 @@
-export type PracticeMistakeLanguage = 'python' | 'sql' | 'java'
+export type PracticeMistakeLanguage = 'python' | 'sql' | 'java' | 'quiz'
 
 export interface PracticeMistake {
   id: string

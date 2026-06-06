@@ -11,9 +11,14 @@ import {
   CatalogQuiz as Quiz,
   CatalogQuizSummary,
   CatalogQuizQuestion as QuizQuestion,
+  QuizAttemptSubmitResult,
   fetchCatalogQuizzes,
   fetchCatalogQuiz,
+  startCatalogQuizAttempt,
+  submitCatalogQuizAttempt,
 } from '@/lib/api'
+import { logQuizWrongAnswersToMistakesReview } from '@/lib/quiz-mistakes-adapter'
+import { applyAttemptShuffle } from '@/lib/quiz-shuffle'
 import { ArrowLeft, ArrowRight, CheckCircle, Clock, ListChecks, Lock, XCircle } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import { isDemoUser } from '@/lib/auth'
@@ -35,18 +40,40 @@ const getQuestionTypeLabel = (type: QuizQuestion['type']) => {
       return 'Code Completion'
     case 'code-output':
       return 'Code Output'
+    case 'fill-blank':
+      return 'Fill in the Blank'
+    case 'sql-query':
+      return 'SQL Query'
+    case 'python-debug':
+      return 'Python Debugging'
+    case 'scenario':
+      return 'Scenario'
   }
 }
+
+const isChoiceQuestion = (question: QuizQuestion): question is QuizQuestion & { options: string[]; correctIndex: number } =>
+  question.type === 'multiple-choice' ||
+  question.type === 'true-false' ||
+  (question.type === 'scenario' && Array.isArray(question.options) && question.options.length > 0)
+
+const isTextAnswerQuestion = (
+  question: QuizQuestion,
+): question is QuizQuestion & { answer: string; acceptableAnswers?: string[] | null } =>
+  question.type === 'code-completion' ||
+  question.type === 'fill-blank' ||
+  question.type === 'sql-query' ||
+  question.type === 'python-debug' ||
+  (question.type === 'scenario' && (!question.options || question.options.length === 0))
 
 const getLetter = (index: number) => String.fromCharCode(65 + index)
 
 const getCorrectAnswerText = (question: QuizQuestion) => {
-  if (question.type === 'multiple-choice' || question.type === 'true-false') {
+  if (isChoiceQuestion(question)) {
     const correctOption = question.options[question.correctIndex]
     return `${getLetter(question.correctIndex)}. ${correctOption}`
   }
 
-  if (question.type === 'code-completion') {
+  if (isTextAnswerQuestion(question)) {
     return question.answer
   }
 
@@ -62,7 +89,7 @@ const getUserAnswerText = (question: QuizQuestion, answer: string | number | und
     return 'No answer provided'
   }
 
-  if (question.type === 'multiple-choice' || question.type === 'true-false') {
+  if (isChoiceQuestion(question)) {
     const selectedIndex = Number(answer)
     const selectedOption = question.options[selectedIndex]
 
@@ -77,14 +104,14 @@ const getUserAnswerText = (question: QuizQuestion, answer: string | number | und
 }
 
 const getWhyWrongText = (question: QuizQuestion, answer: string | number | undefined) => {
-  if (question.type === 'multiple-choice' || question.type === 'true-false') {
+  if (isChoiceQuestion(question)) {
     const userAnswer = getUserAnswerText(question, answer)
     const correctAnswer = getCorrectAnswerText(question)
     return `You selected ${userAnswer}, but the correct choice is ${correctAnswer}. ${question.explanation}`
   }
 
-  if (question.type === 'code-completion') {
-    return `Your line does not exactly match what the code needs. ${question.explanation}`
+  if (isTextAnswerQuestion(question)) {
+    return `Your answer does not match the expected response. ${question.explanation}`
   }
 
   if (question.type === 'code-output') {
@@ -98,7 +125,7 @@ const getWhyWrongText = (question: QuizQuestion, answer: string | number | undef
 const QUIZ_CHALLENGE_SECONDS = 15 * 60
 
 const getWhyRightText = (question: QuizQuestion) => {
-  if (question.type === 'multiple-choice' || question.type === 'true-false') {
+  if (isChoiceQuestion(question)) {
     return `${getCorrectAnswerText(question)} is correct because ${question.explanation.charAt(0).toLowerCase()}${question.explanation.slice(1)}`
   }
 
@@ -130,6 +157,9 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
   const [submittedAnswers, setSubmittedAnswers] = useState<Record<number, boolean>>({})
   /** Elapsed seconds for the active quiz; starts when the quiz payload is ready (not when the list is shown). Resets per quiz id. */
   const [elapsedSec, setElapsedSec] = useState(0)
+  const [attemptId, setAttemptId] = useState<string | null>(null)
+  const [quizResult, setQuizResult] = useState<QuizAttemptSubmitResult | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const demoMode = isDemoUser()
 
   useEffect(() => {
@@ -166,8 +196,17 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
   useEffect(() => {
     if (!selectedQuizId) return
     setQuizLoading(true)
-    fetchCatalogQuiz(selectedQuizId)
-      .then(setSelectedQuiz)
+    setQuizResult(null)
+    setAttemptId(null)
+    Promise.all([fetchCatalogQuiz(selectedQuizId), startCatalogQuizAttempt(selectedQuizId)])
+      .then(([quiz, attempt]) => {
+        if (attempt) {
+          setAttemptId(attempt.attempt_id)
+          setSelectedQuiz(applyAttemptShuffle(quiz, attempt))
+          return
+        }
+        setSelectedQuiz(quiz)
+      })
       .catch(() => setSelectedQuiz(null))
       .finally(() => setQuizLoading(false))
   }, [selectedQuizId])
@@ -177,6 +216,9 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
     setDraftAnswers({})
     setSubmittedAnswers({})
     setSelectedQuiz(null)
+    setAttemptId(null)
+    setQuizResult(null)
+    setIsSubmitting(false)
   }
 
   const handleSelectQuiz = (quizId: string) => {
@@ -202,11 +244,11 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
   }
 
   const evaluateAnswer = (question: QuizQuestion, answer: string | number) => {
-    if (question.type === 'multiple-choice' || question.type === 'true-false') {
+    if (isChoiceQuestion(question)) {
       return Number(answer) === question.correctIndex
     }
 
-    if (question.type === 'code-completion') {
+    if (isTextAnswerQuestion(question)) {
       const normalized = normalizeText(String(answer))
       const acceptableAnswers = question.acceptableAnswers ?? [question.answer]
       return acceptableAnswers.some((option) => normalizeText(option) === normalized)
@@ -217,6 +259,39 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
     }
 
     return false
+  }
+
+  const handleFinishQuiz = async (quiz: Quiz) => {
+    const answers = quiz.questions
+      .filter((item) => draftAnswers[item.id] !== undefined)
+      .map((item) => ({
+        question_id: item.id,
+        answer: draftAnswers[item.id],
+      }))
+    const answeredCorrect = Object.values(submittedAnswers).filter(Boolean).length
+    const localPassed = answeredCorrect >= Math.ceil(quiz.questions.length * 0.6)
+
+    if (!attemptId) {
+      onComplete?.(localPassed)
+      handleBackToList()
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      const result = await submitCatalogQuizAttempt(attemptId, answers, elapsedSec)
+      if (!result) {
+        toast.error('Could not save quiz attempt. Showing local score only.')
+        onComplete?.(localPassed)
+        handleBackToList()
+        return
+      }
+      setQuizResult(result)
+      logQuizWrongAnswersToMistakesReview(result.wrong_answers, quiz.title)
+      onComplete?.(result.passed)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleSubmitAnswer = (question: QuizQuestion) => {
@@ -346,6 +421,60 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
     )
   }
 
+  if (quizResult) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+        <div className="container mx-auto px-6 py-12 max-w-3xl space-y-6">
+          <Card className="border-2 p-8 space-y-6">
+            <div className="text-center space-y-2">
+              <h1 className="text-3xl font-bold">Quiz Result</h1>
+              <p className="text-muted-foreground">{selectedQuiz.title}</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="rounded-lg border p-4 text-center">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">Score</p>
+                <p className="text-3xl font-bold">{quizResult.score}%</p>
+              </div>
+              <div className="rounded-lg border p-4 text-center">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">Correct</p>
+                <p className="text-3xl font-bold">
+                  {quizResult.correct_count}/{quizResult.total_questions}
+                </p>
+              </div>
+              <div className="rounded-lg border p-4 text-center">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">Time</p>
+                <p className="text-3xl font-bold">{quizResult.time_taken_seconds}s</p>
+              </div>
+            </div>
+            <div className="text-center">
+              <Badge className={quizResult.passed ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}>
+                {quizResult.passed ? 'Passed' : 'Keep practicing'}
+              </Badge>
+            </div>
+            {quizResult.wrong_answers.length > 0 ? (
+              <div className="space-y-3">
+                <h2 className="text-lg font-semibold">Wrong answers saved to Mistakes Review</h2>
+                <ul className="space-y-2">
+                  {quizResult.wrong_answers.map((item) => (
+                    <li key={item.question_id} className="rounded-md border border-rose-200 bg-rose-50/70 p-3 text-sm">
+                      <p className="font-medium text-rose-900">{item.title}</p>
+                      <p className="mt-1 text-rose-800">
+                        Your answer: {item.user_answer} · Correct: {item.correct_answer}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            <Button className="w-full" onClick={handleBackToList}>
+              Back to Quiz Zone
+            </Button>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   const question = selectedQuiz.questions[currentQuestionIndex]
   const isSubmitted = submittedAnswers[question.id] !== undefined
   const isCorrect = submittedAnswers[question.id] === true
@@ -463,7 +592,7 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
 
             {/* Answer controls + feedback */}
             <div className="p-6 md:p-8 space-y-5 md:pl-8">
-              {question.type === 'multiple-choice' || question.type === 'true-false' ? (
+              {isChoiceQuestion(question) ? (
                 <div className="grid gap-3">
                   {question.options.map((option, index) => {
                     const isSelected = draftAnswer === index
@@ -493,7 +622,7 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
                 </div>
               ) : null}
 
-              {question.type === 'code-completion' ? (
+              {isTextAnswerQuestion(question) ? (
                 <div className="space-y-2">
                   <Input
                     value={typeof draftAnswer === 'string' ? draftAnswer : ''}
@@ -503,7 +632,15 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
                         [question.id]: event.target.value,
                       }))
                     }
-                    placeholder="Type the missing line"
+                    placeholder={
+                      question.type === 'sql-query'
+                        ? 'Type your SQL query'
+                        : question.type === 'python-debug'
+                          ? 'Type the corrected Python line'
+                          : question.type === 'fill-blank'
+                            ? 'Fill in the blank'
+                            : 'Type the missing line'
+                    }
                     disabled={isSubmitted}
                   />
                   <p className="text-sm text-muted-foreground">Keep the answer short and exact.</p>
@@ -553,7 +690,7 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
                       <div className="grid gap-3 sm:grid-cols-2">
                         <div className="rounded-md border border-rose-300 bg-rose-500/10 p-3">
                           <div className="text-xs font-semibold text-rose-700">Your answer</div>
-                          {question.type === 'code-output' || question.type === 'code-completion' ? (
+                          {question.type === 'code-output' || isTextAnswerQuestion(question) ? (
                             <pre className="mt-2 whitespace-pre-wrap text-sm text-rose-900">
                               {getUserAnswerText(question, draftAnswer)}
                             </pre>
@@ -566,7 +703,7 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
 
                         <div className="rounded-md border border-emerald-300 bg-emerald-500/10 p-3">
                           <div className="text-xs font-semibold text-emerald-700">Correct answer</div>
-                          {question.type === 'code-output' || question.type === 'code-completion' ? (
+                          {question.type === 'code-output' || isTextAnswerQuestion(question) ? (
                             <pre className="mt-2 whitespace-pre-wrap text-sm text-emerald-900">
                               {getCorrectAnswerText(question)}
                             </pre>
@@ -624,14 +761,11 @@ export function QuizPage({ lockedQuizIds = [], onBeforeSelect, initialQuizId, on
                     </Button>
                   ) : (
                     <Button
-                      onClick={() => {
-                        const passed = correctCount >= Math.ceil(selectedQuiz.questions.length * 0.6)
-                        onComplete?.(passed)
-                        handleBackToList()
-                      }}
+                      onClick={() => void handleFinishQuiz(selectedQuiz)}
+                      disabled={isSubmitting}
                       className="bg-primary hover:bg-primary/90 flex-1 sm:flex-initial"
                     >
-                      Finish Quiz
+                      {isSubmitting ? 'Submitting…' : 'Finish Quiz'}
                       <ArrowRight className="ml-2" size={16} />
                     </Button>
                   )}
