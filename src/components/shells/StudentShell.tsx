@@ -20,8 +20,8 @@ import {
   LayoutGrid,
   LogOut,
   User,
-  Keyboard,
   ChevronDown,
+  Terminal,
   BookOpen,
   MessageSquare,
 } from 'lucide-react'
@@ -34,6 +34,7 @@ type StudentPage =
   | 'hub'
   | 'jobs'
   | 'projects'
+  | 'practice-ground'
   | 'practice'
   | 'typing'
   | 'quiz'
@@ -61,13 +62,16 @@ const PRIMARY_NAV: NavItem[] = [
 
 const LEARNING_NAV: NavItem[] = [
   { page: 'projects', label: 'Projects', icon: <Boxes size={14} aria-hidden /> },
-  { page: 'practice', label: 'Practice', icon: <Code2 size={14} aria-hidden /> },
+  { page: 'practice-ground', label: 'Code Practice Ground', icon: <Terminal size={14} aria-hidden /> },
   { page: 'quiz', label: 'Quiz', icon: <ClipboardList size={14} aria-hidden /> },
-  { page: 'typing', label: 'Typing', icon: <Keyboard size={14} aria-hidden /> },
   { page: 'flow-roadmap', label: 'Flow Path', icon: <GitBranch size={14} aria-hidden /> },
 ]
 
-const LEARNING_PAGES = new Set<StudentPage>(LEARNING_NAV.map((item) => item.page))
+const LEARNING_PAGES = new Set<StudentPage>([
+  ...LEARNING_NAV.map((item) => item.page),
+  'practice',
+  'typing',
+])
 
 function navLinkClass(active: boolean, compact = false) {
   return `flex items-center gap-1 ${compact ? 'gap-1.5 px-2.5 py-1.5 text-sm' : 'px-2.5 py-1.5 text-[13px]'} font-medium rounded-lg whitespace-nowrap transition-all duration-150 ${
@@ -111,7 +115,9 @@ function LearningNavDropdown({
   onNavigate: (page: StudentPage) => void
   compact?: boolean
 }) {
-  const learningActive = LEARNING_PAGES.has(currentPage)
+  const practiceGroundActive =
+    currentPage === 'practice-ground' || currentPage === 'practice' || currentPage === 'typing'
+  const learningActive = LEARNING_PAGES.has(currentPage) || practiceGroundActive
 
   return (
     <DropdownMenu>
@@ -127,16 +133,22 @@ function LearningNavDropdown({
       <DropdownMenuContent align="start" className="w-48">
         <DropdownMenuLabel className="text-xs text-slate-500">Learning</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {LEARNING_NAV.map(({ page, label, icon }) => (
-          <DropdownMenuItem
-            key={page}
-            onClick={() => onNavigate(page)}
-            className={`cursor-pointer gap-2 ${currentPage === page ? 'bg-slate-100 font-medium text-slate-900' : ''}`}
-          >
-            {icon}
-            {label}
-          </DropdownMenuItem>
-        ))}
+        {LEARNING_NAV.map(({ page, label, icon }) => {
+          const active =
+            page === 'practice-ground'
+              ? practiceGroundActive
+              : currentPage === page
+          return (
+            <DropdownMenuItem
+              key={page}
+              onClick={() => onNavigate(page)}
+              className={`cursor-pointer gap-2 ${active ? 'bg-slate-100 font-medium text-slate-900' : ''}`}
+            >
+              {icon}
+              {label}
+            </DropdownMenuItem>
+          )
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -7,9 +7,19 @@ import { Play, Eraser, ChevronDown, Download } from 'lucide-react'
 import { sandbox } from '@/lib/sandboxInstance'
 import { getAllTestsForLanguage } from '@/lib/test-cases'
 import { fetchSqlPracticeSchema, SqlSchemaTable } from '@/lib/api'
+import { logPracticeMistake } from '@/lib/practice-mistakes'
 import { toast } from 'sonner'
 
-type Language = 'python' | 'sql' | 'java'
+export type PracticeLanguage = 'python' | 'sql' | 'java'
+type Language = PracticeLanguage
+
+interface PracticePageProps {
+  embedded?: boolean
+  initialLanguage?: Language
+  retryCode?: string | null
+  onRetryConsumed?: () => void
+  onMistakeLogged?: () => void
+}
 type Difficulty = 'easy' | 'medium' | 'hard'
 
 interface PracticeTopic {
@@ -178,8 +188,14 @@ public class Practice {
 }`
 }
 
-export function PracticePage() {
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>('python')
+export function PracticePage({
+  embedded = false,
+  initialLanguage = 'python',
+  retryCode = null,
+  onRetryConsumed,
+  onMistakeLogged,
+}: PracticePageProps = {}) {
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(initialLanguage)
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('easy')
   const [pythonCode, setPythonCode] = useKV('practice-python-code', defaultCode.python)
   const [sqlCode, setSqlCode] = useKV('practice-sql-code', defaultCode.sql)
@@ -191,6 +207,11 @@ export function PracticePage() {
   const [isSchemaLoading, setIsSchemaLoading] = useState(false)
   const [schemaError, setSchemaError] = useState<string | null>(null)
   const outputRef = useRef<HTMLDivElement | null>(null)
+  const schemaLoadState = useRef<'idle' | 'loading' | 'done' | 'error'>('idle')
+
+  useEffect(() => {
+    setSelectedLanguage(initialLanguage)
+  }, [initialLanguage])
 
   const availableExercises = getAllTestsForLanguage(selectedLanguage)
   const allowedExerciseNames = DIFFICULTY_MAP[selectedLanguage][selectedDifficulty]
@@ -219,26 +240,30 @@ export function PracticePage() {
   }, [output])
 
   useEffect(() => {
-    if (selectedLanguage !== 'sql' || sqlSchemaTables.length > 0 || isSchemaLoading) {
+    if (selectedLanguage !== 'sql') return
+    if (sqlSchemaTables.length > 0 || schemaLoadState.current === 'loading' || schemaLoadState.current === 'done' || schemaLoadState.current === 'error') {
       return
     }
 
     const loadSchema = async () => {
+      schemaLoadState.current = 'loading'
       try {
         setIsSchemaLoading(true)
         setSchemaError(null)
         const response = await fetchSqlPracticeSchema()
         setSqlSchemaTables(response.tables)
+        schemaLoadState.current = 'done'
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to load SQL schema'
         setSchemaError(message)
+        schemaLoadState.current = 'error'
       } finally {
         setIsSchemaLoading(false)
       }
     }
 
-    loadSchema()
-  }, [selectedLanguage, sqlSchemaTables.length, isSchemaLoading])
+    void loadSchema()
+  }, [selectedLanguage, sqlSchemaTables.length])
 
   const getCurrentCode = (): string => {
     switch (selectedLanguage) {
@@ -255,6 +280,28 @@ export function PracticePage() {
       case 'java': setJavaCode(code); break
     }
   }
+
+  useEffect(() => {
+    if (!retryCode?.trim()) return
+    setCurrentCode(retryCode)
+    setOutput('')
+    setExecutionTime(null)
+    onRetryConsumed?.()
+    toast.message('Loaded code from Mistakes Review.')
+  }, [retryCode, onRetryConsumed, selectedLanguage])
+
+  useEffect(() => {
+    if (!embedded) return
+    const stored = sessionStorage.getItem(`practice-retry-code-${initialLanguage}`)
+    if (!stored?.trim()) return
+    switch (initialLanguage) {
+      case 'python': setPythonCode(stored); break
+      case 'sql': setSqlCode(stored); break
+      case 'java': setJavaCode(stored); break
+    }
+    sessionStorage.removeItem(`practice-retry-code-${initialLanguage}`)
+    toast.message('Loaded code from Mistakes Review.')
+  }, [embedded, initialLanguage, setPythonCode, setSqlCode, setJavaCode])
 
   const handleRunCode = async () => {
     const code = getCurrentCode()
@@ -280,16 +327,19 @@ export function PracticePage() {
           result.error.toLowerCase().includes('cannot find the file specified'))
       
       if (result.error) {
+        const errorText = javaRuntimeMissing
+          ? 'Java runtime not available on server.\nPlease install JDK (17+) and add both `java` and `javac` to PATH, then restart backend.'
+          : result.error
+
         if (javaRuntimeMissing) {
-          setOutput(
-            'Java runtime not available on server.\n' +
-            'Please install JDK (17+) and add both `java` and `javac` to PATH, then restart backend.'
-          )
+          setOutput(errorText)
           toast.error('Java needs JDK setup on backend host.')
         } else {
           setOutput(`Error:\n${result.error}`)
           toast.error('Execution failed. Check the output for details.')
         }
+        logPracticeMistake(selectedLanguage, errorText, code)
+        onMistakeLogged?.()
         setExecutionTime(result.executionTime)
       } else {
         setOutput(result.output || 'Code executed successfully with no output.')
@@ -297,7 +347,10 @@ export function PracticePage() {
         toast.success('Code executed successfully!')
       }
     } catch (error) {
-      setOutput(`Unexpected error:\n${error}`)
+      const message = error instanceof Error ? error.message : String(error)
+      setOutput(`Unexpected error:\n${message}`)
+      logPracticeMistake(selectedLanguage, message, code)
+      onMistakeLogged?.()
       setExecutionTime(null)
       toast.error('An unexpected error occurred.')
     } finally {
@@ -340,19 +393,24 @@ export function PracticePage() {
   const sqlTableResult = selectedLanguage === 'sql' ? parseSqlTableOutput(output) : null
   const hasSqlRows = !!sqlTableResult && sqlTableResult.headers.length > 0 && sqlTableResult.rows.length > 0
 
+  const shellClass = embedded ? 'space-y-6' : 'min-h-screen bg-white'
+  const innerClass = embedded ? 'space-y-6' : 'max-w-7xl mx-auto px-6 py-10 space-y-6'
+
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-6 py-10">
+    <div className={shellClass}>
+      <div className={innerClass}>
         <div className="space-y-6">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Practice Playground</h1>
-            <p className="text-slate-500">
-              Pick a language, load a quick exercise, and practice with instant output.
-            </p>
-            <p className="text-sm text-slate-400">
-              Running code requires the CodeQuest API (local or deployed). SQL practice loads schema from the backend when you select SQL.
-            </p>
-          </div>
+          {!embedded ? (
+            <div className="space-y-1">
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900">Practice Playground</h1>
+              <p className="text-slate-500">
+                Pick a language, load a quick exercise, and practice with instant output.
+              </p>
+              <p className="text-sm text-slate-400">
+                Running code requires the CodeQuest API (local or deployed). SQL practice loads schema from the backend when you select SQL.
+              </p>
+            </div>
+          ) : null}
 
           <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -412,6 +470,7 @@ export function PracticePage() {
           <Tabs
             value={selectedLanguage}
             onValueChange={(value) => {
+              if (embedded) return
               const nextLanguage = value as Language
               setSelectedLanguage(nextLanguage)
               setOutput('')
@@ -419,17 +478,19 @@ export function PracticePage() {
             }}
             className="space-y-6"
           >
-            <TabsList className="grid w-full max-w-xs grid-cols-3 h-9 bg-slate-100 rounded-lg p-1">
-              <TabsTrigger value="python" className="text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500">
-                {languageLabels.python}
-              </TabsTrigger>
-              <TabsTrigger value="sql" className="text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500">
-                {languageLabels.sql}
-              </TabsTrigger>
-              <TabsTrigger value="java" className="text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500">
-                {languageLabels.java}
-              </TabsTrigger>
-            </TabsList>
+            {!embedded ? (
+              <TabsList className="grid w-full max-w-xs grid-cols-3 h-9 bg-slate-100 rounded-lg p-1">
+                <TabsTrigger value="python" className="text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500">
+                  {languageLabels.python}
+                </TabsTrigger>
+                <TabsTrigger value="sql" className="text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500">
+                  {languageLabels.sql}
+                </TabsTrigger>
+                <TabsTrigger value="java" className="text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500">
+                  {languageLabels.java}
+                </TabsTrigger>
+              </TabsList>
+            ) : null}
 
             {/* ---------- Python tab ---------- */}
             <TabsContent value="python" className="space-y-4 mt-0">

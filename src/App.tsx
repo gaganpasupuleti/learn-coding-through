@@ -3,8 +3,11 @@ import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
 import { LandingPage } from '@/components/pages/LandingPage'
 import { ProjectsPage } from '@/components/pages/ProjectsPage'
 import { ProjectLearningPage } from '@/components/pages/ProjectLearningPage'
-import { PracticePage } from '@/components/pages/PracticePage'
-import { TypingTrainerPage } from '@/components/pages/TypingTrainerPage'
+import { CodePracticeGroundPage } from '@/components/pages/CodePracticeGroundPage'
+import {
+  sectionFromLegacyPage,
+  type PracticeGroundSection,
+} from '@/components/practice-ground/practice-ground-types'
 import { QuizPage } from '@/components/pages/QuizPage'
 import { CareerMapperPage } from '@/components/career-mapper'
 import { AdminPage } from '@/components/pages/AdminPage'
@@ -44,6 +47,7 @@ export type StudentPage =
   | 'dashboard'
   | 'projects'
   | 'learning'
+  | 'practice-ground'
   | 'practice'
   | 'typing'
   | 'quiz'
@@ -78,6 +82,8 @@ function PracticeRouteErrorFallback({ resetErrorBoundary }: FallbackProps) {
 function App() {
   const [authState, setAuthState] = useState<AuthState>(() => getStoredUser())
   const [studentPage, setStudentPage] = useState<StudentPage>('dashboard')
+  const [practiceGroundSection, setPracticeGroundSection] = useState<PracticeGroundSection>('python')
+  const [practiceRetryCode, setPracticeRetryCode] = useState<string | null>(null)
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
   const routeStartRef = useRef<{ route: string; startedAt: number } | null>(null)
 
@@ -99,6 +105,12 @@ function App() {
   }
 
   const handleStudentNavigate = (page: StudentPage) => {
+    if (page === 'practice' || page === 'typing') {
+      setPracticeGroundSection(sectionFromLegacyPage(page))
+      setStudentPage('practice-ground')
+      setSelectedProjectId(null)
+      return
+    }
     setStudentPage(page)
     setSelectedProjectId(null)
   }
@@ -172,7 +184,9 @@ function App() {
 
   const user = authState as AuthUser
   const assessmentGuardEnabled = false
-  const isAssessmentPage = studentPage === 'quiz' || studentPage === 'typing'
+  const isAssessmentPage =
+    studentPage === 'quiz' ||
+    (studentPage === 'practice-ground' && practiceGroundSection === 'typing')
 
   if (user.role === 'admin') {
     return (
@@ -224,13 +238,16 @@ function App() {
           <ProjectsPage onSelectProject={handleSelectProject} />
         )}
 
-        {studentPage === 'practice' && (
+        {studentPage === 'practice-ground' && (
           <ErrorBoundary FallbackComponent={PracticeRouteErrorFallback}>
-            <PracticePage />
+            <CodePracticeGroundPage
+              section={practiceGroundSection}
+              onSectionChange={setPracticeGroundSection}
+              retryCode={practiceRetryCode}
+              onRetryConsumed={() => setPracticeRetryCode(null)}
+            />
           </ErrorBoundary>
         )}
-
-        {studentPage === 'typing' && <TypingTrainerPage />}
 
         {studentPage === 'quiz' && <QuizPage onBeforeSelect={handleBeforeSelectQuiz} />}
 

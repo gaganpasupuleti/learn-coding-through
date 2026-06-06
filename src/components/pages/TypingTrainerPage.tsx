@@ -158,7 +158,11 @@ function HighlightedPrompt({ source, typed }: { source: string; typed: string })
   )
 }
 
-export function TypingTrainerPage() {
+interface TypingTrainerPageProps {
+  embedded?: boolean
+}
+
+export function TypingTrainerPage({ embedded = false }: TypingTrainerPageProps = {}) {
   const isMobile = useIsMobile()
   const [mode, setMode] = useState<TypingMode>('sentence')
   const [codeLanguage, setCodeLanguage] = useState<CodeLanguage>('python')
@@ -307,14 +311,19 @@ export function TypingTrainerPage() {
       }))
   }, [history])
 
+  const shellClass = embedded ? 'space-y-6' : 'min-h-screen bg-white'
+  const innerClass = embedded ? 'space-y-6' : 'max-w-7xl mx-auto px-6 py-10 space-y-6'
+
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-6 py-10 space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Typing Trainer</h1>
-        <p className="text-slate-500">Practice sentence and code typing with live speed metrics and history.</p>
-        <p className="text-sm text-slate-400">Saving attempts to your profile requires a signed-in session and the CodeQuest API.</p>
-      </div>
+    <div className={shellClass}>
+      <div className={innerClass}>
+      {!embedded ? (
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Typing Trainer</h1>
+          <p className="text-slate-500">Practice sentence and code typing with live speed metrics and history.</p>
+          <p className="text-sm text-slate-400">Saving attempts to your profile requires a signed-in session and the CodeQuest API.</p>
+        </div>
+      ) : null}
 
       <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
         <div className="grid gap-4 lg:grid-cols-4">

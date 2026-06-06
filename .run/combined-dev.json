@@ -1,21 +1,21 @@
 ﻿{
-    "startedAt":  "2026-05-02T00:15:51.8143869+05:30",
+    "startedAt":  "2026-06-05T23:25:18.5288239+05:30",
     "processes":  [
                       {
                           "name":  "main-backend",
-                          "pid":  32268,
-                          "cwd":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\backend",
+                          "pid":  20332,
+                          "cwd":  "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\learn-coding-through\\backend",
                           "command":  "python -m uvicorn app.main:app --host 127.0.0.1 --port 8000",
-                          "stdout":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\main-backend.out.log",
-                          "stderr":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\main-backend.err.log"
+                          "stdout":  "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\learn-coding-through\\.run\\logs\\main-backend.out.log",
+                          "stderr":  "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\learn-coding-through\\.run\\logs\\main-backend.err.log"
                       },
                       {
                           "name":  "main-frontend",
-                          "pid":  19488,
-                          "cwd":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through",
+                          "pid":  4172,
+                          "cwd":  "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\learn-coding-through",
                           "command":  "npm run dev",
-                          "stdout":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\main-frontend.out.log",
-                          "stderr":  "C:\\Users\\Admin\\OneDrive\\Documents\\learn-coding-through\\.run\\logs\\main-frontend.err.log"
+                          "stdout":  "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\learn-coding-through\\.run\\logs\\main-frontend.out.log",
+                          "stderr":  "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\learn-coding-through\\.run\\logs\\main-frontend.err.log"
                       }
                   ]
 }
