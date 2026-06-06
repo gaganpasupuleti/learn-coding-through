@@ -225,6 +225,8 @@ export interface ExecuteResponse {
   output: string
   error?: string
   execution_time: number
+  error_code?: string
+  timed_out?: boolean
 }
 
 export interface SqlSchemaTable {
@@ -453,6 +455,7 @@ export async function executeCode(
   code: string,
   language: string,
   signal?: AbortSignal,
+  timeoutSeconds = 5,
 ): Promise<ExecuteResponse> {
   if (!DemoLimits.canExecuteCode()) {
     DemoLimits.triggerLimitReachedError();
@@ -478,6 +481,7 @@ export async function executeCode(
       body: JSON.stringify({
         code,
         language,
+        timeout_seconds: timeoutSeconds,
       }),
       signal,
     })

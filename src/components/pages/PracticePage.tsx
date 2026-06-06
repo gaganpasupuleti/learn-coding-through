@@ -32,6 +32,53 @@ interface ParsedSqlTable {
   notes: string[]
 }
 
+interface SandboxRunResult {
+  output: string
+  executionTime: number
+  error?: string
+  error_code?: string
+  timed_out?: boolean
+}
+
+function isJavaRuntimeUnavailable(result: SandboxRunResult): boolean {
+  if (result.error_code === 'runtime_unavailable') return true
+  if (!result.error) return false
+  const message = result.error.toLowerCase()
+  return (
+    result.error.includes('WinError 2') ||
+    message.includes('java compiler not found') ||
+    message.includes('java runtime not found') ||
+    message.includes('cannot find the file specified')
+  )
+}
+
+function formatJavaPracticeError(result: SandboxRunResult): string {
+  const raw = result.error ?? 'Java execution failed'
+  if (isJavaRuntimeUnavailable(result)) {
+    return 'Java runtime not available on server.\nPlease install JDK (17+) and add both `java` and `javac` to PATH, then restart backend.'
+  }
+  if (result.error_code === 'validation_error' || raw === 'Code cannot be empty') return raw
+  if (result.error_code === 'compile_error' || raw.startsWith('Compilation error:')) return raw
+  if (result.timed_out || result.error_code === 'timeout' || /timeout|timed out/i.test(raw)) {
+    return raw.startsWith('Execution timeout:') || raw.startsWith('Compilation timeout:')
+      ? raw
+      : `Execution timeout: ${raw}`
+  }
+  if (
+    result.error_code === 'runtime_error' ||
+    raw.startsWith('Runtime error:') ||
+    raw.includes('Exception in thread')
+  ) {
+    return raw.startsWith('Runtime error:') ? raw : `Runtime error:\n${raw}`
+  }
+  return raw
+}
+
+function formatPracticeError(language: Language, result: SandboxRunResult): string {
+  if (language === 'java') return formatJavaPracticeError(result)
+  return result.error ?? 'Execution failed'
+}
+
 const parseSqlTableOutput = (rawOutput: string): ParsedSqlTable | null => {
   const lines = rawOutput
     .split('\n')
@@ -328,26 +375,18 @@ export function PracticePage({
     try {
       const result = await sandbox.execute(code, selectedLanguage)
 
-      const javaRuntimeMissing =
-        selectedLanguage === 'java' &&
-        !!result.error &&
-        (result.error.includes('WinError 2') ||
-          result.error.toLowerCase().includes('javac') ||
-          result.error.toLowerCase().includes('java runtime not found') ||
-          result.error.toLowerCase().includes('cannot find the file specified'))
-      
       if (result.error) {
-        const errorText = javaRuntimeMissing
-          ? 'Java runtime not available on server.\nPlease install JDK (17+) and add both `java` and `javac` to PATH, then restart backend.'
-          : result.error
+        const errorText = formatPracticeError(selectedLanguage, result)
+        const runtimeUnavailable = selectedLanguage === 'java' && isJavaRuntimeUnavailable(result)
 
-        if (javaRuntimeMissing) {
-          setOutput(errorText)
-          toast.error('Java needs JDK setup on backend host.')
-        } else {
-          setOutput(`Error:\n${result.error}`)
-          toast.error('Execution failed. Check the output for details.')
-        }
+        setOutput(`Error:\n${errorText}`)
+        toast.error(
+          runtimeUnavailable
+            ? 'Java needs JDK setup on backend host.'
+            : result.timed_out || result.error_code === 'timeout'
+              ? 'Execution timed out.'
+              : 'Execution failed. Check the output for details.',
+        )
         logPracticeMistake(selectedLanguage, errorText, code)
         onMistakeLogged?.()
         setExecutionTime(result.executionTime)
@@ -358,8 +397,14 @@ export function PracticePage({
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
-      setOutput(`Unexpected error:\n${message}`)
-      logPracticeMistake(selectedLanguage, message, code)
+      const displayMessage =
+        selectedLanguage === 'java' && /timeout|timed out/i.test(message)
+          ? message.startsWith('Execution timeout:')
+            ? message
+            : `Execution timeout: ${message}`
+          : message
+      setOutput(`Error:\n${displayMessage}`)
+      logPracticeMistake(selectedLanguage, displayMessage, code)
       onMistakeLogged?.()
       setExecutionTime(null)
       toast.error('An unexpected error occurred.')

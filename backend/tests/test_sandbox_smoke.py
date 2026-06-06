@@ -55,6 +55,42 @@ class SandboxSmokeTests(unittest.TestCase):
         result = execute_java(code, timeout=5)
         self.assertIn("success", result)
         self.assertEqual(result.get("language"), "java")
+        self.assertTrue(result["success"])
+
+    @unittest.skipUnless(shutil.which("javac") and shutil.which("java"), "java runtime not available")
+    def test_java_compile_error_is_structured(self) -> None:
+        result = execute_java(
+            "public class Main { public static void main(String[] args) { int x = } }",
+            timeout=3,
+        )
+        self.assertFalse(result["success"])
+        self.assertEqual(result.get("error_code"), "compile_error")
+        self.assertIn("Compilation error:", result.get("error", ""))
+
+    @unittest.skipUnless(shutil.which("javac") and shutil.which("java"), "java runtime not available")
+    def test_java_runtime_error_is_structured(self) -> None:
+        result = execute_java(
+            'public class Main { public static void main(String[] args) { throw new RuntimeException("boom"); } }',
+            timeout=3,
+        )
+        self.assertFalse(result["success"])
+        self.assertEqual(result.get("error_code"), "runtime_error")
+        self.assertIn("Runtime error:", result.get("error", ""))
+
+    def test_java_empty_code_is_safe(self) -> None:
+        result = execute_java("", timeout=3)
+        self.assertFalse(result["success"])
+        self.assertEqual(result.get("error_code"), "validation_error")
+
+    @unittest.skipUnless(shutil.which("javac") and shutil.which("java"), "java runtime not available")
+    def test_java_infinite_loop_times_out(self) -> None:
+        result = execute_java(
+            "public class Main { public static void main(String[] args) { while (true) {} } }",
+            timeout=2,
+        )
+        self.assertFalse(result["success"])
+        self.assertTrue(result.get("timed_out"))
+        self.assertEqual(result.get("error_code"), "timeout")
 
 
 if __name__ == "__main__":

@@ -43,21 +43,33 @@ async function selectSection(page, sectionId) {
   await page.getByTestId(`practice-section-${sectionId}`).click()
 }
 
-async function runCode(page, code) {
-  await page.getByRole('button', { name: 'Run Code' }).waitFor({ state: 'visible', timeout: 60000 })
+async function clearEditor(page) {
   const monaco = page.locator('.monaco-editor').first()
   await monaco.waitFor({ state: 'visible', timeout: 60000 })
   await monaco.click()
   await page.keyboard.press('Control+A')
   await page.keyboard.press('Backspace')
-  await page.keyboard.type(code, { delay: 2 })
+}
+
+async function runCode(page, code, { waitMs = 60000 } = {}) {
+  await page.getByRole('button', { name: 'Run Code' }).waitFor({ state: 'visible', timeout: 60000 })
+  await clearEditor(page)
+  if (code) {
+    await page.keyboard.type(code, { delay: 2 })
+  }
   await page.getByRole('button', { name: 'Run Code' }).click()
   await page
     .getByRole('button', { name: 'Running…' })
     .waitFor({ state: 'visible', timeout: 10000 })
     .catch(() => {})
+  await page.getByRole('button', { name: 'Run Code' }).waitFor({ state: 'visible', timeout: waitMs })
+  await page.getByText('Output', { exact: true }).waitFor({ state: 'visible', timeout: waitMs }).catch(() => {})
+}
+
+async function runEmptyCode(page) {
   await page.getByRole('button', { name: 'Run Code' }).waitFor({ state: 'visible', timeout: 60000 })
-  await page.getByText('Output', { exact: true }).waitFor({ state: 'visible', timeout: 60000 })
+  await clearEditor(page)
+  await page.getByRole('button', { name: 'Run Code' }).click()
 }
 
 async function main() {
@@ -156,6 +168,24 @@ async function main() {
       const runtimeMissing = await page.getByText('Java runtime not available', { exact: false }).isVisible().catch(() => false)
       if (!err && !compileErr && !runtimeMissing) throw new Error('Java invalid run produced no error output')
       return 'invalid java handled'
+    })
+
+    await runCheck('11a_java_empty', async () => {
+      await runEmptyCode(page)
+      await page.getByText('Please write some code first!').waitFor({ state: 'visible', timeout: 10000 })
+      return 'empty java blocked safely'
+    })
+
+    await runCheck('11b_java_timeout', async () => {
+      await runCode(
+        page,
+        'public class Practice { public static void main(String[] args) { while(true){} } }',
+        { waitMs: 20000 },
+      )
+      const timeoutVisible = await page.getByText(/Execution timeout:/i).isVisible().catch(() => false)
+      const runtimeMissing = await page.getByText('Java runtime not available', { exact: false }).isVisible().catch(() => false)
+      if (!timeoutVisible && !runtimeMissing) throw new Error('Java infinite loop did not surface timeout output')
+      return timeoutVisible ? 'java timeout handled' : 'java runtime missing on host (skipped assertion)'
     })
 
     await runCheck('12_mistakes_review', async () => {

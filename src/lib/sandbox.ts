@@ -4,6 +4,8 @@ export interface ExecutionResult {
   output: string
   executionTime: number
   error?: string
+  error_code?: string
+  timed_out?: boolean
 }
 
 export interface ExecutorConfig {
@@ -39,17 +41,24 @@ export class CodeSandbox {
       setTimeout(() => {
         controller.abort()
         reject(new Error(
-          'Execution Error: Code timed out after 3 seconds. Did you write an infinite loop?'
+          `Execution timeout: request exceeded ${this.executionTimeoutSeconds + 1} seconds. Did you write an infinite loop?`
         ))
       }, this.timeout)
     )
 
     // API call promise: always resolves (executeCode swallows its own errors)
-    const apiPromise = executeCode(code, language, controller.signal).then(
+    const apiPromise = executeCode(
+      code,
+      language,
+      controller.signal,
+      this.executionTimeoutSeconds,
+    ).then(
       (result): ExecutionResult => ({
         output: this.truncate(result.output),
         executionTime: result.execution_time,
         error: result.error,
+        error_code: result.error_code,
+        timed_out: result.timed_out,
       })
     )
 
