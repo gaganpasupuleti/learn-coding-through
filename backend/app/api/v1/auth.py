@@ -173,9 +173,23 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
             payload.id_token,
             google_requests.Request(),
             audience=client_id,
+            clock_skew_in_seconds=30,
         )
     except ValueError as exc:
-        raise HTTPException(status_code=401, detail="Invalid Google token") from exc
+        detail = "Invalid Google token"
+        if settings.environment != "production":
+            hint = (
+                "Ensure GOOGLE_OAUTH_CLIENT_ID in backend/.env matches VITE_GOOGLE_CLIENT_ID "
+                "and the Google Cloud Web client ID, then restart the API and Vite."
+            )
+            if "too early" in str(exc).lower() or "too late" in str(exc).lower():
+                hint = (
+                    "Your system clock may be slightly out of sync with Google. "
+                    "Sync Windows date/time (Settings → Time & language → Sync now), then retry. "
+                    + hint
+                )
+            detail = f"{detail}: {exc}. {hint}"
+        raise HTTPException(status_code=401, detail=detail) from exc
 
     email = str(info.get("email") or "").strip().lower()
     external_uid = str(info.get("sub") or "").strip()
