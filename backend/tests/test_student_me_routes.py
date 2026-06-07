@@ -196,6 +196,32 @@ class StudentMeRoutesTests(unittest.TestCase):
         self.assertEqual(body["items"][0]["company_name"], "Acme")
         self.assertEqual(body["items"][0]["status"], "applied")
 
+    def test_open_jobs_is_public(self) -> None:
+        email = "smoke-kpi-open-jobs@example.com"
+        self._register_and_token(email)
+
+        db = SessionLocal()
+        try:
+            user = db.query(User).filter(User.email == email).one()
+            job = JobPost(
+                title="smoke-kpi-job-public",
+                company_name="Acme",
+                location="Remote",
+                employment_type="full_time",
+                description="Public listing",
+                status=JobPostStatus.OPEN,
+                created_by_user_id=user.id,
+            )
+            db.add(job)
+            db.commit()
+        finally:
+            db.close()
+
+        res = self.client.get("/api/v1/jobs/open")
+        self.assertEqual(res.status_code, 200, res.text)
+        titles = {item["title"] for item in res.json()}
+        self.assertIn("smoke-kpi-job-public", titles)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
