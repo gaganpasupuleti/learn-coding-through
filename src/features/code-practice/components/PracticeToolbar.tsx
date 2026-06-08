@@ -41,7 +41,11 @@ export function PracticeToolbar({
     <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-slate-950/90 px-4 py-2.5">
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-xs font-semibold uppercase tracking-wider text-sky-400">Code Workbench</span>
-        <LanguageSelector value={language} onChange={onLanguageChange} />
+        <LanguageSelector
+          value={language}
+          onChange={onLanguageChange}
+          onComingSoon={onLanguageChange}
+        />
       </div>
 
       <div className="flex flex-wrap items-center gap-2">

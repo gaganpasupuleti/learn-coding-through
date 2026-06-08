@@ -28,6 +28,13 @@ export interface CodePracticeExample {
   explanation?: string
 }
 
+export interface CodePracticeTestCase {
+  id: string
+  label: string
+  input?: string
+  expectedOutput: string
+}
+
 export interface CodePracticeQuestion {
   id: string
   title: string
@@ -38,7 +45,12 @@ export interface CodePracticeQuestion {
   examples: CodePracticeExample[]
   constraints: string[]
   starterCode: string
+  /** Primary expected output (legacy / default case). */
   expectedOutput: string
+  /** Default stdin for Run when no test case is selected. */
+  defaultInput?: string
+  /** Structured cases for Submit (Phase 2+ multi-case ready). */
+  testCases?: CodePracticeTestCase[]
   hints: string[]
 }
 

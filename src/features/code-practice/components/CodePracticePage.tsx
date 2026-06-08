@@ -25,9 +25,14 @@ import {
   getQuestionsForLanguage,
 } from '../data/codeQuestions'
 import { resolveStarterCode } from '../data/starterTemplates'
-import { buildTestResults } from '../utils/resultComparator'
+import { buildTestResultsFromCases } from '../utils/resultComparator'
 import { createExecutionTimer } from '../utils/executionTimer'
 import { classifyRunError, toLegacyMistakeLanguage } from '../utils/mistakeClassifier'
+import {
+  prepareCodeForExecution,
+  resolveQuestionTestCases,
+  resolveRunStdin,
+} from '../utils/executionAdapter'
 import { cn } from '@/lib/utils'
 
 const ATTEMPTS_KEY = 'codequest-code-practice-attempts'
@@ -71,6 +76,9 @@ export function CodePracticePage() {
   const [lastRunMs, setLastRunMs] = useState<number | null>(null)
   const [attempts, setAttempts] = useState<CodePracticeAttempt[]>(() => readAttempts())
   const [mistakesRefreshKey, setMistakesRefreshKey] = useState(0)
+  const [activeTestCaseId, setActiveTestCaseId] = useState<string | null>(null)
+  const [runStdin, setRunStdin] = useState('')
+  const [executionNote, setExecutionNote] = useState<string | null>(null)
 
   const languageMeta = useMemo(
     () => CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === language) ?? CODE_PRACTICE_LANGUAGE_MODES[0],
@@ -81,24 +89,33 @@ export function CodePracticePage() {
 
   const languageQuestions = useMemo(() => getQuestionsForLanguage(language), [language])
 
-  const loadLanguageQuestion = useCallback((nextLanguage: CodePracticeLanguageMode, nextQuestionId?: string | null) => {
-    const defaultQ = getDefaultQuestionForLanguage(nextLanguage)
-    const qid = nextQuestionId ?? defaultQ?.id ?? null
-    setLanguage(nextLanguage)
-    setQuestionId(qid)
-    setCode(resolveStarterCode(nextLanguage, qid))
+  const syncQuestionContext = useCallback((qid: string | null, lang: CodePracticeLanguageMode) => {
+    const q = qid ? getQuestionById(qid) : null
+    const cases = q ? resolveQuestionTestCases(q) : []
+    setActiveTestCaseId(cases[0]?.id ?? null)
+    setRunStdin(resolveRunStdin(q, cases[0]?.id ?? null))
+    setCode(resolveStarterCode(lang, qid))
     setOutput('')
     setError(null)
     setConsoleLines([])
     setTestResults([])
     setRevealedHintCount(0)
     setLastRunMs(null)
+    setExecutionNote(null)
   }, [])
+
+  const loadLanguageQuestion = useCallback((nextLanguage: CodePracticeLanguageMode, nextQuestionId?: string | null) => {
+    const defaultQ = getDefaultQuestionForLanguage(nextLanguage)
+    const qid = nextQuestionId ?? defaultQ?.id ?? null
+    setLanguage(nextLanguage)
+    setQuestionId(qid)
+    syncQuestionContext(qid, nextLanguage)
+  }, [syncQuestionContext])
 
   const handleLanguageChange = (next: CodePracticeLanguageMode) => {
     const mode = CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === next)
     if (mode?.status === 'coming-soon') {
-      toast.message(`${mode.label} support is planned for a later phase.`)
+      toast.message(`${mode.label} execution will be added later with Judge0.`)
       return
     }
     loadLanguageQuestion(next)
@@ -108,11 +125,7 @@ export function CodePracticePage() {
     const q = getQuestionById(id)
     if (!q || q.language !== language) return
     setQuestionId(id)
-    setCode(q.starterCode)
-    setOutput('')
-    setError(null)
-    setTestResults([])
-    setRevealedHintCount(0)
+    syncQuestionContext(id, language)
   }
 
   const handleReset = () => {
@@ -124,7 +137,22 @@ export function CodePracticePage() {
     setOutput('')
     setError(null)
     setTestResults([])
+    setExecutionNote(null)
     toast.success('Starter code restored.')
+  }
+
+  const executeOnce = async (stdin: string): Promise<{ output: string; error: string | null; note: string | null }> => {
+    const execLang = toSandboxLanguage(language)
+    if (!execLang) {
+      return { output: '', error: 'Language not executable yet.', note: null }
+    }
+
+    const prepared = prepareCodeForExecution(language, code, stdin)
+    const result = await sandbox.execute(prepared.code, execLang)
+    if (result.error) {
+      return { output: '', error: result.error, note: prepared.note ?? null }
+    }
+    return { output: result.output || '', error: null, note: prepared.note ?? null }
   }
 
   const handleRun = async (): Promise<string> => {
@@ -134,33 +162,35 @@ export function CodePracticePage() {
       return ''
     }
 
+    const stdin = resolveRunStdin(question, activeTestCaseId)
+    setRunStdin(stdin)
     setIsRunning(true)
     setError(null)
     setOutput('Running…')
+    setExecutionNote(null)
     const timer = createExecutionTimer()
 
     try {
-      const result = await sandbox.execute(code, execLang)
+      const { output: out, error: runError, note } = await executeOnce(stdin)
       const elapsed = timer.elapsedMs()
       setLastRunMs(elapsed)
+      setExecutionNote(note)
 
-      if (result.error) {
-        const msg = result.error
-        setError(msg)
+      if (runError) {
+        setError(runError)
         setOutput('')
-        setConsoleLines([`[${classifyRunError(msg)}] ${msg}`])
+        setConsoleLines([`[${classifyRunError(runError)}] ${runError}`])
         const legacyLang = toLegacyMistakeLanguage(language)
         if (legacyLang) {
-          logPracticeMistake(legacyLang, msg, code)
+          logPracticeMistake(legacyLang, runError, code)
           setMistakesRefreshKey((k) => k + 1)
         }
         toast.error('Run failed — see output panel.')
         return ''
       }
 
-      const out = result.output || '(no output)'
-      setOutput(out)
-      setConsoleLines(out.split('\n').filter(Boolean))
+      setOutput(out || '(no output)')
+      setConsoleLines((out || '').split('\n').filter(Boolean))
       toast.success(`Finished in ${elapsed} ms`)
       return out
     } catch (e) {
@@ -176,23 +206,63 @@ export function CodePracticePage() {
 
   const handleSubmit = async () => {
     if (!question) {
-      toast.error('Select a question with a sample case first.')
+      toast.error('Select a question with sample cases first.')
       return
     }
 
-    const actual = await handleRun()
-    const results = buildTestResults(actual, question.expectedOutput)
-    setTestResults(results)
+    const cases = resolveQuestionTestCases(question)
+    const actualByCaseId: Record<string, string> = {}
+    const executedIds: string[] = []
+    let lastOutput = ''
+    let hadError = false
 
-    if (results[0]?.passed) {
-      toast.success('Sample case passed!')
-    } else if (actual) {
-      toast.error('Sample case did not match expected output.')
-      const legacyLang = toLegacyMistakeLanguage(language)
-      if (legacyLang) {
-        logPracticeMistake(legacyLang, results[0]?.message ?? 'Wrong output', code)
-        setMistakesRefreshKey((k) => k + 1)
+    setIsRunning(true)
+    setTestResults([])
+    const timer = createExecutionTimer()
+
+    try {
+      for (const testCase of cases) {
+        executedIds.push(testCase.id)
+        const stdin = testCase.input ?? ''
+        setRunStdin(stdin)
+        const { output: out, error: runError, note } = await executeOnce(stdin)
+        if (note) setExecutionNote(note)
+
+        if (runError) {
+          hadError = true
+          setError(runError)
+          setOutput('')
+          actualByCaseId[testCase.id] = ''
+          break
+        }
+
+        actualByCaseId[testCase.id] = out
+        lastOutput = out
       }
+
+      setLastRunMs(timer.elapsedMs())
+      if (!hadError) {
+        setOutput(lastOutput || '(no output)')
+        setError(null)
+        setConsoleLines((lastOutput || '').split('\n').filter(Boolean))
+      }
+
+      const results = buildTestResultsFromCases(cases, actualByCaseId, executedIds)
+      setTestResults(results)
+
+      const allPassed = results.every((r) => r.passed)
+      if (allPassed) {
+        toast.success(`All ${results.length} sample case(s) passed!`)
+      } else if (!hadError) {
+        toast.error('Some sample cases did not match.')
+        const legacyLang = toLegacyMistakeLanguage(language)
+        if (legacyLang) {
+          logPracticeMistake(legacyLang, results.find((r) => !r.passed)?.message ?? 'Wrong output', code)
+          setMistakesRefreshKey((k) => k + 1)
+        }
+      }
+    } finally {
+      setIsRunning(false)
     }
   }
 
@@ -203,7 +273,7 @@ export function CodePracticePage() {
       language,
       code,
       output,
-      passed: testResults.some((t) => t.passed),
+      passed: testResults.length > 0 && testResults.every((t) => t.passed),
       durationMs: lastRunMs ?? 0,
       createdAt: new Date().toISOString(),
     }
@@ -262,6 +332,7 @@ export function CodePracticePage() {
           code={code}
           languageId={language}
           monacoLanguage={languageMeta.monacoLanguage}
+          editorTheme={theme}
           onChange={setCode}
         />
       }
@@ -271,6 +342,8 @@ export function CodePracticePage() {
           error={error}
           consoleLines={consoleLines}
           lastRunMs={lastRunMs}
+          sampleInput={runStdin || undefined}
+          executionNote={executionNote}
         />
       }
       livePreview={<LivePreviewPanel language={language} />}

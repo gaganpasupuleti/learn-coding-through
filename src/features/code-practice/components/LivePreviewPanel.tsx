@@ -16,8 +16,8 @@ export function LivePreviewPanel({ language }: LivePreviewPanelProps) {
       </div>
       <p className="mt-2 text-xs text-slate-500 leading-relaxed">
         {isReact
-          ? 'React / frontend live preview placeholder. Sandpack integration is planned for Phase 2.'
-          : 'Live preview is available for React / frontend sandbox mode in Phase 2.'}
+          ? 'Live React preview will be connected in Phase 3 using Sandpack.'
+          : 'Live preview is available for React / frontend sandbox mode in Phase 3.'}
       </p>
       {isReact && (
         <div className="mt-3 rounded border border-slate-800 bg-slate-950 p-6 text-center text-sm text-slate-600">

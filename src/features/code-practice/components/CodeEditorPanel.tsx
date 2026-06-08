@@ -1,14 +1,15 @@
 import { CodeEditor } from '@/components/CodeEditor'
-import { CODE_PRACTICE_LANGUAGE_MODES } from '../types/codePractice.types'
+import { CODE_PRACTICE_LANGUAGE_MODES, type CodePracticeEditorTheme } from '../types/codePractice.types'
 
 interface CodeEditorPanelProps {
   code: string
   languageId: string
   monacoLanguage: string
+  editorTheme: CodePracticeEditorTheme
   onChange: (code: string) => void
 }
 
-export function CodeEditorPanel({ code, languageId, monacoLanguage, onChange }: CodeEditorPanelProps) {
+export function CodeEditorPanel({ code, languageId, monacoLanguage, editorTheme, onChange }: CodeEditorPanelProps) {
   const label = CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === languageId)?.label ?? languageId
 
   return (
@@ -22,6 +23,7 @@ export function CodeEditorPanel({ code, languageId, monacoLanguage, onChange }: 
           code={code}
           onChange={onChange}
           language={monacoLanguage}
+          monacoTheme={editorTheme}
           showExecutionControls={false}
           showOutputPanel={false}
         />

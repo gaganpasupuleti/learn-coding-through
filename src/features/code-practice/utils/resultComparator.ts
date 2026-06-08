@@ -1,4 +1,4 @@
-import type { CodePracticeTestResult } from '../types/codePractice.types'
+import type { CodePracticeTestCase, CodePracticeTestResult } from '../types/codePractice.types'
 
 function normalizeOutput(raw: string): string {
   return raw
@@ -29,4 +29,36 @@ export function buildTestResults(
       message: passed ? 'Output matches expected result.' : 'Output does not match expected result.',
     },
   ]
+}
+
+export function buildTestResultsFromCases(
+  cases: CodePracticeTestCase[],
+  actualByCaseId: Record<string, string>,
+  executedCaseIds: string[],
+): CodePracticeTestResult[] {
+  return cases.map((testCase) => {
+    const executed = executedCaseIds.includes(testCase.id)
+    const actual = actualByCaseId[testCase.id] ?? ''
+    if (!executed) {
+      return {
+        id: testCase.id,
+        label: testCase.label,
+        passed: false,
+        expected: normalizeOutput(testCase.expectedOutput),
+        actual: '',
+        message: 'Not executed in this pass (structure ready for multi-case runs).',
+      }
+    }
+    const passed = compareOutputs(actual, testCase.expectedOutput)
+    return {
+      id: testCase.id,
+      label: testCase.label,
+      passed,
+      expected: normalizeOutput(testCase.expectedOutput),
+      actual: normalizeOutput(actual),
+      message: passed
+        ? 'Output matches expected result.'
+        : `Expected "${normalizeOutput(testCase.expectedOutput)}" but got "${normalizeOutput(actual)}".`,
+    }
+  })
 }

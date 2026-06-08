@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import type { CodePracticeQuestion } from '../types/codePractice.types'
+import { resolveQuestionTestCases } from '../utils/executionAdapter'
 
 interface ProblemPanelProps {
   question: CodePracticeQuestion | null
@@ -50,6 +51,25 @@ export function ProblemPanel({ question, languageLabel }: ProblemPanelProps) {
             ))}
           </div>
         </section>
+
+        {(question.defaultInput || (question.testCases?.length ?? 0) > 0) && (
+          <section>
+            <h3 className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Sample input</h3>
+            {question.defaultInput && (
+              <pre className="rounded-md border border-slate-800 bg-slate-900/80 p-2.5 font-mono text-slate-300 whitespace-pre-wrap">
+                {question.defaultInput}
+              </pre>
+            )}
+            <div className="mt-2 space-y-1.5">
+              {resolveQuestionTestCases(question).map((tc) => (
+                <div key={tc.id} className="rounded border border-slate-800/80 bg-slate-900/50 px-2 py-1.5 text-[11px] text-slate-400">
+                  <span className="text-slate-500">{tc.label}:</span>{' '}
+                  {tc.input ? `input → ${tc.input.replace(/\n/g, '\\n')}` : 'no stdin'} → {tc.expectedOutput.replace(/\n/g, '\\n')}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section>
           <h3 className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Constraints</h3>

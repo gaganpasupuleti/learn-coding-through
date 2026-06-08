@@ -21,6 +21,8 @@ import { DemoLimits } from '../lib/demo-limits'
 
 /* ---------------- Types ---------------- */
 
+export type MonacoEditorTheme = 'vs-dark' | 'vs' | 'hc-black'
+
 interface CodeEditorProps {
   initialCode?: string
   code?: string
@@ -30,6 +32,8 @@ interface CodeEditorProps {
   onRun?: (code: string) => void
   showExecutionControls?: boolean
   showOutputPanel?: boolean
+  /** When set, overrides the internal KV theme picker for Monaco. */
+  monacoTheme?: MonacoEditorTheme
 }
 
 type Theme = 'monokai' | 'dracula' | 'nord' | 'github' | 'synthwave'
@@ -44,6 +48,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   onRun,
   showExecutionControls = true,
   showOutputPanel = true,
+  monacoTheme,
 }) => {
   const isControlled = controlledCode !== undefined
   const [internalCode, setInternalCode] = useState(initialCode || '')
@@ -93,7 +98,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   }
 
   /* ---------- Monaco theme ---------- */
-  const getMonacoTheme = () => (theme === 'github' ? 'vs' : 'vs-dark')
+  const getMonacoTheme = (): MonacoEditorTheme => {
+    if (monacoTheme) return monacoTheme
+    return theme === 'github' ? 'vs' : 'vs-dark'
+  }
 
   /* ---------- Code change ---------- */
   const handleCodeChange = (value: string | undefined) => {
