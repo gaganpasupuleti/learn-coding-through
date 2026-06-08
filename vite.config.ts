@@ -8,6 +8,7 @@ import { resolve } from 'path'
 
 const projectRoot = process.env.PROJECT_ROOT || import.meta.dirname
 const apiProxyTarget = process.env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:8000'
+const jobsApiProxyTarget = process.env.VITE_JOBS_API_PROXY_TARGET || 'http://127.0.0.1:8001'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -33,6 +34,10 @@ export default defineConfig({
     // If something else is already bound to 5000, fail fast instead of silently picking another port
     // (opening the old URL would look like a blank page).
     strictPort: true,
+    // Pre-transform entry files so the first browser load is not a long white screen (esp. on OneDrive paths).
+    warmup: {
+      clientFiles: ['./index.html', './src/main.tsx', './src/App.tsx'],
+    },
     proxy: {
       '/api': {
         target: apiProxyTarget,
@@ -41,6 +46,31 @@ export default defineConfig({
       '/health': {
         target: apiProxyTarget,
         changeOrigin: true,
+      },
+      '/jobs-api': {
+        target: jobsApiProxyTarget,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/jobs-api/, ''),
+      },
+    },
+  },
+  preview: {
+    host: '127.0.0.1',
+    port: 5001,
+    strictPort: false,
+    proxy: {
+      '/api': {
+        target: apiProxyTarget,
+        changeOrigin: true,
+      },
+      '/health': {
+        target: apiProxyTarget,
+        changeOrigin: true,
+      },
+      '/jobs-api': {
+        target: jobsApiProxyTarget,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/jobs-api/, ''),
       },
     },
   },

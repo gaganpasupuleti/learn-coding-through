@@ -349,35 +349,6 @@ export interface AdminClassInsights {
   students: AdminClassStudent[]
 }
 
-export type AdminJobListFilter = 'all' | 'fixture' | 'live'
-
-export interface AdminJobPost {
-  id: number
-  title: string
-  company_name: string
-  location: string
-  employment_type: string
-  description: string | null
-  external_apply_url?: string | null
-  listing_metadata?: Record<string, unknown> | null
-  status: string
-  is_fixture: boolean
-  sort_order: number
-  eligible_batch_id: number | null
-  eligible_batch_name: string | null
-  applications_count: number
-  created_at: string
-}
-
-export interface AdminJobCreatePayload {
-  title: string
-  company_name: string
-  location: string
-  employment_type: string
-  description?: string | null
-  eligible_batch_id?: number | null
-}
-
 export interface AdminRoleInsightItem {
   label: string
   value: number
@@ -702,43 +673,6 @@ export async function fetchAdminClassInsights(token: string, batchId: number): P
   return parseOrThrow(response) as Promise<AdminClassInsights>
 }
 
-export async function fetchAdminJobs(
-  token: string,
-  filter: AdminJobListFilter = 'all',
-): Promise<AdminJobPost[]> {
-  const response = await fetchWithAuthApiFallback(
-    `/api/v1/admin/jobs?filter=${encodeURIComponent(filter)}`,
-    token,
-  )
-  return parseOrThrow(response) as Promise<AdminJobPost[]>
-}
-
-export async function reorderAdminJobs(
-  token: string,
-  orderedJobIds: number[],
-): Promise<AdminJobPost[]> {
-  const response = await fetchWithAuthApiFallback('/api/v1/admin/jobs/reorder', token, {
-    method: 'PUT',
-    body: JSON.stringify({ ordered_job_ids: orderedJobIds }),
-  })
-  return parseOrThrow(response) as Promise<AdminJobPost[]>
-}
-
-export async function seedAdminFixtureJobs(token: string): Promise<{ upserted: number; message: string }> {
-  const response = await fetchWithAuthApiFallback('/api/v1/admin/jobs/seed-fixture', token, {
-    method: 'POST',
-  })
-  return parseOrThrow(response) as Promise<{ upserted: number; message: string }>
-}
-
-export async function createAdminJob(token: string, payload: AdminJobCreatePayload): Promise<AdminJobPost> {
-  const response = await fetchWithAuthApiFallback('/api/v1/admin/jobs', token, {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
-  return parseOrThrow(response) as Promise<AdminJobPost>
-}
-
 export async function fetchAdminRoleSplitInsights(token: string): Promise<AdminRoleSplitInsights> {
   const response = await fetchWithAuthApiFallback('/api/v1/admin/role-split-insights', token)
   return parseOrThrow(response) as Promise<AdminRoleSplitInsights>
@@ -857,124 +791,6 @@ export async function deleteAdminBatch(token: string, batchId: number): Promise<
     method: 'DELETE',
   })
   await parseOrThrow(response)
-}
-
-// ── Job update / delete ────────────────────────────────────────────────────────
-
-export interface AdminJobUpdatePayload {
-  title?: string
-  company_name?: string
-  location?: string
-  employment_type?: string
-  description?: string
-  status?: 'open' | 'closed'
-  is_fixture?: boolean
-  sort_order?: number
-  eligible_batch_id?: number | null
-}
-
-export async function updateAdminJob(token: string, jobId: number, payload: AdminJobUpdatePayload): Promise<AdminJobPost> {
-  const response = await fetchWithAuthApiFallback(`/api/v1/admin/jobs/${jobId}`, token, {
-    method: 'PATCH',
-    body: JSON.stringify(payload),
-  })
-  return parseOrThrow(response) as Promise<AdminJobPost>
-}
-
-export async function deleteAdminJob(token: string, jobId: number): Promise<void> {
-  const response = await fetchWithAuthApiFallback(`/api/v1/admin/jobs/${jobId}`, token, {
-    method: 'DELETE',
-  })
-  await parseOrThrow(response)
-}
-
-export interface JobImportRowError {
-  row: number
-  detail: string
-}
-
-export interface JobImportResult {
-  created: number
-  skipped: number
-  closed_previous?: number
-  errors: JobImportRowError[]
-}
-
-export async function downloadAdminJobImportTemplate(token: string): Promise<Blob> {
-  const response = await fetchWithAuthApiFallback('/api/v1/admin/jobs/import-template', token)
-  if (!response.ok) {
-    const text = await response.text()
-    let message = `Failed to download job import template (HTTP ${response.status})`
-    try {
-      const data = JSON.parse(text) as { detail?: unknown }
-      if (data.detail !== undefined) {
-        const d = data.detail
-        message = typeof d === 'string' ? d : JSON.stringify(d).slice(0, 500)
-      }
-    } catch {
-      if (text.trim()) {
-        message = text.slice(0, 500)
-      }
-    }
-    throw new Error(message)
-  }
-  return response.blob()
-}
-
-function parseJobImportJsonBody(text: string, response: Response): JobImportResult {
-  try {
-    return JSON.parse(text) as JobImportResult
-  } catch {
-    throw new Error(
-      `Import failed (HTTP ${response.status}). The server response was not JSON. Check that the backend is running and the admin API URL matches your dev proxy.`,
-    )
-  }
-}
-
-function throwIfJobImportHttpFailed(response: Response, data: unknown): void {
-  if (response.ok) return
-  const p = data as { errors?: { row: number; detail: string }[]; detail?: unknown }
-  if (p.errors?.length) {
-    throw new Error(p.errors.map((e) => `Row ${e.row}: ${e.detail}`).join('; '))
-  }
-  if (p.detail !== undefined) {
-    const d = p.detail
-    throw new Error(typeof d === 'string' ? d : JSON.stringify(d).slice(0, 500))
-  }
-  throw new Error(`Import failed (HTTP ${response.status})`)
-}
-
-export async function importAdminJobsFromExcel(token: string, file: File): Promise<JobImportResult> {
-  const response = await fetchWithApiFallbackMultipart('/api/v1/admin/jobs/import', token, () => {
-    const formData = new FormData()
-    formData.append('file', file, file.name || 'jobs.xlsx')
-    return formData
-  })
-  const text = await response.text()
-  const data = parseJobImportJsonBody(text, response)
-  throwIfJobImportHttpFailed(response, data)
-  return data
-}
-
-export async function importAdminJobsFromLinkedInJson(
-  token: string,
-  file: File,
-  replaceOpenJobs: boolean,
-): Promise<JobImportResult> {
-  const response = await fetchWithApiFallbackMultipart(
-    '/api/v1/admin/jobs/import-linkedin-json',
-    token,
-    () => {
-      const formData = new FormData()
-      formData.append('file', file, file.name || 'linkedin-jobs.json')
-      formData.append('replace_open_jobs', replaceOpenJobs ? 'true' : 'false')
-      return formData
-    },
-  )
-  const text = await response.text()
-  const data = parseJobImportJsonBody(text, response)
-  throwIfJobImportHttpFailed(response, data)
-  return data
 }
 
 // ── Student delete ─────────────────────────────────────────────────────────────
@@ -1312,65 +1128,6 @@ export async function fetchMyStageProgress(): Promise<StageProgressRecord[]> {
     headers: { ...studentAuthHeaders() },
   })
   return parseOrThrow(response) as Promise<StageProgressRecord[]>
-}
-
-export interface StudentJobOpen {
-  id: number
-  title: string
-  company_name: string
-  location: string
-  employment_type: string
-  description: string | null
-  external_apply_url?: string | null
-  listing_metadata?: Record<string, unknown> | null
-  eligible_batch_id: number | null
-  eligible_batch_name: string | null
-  created_at: string
-}
-
-export interface JobApplyResult {
-  job_id: number
-  status: string
-  message: string
-}
-
-export async function fetchOpenJobs(): Promise<StudentJobOpen[]> {
-  const response = await fetchWithApiFallback('/api/v1/jobs/open', {
-    headers: { ...studentAuthHeaders() },
-  })
-  return parseOrThrow(response) as Promise<StudentJobOpen[]>
-}
-
-export async function applyToJob(jobId: number): Promise<JobApplyResult> {
-  const token = localStorage.getItem('career-portal-token')
-  if (!token) {
-    throw new Error('Sign in to apply to jobs.')
-  }
-  const response = await fetchWithApiFallback(`/api/v1/jobs/${jobId}/apply`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  return parseOrThrow(response) as Promise<JobApplyResult>
-}
-
-export interface StudentJobApplicationItem {
-  job_id: number
-  title: string
-  company_name: string
-  status: string
-  created_at: string
-}
-
-export interface StudentJobApplicationsMe {
-  count: number
-  items: StudentJobApplicationItem[]
-}
-
-export async function fetchStudentJobApplications(): Promise<StudentJobApplicationsMe> {
-  const response = await fetchWithApiFallback('/api/v1/jobs/applications/me', {
-    headers: { ...studentAuthHeaders() },
-  })
-  return parseOrThrow(response) as Promise<StudentJobApplicationsMe>
 }
 
 export interface EnrollmentMe {

@@ -1,4 +1,4 @@
-"""Student-facing GET /enrollment/me and GET /jobs/applications/me."""
+"""Student-facing GET /enrollment/me."""
 
 from __future__ import annotations
 
@@ -20,9 +20,6 @@ from app.models.models import (
     BatchEnrollment,
     BatchMode,
     EnrollmentRole,
-    JobApplication,
-    JobPost,
-    JobPostStatus,
     LearningBatch,
     RegistrationWaitlist,
     User,
@@ -40,11 +37,6 @@ class StudentMeRoutesTests(unittest.TestCase):
         db = SessionLocal()
         try:
             uids = [u.id for u in db.query(User).filter(User.email.like("smoke-kpi-%@example.com")).all()]
-            if uids:
-                db.query(JobApplication).filter(JobApplication.student_user_id.in_(uids)).delete(
-                    synchronize_session=False,
-                )
-            db.query(JobPost).filter(JobPost.title.like("smoke-kpi-job%")).delete(synchronize_session=False)
             if uids:
                 db.query(BatchEnrollment).filter(BatchEnrollment.user_id.in_(uids)).delete(synchronize_session=False)
             db.query(LearningBatch).filter(LearningBatch.name.like("smoke-kpi-batch%")).delete(
@@ -153,49 +145,6 @@ class StudentMeRoutesTests(unittest.TestCase):
         self.assertEqual(data["attendance_pct"], 80)
         self.assertEqual(sorted(data["batch_names"]), ["smoke-kpi-batch-a", "smoke-kpi-batch-b"])
 
-    def test_job_applications_me(self) -> None:
-        email = "smoke-kpi-jobs@example.com"
-        token = self._register_and_token(email)
-
-        res0 = self.client.get("/api/v1/jobs/applications/me", headers={"Authorization": f"Bearer {token}"})
-        self.assertEqual(res0.status_code, 200, res0.text)
-        self.assertEqual(res0.json()["count"], 0)
-        self.assertEqual(res0.json()["items"], [])
-
-        db = SessionLocal()
-        try:
-            user = db.query(User).filter(User.email == email).one()
-            job = JobPost(
-                title="smoke-kpi-job-1",
-                company_name="Acme",
-                location="Remote",
-                employment_type="full_time",
-                description="Test",
-                status=JobPostStatus.OPEN,
-                created_by_user_id=user.id,
-            )
-            db.add(job)
-            db.commit()
-            job_id = job.id
-        finally:
-            db.close()
-
-        apply_res = self.client.post(
-            f"/api/v1/jobs/{job_id}/apply",
-            headers={"Authorization": f"Bearer {token}"},
-        )
-        self.assertEqual(apply_res.status_code, 200, apply_res.text)
-
-        res1 = self.client.get("/api/v1/jobs/applications/me", headers={"Authorization": f"Bearer {token}"})
-        self.assertEqual(res1.status_code, 200, res1.text)
-        body = res1.json()
-        self.assertEqual(body["count"], 1)
-        self.assertEqual(len(body["items"]), 1)
-        self.assertEqual(body["items"][0]["job_id"], job_id)
-        self.assertEqual(body["items"][0]["title"], "smoke-kpi-job-1")
-        self.assertEqual(body["items"][0]["company_name"], "Acme")
-        self.assertEqual(body["items"][0]["status"], "applied")
-
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    unittest.main()

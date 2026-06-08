@@ -1,4 +1,4 @@
-import type { AdminActivityLog, AdminBatch, AdminJobPost, AdminStudent, AdminUserActivity } from '@/lib/api'
+import type { AdminActivityLog, AdminBatch, AdminStudent, AdminUserActivity } from '@/lib/api'
 
 import { inLocalDateRange } from './chartSeries'
 
@@ -85,51 +85,6 @@ export function filterUserActivity(
     if (scopedUserIds === null) return true
     if (row.user_id == null) return false
     return scopedUserIds.has(row.user_id)
-  })
-}
-
-export function filterJobsForSlicers(
-  jobs: AdminJobPost[],
-  students: AdminStudent[],
-  batches: AdminBatch[],
-  rangeStart: Date,
-  rangeEnd: Date,
-  mentorName: string | null,
-  batchId: number | null,
-  studentId: number | null,
-): AdminJobPost[] {
-  const mentorBatches = mentorName
-    ? batches.filter((b) => (b.mentor_name ?? '').trim() === mentorName)
-    : null
-  const mentorIds = mentorBatches ? new Set(mentorBatches.map((b) => b.id)) : null
-  const mentorNames = mentorBatches ? new Set(mentorBatches.map((b) => b.name)) : null
-
-  return jobs.filter((job) => {
-    if (!inLocalDateRange(job.created_at, rangeStart, rangeEnd)) return false
-
-    if (studentId != null) {
-      const st = students.find((s) => s.id === studentId)
-      if (!st?.batch_name) return true
-      return (
-        job.eligible_batch_id === batches.find((b) => b.name === st.batch_name)?.id ||
-        job.eligible_batch_name === st.batch_name ||
-        (job.eligible_batch_id == null && !job.eligible_batch_name)
-      )
-    }
-
-    if (batchId != null) {
-      const batch = batches.find((b) => b.id === batchId)
-      if (!batch) return false
-      return job.eligible_batch_id === batch.id || job.eligible_batch_name === batch.name
-    }
-
-    if (mentorIds && mentorNames) {
-      if (job.eligible_batch_id != null && mentorIds.has(job.eligible_batch_id)) return true
-      if (job.eligible_batch_name && mentorNames.has(job.eligible_batch_name)) return true
-      return job.eligible_batch_id == null && !job.eligible_batch_name
-    }
-
-    return true
   })
 }
 

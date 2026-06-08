@@ -1,5 +1,4 @@
-import type { ChangeEvent, DragEvent } from "react"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 
 import {
@@ -8,9 +7,6 @@ import {
   type AdminBatch,
   type AdminBatchCreatePayload,
   type AdminClassInsights,
-  type AdminJobCreatePayload,
-  type AdminJobListFilter,
-  type AdminJobPost,
   type AdminMetrics,
   type AdminMonthlyKpis,
   type AdminPlatformOverview,
@@ -20,19 +16,13 @@ import {
   type AdminStudentCreatePayload,
   type AdminUserActivity,
   createAdminBatch,
-  createAdminJob,
   createAdminStudent,
   deleteAdminBatch,
-  deleteAdminJob,
   deleteAdminStudent,
-  downloadAdminJobImportTemplate,
   fetchAdminActivity,
   fetchAdminFeedback,
   fetchAdminBatches,
   fetchAdminClassInsights,
-  fetchAdminJobs,
-  reorderAdminJobs,
-  seedAdminFixtureJobs,
   fetchAdminMetrics,
   fetchAdminMonthlyKpis,
   fetchAdminPlatformOverview,
@@ -41,10 +31,7 @@ import {
   fetchAdminUserActivity,
   fetchDatabaseHealth,
   fetchAdminStudents,
-  importAdminJobsFromExcel,
-  importAdminJobsFromLinkedInJson,
   updateAdminBatch,
-  updateAdminJob,
   updateAdminRegistrationWaitlistStatus,
   updateAdminStudent,
   reviewAdminFeedback,
@@ -55,7 +42,6 @@ import {
   WORKFLOW_STAGE_STORAGE_KEY,
   defaultBatchPayload,
   defaultCreatePayload,
-  defaultJobPayload,
 } from "../constants"
 import { blendAdminDashboardData } from "../utils/dashboardKpiBlend"
 import { resolveStudentWorkflowStage } from "../workflow"
@@ -96,17 +82,8 @@ export function useAdminWorkspace() {
   const [batchPayload, setBatchPayload] = useState<AdminBatchCreatePayload>(defaultBatchPayload)
   const [editingBatchId, setEditingBatchId] = useState<number | null>(null)
 
-  const [jobs, setJobs] = useState<AdminJobPost[]>([])
-  const [jobListFilter, setJobListFilter] = useState<AdminJobListFilter>('all')
-  const [draggedJobId, setDraggedJobId] = useState<number | null>(null)
   const [waitlistEntries, setWaitlistEntries] = useState<AdminRegistrationWaitlistEntry[]>([])
   const [userActivityEntries, setUserActivityEntries] = useState<AdminUserActivity[]>([])
-  const [jobPayload, setJobPayload] = useState<AdminJobCreatePayload>(defaultJobPayload)
-  const jobImportFileRef = useRef<HTMLInputElement>(null)
-  const jobImportLinkedInRef = useRef<HTMLInputElement>(null)
-  const linkedinDragDepthRef = useRef(0)
-  const [linkedinReplaceOpen, setLinkedinReplaceOpen] = useState(false)
-  const [linkedinDropActive, setLinkedinDropActive] = useState(false)
   const [createPayload, setCreatePayload] = useState<AdminStudentCreatePayload>(defaultCreatePayload)
 
   useEffect(() => {
@@ -200,7 +177,6 @@ export function useAdminWorkspace() {
         fetchAdminRoleSplitInsights(t),
         fetchAdminActivity(t, 200),
         fetchAdminBatches(t),
-        fetchAdminJobs(t, jobListFilter),
         fetchAdminRegistrationWaitlist(t),
         fetchAdminUserActivity(t, 500),
         fetchAdminPlatformOverview(t),
@@ -214,7 +190,6 @@ export function useAdminWorkspace() {
         'role insights',
         'activity',
         'batches',
-        'jobs',
         'waitlist',
         'user activity',
         'overview',
@@ -224,6 +199,10 @@ export function useAdminWorkspace() {
       const failed: string[] = []
       const pick = <T,>(index: number, fallback: T): T => {
         const result = results[index]
+        if (!result) {
+          failed.push(label[index] ?? `request-${index}`)
+          return fallback
+        }
         if (result.status === 'fulfilled') return result.value as T
         failed.push(label[index])
         console.warn(`[Admin] ${label[index]} failed:`, result.reason)
@@ -236,11 +215,10 @@ export function useAdminWorkspace() {
       const splitInsights = pick(3, null)
       const activity = pick(4, [] as AdminActivityLog[])
       const batchList = pick(5, [] as AdminBatch[])
-      const jobList = pick(6, [] as AdminJobPost[])
-      const waitlist = pick(7, [] as AdminRegistrationWaitlistEntry[])
-      const userActivity = pick(8, [] as AdminUserActivity[])
-      const platformOverview = pick(9, null)
-      const feedbackList = pick(10, [] as AdminFeedbackItem[])
+      const waitlist = pick(6, [] as AdminRegistrationWaitlistEntry[])
+      const userActivity = pick(7, [] as AdminUserActivity[])
+      const platformOverview = pick(8, null)
+      const feedbackList = pick(9, [] as AdminFeedbackItem[])
 
       const blended = blendAdminDashboardData({
         overview: platformOverview,
@@ -248,7 +226,6 @@ export function useAdminWorkspace() {
         monthlyKpis: kpis,
         students: studentList,
         batches: batchList,
-        jobs: jobList,
         waitlist,
         roleSplit: splitInsights,
       })
@@ -260,7 +237,6 @@ export function useAdminWorkspace() {
       setActivityLogs(activity)
       setFeedbackEntries(feedbackList)
       setBatches(batchList)
-      setJobs(jobList)
       setWaitlistEntries(waitlist)
       setUserActivityEntries(userActivity)
       setOverview(blended.overview)
@@ -413,262 +389,6 @@ export function useAdminWorkspace() {
     }
   }
 
-  const reloadJobs = useCallback(
-    async (authToken?: string, filter: AdminJobListFilter = jobListFilter) => {
-      const t = (authToken ?? (token.trim() || getAuthToken() || '')).trim()
-      if (!t) return
-      setJobs(await fetchAdminJobs(t, filter))
-    },
-    [jobListFilter, token],
-  )
-
-  const handleJobListFilterChange = async (filter: AdminJobListFilter) => {
-    setJobListFilter(filter)
-    const t = token.trim() || getAuthToken() || ''
-    if (!t) return
-    try {
-      setIsLoading(true)
-      setJobs(await fetchAdminJobs(t, filter))
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to load jobs')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleCreateJob = async () => {
-    const t = token.trim() || getAuthToken() || ''
-    if (!t) return
-    if (!jobPayload.title?.trim() || !jobPayload.company_name?.trim() || !jobPayload.location?.trim()) {
-      toast.error('Title, company, and location are required.')
-      return
-    }
-
-    try {
-      setIsLoading(true)
-      await createAdminJob(t, {
-        ...jobPayload,
-        title: jobPayload.title.trim(),
-        company_name: jobPayload.company_name.trim(),
-        location: jobPayload.location.trim(),
-      })
-      setJobPayload(defaultJobPayload)
-      await reloadJobs(t)
-      toast.success('Job created')
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to create job'
-      toast.error(message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleToggleJobStatus = async (job: AdminJobPost) => {
-    const t = token.trim() || getAuthToken() || ''
-    if (!t) return
-    const newStatus = job.status === 'open' ? 'closed' : 'open'
-    try {
-      setIsLoading(true)
-      await updateAdminJob(t, job.id, { status: newStatus as 'open' | 'closed' })
-      await reloadJobs(t)
-      toast.success(`Job ${newStatus === 'open' ? 'reopened' : 'closed'}`)
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update job')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleToggleJobFixture = async (job: AdminJobPost) => {
-    const t = token.trim() || getAuthToken() || ''
-    if (!t) return
-    try {
-      setIsLoading(true)
-      await updateAdminJob(t, job.id, { is_fixture: !job.is_fixture })
-      await reloadJobs(t)
-      toast.success(job.is_fixture ? 'Marked as live listing' : 'Marked as fixture listing')
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update job')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleSeedFixtureJobs = async () => {
-    const t = token.trim() || getAuthToken() || ''
-    if (!t) return
-    try {
-      setIsLoading(true)
-      const result = await seedAdminFixtureJobs(t)
-      await reloadJobs(t, 'all')
-      setJobListFilter('all')
-      toast.success(result.message)
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to load fixture jobs')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleDropJobOn = async (targetJobId: number) => {
-    const t = token.trim() || getAuthToken() || ''
-    if (!t || !draggedJobId || draggedJobId === targetJobId) {
-      setDraggedJobId(null)
-      return
-    }
-    if (jobListFilter !== 'all') {
-      toast.error('Switch filter to All to reorder the job board.')
-      setDraggedJobId(null)
-      return
-    }
-    const ordered = [...jobs].sort((a, b) => a.sort_order - b.sort_order || a.id - b.id)
-    const from = ordered.findIndex((j) => j.id === draggedJobId)
-    const to = ordered.findIndex((j) => j.id === targetJobId)
-    if (from < 0 || to < 0) {
-      setDraggedJobId(null)
-      return
-    }
-    const next = [...ordered]
-    const [moved] = next.splice(from, 1)
-    next.splice(to, 0, moved)
-    try {
-      setIsLoading(true)
-      setJobs(await reorderAdminJobs(t, next.map((j) => j.id)))
-      toast.success('Job order updated')
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to reorder jobs')
-    } finally {
-      setDraggedJobId(null)
-      setIsLoading(false)
-    }
-  }
-
-  const handleDeleteJob = async (jobId: number) => {
-    const t = token.trim() || getAuthToken() || ''
-    if (!t) return
-    try {
-      setIsLoading(true)
-      await deleteAdminJob(t, jobId)
-      await reloadJobs(t)
-      toast.success('Job deleted')
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete job')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleDownloadJobImportTemplate = async () => {
-    const t = token.trim() || getAuthToken() || ''
-    if (!t) return
-    try {
-      const blob = await downloadAdminJobImportTemplate(t)
-      const url = URL.createObjectURL(blob)
-      const anchor = document.createElement('a')
-      anchor.href = url
-      anchor.download = 'job_import_template.xlsx'
-      anchor.click()
-      URL.revokeObjectURL(url)
-      toast.success('Template downloaded')
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Download failed')
-    }
-  }
-
-  const handleJobImportFile = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-    if (!file) return
-    const t = token.trim() || getAuthToken() || ''
-    if (!t) {
-      toast.error('Not signed in. Use Access Control to log in, then try the upload again.')
-      return
-    }
-    try {
-      setIsLoading(true)
-      const result = await importAdminJobsFromExcel(t, file)
-      toast.success(`Imported ${result.created} job(s). Empty rows skipped: ${result.skipped}.`)
-      await reloadJobs(t)
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Import failed')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const processLinkedInJsonFile = useCallback(
-    async (file: File) => {
-      const lower = file.name.toLowerCase()
-      const jsonMime = ['application/json', 'text/json', 'application/x-json'].includes(file.type)
-      if (!lower.endsWith('.json') && !jsonMime) {
-        toast.error('Choose a .json file (UTF-8 export from the LinkedIn scraper).')
-        return
-      }
-      const t = token.trim() || getAuthToken() || ''
-      if (!t) {
-        toast.error('Session missing. Open Access Control, sign in as admin, then upload again.')
-        return
-      }
-      try {
-        setIsLoading(true)
-        const result = await importAdminJobsFromLinkedInJson(t, file, linkedinReplaceOpen)
-        const closed = result.closed_previous ?? 0
-        toast.success(
-          `Imported ${result.created} job(s). Skipped: ${result.skipped}.${closed ? ` Closed ${closed} previous open job(s).` : ''}`,
-        )
-        if (result.errors?.length) {
-          toast.message('Import finished with row warnings', {
-            description: `${result.errors.length} issue(s). Check server logs or re-export the scraper file.`,
-          })
-        }
-        await reloadJobs(t)
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : 'Import failed')
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [linkedinReplaceOpen, reloadJobs, token],
-  )
-
-  const handleLinkedInJsonInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-    if (!file) return
-    void processLinkedInJsonFile(file)
-  }
-
-  const onLinkedinDragEnter = (event: DragEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    linkedinDragDepthRef.current += 1
-    setLinkedinDropActive(true)
-  }
-
-  const onLinkedinDragLeave = (event: DragEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    linkedinDragDepthRef.current -= 1
-    if (linkedinDragDepthRef.current <= 0) {
-      linkedinDragDepthRef.current = 0
-      setLinkedinDropActive(false)
-    }
-  }
-
-  const onLinkedinDrop = (event: DragEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    linkedinDragDepthRef.current = 0
-    setLinkedinDropActive(false)
-    if (isLoading) return
-    const f = event.dataTransfer.files?.[0]
-    if (!f) {
-      toast.error('No file received. Drop one .json file, or click the area to browse.')
-      return
-    }
-    void processLinkedInJsonFile(f)
-  }
-
   const handleCreateBatch = async () => {
     const t = token.trim() || getAuthToken() || ''
     if (!t) return
@@ -805,19 +525,8 @@ export function useAdminWorkspace() {
     setBatchPayload,
     editingBatchId,
     setEditingBatchId,
-    jobs,
-    jobListFilter,
-    draggedJobId,
-    setDraggedJobId,
     waitlistEntries,
     userActivityEntries,
-    jobPayload,
-    setJobPayload,
-    jobImportFileRef,
-    jobImportLinkedInRef,
-    linkedinReplaceOpen,
-    setLinkedinReplaceOpen,
-    linkedinDropActive,
     createPayload,
     setCreatePayload,
     selectedStudent,
@@ -833,20 +542,6 @@ export function useAdminWorkspace() {
     handleCreateStudent,
     handleUpdateStudent,
     handleDeleteStudent,
-    handleCreateJob,
-    handleJobListFilterChange,
-    handleToggleJobStatus,
-    handleToggleJobFixture,
-    handleSeedFixtureJobs,
-    handleDropJobOn,
-    handleDeleteJob,
-    handleDownloadJobImportTemplate,
-    handleJobImportFile,
-    processLinkedInJsonFile,
-    handleLinkedInJsonInputChange,
-    onLinkedinDragEnter,
-    onLinkedinDragLeave,
-    onLinkedinDrop,
     handleCreateBatch,
     handleUpdateBatch,
     handleDeleteBatch,

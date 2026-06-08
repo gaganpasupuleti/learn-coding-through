@@ -3,7 +3,6 @@ import type {
   EnrollmentMe,
   MySubmittedProject,
   StageProgressRecord,
-  StudentJobApplicationsMe,
   TypingAttempt,
   UpcomingDeadlines,
   UpcomingSession,
@@ -36,19 +35,6 @@ export const DUMMY_STUDENT_TYPING: TypingAttempt[] = [38, 44, 41, 52, 48, 61, 55
   elapsed_seconds: 60,
   created_at: isoMinutesAgo(20 * (i + 1)),
 }))
-
-export const DUMMY_STUDENT_APPLICATIONS: StudentJobApplicationsMe = {
-  count: 1,
-  items: [
-    {
-      job_id: 9001,
-      title: 'Junior Backend Engineer',
-      company_name: 'TechMahindra Digital',
-      status: 'applied',
-      created_at: isoMinutesAgo(120),
-    },
-  ],
-}
 
 export const DUMMY_STUDENT_ENROLLMENT: EnrollmentMe = {
   attendance_pct: 88,
@@ -140,7 +126,6 @@ export function isStudentDashboardSnapshotEmpty(
   stageRows: StageProgressRecord[],
   catalogSteps: number,
   typingAttempts: TypingAttempt[],
-  applications: StudentJobApplicationsMe,
   enrollment: EnrollmentMe | null,
   submittedProjects: MySubmittedProject[],
 ): boolean {
@@ -150,7 +135,6 @@ export function isStudentDashboardSnapshotEmpty(
     stageRows.length === 0 &&
     catalogSteps === 0 &&
     typingAttempts.length === 0 &&
-    applications.count === 0 &&
     submittedProjects.length === 0 &&
     noEnrollment
   )
@@ -162,7 +146,6 @@ export function blendStudentDashboardDummyIfNeeded(
     stageRows: StageProgressRecord[]
     catalogSteps: number
     typingAttempts: TypingAttempt[]
-    applications: StudentJobApplicationsMe
     enrollment: EnrollmentMe | null
     submittedProjects: MySubmittedProject[]
   },
@@ -175,7 +158,6 @@ export function blendStudentDashboardDummyIfNeeded(
       snapshot.stageRows,
       snapshot.catalogSteps,
       snapshot.typingAttempts,
-      snapshot.applications,
       snapshot.enrollment,
       snapshot.submittedProjects,
     )
@@ -186,7 +168,6 @@ export function blendStudentDashboardDummyIfNeeded(
     stageRows: DUMMY_STUDENT_STAGE_ROWS,
     catalogSteps: DUMMY_CATALOG_STEP_COUNT,
     typingAttempts: DUMMY_STUDENT_TYPING,
-    applications: DUMMY_STUDENT_APPLICATIONS,
     enrollment: DUMMY_STUDENT_ENROLLMENT,
     submittedProjects: DUMMY_STUDENT_PROJECTS,
   }

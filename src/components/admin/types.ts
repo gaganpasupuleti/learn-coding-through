@@ -3,7 +3,7 @@ export type AdminSection =
   | 'board'
   | 'students'
   | 'classes'
-  | 'jobs'
+  | 'jobspy-ops'
   | 'quizzes'
   | 'activity'
   | 'feedback'

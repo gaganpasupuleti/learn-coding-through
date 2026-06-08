@@ -4,7 +4,6 @@ import { PlannerPreviewWidget } from '@/components/student-dashboard/PlannerPrev
 import { DashboardHero, resolveNextLessonTitle } from '@/components/student-dashboard/DashboardHero'
 import { DeadlinesTaskBoard } from '@/components/student-dashboard/DeadlinesTaskBoard'
 import { JobReadinessCard } from '@/components/student-dashboard/JobReadinessCard'
-import { JobRecommendationsCard } from '@/components/student-dashboard/JobRecommendationsCard'
 import { LearningJourneyCard } from '@/components/student-dashboard/LearningJourneyCard'
 import { UpcomingClassesTimeline } from '@/components/student-dashboard/UpcomingClassesTimeline'
 import { useStudentDashboardSnapshot } from '@/components/student-dashboard/useStudentDashboardSnapshot'
@@ -13,7 +12,7 @@ import type { AuthUser } from '@/lib/auth'
 import { computeDaysRemaining, computeReadinessBreakdown } from '@/lib/dashboard-derive'
 import { storeSelectedDateForPlanner } from '@/lib/learning-planner-derive'
 
-type DashboardNavTarget = 'roadmapper' | 'jobs' | 'learning-planner'
+type DashboardNavTarget = 'roadmapper' | 'jobspy' | 'learning-planner'
 
 interface StudentDashboardPageProps {
   user: AuthUser
@@ -21,15 +20,15 @@ interface StudentDashboardPageProps {
 }
 
 function RightSidebar({
-  snapshot,
   readiness,
   plannerPreview,
   onNavigate,
+  loading,
 }: {
-  snapshot: ReturnType<typeof useStudentDashboardSnapshot>
   readiness: ReturnType<typeof computeReadinessBreakdown>
   plannerPreview: ReturnType<typeof useLearningPlanner>
   onNavigate: (page: DashboardNavTarget) => void
+  loading: boolean
 }) {
   return (
     <div className="space-y-6">
@@ -49,14 +48,18 @@ function RightSidebar({
           onNavigate('learning-planner')
         }}
       />
-      <JobReadinessCard breakdown={readiness} loading={snapshot.loading} />
-      <JobRecommendationsCard
-        jobs={snapshot.openJobs}
-        careerTitle={snapshot.careerJourney?.title ?? null}
-        careerSkills={snapshot.careerJourney?.skills ?? []}
-        loading={snapshot.loading}
-        onViewAll={() => onNavigate('jobs')}
-      />
+      <JobReadinessCard breakdown={readiness} loading={loading} />
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h3 className="font-semibold text-slate-900">Job Board</h3>
+        <p className="text-sm text-slate-600 mt-2">Browse live roles from JobSpy — LinkedIn, Indeed, and more.</p>
+        <button
+          type="button"
+          onClick={() => onNavigate('jobspy')}
+          className="mt-4 w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
+        >
+          Open Job Board
+        </button>
+      </div>
     </div>
   )
 }
@@ -96,7 +99,6 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
 
   return (
     <div className="min-h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/40 p-4 md:p-6">
-      {/* Desktop layout */}
       <div className="mx-auto hidden max-w-7xl lg:grid lg:grid-cols-12 lg:gap-6">
         <div className="col-span-12">
           <DashboardHero
@@ -108,7 +110,6 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
             onContinueLearning={() => onNavigate('roadmapper')}
           />
         </div>
-
         <div className="col-span-8">
           <LearningJourneyCard
             careerJourney={snapshot.careerJourney}
@@ -116,29 +117,22 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
             loading={snapshot.loading}
           />
         </div>
-
         <div className="col-span-4 row-span-3 row-start-2 self-start lg:sticky lg:top-6">
           <RightSidebar
-            snapshot={snapshot}
             readiness={readiness}
             plannerPreview={plannerPreview}
             onNavigate={onNavigate}
-          />
-        </div>
-
-        <div className="col-span-8">
-          <UpcomingClassesTimeline
-            sessions={snapshot.upcomingSessions}
             loading={snapshot.loading}
           />
         </div>
-
+        <div className="col-span-8">
+          <UpcomingClassesTimeline sessions={snapshot.upcomingSessions} loading={snapshot.loading} />
+        </div>
         <div className="col-span-8">
           <DeadlinesTaskBoard deadlines={snapshot.deadlines} loading={snapshot.loading} />
         </div>
       </div>
 
-      {/* Mobile layout */}
       <div className="mx-auto max-w-7xl space-y-6 lg:hidden">
         <DashboardHero
           firstName={firstName}
@@ -153,19 +147,17 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           stageRows={snapshot.stageRows}
           loading={snapshot.loading}
         />
-        <UpcomingClassesTimeline
-          sessions={snapshot.upcomingSessions}
-          loading={snapshot.loading}
-        />
+        <UpcomingClassesTimeline sessions={snapshot.upcomingSessions} loading={snapshot.loading} />
         <DeadlinesTaskBoard deadlines={snapshot.deadlines} loading={snapshot.loading} />
         <JobReadinessCard breakdown={readiness} loading={snapshot.loading} />
-        <JobRecommendationsCard
-          jobs={snapshot.openJobs}
-          careerTitle={snapshot.careerJourney?.title ?? null}
-          careerSkills={snapshot.careerJourney?.skills ?? []}
-          loading={snapshot.loading}
-          onViewAll={() => onNavigate('jobs')}
-        />
+        <button
+          type="button"
+          onClick={() => onNavigate('jobspy')}
+          className="w-full rounded-xl border border-slate-200 bg-white p-5 text-left shadow-sm hover:border-blue-300"
+        >
+          <span className="font-semibold text-slate-900">Job Board</span>
+          <p className="text-sm text-slate-600 mt-1">Browse live JobSpy listings</p>
+        </button>
         <PlannerPreviewWidget
           dayPlan={plannerPreview.dayPlan}
           viewMonth={plannerPreview.viewMonth}

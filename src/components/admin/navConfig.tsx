@@ -18,7 +18,7 @@ export const adminNavItems: Array<{ key: AdminSection; label: string; icon: Reac
   { key: 'board', label: 'Workflow Board', icon: <Kanban size={16} /> },
   { key: 'students', label: 'Students', icon: <UsersThree size={16} /> },
   { key: 'classes', label: 'Classes', icon: <CalendarBlank size={16} /> },
-  { key: 'jobs', label: 'Jobs', icon: <Briefcase size={16} /> },
+  { key: 'jobspy-ops', label: 'JobSpy Ops', icon: <Briefcase size={16} /> },
   { key: 'quizzes', label: 'Quizzes', icon: <ListChecks size={16} /> },
   { key: 'activity', label: 'Activity', icon: <ClockCounterClockwise size={16} /> },
   { key: 'feedback', label: 'Feedback', icon: <ChatCircle size={16} /> },

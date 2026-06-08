@@ -1,6 +1,5 @@
 import type {
   AdminBatch,
-  AdminJobPost,
   AdminMetrics,
   AdminMonthlyKpis,
   AdminPlatformOverview,
@@ -37,7 +36,6 @@ function countActiveBatches(batches: AdminBatch[]): number {
 function deriveOverview(input: {
   students: AdminStudent[]
   batches: AdminBatch[]
-  jobs: AdminJobPost[]
   waitlist: AdminRegistrationWaitlistEntry[]
   roleSplit: AdminRoleSplitInsights | null
 }): AdminPlatformOverview {
@@ -57,11 +55,7 @@ function deriveOverview(input: {
   const totalAdmins = adminsFromList.length || 1
   const totalUsers = totalStudents + totalAdmins
 
-  const openJobs =
-    insightValue(studentRows, 'Open Jobs') ??
-    input.jobs.filter((j) => j.status === 'open').length
-  const closedJobs = input.jobs.filter((j) => j.status === 'closed').length
-  const totalApplications = input.jobs.reduce((sum, j) => sum + (j.applications_count ?? 0), 0)
+  const openJobs = insightValue(studentRows, 'Open Jobs') ?? 0
   const totalHires = insightValue(studentRows, 'Students Hired') ?? 0
 
   const totalBatches = insightValue(facultyRows, 'Total Batches') ?? input.batches.length
@@ -74,8 +68,8 @@ function deriveOverview(input: {
     total_batches: totalBatches,
     active_batches: activeBatches,
     total_jobs_open: openJobs,
-    total_jobs_closed: closedJobs,
-    total_job_applications: totalApplications,
+    total_jobs_closed: 0,
+    total_job_applications: 0,
     total_hires: totalHires,
     catalog_quizzes: Math.max(10, totalStudents),
     catalog_projects: Math.max(8, Math.round(totalStudents * 0.75)),
@@ -107,7 +101,6 @@ function deriveMetrics(students: AdminStudent[], roleSplit: AdminRoleSplitInsigh
 
 function deriveMonthlyKpis(input: {
   batches: AdminBatch[]
-  jobs: AdminJobPost[]
   roleSplit: AdminRoleSplitInsights | null
   students: AdminStudent[]
 }): AdminMonthlyKpis {
@@ -141,9 +134,7 @@ function deriveMonthlyKpis(input: {
     classes_starting_this_month: classesStarting,
     classes_completing_this_month: classesCompleting,
     active_classes_running: countActiveBatches(input.batches),
-    open_jobs:
-      insightValue(studentRows, 'Open Jobs') ??
-      input.jobs.filter((j) => j.status === 'open').length,
+    open_jobs: insightValue(studentRows, 'Open Jobs') ?? 0,
     hires_this_month: insightValue(studentRows, 'Students Hired') ?? 0,
   }
 }
@@ -204,7 +195,6 @@ export function blendAdminDashboardData(input: {
   monthlyKpis: AdminMonthlyKpis | null
   students: AdminStudent[]
   batches: AdminBatch[]
-  jobs: AdminJobPost[]
   waitlist: AdminRegistrationWaitlistEntry[]
   roleSplit: AdminRoleSplitInsights | null
 }): {
@@ -216,7 +206,6 @@ export function blendAdminDashboardData(input: {
   const derivedMetrics = deriveMetrics(input.students, input.roleSplit)
   const derivedMonthly = deriveMonthlyKpis({
     batches: input.batches,
-    jobs: input.jobs,
     roleSplit: input.roleSplit,
     students: input.students,
   })

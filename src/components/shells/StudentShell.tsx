@@ -32,7 +32,7 @@ type StudentPage =
   | 'landing'
   | 'dashboard'
   | 'hub'
-  | 'jobs'
+  | 'jobspy'
   | 'projects'
   | 'practice-ground'
   | 'practice'
@@ -56,7 +56,7 @@ const PRIMARY_NAV: NavItem[] = [
   { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={14} aria-hidden /> },
   { page: 'learning-planner', label: 'Learning Planner', icon: <CalendarDays size={14} aria-hidden /> },
   { page: 'hub', label: 'Hub', icon: <LayoutGrid size={14} aria-hidden /> },
-  { page: 'jobs', label: 'Jobs', icon: <Briefcase size={14} aria-hidden /> },
+  { page: 'jobspy', label: 'Job Board', icon: <Briefcase size={14} aria-hidden /> },
   { page: 'roadmapper', label: 'Career Map', icon: <Map size={14} aria-hidden /> },
 ]
 

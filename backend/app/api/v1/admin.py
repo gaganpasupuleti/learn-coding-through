@@ -1,7 +1,5 @@
 from datetime import date, datetime, time, timedelta
-from typing import Final, Literal, TypedDict
-
-from sqlalchemy import func, select
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from fastapi.responses import JSONResponse, Response
@@ -11,8 +9,6 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.schema_ensure import ensure_admin_api_schema
 from app.core.security import get_password_hash
-from app.services.job_fixture_seed import seed_fixture_job_board
-from app.services.job_import import build_job_template_xlsx, parse_job_import_xlsx, parse_linkedin_jobs_json
 from app.models.models import (
     AdminActivityLog,
     BatchEnrollment,
@@ -33,7 +29,6 @@ from app.models.models import (
     UserActivityLog,
     UserRole,
 )
-from app.schemas.jobs import JobImportResult, JobImportRowError
 from app.schemas.quiz import QuizBankImportResult, QuizBankRowError
 from app.services.quiz_bank_import import import_quiz_bank_rows, parse_quiz_bank_file
 from app.schemas.schedule import ClassSessionCreate, ClassSessionResponse, ClassSessionUpdate
@@ -53,11 +48,6 @@ from app.schemas.admin import (
     BatchUpdateRequest,
     ClassInsightsResponse,
     ClassStudentDetailResponse,
-    JobFixtureSeedResult,
-    JobPostCreateRequest,
-    JobPostResponse,
-    JobPostUpdateRequest,
-    JobReorderRequest,
     PieSliceResponse,
     RoleInsightItem,
     RoleSplitInsightsResponse,
@@ -73,73 +63,6 @@ router = APIRouter(
     tags=["Admin"],
     dependencies=[Depends(_admin_schema_guard)],
 )
-
-# Job post tier caps (per uploading admin user, counting all rows in job_posts they created).
-MAX_FREE_TIER_JOBS: Final[int] = 100
-MAX_PRO_TIER_JOBS: Final[int] = -1  # Product convention: -1 means unlimited (no numeric cap).
-
-
-class JobQuotaExceededDetail(TypedDict):
-    error: Literal["QuotaExceeded"]
-    message: str
-    upgrade_required: bool
-
-
-JOB_QUOTA_EXCEEDED_DETAIL: Final[JobQuotaExceededDetail] = {
-    "error": "QuotaExceeded",
-    "message": "You have reached your job upload limit.",
-    "upgrade_required": True,
-}
-
-
-def _admin_job_quota_cap(admin_user: User) -> int | None:
-    """Inclusive max jobs this admin may have created; ``None`` means unlimited."""
-    if admin_user.role == UserRole.SUPER_ADMIN:
-        return None
-    if admin_user.email.strip().lower() in frozenset(settings.admin_pro_job_tier_emails):
-        return None
-    return MAX_FREE_TIER_JOBS
-
-
-def _count_jobs_created_by_admin(db: Session, admin_user_id: int) -> int:
-    total = db.query(func.count(JobPost.id)).filter(JobPost.created_by_user_id == admin_user_id).scalar()
-    return int(total or 0)
-
-
-def _job_post_response(db: Session, job: JobPost) -> JobPostResponse:
-    applications_count = (
-        db.query(JobApplication).filter(JobApplication.job_post_id == job.id).count()
-    )
-    return JobPostResponse(
-        id=job.id,
-        title=job.title,
-        company_name=job.company_name,
-        location=job.location,
-        employment_type=job.employment_type,
-        description=job.description,
-        external_apply_url=job.external_apply_url,
-        listing_metadata=job.listing_metadata,
-        status=job.status.value,
-        is_fixture=job.is_fixture,
-        sort_order=job.sort_order,
-        eligible_batch_id=job.eligible_batch_id,
-        eligible_batch_name=job.eligible_batch.name if job.eligible_batch else None,
-        applications_count=applications_count,
-        created_at=job.created_at,
-    )
-
-
-def ensure_admin_job_create_quota(db: Session, admin_user: User, *, additional_jobs: int) -> None:
-    """Raises ``HTTPException`` (402) when the admin would exceed their tier cap."""
-    if additional_jobs < 0:
-        raise ValueError("additional_jobs must be non-negative")
-    cap = _admin_job_quota_cap(admin_user)
-    if cap is None:
-        return
-    current = _count_jobs_created_by_admin(db, admin_user.id)
-    if current + additional_jobs > cap:
-        raise HTTPException(status_code=402, detail=JOB_QUOTA_EXCEEDED_DETAIL)
-
 
 def _log_admin_action(
     db: Session,
@@ -257,40 +180,7 @@ def _seed_learning_ops_demo_data(db: Session, admin_user: User, student_users: l
     db.add_all(enrollments)
     db.flush()
 
-    try:
-        seed_fixture_job_board(
-            db,
-            created_by_user_id=admin_user.id,
-            eligible_batch_id=batches[0].id,
-        )
-    except Exception as exc:
-        print(f"Warning: fixture job board seed skipped in learning ops demo: {exc}")
-
-    jobs = (
-        db.query(JobPost)
-        .filter(JobPost.status == JobPostStatus.OPEN)
-        .order_by(JobPost.created_at.desc())
-        .limit(2)
-        .all()
-    )
-    db.flush()
-
-    if jobs:
-        for index, student in enumerate(student_users[:4]):
-            db.add(
-                JobApplication(
-                    job_post_id=jobs[index % len(jobs)].id,
-                    student_user_id=student.id,
-                    status=[
-                        JobApplicationStatus.APPLIED,
-                        JobApplicationStatus.SHORTLISTED,
-                        JobApplicationStatus.REJECTED,
-                        JobApplicationStatus.HIRED,
-                    ][index],
-                )
-            )
-
-    _log_admin_action(db, admin_user.id, "learning_ops_seeded", details="Seeded batch and job portal demo data")
+    _log_admin_action(db, admin_user.id, "learning_ops_seeded", details="Seeded batch demo data")
     db.commit()
 
 
@@ -602,250 +492,6 @@ def get_batch_insights(
     )
 
 
-@router.get("/jobs", response_model=list[JobPostResponse])
-def list_jobs(
-    fixture_filter: Literal["all", "fixture", "live"] = Query(default="all", alias="filter"),
-    db: Session = Depends(get_db),
-    admin_user: User = Depends(require_admin),
-):
-    _ensure_learning_ops_demo_data(db, admin_user)
-    query = db.query(JobPost)
-    if fixture_filter == "fixture":
-        query = query.filter(JobPost.is_fixture.is_(True))
-    elif fixture_filter == "live":
-        query = query.filter(JobPost.is_fixture.is_(False))
-    jobs = query.order_by(JobPost.sort_order.asc(), JobPost.created_at.desc()).all()
-    return [_job_post_response(db, job) for job in jobs]
-
-
-@router.post("/jobs", response_model=JobPostResponse)
-def create_job(
-    payload: JobPostCreateRequest,
-    db: Session = Depends(get_db),
-    admin_user: User = Depends(require_admin),
-):
-    if payload.eligible_batch_id is not None:
-        batch = db.query(LearningBatch).filter(LearningBatch.id == payload.eligible_batch_id).first()
-        if not batch:
-            raise HTTPException(status_code=404, detail="Eligible batch not found")
-
-    ensure_admin_job_create_quota(db, admin_user, additional_jobs=1)
-
-    max_order = db.query(func.max(JobPost.sort_order)).scalar() or 0
-    job = JobPost(
-        title=payload.title,
-        company_name=payload.company_name,
-        location=payload.location,
-        employment_type=payload.employment_type,
-        description=payload.description,
-        status=JobPostStatus.OPEN,
-        is_fixture=False,
-        sort_order=int(max_order) + 1,
-        eligible_batch_id=payload.eligible_batch_id,
-        created_by_user_id=admin_user.id,
-    )
-    db.add(job)
-    db.flush()
-    _log_admin_action(db, admin_user.id, "job_created", details=f"Created job {job.title}")
-    db.commit()
-    db.refresh(job)
-
-    return _job_post_response(db, job)
-
-
-@router.get("/jobs/import-template")
-def download_job_import_template(
-    admin_user: User = Depends(require_admin),
-):
-    _ = admin_user
-    content = build_job_template_xlsx()
-    return Response(
-        content=content,
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={"Content-Disposition": 'attachment; filename="job_import_template.xlsx"'},
-    )
-
-
-@router.post("/jobs/import", response_model=JobImportResult)
-async def import_jobs_from_spreadsheet(
-    file: UploadFile = File(...),
-    db: Session = Depends(get_db),
-    admin_user: User = Depends(require_admin),
-):
-    raw = await file.read()
-    xfn = (file.filename or "").strip().lower()
-    if xfn and not xfn.endswith(".xlsx"):
-        return JSONResponse(
-            status_code=400,
-            content=JobImportResult(
-                created=0,
-                skipped=0,
-                closed_previous=0,
-                errors=[JobImportRowError(row=0, detail="Upload a .xlsx file (Excel)")],
-            ).model_dump(mode="json"),
-        )
-    rows, errors, skipped = parse_job_import_xlsx(raw, db)
-
-    if errors:
-        return JSONResponse(
-            status_code=400,
-            content=JobImportResult(
-                created=0,
-                skipped=skipped,
-                closed_previous=0,
-                errors=[JobImportRowError(row=r, detail=d) for r, d in errors],
-            ).model_dump(mode="json"),
-        )
-
-    ensure_admin_job_create_quota(db, admin_user, additional_jobs=len(rows))
-
-    created = 0
-    for row in rows:
-        job = JobPost(
-            title=row["title"],
-            company_name=row["company_name"],
-            location=row["location"],
-            employment_type=row["employment_type"],
-            description=row["description"],
-            status=JobPostStatus.OPEN,
-            eligible_batch_id=row["eligible_batch_id"],
-            created_by_user_id=admin_user.id,
-        )
-        db.add(job)
-        created += 1
-
-    _log_admin_action(db, admin_user.id, "jobs_imported", details=f"Excel import: {created} jobs created")
-    db.commit()
-
-    return JobImportResult(created=created, skipped=skipped, closed_previous=0, errors=[])
-
-
-@router.post("/jobs/import-linkedin-json", response_model=JobImportResult)
-async def import_jobs_from_linkedin_json(
-    file: UploadFile = File(...),
-    replace_open_jobs: str = Form("false"),
-    db: Session = Depends(get_db),
-    admin_user: User = Depends(require_admin),
-):
-    replace_flag = replace_open_jobs.lower() in ("1", "true", "yes", "on")
-    raw = await file.read()
-    fn = (file.filename or "").strip().lower()
-    # If the client omitted Content-Disposition filename, fn may be empty — still allow valid JSON bytes.
-    if fn and not fn.endswith(".json"):
-        return JSONResponse(
-            status_code=400,
-            content=JobImportResult(
-                created=0,
-                skipped=0,
-                closed_previous=0,
-                errors=[JobImportRowError(row=0, detail="Upload a .json file (or omit filename and send raw JSON bytes)")],
-            ).model_dump(mode="json"),
-        )
-    rows, parse_errors, skipped = parse_linkedin_jobs_json(raw)
-
-    if not rows and parse_errors and any(r == 0 for r, _ in parse_errors):
-        return JSONResponse(
-            status_code=400,
-            content=JobImportResult(
-                created=0,
-                skipped=skipped,
-                closed_previous=0,
-                errors=[JobImportRowError(row=r, detail=d) for r, d in parse_errors],
-            ).model_dump(mode="json"),
-        )
-
-    closed_previous = 0
-    if replace_flag:
-        open_jobs = db.query(JobPost).filter(JobPost.status == JobPostStatus.OPEN).all()
-        for job in open_jobs:
-            job.status = JobPostStatus.CLOSED
-        closed_previous = len(open_jobs)
-        db.flush()
-
-    existing_urls = set(
-        db.scalars(
-            select(JobPost.external_apply_url).where(
-                JobPost.external_apply_url.is_not(None),
-                JobPost.status == JobPostStatus.OPEN,
-            )
-        ).all()
-    )
-
-    planned_creates = 0
-    for row in rows:
-        url = row.get("external_apply_url")
-        if url and url in existing_urls:
-            continue
-        planned_creates += 1
-
-    ensure_admin_job_create_quota(db, admin_user, additional_jobs=planned_creates)
-
-    created = 0
-    for row in rows:
-        url = row.get("external_apply_url")
-        if url and url in existing_urls:
-            skipped += 1
-            continue
-        job = JobPost(
-            title=row["title"],
-            company_name=row["company_name"],
-            location=row["location"],
-            employment_type=row["employment_type"],
-            description=row["description"],
-            external_apply_url=url,
-            listing_metadata=row["listing_metadata"],
-            status=JobPostStatus.OPEN,
-            eligible_batch_id=row["eligible_batch_id"],
-            created_by_user_id=admin_user.id,
-        )
-        db.add(job)
-        created += 1
-        if url:
-            existing_urls.add(url)
-
-    err_models = [JobImportRowError(row=r, detail=d) for r, d in parse_errors]
-    try:
-        _log_admin_action(
-            db,
-            admin_user.id,
-            "jobs_imported",
-            details=(
-                f"LinkedIn JSON import: {created} created, {skipped} skipped, "
-                f"{closed_previous} previous open jobs closed"
-            ),
-        )
-        db.commit()
-    except Exception as exc:  # noqa: BLE001
-        db.rollback()
-        detail = str(exc)
-        if len(detail) > 500:
-            detail = detail[:497] + "..."
-        return JSONResponse(
-            status_code=500,
-            content=JobImportResult(
-                created=0,
-                skipped=skipped,
-                closed_previous=0,
-                errors=[
-                    JobImportRowError(
-                        row=0,
-                        detail=(
-                            "Database error while saving jobs. Restart the API so startup migrations run, "
-                            f"or run Alembic upgrades. Details: {detail}"
-                        ),
-                    )
-                ],
-            ).model_dump(mode="json"),
-        )
-
-    return JobImportResult(
-        created=created,
-        skipped=skipped,
-        closed_previous=closed_previous,
-        errors=err_models,
-    )
-
-
 @router.get("/role-split-insights", response_model=RoleSplitInsightsResponse)
 def get_role_split_insights(
     db: Session = Depends(get_db),
@@ -922,7 +568,6 @@ def update_registration_waitlist_status(
     entry.status = new_status
     db.add(entry)
 
-    # Activate / deactivate the corresponding user account
     linked_user = db.query(User).filter(User.email == entry.email).first()
     if linked_user:
         if new_status == "approved" and not linked_user.is_active:
@@ -1111,115 +756,6 @@ def delete_batch(
     _log_admin_action(db, admin_user.id, "batch_deleted", details=f"Deleted batch {name}")
     db.commit()
     return {"detail": f"Batch '{name}' deleted"}
-
-
-# ---------------------------------------------------------------------------
-# Job update / delete
-# ---------------------------------------------------------------------------
-
-@router.patch("/jobs/{job_id}", response_model=JobPostResponse)
-def update_job(
-    job_id: int,
-    payload: JobPostUpdateRequest,
-    db: Session = Depends(get_db),
-    admin_user: User = Depends(require_admin),
-):
-    job = db.query(JobPost).filter(JobPost.id == job_id).first()
-    if not job:
-        raise HTTPException(status_code=404, detail="Job not found")
-
-    updates = payload.model_dump(exclude_unset=True)
-    changed: list[str] = []
-
-    if "status" in updates and updates["status"] is not None:
-        job.status = JobPostStatus(updates.pop("status"))
-        changed.append("status")
-
-    if "eligible_batch_id" in updates:
-        bid = updates.pop("eligible_batch_id")
-        if bid is not None:
-            if not db.query(LearningBatch).filter(LearningBatch.id == bid).first():
-                raise HTTPException(status_code=404, detail="Eligible batch not found")
-        job.eligible_batch_id = bid
-        changed.append("eligible_batch_id")
-
-    if "is_fixture" in updates:
-        job.is_fixture = bool(updates.pop("is_fixture"))
-        changed.append("is_fixture")
-
-    if "sort_order" in updates and updates["sort_order"] is not None:
-        job.sort_order = int(updates.pop("sort_order"))
-        changed.append("sort_order")
-
-    for field, value in updates.items():
-        if value is not None:
-            setattr(job, field, value)
-            changed.append(field)
-
-    db.add(job)
-    _log_admin_action(db, admin_user.id, "job_updated", details=f"Updated job {job.title}: {', '.join(changed)}")
-    db.commit()
-    db.refresh(job)
-
-    return _job_post_response(db, job)
-
-
-@router.put("/jobs/reorder", response_model=list[JobPostResponse])
-def reorder_jobs(
-    payload: JobReorderRequest,
-    db: Session = Depends(get_db),
-    admin_user: User = Depends(require_admin),
-):
-    for index, job_id in enumerate(payload.ordered_job_ids):
-        job = db.query(JobPost).filter(JobPost.id == job_id).first()
-        if not job:
-            raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
-        job.sort_order = index
-
-    _log_admin_action(
-        db,
-        admin_user.id,
-        "jobs_reordered",
-        details=f"Reordered {len(payload.ordered_job_ids)} jobs",
-    )
-    db.commit()
-    jobs = (
-        db.query(JobPost)
-        .order_by(JobPost.sort_order.asc(), JobPost.created_at.desc())
-        .all()
-    )
-    return [_job_post_response(db, job) for job in jobs]
-
-
-@router.post("/jobs/seed-fixture", response_model=JobFixtureSeedResult)
-def admin_seed_fixture_jobs(
-    db: Session = Depends(get_db),
-    admin_user: User = Depends(require_admin),
-):
-    upserted = seed_fixture_job_board(db, created_by_user_id=admin_user.id)
-    _log_admin_action(db, admin_user.id, "fixture_jobs_seeded", details=f"Upserted {upserted} fixture jobs")
-    db.commit()
-    return JobFixtureSeedResult(
-        upserted=upserted,
-        message=f"Loaded {upserted} fixture job listings (students see them as normal roles).",
-    )
-
-
-@router.delete("/jobs/{job_id}")
-def delete_job(
-    job_id: int,
-    db: Session = Depends(get_db),
-    admin_user: User = Depends(require_admin),
-):
-    job = db.query(JobPost).filter(JobPost.id == job_id).first()
-    if not job:
-        raise HTTPException(status_code=404, detail="Job not found")
-
-    title = job.title
-    db.delete(job)
-    _log_admin_action(db, admin_user.id, "job_deleted", details=f"Deleted job {title}")
-    db.commit()
-    return {"detail": f"Job '{title}' deleted"}
 
 
 # ---------------------------------------------------------------------------

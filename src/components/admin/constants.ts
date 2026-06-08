@@ -1,4 +1,4 @@
-import type { AdminBatchCreatePayload, AdminJobCreatePayload, AdminStudentCreatePayload } from '@/lib/api'
+import type { AdminBatchCreatePayload, AdminStudentCreatePayload } from '@/lib/api'
 
 import type { StudentWorkflowStage } from './types'
 
@@ -18,15 +18,6 @@ export const defaultCreatePayload: AdminStudentCreatePayload = {
   cohort_name: null,
   batch_name: null,
   is_active: true,
-}
-
-export const defaultJobPayload: AdminJobCreatePayload = {
-  title: '',
-  company_name: '',
-  location: '',
-  employment_type: 'Full-time',
-  description: '',
-  eligible_batch_id: null,
 }
 
 export const defaultBatchPayload: AdminBatchCreatePayload = {

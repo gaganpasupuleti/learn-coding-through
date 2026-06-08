@@ -18,7 +18,7 @@ import { FlowRoadmapPage } from '@/components/pages/FlowRoadmapPage'
 import { LearningPlannerPage } from '@/components/pages/LearningPlannerPage'
 import { StudentDashboardPage } from '@/components/pages/StudentDashboardPage'
 import { StudentHubPage } from '@/components/pages/StudentHubPage'
-import { StudentJobsPage } from '@/components/pages/StudentJobsPage'
+import { JobSpyPage } from '@/components/pages/JobSpyPage'
 import { PasswordSetupGate } from '@/components/auth/PasswordSetupGate'
 import {
   getStoredUser,
@@ -54,7 +54,7 @@ export type StudentPage =
   | 'roadmapper'
   | 'flow-roadmap'
   | 'hub'
-  | 'jobs'
+  | 'jobspy'
   | 'learning-planner'
 
 type AuthState = AuthUser | null
@@ -230,10 +230,10 @@ function App() {
         )}
 
         {studentPage === 'hub' && (
-          <StudentHubPage onOpenJobBoard={() => handleStudentNavigate('jobs')} />
+          <StudentHubPage onOpenJobBoard={() => handleStudentNavigate('jobspy')} />
         )}
 
-        {studentPage === 'jobs' && <StudentJobsPage />}
+        {studentPage === 'jobspy' && <JobSpyPage />}
 
         {studentPage === 'learning-planner' && (
           <LearningPlannerPage user={user} onNavigate={handleStudentNavigate} />

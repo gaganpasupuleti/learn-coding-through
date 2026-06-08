@@ -5,8 +5,6 @@ import {
   fetchMyEnrollment,
   fetchMyStageProgress,
   fetchMySubmittedProjects,
-  fetchOpenJobs,
-  fetchStudentJobApplications,
   fetchTypingAttempts,
   fetchUpcomingDeadlines,
   fetchUpcomingSchedule,
@@ -14,8 +12,6 @@ import {
   type EnrollmentMe,
   type MySubmittedProject,
   type StageProgressRecord,
-  type StudentJobApplicationsMe,
-  type StudentJobOpen,
   type TypingAttempt,
   type UpcomingDeadlines,
   type UpcomingSession,
@@ -32,12 +28,10 @@ export interface StudentDashboardSnapshot {
   catalogSteps: number | null
   careerJourney: CareerJourneySummary | null
   typingAttempts: TypingAttempt[]
-  applications: StudentJobApplicationsMe
   enrollment: EnrollmentMe | null
   submittedProjects: MySubmittedProject[]
   upcomingSessions: UpcomingSession[]
   deadlines: UpcomingDeadlines
-  openJobs: StudentJobOpen[]
   loading: boolean
   reload: () => Promise<void>
 }
@@ -47,15 +41,10 @@ export function useStudentDashboardSnapshot(user: AuthUser): StudentDashboardSna
   const [catalogSteps, setCatalogSteps] = useState<number | null>(null)
   const [careerJourney, setCareerJourney] = useState<CareerJourneySummary | null>(null)
   const [typingAttempts, setTypingAttempts] = useState<TypingAttempt[]>([])
-  const [applications, setApplications] = useState<StudentJobApplicationsMe>({
-    count: 0,
-    items: [],
-  })
   const [enrollment, setEnrollment] = useState<EnrollmentMe | null>(null)
   const [submittedProjects, setSubmittedProjects] = useState<MySubmittedProject[]>([])
   const [upcomingSessions, setUpcomingSessions] = useState<UpcomingSession[]>([])
   const [deadlines, setDeadlines] = useState<UpcomingDeadlines>({ quizzes: [], stages: [] })
-  const [openJobs, setOpenJobs] = useState<StudentJobOpen[]>([])
   const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
@@ -66,33 +55,28 @@ export function useStudentDashboardSnapshot(user: AuthUser): StudentDashboardSna
         console.warn(`[Dashboard] ${label} failed:`, err)
         return undefined
       }
-      const [stages, catalog, typing, apps, enr, projs, sessions, dl, jobs] = await Promise.all([
+      const [stages, catalog, typing, enr, projs, sessions, dl] = await Promise.all([
         fetchMyStageProgress().catch(warn('stageProgress')),
         fetchUserProgress().catch(warn('catalogProgress')),
         fetchTypingAttempts(30).catch(warn('typing')),
-        fetchStudentJobApplications().catch(warn('jobApps')),
         fetchMyEnrollment().catch(warn('enrollment')),
         fetchMySubmittedProjects().catch(warn('projects')),
         fetchUpcomingSchedule(5).catch(warn('schedule')),
         fetchUpcomingDeadlines().catch(warn('deadlines')),
-        fetchOpenJobs().catch(warn('openJobs')),
       ])
       const catalogCount = catalog?.completedSteps?.length ?? 0
       const blended = blendStudentDashboardDummyIfNeeded(user, {
         stageRows: stages ?? [],
         catalogSteps: catalogCount,
         typingAttempts: typing ?? [],
-        applications: apps ?? { count: 0, items: [] },
         enrollment: enr ?? { attendance_pct: null, batch_names: [], batch_start_date: null, selected_role_id: null },
         submittedProjects: projs ?? [],
       })
       setStageRows(blended.stageRows)
       setCatalogSteps(blended.catalogSteps)
       setTypingAttempts(blended.typingAttempts)
-      setApplications(blended.applications)
       setEnrollment(blended.enrollment)
       setSubmittedProjects(blended.submittedProjects)
-      setOpenJobs(jobs ?? [])
       const scheduleBlend = blendStudentScheduleDummyIfNeeded(
         user,
         sessions ?? [],
@@ -100,7 +84,7 @@ export function useStudentDashboardSnapshot(user: AuthUser): StudentDashboardSna
       )
       setUpcomingSessions(scheduleBlend.sessions)
       setDeadlines(scheduleBlend.deadlines)
-      const failCount = [stages, catalog, typing, apps, enr, projs, sessions, dl, jobs].filter(
+      const failCount = [stages, catalog, typing, enr, projs, sessions, dl].filter(
         (v) => v === undefined,
       ).length
       const hasCoreData =
@@ -120,17 +104,14 @@ export function useStudentDashboardSnapshot(user: AuthUser): StudentDashboardSna
         stageRows: [],
         catalogSteps: 0,
         typingAttempts: [],
-        applications: { count: 0, items: [] },
         enrollment: { attendance_pct: null, batch_names: [], batch_start_date: null, selected_role_id: null },
         submittedProjects: [],
       })
       setStageRows(blended.stageRows)
       setCatalogSteps(blended.catalogSteps)
       setTypingAttempts(blended.typingAttempts)
-      setApplications(blended.applications)
       setEnrollment(blended.enrollment)
       setSubmittedProjects(blended.submittedProjects)
-      setOpenJobs([])
       const scheduleBlend = blendStudentScheduleDummyIfNeeded(user, [], {
         quizzes: [],
         stages: [],
@@ -151,12 +132,10 @@ export function useStudentDashboardSnapshot(user: AuthUser): StudentDashboardSna
     catalogSteps,
     careerJourney,
     typingAttempts,
-    applications,
     enrollment,
     submittedProjects,
     upcomingSessions,
     deadlines,
-    openJobs,
     loading,
     reload: load,
   }

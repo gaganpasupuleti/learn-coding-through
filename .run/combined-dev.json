@@ -1,9 +1,9 @@
 ﻿{
-    "startedAt":  "2026-06-05T23:25:18.5288239+05:30",
+    "startedAt":  "2026-06-08T22:13:24.5928806+05:30",
     "processes":  [
                       {
                           "name":  "main-backend",
-                          "pid":  20332,
+                          "pid":  39684,
                           "cwd":  "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\learn-coding-through\\backend",
                           "command":  "python -m uvicorn app.main:app --host 127.0.0.1 --port 8000",
                           "stdout":  "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\learn-coding-through\\.run\\logs\\main-backend.out.log",
@@ -11,7 +11,7 @@
                       },
                       {
                           "name":  "main-frontend",
-                          "pid":  4172,
+                          "pid":  44900,
                           "cwd":  "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\learn-coding-through",
                           "command":  "npm run dev",
                           "stdout":  "C:\\Users\\Admin\\OneDrive\\Documents\\cursor\\learn-coding-through\\.run\\logs\\main-frontend.out.log",

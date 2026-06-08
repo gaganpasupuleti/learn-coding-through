@@ -12,7 +12,7 @@ export type LandingNavTarget =
   | 'flow-roadmap'
   | 'typing'
   | 'hub'
-  | 'jobs'
+  | 'jobspy'
 
 interface LandingPageProps {
   onNavigate: (page: LandingNavTarget) => void
@@ -125,7 +125,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
       <LandingProgressStrip
         onOpenHub={() => onNavigate('hub')}
         onOpenCareerMap={() => onNavigate('roadmapper')}
-        onOpenLiveJobs={() => onNavigate('jobs')}
+        onOpenJobBoard={() => onNavigate('jobspy')}
       />
 
       {/* Curated Learning Paths */}

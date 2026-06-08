@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import {
   BookOpen,
-  Briefcase,
   CalendarBlank,
   Cube,
   Lightning,
@@ -14,11 +13,10 @@ import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 import { useAdminWorkspaceContext } from '../AdminWorkspaceContext'
-import { bucketIsoDatesInRange, bucketJobsByWeekInRange } from '../utils/chartSeries'
+import { bucketIsoDatesInRange } from '../utils/chartSeries'
 import {
   computeScopedUserIds,
   filterActivityLogs,
-  filterJobsForSlicers,
   filterUserActivity,
   formatSlicerSummary,
   type QuarterSlice,
@@ -27,7 +25,6 @@ import {
 } from '../utils/dashboardSlicerLogic'
 import {
   AdminActivityLineChart,
-  AdminJobsVolumeBarChart,
   AdminUserActivityAreaChart,
 } from '../widgets/DashboardCharts'
 import { DashboardSlicers } from '../widgets/DashboardSlicers'
@@ -66,7 +63,6 @@ export function DashboardView() {
     roleSplitInsights,
     activityLogs,
     userActivityEntries,
-    jobs,
     students,
     batches,
     setSection,
@@ -150,12 +146,6 @@ export function DashboardView() {
     [userActivityEntries, dateRange, scopedUserIds],
   )
 
-  const filteredJobs = useMemo(
-    () =>
-      filterJobsForSlicers(jobs, students, batches, dateRange.start, dateRange.end, slicerMentor, slicerBatchId, slicerStudentId),
-    [jobs, students, batches, dateRange, slicerMentor, slicerBatchId, slicerStudentId],
-  )
-
   const adminActivitySeries = useMemo(
     () => bucketIsoDatesInRange(filteredActivityLogs.map((e) => e.created_at), dateRange.start, dateRange.end),
     [filteredActivityLogs, dateRange],
@@ -164,11 +154,6 @@ export function DashboardView() {
     () => bucketIsoDatesInRange(filteredUserActivity.map((e) => e.occurred_at), dateRange.start, dateRange.end),
     [filteredUserActivity, dateRange],
   )
-  const jobsWeekSeries = useMemo(
-    () => bucketJobsByWeekInRange(filteredJobs, dateRange.start, dateRange.end),
-    [filteredJobs, dateRange],
-  )
-
   const selectedBatch = slicerBatchId != null ? batches.find((b) => b.id === slicerBatchId) ?? null : null
   const selectedStudent = slicerStudentId != null ? students.find((s) => s.id === slicerStudentId) ?? null : null
 
@@ -200,7 +185,6 @@ export function DashboardView() {
   }
 
   const waitlistPending = overview?.waitlist_pending ?? 0
-  const openJobs = overview?.total_jobs_open ?? monthlyKpis?.open_jobs ?? '—'
 
   const iconSm = (node: ReactNode) => (
     <span className="text-slate-400 transition-colors group-hover:text-primary dark:text-muted-foreground [&_svg]:size-3.5">
@@ -242,7 +226,6 @@ export function DashboardView() {
           <div className="mt-1.5 grid grid-cols-2 gap-1.5">
             <MiniStat label="Users" value={overview?.total_users ?? metrics?.total_students ?? '—'} />
             <MiniStat label="Active batches" value={overview?.active_batches ?? monthlyKpis?.active_classes_running ?? '—'} />
-            <MiniStat label="Open jobs" value={overview?.total_jobs_open ?? monthlyKpis?.open_jobs ?? '—'} />
             <MiniStat label="Courses" value={overview ? overview.catalog_quizzes + overview.catalog_projects : '—'} />
             <MiniStat label="WL pending" value={overview?.waitlist_pending ?? '—'} />
             <MiniStat label="Admins" value={overview?.total_admins ?? '—'} />
@@ -282,9 +265,9 @@ export function DashboardView() {
                 size="sm"
                 variant="outline"
                 className="h-7 border-primary-foreground/30 bg-primary-foreground/12 px-2.5 text-[11px] text-primary-foreground hover:bg-primary-foreground/22"
-                onClick={() => setSection('jobs')}
+                onClick={() => setSection('jobspy-ops')}
               >
-                Jobs
+                JobSpy Ops
               </Button>
             </div>
           </div>
@@ -294,13 +277,8 @@ export function DashboardView() {
                 <span className="font-semibold tabular-nums">{waitlistPending}</span> waitlist pending.{' '}
               </>
             ) : (
-              <>Waitlist clear. </>
+              <>Waitlist clear. Job board listings are powered by JobSpy. </>
             )}
-            {typeof openJobs === 'number' ? (
-              <>
-                <span className="font-semibold tabular-nums">{openJobs}</span> open roles.
-              </>
-            ) : null}
           </p>
         </Card>
 
@@ -324,9 +302,8 @@ export function DashboardView() {
 
       {/* Charts */}
       <div className="grid grid-cols-12 gap-2">
-        <AdminActivityLineChart data={adminActivitySeries} compact className="col-span-12 sm:col-span-6 xl:col-span-4" />
-        <AdminUserActivityAreaChart data={userActivitySeries} compact className="col-span-12 sm:col-span-6 xl:col-span-4" />
-        <AdminJobsVolumeBarChart data={jobsWeekSeries} compact className="col-span-12 xl:col-span-4" />
+        <AdminActivityLineChart data={adminActivitySeries} compact className="col-span-12 sm:col-span-6" />
+        <AdminUserActivityAreaChart data={userActivitySeries} compact className="col-span-12 sm:col-span-6" />
       </div>
 
       {/* KPI matrix */}
@@ -363,13 +340,6 @@ export function DashboardView() {
         />
         <KpiStatCard
           compact
-          label="Hires (mo)"
-          value={monthlyKpis?.hires_this_month ?? '—'}
-          icon={iconSm(<Briefcase />)}
-          onClick={() => setSection('jobs')}
-        />
-        <KpiStatCard
-          compact
           label="Total batches"
           value={overview?.total_batches ?? '—'}
           icon={iconSm(<CalendarBlank />)}
@@ -381,20 +351,6 @@ export function DashboardView() {
           value={overview?.active_batches ?? '—'}
           icon={iconSm(<CalendarBlank />)}
           onClick={() => setSection('classes')}
-        />
-        <KpiStatCard
-          compact
-          label="Open jobs"
-          value={overview?.total_jobs_open ?? '—'}
-          icon={iconSm(<Briefcase />)}
-          onClick={() => setSection('jobs')}
-        />
-        <KpiStatCard
-          compact
-          label="Job applications"
-          value={overview?.total_job_applications ?? '—'}
-          icon={iconSm(<Briefcase />)}
-          onClick={() => setSection('jobs')}
         />
         <KpiStatCard
           compact

@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.security import get_password_hash
-from app.services.job_fixture_seed import seed_fixture_job_board
 from app.models.models import (
     BatchEnrollment,
     BatchMode,
@@ -15,10 +14,6 @@ from app.models.models import (
     ClassSessionStatus,
     DifficultyLevel,
     EnrollmentRole,
-    JobApplication,
-    JobApplicationStatus,
-    JobPost,
-    JobPostStatus,
     LearningBatch,
     ProgressTracking,
     Project,
@@ -867,29 +862,6 @@ def _apply_student_dashboard_kpi_seed(db: Session, user: User) -> None:
         )
     else:
         enr.attendance_pct = 88
-
-    seed_fixture_job_board(db, created_by_user_id=user.id, eligible_batch_id=batch.id)
-    job = (
-        db.query(JobPost)
-        .filter(JobPost.status == JobPostStatus.OPEN, JobPost.is_fixture.is_(True))
-        .order_by(JobPost.sort_order.asc())
-        .first()
-    )
-
-    if job:
-        app_row = (
-            db.query(JobApplication)
-            .filter(JobApplication.job_post_id == job.id, JobApplication.student_user_id == user.id)
-            .first()
-        )
-        if not app_row:
-            db.add(
-                JobApplication(
-                    job_post_id=job.id,
-                    student_user_id=user.id,
-                    status=JobApplicationStatus.APPLIED,
-                )
-            )
 
     slug = "frontend-foundations"
     cat = db.query(ProjectCatalog).filter(ProjectCatalog.slug == slug).first()

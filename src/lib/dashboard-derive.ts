@@ -1,7 +1,6 @@
 import type {
   MySubmittedProject,
   StageProgressRecord,
-  StudentJobOpen,
   TypingAttempt,
   UpcomingDeadlines,
 } from '@/lib/api'
@@ -19,10 +18,6 @@ export interface ReadinessBreakdown {
   skill: number
   interview: number
   ats: number
-}
-
-export interface ScoredJob extends StudentJobOpen {
-  matchPct: number
 }
 
 export interface DeadlineBuckets {
@@ -152,50 +147,6 @@ export function computeReadinessBreakdown(snapshot: {
 
   const overall = Math.round((resume + skill + interview + ats) / 4)
   return { overall, resume, skill, interview, ats }
-}
-
-function tokenize(text: string): Set<string> {
-  return new Set(
-    text
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, ' ')
-      .split(/\s+/)
-      .filter((w) => w.length > 2),
-  )
-}
-
-function jaccardLike(a: Set<string>, b: Set<string>): number {
-  if (a.size === 0 || b.size === 0) return 0
-  let intersection = 0
-  for (const w of a) {
-    if (b.has(w)) intersection++
-  }
-  const union = a.size + b.size - intersection
-  return union === 0 ? 0 : intersection / union
-}
-
-export function scoreJobsForCareer(
-  jobs: StudentJobOpen[],
-  careerTitle: string | null,
-  careerSkills: string[] = [],
-): ScoredJob[] {
-  const hasCareer = Boolean(careerTitle)
-  const careerTokens = tokenize([careerTitle ?? '', ...careerSkills].join(' '))
-
-  const scored = jobs.map((job) => {
-    const jobTokens = tokenize(`${job.title} ${job.company_name}`)
-    const raw = jaccardLike(careerTokens, jobTokens)
-    let matchPct = hasCareer ? Math.round(72 + raw * 24) : 0
-    if (hasCareer) matchPct = Math.min(96, Math.max(72, matchPct))
-    return { ...job, matchPct }
-  })
-
-  if (hasCareer) {
-    return scored.sort((a, b) => b.matchPct - a.matchPct)
-  }
-  return scored.sort(
-    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-  )
 }
 
 export function deriveStageJourneyFallback(stageRows: StageProgressRecord[]): {

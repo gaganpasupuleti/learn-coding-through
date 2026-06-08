@@ -22,10 +22,23 @@ CodeQuest is a career-acceleration learning platform: students use projects, pra
 | `VITE_GOOGLE_CLIENT_ID` | Web client ID (optional until Google Sign-In needed) | Same as backend `GOOGLE_OAUTH_CLIENT_ID` |
 | `VITE_API_URL` / `VITE_API_BASE_URL` | **Leave empty** so the browser uses same-origin `/api/v1` and Vite proxies to the API | Full API origin, e.g. `https://api.example.com` |
 | `VITE_API_PROXY_TARGET` | `http://127.0.0.1:8000` (Vite dev **server** proxy only; not used as the browser API base) | N/A |
+| `VITE_JOBS_API_URL` | **Leave empty** — browser calls same-origin `/jobs-api` and Vite proxies to JobSpy on **8001** | Full JobSpy API origin (Railway URL) |
+| `VITE_JOBS_API_PROXY_TARGET` | `http://127.0.0.1:8001` (Vite dev proxy only) | N/A |
+| `VITE_JOBS_ADMIN_API_KEY` | Optional default for admin **JobSpy Ops** scrape panel | Same; or set via runtime config |
 
 **Google OAuth:** In Google Cloud Console, add **Authorized JavaScript origins** for your frontend origin(s) (e.g. `http://127.0.0.1:5000`, production URL). This app uses **ID token** verification; backend variable name is **`GOOGLE_OAUTH_CLIENT_ID`** (not `GOOGLE_CLIENT_ID`).
 
-**Admin job import (template download, Excel, LinkedIn JSON):** If you see **HTTP 405 Method Not Allowed** or imports hit the wrong host, keep **`VITE_API_URL` / `VITE_API_BASE_URL` empty** in local dev so the browser uses same-origin `/api/v1/...` and Vite proxies to Uvicorn. Do **not** treat `VITE_API_PROXY_TARGET` as the browser API URL (it is only for the Vite dev proxy). **Restart Uvicorn** after pulling changes so port 8000 is running the same code as this repo (stale processes often expose old routes and odd 405s). In production, either reverse-proxy **`/api/*` → FastAPI** on the same host as the SPA, or set the frontend’s API base to the **real API origin** only (not a static file host). Runtime deployments may inject `window.__RUNTIME_CONFIG__.VITE_API_URL` via `public/runtime-config.js`—use the same rules.
+**Job board (JobSpy):** Student **Job Board** and admin **JobSpy Ops** call a **separate** [JobSpy](https://github.com/gaganpasupuleti/JobSpy) FastAPI backend — not CodeQuest `/api/v1/jobs`. Clone JobSpy alongside this repo, run its API on **8001**, and set JobSpy `CORS_ORIGINS` to include CodeQuest frontend origins (`http://localhost:5000`, `http://127.0.0.1:5000`, production URL). In production, set `VITE_JOBS_API_URL` on the CodeQuest frontend build to the deployed JobSpy API URL.
+
+### Local two-backend setup
+
+| Service | Port | Start |
+| --- | --- | --- |
+| CodeQuest API | **8000** | `npm run dev:all` or Uvicorn from `backend/` |
+| CodeQuest frontend | **5000** | Vite (included in `dev:all`) |
+| JobSpy API | **8001** | Clone [JobSpy](https://github.com/gaganpasupuleti/JobSpy), `cd backend`, follow its README (PostgreSQL + `uvicorn` on 8001) |
+
+Smoke: `npm run qa:jobspy-smoke` (optional `JOBS_ADMIN_API_KEY` for dashboard stats).
 
 ### Backend (`backend/.env`)
 
@@ -78,8 +91,9 @@ Run before each release candidate:
 5. **Projects:** list loads; open one project; learning view loads; back returns to list.
 6. **Quiz / Typing:** open page; no unhandled blank screen.
 7. **Career Map** vs **Flow Path:** both open; content visible.
-8. **Admin:** log in as admin; dashboard loads (if admin user available).
-9. **Logout:** session clears; login screen returns.
+8. **Job Board:** with JobSpy on `:8001`, listings load; external apply opens in new tab.
+9. **Admin:** log in as admin; dashboard loads; **JobSpy Ops** accepts admin key and shows stats.
+10. **Logout:** session clears; login screen returns.
 
 ## Page inventory and polish status
 
@@ -100,10 +114,12 @@ Use: `[ ]` not started · `[~]` in progress · `[x]` done
 - `[x]` **QuizPage** — list error, empty, and retry paths
 - `[x]` **CareerMapperPage** — short explainer vs Flow Path
 - `[x]` **FlowRoadmapPage** — title aligned with nav; distinction from Career Map
+- `[x]` **JobSpyPage** — Job Board powered by external JobSpy API; filters + external apply
 
 ### Admin
 
 - `[x]` **AdminPage** — student list empty state; confirm before student deactivation
+- `[x]` **JobSpyOpsView** — scrape controls and live/inactive counts via JobSpy API
 
 ### Per-page checklist (copy into notes)
 
