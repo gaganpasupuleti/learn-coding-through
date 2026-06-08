@@ -8,31 +8,26 @@ export interface ExecutionPrepareResult {
 }
 
 /**
- * Prepares user code for sandbox execution.
- * Backend executors currently use stdin=DEVNULL — Python stdin is mocked client-side
- * until POST /api/v1/execute accepts an optional stdin field (planned).
+ * Prepares code for backend sandbox execution (JavaScript in Code Practice Ground).
+ * Python in the new workbench uses Pyodide — see `python/pyodideRunner.ts`.
+ * Legacy PracticePage still uses backend Python subprocess separately.
  */
 export function prepareCodeForExecution(
   language: CodePracticeLanguageMode,
   code: string,
   stdin?: string,
 ): ExecutionPrepareResult {
+  if (language === 'python') {
+    return {
+      code,
+      stdinApplied: false,
+      note: 'Python uses Pyodide in Code Workbench — not backend stdin mock.',
+    }
+  }
+
   const trimmedStdin = stdin?.trim()
   if (!trimmedStdin) {
     return { code, stdinApplied: false }
-  }
-
-  if (language === 'python') {
-    const preamble = [
-      'import io, sys',
-      `sys.stdin = io.StringIO(${JSON.stringify(stdin)})`,
-      '',
-    ].join('\n')
-    return {
-      code: `${preamble}${code}`,
-      stdinApplied: true,
-      note: 'Stdin mocked in Python until backend stdin support ships.',
-    }
   }
 
   return {

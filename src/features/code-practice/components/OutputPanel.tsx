@@ -8,9 +8,18 @@ interface OutputPanelProps {
   lastRunMs: number | null
   sampleInput?: string
   executionNote?: string | null
+  runtimeLabel?: string | null
 }
 
-export function OutputPanel({ output, error, consoleLines, lastRunMs, sampleInput, executionNote }: OutputPanelProps) {
+export function OutputPanel({
+  output,
+  error,
+  consoleLines,
+  lastRunMs,
+  sampleInput,
+  executionNote,
+  runtimeLabel,
+}: OutputPanelProps) {
   return (
     <aside className="flex h-full flex-col border-l border-slate-800 bg-slate-950">
       <div className="flex items-center justify-between border-b border-slate-800 px-3 py-2">
@@ -18,7 +27,12 @@ export function OutputPanel({ output, error, consoleLines, lastRunMs, sampleInpu
           <Terminal className="h-3.5 w-3.5 text-sky-400" />
           Output
         </div>
-        <span className="text-[10px] text-slate-600">{formatDuration(lastRunMs)}</span>
+        <div className="flex flex-col items-end gap-0.5">
+          {runtimeLabel && (
+            <span className="text-[10px] text-emerald-500/90">Runtime: {runtimeLabel}</span>
+          )}
+          <span className="text-[10px] text-slate-600">{formatDuration(lastRunMs)}</span>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 space-y-3 text-xs font-mono">

@@ -28,11 +28,8 @@ import { resolveStarterCode } from '../data/starterTemplates'
 import { buildReactPreviewCheckResults, buildTestResultsFromCases } from '../utils/resultComparator'
 import { createExecutionTimer } from '../utils/executionTimer'
 import { classifyRunError, toLegacyMistakeLanguage } from '../utils/mistakeClassifier'
-import {
-  prepareCodeForExecution,
-  resolveQuestionTestCases,
-  resolveRunStdin,
-} from '../utils/executionAdapter'
+import { resolveQuestionTestCases, resolveRunStdin } from '../utils/executionAdapter'
+import { isPyodideReady, runPythonWithPyodide } from '../python/pyodideRunner'
 import { cn } from '@/lib/utils'
 
 const ATTEMPTS_KEY = 'codequest-code-practice-attempts'
@@ -56,8 +53,7 @@ function writeAttempts(items: CodePracticeAttempt[]) {
   }
 }
 
-function toSandboxLanguage(language: CodePracticeLanguageMode): 'python' | 'javascript' | null {
-  if (language === 'python') return 'python'
+function toSandboxLanguage(language: CodePracticeLanguageMode): 'javascript' | null {
   if (language === 'javascript') return 'javascript'
   return null
 }
@@ -84,6 +80,7 @@ export function CodePracticePage() {
   const [activeTestCaseId, setActiveTestCaseId] = useState<string | null>(null)
   const [runStdin, setRunStdin] = useState('')
   const [executionNote, setExecutionNote] = useState<string | null>(null)
+  const [runtimeLabel, setRuntimeLabel] = useState<string | null>(null)
 
   const languageMeta = useMemo(
     () => CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === language) ?? CODE_PRACTICE_LANGUAGE_MODES[0],
@@ -107,6 +104,7 @@ export function CodePracticePage() {
     setRevealedHintCount(0)
     setLastRunMs(null)
     setExecutionNote(null)
+    setRuntimeLabel(null)
   }, [])
 
   const loadLanguageQuestion = useCallback((nextLanguage: CodePracticeLanguageMode, nextQuestionId?: string | null) => {
@@ -143,21 +141,34 @@ export function CodePracticePage() {
     setError(null)
     setTestResults([])
     setExecutionNote(null)
+    setRuntimeLabel(null)
     toast.success('Starter code restored.')
   }
 
-  const executeOnce = async (stdin: string): Promise<{ output: string; error: string | null; note: string | null }> => {
+  const executeOnce = async (
+    stdin: string,
+    onPythonLoading?: () => void,
+  ): Promise<{ output: string; error: string | null; note: string | null; executionTimeMs?: number }> => {
+    if (language === 'python') {
+      const result = await runPythonWithPyodide(code, stdin || undefined, onPythonLoading)
+      return {
+        output: result.output,
+        error: result.error,
+        note: result.error ? null : result.note ?? 'Runtime: Pyodide',
+        executionTimeMs: result.executionTimeMs,
+      }
+    }
+
     const execLang = toSandboxLanguage(language)
     if (!execLang) {
       return { output: '', error: 'Language not executable yet.', note: null }
     }
 
-    const prepared = prepareCodeForExecution(language, code, stdin)
-    const result = await sandbox.execute(prepared.code, execLang)
+    const result = await sandbox.execute(code, execLang)
     if (result.error) {
-      return { output: '', error: result.error, note: prepared.note ?? null }
+      return { output: '', error: result.error, note: null }
     }
-    return { output: result.output || '', error: null, note: prepared.note ?? null }
+    return { output: result.output || '', error: null, note: null }
   }
 
   const handleReactRun = (): string => {
@@ -186,15 +197,30 @@ export function CodePracticePage() {
     setRunStdin(stdin)
     setIsRunning(true)
     setError(null)
-    setOutput('Running…')
+    setRuntimeLabel(null)
     setExecutionNote(null)
+    setOutput(
+      language === 'python'
+        ? isPyodideReady()
+          ? 'Running Python…'
+          : 'Starting Python runtime…'
+        : 'Running…',
+    )
     const timer = createExecutionTimer()
 
     try {
-      const { output: out, error: runError, note } = await executeOnce(stdin)
-      const elapsed = timer.elapsedMs()
+      const { output: out, error: runError, note, executionTimeMs } = await executeOnce(
+        stdin,
+        language === 'python'
+          ? () => setOutput('Starting Python runtime…')
+          : undefined,
+      )
+      const elapsed = executionTimeMs ?? timer.elapsedMs()
       setLastRunMs(elapsed)
       setExecutionNote(note)
+      if (language === 'python' && !runError) {
+        setRuntimeLabel('Pyodide')
+      }
 
       if (runError) {
         setError(runError)
@@ -245,15 +271,28 @@ export function CodePracticePage() {
 
     setIsRunning(true)
     setTestResults([])
+    setRuntimeLabel(null)
     const timer = createExecutionTimer()
 
     try {
+      if (language === 'python') {
+        setOutput(isPyodideReady() ? 'Running Python…' : 'Starting Python runtime…')
+      }
+
       for (const testCase of cases) {
         executedIds.push(testCase.id)
         const stdin = testCase.input ?? ''
         setRunStdin(stdin)
-        const { output: out, error: runError, note } = await executeOnce(stdin)
+        const { output: out, error: runError, note, executionTimeMs } = await executeOnce(
+          stdin,
+          language === 'python' && !isPyodideReady()
+            ? () => setOutput('Starting Python runtime…')
+            : language === 'python'
+              ? () => setOutput('Running Python…')
+              : undefined,
+        )
         if (note) setExecutionNote(note)
+        if (language === 'python' && !runError) setRuntimeLabel('Pyodide')
 
         if (runError) {
           hadError = true
@@ -265,6 +304,7 @@ export function CodePracticePage() {
 
         actualByCaseId[testCase.id] = out
         lastOutput = out
+        if (executionTimeMs) setLastRunMs(executionTimeMs)
       }
 
       setLastRunMs(timer.elapsedMs())
@@ -371,6 +411,7 @@ export function CodePracticePage() {
           lastRunMs={lastRunMs}
           sampleInput={runStdin || undefined}
           executionNote={executionNote}
+          runtimeLabel={runtimeLabel}
         />
       }
       livePreview={
