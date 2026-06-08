@@ -25,7 +25,7 @@ import {
   getQuestionsForLanguage,
 } from '../data/codeQuestions'
 import { resolveStarterCode } from '../data/starterTemplates'
-import { buildTestResultsFromCases } from '../utils/resultComparator'
+import { buildReactPreviewCheckResults, buildTestResultsFromCases } from '../utils/resultComparator'
 import { createExecutionTimer } from '../utils/executionTimer'
 import { classifyRunError, toLegacyMistakeLanguage } from '../utils/mistakeClassifier'
 import {
@@ -58,9 +58,14 @@ function writeAttempts(items: CodePracticeAttempt[]) {
 
 function toSandboxLanguage(language: CodePracticeLanguageMode): 'python' | 'javascript' | null {
   if (language === 'python') return 'python'
-  if (language === 'javascript' || language === 'react') return 'javascript'
+  if (language === 'javascript') return 'javascript'
   return null
 }
+
+const REACT_RUN_OUTPUT = 'Use the live preview to test your component.'
+const REACT_RUN_CONSOLE = 'Sandpack preview is active.'
+const REACT_RUN_TOAST =
+  'React preview runs live through Sandpack. Backend Run is not required for this task yet.'
 
 export function CodePracticePage() {
   const [language, setLanguage] = useState<CodePracticeLanguageMode>('python')
@@ -155,7 +160,22 @@ export function CodePracticePage() {
     return { output: result.output || '', error: null, note: prepared.note ?? null }
   }
 
+  const handleReactRun = (): string => {
+    setError(null)
+    setRunStdin('')
+    setExecutionNote('React uses Sandpack for live preview — not the backend JavaScript executor.')
+    setOutput(REACT_RUN_OUTPUT)
+    setConsoleLines([REACT_RUN_CONSOLE])
+    setLastRunMs(0)
+    toast.message(REACT_RUN_TOAST)
+    return REACT_RUN_OUTPUT
+  }
+
   const handleRun = async (): Promise<string> => {
+    if (language === 'react') {
+      return handleReactRun()
+    }
+
     const execLang = toSandboxLanguage(language)
     if (!execLang) {
       toast.message('Execution for this language is planned for a later phase.')
@@ -207,6 +227,13 @@ export function CodePracticePage() {
   const handleSubmit = async () => {
     if (!question) {
       toast.error('Select a question with sample cases first.')
+      return
+    }
+
+    if (language === 'react') {
+      handleReactRun()
+      setTestResults(buildReactPreviewCheckResults())
+      toast.success('Preview check recorded — use Sandpack to validate your component.')
       return
     }
 

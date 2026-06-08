@@ -31,6 +31,20 @@ export function buildTestResults(
   ]
 }
 
+/** React Submit — preview-only check until DOM validation exists (Phase 3.1). */
+export function buildReactPreviewCheckResults(): CodePracticeTestResult[] {
+  return [
+    {
+      id: 'react-preview-check',
+      label: 'Preview check',
+      passed: true,
+      expected: 'Component renders in Sandpack preview',
+      actual: 'Preview available',
+      message: 'React visual validation will be improved later.',
+    },
+  ]
+}
+
 export function buildTestResultsFromCases(
   cases: CodePracticeTestCase[],
   actualByCaseId: Record<string, string>,
