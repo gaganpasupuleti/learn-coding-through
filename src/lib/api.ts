@@ -491,6 +491,7 @@ export async function executeCode(
   }
 }
 
+/** Issue #30 — SQL Practice Ground schema API (not part of Issue #29 rebuild). */
 export async function fetchSqlPracticeSchema(): Promise<SqlPracticeSchemaResponse> {
   const response = await fetchWithApiFallback('/api/v1/sql/schema')
   if (!response.ok) {

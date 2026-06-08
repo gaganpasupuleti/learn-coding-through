@@ -38,12 +38,14 @@ type Theme = 'monokai' | 'dracula' | 'nord' | 'github' | 'synthwave'
 
 const CodeEditor: React.FC<CodeEditorProps> = ({
   initialCode = '',
+  code: controlledCode,
   language,
   onChange,
   onRun,
   showExecutionControls = true,
   showOutputPanel = true,
 }) => {
+  const isControlled = controlledCode !== undefined
   const [internalCode, setInternalCode] = useState(initialCode || '')
   const [output, setOutput] = useState('')
   const [isRunning, setIsRunning] = useState(false)
@@ -53,7 +55,13 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
   const workerRef = useRef<Worker | null>(null)
 
-  const code = initialCode ?? internalCode
+  const editorCode = isControlled ? controlledCode : internalCode
+
+  useEffect(() => {
+    if (!isControlled) {
+      setInternalCode(initialCode || '')
+    }
+  }, [initialCode, isControlled])
 
   /* ---------- Worker helpers ---------- */
   const createWorker = () => {
@@ -90,9 +98,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   /* ---------- Code change ---------- */
   const handleCodeChange = (value: string | undefined) => {
     const val = value ?? ''
-    if (onChange) {
-      onChange(val)
-    } else {
+    onChange?.(val)
+    if (!isControlled) {
       setInternalCode(val)
     }
   }
@@ -104,7 +111,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
       return
     }
 
-    if (!code.trim()) {
+    if (!editorCode.trim()) {
       toast.error('Please write some code first!')
       return
     }
@@ -126,7 +133,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         setIsRunning(false)
         toast.error('Execution timed out. Possible infinite loop detected.')
         createWorker()
-        onRun?.(code)
+        onRun?.(editorCode)
       }, 5000)
 
       workerRef.current.onmessage = (
@@ -148,10 +155,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         }
 
         setIsRunning(false)
-        onRun?.(code)
+        onRun?.(editorCode)
       }
 
-      workerRef.current.postMessage({ code })
+      workerRef.current.postMessage({ code: editorCode })
     } else {
       const langMap: Record<string, 'javascript' | 'python' | 'java' | 'sql'> = {
         javascript: 'javascript',
@@ -168,7 +175,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
       void (async () => {
         try {
-          const result = await sandbox.execute(code, execLang)
+          const result = await sandbox.execute(editorCode, execLang)
           setExecutionTime(result.executionTime || 0)
 
           if (result.error) {
@@ -189,7 +196,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
           toast.error('Failed to execute code')
         } finally {
           setIsRunning(false)
-          onRun?.(code)
+          onRun?.(editorCode)
         }
       })()
     }
@@ -198,9 +205,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   /* ---------- Reset ---------- */
   const resetCode = () => {
     const val = initialCode || ''
-    if (onChange) {
-      onChange(val)
-    } else {
+    onChange?.(val)
+    if (!isControlled) {
       setInternalCode(val)
     }
     setOutput('')
@@ -287,7 +293,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             height="100%"
             language={getMonacoLanguage()}
             theme={getMonacoTheme()}
-            value={code}
+            value={editorCode}
             onChange={handleCodeChange}
             options={{
               minimap: { enabled: false },

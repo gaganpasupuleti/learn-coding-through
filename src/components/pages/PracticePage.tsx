@@ -1,3 +1,8 @@
+/**
+ * Legacy monolithic practice editor (Python, Java, SQL).
+ * Issue #29 will split non-SQL languages into dedicated panels.
+ * SQL tab + schema UI below belong to Issue #30 — do not extend SQL here for #29.
+ */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
@@ -574,7 +579,7 @@ export function PracticePage({
               </div>
             </TabsContent>
 
-            {/* ---------- SQL tab ---------- */}
+            {/* ---------- SQL tab (Issue #30 — SQL Practice Ground; frozen for #29) ---------- */}
             <TabsContent value="sql" className="space-y-4 mt-0">
               <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                 <div className="bg-slate-50 border-b border-slate-100 px-4 py-3">

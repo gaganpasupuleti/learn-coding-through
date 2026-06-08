@@ -1,6 +1,19 @@
+/**
+ * Practice hub sections. SQL is owned by GitHub Issue #30 (SQL Practice Ground)
+ * and is excluded from Issue #29 (multi-language Code Practice Ground rebuild).
+ */
 export type PracticeGroundSection = 'typing' | 'sql' | 'java' | 'python' | 'mistakes'
 
+/** Languages embedded in PracticePage today (includes legacy SQL; see Issue #30). */
 export type CodePracticeLanguage = 'python' | 'sql' | 'java'
+
+/**
+ * Issue #29 rebuild scope — multi-language code practice only.
+ * SQL is intentionally omitted; add javascript/react/java/c/c++ here in later phases.
+ */
+export const ISSUE_29_CODE_PRACTICE_LANGUAGES = ['python', 'java'] as const
+
+export type Issue29CodePracticeLanguage = (typeof ISSUE_29_CODE_PRACTICE_LANGUAGES)[number]
 
 export const PRACTICE_GROUND_SECTIONS: Array<{
   id: PracticeGroundSection
@@ -12,6 +25,7 @@ export const PRACTICE_GROUND_SECTIONS: Array<{
     label: 'Typing Practice',
     description: 'Sentence and code typing with WPM tracking.',
   },
+  // Issue #30 — SQL Practice Ground (not part of Issue #29 rebuild scope).
   {
     id: 'sql',
     label: 'SQL Practice',

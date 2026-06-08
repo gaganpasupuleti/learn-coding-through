@@ -9,6 +9,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 
+// SQL hub section is Issue #30 scope; Issue #29 rebuild covers non-SQL code practice only.
 import { MistakesReviewPanel } from '@/components/practice-ground/MistakesReviewPanel'
 import {
   isCodeSection,
