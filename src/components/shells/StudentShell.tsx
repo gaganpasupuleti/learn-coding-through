@@ -35,6 +35,7 @@ type StudentPage =
   | 'jobspy'
   | 'projects'
   | 'practice-ground'
+  | 'practice-code'
   | 'practice'
   | 'typing'
   | 'quiz'
@@ -62,7 +63,8 @@ const PRIMARY_NAV: NavItem[] = [
 
 const LEARNING_NAV: NavItem[] = [
   { page: 'projects', label: 'Projects', icon: <Boxes size={14} aria-hidden /> },
-  { page: 'practice-ground', label: 'Code Practice Ground', icon: <Terminal size={14} aria-hidden /> },
+  { page: 'practice-code', label: 'Code Workbench', icon: <Code2 size={14} aria-hidden /> },
+  { page: 'practice-ground', label: 'Practice Hub (Legacy)', icon: <Terminal size={14} aria-hidden /> },
   { page: 'quiz', label: 'Quiz', icon: <ClipboardList size={14} aria-hidden /> },
   { page: 'flow-roadmap', label: 'Flow Path', icon: <GitBranch size={14} aria-hidden /> },
 ]
@@ -71,6 +73,7 @@ const LEARNING_PAGES = new Set<StudentPage>([
   ...LEARNING_NAV.map((item) => item.page),
   'practice',
   'typing',
+  'practice-code',
 ])
 
 function navLinkClass(active: boolean, compact = false) {

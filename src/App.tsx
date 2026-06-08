@@ -19,6 +19,8 @@ import { LearningPlannerPage } from '@/components/pages/LearningPlannerPage'
 import { StudentDashboardPage } from '@/components/pages/StudentDashboardPage'
 import { StudentHubPage } from '@/components/pages/StudentHubPage'
 import { JobSpyPage } from '@/components/pages/JobSpyPage'
+import { CodePracticePage } from '@/features/code-practice/components/CodePracticePage'
+import { CODE_PRACTICE_ROUTE } from '@/features/code-practice/types/codePractice.types'
 import { PasswordSetupGate } from '@/components/auth/PasswordSetupGate'
 import {
   getStoredUser,
@@ -48,6 +50,7 @@ export type StudentPage =
   | 'projects'
   | 'learning'
   | 'practice-ground'
+  | 'practice-code'
   | 'practice'
   | 'typing'
   | 'quiz'
@@ -104,7 +107,29 @@ function App() {
     toast.success('Logged out successfully.')
   }
 
+  const syncPracticeCodeUrl = (active: boolean) => {
+    if (typeof window === 'undefined') return
+    if (active) {
+      window.history.replaceState(null, '', CODE_PRACTICE_ROUTE)
+    } else if (window.location.pathname === CODE_PRACTICE_ROUTE) {
+      window.history.replaceState(null, '', '/')
+    }
+  }
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (window.location.pathname === CODE_PRACTICE_ROUTE) {
+      setStudentPage('practice-code')
+    }
+  }, [])
+
   const handleStudentNavigate = (page: StudentPage) => {
+    if (page === 'practice-code') {
+      setStudentPage('practice-code')
+      setSelectedProjectId(null)
+      syncPracticeCodeUrl(true)
+      return
+    }
     if (page === 'practice' || page === 'typing') {
       setPracticeGroundSection(sectionFromLegacyPage(page))
       setStudentPage('practice-ground')
@@ -114,10 +139,12 @@ function App() {
     if (page === 'practice-ground') {
       setStudentPage('practice-ground')
       setSelectedProjectId(null)
+      syncPracticeCodeUrl(false)
       return
     }
     setStudentPage(page)
     setSelectedProjectId(null)
+    syncPracticeCodeUrl(false)
   }
 
   const handleSelectProject = (projectId: string) => {
@@ -241,6 +268,12 @@ function App() {
 
         {studentPage === 'projects' && (
           <ProjectsPage onSelectProject={handleSelectProject} />
+        )}
+
+        {studentPage === 'practice-code' && (
+          <ErrorBoundary FallbackComponent={PracticeRouteErrorFallback}>
+            <CodePracticePage />
+          </ErrorBoundary>
         )}
 
         {studentPage === 'practice-ground' && (

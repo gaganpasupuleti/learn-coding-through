@@ -11,7 +11,7 @@ export type CodePracticeLanguage = 'python' | 'sql' | 'java'
  * Issue #29 rebuild scope — multi-language code practice only.
  * SQL is intentionally omitted; add javascript/react/java/c/c++ here in later phases.
  */
-export const ISSUE_29_CODE_PRACTICE_LANGUAGES = ['python', 'java'] as const
+export const ISSUE_29_CODE_PRACTICE_LANGUAGES = ['python', 'javascript', 'react', 'java'] as const
 
 export type Issue29CodePracticeLanguage = (typeof ISSUE_29_CODE_PRACTICE_LANGUAGES)[number]
 
