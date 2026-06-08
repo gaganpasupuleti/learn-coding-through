@@ -346,7 +346,13 @@ export function CodePracticePage() {
           executionNote={executionNote}
         />
       }
-      livePreview={<LivePreviewPanel language={language} />}
+      livePreview={
+        <LivePreviewPanel
+          language={language}
+          code={code}
+          questionTitle={question?.title}
+        />
+      }
       testResults={<TestResultsPanel results={testResults} />}
       hints={
         <HintsPanel

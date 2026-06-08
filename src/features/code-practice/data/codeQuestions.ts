@@ -137,9 +137,11 @@ export const CODE_PRACTICE_QUESTIONS: CodePracticeQuestion[] = [
       { input: '(render)', output: 'Click me' },
     ],
     constraints: ['Use a functional component', 'Button text must be exactly `Click me`'],
-    starterCode: `function App() {
+    starterCode: `export default function App() {
   return (
-    <button>Click me</button>
+    <button style={{ padding: '8px 16px', borderRadius: 8, background: '#0ea5e9', color: '#fff', border: 'none' }}>
+      Click me
+    </button>
   );
 }
 
@@ -149,7 +151,7 @@ console.log("Click me");
     testCases: [
       { id: 'react-btn-1', label: 'Button label', expectedOutput: 'Click me' },
     ],
-    hints: ['Return JSX from your component.', 'Use console.log for Phase 2 checks until Sandpack preview.'],
+    hints: ['Edit the button label and watch the Sandpack preview update.', 'console.log still powers Run/Submit checks.'],
   },
   {
     id: 'react-card',
@@ -162,11 +164,11 @@ console.log("Click me");
       { input: '(render)', output: 'Welcome\\nStart coding' },
     ],
     constraints: ['Use semantic structure (heading + paragraph)', 'Text must match exactly'],
-    starterCode: `function Card() {
+    starterCode: `export default function App() {
   return (
-    <div className="card">
-      <h2>Welcome</h2>
-      <p>Start coding</p>
+    <div style={{ border: '1px solid #334155', borderRadius: 8, padding: 16, maxWidth: 280 }}>
+      <h2 style={{ margin: '0 0 8px', fontSize: 18 }}>Welcome</h2>
+      <p style={{ margin: 0, color: '#64748b' }}>Start coding</p>
     </div>
   );
 }
@@ -178,7 +180,7 @@ console.log("Start coding");
     testCases: [
       { id: 'react-card-1', label: 'Card copy', expectedOutput: 'Welcome\nStart coding' },
     ],
-    hints: ['Use <h2> for the title and <p> for the body.', 'console.log each line until live preview ships.'],
+    hints: ['Style the card in JSX and preview it live on the right.', 'console.log lines support Run/Submit.'],
   },
   {
     id: 'react-counter',
@@ -186,14 +188,21 @@ console.log("Start coding");
     language: 'react',
     difficulty: 'medium',
     topic: 'state',
-    description: 'Create a counter that starts at 0 and prints `Count: 0` (stateful UI in Phase 3).',
+    description: 'Create a counter that starts at 0. Use `useState` so the preview updates when you click +1.',
     examples: [
       { input: '(initial)', output: 'Count: 0' },
     ],
     constraints: ['Initial count is 0', 'Label format: `Count: N`'],
-    starterCode: `function Counter() {
-  const count = 0;
-  return <p>Count: {count}</p>;
+    starterCode: `import { useState } from "react";
+
+export default function App() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>+1</button>
+    </div>
+  );
 }
 
 console.log("Count: 0");
@@ -202,7 +211,7 @@ console.log("Count: 0");
     testCases: [
       { id: 'react-ctr-1', label: 'Initial count', expectedOutput: 'Count: 0' },
     ],
-    hints: ['Log the expected initial state for now.', 'useState + Sandpack preview arrive in Phase 3.'],
+    hints: ['Click +1 in the Sandpack preview to test state.', 'Initial Run/Submit still checks console output.'],
   },
 ]
 
