@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import { wb } from '@/lib/workbench-theme'
 
 type BottomTab = 'tests' | 'hints' | 'mistakes' | 'history'
 
@@ -39,47 +40,45 @@ export function CodeWorkbenchLayout({
   const [bottomTab, setBottomTab] = useState<BottomTab>('tests')
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] flex-col bg-slate-950 text-slate-100">
+    <div className={cn('flex min-h-[calc(100vh-4rem)] flex-col', wb.root)}>
       {toolbar}
       {questionPicker}
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(240px,300px)_1fr_minmax(240px,320px)]">
-        <div className="min-h-[220px] lg:min-h-0">{problemPanel}</div>
+      <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(260px,320px)_1fr_minmax(260px,340px)]">
+        <div className="min-h-[240px] lg:min-h-0">{problemPanel}</div>
 
-        <div className="flex min-h-[340px] flex-col border-x border-slate-800 lg:min-h-0">
+        <div className={cn('flex min-h-[360px] flex-col border-x lg:min-h-0', wb.border)}>
           <div className="min-h-0 flex-1">{editorPanel}</div>
           {livePreview && (
-            <div className="border-t border-slate-800 p-4 lg:hidden">{livePreview}</div>
+            <div className={cn('border-t p-4 lg:hidden', wb.border)}>{livePreview}</div>
           )}
         </div>
 
-        <div className="flex min-h-[220px] flex-col lg:min-h-0">
+        <div className="flex min-h-[240px] flex-col lg:min-h-0">
           {livePreview && (
-            <div className="hidden border-b border-slate-800 p-4 lg:block">{livePreview}</div>
+            <div className={cn('hidden border-b p-4 lg:block', wb.border)}>{livePreview}</div>
           )}
           <div className="min-h-0 flex-1">{outputPanel}</div>
         </div>
       </div>
 
-      <div className="border-t border-slate-800 bg-slate-950">
-        <div className="flex gap-1 border-b border-slate-800 px-3">
+      <div className={cn('border-t', wb.panel, wb.border)}>
+        <div className={cn('flex gap-0.5 border-b px-3', wb.border)}>
           {BOTTOM_TABS.map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => setBottomTab(tab.id)}
               className={cn(
-                'px-3.5 py-2.5 text-sm font-medium transition-colors',
-                bottomTab === tab.id
-                  ? 'border-b-2 border-sky-500 text-sky-300'
-                  : 'text-slate-500 hover:text-slate-300',
+                'px-4 py-3 text-sm font-medium transition-colors',
+                bottomTab === tab.id ? wb.tabActive : wb.tabInactive,
               )}
             >
               {tab.label}
             </button>
           ))}
         </div>
-        <div className="max-h-52 overflow-y-auto">
+        <div className="max-h-56 overflow-y-auto">
           {bottomTab === 'tests' && testResults}
           {bottomTab === 'hints' && hints}
           {bottomTab === 'mistakes' && mistakes}

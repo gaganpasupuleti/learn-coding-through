@@ -1,5 +1,6 @@
 import { CodeEditor } from '@/components/CodeEditor'
 import { CODE_PRACTICE_LANGUAGE_MODES, type CodePracticeEditorTheme } from '../types/codePractice.types'
+import { wb } from '@/lib/workbench-theme'
 
 interface CodeEditorPanelProps {
   code: string
@@ -13,10 +14,10 @@ export function CodeEditorPanel({ code, languageId, monacoLanguage, editorTheme,
   const label = CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === languageId)?.label ?? languageId
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#1e1e1e]">
-      <div className="flex items-center justify-between border-b border-slate-800 bg-slate-950 px-4 py-2.5">
-        <span className="text-sm font-medium text-slate-300">{label} · editor</span>
-        <span className="text-xs text-slate-500">Monaco</span>
+    <div className={`flex h-full min-h-0 flex-col ${wb.editor}`}>
+      <div className={`flex items-center justify-between border-b px-4 py-3 ${wb.panelHeader} ${wb.border}`}>
+        <span className={`text-sm font-medium ${wb.textSecondary}`}>{label} · editor</span>
+        <span className={`text-xs ${wb.textMuted}`}>Monaco</span>
       </div>
       <div className="code-practice-editor min-h-0 flex-1 overflow-hidden">
         <CodeEditor
@@ -27,8 +28,8 @@ export function CodeEditorPanel({ code, languageId, monacoLanguage, editorTheme,
           showExecutionControls={false}
           showOutputPanel={false}
           showEditorChrome={false}
-          fontSize={15}
-          lineHeight={24}
+          fontSize={16}
+          lineHeight={26}
         />
       </div>
     </div>

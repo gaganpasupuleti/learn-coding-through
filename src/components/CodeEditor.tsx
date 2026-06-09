@@ -55,7 +55,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   showExecutionControls = true,
   showOutputPanel = true,
   monacoTheme,
-  fontSize = 15,
+  fontSize = 16,
   lineHeight,
   showEditorChrome = true,
 }) => {

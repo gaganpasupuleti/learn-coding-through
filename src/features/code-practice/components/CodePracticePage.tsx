@@ -815,18 +815,18 @@ export function CodePracticePage() {
   }, [])
 
   const questionPicker = languageQuestions.length > 0 ? (
-    <div className="flex flex-wrap items-center gap-2.5 border-b border-slate-800 bg-slate-900/80 px-4 py-2.5">
-      <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Question</span>
+    <div className="flex flex-wrap items-center gap-2.5 border-b border-[#26324A] bg-[#0F172A] px-4 py-3">
+      <span className="text-xs font-bold uppercase tracking-widest text-[#94A3B8]">Question</span>
       {languageQuestions.map((q) => (
         <button
           key={q.id}
           type="button"
           onClick={() => handleQuestionSelect(q.id)}
           className={cn(
-            'rounded-md px-3 py-1.5 text-sm transition-colors',
+            'rounded-md px-3.5 py-2 text-sm font-medium transition-all',
             questionId === q.id
-              ? 'bg-violet-600 text-white'
-              : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200',
+              ? 'bg-violet-600 text-white shadow ring-1 ring-violet-400/50'
+              : 'border border-[#26324A] bg-[#111827] text-[#CBD5E1] hover:border-violet-500/50 hover:bg-[#1a2332] hover:text-[#E5E7EB]',
           )}
         >
           {q.title}

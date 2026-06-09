@@ -26,6 +26,17 @@
   flex: 1;
 }
 
+/* Issue #29 — shared practice workbench readability */
+.practice-workbench {
+  --wb-bg: #0b1020;
+  --wb-panel: #0f172a;
+  --wb-editor: #1e1e1e;
+  --wb-border: #26324a;
+  --wb-text: #e5e7eb;
+  --wb-text-secondary: #cbd5e1;
+  --wb-text-muted: #94a3b8;
+}
+
 @layer base {
   * {
     @apply border-border

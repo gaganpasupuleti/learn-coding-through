@@ -1,4 +1,6 @@
 import { Database, Play, RotateCcw } from 'lucide-react'
+import { wb } from '@/lib/workbench-theme'
+import { cn } from '@/lib/utils'
 
 interface SqlToolbarProps {
   dataset: string
@@ -9,7 +11,8 @@ interface SqlToolbarProps {
   onDifficultyChange: (value: string) => void
 }
 
-const SELECT_CLASS = 'rounded border border-slate-700 bg-slate-800 px-2.5 py-1.5 text-sm text-slate-200'
+const SELECT_CLASS =
+  'rounded-md border border-[#26324A] bg-[#111827] px-3 py-2 text-sm text-[#E5E7EB]'
 
 export function SqlToolbar({
   dataset,
@@ -20,43 +23,31 @@ export function SqlToolbar({
   onDifficultyChange,
 }: SqlToolbarProps) {
   return (
-    <header className="flex flex-wrap items-center gap-4 border-b border-slate-800 bg-slate-900/90 px-4 py-3">
-      <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-emerald-400">
+    <header className={cn('flex flex-wrap items-center gap-4 border-b px-4 py-3.5', wb.panelHeader, wb.border)}>
+      <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-emerald-300">
         <Database className="h-4 w-4" />
         SQL Practice Ground
       </div>
 
       <div className="flex flex-wrap items-center gap-3 text-sm">
-        <label className="flex items-center gap-2 text-slate-400">
+        <label className={cn('flex items-center gap-2', wb.textSecondary)}>
           Dataset
-          <select
-            value={dataset}
-            onChange={(e) => onDatasetChange(e.target.value)}
-            className={SELECT_CLASS}
-          >
+          <select value={dataset} onChange={(e) => onDatasetChange(e.target.value)} className={SELECT_CLASS}>
             <option value="sample-hr">Sample HR (placeholder)</option>
             <option value="sample-sales">Sample Sales (placeholder)</option>
           </select>
         </label>
-        <label className="flex items-center gap-2 text-slate-400">
+        <label className={cn('flex items-center gap-2', wb.textSecondary)}>
           Topic
-          <select
-            value={topic}
-            onChange={(e) => onTopicChange(e.target.value)}
-            className={SELECT_CLASS}
-          >
+          <select value={topic} onChange={(e) => onTopicChange(e.target.value)} className={SELECT_CLASS}>
             <option value="select">SELECT basics</option>
             <option value="joins">JOINs</option>
             <option value="aggregates">Aggregates</option>
           </select>
         </label>
-        <label className="flex items-center gap-2 text-slate-400">
+        <label className={cn('flex items-center gap-2', wb.textSecondary)}>
           Difficulty
-          <select
-            value={difficulty}
-            onChange={(e) => onDifficultyChange(e.target.value)}
-            className={SELECT_CLASS}
-          >
+          <select value={difficulty} onChange={(e) => onDifficultyChange(e.target.value)} className={SELECT_CLASS}>
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
             <option value="hard">Hard</option>
@@ -69,7 +60,7 @@ export function SqlToolbar({
           type="button"
           disabled
           title="Query execution coming in Issue #30"
-          className="inline-flex items-center gap-2 rounded bg-emerald-700/40 px-3.5 py-2 text-sm font-medium text-slate-500 cursor-not-allowed"
+          className="inline-flex items-center gap-2 rounded-md bg-emerald-800/40 px-4 py-2.5 text-sm font-medium text-[#94A3B8] cursor-not-allowed"
         >
           <Play className="h-4 w-4" />
           Run Query
@@ -78,7 +69,7 @@ export function SqlToolbar({
           type="button"
           disabled
           title="Reset coming soon"
-          className="inline-flex items-center gap-2 rounded border border-slate-700 px-3.5 py-2 text-sm text-slate-500 cursor-not-allowed"
+          className={cn('inline-flex items-center gap-2 rounded-md border px-4 py-2.5 text-sm cursor-not-allowed', wb.border, wb.textMuted)}
         >
           <RotateCcw className="h-4 w-4" />
           Reset

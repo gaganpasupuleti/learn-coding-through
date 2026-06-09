@@ -3,6 +3,8 @@ import { Eye } from 'lucide-react'
 import { SandpackPreview, SandpackProvider } from '@codesandbox/sandpack-react'
 import type { CodePracticeLanguageMode } from '../types/codePractice.types'
 import { buildSandpackAppCode } from '../utils/sandpackReact'
+import { wb } from '@/lib/workbench-theme'
+import { cn } from '@/lib/utils'
 
 interface LivePreviewPanelProps {
   language: CodePracticeLanguageMode
@@ -25,12 +27,12 @@ export function LivePreviewPanel({ language, code, questionTitle }: LivePreviewP
 
   if (!isReact) {
     return (
-      <div className="rounded-md border border-dashed border-slate-700 bg-slate-900/50 p-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
-          <Eye className="h-4 w-4 text-violet-400" />
+      <div className={cn('rounded-lg border border-dashed p-4', wb.border, 'bg-[#111827]')}>
+        <div className={cn('flex items-center gap-2 text-sm font-medium', wb.textSecondary)}>
+          <Eye className="h-4 w-4 text-violet-300" />
           Live preview
         </div>
-        <p className="mt-2 text-sm text-slate-500 leading-relaxed">
+        <p className={cn('mt-2 text-sm leading-relaxed', wb.textMuted)}>
           Live preview is available for React practice.
         </p>
       </div>
@@ -38,16 +40,16 @@ export function LivePreviewPanel({ language, code, questionTitle }: LivePreviewP
   }
 
   return (
-    <div className="flex min-h-[220px] flex-col rounded-md border border-slate-800 bg-slate-950 overflow-hidden">
-      <div className="flex items-center justify-between gap-2 border-b border-slate-800 bg-slate-900/80 px-4 py-2.5">
-        <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
-          <Eye className="h-4 w-4 text-violet-400" />
+    <div className={cn('flex min-h-[220px] flex-col overflow-hidden rounded-lg border', wb.border, wb.panel)}>
+      <div className={cn('flex items-center justify-between gap-2 border-b px-4 py-3', wb.border, 'bg-[#111827]')}>
+        <div className={cn('flex items-center gap-2 text-sm font-semibold', wb.textPrimary)}>
+          <Eye className="h-4 w-4 text-violet-300" />
           Live Preview
         </div>
-        <span className="text-xs text-slate-500">Powered by Sandpack</span>
+        <span className={cn('text-xs', wb.textMuted)}>Powered by Sandpack</span>
       </div>
       {questionTitle && (
-        <p className="border-b border-slate-800 px-4 py-2 text-xs text-slate-500 truncate">
+        <p className={cn('border-b px-4 py-2 text-sm truncate', wb.border, wb.textMuted)}>
           {questionTitle}
         </p>
       )}

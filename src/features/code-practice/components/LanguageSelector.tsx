@@ -1,4 +1,5 @@
 import { CODE_PRACTICE_LANGUAGE_MODES, type CodePracticeLanguageMode } from '../types/codePractice.types'
+import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
 interface LanguageSelectorProps {
@@ -9,7 +10,7 @@ interface LanguageSelectorProps {
 
 export function LanguageSelector({ value, onChange, onComingSoon }: LanguageSelectorProps) {
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
+    <div className="flex flex-wrap items-center gap-2">
       {CODE_PRACTICE_LANGUAGE_MODES.map((mode) => {
         const active = value === mode.id
         const comingSoon = mode.status === 'coming-soon'
@@ -25,11 +26,10 @@ export function LanguageSelector({ value, onChange, onComingSoon }: LanguageSele
               onChange(mode.id)
             }}
             className={cn(
-              'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-              active && !comingSoon
-                ? 'bg-sky-500 text-white shadow-sm'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200',
-              comingSoon && 'cursor-not-allowed px-2.5 py-1 text-xs opacity-55 hover:bg-transparent hover:text-slate-500',
+              'rounded-md px-3.5 py-2 text-sm font-medium transition-all',
+              active && !comingSoon && wb.langActive,
+              !active && !comingSoon && wb.langInactive,
+              comingSoon && `${wb.langSoon} px-3 py-1.5 text-xs`,
             )}
             title={comingSoon ? `${mode.label} — Judge0-backed execution coming later` : mode.label}
           >

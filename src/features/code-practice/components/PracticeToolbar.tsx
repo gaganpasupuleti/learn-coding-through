@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { wb } from '@/lib/workbench-theme'
 
 interface PracticeToolbarProps {
   language: CodePracticeLanguageMode
@@ -26,9 +27,6 @@ const THEMES: Array<{ id: CodePracticeEditorTheme; label: string }> = [
   { id: 'hc-black', label: 'High Contrast' },
 ]
 
-const TOOLBAR_BTN =
-  'inline-flex items-center gap-2 rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800'
-
 export function PracticeToolbar({
   language,
   theme: editorTheme,
@@ -41,9 +39,9 @@ export function PracticeToolbar({
   onSaveAttempt,
 }: PracticeToolbarProps) {
   return (
-    <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-slate-950/90 px-4 py-3">
+    <header className={`flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3.5 ${wb.panelHeader} ${wb.border}`}>
       <div className="flex flex-wrap items-center gap-4">
-        <span className="text-sm font-semibold uppercase tracking-wider text-sky-400">Code Workbench</span>
+        <span className="text-sm font-bold uppercase tracking-wider text-sky-300">Code Workbench</span>
         <LanguageSelector
           value={language}
           onChange={onLanguageChange}
@@ -54,26 +52,26 @@ export function PracticeToolbar({
       <div className="flex flex-wrap items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button type="button" className={TOOLBAR_BTN}>
+            <button type="button" className={wb.toolbarBtn}>
               <Palette className="h-4 w-4" />
               Theme ({editorTheme === 'vs' ? 'Light' : editorTheme === 'hc-black' ? 'HC' : 'Dark'})
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-slate-900 border-slate-700 text-slate-200">
+          <DropdownMenuContent align="end" className="border-[#26324A] bg-[#0F172A] text-[#E5E7EB]">
             {THEMES.map((t) => (
-              <DropdownMenuItem key={t.id} onClick={() => onThemeChange(t.id)} className="text-sm">
+              <DropdownMenuItem key={t.id} onClick={() => onThemeChange(t.id)} className="text-sm focus:bg-[#1a2332]">
                 {t.label}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <button type="button" onClick={onReset} className={TOOLBAR_BTN}>
+        <button type="button" onClick={onReset} className={wb.toolbarBtn}>
           <RotateCcw className="h-4 w-4" />
           Reset
         </button>
 
-        <button type="button" onClick={onSaveAttempt} className={TOOLBAR_BTN}>
+        <button type="button" onClick={onSaveAttempt} className={wb.toolbarBtn}>
           <Save className="h-4 w-4" />
           Save attempt
         </button>
@@ -82,7 +80,7 @@ export function PracticeToolbar({
           type="button"
           onClick={onRun}
           disabled={isRunning}
-          className="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 disabled:opacity-50"
         >
           <Play className="h-4 w-4" />
           {isRunning ? 'Running…' : 'Run'}
@@ -92,7 +90,7 @@ export function PracticeToolbar({
           type="button"
           onClick={onSubmit}
           disabled={isRunning}
-          className="inline-flex items-center gap-2 rounded-md bg-sky-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-sky-500 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-md bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 disabled:opacity-50"
         >
           <Send className="h-4 w-4" />
           Submit
