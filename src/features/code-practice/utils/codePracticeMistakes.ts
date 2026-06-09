@@ -3,8 +3,12 @@
  * Uses localStorage; does not share the legacy `codequest-practice-mistakes` key.
  */
 
-import type { CodePracticeLanguageMode, CodePracticeQuestion } from '../types/codePractice.types'
-import type { PythonFeedback } from '../python/pythonFeedback'
+import type {
+  CodePracticeFeedback,
+  CodePracticeLanguageMode,
+  CodePracticeQuestion,
+} from '../types/codePractice.types'
+import { JAVASCRIPT_SAFETY_USER_MESSAGE } from '../javascript/javascriptSafetyValidator'
 import { PYTHON_SAFETY_USER_MESSAGE } from '../python/pythonSafetyValidator'
 import { classifyRunError } from './mistakeClassifier'
 
@@ -68,7 +72,7 @@ function newId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 }
 
-function mistakeTypeFromFeedback(feedback: PythonFeedback): CodePracticeMistakeType {
+function mistakeTypeFromFeedback(feedback: CodePracticeFeedback): CodePracticeMistakeType {
   if (feedback.type === 'syntax') return 'syntax'
   if (feedback.type === 'runtime') return 'runtime'
   return 'unknown'
@@ -92,7 +96,7 @@ export interface SaveCodePracticeMistakeInput {
   expectedOutput?: string
   actualOutput?: string
   errorMessage?: string
-  feedback?: PythonFeedback | null
+  feedback?: CodePracticeFeedback | null
   feedbackRuleId?: string
   feedbackTitle?: string
   feedbackMessage?: string
@@ -212,7 +216,7 @@ export function recordPythonPrerunBlockMistake(params: {
   code: string
   stdin: string
   attemptType: CodePracticeMistakeAttemptType
-  feedback: PythonFeedback
+  feedback: CodePracticeFeedback
 }): CodePracticeMistake {
   return saveCodePracticeMistake({
     language: 'python',
@@ -233,7 +237,7 @@ export function recordPythonRuntimeMistake(params: {
   stdin: string
   attemptType: CodePracticeMistakeAttemptType
   rawError: string
-  feedback: PythonFeedback
+  feedback: CodePracticeFeedback
 }): CodePracticeMistake {
   return saveCodePracticeMistake({
     language: 'python',
@@ -278,12 +282,56 @@ export function recordFailedTestCaseMistake(params: {
   })
 }
 
-export function recordJavaScriptErrorMistake(params: {
+export function recordJavaScriptSafetyBlockMistake(params: {
   question?: CodePracticeQuestion | null
   code: string
   stdin: string
   attemptType: CodePracticeMistakeAttemptType
-  errorMessage: string
+  ruleId: string
+  message: string
+}): CodePracticeMistake {
+  return saveCodePracticeMistake({
+    language: 'javascript',
+    question: params.question,
+    submittedCode: params.code,
+    attemptType: params.attemptType,
+    status: 'blocked',
+    mistakeType: 'safety-block',
+    inputUsed: params.stdin,
+    errorMessage: JAVASCRIPT_SAFETY_USER_MESSAGE,
+    feedbackRuleId: params.ruleId,
+    feedbackTitle: 'Blocked for practice safety',
+    feedbackMessage: params.message,
+  })
+}
+
+export function recordJavaScriptPrerunBlockMistake(params: {
+  question?: CodePracticeQuestion | null
+  code: string
+  stdin: string
+  attemptType: CodePracticeMistakeAttemptType
+  feedback: CodePracticeFeedback
+}): CodePracticeMistake {
+  return saveCodePracticeMistake({
+    language: 'javascript',
+    question: params.question,
+    submittedCode: params.code,
+    attemptType: params.attemptType,
+    status: 'blocked',
+    mistakeType: 'prerun-block',
+    inputUsed: params.stdin,
+    errorMessage: params.feedback.title,
+    feedback: params.feedback,
+  })
+}
+
+export function recordJavaScriptRuntimeMistake(params: {
+  question?: CodePracticeQuestion | null
+  code: string
+  stdin: string
+  attemptType: CodePracticeMistakeAttemptType
+  rawError: string
+  feedback: CodePracticeFeedback
 }): CodePracticeMistake {
   return saveCodePracticeMistake({
     language: 'javascript',
@@ -291,11 +339,9 @@ export function recordJavaScriptErrorMistake(params: {
     submittedCode: params.code,
     attemptType: params.attemptType,
     status: 'failed',
-    mistakeType: mistakeTypeFromErrorMessage(params.errorMessage),
+    mistakeType: mistakeTypeFromFeedback(params.feedback),
     inputUsed: params.stdin,
-    errorMessage: params.errorMessage,
-    feedbackTitle: 'JavaScript error',
-    feedbackMessage: params.errorMessage.slice(0, 400),
-    feedbackRuleId: 'js-runtime',
+    errorMessage: params.rawError,
+    feedback: params.feedback,
   })
 }

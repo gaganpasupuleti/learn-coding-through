@@ -76,6 +76,17 @@ export interface CodePracticeTestResult {
 
 export type CodePracticeEditorTheme = 'vs-dark' | 'vs' | 'hc-black'
 
+/** Shared beginner feedback shape for Python and JavaScript workbench hints/errors. */
+export interface CodePracticeFeedback {
+  type: 'syntax' | 'runtime' | 'style' | 'hint'
+  severity: 'info' | 'warning' | 'error'
+  title: string
+  message: string
+  lineNumber?: number
+  suggestion?: string
+  ruleId: string
+}
+
 export interface CodePracticeWorkbenchState {
   language: CodePracticeLanguageMode
   questionId: string | null

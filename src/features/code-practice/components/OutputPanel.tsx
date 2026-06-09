@@ -1,6 +1,6 @@
 import { AlertTriangle, Lightbulb, Terminal } from 'lucide-react'
 import { formatDuration } from '../utils/executionTimer'
-import type { PythonFeedback } from '../python/pythonFeedback'
+import type { CodePracticeFeedback } from '../types/codePractice.types'
 import { cn } from '@/lib/utils'
 
 interface OutputPanelProps {
@@ -11,7 +11,7 @@ interface OutputPanelProps {
   sampleInput?: string
   executionNote?: string | null
   runtimeLabel?: string | null
-  feedbackItems?: PythonFeedback[]
+  feedbackItems?: CodePracticeFeedback[]
 }
 
 export function OutputPanel({

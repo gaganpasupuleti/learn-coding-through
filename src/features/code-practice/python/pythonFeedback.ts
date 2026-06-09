@@ -3,15 +3,15 @@
  * No AI/LLM — static pattern matching only. Not a full linter (no parso/ruff).
  */
 
-export interface PythonFeedback {
-  type: 'syntax' | 'runtime' | 'style' | 'hint'
-  severity: 'info' | 'warning' | 'error'
-  title: string
-  message: string
-  lineNumber?: number
-  suggestion?: string
-  ruleId: string
-}
+import type { CodePracticeFeedback } from '../types/codePractice.types'
+
+export type PythonFeedback = CodePracticeFeedback
+
+export {
+  formatFeedbackForError,
+  formatFeedbackForConsole,
+  formatHintsForConsole,
+} from '../utils/feedbackDisplay'
 
 function feedback(
   partial: Omit<PythonFeedback, 'ruleId'> & { ruleId: string },
@@ -360,25 +360,3 @@ export function explainPythonError(error: string): PythonFeedback {
   })
 }
 
-export function formatFeedbackForError(feedback: PythonFeedback): string {
-  const parts = [feedback.title, feedback.message]
-  if (feedback.lineNumber) parts.push(`Line: ${feedback.lineNumber}`)
-  if (feedback.suggestion) parts.push(`Suggestion: ${feedback.suggestion}`)
-  return parts.join('\n')
-}
-
-export function formatFeedbackForConsole(feedback: PythonFeedback, rawError?: string): string[] {
-  const lines = [`[${feedback.ruleId}] ${feedback.title}: ${feedback.message}`]
-  if (feedback.suggestion) lines.push(`Suggestion: ${feedback.suggestion}`)
-  if (rawError) lines.push(`Technical: ${extractErrorTail(rawError)}`)
-  return lines
-}
-
-export function formatHintsForConsole(hints: PythonFeedback[]): string[] {
-  return hints.map((hint) => {
-    const prefix = hint.severity === 'info' ? 'Hint' : 'Notice'
-    const line = hint.lineNumber ? ` (line ${hint.lineNumber})` : ''
-    const suggestion = hint.suggestion ? ` — ${hint.suggestion}` : ''
-    return `${prefix}${line}: ${hint.message}${suggestion}`
-  })
-}
