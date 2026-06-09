@@ -58,6 +58,16 @@ function toSandboxLanguage(language: CodePracticeLanguageMode): 'javascript' | n
   return null
 }
 
+/** Python uses Pyodide; JavaScript uses backend sandbox — not via toSandboxLanguage alone. */
+function canRunInWorkbench(language: CodePracticeLanguageMode): boolean {
+  return language === 'python' || language === 'javascript'
+}
+
+function isComingSoonLanguage(language: CodePracticeLanguageMode): boolean {
+  const mode = CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === language)
+  return mode?.status === 'coming-soon'
+}
+
 const REACT_RUN_OUTPUT = 'Use the live preview to test your component.'
 const REACT_RUN_CONSOLE = 'Sandpack preview is active.'
 const REACT_RUN_TOAST =
@@ -187,8 +197,13 @@ export function CodePracticePage() {
       return handleReactRun()
     }
 
-    const execLang = toSandboxLanguage(language)
-    if (!execLang) {
+    if (isComingSoonLanguage(language)) {
+      const mode = CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === language)
+      toast.message(`${mode?.label ?? language} execution will be added later with Judge0.`)
+      return ''
+    }
+
+    if (!canRunInWorkbench(language)) {
       toast.message('Execution for this language is planned for a later phase.')
       return ''
     }
@@ -260,6 +275,17 @@ export function CodePracticePage() {
       handleReactRun()
       setTestResults(buildReactPreviewCheckResults())
       toast.success('Preview check recorded — use Sandpack to validate your component.')
+      return
+    }
+
+    if (isComingSoonLanguage(language)) {
+      const mode = CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === language)
+      toast.message(`${mode?.label ?? language} execution will be added later with Judge0.`)
+      return
+    }
+
+    if (!canRunInWorkbench(language)) {
+      toast.error('This language is not runnable in the workbench yet.')
       return
     }
 
