@@ -31,7 +31,60 @@ import { classifyRunError, toLegacyMistakeLanguage } from '../utils/mistakeClass
 import { resolveQuestionTestCases, resolveRunStdin } from '../utils/executionAdapter'
 import { isPyodideReady, runPythonWithPyodide } from '../python/pyodideRunner'
 import { getPythonSafetyBlock, PYTHON_SAFETY_USER_MESSAGE } from '../python/pythonSafetyValidator'
+import {
+  explainPythonError,
+  formatFeedbackForConsole,
+  formatFeedbackForError,
+  formatHintsForConsole,
+  getBlockingPreRunFeedback,
+  getPreRunHints,
+  type PythonFeedback,
+} from '../python/pythonFeedback'
 import { cn } from '@/lib/utils'
+
+type ExecuteOnceResult = {
+  output: string
+  error: string | null
+  note: string | null
+  executionTimeMs?: number
+  feedback?: PythonFeedback[]
+  preRunHints?: PythonFeedback[]
+  rawError?: string | null
+  blockedBy?: 'safety' | 'prerun'
+}
+
+function resolvePythonErrorDisplay(
+  runError: string,
+  options: {
+    rawError?: string | null
+    note?: string | null
+    feedback?: PythonFeedback[]
+    blockedBy?: 'safety' | 'prerun'
+  },
+): { displayError: string; consoleLines: string[]; feedback: PythonFeedback[] } {
+  if (options.blockedBy === 'safety') {
+    return {
+      displayError: runError,
+      consoleLines: options.note ? [options.note] : [runError],
+      feedback: [],
+    }
+  }
+
+  if (options.blockedBy === 'prerun' && options.feedback?.[0]) {
+    return {
+      displayError: runError,
+      consoleLines: formatFeedbackForConsole(options.feedback[0]),
+      feedback: options.feedback,
+    }
+  }
+
+  const explained = explainPythonError(options.rawError ?? runError)
+  return {
+    displayError: formatFeedbackForError(explained),
+    consoleLines: formatFeedbackForConsole(explained, options.rawError ?? runError),
+    feedback: [explained],
+  }
+}
 
 const ATTEMPTS_KEY = 'codequest-code-practice-attempts'
 
@@ -92,6 +145,7 @@ export function CodePracticePage() {
   const [runStdin, setRunStdin] = useState('')
   const [executionNote, setExecutionNote] = useState<string | null>(null)
   const [runtimeLabel, setRuntimeLabel] = useState<string | null>(null)
+  const [pythonFeedback, setPythonFeedback] = useState<PythonFeedback[]>([])
 
   const languageMeta = useMemo(
     () => CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === language) ?? CODE_PRACTICE_LANGUAGE_MODES[0],
@@ -116,6 +170,7 @@ export function CodePracticePage() {
     setLastRunMs(null)
     setExecutionNote(null)
     setRuntimeLabel(null)
+    setPythonFeedback([])
   }, [])
 
   const loadLanguageQuestion = useCallback((nextLanguage: CodePracticeLanguageMode, nextQuestionId?: string | null) => {
@@ -150,6 +205,7 @@ export function CodePracticePage() {
     setLastRunMs(null)
     setExecutionNote(null)
     setRuntimeLabel(null)
+    setPythonFeedback([])
   }
 
   const handleReset = () => {
@@ -168,8 +224,10 @@ export function CodePracticePage() {
     stdin: string,
     onPythonLoading?: () => void,
     onPythonReady?: () => void,
-  ): Promise<{ output: string; error: string | null; note: string | null; executionTimeMs?: number }> => {
+  ): Promise<ExecuteOnceResult> => {
     if (language === 'python') {
+      const preRunHints = getPreRunHints(code)
+
       const safetyBlock = getPythonSafetyBlock(code)
       if (safetyBlock) {
         return {
@@ -177,6 +235,21 @@ export function CodePracticePage() {
           error: PYTHON_SAFETY_USER_MESSAGE,
           note: `[${safetyBlock.ruleId}] ${safetyBlock.message}`,
           executionTimeMs: 0,
+          blockedBy: 'safety',
+          preRunHints,
+        }
+      }
+
+      const preRunBlock = getBlockingPreRunFeedback(code)
+      if (preRunBlock) {
+        return {
+          output: '',
+          error: formatFeedbackForError(preRunBlock),
+          note: preRunBlock.suggestion ?? preRunBlock.message,
+          executionTimeMs: 0,
+          feedback: [preRunBlock],
+          preRunHints,
+          blockedBy: 'prerun',
         }
       }
 
@@ -189,8 +262,10 @@ export function CodePracticePage() {
       return {
         output: result.output,
         error: result.error,
+        rawError: result.error,
         note: result.error ? null : result.note ?? 'Runtime: Pyodide',
         executionTimeMs: result.executionTimeMs,
+        preRunHints,
       }
     }
 
@@ -239,6 +314,7 @@ export function CodePracticePage() {
     setError(null)
     setRuntimeLabel(null)
     setExecutionNote(null)
+    setPythonFeedback([])
     setOutput(
       language === 'python'
         ? isPyodideReady()
@@ -249,11 +325,19 @@ export function CodePracticePage() {
     const timer = createExecutionTimer()
 
     try {
-      const { output: out, error: runError, note, executionTimeMs } = await executeOnce(
+      const {
+        output: out,
+        error: runError,
+        note,
+        executionTimeMs,
+        feedback,
+        preRunHints,
+        rawError,
+        blockedBy,
+      } = await executeOnce(
         stdin,
-        language === 'python'
-          ? () => setOutput('Starting Python runtime…')
-          : undefined,
+        language === 'python' ? () => setOutput('Starting Python runtime…') : undefined,
+        language === 'python' ? () => setOutput('Running Python…') : undefined,
       )
       const elapsed = executionTimeMs ?? timer.elapsedMs()
       setLastRunMs(elapsed)
@@ -263,20 +347,47 @@ export function CodePracticePage() {
       }
 
       if (runError) {
-        setError(runError)
-        setOutput('')
-        setConsoleLines([`[${classifyRunError(runError)}] ${runError}`])
-        const legacyLang = toLegacyMistakeLanguage(language)
-        if (legacyLang) {
-          logPracticeMistake(legacyLang, runError, code)
-          setMistakesRefreshKey((k) => k + 1)
+        if (language === 'python') {
+          const errorState = resolvePythonErrorDisplay(runError, {
+            rawError,
+            note,
+            feedback,
+            blockedBy,
+          })
+          setError(errorState.displayError)
+          setPythonFeedback(errorState.feedback)
+          setConsoleLines(errorState.consoleLines)
+          if (blockedBy === 'safety') {
+            toast.error('Code blocked for browser safety.')
+          } else if (blockedBy === 'prerun') {
+            toast.error('Fix the issue above before running.')
+          } else {
+            toast.error('Run failed — see feedback in the output panel.')
+            const legacyLang = toLegacyMistakeLanguage(language)
+            if (legacyLang) {
+              logPracticeMistake(legacyLang, rawError ?? runError, code)
+              setMistakesRefreshKey((k) => k + 1)
+            }
+          }
+        } else {
+          setError(runError)
+          setPythonFeedback([])
+          setConsoleLines([`[${classifyRunError(runError)}] ${runError}`])
+          const legacyLang = toLegacyMistakeLanguage(language)
+          if (legacyLang) {
+            logPracticeMistake(legacyLang, runError, code)
+            setMistakesRefreshKey((k) => k + 1)
+          }
+          toast.error('Run failed — see output panel.')
         }
-        toast.error('Run failed — see output panel.')
+        setOutput('')
         return ''
       }
 
+      const hintLines = language === 'python' ? formatHintsForConsole(preRunHints ?? []) : []
+      setPythonFeedback(preRunHints ?? [])
       setOutput(out || '(no output)')
-      setConsoleLines((out || '').split('\n').filter(Boolean))
+      setConsoleLines([...hintLines, ...(out || '').split('\n').filter(Boolean)])
       toast.success(`Finished in ${elapsed} ms`)
       return out
     } catch (e) {
@@ -323,6 +434,7 @@ export function CodePracticePage() {
     setIsRunning(true)
     setTestResults([])
     setRuntimeLabel(null)
+    setPythonFeedback([])
     const timer = createExecutionTimer()
 
     try {
@@ -334,7 +446,16 @@ export function CodePracticePage() {
         executedIds.push(testCase.id)
         const stdin = testCase.input ?? ''
         setRunStdin(stdin)
-        const { output: out, error: runError, note, executionTimeMs } = await executeOnce(
+        const {
+          output: out,
+          error: runError,
+          note,
+          executionTimeMs,
+          feedback,
+          preRunHints,
+          rawError,
+          blockedBy,
+        } = await executeOnce(
           stdin,
           language === 'python' ? () => setOutput('Starting Python runtime…') : undefined,
           language === 'python' ? () => setOutput('Running Python…') : undefined,
@@ -344,14 +465,35 @@ export function CodePracticePage() {
 
         if (runError) {
           hadError = true
-          setError(runError)
           setOutput('')
-          if (runError === PYTHON_SAFETY_USER_MESSAGE) {
-            setConsoleLines(note ? [note] : [runError])
-            toast.error('Code blocked for browser safety.')
+          if (language === 'python') {
+            const errorState = resolvePythonErrorDisplay(runError, {
+              rawError,
+              note,
+              feedback,
+              blockedBy,
+            })
+            setError(errorState.displayError)
+            setPythonFeedback(errorState.feedback)
+            setConsoleLines(errorState.consoleLines)
+            if (blockedBy === 'safety') {
+              toast.error('Code blocked for browser safety.')
+            } else if (blockedBy === 'prerun') {
+              toast.error('Fix the issue above before submitting.')
+            } else {
+              toast.error('Submit failed — see feedback in the output panel.')
+            }
+          } else {
+            setError(runError)
+            setConsoleLines([runError])
+            toast.error('Submit failed — see output panel.')
           }
           actualByCaseId[testCase.id] = ''
           break
+        }
+
+        if (language === 'python' && preRunHints?.length) {
+          setPythonFeedback(preRunHints)
         }
 
         actualByCaseId[testCase.id] = out
@@ -464,6 +606,7 @@ export function CodePracticePage() {
           sampleInput={runStdin || undefined}
           executionNote={executionNote}
           runtimeLabel={runtimeLabel}
+          feedbackItems={pythonFeedback}
         />
       }
       livePreview={
