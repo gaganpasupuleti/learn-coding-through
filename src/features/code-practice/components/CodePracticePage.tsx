@@ -30,6 +30,7 @@ import { createExecutionTimer } from '../utils/executionTimer'
 import { classifyRunError, toLegacyMistakeLanguage } from '../utils/mistakeClassifier'
 import { resolveQuestionTestCases, resolveRunStdin } from '../utils/executionAdapter'
 import { isPyodideReady, runPythonWithPyodide } from '../python/pyodideRunner'
+import { getPythonSafetyBlock, PYTHON_SAFETY_USER_MESSAGE } from '../python/pythonSafetyValidator'
 import { cn } from '@/lib/utils'
 
 const ATTEMPTS_KEY = 'codequest-code-practice-attempts'
@@ -141,26 +142,50 @@ export function CodePracticePage() {
     syncQuestionContext(id, language)
   }
 
+  const clearExecutionState = () => {
+    setOutput('')
+    setError(null)
+    setConsoleLines([])
+    setTestResults([])
+    setLastRunMs(null)
+    setExecutionNote(null)
+    setRuntimeLabel(null)
+  }
+
   const handleReset = () => {
     if (!question) {
       setCode(resolveStarterCode(language))
+      clearExecutionState()
+      toast.success('Editor reset.')
       return
     }
     setCode(question.starterCode)
-    setOutput('')
-    setError(null)
-    setTestResults([])
-    setExecutionNote(null)
-    setRuntimeLabel(null)
+    clearExecutionState()
     toast.success('Starter code restored.')
   }
 
   const executeOnce = async (
     stdin: string,
     onPythonLoading?: () => void,
+    onPythonReady?: () => void,
   ): Promise<{ output: string; error: string | null; note: string | null; executionTimeMs?: number }> => {
     if (language === 'python') {
-      const result = await runPythonWithPyodide(code, stdin || undefined, onPythonLoading)
+      const safetyBlock = getPythonSafetyBlock(code)
+      if (safetyBlock) {
+        return {
+          output: '',
+          error: PYTHON_SAFETY_USER_MESSAGE,
+          note: `[${safetyBlock.ruleId}] ${safetyBlock.message}`,
+          executionTimeMs: 0,
+        }
+      }
+
+      const result = await runPythonWithPyodide(
+        code,
+        stdin || undefined,
+        onPythonLoading,
+        onPythonReady,
+      )
       return {
         output: result.output,
         error: result.error,
@@ -311,11 +336,8 @@ export function CodePracticePage() {
         setRunStdin(stdin)
         const { output: out, error: runError, note, executionTimeMs } = await executeOnce(
           stdin,
-          language === 'python' && !isPyodideReady()
-            ? () => setOutput('Starting Python runtime…')
-            : language === 'python'
-              ? () => setOutput('Running Python…')
-              : undefined,
+          language === 'python' ? () => setOutput('Starting Python runtime…') : undefined,
+          language === 'python' ? () => setOutput('Running Python…') : undefined,
         )
         if (note) setExecutionNote(note)
         if (language === 'python' && !runError) setRuntimeLabel('Pyodide')
@@ -324,6 +346,10 @@ export function CodePracticePage() {
           hadError = true
           setError(runError)
           setOutput('')
+          if (runError === PYTHON_SAFETY_USER_MESSAGE) {
+            setConsoleLines(note ? [note] : [runError])
+            toast.error('Code blocked for browser safety.')
+          }
           actualByCaseId[testCase.id] = ''
           break
         }

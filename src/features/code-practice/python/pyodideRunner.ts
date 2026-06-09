@@ -1,7 +1,22 @@
 import { loadPyodide, type PyodideInterface } from 'pyodide'
 
+/**
+ * Browser Python runner for beginner Code Practice Ground tasks.
+ * Pyodide executes locally in the tab — not a full security sandbox.
+ * Pre-run checks live in pythonSafetyValidator.ts; worker timeouts may follow later.
+ */
+
 /** CDN assets for the installed pyodide npm version (lazy-loaded on first Python run). */
 const PYODIDE_INDEX_URL = 'https://cdn.jsdelivr.net/pyodide/v0.29.4/full/'
+
+/** Cap stdout size so runaway print loops do not exhaust browser memory. */
+export const MAX_PYODIDE_OUTPUT_CHARS = 20_000
+const OUTPUT_TRUNCATION_SUFFIX = '\n[Output truncated for browser safety]'
+
+export function truncatePyodideOutput(raw: string): string {
+  if (raw.length <= MAX_PYODIDE_OUTPUT_CHARS) return raw
+  return raw.slice(0, MAX_PYODIDE_OUTPUT_CHARS) + OUTPUT_TRUNCATION_SUFFIX
+}
 
 export interface PyodideRunResult {
   output: string
@@ -65,11 +80,13 @@ export async function runPythonWithPyodide(
   code: string,
   stdin?: string,
   onRuntimeLoading?: () => void,
+  onRuntimeReady?: () => void,
 ): Promise<PyodideRunResult> {
   const started = performance.now()
 
   try {
     const py = await ensurePyodideLoaded(onRuntimeLoading)
+    onRuntimeReady?.()
 
     const stdinLine = stdin
       ? `sys.stdin = io.StringIO(${JSON.stringify(stdin)})`
@@ -98,14 +115,16 @@ ${stdinLine}
         /* ignore */
       }
       return {
-        output: partial,
+        output: truncatePyodideOutput(partial),
         error: formatPyodideError(runErr),
         executionTimeMs: Math.round(performance.now() - started),
         runtime: 'pyodide',
       }
     }
 
-    const output = String(py.runPython('_stdout_capture.getvalue()')).trimEnd()
+    const output = truncatePyodideOutput(
+      String(py.runPython('_stdout_capture.getvalue()')).trimEnd(),
+    )
     await py.runPythonAsync('sys.stdout = sys.__stdout__; sys.stdin = sys.__stdin__')
 
     return {
