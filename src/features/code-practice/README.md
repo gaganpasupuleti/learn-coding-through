@@ -12,7 +12,7 @@ Provide a dedicated dark-themed **Code Workbench** where students run sample pro
 |------|---------|-----|
 | `/practice/code` | `practice-code` | Learning → **Code Workbench** |
 
-Legacy hub: Learning → **Practice Hub (Legacy)** (`PracticePage`) — still includes SQL for Issue #30.
+SQL practice: `/practice/sql` — see `src/features/sql-practice/` (Issue #30).
 
 ## Supported MVP modes
 
@@ -39,8 +39,6 @@ Legacy hub: Learning → **Practice Hub (Legacy)** (`PracticePage`) — still in
 - Judge0 live execution
 - Paid model/API usage
 - Hidden test cases for compiled languages (future)
-- Legacy practice hub removal
-
 ## Module layout
 
 ```
@@ -87,7 +85,7 @@ src/features/code-practice/
 
 ## Issue #30 SQL separation
 
-SQL practice remains in the **legacy Practice Hub** and Issue #30 scope. This module must not add SQL tabs, schema UI, or SQL execution.
+SQL practice lives at `/practice/sql` in `src/features/sql-practice/`. This module must not add SQL tabs, schema UI, or SQL execution.
 
 ## Judge0 note
 
