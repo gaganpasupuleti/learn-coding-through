@@ -34,6 +34,12 @@ interface CodeEditorProps {
   showOutputPanel?: boolean
   /** When set, overrides the internal KV theme picker for Monaco. */
   monacoTheme?: MonacoEditorTheme
+  /** Monaco font size in px (default 15). */
+  fontSize?: number
+  /** Monaco line height in px; defaults to ~1.6× fontSize. */
+  lineHeight?: number
+  /** Hide the built-in editor chrome (toolbar) for embedded workbench layouts. */
+  showEditorChrome?: boolean
 }
 
 type Theme = 'monokai' | 'dracula' | 'nord' | 'github' | 'synthwave'
@@ -49,7 +55,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   showExecutionControls = true,
   showOutputPanel = true,
   monacoTheme,
+  fontSize = 15,
+  lineHeight,
+  showEditorChrome = true,
 }) => {
+  const editorLineHeight = lineHeight ?? Math.round(fontSize * 1.6)
   const isControlled = controlledCode !== undefined
   const [internalCode, setInternalCode] = useState(initialCode || '')
   const [output, setOutput] = useState('')
@@ -222,9 +232,34 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     toast.success('Code reset to original!')
   }
 
+  const editorOptions = {
+    minimap: { enabled: false },
+    fontSize,
+    lineHeight: editorLineHeight,
+    fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+    wordWrap: 'on' as const,
+    automaticLayout: true,
+    autoClosingBrackets: 'always' as const,
+    autoClosingQuotes: 'always' as const,
+    lineDecorationsWidth: 8,
+    padding: { top: 14, bottom: 14 },
+  }
+
+  const editorElement = (
+    <Editor
+      height="100%"
+      language={getMonacoLanguage()}
+      theme={getMonacoTheme()}
+      value={editorCode}
+      onChange={handleCodeChange}
+      options={editorOptions}
+    />
+  )
+
   return (
     <div className="space-y-3">
       {/* Editor container */}
+      {showEditorChrome ? (
       <div className="rounded-lg border border-slate-200 overflow-hidden shadow-sm">
         {/* Toolbar */}
         <div className="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex items-center justify-between">
@@ -297,26 +332,14 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
         {/* Monaco Editor */}
         <div className="h-[400px]">
-          <Editor
-            height="100%"
-            language={getMonacoLanguage()}
-            theme={getMonacoTheme()}
-            value={editorCode}
-            onChange={handleCodeChange}
-            options={{
-              minimap: { enabled: false },
-              fontSize: 14,
-              fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-              wordWrap: 'on',
-              automaticLayout: true,
-              autoClosingBrackets: 'always',
-              autoClosingQuotes: 'always',
-              lineDecorationsWidth: 8,
-              padding: { top: 12, bottom: 12 },
-            }}
-          />
+          {editorElement}
         </div>
       </div>
+      ) : (
+        <div className="code-editor-embedded h-full min-h-[280px] flex-1">
+          {editorElement}
+        </div>
+      )}
 
       {/* Output panel */}
       {showOutputPanel && output && (
@@ -351,7 +374,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
               </div>
             )}
           </div>
-          <pre className="font-mono text-xs whitespace-pre-wrap leading-relaxed text-slate-700 p-4">
+          <pre className="font-mono text-sm whitespace-pre-wrap leading-relaxed text-slate-700 p-4">
             {output}
           </pre>
         </div>

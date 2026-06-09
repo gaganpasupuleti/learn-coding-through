@@ -43,33 +43,33 @@ export function CodeWorkbenchLayout({
       {toolbar}
       {questionPicker}
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(220px,280px)_1fr_minmax(220px,300px)]">
-        <div className="min-h-[200px] lg:min-h-0">{problemPanel}</div>
+      <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(240px,300px)_1fr_minmax(240px,320px)]">
+        <div className="min-h-[220px] lg:min-h-0">{problemPanel}</div>
 
-        <div className="flex min-h-[320px] flex-col border-x border-slate-800 lg:min-h-0">
+        <div className="flex min-h-[340px] flex-col border-x border-slate-800 lg:min-h-0">
           <div className="min-h-0 flex-1">{editorPanel}</div>
           {livePreview && (
-            <div className="border-t border-slate-800 p-3 lg:hidden">{livePreview}</div>
+            <div className="border-t border-slate-800 p-4 lg:hidden">{livePreview}</div>
           )}
         </div>
 
-        <div className="flex min-h-[200px] flex-col lg:min-h-0">
+        <div className="flex min-h-[220px] flex-col lg:min-h-0">
           {livePreview && (
-            <div className="hidden border-b border-slate-800 p-3 lg:block">{livePreview}</div>
+            <div className="hidden border-b border-slate-800 p-4 lg:block">{livePreview}</div>
           )}
           <div className="min-h-0 flex-1">{outputPanel}</div>
         </div>
       </div>
 
       <div className="border-t border-slate-800 bg-slate-950">
-        <div className="flex gap-1 border-b border-slate-800 px-2">
+        <div className="flex gap-1 border-b border-slate-800 px-3">
           {BOTTOM_TABS.map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => setBottomTab(tab.id)}
               className={cn(
-                'px-3 py-2 text-xs font-medium transition-colors',
+                'px-3.5 py-2.5 text-sm font-medium transition-colors',
                 bottomTab === tab.id
                   ? 'border-b-2 border-sky-500 text-sky-300'
                   : 'text-slate-500 hover:text-slate-300',
@@ -79,7 +79,7 @@ export function CodeWorkbenchLayout({
             </button>
           ))}
         </div>
-        <div className="max-h-44 overflow-y-auto">
+        <div className="max-h-52 overflow-y-auto">
           {bottomTab === 'tests' && testResults}
           {bottomTab === 'hints' && hints}
           {bottomTab === 'mistakes' && mistakes}

@@ -9,7 +9,7 @@ interface LanguageSelectorProps {
 
 export function LanguageSelector({ value, onChange, onComingSoon }: LanguageSelectorProps) {
   return (
-    <div className="flex flex-wrap items-center gap-1">
+    <div className="flex flex-wrap items-center gap-1.5">
       {CODE_PRACTICE_LANGUAGE_MODES.map((mode) => {
         const active = value === mode.id
         const comingSoon = mode.status === 'coming-soon'
@@ -25,11 +25,11 @@ export function LanguageSelector({ value, onChange, onComingSoon }: LanguageSele
               onChange(mode.id)
             }}
             className={cn(
-              'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+              'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
               active && !comingSoon
                 ? 'bg-sky-500 text-white shadow-sm'
                 : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200',
-              comingSoon && 'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-slate-500',
+              comingSoon && 'cursor-not-allowed px-2.5 py-1 text-xs opacity-55 hover:bg-transparent hover:text-slate-500',
             )}
             title={comingSoon ? `${mode.label} — Judge0-backed execution coming later` : mode.label}
           >

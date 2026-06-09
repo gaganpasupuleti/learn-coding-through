@@ -14,14 +14,14 @@ interface SqlEditorPlaceholderProps {
 export function SqlEditorPlaceholder({ value, onChange }: SqlEditorPlaceholderProps) {
   return (
     <div className="flex h-full min-h-[240px] flex-col bg-slate-950">
-      <div className="border-b border-slate-800 px-3 py-1.5 text-[10px] uppercase tracking-wider text-slate-600">
+      <div className="border-b border-slate-800 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-slate-500">
         SQL Editor
       </div>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         spellCheck={false}
-        className="min-h-0 flex-1 resize-none bg-slate-950 p-3 font-mono text-xs leading-relaxed text-slate-200 outline-none"
+        className="min-h-0 flex-1 resize-none bg-slate-950 p-4 font-mono text-[15px] leading-[1.6] text-slate-200 outline-none"
         aria-label="SQL editor placeholder"
       />
     </div>

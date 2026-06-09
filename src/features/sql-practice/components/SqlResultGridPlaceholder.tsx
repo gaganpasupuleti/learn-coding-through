@@ -8,7 +8,7 @@ export function SqlResultGridPlaceholder() {
 
   return (
     <section className="border-t border-slate-800 bg-slate-950">
-      <div className="flex gap-1 border-b border-slate-800 px-2">
+      <div className="flex gap-1 border-b border-slate-800 px-3">
         {(
           [
             { id: 'results' as const, label: 'Result grid' },
@@ -22,7 +22,7 @@ export function SqlResultGridPlaceholder() {
             type="button"
             onClick={() => setTab(item.id)}
             className={cn(
-              'px-3 py-2 text-xs font-medium transition-colors',
+              'px-3.5 py-2.5 text-sm font-medium transition-colors',
               tab === item.id
                 ? 'border-b-2 border-emerald-500 text-emerald-300'
                 : 'text-slate-500 hover:text-slate-300',
@@ -32,7 +32,7 @@ export function SqlResultGridPlaceholder() {
           </button>
         ))}
       </div>
-      <div className="max-h-44 overflow-auto p-3 font-mono text-xs text-slate-500">
+      <div className="max-h-52 overflow-auto p-4 font-mono text-sm leading-relaxed text-slate-500">
         {tab === 'results' && (
           <p>Run Query is disabled. Results will appear here when sql.js execution is added (Issue #30).</p>
         )}

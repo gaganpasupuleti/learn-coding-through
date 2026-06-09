@@ -14,9 +14,9 @@ export function CodeEditorPanel({ code, languageId, monacoLanguage, editorTheme,
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-[#1e1e1e]">
-      <div className="flex items-center justify-between border-b border-slate-800 bg-slate-950 px-3 py-2">
-        <span className="text-xs font-medium text-slate-400">{label} · editor</span>
-        <span className="text-[10px] text-slate-600">Monaco</span>
+      <div className="flex items-center justify-between border-b border-slate-800 bg-slate-950 px-4 py-2.5">
+        <span className="text-sm font-medium text-slate-300">{label} · editor</span>
+        <span className="text-xs text-slate-500">Monaco</span>
       </div>
       <div className="code-practice-editor min-h-0 flex-1 overflow-hidden">
         <CodeEditor
@@ -26,6 +26,9 @@ export function CodeEditorPanel({ code, languageId, monacoLanguage, editorTheme,
           monacoTheme={editorTheme}
           showExecutionControls={false}
           showOutputPanel={false}
+          showEditorChrome={false}
+          fontSize={15}
+          lineHeight={24}
         />
       </div>
     </div>

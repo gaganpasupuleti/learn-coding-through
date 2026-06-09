@@ -26,11 +26,11 @@ export function LivePreviewPanel({ language, code, questionTitle }: LivePreviewP
   if (!isReact) {
     return (
       <div className="rounded-md border border-dashed border-slate-700 bg-slate-900/50 p-4">
-        <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
-          <Eye className="h-3.5 w-3.5 text-violet-400" />
+        <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+          <Eye className="h-4 w-4 text-violet-400" />
           Live preview
         </div>
-        <p className="mt-2 text-xs text-slate-500 leading-relaxed">
+        <p className="mt-2 text-sm text-slate-500 leading-relaxed">
           Live preview is available for React practice.
         </p>
       </div>
@@ -39,15 +39,15 @@ export function LivePreviewPanel({ language, code, questionTitle }: LivePreviewP
 
   return (
     <div className="flex min-h-[220px] flex-col rounded-md border border-slate-800 bg-slate-950 overflow-hidden">
-      <div className="flex items-center justify-between gap-2 border-b border-slate-800 bg-slate-900/80 px-3 py-2">
-        <div className="flex items-center gap-2 text-xs font-medium text-slate-300">
-          <Eye className="h-3.5 w-3.5 text-violet-400" />
+      <div className="flex items-center justify-between gap-2 border-b border-slate-800 bg-slate-900/80 px-4 py-2.5">
+        <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
+          <Eye className="h-4 w-4 text-violet-400" />
           Live Preview
         </div>
-        <span className="text-[10px] text-slate-500">Powered by Sandpack</span>
+        <span className="text-xs text-slate-500">Powered by Sandpack</span>
       </div>
       {questionTitle && (
-        <p className="border-b border-slate-800 px-3 py-1.5 text-[10px] text-slate-500 truncate">
+        <p className="border-b border-slate-800 px-4 py-2 text-xs text-slate-500 truncate">
           {questionTitle}
         </p>
       )}
