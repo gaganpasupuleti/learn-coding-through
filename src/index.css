@@ -1,6 +1,42 @@
 @import 'tailwindcss';
 @import "tw-animate-css";
 
+/* Issue #29 — Code Workbench editor fills panel height */
+.code-practice-editor > .space-y-3 {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.code-practice-editor .rounded-lg.border-slate-200 {
+  border-color: rgb(30 41 59);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+}
+.code-practice-editor .h-\[400px\] {
+  height: 100% !important;
+  min-height: 280px;
+  flex: 1;
+}
+.code-practice-editor .code-editor-embedded {
+  height: 100% !important;
+  min-height: 280px;
+  flex: 1;
+}
+
+/* Issue #29 — shared practice workbench readability */
+.practice-workbench {
+  --wb-bg: #0b1020;
+  --wb-panel: #0f172a;
+  --wb-editor: #1e1e1e;
+  --wb-border: #26324a;
+  --wb-text: #e5e7eb;
+  --wb-text-secondary: #cbd5e1;
+  --wb-text-muted: #94a3b8;
+}
+
 @layer base {
   * {
     @apply border-border

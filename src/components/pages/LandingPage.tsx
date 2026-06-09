@@ -5,12 +5,12 @@ import { LandingProgressStrip } from '@/components/home/LandingProgressStrip'
 /** Destinations available from the home hero (subset of student nav). */
 export type LandingNavTarget =
   | 'projects'
-  | 'practice-ground'
+  | 'practice-code'
   | 'practice'
   | 'quiz'
   | 'roadmapper'
   | 'flow-roadmap'
-  | 'typing'
+  | 'practice-typing'
   | 'hub'
   | 'jobspy'
 
@@ -64,12 +64,12 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             </button>
             <button
               type="button"
-              onClick={() => onNavigate('practice-ground')}
+              onClick={() => onNavigate('practice-code')}
               className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-semibold px-5 py-3 rounded-lg border border-slate-200 shadow-sm transition-all duration-200"
-              aria-label="Open Code Practice Ground"
+              aria-label="Open Code Workbench"
             >
               <Keyboard size={16} strokeWidth={2.5} aria-hidden />
-              Code Practice Ground
+              Code Workbench
             </button>
           </div>
           <p className="text-sm text-slate-500 max-w-xl mx-auto pt-1 leading-relaxed">

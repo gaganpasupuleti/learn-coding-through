@@ -1,3 +1,4 @@
+/** `sql` mistakes are tracked for Issue #30 SQL practice; excluded from Issue #29 rebuild. */
 export type PracticeMistakeLanguage = 'python' | 'sql' | 'java' | 'quiz'
 
 export interface PracticeMistake {

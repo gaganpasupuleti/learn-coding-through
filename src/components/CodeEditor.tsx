@@ -21,6 +21,8 @@ import { DemoLimits } from '../lib/demo-limits'
 
 /* ---------------- Types ---------------- */
 
+export type MonacoEditorTheme = 'vs-dark' | 'vs' | 'hc-black'
+
 interface CodeEditorProps {
   initialCode?: string
   code?: string
@@ -30,6 +32,14 @@ interface CodeEditorProps {
   onRun?: (code: string) => void
   showExecutionControls?: boolean
   showOutputPanel?: boolean
+  /** When set, overrides the internal KV theme picker for Monaco. */
+  monacoTheme?: MonacoEditorTheme
+  /** Monaco font size in px (default 15). */
+  fontSize?: number
+  /** Monaco line height in px; defaults to ~1.6× fontSize. */
+  lineHeight?: number
+  /** Hide the built-in editor chrome (toolbar) for embedded workbench layouts. */
+  showEditorChrome?: boolean
 }
 
 type Theme = 'monokai' | 'dracula' | 'nord' | 'github' | 'synthwave'
@@ -38,12 +48,19 @@ type Theme = 'monokai' | 'dracula' | 'nord' | 'github' | 'synthwave'
 
 const CodeEditor: React.FC<CodeEditorProps> = ({
   initialCode = '',
+  code: controlledCode,
   language,
   onChange,
   onRun,
   showExecutionControls = true,
   showOutputPanel = true,
+  monacoTheme,
+  fontSize = 16,
+  lineHeight,
+  showEditorChrome = true,
 }) => {
+  const editorLineHeight = lineHeight ?? Math.round(fontSize * 1.6)
+  const isControlled = controlledCode !== undefined
   const [internalCode, setInternalCode] = useState(initialCode || '')
   const [output, setOutput] = useState('')
   const [isRunning, setIsRunning] = useState(false)
@@ -53,7 +70,13 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
   const workerRef = useRef<Worker | null>(null)
 
-  const code = initialCode ?? internalCode
+  const editorCode = isControlled ? controlledCode : internalCode
+
+  useEffect(() => {
+    if (!isControlled) {
+      setInternalCode(initialCode || '')
+    }
+  }, [initialCode, isControlled])
 
   /* ---------- Worker helpers ---------- */
   const createWorker = () => {
@@ -85,14 +108,16 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   }
 
   /* ---------- Monaco theme ---------- */
-  const getMonacoTheme = () => (theme === 'github' ? 'vs' : 'vs-dark')
+  const getMonacoTheme = (): MonacoEditorTheme => {
+    if (monacoTheme) return monacoTheme
+    return theme === 'github' ? 'vs' : 'vs-dark'
+  }
 
   /* ---------- Code change ---------- */
   const handleCodeChange = (value: string | undefined) => {
     const val = value ?? ''
-    if (onChange) {
-      onChange(val)
-    } else {
+    onChange?.(val)
+    if (!isControlled) {
       setInternalCode(val)
     }
   }
@@ -104,7 +129,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
       return
     }
 
-    if (!code.trim()) {
+    if (!editorCode.trim()) {
       toast.error('Please write some code first!')
       return
     }
@@ -126,7 +151,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         setIsRunning(false)
         toast.error('Execution timed out. Possible infinite loop detected.')
         createWorker()
-        onRun?.(code)
+        onRun?.(editorCode)
       }, 5000)
 
       workerRef.current.onmessage = (
@@ -148,10 +173,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         }
 
         setIsRunning(false)
-        onRun?.(code)
+        onRun?.(editorCode)
       }
 
-      workerRef.current.postMessage({ code })
+      workerRef.current.postMessage({ code: editorCode })
     } else {
       const langMap: Record<string, 'javascript' | 'python' | 'java' | 'sql'> = {
         javascript: 'javascript',
@@ -168,7 +193,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
       void (async () => {
         try {
-          const result = await sandbox.execute(code, execLang)
+          const result = await sandbox.execute(editorCode, execLang)
           setExecutionTime(result.executionTime || 0)
 
           if (result.error) {
@@ -189,7 +214,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
           toast.error('Failed to execute code')
         } finally {
           setIsRunning(false)
-          onRun?.(code)
+          onRun?.(editorCode)
         }
       })()
     }
@@ -198,9 +223,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   /* ---------- Reset ---------- */
   const resetCode = () => {
     const val = initialCode || ''
-    if (onChange) {
-      onChange(val)
-    } else {
+    onChange?.(val)
+    if (!isControlled) {
       setInternalCode(val)
     }
     setOutput('')
@@ -208,9 +232,34 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     toast.success('Code reset to original!')
   }
 
+  const editorOptions = {
+    minimap: { enabled: false },
+    fontSize,
+    lineHeight: editorLineHeight,
+    fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+    wordWrap: 'on' as const,
+    automaticLayout: true,
+    autoClosingBrackets: 'always' as const,
+    autoClosingQuotes: 'always' as const,
+    lineDecorationsWidth: 8,
+    padding: { top: 14, bottom: 14 },
+  }
+
+  const editorElement = (
+    <Editor
+      height="100%"
+      language={getMonacoLanguage()}
+      theme={getMonacoTheme()}
+      value={editorCode}
+      onChange={handleCodeChange}
+      options={editorOptions}
+    />
+  )
+
   return (
     <div className="space-y-3">
       {/* Editor container */}
+      {showEditorChrome ? (
       <div className="rounded-lg border border-slate-200 overflow-hidden shadow-sm">
         {/* Toolbar */}
         <div className="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex items-center justify-between">
@@ -283,26 +332,14 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
 
         {/* Monaco Editor */}
         <div className="h-[400px]">
-          <Editor
-            height="100%"
-            language={getMonacoLanguage()}
-            theme={getMonacoTheme()}
-            value={code}
-            onChange={handleCodeChange}
-            options={{
-              minimap: { enabled: false },
-              fontSize: 14,
-              fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-              wordWrap: 'on',
-              automaticLayout: true,
-              autoClosingBrackets: 'always',
-              autoClosingQuotes: 'always',
-              lineDecorationsWidth: 8,
-              padding: { top: 12, bottom: 12 },
-            }}
-          />
+          {editorElement}
         </div>
       </div>
+      ) : (
+        <div className="code-editor-embedded h-full min-h-[280px] flex-1">
+          {editorElement}
+        </div>
+      )}
 
       {/* Output panel */}
       {showOutputPanel && output && (
@@ -337,7 +374,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
               </div>
             )}
           </div>
-          <pre className="font-mono text-xs whitespace-pre-wrap leading-relaxed text-slate-700 p-4">
+          <pre className="font-mono text-sm whitespace-pre-wrap leading-relaxed text-slate-700 p-4">
             {output}
           </pre>
         </div>

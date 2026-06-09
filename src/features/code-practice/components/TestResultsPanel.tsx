@@ -1,0 +1,41 @@
+import { CheckCircle2, XCircle } from 'lucide-react'
+import type { CodePracticeTestResult } from '../types/codePractice.types'
+import { wb } from '@/lib/workbench-theme'
+
+interface TestResultsPanelProps {
+  results: CodePracticeTestResult[]
+}
+
+export function TestResultsPanel({ results }: TestResultsPanelProps) {
+  if (results.length === 0) {
+    return (
+      <div className={`p-4 text-sm ${wb.textMuted}`}>
+        Submit your solution to compare output against the sample case.
+      </div>
+    )
+  }
+
+  return (
+    <div className={`divide-y ${wb.border}`}>
+      {results.map((result) => (
+        <div key={result.id} className={`flex items-start gap-2.5 px-4 py-3.5 text-sm`}>
+          {result.passed ? (
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+          ) : (
+            <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
+          )}
+          <div className="min-w-0 flex-1">
+            <p className={`font-medium ${wb.textPrimary}`}>{result.label}</p>
+            <p className={wb.textSecondary}>{result.message}</p>
+            {!result.passed && (
+              <div className={`mt-2 space-y-0.5 font-mono text-xs ${wb.textMuted}`}>
+                <div>Expected: {result.expected}</div>
+                <div>Actual: {result.actual}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
