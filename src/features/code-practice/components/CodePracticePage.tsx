@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { sandbox } from '@/lib/sandboxInstance'
-import { logPracticeMistake } from '@/lib/practice-mistakes'
 import { CodeWorkbenchLayout } from './CodeWorkbenchLayout'
 import { PracticeToolbar } from './PracticeToolbar'
 import { ProblemPanel } from './ProblemPanel'
@@ -27,7 +26,15 @@ import {
 import { resolveStarterCode } from '../data/starterTemplates'
 import { buildReactPreviewCheckResults, buildTestResultsFromCases } from '../utils/resultComparator'
 import { createExecutionTimer } from '../utils/executionTimer'
-import { classifyRunError, toLegacyMistakeLanguage } from '../utils/mistakeClassifier'
+import { classifyRunError } from '../utils/mistakeClassifier'
+import {
+  recordFailedTestCaseMistake,
+  recordJavaScriptErrorMistake,
+  recordPythonPrerunBlockMistake,
+  recordPythonRuntimeMistake,
+  recordPythonSafetyBlockMistake,
+  type CodePracticeMistake,
+} from '../utils/codePracticeMistakes'
 import { resolveQuestionTestCases, resolveRunStdin } from '../utils/executionAdapter'
 import { isPyodideReady, runPythonWithPyodide } from '../python/pyodideRunner'
 import { getPythonSafetyBlock, PYTHON_SAFETY_USER_MESSAGE } from '../python/pythonSafetyValidator'
@@ -51,6 +58,8 @@ type ExecuteOnceResult = {
   preRunHints?: PythonFeedback[]
   rawError?: string | null
   blockedBy?: 'safety' | 'prerun'
+  safetyRuleId?: string
+  safetyMessage?: string
 }
 
 function resolvePythonErrorDisplay(
@@ -208,6 +217,76 @@ export function CodePracticePage() {
     setPythonFeedback([])
   }
 
+  const bumpMistakes = () => setMistakesRefreshKey((k) => k + 1)
+
+  const recordPythonExecutionMistake = (
+    attemptType: 'run' | 'submit',
+    stdin: string,
+    runError: string,
+    options: {
+      rawError?: string | null
+      feedback?: PythonFeedback[]
+      blockedBy?: 'safety' | 'prerun'
+      safetyRuleId?: string
+      safetyMessage?: string
+    },
+  ) => {
+    if (options.blockedBy === 'safety' && options.safetyRuleId) {
+      recordPythonSafetyBlockMistake({
+        question,
+        code,
+        stdin,
+        attemptType,
+        ruleId: options.safetyRuleId,
+        message: options.safetyMessage ?? runError,
+      })
+      bumpMistakes()
+      return
+    }
+
+    if (options.blockedBy === 'prerun' && options.feedback?.[0]) {
+      recordPythonPrerunBlockMistake({
+        question,
+        code,
+        stdin,
+        attemptType,
+        feedback: options.feedback[0],
+      })
+      bumpMistakes()
+      return
+    }
+
+    const explained = explainPythonError(options.rawError ?? runError)
+    recordPythonRuntimeMistake({
+      question,
+      code,
+      stdin,
+      attemptType,
+      rawError: options.rawError ?? runError,
+      feedback: explained,
+    })
+    bumpMistakes()
+  }
+
+  const handleRetryMistake = useCallback((mistake: CodePracticeMistake) => {
+    const q = mistake.questionId !== 'freeform' ? getQuestionById(mistake.questionId) : null
+    const cases = q ? resolveQuestionTestCases(q) : []
+    const matchingCase = mistake.inputUsed
+      ? cases.find((c) => (c.input ?? '') === mistake.inputUsed)
+      : undefined
+
+    setLanguage(mistake.language)
+    setQuestionId(q?.id ?? null)
+    setActiveTestCaseId(matchingCase?.id ?? cases[0]?.id ?? null)
+    setRunStdin(
+      mistake.inputUsed || resolveRunStdin(q, matchingCase?.id ?? cases[0]?.id ?? null),
+    )
+    setCode(mistake.submittedCode)
+    clearExecutionState()
+    setRevealedHintCount(0)
+    toast.message('Mistake loaded — fix your code and run again.')
+  }, [])
+
   const handleReset = () => {
     if (!question) {
       setCode(resolveStarterCode(language))
@@ -236,6 +315,8 @@ export function CodePracticePage() {
           note: `[${safetyBlock.ruleId}] ${safetyBlock.message}`,
           executionTimeMs: 0,
           blockedBy: 'safety',
+          safetyRuleId: safetyBlock.ruleId,
+          safetyMessage: safetyBlock.message,
           preRunHints,
         }
       }
@@ -334,6 +415,8 @@ export function CodePracticePage() {
         preRunHints,
         rawError,
         blockedBy,
+        safetyRuleId,
+        safetyMessage,
       } = await executeOnce(
         stdin,
         language === 'python' ? () => setOutput('Starting Python runtime…') : undefined,
@@ -357,27 +440,32 @@ export function CodePracticePage() {
           setError(errorState.displayError)
           setPythonFeedback(errorState.feedback)
           setConsoleLines(errorState.consoleLines)
+          recordPythonExecutionMistake('run', stdin, runError, {
+            rawError,
+            feedback,
+            blockedBy,
+            safetyRuleId,
+            safetyMessage,
+          })
           if (blockedBy === 'safety') {
             toast.error('Code blocked for browser safety.')
           } else if (blockedBy === 'prerun') {
             toast.error('Fix the issue above before running.')
           } else {
             toast.error('Run failed — see feedback in the output panel.')
-            const legacyLang = toLegacyMistakeLanguage(language)
-            if (legacyLang) {
-              logPracticeMistake(legacyLang, rawError ?? runError, code)
-              setMistakesRefreshKey((k) => k + 1)
-            }
           }
         } else {
           setError(runError)
           setPythonFeedback([])
           setConsoleLines([`[${classifyRunError(runError)}] ${runError}`])
-          const legacyLang = toLegacyMistakeLanguage(language)
-          if (legacyLang) {
-            logPracticeMistake(legacyLang, runError, code)
-            setMistakesRefreshKey((k) => k + 1)
-          }
+          recordJavaScriptErrorMistake({
+            question,
+            code,
+            stdin,
+            attemptType: 'run',
+            errorMessage: runError,
+          })
+          bumpMistakes()
           toast.error('Run failed — see output panel.')
         }
         setOutput('')
@@ -455,6 +543,8 @@ export function CodePracticePage() {
           preRunHints,
           rawError,
           blockedBy,
+          safetyRuleId,
+          safetyMessage,
         } = await executeOnce(
           stdin,
           language === 'python' ? () => setOutput('Starting Python runtime…') : undefined,
@@ -476,6 +566,13 @@ export function CodePracticePage() {
             setError(errorState.displayError)
             setPythonFeedback(errorState.feedback)
             setConsoleLines(errorState.consoleLines)
+            recordPythonExecutionMistake('submit', stdin, runError, {
+              rawError,
+              feedback,
+              blockedBy,
+              safetyRuleId,
+              safetyMessage,
+            })
             if (blockedBy === 'safety') {
               toast.error('Code blocked for browser safety.')
             } else if (blockedBy === 'prerun') {
@@ -486,6 +583,14 @@ export function CodePracticePage() {
           } else {
             setError(runError)
             setConsoleLines([runError])
+            recordJavaScriptErrorMistake({
+              question,
+              code,
+              stdin,
+              attemptType: 'submit',
+              errorMessage: runError,
+            })
+            bumpMistakes()
             toast.error('Submit failed — see output panel.')
           }
           actualByCaseId[testCase.id] = ''
@@ -516,10 +621,20 @@ export function CodePracticePage() {
         toast.success(`All ${results.length} sample case(s) passed!`)
       } else if (!hadError) {
         toast.error('Some sample cases did not match.')
-        const legacyLang = toLegacyMistakeLanguage(language)
-        if (legacyLang) {
-          logPracticeMistake(legacyLang, results.find((r) => !r.passed)?.message ?? 'Wrong output', code)
-          setMistakesRefreshKey((k) => k + 1)
+        const failed = results.find((r) => !r.passed)
+        if (failed) {
+          const failedCase = cases.find((c) => c.id === failed.id)
+          recordFailedTestCaseMistake({
+            language,
+            question,
+            code,
+            stdin: failedCase?.input ?? '',
+            expectedOutput: failed.expected,
+            actualOutput: failed.actual,
+            attemptType: 'submit',
+            caseLabel: failed.label,
+          })
+          bumpMistakes()
         }
       }
     } finally {
@@ -624,7 +739,7 @@ export function CodePracticePage() {
           onRevealNext={() => setRevealedHintCount((c) => Math.min(c + 1, question?.hints.length ?? 0))}
         />
       }
-      mistakes={<OldMistakesPanel refreshKey={mistakesRefreshKey} />}
+      mistakes={<OldMistakesPanel refreshKey={mistakesRefreshKey} onRetry={handleRetryMistake} />}
       attemptHistory={<AttemptHistoryPanel attempts={attempts} />}
     />
   )
