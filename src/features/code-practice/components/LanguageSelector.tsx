@@ -31,7 +31,7 @@ export function LanguageSelector({ value, onChange, onComingSoon }: LanguageSele
                 : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200',
               comingSoon && 'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-slate-500',
             )}
-            title={comingSoon ? `${mode.label} — Judge0 execution coming later` : mode.label}
+            title={comingSoon ? `${mode.label} — Judge0-backed execution coming later` : mode.label}
           >
             {mode.label}
             {comingSoon ? ' · soon' : ''}

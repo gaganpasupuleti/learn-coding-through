@@ -233,7 +233,7 @@ export function CodePracticePage() {
   const handleLanguageChange = (next: CodePracticeLanguageMode) => {
     const mode = CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === next)
     if (mode?.status === 'coming-soon') {
-      toast.message(`${mode.label} execution will be added later with Judge0.`)
+      toast.message(`${mode.label} execution will be added later through a Judge0-backed service.`)
       return
     }
     loadLanguageQuestion(next)
@@ -508,7 +508,7 @@ export function CodePracticePage() {
 
     if (isComingSoonLanguage(language)) {
       const mode = CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === language)
-      toast.message(`${mode?.label ?? language} execution will be added later with Judge0.`)
+      toast.message(`${mode?.label ?? language} execution will be added later through a Judge0-backed service.`)
       return ''
     }
 
@@ -643,7 +643,7 @@ export function CodePracticePage() {
 
     if (isComingSoonLanguage(language)) {
       const mode = CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === language)
-      toast.message(`${mode?.label ?? language} execution will be added later with Judge0.`)
+      toast.message(`${mode?.label ?? language} execution will be added later through a Judge0-backed service.`)
       return
     }
 
