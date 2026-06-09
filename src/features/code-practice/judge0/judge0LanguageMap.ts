@@ -27,7 +27,7 @@ export interface Judge0LanguageConfig {
  * - C (GCC): often 50
  * - C++ (GCC): often 54
  *
- * TODO(Phase 10+): Replace null with verified IDs from production/staging Judge0.
+ * TODO(post-merge): Replace null with verified IDs from deployed Judge0 (separate track).
  */
 export const JUDGE0_LANGUAGE_MAP: Record<Judge0LanguageKey, Judge0LanguageConfig> = {
   java: {

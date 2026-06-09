@@ -10,7 +10,6 @@ import type {
 } from '../types/codePractice.types'
 import { JAVASCRIPT_SAFETY_USER_MESSAGE } from '../javascript/javascriptSafetyValidator'
 import { PYTHON_SAFETY_USER_MESSAGE } from '../python/pythonSafetyValidator'
-import { classifyRunError } from './mistakeClassifier'
 
 export type CodePracticeMistakeType =
   | 'syntax'
@@ -75,13 +74,6 @@ function newId(): string {
 function mistakeTypeFromFeedback(feedback: CodePracticeFeedback): CodePracticeMistakeType {
   if (feedback.type === 'syntax') return 'syntax'
   if (feedback.type === 'runtime') return 'runtime'
-  return 'unknown'
-}
-
-function mistakeTypeFromErrorMessage(message: string): CodePracticeMistakeType {
-  const kind = classifyRunError(message)
-  if (kind === 'syntax') return 'syntax'
-  if (kind === 'runtime' || kind === 'timeout') return 'runtime'
   return 'unknown'
 }
 

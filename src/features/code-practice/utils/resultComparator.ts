@@ -13,24 +13,6 @@ export function compareOutputs(actual: string, expected: string): boolean {
   return normalizeOutput(actual) === normalizeOutput(expected)
 }
 
-export function buildTestResults(
-  actual: string,
-  expected: string,
-  label = 'Sample case',
-): CodePracticeTestResult[] {
-  const passed = compareOutputs(actual, expected)
-  return [
-    {
-      id: 'primary',
-      label,
-      passed,
-      expected: normalizeOutput(expected),
-      actual: normalizeOutput(actual),
-      message: passed ? 'Output matches expected result.' : 'Output does not match expected result.',
-    },
-  ]
-}
-
 /** React Submit — preview-only check until DOM validation exists (Phase 3.1). */
 export function buildReactPreviewCheckResults(): CodePracticeTestResult[] {
   return [

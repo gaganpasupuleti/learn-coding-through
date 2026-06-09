@@ -10,7 +10,7 @@
 import type { Judge0SubmissionRequest, Judge0SubmissionResult } from './judge0Types'
 
 export const JUDGE0_NOT_ENABLED_MESSAGE =
-  'Judge0 execution is not enabled yet. This must call our backend adapter in a later phase.'
+  'Judge0 execution is not enabled yet. This must call our backend adapter after deployment.'
 
 /**
  * Future entry point: browser → our backend → Judge0.
@@ -20,8 +20,9 @@ export const JUDGE0_NOT_ENABLED_MESSAGE =
  * - POST /api/code/judge0/submit   — run against test cases (hidden cases later)
  */
 export async function submitToJudge0Backend(
-  _request: Judge0SubmissionRequest,
+  request: Judge0SubmissionRequest,
 ): Promise<Judge0SubmissionResult> {
+  void request
   throw new Error(JUDGE0_NOT_ENABLED_MESSAGE)
 }
 
