@@ -80,7 +80,7 @@ export function PracticeToolbar({
           type="button"
           onClick={onRun}
           disabled={isRunning}
-          className="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-md bg-emerald-500 px-4 py-2.5 text-sm font-bold text-white shadow-md ring-2 ring-emerald-400/40 hover:bg-emerald-400 disabled:opacity-50"
         >
           <Play className="h-4 w-4" />
           {isRunning ? 'Running…' : 'Run'}
@@ -90,7 +90,7 @@ export function PracticeToolbar({
           type="button"
           onClick={onSubmit}
           disabled={isRunning}
-          className="inline-flex items-center gap-2 rounded-md bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-md bg-sky-500 px-4 py-2.5 text-sm font-bold text-white shadow-md ring-2 ring-sky-400/40 hover:bg-sky-400 disabled:opacity-50"
         >
           <Send className="h-4 w-4" />
           Submit
