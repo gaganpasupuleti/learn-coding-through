@@ -1,4 +1,11 @@
-﻿import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect, useRef, useCallback } from 'react'
+import type { Monaco } from '@monaco-editor/react'
+import type { IDisposable } from 'monaco-editor'
+import type { CodePracticeLanguageMode } from '@/features/code-practice/types/codePractice.types'
+import {
+  isPracticeIntelligenceLanguage,
+  registerPracticeCompletionProvider,
+} from '@/features/code-practice/editor-intelligence/completionProvider'
 import {
   Play,
   RotateCcw,
@@ -40,6 +47,9 @@ interface CodeEditorProps {
   lineHeight?: number
   /** Hide the built-in editor chrome (toolbar) for embedded workbench layouts. */
   showEditorChrome?: boolean
+  /** Enable offline rule-based completions (Code Workbench only). */
+  enablePracticeSuggestions?: boolean
+  practiceLanguage?: CodePracticeLanguageMode
 }
 
 type Theme = 'monokai' | 'dracula' | 'nord' | 'github' | 'synthwave'
@@ -58,8 +68,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   fontSize = 16,
   lineHeight,
   showEditorChrome = true,
+  enablePracticeSuggestions = false,
+  practiceLanguage,
 }) => {
   const editorLineHeight = lineHeight ?? Math.round(fontSize * 1.6)
+  const completionDisposableRef = useRef<IDisposable | null>(null)
+  const monacoRef = useRef<Monaco | null>(null)
   const isControlled = controlledCode !== undefined
   const [internalCode, setInternalCode] = useState(initialCode || '')
   const [output, setOutput] = useState('')
@@ -232,6 +246,33 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     toast.success('Code reset to original!')
   }
 
+  const setupCompletionProvider = useCallback(() => {
+    completionDisposableRef.current?.dispose()
+    completionDisposableRef.current = null
+    if (!enablePracticeSuggestions || !practiceLanguage || !monacoRef.current) return
+    if (!isPracticeIntelligenceLanguage(practiceLanguage)) return
+    completionDisposableRef.current = registerPracticeCompletionProvider(
+      monacoRef.current,
+      practiceLanguage,
+    )
+  }, [enablePracticeSuggestions, practiceLanguage])
+
+  useEffect(() => {
+    setupCompletionProvider()
+    return () => {
+      completionDisposableRef.current?.dispose()
+      completionDisposableRef.current = null
+    }
+  }, [setupCompletionProvider])
+
+  const handleEditorMount = useCallback(
+    (_editor: unknown, monaco: Monaco) => {
+      monacoRef.current = monaco
+      setupCompletionProvider()
+    },
+    [setupCompletionProvider],
+  )
+
   const editorOptions = {
     minimap: { enabled: false },
     fontSize,
@@ -243,6 +284,13 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     autoClosingQuotes: 'always' as const,
     lineDecorationsWidth: 8,
     padding: { top: 14, bottom: 14 },
+    ...(enablePracticeSuggestions
+      ? {
+          quickSuggestions: { other: true, comments: false, strings: true },
+          suggestOnTriggerCharacters: true,
+          tabCompletion: 'on' as const,
+        }
+      : {}),
   }
 
   const editorElement = (
@@ -252,6 +300,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
       theme={getMonacoTheme()}
       value={editorCode}
       onChange={handleCodeChange}
+      onMount={handleEditorMount}
       options={editorOptions}
     />
   )

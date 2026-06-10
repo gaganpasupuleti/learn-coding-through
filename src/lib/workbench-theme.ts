@@ -14,14 +14,14 @@ export const wb = {
   textMuted: 'text-[#94A3B8]',
   sectionLabel:
     'mb-2.5 text-xs font-bold uppercase tracking-widest text-[#94A3B8]',
-  card: 'rounded-lg border border-[#26324A] bg-[#111827] p-4',
-  cardMono: 'rounded-lg border border-[#26324A] bg-[#111827] p-4 font-mono text-sm leading-relaxed text-[#CBD5E1]',
+  card: 'rounded-lg border border-[#26324A] bg-[#111827] p-4 leading-relaxed',
+  cardMono: 'rounded-lg border border-[#26324A] bg-[#111827] p-4 font-mono text-sm leading-[1.65] text-[#CBD5E1]',
   tabActive:
     'border-b-2 border-sky-400 bg-sky-950/25 text-sky-100',
   tabInactive:
     'text-[#94A3B8] hover:bg-[#0F172A] hover:text-[#CBD5E1]',
   langActive:
-    'bg-sky-500 text-white shadow-md ring-1 ring-sky-400/60',
+    'bg-sky-500 text-white shadow-lg ring-2 ring-sky-300/70 scale-[1.02]',
   langInactive:
     'border border-[#26324A] bg-[#111827] text-[#CBD5E1] hover:border-sky-500/50 hover:bg-[#1a2332] hover:text-[#E5E7EB]',
   langSoon:
