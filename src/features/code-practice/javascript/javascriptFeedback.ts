@@ -258,6 +258,22 @@ export function explainJavaScriptError(error: string): JavaScriptFeedback {
     })
   }
 
+  if (
+    lower.includes('fatal process oom') ||
+    lower.includes('failed to reserve virtual memory') ||
+    lower.includes('javascript heap out of memory')
+  ) {
+    return feedback({
+      ruleId: 'runtime-sandbox-oom',
+      type: 'runtime',
+      severity: 'error',
+      title: 'Sandbox could not start',
+      message: 'The JavaScript runner ran out of memory on the server.',
+      lineNumber,
+      suggestion: 'Try again in a moment. If this keeps happening, tell your instructor — the backend may need more memory.',
+    })
+  }
+
   if (lower.includes('typeerror')) {
     if (lower.includes('is not a function')) {
       const fnMatch = tail.match(/(\S+) is not a function/)

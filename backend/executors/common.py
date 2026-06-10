@@ -23,7 +23,7 @@ def isolated_workspace() -> str:
 
 def _posix_preexec_with_memory_limit(max_memory_mb: int):
     """Return preexec function that applies memory limits on POSIX systems."""
-    if os.name == "nt":
+    if os.name == "nt" or max_memory_mb <= 0:
         return None
 
     def _preexec():
@@ -43,7 +43,11 @@ def run_guarded_subprocess(
     env: Dict[str, str] | None = None,
     max_memory_mb: int = DEFAULT_MAX_MEMORY_MB,
 ) -> subprocess.CompletedProcess:
-    """Run subprocess with baseline isolation and guardrails."""
+    """Run subprocess with baseline isolation and guardrails.
+
+    Pass max_memory_mb=0 to skip POSIX RLIMIT_AS (used for Node.js where V8
+    needs a larger virtual code range than a tight cap allows).
+    """
     merged_env = os.environ.copy()
     if env:
         merged_env.update(env)
