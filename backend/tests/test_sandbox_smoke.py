@@ -49,6 +49,26 @@ class SandboxSmokeTests(unittest.TestCase):
         self.assertIn("success", result)
         self.assertEqual(result.get("language"), "javascript")
 
+    @unittest.skipUnless(shutil.which("node"), "node runtime not available")
+    def test_javascript_hello_world(self) -> None:
+        result = execute_javascript('console.log("Hello World")', timeout=3)
+        self.assertTrue(result["success"])
+        self.assertEqual(result.get("output"), "Hello World")
+
+    @unittest.skipUnless(shutil.which("node"), "node runtime not available")
+    def test_javascript_variables_sum(self) -> None:
+        code = "const x = 10;\nconst y = 20;\nconsole.log(x + y);"
+        result = execute_javascript(code, timeout=3)
+        self.assertTrue(result["success"])
+        self.assertEqual(result.get("output"), "30")
+
+    @unittest.skipUnless(shutil.which("node"), "node runtime not available")
+    def test_javascript_infinite_loop_times_out(self) -> None:
+        result = execute_javascript("while (true) {}", timeout=2)
+        self.assertFalse(result["success"])
+        self.assertTrue(result.get("timed_out"))
+        self.assertEqual(result.get("error_code"), "timeout")
+
     @unittest.skipUnless(shutil.which("javac") and shutil.which("java"), "java runtime not available")
     def test_java_executor_contract(self) -> None:
         code = "public class Main { public static void main(String[] args) { System.out.println(\"smoke\"); } }"

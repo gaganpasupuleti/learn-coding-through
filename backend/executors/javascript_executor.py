@@ -22,11 +22,13 @@ def execute_javascript(code: str, timeout: int = 5) -> Dict[str, Any]:
     
     try:
         with isolated_workspace() as workspace:
+            # Node/V8 reserves a large virtual code range; a tight RLIMIT_AS (e.g. 256MB)
+            # causes "Fatal process OOM … CodeRange" on small containers (Railway).
             result = run_guarded_subprocess(
                 ["node", "--max-old-space-size=128", "-e", code],
                 timeout=timeout,
                 cwd=workspace,
-                max_memory_mb=256,
+                max_memory_mb=0,
             )
 
         output = result.stdout.strip()
