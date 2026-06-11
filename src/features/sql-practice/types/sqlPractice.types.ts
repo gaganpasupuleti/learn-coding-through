@@ -61,12 +61,28 @@ export type SqlBottomTab =
   | 'schema'
   | 'schema3d'
 
+export type SqlAttemptStatus = 'success' | 'error' | 'blocked'
+
+export type SqlRunState = 'ready' | 'running' | 'success' | 'error'
+
+export interface SqlQueryGrid {
+  columns: string[]
+  rows: (string | null)[][]
+  rowCount: number
+  executionTimeMs: number
+  hasRun: boolean
+}
+
 export interface SqlAttemptRecord {
   id: string
-  questionId: string
+  questionId?: string
+  databaseId: SqlDatabaseId
   sql: string
   ranAt: string
+  status: SqlAttemptStatus
   success: boolean
+  rowCount: number
+  executionTimeMs: number
   message: string
 }
 

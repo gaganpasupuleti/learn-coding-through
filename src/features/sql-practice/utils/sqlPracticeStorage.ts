@@ -45,3 +45,17 @@ export function saveRevealedHintCount(questionId: string, count: number): void {
   all[questionId] = count
   writeJson(HINTS_KEY, all)
 }
+
+const MAX_ATTEMPTS = 50
+
+export function appendSqlAttempt(
+  record: Omit<SqlAttemptRecord, 'id'>,
+): SqlAttemptRecord {
+  const entry: SqlAttemptRecord = {
+    ...record,
+    id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `att-${Date.now()}`,
+  }
+  const attempts = loadSqlAttempts()
+  saveSqlAttempts([entry, ...attempts].slice(0, MAX_ATTEMPTS))
+  return entry
+}

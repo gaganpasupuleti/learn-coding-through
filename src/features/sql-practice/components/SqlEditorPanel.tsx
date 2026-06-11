@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { CodeEditor } from '@/components/CodeEditor'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
@@ -5,9 +6,24 @@ import { cn } from '@/lib/utils'
 interface SqlEditorPanelProps {
   sql: string
   onChange: (sql: string) => void
+  onRun?: () => void
 }
 
-export function SqlEditorPanel({ sql, onChange }: SqlEditorPanelProps) {
+export function SqlEditorPanel({ sql, onChange, onRun }: SqlEditorPanelProps) {
+  useEffect(() => {
+    if (!onRun) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        event.preventDefault()
+        onRun()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onRun])
+
   return (
     <div className={cn('flex h-full min-h-0 flex-col', wb.editor)}>
       <div className={cn('flex items-center justify-between border-b px-4 py-3', wb.border, 'bg-[#252526]')}>

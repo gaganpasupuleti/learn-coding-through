@@ -1,3 +1,4 @@
+import type { SqlRunState } from '../types/sqlPractice.types'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
@@ -5,10 +6,24 @@ interface SqlStatusBarProps {
   databaseName: string
   tableCount: number
   questionTitle: string
+  runState: SqlRunState
   lineInfo?: string
 }
 
-export function SqlStatusBar({ databaseName, tableCount, questionTitle, lineInfo }: SqlStatusBarProps) {
+const RUN_STATE_LABEL: Record<SqlRunState, string> = {
+  ready: 'Ready',
+  running: 'Running…',
+  success: 'Success',
+  error: 'Error',
+}
+
+export function SqlStatusBar({
+  databaseName,
+  tableCount,
+  questionTitle,
+  runState,
+  lineInfo,
+}: SqlStatusBarProps) {
   return (
     <footer
       className={cn(
@@ -21,12 +36,22 @@ export function SqlStatusBar({ databaseName, tableCount, questionTitle, lineInfo
       <span>
         Database: <span className={cn('font-medium', wb.textSecondary)}>{databaseName}</span>
       </span>
-      <span>{tableCount} tables (metadata)</span>
+      <span>{tableCount} tables</span>
       <span>
         Question: <span className={cn('font-medium', wb.textSecondary)}>{questionTitle}</span>
       </span>
+      <span
+        className={cn(
+          'font-medium',
+          runState === 'success' && 'text-emerald-300',
+          runState === 'error' && 'text-rose-300',
+          runState === 'running' && 'text-amber-200',
+        )}
+      >
+        {RUN_STATE_LABEL[runState]}
+      </span>
       {lineInfo && <span className="ml-auto font-mono">{lineInfo}</span>}
-      <span className={lineInfo ? '' : 'ml-auto'}>Phase 1 — no execution</span>
+      <span className={lineInfo ? '' : 'ml-auto'}>sql.js · university_system</span>
     </footer>
   )
 }
