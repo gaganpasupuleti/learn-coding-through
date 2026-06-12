@@ -17,6 +17,57 @@ function formatCellValue(value: unknown): string | null {
   return String(value)
 }
 
+export async function runTrustedUniversitySql(
+  sql: string,
+  onLoading?: () => void,
+): Promise<SqlQueryResult> {
+  const started = performance.now()
+  try {
+    const db = await getUniversityDatabase(onLoading)
+    const resultSets = db.exec(sql)
+    const executionTimeMs = performance.now() - started
+
+    if (resultSets.length === 0) {
+      return {
+        success: true,
+        columns: [],
+        rows: [],
+        rowCount: 0,
+        executionTimeMs,
+        messages: [],
+        error: null,
+        blocked: false,
+      }
+    }
+
+    const first = resultSets[0]
+    const rows = first.values.map((row) => row.map(formatCellValue))
+    return {
+      success: true,
+      columns: first.columns,
+      rows,
+      rowCount: rows.length,
+      executionTimeMs,
+      messages: [],
+      error: null,
+      blocked: false,
+    }
+  } catch (error) {
+    const executionTimeMs = performance.now() - started
+    const message = error instanceof Error ? error.message : 'SQL execution failed.'
+    return {
+      success: false,
+      columns: [],
+      rows: [],
+      rowCount: 0,
+      executionTimeMs,
+      messages: [],
+      error: message,
+      blocked: false,
+    }
+  }
+}
+
 export async function runUniversitySelectQuery(
   sql: string,
   onLoading?: () => void,

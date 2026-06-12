@@ -15,6 +15,9 @@ const RUN_STATE_LABEL: Record<SqlRunState, string> = {
   running: 'Running…',
   success: 'Success',
   error: 'Error',
+  checking: 'Checking…',
+  passed: 'Passed',
+  failed: 'Failed',
 }
 
 export function SqlStatusBar({
@@ -43,9 +46,9 @@ export function SqlStatusBar({
       <span
         className={cn(
           'font-medium',
-          runState === 'success' && 'text-emerald-300',
-          runState === 'error' && 'text-rose-300',
-          runState === 'running' && 'text-amber-200',
+          (runState === 'success' || runState === 'passed') && 'text-emerald-300',
+          (runState === 'error' || runState === 'failed') && 'text-rose-300',
+          (runState === 'running' || runState === 'checking') && 'text-amber-200',
         )}
       >
         {RUN_STATE_LABEL[runState]}
