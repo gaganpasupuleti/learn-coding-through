@@ -34,6 +34,7 @@ import { SqlBottomPanel } from './SqlBottomPanel'
 import { SqlStatusBar } from './SqlStatusBar'
 import { useResizableSqlLayout } from '../hooks/useResizableSqlLayout'
 import { buildSqlErrorMessages } from '../utils/sqlExecutionMessages'
+import { SqlPaneCollapseButton } from './SqlPaneCollapseButton'
 
 const LATER_PHASE_RUN_MESSAGE = 'Execution for this database will be enabled in a later phase.'
 const LATER_PHASE_CHECK_MESSAGE = 'Answer checking for this database will be enabled in a later phase.'
