@@ -16,6 +16,8 @@ import { SqlEditorPanel } from './SqlEditorPanel'
 import { SqlQuestionPanel } from './SqlQuestionPanel'
 import { SqlBottomPanel } from './SqlBottomPanel'
 import { SqlStatusBar } from './SqlStatusBar'
+import { useResizableSqlLayout } from '../hooks/useResizableSqlLayout'
+import { SqlPaneCollapseButton } from './SqlPaneCollapseButton'
 
 const LATER_PHASE_MESSAGE = 'Execution for this database will be enabled in a later phase.'
 
@@ -40,6 +42,7 @@ export function SqlPracticePage() {
 
   const question = useMemo(() => getDefaultQuestionForDatabase(databaseId), [databaseId])
   const database = useMemo(() => getDatabaseById(databaseId), [databaseId])
+  const resizableLayout = useResizableSqlLayout()
 
   const [revealedHintCount, setRevealedHintCount] = useState(() => {
     const stored = loadRevealedHintCounts()
@@ -187,6 +190,7 @@ export function SqlPracticePage() {
 
   return (
     <SqlPracticeLayout
+      layout={resizableLayout}
       topBar={
         <SqlTopBar
           databaseLabel={database.displayName}
@@ -197,6 +201,7 @@ export function SqlPracticePage() {
           onResetQuery={handleResetQuery}
           onFormatSql={handleFormatSql}
           onClearOutput={handleClearOutput}
+          onResetLayout={resizableLayout.desktopLayout ? resizableLayout.resetLayout : undefined}
         />
       }
       objectExplorer={
@@ -207,6 +212,15 @@ export function SqlPracticePage() {
           expandedTables={expandedTables}
           onToggleSection={toggleSection}
           onToggleTable={toggleTable}
+          headerActions={
+            resizableLayout.desktopLayout ? (
+              <SqlPaneCollapseButton
+                side="left"
+                label="Object Explorer"
+                onClick={resizableLayout.toggleLeftCollapsed}
+              />
+            ) : undefined
+          }
         />
       }
       editorPanel={
@@ -223,6 +237,15 @@ export function SqlPracticePage() {
           question={question}
           revealedHintCount={revealedHintCount}
           onRevealHint={handleRevealHint}
+          headerActions={
+            resizableLayout.desktopLayout ? (
+              <SqlPaneCollapseButton
+                side="right"
+                label="Practice Question"
+                onClick={resizableLayout.toggleRightCollapsed}
+              />
+            ) : undefined
+          }
         />
       }
       bottomPanel={
@@ -232,6 +255,15 @@ export function SqlPracticePage() {
           database={database}
           expectedColumns={question.expectedColumns}
           attemptHistoryVersion={attemptHistoryVersion}
+          headerActions={
+            resizableLayout.desktopLayout ? (
+              <SqlPaneCollapseButton
+                side="bottom"
+                label="Results"
+                onClick={resizableLayout.toggleBottomCollapsed}
+              />
+            ) : undefined
+          }
         />
       }
       statusBar={

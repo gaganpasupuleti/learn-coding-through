@@ -1,4 +1,4 @@
-import { AlignLeft, CheckCircle2, Eraser, Loader2, Play, RotateCcw } from 'lucide-react'
+import { AlignLeft, CheckCircle2, Eraser, LayoutGrid, Loader2, Play, RotateCcw } from 'lucide-react'
 import type { SqlRunState } from '../types/sqlPractice.types'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
@@ -12,6 +12,7 @@ interface SqlTopBarProps {
   onResetQuery: () => void
   onFormatSql: () => void
   onClearOutput: () => void
+  onResetLayout?: () => void
 }
 
 const RUN_STATE_LABEL: Record<SqlRunState, string> = {
@@ -30,6 +31,7 @@ export function SqlTopBar({
   onResetQuery,
   onFormatSql,
   onClearOutput,
+  onResetLayout,
 }: SqlTopBarProps) {
   return (
     <header className={cn('flex flex-wrap items-center gap-3 border-b px-4 py-3', wb.panelHeader, wb.border)}>
@@ -66,6 +68,12 @@ export function SqlTopBar({
           <Eraser className="h-4 w-4" />
           Clear Output
         </button>
+        {onResetLayout && (
+          <button type="button" onClick={onResetLayout} className={wb.toolbarBtn} title="Reset pane sizes and visibility">
+            <LayoutGrid className="h-4 w-4" />
+            Reset Layout
+          </button>
+        )}
       </div>
 
       <div className={cn('ml-auto flex flex-col items-end gap-1 text-xs', wb.textMuted)}>
