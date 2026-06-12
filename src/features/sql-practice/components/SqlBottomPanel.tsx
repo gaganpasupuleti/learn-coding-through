@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import type { SqlBottomTab, SqlDatabaseMeta, SqlQueryGrid } from '../types/sqlPractice.types'
 import { SqlResultsPanel } from './SqlResultsPanel'
 import { SqlMessagesPanel } from './SqlMessagesPanel'
@@ -23,6 +23,7 @@ interface SqlBottomPanelProps {
   database: SqlDatabaseMeta
   expectedColumns: string[]
   attemptHistoryVersion: number
+  headerActions?: ReactNode
 }
 
 export function SqlBottomPanel({
@@ -31,14 +32,16 @@ export function SqlBottomPanel({
   database,
   expectedColumns,
   attemptHistoryVersion,
+  headerActions,
 }: SqlBottomPanelProps) {
   const [tab, setTab] = useState<SqlBottomTab>('results')
   const attempts = useMemo(() => loadSqlAttempts(), [attemptHistoryVersion])
   const mistakes = loadSqlMistakes()
 
   return (
-    <section className={cn('border-t', wb.panel, wb.border)}>
-      <div className={cn('flex gap-0.5 overflow-x-auto border-b px-2', wb.border)}>
+    <section className={cn('flex h-full min-h-0 flex-col', wb.panel)}>
+      <div className={cn('flex items-center gap-1 border-b pr-1', wb.border)}>
+        <div className={cn('flex min-w-0 flex-1 gap-0.5 overflow-x-auto px-2', wb.border)}>
         {TABS.map((item) => {
           const Icon = item.icon
           return (
@@ -58,8 +61,10 @@ export function SqlBottomPanel({
             </button>
           )
         })}
+        </div>
+        {headerActions}
       </div>
-      <div className={cn('max-h-56 overflow-y-auto', wb.textSecondary)}>
+      <div className={cn('min-h-0 flex-1 overflow-y-auto', wb.textSecondary)}>
         {tab === 'results' && (
           <SqlResultsPanel
             result={result}

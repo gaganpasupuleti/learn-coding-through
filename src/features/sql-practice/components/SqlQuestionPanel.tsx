@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { BookOpen, Eye, EyeOff, Lightbulb } from 'lucide-react'
 import type { SqlPracticeQuestion } from '../types/sqlPractice.types'
 import { getDatabaseById } from '../data/databaseCatalog'
@@ -8,6 +9,7 @@ interface SqlQuestionPanelProps {
   question: SqlPracticeQuestion
   revealedHintCount: number
   onRevealHint: () => void
+  headerActions?: ReactNode
 }
 
 const DIFFICULTY_STYLES: Record<string, string> = {
@@ -16,15 +18,18 @@ const DIFFICULTY_STYLES: Record<string, string> = {
   hard: 'bg-red-950/50 text-red-100 border-red-700/50',
 }
 
-export function SqlQuestionPanel({ question, revealedHintCount, onRevealHint }: SqlQuestionPanelProps) {
+export function SqlQuestionPanel({ question, revealedHintCount, onRevealHint, headerActions }: SqlQuestionPanelProps) {
   const db = getDatabaseById(question.databaseId)
   const hintsLeft = question.hints.length - revealedHintCount
 
   return (
     <aside className={cn('flex h-full flex-col', wb.panel, wb.border)}>
-      <div className={cn('flex items-center gap-2 border-b px-4 py-3', wb.border)}>
-        <BookOpen className="h-4 w-4 text-violet-300" />
-        <span className={cn('text-sm font-semibold', wb.textPrimary)}>Practice Question</span>
+      <div className={cn('flex items-center justify-between gap-2 border-b px-4 py-3', wb.border)}>
+        <div className="flex min-w-0 items-center gap-2">
+          <BookOpen className="h-4 w-4 shrink-0 text-violet-300" />
+          <span className={cn('text-sm font-semibold', wb.textPrimary)}>Practice Question</span>
+        </div>
+        {headerActions}
       </div>
       <div className={cn('flex-1 space-y-4 overflow-y-auto p-4 text-[15px] leading-relaxed', wb.textSecondary)}>
         <div className="flex flex-wrap gap-2">
