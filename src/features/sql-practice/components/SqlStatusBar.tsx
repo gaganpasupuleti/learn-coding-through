@@ -1,8 +1,9 @@
-import type { SqlRunState } from '../types/sqlPractice.types'
+import type { SqlDatabaseId, SqlRunState } from '../types/sqlPractice.types'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
 interface SqlStatusBarProps {
+  databaseId: SqlDatabaseId
   databaseName: string
   tableCount: number
   questionTitle: string
@@ -21,6 +22,7 @@ const RUN_STATE_LABEL: Record<SqlRunState, string> = {
 }
 
 export function SqlStatusBar({
+  databaseId,
   databaseName,
   tableCount,
   questionTitle,
@@ -54,7 +56,7 @@ export function SqlStatusBar({
         {RUN_STATE_LABEL[runState]}
       </span>
       {lineInfo && <span className="ml-auto font-mono">{lineInfo}</span>}
-      <span className={lineInfo ? '' : 'ml-auto'}>sql.js · university_system</span>
+      <span className={lineInfo ? '' : 'ml-auto'}>sql.js · {databaseId}</span>
     </footer>
   )
 }

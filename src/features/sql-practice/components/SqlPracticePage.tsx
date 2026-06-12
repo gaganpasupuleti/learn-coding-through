@@ -4,9 +4,10 @@ import {
   getDefaultQuestionForDatabase,
   getQuestionById,
   getQuestionsForDatabase,
-  SQL_STARTER_QUERY,
+  getStarterQueryForDatabase,
 } from '../data/sqlQuestions'
-import { runTrustedUniversitySql, runUniversitySelectQuery } from '../engine/sqlRunner'
+import { isExecutableSqlDatabase } from '../engine/sqlEngine'
+import { runSelectQuery, runTrustedSql } from '../engine/sqlRunner'
 import { validateSqlResults } from '../engine/sqlResultValidator'
 import type {
   SqlAnswerFeedback,
@@ -48,7 +49,7 @@ const EMPTY_RESULT: SqlQueryGrid = {
 export function SqlPracticePage() {
   const [databaseId, setDatabaseId] = useState<SqlDatabaseId>('university_system')
   const [questionId, setQuestionId] = useState(() => getDefaultQuestionForDatabase('university_system').id)
-  const [sql, setSql] = useState(SQL_STARTER_QUERY)
+  const [sql, setSql] = useState(() => getStarterQueryForDatabase('university_system'))
   const [messages, setMessages] = useState<string[]>([])
   const [result, setResult] = useState<SqlQueryGrid>(EMPTY_RESULT)
   const [runState, setRunState] = useState<SqlRunState>('ready')
@@ -118,7 +119,7 @@ export function SqlPracticePage() {
   const handleRun = useCallback(async () => {
     if (isRunning || isChecking) return
 
-    if (databaseId !== 'university_system') {
+    if (!isExecutableSqlDatabase(databaseId)) {
       setMessages([LATER_PHASE_RUN_MESSAGE])
       setResult(EMPTY_RESULT)
       setRunState('error')
@@ -142,7 +143,7 @@ export function SqlPracticePage() {
     setIsRunning(true)
     setRunState('running')
 
-    const outcome = await runUniversitySelectQuery(sql, () => {
+    const outcome = await runSelectQuery(databaseId, sql, () => {
       setMessages(['Loading SQL engine…'])
     })
 
@@ -218,7 +219,7 @@ export function SqlPracticePage() {
   const handleCheckAnswer = useCallback(async () => {
     if (isRunning || isChecking) return
 
-    if (databaseId !== 'university_system') {
+    if (!isExecutableSqlDatabase(databaseId)) {
       setMessages([LATER_PHASE_CHECK_MESSAGE])
       setAnswerFeedback(null)
       setRunState('error')
@@ -245,11 +246,11 @@ export function SqlPracticePage() {
     setRunState('checking')
     setPreferredBottomTab('messages')
 
-    const studentOutcome = await runUniversitySelectQuery(sql, () => {
+    const studentOutcome = await runSelectQuery(databaseId, sql, () => {
       setMessages(['Loading SQL engine…'])
     })
 
-    const solutionOutcome = await runTrustedUniversitySql(question.solutionSql)
+    const solutionOutcome = await runTrustedSql(databaseId, question.solutionSql)
     const validationOptions = getValidationOptionsForQuestion(question)
     const check = validateSqlResults(studentOutcome, solutionOutcome, validationOptions)
 
@@ -450,6 +451,7 @@ export function SqlPracticePage() {
       }
       statusBar={
         <SqlStatusBar
+          databaseId={databaseId}
           databaseName={database.displayName}
           tableCount={database.tables.length}
           questionTitle={question.title}
