@@ -19,84 +19,78 @@ function table(name: string, rowCount: number, columns: SqlColumnMeta[]): SqlTab
 }
 
 const UNIVERSITY_TABLES: SqlTableMeta[] = [
-  table('students', 1240, [
-    col('student_id', 'INT', { pk: true }),
-    col('first_name', 'VARCHAR(80)'),
-    col('last_name', 'VARCHAR(80)'),
-    col('email', 'VARCHAR(120)'),
-    col('enrollment_year', 'SMALLINT'),
-    col('program_id', 'INT', { fk: { table: 'programs', column: 'program_id' } }),
+  table('universities', 3, [
+    col('university_id', 'INTEGER', { pk: true }),
+    col('university_name', 'TEXT'),
+    col('city', 'TEXT'),
+    col('founded_year', 'INTEGER'),
   ]),
-  table('professors', 86, [
-    col('professor_id', 'INT', { pk: true }),
-    col('full_name', 'VARCHAR(120)'),
-    col('department_id', 'INT', { fk: { table: 'departments', column: 'department_id' } }),
-    col('hire_date', 'DATE'),
+  table('colleges', 4, [
+    col('college_id', 'INTEGER', { pk: true }),
+    col('university_id', 'INTEGER', { fk: { table: 'universities', column: 'university_id' } }),
+    col('college_name', 'TEXT'),
   ]),
-  table('departments', 12, [
-    col('department_id', 'INT', { pk: true }),
-    col('name', 'VARCHAR(100)'),
-    col('building', 'VARCHAR(60)'),
+  table('departments', 6, [
+    col('department_id', 'INTEGER', { pk: true }),
+    col('college_id', 'INTEGER', { fk: { table: 'colleges', column: 'college_id' } }),
+    col('department_name', 'TEXT'),
   ]),
-  table('courses', 320, [
-    col('course_id', 'INT', { pk: true }),
-    col('code', 'VARCHAR(12)'),
-    col('title', 'VARCHAR(200)'),
-    col('credits', 'TINYINT'),
-    col('department_id', 'INT', { fk: { table: 'departments', column: 'department_id' } }),
+  table('programs', 6, [
+    col('program_id', 'INTEGER', { pk: true }),
+    col('department_id', 'INTEGER', { fk: { table: 'departments', column: 'department_id' } }),
+    col('program_name', 'TEXT'),
+    col('degree_level', 'TEXT'),
   ]),
-  table('enrollments', 5680, [
-    col('enrollment_id', 'INT', { pk: true }),
-    col('student_id', 'INT', { fk: { table: 'students', column: 'student_id' } }),
-    col('course_id', 'INT', { fk: { table: 'courses', column: 'course_id' } }),
-    col('semester', 'VARCHAR(20)'),
-    col('grade', 'CHAR(2)'),
+  table('courses', 10, [
+    col('course_id', 'INTEGER', { pk: true }),
+    col('department_id', 'INTEGER', { fk: { table: 'departments', column: 'department_id' } }),
+    col('course_code', 'TEXT'),
+    col('course_name', 'TEXT'),
+    col('credits', 'INTEGER'),
   ]),
-  table('classrooms', 48, [
-    col('room_id', 'INT', { pk: true }),
-    col('building', 'VARCHAR(60)'),
-    col('room_number', 'VARCHAR(10)'),
-    col('capacity', 'SMALLINT'),
+  table('students', 15, [
+    col('student_id', 'INTEGER', { pk: true }),
+    col('program_id', 'INTEGER', { fk: { table: 'programs', column: 'program_id' } }),
+    col('student_name', 'TEXT'),
+    col('email', 'TEXT'),
+    col('city', 'TEXT'),
+    col('enrollment_year', 'INTEGER'),
   ]),
-  table('schedules', 410, [
-    col('schedule_id', 'INT', { pk: true }),
-    col('course_id', 'INT', { fk: { table: 'courses', column: 'course_id' } }),
-    col('room_id', 'INT', { fk: { table: 'classrooms', column: 'room_id' } }),
-    col('day_of_week', 'VARCHAR(12)'),
-    col('start_time', 'TIME'),
+  table('faculty', 10, [
+    col('faculty_id', 'INTEGER', { pk: true }),
+    col('department_id', 'INTEGER', { fk: { table: 'departments', column: 'department_id' } }),
+    col('faculty_name', 'TEXT'),
+    col('title', 'TEXT'),
   ]),
-  table('assignments', 890, [
-    col('assignment_id', 'INT', { pk: true }),
-    col('course_id', 'INT', { fk: { table: 'courses', column: 'course_id' } }),
-    col('title', 'VARCHAR(200)'),
-    col('due_date', 'DATE'),
-    col('max_points', 'SMALLINT'),
+  table('semesters', 4, [
+    col('semester_id', 'INTEGER', { pk: true }),
+    col('semester_name', 'TEXT'),
+    col('start_date', 'TEXT'),
+    col('end_date', 'TEXT'),
   ]),
-  table('submissions', 4200, [
-    col('submission_id', 'INT', { pk: true }),
-    col('assignment_id', 'INT', { fk: { table: 'assignments', column: 'assignment_id' } }),
-    col('student_id', 'INT', { fk: { table: 'students', column: 'student_id' } }),
-    col('submitted_at', 'TIMESTAMP'),
-    col('score', 'DECIMAL(5,2)'),
+  table('enrollments', 20, [
+    col('enrollment_id', 'INTEGER', { pk: true }),
+    col('student_id', 'INTEGER', { fk: { table: 'students', column: 'student_id' } }),
+    col('course_id', 'INTEGER', { fk: { table: 'courses', column: 'course_id' } }),
+    col('semester_id', 'INTEGER', { fk: { table: 'semesters', column: 'semester_id' } }),
   ]),
-  table('programs', 24, [
-    col('program_id', 'INT', { pk: true }),
-    col('name', 'VARCHAR(120)'),
-    col('degree_level', 'VARCHAR(40)'),
+  table('grades', 15, [
+    col('grade_id', 'INTEGER', { pk: true }),
+    col('enrollment_id', 'INTEGER', { fk: { table: 'enrollments', column: 'enrollment_id' } }),
+    col('letter_grade', 'TEXT'),
+    col('numeric_grade', 'REAL'),
   ]),
-  table('library_books', 15200, [
-    col('book_id', 'INT', { pk: true }),
-    col('isbn', 'VARCHAR(20)'),
-    col('title', 'VARCHAR(250)'),
-    col('author', 'VARCHAR(120)'),
-    col('copies_available', 'SMALLINT'),
+  table('classrooms', 8, [
+    col('classroom_id', 'INTEGER', { pk: true }),
+    col('building', 'TEXT'),
+    col('room_number', 'TEXT'),
+    col('capacity', 'INTEGER'),
   ]),
-  table('library_loans', 3800, [
-    col('loan_id', 'INT', { pk: true }),
-    col('book_id', 'INT', { fk: { table: 'library_books', column: 'book_id' } }),
-    col('student_id', 'INT', { fk: { table: 'students', column: 'student_id' } }),
-    col('loan_date', 'DATE'),
-    col('return_date', 'DATE'),
+  table('attendance', 12, [
+    col('attendance_id', 'INTEGER', { pk: true }),
+    col('enrollment_id', 'INTEGER', { fk: { table: 'enrollments', column: 'enrollment_id' } }),
+    col('class_date', 'TEXT'),
+    col('status', 'TEXT'),
   ]),
 ]
 

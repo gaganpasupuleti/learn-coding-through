@@ -13,12 +13,12 @@ export const SQL_PRACTICE_QUESTIONS: SqlPracticeQuestion[] = [
     difficulty: 'easy',
     topic: 'select',
     problemStatement:
-      'Write a query that returns each student\'s first name and last name from the students table.',
+      'Write a query that returns each student\'s name and city from the students table.',
     learningObjective: 'Practice basic SELECT and column lists.',
-    expectedColumns: ['first_name', 'last_name'],
+    expectedColumns: ['student_name', 'city'],
     hints: [
       'Use SELECT to choose columns from students.',
-      'You only need first_name and last_name — no JOIN required.',
+      'Try SELECT student_name, city FROM students.',
     ],
     starterSql: SQL_STARTER_QUERY,
   },

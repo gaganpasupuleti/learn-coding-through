@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import type { SqlBottomTab } from '../types/sqlPractice.types'
-import type { SqlDatabaseMeta } from '../types/sqlPractice.types'
+import { useMemo, useState } from 'react'
+import type { SqlBottomTab, SqlDatabaseMeta, SqlQueryGrid } from '../types/sqlPractice.types'
 import { SqlResultsPanel } from './SqlResultsPanel'
 import { SqlMessagesPanel } from './SqlMessagesPanel'
 import { loadSqlAttempts, loadSqlMistakes } from '../utils/sqlPracticeStorage'
@@ -20,13 +19,21 @@ const TABS: Array<{ id: SqlBottomTab; label: string; icon: typeof Table2 }> = [
 
 interface SqlBottomPanelProps {
   messages: string[]
+  result: SqlQueryGrid
   database: SqlDatabaseMeta
   expectedColumns: string[]
+  attemptHistoryVersion: number
 }
 
-export function SqlBottomPanel({ messages, database, expectedColumns }: SqlBottomPanelProps) {
+export function SqlBottomPanel({
+  messages,
+  result,
+  database,
+  expectedColumns,
+  attemptHistoryVersion,
+}: SqlBottomPanelProps) {
   const [tab, setTab] = useState<SqlBottomTab>('results')
-  const attempts = loadSqlAttempts()
+  const attempts = useMemo(() => loadSqlAttempts(), [attemptHistoryVersion])
   const mistakes = loadSqlMistakes()
 
   return (
@@ -53,7 +60,12 @@ export function SqlBottomPanel({ messages, database, expectedColumns }: SqlBotto
         })}
       </div>
       <div className={cn('max-h-56 overflow-y-auto', wb.textSecondary)}>
-        {tab === 'results' && <SqlResultsPanel />}
+        {tab === 'results' && (
+          <SqlResultsPanel
+            result={result}
+            emptyMessage={result.hasRun && result.rowCount === 0 ? 'Query returned no rows.' : undefined}
+          />
+        )}
         {tab === 'expected' && (
           <div className={cn('p-4 text-sm', wb.textMuted)}>
             <p className="mb-2">Expected output preview (validation in Phase 3+).</p>
@@ -65,12 +77,14 @@ export function SqlBottomPanel({ messages, database, expectedColumns }: SqlBotto
         {tab === 'history' && (
           <div className={cn('p-4 text-sm', wb.textMuted)}>
             {attempts.length === 0 ? (
-              <p>No attempts recorded yet. History will populate when execution is enabled.</p>
+              <p>No attempts recorded yet. Run a query to populate history.</p>
             ) : (
               <ul className="space-y-2">
                 {attempts.map((a) => (
                   <li key={a.id} className="font-mono text-xs">
-                    {a.ranAt} — {a.message}
+                    {a.ranAt} — [{a.status}] {a.message}
+                    {a.rowCount > 0 && ` · ${a.rowCount} rows`}
+                    {a.executionTimeMs > 0 && ` · ${Math.round(a.executionTimeMs)} ms`}
                   </li>
                 ))}
               </ul>

@@ -2,8 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { getDatabaseById } from '../data/databaseCatalog'
 import { getDefaultQuestionForDatabase, SQL_STARTER_QUERY } from '../data/sqlQuestions'
-import type { SqlDatabaseId } from '../types/sqlPractice.types'
-import { loadRevealedHintCounts, saveRevealedHintCount } from '../utils/sqlPracticeStorage'
+import { runUniversitySelectQuery } from '../engine/sqlRunner'
+import type { SqlDatabaseId, SqlQueryGrid, SqlRunState } from '../types/sqlPractice.types'
+import {
+  appendSqlAttempt,
+  loadRevealedHintCounts,
+  saveRevealedHintCount,
+} from '../utils/sqlPracticeStorage'
 import { SqlPracticeLayout } from './SqlPracticeLayout'
 import { SqlTopBar } from './SqlTopBar'
 import { SqlObjectExplorer } from './SqlObjectExplorer'
@@ -12,13 +17,24 @@ import { SqlQuestionPanel } from './SqlQuestionPanel'
 import { SqlBottomPanel } from './SqlBottomPanel'
 import { SqlStatusBar } from './SqlStatusBar'
 
-const PHASE2_RUN_MESSAGE = 'SQL execution will be enabled in Phase 2.'
+const LATER_PHASE_MESSAGE = 'Execution for this database will be enabled in a later phase.'
+
+const EMPTY_RESULT: SqlQueryGrid = {
+  columns: [],
+  rows: [],
+  rowCount: 0,
+  executionTimeMs: 0,
+  hasRun: false,
+}
 
 export function SqlPracticePage() {
   const [databaseId, setDatabaseId] = useState<SqlDatabaseId>('university_system')
   const [sql, setSql] = useState(SQL_STARTER_QUERY)
   const [messages, setMessages] = useState<string[]>([])
-  const [statusText, setStatusText] = useState('Ready')
+  const [result, setResult] = useState<SqlQueryGrid>(EMPTY_RESULT)
+  const [runState, setRunState] = useState<SqlRunState>('ready')
+  const [isRunning, setIsRunning] = useState(false)
+  const [attemptHistoryVersion, setAttemptHistoryVersion] = useState(0)
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({ tables: true })
   const [expandedTables, setExpandedTables] = useState<Record<string, boolean>>({})
 
@@ -40,33 +56,118 @@ export function SqlPracticePage() {
     const nextQ = getDefaultQuestionForDatabase(id)
     setSql(nextQ.starterSql)
     setExpandedTables({})
-    setStatusText(`Switched to ${getDatabaseById(id).displayName}`)
+    setRunState('ready')
   }, [])
 
-  const handleRun = useCallback(() => {
-    toast.message(PHASE2_RUN_MESSAGE)
-    setStatusText('Run — Phase 2')
-    setMessages((prev) => [...prev, `[info] ${PHASE2_RUN_MESSAGE}`])
-  }, [])
+  const handleRun = useCallback(async () => {
+    if (isRunning) return
+
+    if (databaseId !== 'university_system') {
+      setMessages([LATER_PHASE_MESSAGE])
+      setResult(EMPTY_RESULT)
+      setRunState('error')
+      appendSqlAttempt({
+        questionId: question.id,
+        databaseId,
+        sql,
+        ranAt: new Date().toISOString(),
+        status: 'blocked',
+        success: false,
+        rowCount: 0,
+        executionTimeMs: 0,
+        message: LATER_PHASE_MESSAGE,
+      })
+      setAttemptHistoryVersion((v) => v + 1)
+      return
+    }
+
+    setIsRunning(true)
+    setRunState('running')
+
+    const outcome = await runUniversitySelectQuery(sql, () => {
+      setMessages(['Loading SQL engine…'])
+    })
+
+    setIsRunning(false)
+
+    if (outcome.blocked) {
+      setMessages([outcome.error ?? 'Query blocked.'])
+      setResult({ ...EMPTY_RESULT, hasRun: true })
+      setRunState('error')
+      appendSqlAttempt({
+        questionId: question.id,
+        databaseId,
+        sql,
+        ranAt: new Date().toISOString(),
+        status: 'blocked',
+        success: false,
+        rowCount: 0,
+        executionTimeMs: outcome.executionTimeMs,
+        message: outcome.error ?? 'Query blocked.',
+      })
+      setAttemptHistoryVersion((v) => v + 1)
+      return
+    }
+
+    if (!outcome.success) {
+      setMessages([outcome.error ?? 'SQL execution failed.'])
+      setResult({ ...EMPTY_RESULT, hasRun: true })
+      setRunState('error')
+      appendSqlAttempt({
+        questionId: question.id,
+        databaseId,
+        sql,
+        ranAt: new Date().toISOString(),
+        status: 'error',
+        success: false,
+        rowCount: 0,
+        executionTimeMs: outcome.executionTimeMs,
+        message: outcome.error ?? 'SQL execution failed.',
+      })
+      setAttemptHistoryVersion((v) => v + 1)
+      return
+    }
+
+    setMessages(outcome.messages)
+    setResult({
+      columns: outcome.columns,
+      rows: outcome.rows,
+      rowCount: outcome.rowCount,
+      executionTimeMs: outcome.executionTimeMs,
+      hasRun: true,
+    })
+    setRunState('success')
+    appendSqlAttempt({
+      questionId: question.id,
+      databaseId,
+      sql,
+      ranAt: new Date().toISOString(),
+      status: 'success',
+      success: true,
+      rowCount: outcome.rowCount,
+      executionTimeMs: outcome.executionTimeMs,
+      message: `Rows returned: ${outcome.rowCount}`,
+    })
+    setAttemptHistoryVersion((v) => v + 1)
+  }, [databaseId, isRunning, question.id, sql])
 
   const handleCheckAnswer = useCallback(() => {
     toast.message('Answer checking will be enabled in Phase 3.')
-    setStatusText('Check Answer — coming soon')
   }, [])
 
   const handleResetQuery = useCallback(() => {
     setSql(question.starterSql)
-    setStatusText('Query reset')
-    toast.success('Query reset to starter SQL.')
+    setRunState('ready')
   }, [question.starterSql])
 
   const handleFormatSql = useCallback(() => {
-    toast.message('SQL formatting will be added in a later phase.')
+    // Format SQL deferred to a later phase.
   }, [])
 
   const handleClearOutput = useCallback(() => {
     setMessages([])
-    setStatusText('Output cleared')
+    setResult(EMPTY_RESULT)
+    setRunState('ready')
   }, [])
 
   const handleRevealHint = useCallback(() => {
@@ -89,7 +190,8 @@ export function SqlPracticePage() {
       topBar={
         <SqlTopBar
           databaseLabel={database.displayName}
-          statusText={statusText}
+          runState={runState}
+          isRunning={isRunning}
           onRun={handleRun}
           onCheckAnswer={handleCheckAnswer}
           onResetQuery={handleResetQuery}
@@ -107,7 +209,7 @@ export function SqlPracticePage() {
           onToggleTable={toggleTable}
         />
       }
-      editorPanel={<SqlEditorPanel sql={sql} onChange={setSql} />}
+      editorPanel={<SqlEditorPanel sql={sql} onChange={setSql} onRun={handleRun} />}
       questionPanel={
         <SqlQuestionPanel
           question={question}
@@ -118,8 +220,10 @@ export function SqlPracticePage() {
       bottomPanel={
         <SqlBottomPanel
           messages={messages}
+          result={result}
           database={database}
           expectedColumns={question.expectedColumns}
+          attemptHistoryVersion={attemptHistoryVersion}
         />
       }
       statusBar={
@@ -127,6 +231,7 @@ export function SqlPracticePage() {
           databaseName={database.displayName}
           tableCount={database.tables.length}
           questionTitle={question.title}
+          runState={runState}
         />
       }
     />
