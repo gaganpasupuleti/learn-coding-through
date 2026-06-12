@@ -185,6 +185,36 @@ export interface SqlExpectedOutputPreview {
   errorMessage?: string
 }
 
+export interface SqlSchemaRelationship {
+  id: string
+  fromTable: string
+  fromColumn: string
+  toTable: string
+  toColumn: string
+}
+
+export interface SqlSchemaNode {
+  table: SqlTableMeta
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+export interface SqlSchemaGraph {
+  nodes: SqlSchemaNode[]
+  relationships: SqlSchemaRelationship[]
+  width: number
+  height: number
+}
+
+export interface SqlSchemaSearchMatch {
+  tableName: string
+  columnName?: string
+}
+
+export type SqlColumnKeyType = 'pk' | 'fk' | 'pk_fk' | null
+
 export function getValidationOptionsForQuestion(question: SqlPracticeQuestion): SqlValidationOptions {
   const defaults: Record<SqlValidationMode, SqlValidationOptions> = {
     default: {
