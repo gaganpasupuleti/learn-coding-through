@@ -16,6 +16,7 @@ import { loadSqlAttempts, loadSqlMistakes } from '../utils/sqlPracticeStorage'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 import { Box, History, LayoutGrid, MessageSquare, Table2, Target, AlertTriangle } from 'lucide-react'
+import { SqlSchemaDiagram } from './schema/SqlSchemaDiagram'
 
 const TABS: Array<{ id: SqlBottomTab; label: string; icon: typeof Table2 }> = [
   { id: 'results', label: 'Results', icon: Table2 },
@@ -93,7 +94,7 @@ export function SqlBottomPanel({
         </div>
         {headerActions}
       </div>
-      <div className={cn('min-h-0 flex-1 overflow-y-auto', wb.textSecondary)}>
+      <div className={cn('min-h-0 flex-1', tab === 'schema' ? 'overflow-hidden' : 'overflow-y-auto', wb.textSecondary)}>
         {tab === 'results' && (
           <SqlResultsPanel
             result={result}
@@ -111,32 +112,32 @@ export function SqlBottomPanel({
         {tab === 'history' && <SqlAttemptHistoryPanel attempts={attempts} onLoadSql={onLoadSql} />}
         {tab === 'mistakes' && <SqlMistakesPanel mistakes={mistakes} onRetryQuestion={onRetryQuestion} />}
         {tab === 'schema' && (
-          <div className="grid gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3">
-            {database.tables.slice(0, 6).map((tbl) => (
-              <div key={tbl.name} className={cn('rounded-lg border p-3', wb.border, 'bg-[#111827]')}>
-                <p className={cn('mb-2 font-mono text-sm font-semibold text-emerald-300', wb.textPrimary)}>
-                  {tbl.name}
-                </p>
-                <ul className={cn('space-y-0.5 text-xs', wb.textMuted)}>
-                  {tbl.columns.slice(0, 4).map((c) => (
-                    <li key={c.name}>
-                      {c.name} <span className="text-[#64748B]">{c.dataType}</span>
-                    </li>
-                  ))}
-                  {tbl.columns.length > 4 && <li>+{tbl.columns.length - 4} more…</li>}
-                </ul>
-              </div>
-            ))}
-            <p className={cn('col-span-full text-xs', wb.textMuted)}>
-              Full interactive schema diagram coming in a later phase.
-            </p>
+          <div className="h-full min-h-[280px]">
+            <SqlSchemaDiagram database={database} />
           </div>
         )}
         {tab === 'schema3d' && (
-          <div className={cn('flex min-h-[140px] flex-col items-center justify-center gap-2 p-6 text-center', wb.textMuted)}>
-            <Box className="h-8 w-8 text-[#475569]" />
-            <p className="text-sm font-medium">Coming in Phase 6</p>
-            <p className="max-w-sm text-xs">3D schema exploration will be added after core SQL practice is stable.</p>
+          <div className={cn('flex min-h-[140px] flex-col gap-4 p-6', wb.textMuted)}>
+            <div className="flex flex-col items-center gap-2 text-center">
+              <Box className="h-8 w-8 text-[#475569]" />
+              <p className="text-sm font-medium">3D schema view — coming soon</p>
+              <p className="max-w-md text-xs">
+                Interactive 3D exploration is planned for a future phase. Use the Schema Diagram tab for the full ERD.
+              </p>
+            </div>
+            <div className={cn('rounded-lg border p-4', wb.border, 'bg-[#111827]')}>
+              <p className={cn('mb-2 text-xs font-semibold uppercase tracking-wide', wb.textMuted)}>
+                {database.displayName} summary
+              </p>
+              <ul className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+                {database.tables.map((tbl) => (
+                  <li key={tbl.name} className="font-mono text-xs text-emerald-300/90">
+                    {tbl.name}
+                    <span className={cn('ml-1', wb.textMuted)}>({tbl.columns.length} cols)</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
       </div>
