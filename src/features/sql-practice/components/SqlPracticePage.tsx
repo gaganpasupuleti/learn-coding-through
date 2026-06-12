@@ -1,13 +1,28 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { toast } from 'sonner'
 import { getDatabaseById } from '../data/databaseCatalog'
-import { getDefaultQuestionForDatabase, SQL_STARTER_QUERY } from '../data/sqlQuestions'
-import { runUniversitySelectQuery } from '../engine/sqlRunner'
-import type { SqlDatabaseId, SqlQueryGrid, SqlRunState } from '../types/sqlPractice.types'
+import {
+  getDefaultQuestionForDatabase,
+  getQuestionById,
+  getQuestionsForDatabase,
+  SQL_STARTER_QUERY,
+} from '../data/sqlQuestions'
+import { runTrustedUniversitySql, runUniversitySelectQuery } from '../engine/sqlRunner'
+import { validateSqlResults } from '../engine/sqlResultValidator'
+import type {
+  SqlAnswerFeedback,
+  SqlBottomTab,
+  SqlDatabaseId,
+  SqlQueryGrid,
+  SqlRunState,
+} from '../types/sqlPractice.types'
+import { getValidationOptionsForQuestion } from '../types/sqlPractice.types'
 import {
   appendSqlAttempt,
+  appendSqlMistake,
   loadRevealedHintCounts,
+  loadRevealedSolutionIds,
   saveRevealedHintCount,
+  saveSolutionRevealed,
 } from '../utils/sqlPracticeStorage'
 import { SqlPracticeLayout } from './SqlPracticeLayout'
 import { SqlTopBar } from './SqlTopBar'
@@ -19,7 +34,8 @@ import { SqlStatusBar } from './SqlStatusBar'
 import { useResizableSqlLayout } from '../hooks/useResizableSqlLayout'
 import { SqlPaneCollapseButton } from './SqlPaneCollapseButton'
 
-const LATER_PHASE_MESSAGE = 'Execution for this database will be enabled in a later phase.'
+const LATER_PHASE_RUN_MESSAGE = 'Execution for this database will be enabled in a later phase.'
+const LATER_PHASE_CHECK_MESSAGE = 'Answer checking for this database will be enabled in a later phase.'
 
 const EMPTY_RESULT: SqlQueryGrid = {
   columns: [],
@@ -31,16 +47,25 @@ const EMPTY_RESULT: SqlQueryGrid = {
 
 export function SqlPracticePage() {
   const [databaseId, setDatabaseId] = useState<SqlDatabaseId>('university_system')
+  const [questionId, setQuestionId] = useState(() => getDefaultQuestionForDatabase('university_system').id)
   const [sql, setSql] = useState(SQL_STARTER_QUERY)
   const [messages, setMessages] = useState<string[]>([])
   const [result, setResult] = useState<SqlQueryGrid>(EMPTY_RESULT)
   const [runState, setRunState] = useState<SqlRunState>('ready')
   const [isRunning, setIsRunning] = useState(false)
+  const [isChecking, setIsChecking] = useState(false)
+  const [answerFeedback, setAnswerFeedback] = useState<SqlAnswerFeedback | null>(null)
   const [attemptHistoryVersion, setAttemptHistoryVersion] = useState(0)
+  const [mistakesVersion, setMistakesVersion] = useState(0)
+  const [preferredBottomTab, setPreferredBottomTab] = useState<SqlBottomTab | null>(null)
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({ tables: true })
   const [expandedTables, setExpandedTables] = useState<Record<string, boolean>>({})
 
-  const question = useMemo(() => getDefaultQuestionForDatabase(databaseId), [databaseId])
+  const questionsForDb = useMemo(() => getQuestionsForDatabase(databaseId), [databaseId])
+  const question = useMemo(
+    () => getQuestionById(questionId) ?? getDefaultQuestionForDatabase(databaseId),
+    [questionId, databaseId],
+  )
   const database = useMemo(() => getDatabaseById(databaseId), [databaseId])
   const resizableLayout = useResizableSqlLayout()
 
@@ -49,38 +74,68 @@ export function SqlPracticePage() {
     return stored[question.id] ?? 0
   })
 
+  const [solutionRevealed, setSolutionRevealed] = useState(() => {
+    const stored = loadRevealedSolutionIds()
+    return stored[question.id] ?? false
+  })
+
   useEffect(() => {
-    const stored = loadRevealedHintCounts()
-    setRevealedHintCount(stored[question.id] ?? 0)
+    const storedHints = loadRevealedHintCounts()
+    setRevealedHintCount(storedHints[question.id] ?? 0)
+    const storedSolutions = loadRevealedSolutionIds()
+    setSolutionRevealed(storedSolutions[question.id] ?? false)
+    setAnswerFeedback(null)
   }, [question.id])
+
+  const bumpHistory = useCallback(() => {
+    setAttemptHistoryVersion((v) => v + 1)
+  }, [])
 
   const handleDatabaseChange = useCallback((id: SqlDatabaseId) => {
     setDatabaseId(id)
     const nextQ = getDefaultQuestionForDatabase(id)
+    setQuestionId(nextQ.id)
     setSql(nextQ.starterSql)
     setExpandedTables({})
     setRunState('ready')
+    setAnswerFeedback(null)
+    setPreferredBottomTab(null)
   }, [])
 
+  const handleSelectQuestion = useCallback(
+    (id: string) => {
+      const next = getQuestionById(id)
+      if (!next || next.databaseId !== databaseId) return
+      setQuestionId(id)
+      setSql(next.starterSql)
+      setRunState('ready')
+      setAnswerFeedback(null)
+      setPreferredBottomTab(null)
+    },
+    [databaseId],
+  )
+
   const handleRun = useCallback(async () => {
-    if (isRunning) return
+    if (isRunning || isChecking) return
 
     if (databaseId !== 'university_system') {
-      setMessages([LATER_PHASE_MESSAGE])
+      setMessages([LATER_PHASE_RUN_MESSAGE])
       setResult(EMPTY_RESULT)
       setRunState('error')
       appendSqlAttempt({
         questionId: question.id,
+        questionTitle: question.title,
         databaseId,
         sql,
         ranAt: new Date().toISOString(),
+        action: 'run',
         status: 'blocked',
         success: false,
         rowCount: 0,
         executionTimeMs: 0,
-        message: LATER_PHASE_MESSAGE,
+        message: LATER_PHASE_RUN_MESSAGE,
       })
-      setAttemptHistoryVersion((v) => v + 1)
+      bumpHistory()
       return
     }
 
@@ -99,16 +154,18 @@ export function SqlPracticePage() {
       setRunState('error')
       appendSqlAttempt({
         questionId: question.id,
+        questionTitle: question.title,
         databaseId,
         sql,
         ranAt: new Date().toISOString(),
+        action: 'run',
         status: 'blocked',
         success: false,
         rowCount: 0,
         executionTimeMs: outcome.executionTimeMs,
         message: outcome.error ?? 'Query blocked.',
       })
-      setAttemptHistoryVersion((v) => v + 1)
+      bumpHistory()
       return
     }
 
@@ -118,16 +175,18 @@ export function SqlPracticePage() {
       setRunState('error')
       appendSqlAttempt({
         questionId: question.id,
+        questionTitle: question.title,
         databaseId,
         sql,
         ranAt: new Date().toISOString(),
+        action: 'run',
         status: 'error',
         success: false,
         rowCount: 0,
         executionTimeMs: outcome.executionTimeMs,
         message: outcome.error ?? 'SQL execution failed.',
       })
-      setAttemptHistoryVersion((v) => v + 1)
+      bumpHistory()
       return
     }
 
@@ -142,25 +201,125 @@ export function SqlPracticePage() {
     setRunState('success')
     appendSqlAttempt({
       questionId: question.id,
+      questionTitle: question.title,
       databaseId,
       sql,
       ranAt: new Date().toISOString(),
+      action: 'run',
       status: 'success',
       success: true,
       rowCount: outcome.rowCount,
       executionTimeMs: outcome.executionTimeMs,
       message: `Rows returned: ${outcome.rowCount}`,
     })
-    setAttemptHistoryVersion((v) => v + 1)
-  }, [databaseId, isRunning, question.id, sql])
+    bumpHistory()
+  }, [bumpHistory, databaseId, isChecking, isRunning, question.id, question.title, sql])
 
-  const handleCheckAnswer = useCallback(() => {
-    toast.message('Answer checking will be enabled in Phase 3.')
-  }, [])
+  const handleCheckAnswer = useCallback(async () => {
+    if (isRunning || isChecking) return
+
+    if (databaseId !== 'university_system') {
+      setMessages([LATER_PHASE_CHECK_MESSAGE])
+      setAnswerFeedback(null)
+      setRunState('error')
+      setPreferredBottomTab('messages')
+      appendSqlAttempt({
+        questionId: question.id,
+        questionTitle: question.title,
+        databaseId,
+        sql,
+        ranAt: new Date().toISOString(),
+        action: 'check',
+        status: 'blocked',
+        success: false,
+        rowCount: 0,
+        executionTimeMs: 0,
+        message: LATER_PHASE_CHECK_MESSAGE,
+        feedbackSummary: LATER_PHASE_CHECK_MESSAGE,
+      })
+      bumpHistory()
+      return
+    }
+
+    setIsChecking(true)
+    setRunState('checking')
+    setPreferredBottomTab('messages')
+
+    const studentOutcome = await runUniversitySelectQuery(sql, () => {
+      setMessages(['Loading SQL engine…'])
+    })
+
+    const solutionOutcome = await runTrustedUniversitySql(question.solutionSql)
+    const validationOptions = getValidationOptionsForQuestion(question)
+    const check = validateSqlResults(studentOutcome, solutionOutcome, validationOptions)
+
+    const feedback: SqlAnswerFeedback = {
+      passed: check.passed,
+      feedback: check.feedback,
+      studentColumns: check.studentColumns,
+      expectedColumns: check.expectedColumns,
+      studentRowCount: check.studentRowCount,
+      expectedRowCount: check.expectedRowCount,
+      checkedAt: new Date().toISOString(),
+    }
+
+    setAnswerFeedback(feedback)
+    setIsChecking(false)
+
+    if (studentOutcome.success && !studentOutcome.blocked) {
+      setResult({
+        columns: studentOutcome.columns,
+        rows: studentOutcome.rows,
+        rowCount: studentOutcome.rowCount,
+        executionTimeMs: studentOutcome.executionTimeMs,
+        hasRun: true,
+      })
+      setMessages(studentOutcome.messages)
+    } else if (studentOutcome.blocked) {
+      setMessages([studentOutcome.error ?? 'Query blocked.'])
+      setResult({ ...EMPTY_RESULT, hasRun: true })
+    } else {
+      setMessages([studentOutcome.error ?? 'SQL execution failed.'])
+      setResult({ ...EMPTY_RESULT, hasRun: true })
+    }
+
+    const status = check.passed ? 'passed' : studentOutcome.blocked ? 'blocked' : studentOutcome.success ? 'failed' : 'error'
+    setRunState(check.passed ? 'passed' : 'failed')
+
+    const feedbackSummary = check.feedback[0] ?? (check.passed ? 'Correct answer.' : 'Answer check failed.')
+
+    appendSqlAttempt({
+      questionId: question.id,
+      questionTitle: question.title,
+      databaseId,
+      sql,
+      ranAt: new Date().toISOString(),
+      action: 'check',
+      status,
+      success: check.passed,
+      rowCount: studentOutcome.rowCount,
+      executionTimeMs: studentOutcome.executionTimeMs,
+      message: feedbackSummary,
+      feedbackSummary,
+    })
+    bumpHistory()
+
+    if (!check.passed && check.errorType) {
+      appendSqlMistake({
+        questionId: question.id,
+        databaseId,
+        sql,
+        errorType: check.errorType,
+        feedback: check.feedback.join(' '),
+      })
+      setMistakesVersion((v) => v + 1)
+    }
+  }, [bumpHistory, databaseId, isChecking, isRunning, question, sql])
 
   const handleResetQuery = useCallback(() => {
     setSql(question.starterSql)
     setRunState('ready')
+    setAnswerFeedback(null)
   }, [question.starterSql])
 
   const handleFormatSql = useCallback(() => {
@@ -171,6 +330,8 @@ export function SqlPracticePage() {
     setMessages([])
     setResult(EMPTY_RESULT)
     setRunState('ready')
+    setAnswerFeedback(null)
+    setPreferredBottomTab(null)
   }, [])
 
   const handleRevealHint = useCallback(() => {
@@ -179,6 +340,17 @@ export function SqlPracticePage() {
     setRevealedHintCount(next)
     saveRevealedHintCount(question.id, next)
   }, [question.hints.length, question.id, revealedHintCount])
+
+  const handleRevealSolution = useCallback(() => {
+    setSolutionRevealed(true)
+    saveSolutionRevealed(question.id)
+  }, [question.id])
+
+  const handleUseSolution = useCallback(() => {
+    setSql(question.solutionSql)
+    setRunState('ready')
+    setAnswerFeedback(null)
+  }, [question.solutionSql])
 
   const toggleSection = useCallback((key: string) => {
     setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }))
@@ -196,6 +368,7 @@ export function SqlPracticePage() {
           databaseLabel={database.displayName}
           runState={runState}
           isRunning={isRunning}
+          isChecking={isChecking}
           onRun={handleRun}
           onCheckAnswer={handleCheckAnswer}
           onResetQuery={handleResetQuery}
@@ -235,8 +408,14 @@ export function SqlPracticePage() {
       questionPanel={
         <SqlQuestionPanel
           question={question}
+          questions={questionsForDb}
           revealedHintCount={revealedHintCount}
+          solutionRevealed={solutionRevealed}
+          answerFeedback={answerFeedback}
+          onSelectQuestion={handleSelectQuestion}
           onRevealHint={handleRevealHint}
+          onRevealSolution={handleRevealSolution}
+          onUseSolution={handleUseSolution}
           headerActions={
             resizableLayout.desktopLayout ? (
               <SqlPaneCollapseButton
@@ -254,7 +433,10 @@ export function SqlPracticePage() {
           result={result}
           database={database}
           expectedColumns={question.expectedColumns}
+          answerFeedback={answerFeedback}
           attemptHistoryVersion={attemptHistoryVersion}
+          mistakesVersion={mistakesVersion}
+          preferredTab={preferredBottomTab}
           headerActions={
             resizableLayout.desktopLayout ? (
               <SqlPaneCollapseButton
