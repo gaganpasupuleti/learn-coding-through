@@ -126,12 +126,63 @@ export interface SqlAttemptRecord {
 export interface SqlMistakeRecord {
   id: string
   questionId: string
+  questionTitle?: string
   databaseId: SqlDatabaseId
   sql: string
   recordedAt: string
   errorType: SqlMistakeErrorType
   feedback: string
   message: string
+}
+
+export type SqlQuestionProgressStatus = 'not_started' | 'in_progress' | 'passed' | 'needs_review'
+
+export interface SqlQuestionProgressRecord {
+  questionId: string
+  databaseId: SqlDatabaseId
+  attemptsCount: number
+  passedCount: number
+  failedCount: number
+  lastStatus: SqlAttemptStatus | 'not_started'
+  lastAttemptedAt?: string
+  firstPassedAt?: string
+  bestExecutionTimeMs?: number
+  solutionRevealed: boolean
+  hintsUsedCount: number
+}
+
+export interface SqlDatabaseProgressSummary {
+  databaseId: SqlDatabaseId
+  totalQuestions: number
+  passedCount: number
+  inProgressCount: number
+  needsReviewCount: number
+  notStartedCount: number
+  percentComplete: number
+}
+
+export interface SqlTopicProgressSummary {
+  topic: SqlPracticeTopic
+  total: number
+  passed: number
+}
+
+export interface SqlDifficultyProgressSummary {
+  difficulty: SqlPracticeDifficulty
+  total: number
+  passed: number
+}
+
+export type SqlQuestionFilterStatus = 'all' | 'not_started' | 'in_progress' | 'passed' | 'needs_review'
+
+export type SqlExpectedPreviewStatus = 'idle' | 'loading' | 'ready' | 'error'
+
+export interface SqlExpectedOutputPreview {
+  status: SqlExpectedPreviewStatus
+  columns: string[]
+  sampleRows: (string | null)[][]
+  rowCount: number
+  errorMessage?: string
 }
 
 export function getValidationOptionsForQuestion(question: SqlPracticeQuestion): SqlValidationOptions {

@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getDatabaseById } from '../data/databaseCatalog'
 import {
+  getAnotherQuestionByTopic,
   getDefaultQuestionForDatabase,
+  getNextQuestion,
   getQuestionById,
   getQuestionsForDatabase,
   getStarterQueryForDatabase,
@@ -9,11 +11,16 @@ import {
 import { isExecutableSqlDatabase } from '../engine/sqlEngine'
 import { runSelectQuery, runTrustedSql } from '../engine/sqlRunner'
 import { validateSqlResults } from '../engine/sqlResultValidator'
+import { useSqlExpectedPreview } from '../hooks/useSqlExpectedPreview'
 import type {
   SqlAnswerFeedback,
+  SqlAttemptStatus,
   SqlBottomTab,
   SqlDatabaseId,
+  SqlPracticeDifficulty,
+  SqlPracticeTopic,
   SqlQueryGrid,
+  SqlQuestionFilterStatus,
   SqlRunState,
 } from '../types/sqlPractice.types'
 import { getValidationOptionsForQuestion } from '../types/sqlPractice.types'
@@ -22,9 +29,16 @@ import {
   appendSqlMistake,
   loadRevealedHintCounts,
   loadRevealedSolutionIds,
+  loadSqlMistakes,
   saveRevealedHintCount,
   saveSolutionRevealed,
 } from '../utils/sqlPracticeStorage'
+import {
+  getDatabaseProgressSummary,
+  getQuestionProgress,
+  syncQuestionProgressMeta,
+  updateProgressOnAttempt,
+} from '../utils/sqlPracticeProgress'
 import { SqlPracticeLayout } from './SqlPracticeLayout'
 import { SqlTopBar } from './SqlTopBar'
 import { SqlObjectExplorer } from './SqlObjectExplorer'
@@ -59,7 +73,11 @@ export function SqlPracticePage() {
   const [answerFeedback, setAnswerFeedback] = useState<SqlAnswerFeedback | null>(null)
   const [attemptHistoryVersion, setAttemptHistoryVersion] = useState(0)
   const [mistakesVersion, setMistakesVersion] = useState(0)
+  const [progressVersion, setProgressVersion] = useState(0)
   const [preferredBottomTab, setPreferredBottomTab] = useState<SqlBottomTab | null>(null)
+  const [statusFilter, setStatusFilter] = useState<SqlQuestionFilterStatus>('all')
+  const [difficultyFilter, setDifficultyFilter] = useState<SqlPracticeDifficulty | 'all'>('all')
+  const [topicFilter, setTopicFilter] = useState<SqlPracticeTopic | 'all'>('all')
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({ tables: true })
   const [expandedTables, setExpandedTables] = useState<Record<string, boolean>>({})
 
@@ -70,6 +88,32 @@ export function SqlPracticePage() {
   )
   const database = useMemo(() => getDatabaseById(databaseId), [databaseId])
   const resizableLayout = useResizableSqlLayout()
+  const expectedPreview = useSqlExpectedPreview(question)
+
+  const databaseSummary = useMemo(() => {
+    void progressVersion
+    return getDatabaseProgressSummary(databaseId, questionsForDb)
+  }, [databaseId, questionsForDb, progressVersion])
+
+  const questionProgress = useMemo(() => {
+    void progressVersion
+    return getQuestionProgress(question.id)
+  }, [question.id, progressVersion])
+
+  const mistakesCount = useMemo(() => {
+    void mistakesVersion
+    return loadSqlMistakes().length
+  }, [mistakesVersion])
+
+  const nextQuestion = useMemo(
+    () => getNextQuestion(question.id, questionsForDb),
+    [question.id, questionsForDb],
+  )
+  const sameTopicQuestion = useMemo(
+    () => getAnotherQuestionByTopic(question, questionsForDb),
+    [question, questionsForDb],
+  )
+  const similarQuestion = sameTopicQuestion
 
   const [revealedHintCount, setRevealedHintCount] = useState(() => {
     const stored = loadRevealedHintCounts()
@@ -93,33 +137,112 @@ export function SqlPracticePage() {
     setAttemptHistoryVersion((v) => v + 1)
   }, [])
 
-  const handleDatabaseChange = useCallback((id: SqlDatabaseId) => {
-    setDatabaseId(id)
-    const nextQ = getDefaultQuestionForDatabase(id)
-    setQuestionId(nextQ.id)
-    setSql(nextQ.starterSql)
-    setMessages([])
-    setResult(EMPTY_RESULT)
-    setExpandedTables({})
-    setRunState('ready')
-    setAnswerFeedback(null)
-    setPreferredBottomTab(null)
+  const bumpProgress = useCallback(() => {
+    setProgressVersion((v) => v + 1)
   }, [])
 
-  const handleSelectQuestion = useCallback(
-    (id: string) => {
-      const next = getQuestionById(id)
-      if (!next || next.databaseId !== databaseId) return
-      setQuestionId(id)
-      setSql(next.starterSql)
+  const recordProgress = useCallback(
+    (
+      qId: string,
+      dbId: SqlDatabaseId,
+      action: 'run' | 'check',
+      status: SqlAttemptStatus,
+      executionTimeMs?: number,
+    ) => {
+      updateProgressOnAttempt({
+        questionId: qId,
+        databaseId: dbId,
+        action,
+        status,
+        executionTimeMs,
+        hintsUsedCount: loadRevealedHintCounts()[qId] ?? 0,
+        solutionRevealed: loadRevealedSolutionIds()[qId] ?? false,
+      })
+      bumpProgress()
+    },
+    [bumpProgress],
+  )
+
+  const loadQuestionContext = useCallback(
+    (qId: string, dbId: SqlDatabaseId, nextSql: string) => {
+      setDatabaseId(dbId)
+      setQuestionId(qId)
+      setSql(nextSql)
       setMessages([])
       setResult(EMPTY_RESULT)
       setRunState('ready')
       setAnswerFeedback(null)
       setPreferredBottomTab(null)
     },
-    [databaseId],
+    [],
   )
+
+  const handleDatabaseChange = useCallback((id: SqlDatabaseId) => {
+    const nextQ = getDefaultQuestionForDatabase(id)
+    loadQuestionContext(nextQ.id, id, nextQ.starterSql)
+    setExpandedTables({})
+    setStatusFilter('all')
+    setDifficultyFilter('all')
+    setTopicFilter('all')
+  }, [loadQuestionContext])
+
+  const handleSelectQuestion = useCallback(
+    (id: string) => {
+      const next = getQuestionById(id)
+      if (!next || next.databaseId !== databaseId) return
+      loadQuestionContext(next.id, databaseId, next.starterSql)
+    },
+    [databaseId, loadQuestionContext],
+  )
+
+  const handleRetryQuestion = useCallback(
+    (qId: string, dbId: SqlDatabaseId, failedSql: string) => {
+      const q = getQuestionById(qId)
+      loadQuestionContext(qId, dbId, failedSql || q?.starterSql || getStarterQueryForDatabase(dbId))
+      setPreferredBottomTab(null)
+    },
+    [loadQuestionContext],
+  )
+
+  const handleLoadSql = useCallback(
+    (attemptSql: string, qId?: string, dbId?: SqlDatabaseId) => {
+      if (dbId && qId) {
+        const q = getQuestionById(qId)
+        if (q) {
+          loadQuestionContext(qId, dbId, attemptSql)
+          return
+        }
+      }
+      setSql(attemptSql)
+      setRunState('ready')
+    },
+    [loadQuestionContext],
+  )
+
+  const handleNextQuestion = useCallback(() => {
+    if (nextQuestion) handleSelectQuestion(nextQuestion.id)
+  }, [nextQuestion, handleSelectQuestion])
+
+  const handlePracticeSameTopic = useCallback(() => {
+    if (sameTopicQuestion) handleSelectQuestion(sameTopicQuestion.id)
+  }, [sameTopicQuestion, handleSelectQuestion])
+
+  const handleReviewSimilarQuestion = useCallback(() => {
+    if (similarQuestion) handleSelectQuestion(similarQuestion.id)
+  }, [similarQuestion, handleSelectQuestion])
+
+  const handleReviewMistakes = useCallback(() => {
+    setPreferredBottomTab('mistakes')
+  }, [])
+
+  const handleViewExpectedOutput = useCallback(() => {
+    setPreferredBottomTab('expected')
+  }, [])
+
+  const handleTryAgain = useCallback(() => {
+    setAnswerFeedback(null)
+    setRunState('ready')
+  }, [])
 
   const handleRun = useCallback(async () => {
     if (isRunning || isChecking) return
@@ -142,6 +265,7 @@ export function SqlPracticePage() {
         executionTimeMs: 0,
         message: LATER_PHASE_RUN_MESSAGE,
       })
+      recordProgress(question.id, databaseId, 'run', 'blocked')
       bumpHistory()
       return
     }
@@ -174,6 +298,7 @@ export function SqlPracticePage() {
         executionTimeMs: outcome.executionTimeMs,
         message: outcome.error ?? 'Query blocked.',
       })
+      recordProgress(question.id, databaseId, 'run', 'blocked', outcome.executionTimeMs)
       bumpHistory()
       return
     }
@@ -197,6 +322,7 @@ export function SqlPracticePage() {
         executionTimeMs: outcome.executionTimeMs,
         message: outcome.error ?? 'SQL execution failed.',
       })
+      recordProgress(question.id, databaseId, 'run', 'error', outcome.executionTimeMs)
       bumpHistory()
       return
     }
@@ -225,8 +351,9 @@ export function SqlPracticePage() {
       executionTimeMs: outcome.executionTimeMs,
       message: `Rows returned: ${outcome.rowCount}`,
     })
+    recordProgress(question.id, databaseId, 'run', 'success', outcome.executionTimeMs)
     bumpHistory()
-  }, [bumpHistory, databaseId, isChecking, isRunning, question.id, question.title, sql])
+  }, [bumpHistory, databaseId, isChecking, isRunning, question.id, question.title, recordProgress, sql])
 
   const handleCheckAnswer = useCallback(async () => {
     if (isRunning || isChecking) return
@@ -250,6 +377,7 @@ export function SqlPracticePage() {
         message: LATER_PHASE_CHECK_MESSAGE,
         feedbackSummary: LATER_PHASE_CHECK_MESSAGE,
       })
+      recordProgress(question.id, databaseId, 'check', 'blocked')
       bumpHistory()
       return
     }
@@ -318,11 +446,13 @@ export function SqlPracticePage() {
       message: feedbackSummary,
       feedbackSummary,
     })
+    recordProgress(question.id, databaseId, 'check', status, studentOutcome.executionTimeMs)
     bumpHistory()
 
     if (!check.passed && check.errorType) {
       appendSqlMistake({
         questionId: question.id,
+        questionTitle: question.title,
         databaseId,
         sql,
         errorType: check.errorType,
@@ -330,7 +460,7 @@ export function SqlPracticePage() {
       })
       setMistakesVersion((v) => v + 1)
     }
-  }, [bumpHistory, databaseId, isChecking, isRunning, question, sql])
+  }, [bumpHistory, databaseId, isChecking, isRunning, question, recordProgress, sql])
 
   const handleResetQuery = useCallback(() => {
     setSql(question.starterSql)
@@ -355,12 +485,16 @@ export function SqlPracticePage() {
     const next = revealedHintCount + 1
     setRevealedHintCount(next)
     saveRevealedHintCount(question.id, next)
-  }, [question.hints.length, question.id, revealedHintCount])
+    syncQuestionProgressMeta(question.id, question.databaseId, { hintsUsedCount: next })
+    bumpProgress()
+  }, [bumpProgress, question.databaseId, question.hints.length, question.id, revealedHintCount])
 
   const handleRevealSolution = useCallback(() => {
     setSolutionRevealed(true)
     saveSolutionRevealed(question.id)
-  }, [question.id])
+    syncQuestionProgressMeta(question.id, question.databaseId, { solutionRevealed: true })
+    bumpProgress()
+  }, [bumpProgress, question.databaseId, question.id])
 
   const handleUseSolution = useCallback(() => {
     setSql(question.solutionSql)
@@ -425,13 +559,32 @@ export function SqlPracticePage() {
         <SqlQuestionPanel
           question={question}
           questions={questionsForDb}
+          questionProgress={questionProgress}
+          databaseSummary={databaseSummary}
+          progressVersion={progressVersion}
           revealedHintCount={revealedHintCount}
           solutionRevealed={solutionRevealed}
           answerFeedback={answerFeedback}
+          statusFilter={statusFilter}
+          difficultyFilter={difficultyFilter}
+          topicFilter={topicFilter}
+          mistakesCount={mistakesCount}
+          hasNextQuestion={Boolean(nextQuestion)}
+          hasSameTopicQuestion={Boolean(sameTopicQuestion)}
+          hasSimilarQuestion={Boolean(similarQuestion)}
           onSelectQuestion={handleSelectQuestion}
+          onStatusFilterChange={setStatusFilter}
+          onDifficultyFilterChange={setDifficultyFilter}
+          onTopicFilterChange={setTopicFilter}
           onRevealHint={handleRevealHint}
           onRevealSolution={handleRevealSolution}
           onUseSolution={handleUseSolution}
+          onNextQuestion={handleNextQuestion}
+          onPracticeSameTopic={handlePracticeSameTopic}
+          onReviewMistakes={handleReviewMistakes}
+          onTryAgain={handleTryAgain}
+          onViewExpectedOutput={handleViewExpectedOutput}
+          onReviewSimilarQuestion={handleReviewSimilarQuestion}
           headerActions={
             resizableLayout.desktopLayout ? (
               <SqlPaneCollapseButton
@@ -448,11 +601,14 @@ export function SqlPracticePage() {
           messages={messages}
           result={result}
           database={database}
-          expectedColumns={question.expectedColumns}
+          question={question}
+          expectedPreview={expectedPreview}
           answerFeedback={answerFeedback}
           attemptHistoryVersion={attemptHistoryVersion}
           mistakesVersion={mistakesVersion}
           preferredTab={preferredBottomTab}
+          onRetryQuestion={handleRetryQuestion}
+          onLoadSql={handleLoadSql}
           headerActions={
             resizableLayout.desktopLayout ? (
               <SqlPaneCollapseButton
@@ -471,6 +627,7 @@ export function SqlPracticePage() {
           tableCount={database.tables.length}
           questionTitle={question.title}
           runState={runState}
+          databaseSummary={databaseSummary}
         />
       }
     />

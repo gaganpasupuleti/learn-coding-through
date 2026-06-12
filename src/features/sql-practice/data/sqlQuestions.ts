@@ -588,6 +588,22 @@ export function isCheckableQuestion(question: SqlPracticeQuestion): boolean {
   return Boolean(question.solutionSql)
 }
 
+export function getNextQuestion(
+  currentId: string,
+  questions: SqlPracticeQuestion[],
+): SqlPracticeQuestion | null {
+  const index = questions.findIndex((q) => q.id === currentId)
+  if (index < 0 || index >= questions.length - 1) return null
+  return questions[index + 1] ?? null
+}
+
+export function getAnotherQuestionByTopic(
+  current: SqlPracticeQuestion,
+  questions: SqlPracticeQuestion[],
+): SqlPracticeQuestion | null {
+  return questions.find((q) => q.topic === current.topic && q.id !== current.id) ?? null
+}
+
 /** @deprecated Use isCheckableQuestion */
 export function isUniversityCheckableQuestion(question: SqlPracticeQuestion): boolean {
   return isCheckableQuestion(question)

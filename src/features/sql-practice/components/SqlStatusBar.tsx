@@ -1,4 +1,4 @@
-import type { SqlDatabaseId, SqlRunState } from '../types/sqlPractice.types'
+import type { SqlDatabaseId, SqlDatabaseProgressSummary, SqlRunState } from '../types/sqlPractice.types'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
@@ -8,6 +8,7 @@ interface SqlStatusBarProps {
   tableCount: number
   questionTitle: string
   runState: SqlRunState
+  databaseSummary?: SqlDatabaseProgressSummary
   lineInfo?: string
 }
 
@@ -27,6 +28,7 @@ export function SqlStatusBar({
   tableCount,
   questionTitle,
   runState,
+  databaseSummary,
   lineInfo,
 }: SqlStatusBarProps) {
   return (
@@ -42,6 +44,11 @@ export function SqlStatusBar({
         Database: <span className={cn('font-medium', wb.textSecondary)}>{databaseName}</span>
       </span>
       <span>{tableCount} tables</span>
+      {databaseSummary && databaseSummary.totalQuestions > 0 && (
+        <span className="text-emerald-300">
+          {databaseSummary.passedCount} / {databaseSummary.totalQuestions} passed · {databaseSummary.percentComplete}%
+        </span>
+      )}
       <span>
         Question: <span className={cn('font-medium', wb.textSecondary)}>{questionTitle}</span>
       </span>

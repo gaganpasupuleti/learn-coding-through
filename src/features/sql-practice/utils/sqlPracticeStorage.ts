@@ -83,7 +83,7 @@ export function appendSqlAttempt(
 }
 
 export function appendSqlMistake(
-  record: Omit<SqlMistakeRecord, 'id' | 'recordedAt' | 'message'>,
+  record: Omit<SqlMistakeRecord, 'id' | 'recordedAt' | 'message'> & { message?: string },
 ): SqlMistakeRecord {
   const entry: SqlMistakeRecord = {
     ...record,
