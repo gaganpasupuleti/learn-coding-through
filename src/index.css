@@ -26,6 +26,25 @@
   flex: 1;
 }
 
+/* Issue #30 hotfix — SQL Workbench editor fills panel height (mirrors code-practice-editor) */
+.sql-practice-editor > .space-y-3,
+.sql-practice-editor > .code-editor-embedded-root {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.sql-practice-editor .code-editor-embedded {
+  height: 100% !important;
+  min-height: 280px;
+  flex: 1;
+}
+.sql-practice-editor .monaco-editor,
+.sql-practice-editor .monaco-editor .overflow-guard {
+  min-height: 280px;
+}
+
 /* Issue #29 — shared practice workbench readability */
 .practice-workbench {
   --wb-bg: #0b1020;

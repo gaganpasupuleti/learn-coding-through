@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect, useRef, useCallback } from 'react'
 import type { Monaco } from '@monaco-editor/react'
-import type { IDisposable } from 'monaco-editor'
+import type { IDisposable, editor as MonacoEditor } from 'monaco-editor'
 import type { CodePracticeLanguageMode } from '@/features/code-practice/types/codePractice.types'
 import {
   isPracticeIntelligenceLanguage,
@@ -50,6 +50,10 @@ interface CodeEditorProps {
   /** Enable offline rule-based completions (Code Workbench only). */
   enablePracticeSuggestions?: boolean
   practiceLanguage?: CodePracticeLanguageMode
+  /** Enable Monaco quick suggestions (SQL Workbench and similar embeds). */
+  enableQuickSuggestions?: boolean
+  /** Extra mount hook for language-specific providers (e.g. SQL). */
+  onEditorMount?: (editor: MonacoEditor.IStandaloneCodeEditor, monaco: Monaco) => IDisposable | void
 }
 
 type Theme = 'monokai' | 'dracula' | 'nord' | 'github' | 'synthwave'
@@ -70,9 +74,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   showEditorChrome = true,
   enablePracticeSuggestions = false,
   practiceLanguage,
+  enableQuickSuggestions = false,
+  onEditorMount,
 }) => {
   const editorLineHeight = lineHeight ?? Math.round(fontSize * 1.6)
   const completionDisposableRef = useRef<IDisposable | null>(null)
+  const extraMountDisposableRef = useRef<IDisposable | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
   const isControlled = controlledCode !== undefined
   const [internalCode, setInternalCode] = useState(initialCode || '')
@@ -266,12 +273,24 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   }, [setupCompletionProvider])
 
   const handleEditorMount = useCallback(
-    (_editor: unknown, monaco: Monaco) => {
+    (editor: MonacoEditor.IStandaloneCodeEditor, monaco: Monaco) => {
       monacoRef.current = monaco
       setupCompletionProvider()
+      extraMountDisposableRef.current?.dispose()
+      extraMountDisposableRef.current = onEditorMount?.(editor, monaco) ?? null
+      editor.focus()
     },
-    [setupCompletionProvider],
+    [onEditorMount, setupCompletionProvider],
   )
+
+  useEffect(() => {
+    return () => {
+      extraMountDisposableRef.current?.dispose()
+      extraMountDisposableRef.current = null
+    }
+  }, [])
+
+  const suggestionsEnabled = enablePracticeSuggestions || enableQuickSuggestions
 
   const editorOptions = {
     minimap: { enabled: false },
@@ -280,11 +299,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
     wordWrap: 'on' as const,
     automaticLayout: true,
+    readOnly: false,
     autoClosingBrackets: 'always' as const,
     autoClosingQuotes: 'always' as const,
     lineDecorationsWidth: 8,
     padding: { top: 14, bottom: 14 },
-    ...(enablePracticeSuggestions
+    ...(suggestionsEnabled
       ? {
           quickSuggestions: { other: true, comments: false, strings: true },
           suggestOnTriggerCharacters: true,
@@ -305,8 +325,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     />
   )
 
+  const rootClassName = showEditorChrome
+    ? 'space-y-3'
+    : 'code-editor-embedded-root h-full min-h-0 flex flex-col'
+
   return (
-    <div className="space-y-3">
+    <div className={rootClassName}>
       {/* Editor container */}
       {showEditorChrome ? (
       <div className="rounded-lg border border-slate-200 overflow-hidden shadow-sm">

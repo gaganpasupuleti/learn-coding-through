@@ -209,7 +209,15 @@ export function SqlPracticePage() {
           onToggleTable={toggleTable}
         />
       }
-      editorPanel={<SqlEditorPanel sql={sql} onChange={setSql} onRun={handleRun} />}
+      editorPanel={
+        <SqlEditorPanel
+          sql={sql}
+          databaseId={databaseId}
+          database={database}
+          onChange={setSql}
+          onRun={handleRun}
+        />
+      }
       questionPanel={
         <SqlQuestionPanel
           question={question}
