@@ -82,7 +82,11 @@ export function SqlBottomPanel({
         {tab === 'results' && (
           <SqlResultsPanel
             result={result}
-            emptyMessage={result.hasRun && result.rowCount === 0 ? 'Query returned no rows.' : undefined}
+            emptyMessage={
+              result.hasRun && !result.errorMessage && result.rowCount === 0
+                ? 'Query returned no rows.'
+                : undefined
+            }
           />
         )}
         {tab === 'expected' && (

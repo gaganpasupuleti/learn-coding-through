@@ -1,5 +1,6 @@
 import { Terminal } from 'lucide-react'
 import type { SqlAnswerFeedback } from '../types/sqlPractice.types'
+import { isSqlExecutionErrorMessage } from '../utils/sqlExecutionMessages'
 import { SqlAnswerFeedbackPanel } from './SqlAnswerFeedbackPanel'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
@@ -30,9 +31,25 @@ export function SqlMessagesPanel({ messages, answerFeedback }: SqlMessagesPanelP
         </div>
       )}
       {messages.length > 0 && (
-        <pre className={cn('max-h-48 overflow-auto px-4 pb-4 font-mono text-sm leading-relaxed', wb.textSecondary)}>
-          {messages.join('\n')}
-        </pre>
+        <div className="space-y-3 px-4 pb-4">
+          {messages.map((line, index) => {
+            const isErrorLine = index === 0 && isSqlExecutionErrorMessage(line)
+            const isHelperLine = index > 0
+            return (
+              <p
+                key={`${index}-${line.slice(0, 24)}`}
+                className={cn(
+                  'font-mono text-sm leading-relaxed',
+                  isErrorLine && 'text-rose-200',
+                  isHelperLine && 'rounded-lg border border-amber-700/40 bg-amber-950/25 p-3 text-amber-100',
+                  !isErrorLine && !isHelperLine && wb.textSecondary,
+                )}
+              >
+                {line}
+              </p>
+            )
+          })}
+        </div>
       )}
     </div>
   )

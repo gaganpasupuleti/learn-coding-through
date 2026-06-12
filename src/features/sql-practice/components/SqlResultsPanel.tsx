@@ -19,6 +19,14 @@ export function SqlResultsPanel({ result, emptyMessage }: SqlResultsPanelProps) 
     )
   }
 
+  if (result.errorMessage) {
+    return (
+      <div className={cn('p-4 text-sm', wb.textMuted)}>
+        <p>This query failed. See the Messages tab for error details.</p>
+      </div>
+    )
+  }
+
   if (result.rowCount === 0 && result.columns.length === 0) {
     return (
       <div className={cn('p-4 text-sm', wb.textMuted)}>

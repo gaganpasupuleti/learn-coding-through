@@ -94,6 +94,7 @@ export interface SqlQueryGrid {
   rowCount: number
   executionTimeMs: number
   hasRun: boolean
+  errorMessage?: string | null
 }
 
 export interface SqlAnswerFeedback {

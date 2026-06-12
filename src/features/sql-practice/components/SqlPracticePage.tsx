@@ -33,7 +33,7 @@ import { SqlQuestionPanel } from './SqlQuestionPanel'
 import { SqlBottomPanel } from './SqlBottomPanel'
 import { SqlStatusBar } from './SqlStatusBar'
 import { useResizableSqlLayout } from '../hooks/useResizableSqlLayout'
-import { SqlPaneCollapseButton } from './SqlPaneCollapseButton'
+import { buildSqlErrorMessages } from '../utils/sqlExecutionMessages'
 
 const LATER_PHASE_RUN_MESSAGE = 'Execution for this database will be enabled in a later phase.'
 const LATER_PHASE_CHECK_MESSAGE = 'Answer checking for this database will be enabled in a later phase.'
@@ -97,6 +97,8 @@ export function SqlPracticePage() {
     const nextQ = getDefaultQuestionForDatabase(id)
     setQuestionId(nextQ.id)
     setSql(nextQ.starterSql)
+    setMessages([])
+    setResult(EMPTY_RESULT)
     setExpandedTables({})
     setRunState('ready')
     setAnswerFeedback(null)
@@ -109,6 +111,8 @@ export function SqlPracticePage() {
       if (!next || next.databaseId !== databaseId) return
       setQuestionId(id)
       setSql(next.starterSql)
+      setMessages([])
+      setResult(EMPTY_RESULT)
       setRunState('ready')
       setAnswerFeedback(null)
       setPreferredBottomTab(null)
@@ -123,6 +127,7 @@ export function SqlPracticePage() {
       setMessages([LATER_PHASE_RUN_MESSAGE])
       setResult(EMPTY_RESULT)
       setRunState('error')
+      setPreferredBottomTab('messages')
       appendSqlAttempt({
         questionId: question.id,
         questionTitle: question.title,
@@ -150,9 +155,11 @@ export function SqlPracticePage() {
     setIsRunning(false)
 
     if (outcome.blocked) {
-      setMessages([outcome.error ?? 'Query blocked.'])
-      setResult({ ...EMPTY_RESULT, hasRun: true })
+      const errorMessage = outcome.error ?? 'Query blocked.'
+      setMessages(buildSqlErrorMessages(databaseId, errorMessage))
+      setResult({ ...EMPTY_RESULT, hasRun: true, errorMessage })
       setRunState('error')
+      setPreferredBottomTab('messages')
       appendSqlAttempt({
         questionId: question.id,
         questionTitle: question.title,
@@ -171,9 +178,11 @@ export function SqlPracticePage() {
     }
 
     if (!outcome.success) {
-      setMessages([outcome.error ?? 'SQL execution failed.'])
-      setResult({ ...EMPTY_RESULT, hasRun: true })
+      const errorMessage = outcome.error ?? 'SQL execution failed.'
+      setMessages(buildSqlErrorMessages(databaseId, errorMessage))
+      setResult({ ...EMPTY_RESULT, hasRun: true, errorMessage })
       setRunState('error')
+      setPreferredBottomTab('messages')
       appendSqlAttempt({
         questionId: question.id,
         questionTitle: question.title,
@@ -198,8 +207,10 @@ export function SqlPracticePage() {
       rowCount: outcome.rowCount,
       executionTimeMs: outcome.executionTimeMs,
       hasRun: true,
+      errorMessage: null,
     })
     setRunState('success')
+    setPreferredBottomTab('results')
     appendSqlAttempt({
       questionId: question.id,
       questionTitle: question.title,
@@ -274,14 +285,17 @@ export function SqlPracticePage() {
         rowCount: studentOutcome.rowCount,
         executionTimeMs: studentOutcome.executionTimeMs,
         hasRun: true,
+        errorMessage: null,
       })
       setMessages(studentOutcome.messages)
     } else if (studentOutcome.blocked) {
-      setMessages([studentOutcome.error ?? 'Query blocked.'])
-      setResult({ ...EMPTY_RESULT, hasRun: true })
+      const errorMessage = studentOutcome.error ?? 'Query blocked.'
+      setMessages(buildSqlErrorMessages(databaseId, errorMessage))
+      setResult({ ...EMPTY_RESULT, hasRun: true, errorMessage })
     } else {
-      setMessages([studentOutcome.error ?? 'SQL execution failed.'])
-      setResult({ ...EMPTY_RESULT, hasRun: true })
+      const errorMessage = studentOutcome.error ?? 'SQL execution failed.'
+      setMessages(buildSqlErrorMessages(databaseId, errorMessage))
+      setResult({ ...EMPTY_RESULT, hasRun: true, errorMessage })
     }
 
     const status = check.passed ? 'passed' : studentOutcome.blocked ? 'blocked' : studentOutcome.success ? 'failed' : 'error'
