@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { BookOpen, Lightbulb } from 'lucide-react'
 import type { SqlAnswerFeedback, SqlPracticeQuestion } from '../types/sqlPractice.types'
 import { getDatabaseById } from '../data/databaseCatalog'
-import { isUniversityCheckableQuestion } from '../data/sqlQuestions'
+import { isCheckableQuestion } from '../data/sqlQuestions'
 import { SqlAnswerFeedbackPanel } from './SqlAnswerFeedbackPanel'
 import { SqlSolutionPanel } from './SqlSolutionPanel'
 import { wb } from '@/lib/workbench-theme'
@@ -41,7 +41,7 @@ export function SqlQuestionPanel({
 }: SqlQuestionPanelProps) {
   const db = getDatabaseById(question.databaseId)
   const hintsLeft = question.hints.length - revealedHintCount
-  const checkable = isUniversityCheckableQuestion(question)
+  const checkable = isCheckableQuestion(question)
 
   return (
     <aside className={cn('flex h-full flex-col', wb.panel, wb.border)}>

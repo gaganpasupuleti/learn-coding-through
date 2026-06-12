@@ -5,6 +5,7 @@ import { Sparkles } from 'lucide-react'
 import { CodeEditor } from '@/components/CodeEditor'
 import type { SqlDatabaseId, SqlDatabaseMeta } from '../types/sqlPractice.types'
 import { registerSqlCompletionProvider } from '../editor-intelligence/sqlCompletionProvider'
+import { isExecutableSqlDatabase } from '../engine/sqlEngine'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
@@ -23,10 +24,9 @@ export function SqlEditorPanel({ sql, databaseId, database, onChange, onRun }: S
   const monacoMountedRef = useRef(false)
   const monacoRef = useRef<Monaco | null>(null)
   const sqlCompletionRef = useRef<IDisposable | null>(null)
-  const executionNote =
-    databaseId !== 'university_system'
-      ? 'Run is enabled only for University System in Phase 2. Other databases execute in later phases.'
-      : null
+  const executionNote = !isExecutableSqlDatabase(databaseId)
+    ? 'Run and answer checking for this database will be enabled in a later phase.'
+    : null
 
   useEffect(() => {
     if (!onRun) return

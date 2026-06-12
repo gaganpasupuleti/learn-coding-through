@@ -5,6 +5,22 @@ FROM students
 LIMIT 10;
 `
 
+export const HOSPITAL_STARTER_QUERY = `SELECT *
+FROM patients
+LIMIT 10;
+`
+
+export const SHIPPING_STARTER_QUERY = `SELECT *
+FROM orders
+LIMIT 10;
+`
+
+export function getStarterQueryForDatabase(databaseId: SqlDatabaseId): string {
+  if (databaseId === 'hospital_management') return HOSPITAL_STARTER_QUERY
+  if (databaseId === 'shipping_logistics') return SHIPPING_STARTER_QUERY
+  return SQL_STARTER_QUERY
+}
+
 const UNIVERSITY_QUESTIONS: SqlPracticeQuestion[] = [
   {
     id: 'uni-q1-student-names',
@@ -247,7 +263,7 @@ ORDER BY city;`,
   },
 ]
 
-const NON_UNIVERSITY_QUESTIONS: SqlPracticeQuestion[] = [
+const HOSPITAL_QUESTIONS: SqlPracticeQuestion[] = [
   {
     id: 'hosp-q1-patient-appointments',
     title: 'Upcoming patient appointments',
@@ -262,7 +278,9 @@ const NON_UNIVERSITY_QUESTIONS: SqlPracticeQuestion[] = [
     starterSql: `SELECT appointment_id, patient_id, scheduled_at
 FROM appointments
 WHERE status = 'scheduled';`,
-    solutionSql: '',
+    solutionSql: `SELECT appointment_id, patient_id, scheduled_at
+FROM appointments
+WHERE status = 'scheduled';`,
     validationMode: 'default',
   },
   {
@@ -274,13 +292,122 @@ WHERE status = 'scheduled';`,
     problemStatement: "Show each doctor's full name alongside their department name.",
     learningObjective: 'Join doctors to departments on department_id.',
     expectedColumns: ['full_name', 'department_name'],
-    hints: ['JOIN doctors and departments on department_id.'],
+    hints: ['JOIN doctors and departments on department_id.', 'Alias departments.name AS department_name.'],
     starterSql: `SELECT d.full_name, dept.name AS department_name
 FROM doctors d
 JOIN departments dept ON d.department_id = dept.department_id;`,
-    solutionSql: '',
+    solutionSql: `SELECT d.full_name, dept.name AS department_name
+FROM doctors d
+JOIN departments dept ON d.department_id = dept.department_id;`,
     validationMode: 'default',
   },
+  {
+    id: 'hosp-q3-patient-names',
+    title: 'List patient names',
+    databaseId: 'hospital_management',
+    difficulty: 'easy',
+    topic: 'select',
+    problemStatement: 'Return full_name and mrn for every patient.',
+    learningObjective: 'Practice basic SELECT from the patients table.',
+    expectedColumns: ['full_name', 'mrn'],
+    hints: ['SELECT from patients.', 'Include full_name and mrn columns.'],
+    starterSql: HOSPITAL_STARTER_QUERY,
+    solutionSql: `SELECT full_name, mrn
+FROM patients;`,
+    validationMode: 'default',
+  },
+  {
+    id: 'hosp-q4-pending-bills',
+    title: 'Pending hospital bills',
+    databaseId: 'hospital_management',
+    difficulty: 'easy',
+    topic: 'filtering',
+    problemStatement: 'List bill_id, patient_id, and amount for bills with status pending.',
+    learningObjective: 'Filter billing rows by status.',
+    expectedColumns: ['bill_id', 'patient_id', 'amount'],
+    hints: ['Query the billing table.', "WHERE status = 'pending'."],
+    starterSql: `SELECT bill_id, patient_id, amount
+FROM billing
+WHERE status = 'pending';`,
+    solutionSql: `SELECT bill_id, patient_id, amount
+FROM billing
+WHERE status = 'pending';`,
+    validationMode: 'default',
+  },
+  {
+    id: 'hosp-q5-appointments-per-doctor',
+    title: 'Appointments per doctor',
+    databaseId: 'hospital_management',
+    difficulty: 'medium',
+    topic: 'aggregates',
+    problemStatement: 'For each doctor_id, count how many appointments exist. Show appointment_count.',
+    learningObjective: 'Use GROUP BY and COUNT on appointments.',
+    expectedColumns: ['doctor_id', 'appointment_count'],
+    hints: ['GROUP BY doctor_id.', 'Use COUNT(*) AS appointment_count.'],
+    starterSql: `SELECT doctor_id, COUNT(*) AS appointment_count
+FROM appointments
+GROUP BY doctor_id;`,
+    solutionSql: `SELECT doctor_id, COUNT(*) AS appointment_count
+FROM appointments
+GROUP BY doctor_id;`,
+    validationMode: 'default',
+  },
+  {
+    id: 'hosp-q6-departments-by-floor',
+    title: 'Departments by floor',
+    databaseId: 'hospital_management',
+    difficulty: 'easy',
+    topic: 'select',
+    problemStatement: 'List department name and floor ordered by floor ascending.',
+    learningObjective: 'Use ORDER BY on numeric columns.',
+    expectedColumns: ['name', 'floor'],
+    hints: ['SELECT name, floor FROM departments.', 'ORDER BY floor.'],
+    starterSql: `SELECT name, floor
+FROM departments
+ORDER BY floor;`,
+    solutionSql: `SELECT name, floor
+FROM departments
+ORDER BY floor;`,
+    validationMode: 'ordered',
+  },
+  {
+    id: 'hosp-q7-patient-insurance',
+    title: 'Patients with insurance providers',
+    databaseId: 'hospital_management',
+    difficulty: 'medium',
+    topic: 'joins',
+    problemStatement:
+      'Show every patient full_name and their insurance provider. Use LEFT JOIN so patients without insurance still appear.',
+    learningObjective: 'Use LEFT JOIN between patients and insurance.',
+    expectedColumns: ['full_name', 'provider'],
+    hints: ['FROM patients LEFT JOIN insurance.', 'Select full_name and provider.'],
+    starterSql: `SELECT p.full_name, i.provider
+FROM patients p
+LEFT JOIN insurance i ON p.patient_id = i.patient_id;`,
+    solutionSql: `SELECT p.full_name, i.provider
+FROM patients p
+LEFT JOIN insurance i ON p.patient_id = i.patient_id;`,
+    validationMode: 'default',
+  },
+  {
+    id: 'hosp-q8-count-patients',
+    title: 'Count all patients',
+    databaseId: 'hospital_management',
+    difficulty: 'easy',
+    topic: 'aggregates',
+    problemStatement: 'Return the total number of patients as total_patients.',
+    learningObjective: 'Use COUNT(*) with an alias.',
+    expectedColumns: ['total_patients'],
+    hints: ['COUNT(*) from patients.', 'Alias as total_patients.'],
+    starterSql: `SELECT COUNT(*) AS total_patients
+FROM patients;`,
+    solutionSql: `SELECT COUNT(*) AS total_patients
+FROM patients;`,
+    validationMode: 'aggregate',
+  },
+]
+
+const SHIPPING_QUESTIONS: SqlPracticeQuestion[] = [
   {
     id: 'ship-q1-order-totals',
     title: 'High-value orders',
@@ -295,14 +422,150 @@ JOIN departments dept ON d.department_id = dept.department_id;`,
     starterSql: `SELECT order_id, customer_id, total_amount
 FROM orders
 WHERE total_amount > 1000;`,
-    solutionSql: '',
+    solutionSql: `SELECT order_id, customer_id, total_amount
+FROM orders
+WHERE total_amount > 1000;`,
     validationMode: 'default',
+  },
+  {
+    id: 'ship-q2-customer-list',
+    title: 'List customers',
+    databaseId: 'shipping_logistics',
+    difficulty: 'easy',
+    topic: 'select',
+    problemStatement: 'Return company_name and country for all customers.',
+    learningObjective: 'Practice basic SELECT from customers.',
+    expectedColumns: ['company_name', 'country'],
+    hints: ['SELECT from customers.', 'Include company_name and country.'],
+    starterSql: SHIPPING_STARTER_QUERY,
+    solutionSql: `SELECT company_name, country
+FROM customers;`,
+    validationMode: 'default',
+  },
+  {
+    id: 'ship-q3-shipped-orders',
+    title: 'Shipped orders',
+    databaseId: 'shipping_logistics',
+    difficulty: 'easy',
+    topic: 'filtering',
+    problemStatement: 'List order_id and order_date for orders with status shipped.',
+    learningObjective: 'Filter orders by status.',
+    expectedColumns: ['order_id', 'order_date'],
+    hints: ['Query orders.', "WHERE status = 'shipped'."],
+    starterSql: `SELECT order_id, order_date
+FROM orders
+WHERE status = 'shipped';`,
+    solutionSql: `SELECT order_id, order_date
+FROM orders
+WHERE status = 'shipped';`,
+    validationMode: 'default',
+  },
+  {
+    id: 'ship-q4-carrier-shipment-count',
+    title: 'Shipments per carrier',
+    databaseId: 'shipping_logistics',
+    difficulty: 'medium',
+    topic: 'aggregates',
+    problemStatement:
+      'For each carrier name, show how many shipments they handle. Include shipment_count.',
+    learningObjective: 'JOIN shipments to carriers and use GROUP BY.',
+    expectedColumns: ['name', 'shipment_count'],
+    hints: ['JOIN carriers and shipments.', 'GROUP BY carrier name and COUNT shipments.'],
+    starterSql: `SELECT c.name, COUNT(*) AS shipment_count
+FROM carriers c
+JOIN shipments s ON c.carrier_id = s.carrier_id
+GROUP BY c.name;`,
+    solutionSql: `SELECT c.name, COUNT(*) AS shipment_count
+FROM carriers c
+JOIN shipments s ON c.carrier_id = s.carrier_id
+GROUP BY c.name;`,
+    validationMode: 'default',
+  },
+  {
+    id: 'ship-q5-customer-order-totals',
+    title: 'Total order value per customer',
+    databaseId: 'shipping_logistics',
+    difficulty: 'medium',
+    topic: 'aggregates',
+    problemStatement:
+      'For each company_name, calculate total_spent as the sum of order total_amount values.',
+    learningObjective: 'Combine JOIN with SUM and GROUP BY.',
+    expectedColumns: ['company_name', 'total_spent'],
+    hints: ['JOIN customers and orders.', 'Use SUM(total_amount) AS total_spent.'],
+    starterSql: `SELECT c.company_name, SUM(o.total_amount) AS total_spent
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.company_name;`,
+    solutionSql: `SELECT c.company_name, ROUND(SUM(o.total_amount), 2) AS total_spent
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.company_name;`,
+    validationMode: 'aggregate',
+    validation: { numericTolerance: 0.05 },
+  },
+  {
+    id: 'ship-q6-heavy-packages',
+    title: 'Heavy packages',
+    databaseId: 'shipping_logistics',
+    difficulty: 'easy',
+    topic: 'filtering',
+    problemStatement: 'List package_id and weight_kg for packages heavier than 20 kg.',
+    learningObjective: 'Filter numeric package weights.',
+    expectedColumns: ['package_id', 'weight_kg'],
+    hints: ['Query packages.', 'WHERE weight_kg > 20.'],
+    starterSql: `SELECT package_id, weight_kg
+FROM packages
+WHERE weight_kg > 20;`,
+    solutionSql: `SELECT package_id, weight_kg
+FROM packages
+WHERE weight_kg > 20;`,
+    validationMode: 'default',
+  },
+  {
+    id: 'ship-q7-unshipped-orders',
+    title: 'Orders without shipments',
+    databaseId: 'shipping_logistics',
+    difficulty: 'medium',
+    topic: 'joins',
+    problemStatement:
+      'Find order_id values for orders that have no matching shipment. Use a LEFT JOIN approach.',
+    learningObjective: 'Use LEFT JOIN and filter where the right side is NULL.',
+    expectedColumns: ['order_id'],
+    hints: ['LEFT JOIN orders to shipments.', 'WHERE shipment_id IS NULL.'],
+    starterSql: `SELECT o.order_id
+FROM orders o
+LEFT JOIN shipments s ON o.order_id = s.order_id
+WHERE s.shipment_id IS NULL;`,
+    solutionSql: `SELECT o.order_id
+FROM orders o
+LEFT JOIN shipments s ON o.order_id = s.order_id
+WHERE s.shipment_id IS NULL;`,
+    validationMode: 'default',
+  },
+  {
+    id: 'ship-q8-orders-by-date',
+    title: 'Orders by date',
+    databaseId: 'shipping_logistics',
+    difficulty: 'easy',
+    topic: 'select',
+    problemStatement: 'List order_id and order_date ordered by order_date ascending.',
+    learningObjective: 'Use ORDER BY on date columns.',
+    expectedColumns: ['order_id', 'order_date'],
+    hints: ['SELECT order_id, order_date FROM orders.', 'ORDER BY order_date.'],
+    starterSql: `SELECT order_id, order_date
+FROM orders
+ORDER BY order_date;`,
+    solutionSql: `SELECT order_id, order_date
+FROM orders
+ORDER BY order_date;`,
+    validationMode: 'ordered',
   },
 ]
 
 export const SQL_PRACTICE_QUESTIONS: SqlPracticeQuestion[] = [
   ...UNIVERSITY_QUESTIONS,
-  ...NON_UNIVERSITY_QUESTIONS,
+  ...HOSPITAL_QUESTIONS,
+  ...SHIPPING_QUESTIONS,
 ]
 
 export function getQuestionById(id: string): SqlPracticeQuestion | undefined {
@@ -321,6 +584,11 @@ export function getDefaultQuestionForDatabase(databaseId: SqlPracticeQuestion['d
   return getQuestionsForDatabase(databaseId)[0] ?? SQL_PRACTICE_QUESTIONS[0]
 }
 
+export function isCheckableQuestion(question: SqlPracticeQuestion): boolean {
+  return Boolean(question.solutionSql)
+}
+
+/** @deprecated Use isCheckableQuestion */
 export function isUniversityCheckableQuestion(question: SqlPracticeQuestion): boolean {
-  return question.databaseId === 'university_system' && Boolean(question.solutionSql)
+  return isCheckableQuestion(question)
 }
