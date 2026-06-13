@@ -37,7 +37,7 @@ interface CodeEditorPanelProps {
 export function CodeEditorPanel({ code, languageId, monacoLanguage, editorTheme, onChange }: CodeEditorPanelProps) {
   const label = CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === languageId)?.label ?? languageId
   const practiceLanguage = languageId as CodePracticeLanguageMode
-  const suggestionsActive = ['python', 'javascript', 'react'].includes(languageId)
+  const suggestionsActive = ['python', 'javascript', 'react', 'java'].includes(languageId)
 
   const [fontPreset, setFontPreset] = useState<EditorFontPreset>(readFontPreset)
   const { fontSize, lineHeight } = FONT_PRESETS[fontPreset]

@@ -1,13 +1,14 @@
 import type { Monaco } from '@monaco-editor/react'
 import type { IDisposable, ITextModel, Position, languages } from 'monaco-editor'
 import type { PracticeIntelligenceLanguage } from './codeIntelligence.types'
-import { extractVariablesForLanguage, isInsideCallExpression } from './variableExtractor'
+import { extractVariablesForLanguage, isInsideCallExpression, isInsideJavaPrintCall } from './variableExtractor'
 import { getSnippetsForLanguage } from './snippetLibrary'
 import { PYTHON_KEYWORDS } from './pythonCompletions'
 import { JAVASCRIPT_KEYWORDS } from './javascriptCompletions'
+import { JAVA_KEYWORDS } from './javaCompletions'
 import { REACT_KEYWORDS, REACT_JSX_TAGS } from './reactCompletions'
 
-const ACTIVE_LANGUAGES = new Set<PracticeIntelligenceLanguage>(['python', 'javascript', 'react'])
+const ACTIVE_LANGUAGES = new Set<PracticeIntelligenceLanguage>(['python', 'javascript', 'react', 'java'])
 
 export function isPracticeIntelligenceLanguage(
   lang: string,
@@ -16,7 +17,9 @@ export function isPracticeIntelligenceLanguage(
 }
 
 function monacoLanguageId(language: PracticeIntelligenceLanguage): string {
-  return language === 'python' ? 'python' : 'javascript'
+  if (language === 'python') return 'python'
+  if (language === 'java') return 'java'
+  return 'javascript'
 }
 
 function matchesPrefix(label: string, prefix: string): boolean {
@@ -82,6 +85,7 @@ function buildKeywordItems(
 
 function getKeywords(language: PracticeIntelligenceLanguage) {
   if (language === 'python') return PYTHON_KEYWORDS
+  if (language === 'java') return JAVA_KEYWORDS
   if (language === 'javascript') return JAVASCRIPT_KEYWORDS
   return [...JAVASCRIPT_KEYWORDS, ...REACT_KEYWORDS]
 }
@@ -128,9 +132,10 @@ function provideCompletions(
   const inConsoleLog =
     (practiceLanguage === 'javascript' || practiceLanguage === 'react') &&
     isInsideCallExpression(textBeforeCursor, 'console.log')
+  const inJavaPrint = practiceLanguage === 'java' && isInsideJavaPrintCall(textBeforeCursor)
 
   const afterOperator = /[+\-*/%,]\s*$/.test(textBeforeCursor)
-  const prioritizeVariables = inPrint || inConsoleLog || afterOperator
+  const prioritizeVariables = inPrint || inConsoleLog || inJavaPrint || afterOperator
 
   const variableItems = buildVariableItems(monaco, variables, prefix, range)
   const snippetItems = prioritizeVariables ? [] : buildSnippetItems(monaco, practiceLanguage, prefix, range)

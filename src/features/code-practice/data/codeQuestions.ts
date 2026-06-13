@@ -158,7 +158,6 @@ export const CODE_PRACTICE_QUESTIONS: CodePracticeQuestion[] = [
     description: 'Given two integers stored in variables `a` and `b`, print their sum.',
     examples: [
       { input: 'a=2, b=3', output: '5' },
-      { input: 'a=10, b=20', output: '30' },
     ],
     constraints: ['Variables a and b are pre-defined in starter', 'Print only the number'],
     starterCode: `public class Main {
@@ -173,9 +172,8 @@ export const CODE_PRACTICE_QUESTIONS: CodePracticeQuestion[] = [
     defaultInput: 'a=2, b=3',
     testCases: [
       { id: 'java-add-1', label: '2 + 3', expectedOutput: '5' },
-      { id: 'java-add-2', label: '10 + 20 (change a/b in code)', expectedOutput: '30' },
     ],
-    hints: ['Use System.out.println(a + b);', 'Change a and b in code to match other sample cases.'],
+    hints: ['Use System.out.println(a + b);', 'Change a and b in the editor to experiment — Submit checks this case only.'],
   },
   {
     id: 'java-even-odd',
@@ -186,7 +184,6 @@ export const CODE_PRACTICE_QUESTIONS: CodePracticeQuestion[] = [
     description: 'Given an integer `n`, print `Even` if it is even, otherwise print `Odd`.',
     examples: [
       { input: 'n=4', output: 'Even' },
-      { input: 'n=7', output: 'Odd' },
     ],
     constraints: ['Use modulo (%) operator', 'Output must be exactly `Even` or `Odd`'],
     starterCode: `public class Main {
@@ -204,9 +201,88 @@ export const CODE_PRACTICE_QUESTIONS: CodePracticeQuestion[] = [
     defaultInput: 'n=4',
     testCases: [
       { id: 'java-eo-1', label: 'Even (4)', expectedOutput: 'Even' },
-      { id: 'java-eo-2', label: 'Odd (7) (change n in code)', expectedOutput: 'Odd' },
     ],
-    hints: ['A number is even when n % 2 == 0.', 'Use an if/else to choose the label.'],
+    hints: ['A number is even when n % 2 == 0.', 'Change n in the editor to try odd values — Submit checks n=4 only.'],
+  },
+  {
+    id: 'java-max-two',
+    title: 'Max of Two Numbers',
+    language: 'java',
+    difficulty: 'easy',
+    topic: 'basics',
+    description: 'Given integers `a` and `b`, print the larger value.',
+    examples: [
+      { input: 'a=7, b=12', output: '12' },
+    ],
+    constraints: ['Use in-code variables', 'Print only the number'],
+    starterCode: `public class Main {
+    public static void main(String[] args) {
+        int a = 7;
+        int b = 12;
+        System.out.println(Math.max(a, b));
+    }
+}
+`,
+    expectedOutput: '12',
+    defaultInput: 'a=7, b=12',
+    testCases: [
+      { id: 'java-max-1', label: 'max(7, 12)', expectedOutput: '12' },
+    ],
+    hints: ['Try Math.max(a, b).', 'Change a and b in the editor to experiment — Submit checks this case only.'],
+  },
+  {
+    id: 'java-print-one-to-five',
+    title: 'Print Numbers 1 to 5',
+    language: 'java',
+    difficulty: 'easy',
+    topic: 'loops',
+    description: 'Print the numbers 1 through 5, each on its own line.',
+    examples: [
+      { input: '(none)', output: '1\\n2\\n3\\n4\\n5' },
+    ],
+    constraints: ['Use a loop', 'One number per line'],
+    starterCode: `public class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(i);
+        }
+    }
+}
+`,
+    expectedOutput: '1\n2\n3\n4\n5',
+    testCases: [
+      { id: 'java-15-1', label: 'Lines 1–5', expectedOutput: '1\n2\n3\n4\n5' },
+    ],
+    hints: ['Use for (int i = 1; i <= 5; i++).', 'System.out.println(i) inside the loop.'],
+  },
+  {
+    id: 'java-sum-array',
+    title: 'Sum Array Values',
+    language: 'java',
+    difficulty: 'easy',
+    topic: 'loops',
+    description: 'Given `int[] nums = {1, 2, 3, 4}`, print the sum of all elements.',
+    examples: [
+      { input: 'nums = {1,2,3,4}', output: '10' },
+    ],
+    constraints: ['Use the provided array', 'Print only the sum'],
+    starterCode: `public class Main {
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 3, 4};
+        int sum = 0;
+        for (int n : nums) {
+            sum += n;
+        }
+        System.out.println(sum);
+    }
+}
+`,
+    expectedOutput: '10',
+    defaultInput: 'nums = {1,2,3,4}',
+    testCases: [
+      { id: 'java-sum-1', label: 'Sum 1+2+3+4', expectedOutput: '10' },
+    ],
+    hints: ['Loop with for (int n : nums).', 'Add each n to sum, then println(sum).'],
   },
 
   // ── React ──

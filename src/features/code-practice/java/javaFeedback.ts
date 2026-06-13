@@ -8,7 +8,7 @@ import type { CodePracticeFeedback } from '../types/codePractice.types'
 export type JavaFeedback = CodePracticeFeedback
 
 export const JAVA_RUNTIME_UNAVAILABLE_MESSAGE =
-  'Java execution is not available in this environment yet. Backend Java runtime/JDK is required.'
+  'Java execution is not available in this environment yet. Backend JDK is required. Install OpenJDK and restart the backend.'
 
 function feedback(
   partial: Omit<JavaFeedback, 'ruleId'> & { ruleId: string },
@@ -72,14 +72,81 @@ export function analyzeJavaCodeBeforeRun(code: string): JavaFeedback[] {
   }
 
   if (!/public\s+static\s+void\s+main\s*\(\s*String\s*\[\s*\]\s*\w*\s*\)/.test(source)) {
+    if (/public\s+static\s+main\s*\(/.test(source)) {
+      results.push(
+        feedback({
+          ruleId: 'main-missing-void',
+          type: 'syntax',
+          severity: 'error',
+          title: 'main method needs void',
+          message: 'Use `public static void main(String[] args)` — `void` is required.',
+          suggestion: 'Add `void` between `static` and `main`.',
+        }),
+      )
+    } else {
+      results.push(
+        feedback({
+          ruleId: 'missing-main-method',
+          type: 'syntax',
+          severity: 'error',
+          title: 'Missing main method',
+          message: 'Java programs need `public static void main(String[] args)` to run.',
+          suggestion: 'Add the main method inside class Main.',
+        }),
+      )
+    }
+  }
+
+  if (/main\s*\(\s*string\s*\[\s*\]/i.test(source) && !/main\s*\(\s*String\s*\[\s*\]/.test(source)) {
     results.push(
       feedback({
-        ruleId: 'missing-main-method',
+        ruleId: 'lowercase-string-args',
         type: 'syntax',
-        severity: 'error',
-        title: 'Missing main method',
-        message: 'Java programs need `public static void main(String[] args)` to run.',
-        suggestion: 'Add the main method inside class Main.',
+        severity: 'warning',
+        title: 'Use String[] with capital S',
+        message: 'Java types are case-sensitive — use `String[] args`, not `string[]`.',
+        suggestion: 'Change `string[]` to `String[]`.',
+      }),
+    )
+  }
+
+  if (/\bsystem\.out\./i.test(source) && !/System\.out\./.test(source)) {
+    results.push(
+      feedback({
+        ruleId: 'lowercase-system-out',
+        type: 'syntax',
+        severity: 'warning',
+        title: 'System.out needs capital letters',
+        message: 'Java is case-sensitive — use `System.out.println`, not `system.out`.',
+        suggestion: 'Capitalize `System` and `out`.',
+      }),
+    )
+  }
+
+  if (/\bScanner\b/.test(source) || /\bnew\s+Scanner\s*\(/.test(source)) {
+    results.push(
+      feedback({
+        ruleId: 'scanner-stdin-unsupported',
+        type: 'hint',
+        severity: 'warning',
+        title: 'Scanner / stdin not supported yet',
+        message: 'The practice backend cannot read stdin yet. Use in-code variables instead of Scanner.',
+        suggestion: 'Assign values to variables (e.g. `int n = 4;`) rather than reading input.',
+      }),
+    )
+  }
+
+  const openBraces = (source.match(/\{/g) ?? []).length
+  const closeBraces = (source.match(/\}/g) ?? []).length
+  if (openBraces > closeBraces) {
+    results.push(
+      feedback({
+        ruleId: 'unbalanced-braces',
+        type: 'syntax',
+        severity: 'warning',
+        title: 'Missing closing brace',
+        message: `Found ${openBraces} \`{\` but only ${closeBraces} \`}\` — a block may be unclosed.`,
+        suggestion: 'Add `}` to close open blocks.',
       }),
     )
   }
@@ -155,7 +222,7 @@ export function explainJavaError(error: string, errorCode?: string): JavaFeedbac
       severity: 'error',
       title: 'Java runtime unavailable',
       message: JAVA_RUNTIME_UNAVAILABLE_MESSAGE,
-      suggestion: 'Ask your instructor to install a JDK on the backend server.',
+      suggestion: 'Install OpenJDK on the backend server, ensure javac/java are on PATH, then restart the backend.',
     })
   }
 

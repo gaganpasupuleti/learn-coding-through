@@ -43,4 +43,25 @@ describe('javaFeedback', () => {
     const hints = analyzeJavaCodeBeforeRun('public class Main { public static void main(String[] args) { print("x"); } }')
     expect(hints.some((h) => h.ruleId === 'python-style-print')).toBe(true)
   })
+
+  it('warns on lowercase string[] args', () => {
+    const hints = analyzeJavaCodeBeforeRun(
+      'public class Main { public static void main(string[] args) {} }',
+    )
+    expect(hints.some((h) => h.ruleId === 'lowercase-string-args')).toBe(true)
+  })
+
+  it('warns on Scanner stdin usage', () => {
+    const hints = analyzeJavaCodeBeforeRun(
+      'import java.util.Scanner;\npublic class Main { public static void main(String[] args) { Scanner s = new Scanner(System.in); } }',
+    )
+    expect(hints.some((h) => h.ruleId === 'scanner-stdin-unsupported')).toBe(true)
+  })
+
+  it('flags public static main without void', () => {
+    const block = getBlockingJavaPreRunFeedback(
+      'public class Main { public static main(String[] args) {} }',
+    )
+    expect(block?.ruleId).toBe('main-missing-void')
+  })
 })
