@@ -12,7 +12,7 @@
         "kill": "fuser -k 5000/tcp",
         "build": "tsc -b --noCheck && vite build",
         "test": "vitest run",
-        "test:sql-practice": "vitest run src/features/sql-practice/utils/sqlFormatter.test.ts src/features/sql-practice/utils/sqlEditorInsert.test.ts src/features/sql-practice/data/sqlQuestions.test.ts",
+        "test:sql-practice": "vitest run src/features/sql-practice/utils/sqlFormatter.test.ts src/features/sql-practice/utils/sqlEditorInsert.test.ts src/features/sql-practice/data/sqlQuestions.test.ts src/features/sql-practice/utils/sqlPracticeAnalytics.test.ts",
         "lint": "eslint .",
         "qa:smoke": "node scripts/e2e-smoke.mjs",
         "qa:practice-smoke": "node scripts/practice-ground-smoke.mjs",

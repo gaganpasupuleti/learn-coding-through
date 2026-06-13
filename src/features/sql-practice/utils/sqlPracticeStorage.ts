@@ -47,6 +47,15 @@ export function saveSqlMistakes(records: SqlMistakeRecord[]): void {
   writeJson(MISTAKES_KEY, records)
 }
 
+/** Remove mistake records for questions that are now passed. Returns count removed. */
+export function clearResolvedMistakes(isPassed: (questionId: string) => boolean): number {
+  const before = loadSqlMistakes()
+  const after = before.filter((m) => !isPassed(m.questionId))
+  const removed = before.length - after.length
+  if (removed > 0) saveSqlMistakes(after)
+  return removed
+}
+
 export function loadRevealedHintCounts(): Record<string, number> {
   return readJson<Record<string, number>>(HINTS_KEY, {})
 }

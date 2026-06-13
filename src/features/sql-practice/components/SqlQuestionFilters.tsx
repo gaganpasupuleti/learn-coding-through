@@ -13,10 +13,11 @@ interface SqlQuestionFiltersProps {
 
 const STATUS_OPTIONS: Array<{ value: SqlQuestionFilterStatus; label: string }> = [
   { value: 'all', label: 'All' },
-  { value: 'not_started', label: 'Not Started' },
+  { value: 'not_started', label: 'Not Attempted' },
   { value: 'in_progress', label: 'In Progress' },
   { value: 'passed', label: 'Passed' },
-  { value: 'needs_review', label: 'Needs Review' },
+  { value: 'needs_review', label: 'Failed' },
+  { value: 'mistakes_only', label: 'Mistakes Only' },
 ]
 
 const DIFFICULTY_OPTIONS: Array<{ value: SqlPracticeDifficulty | 'all'; label: string }> = [

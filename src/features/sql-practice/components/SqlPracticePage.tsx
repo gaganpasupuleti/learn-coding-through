@@ -7,6 +7,7 @@ import {
   getQuestionById,
   getQuestionsForDatabase,
   getStarterQueryForDatabase,
+  SQL_PRACTICE_QUESTIONS,
 } from '../data/sqlQuestions'
 import { isExecutableSqlDatabase } from '../engine/sqlEngine'
 import { runSelectQuery, runTrustedSql } from '../engine/sqlRunner'
@@ -28,6 +29,7 @@ import { getValidationOptionsForQuestion } from '../types/sqlPractice.types'
 import {
   appendSqlAttempt,
   appendSqlMistake,
+  clearResolvedMistakes,
   loadRevealedHintCounts,
   loadRevealedSolutionIds,
   loadSqlMistakes,
@@ -37,9 +39,22 @@ import {
 import {
   getDatabaseProgressSummary,
   getQuestionProgress,
+  getQuestionProgressStatus,
+  loadSqlProgress,
   syncQuestionProgressMeta,
   updateProgressOnAttempt,
 } from '../utils/sqlPracticeProgress'
+import {
+  getDatabaseAnalyticsSummary,
+  getDifficultyProgressSummary,
+  getReviewQueue,
+  getSuggestedNextQuestion,
+  getTopicProgressSummary,
+  getWeakTopics,
+  getWeakestDifficulty,
+  getWeakestTopic,
+  type SqlReviewMode,
+} from '../utils/sqlPracticeAnalytics'
 import { SqlPracticeLayout } from './SqlPracticeLayout'
 import { SqlTopBar } from './SqlTopBar'
 import { SqlObjectExplorer } from './SqlObjectExplorer'
@@ -86,6 +101,7 @@ export function SqlPracticePage() {
   const [statusFilter, setStatusFilter] = useState<SqlQuestionFilterStatus>('all')
   const [difficultyFilter, setDifficultyFilter] = useState<SqlPracticeDifficulty | 'all'>('all')
   const [topicFilter, setTopicFilter] = useState<SqlPracticeTopic | 'all'>('all')
+  const [activeReviewMode, setActiveReviewMode] = useState<SqlReviewMode | null>(null)
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({ tables: true })
   const [expandedTables, setExpandedTables] = useState<Record<string, boolean>>({})
 
@@ -112,6 +128,78 @@ export function SqlPracticePage() {
     void mistakesVersion
     return loadSqlMistakes().length
   }, [mistakesVersion])
+
+  const mistakes = useMemo(() => {
+    void mistakesVersion
+    return loadSqlMistakes()
+  }, [mistakesVersion])
+
+  const progressStore = useMemo(() => {
+    void progressVersion
+    return loadSqlProgress()
+  }, [progressVersion])
+
+  const mistakeQuestionIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const m of mistakes) ids.add(m.questionId)
+    return ids
+  }, [mistakes])
+
+  const analyticsSummary = useMemo(() => {
+    return getDatabaseAnalyticsSummary(databaseId, questionsForDb, progressStore)
+  }, [databaseId, questionsForDb, progressStore])
+
+  const topicAnalytics = useMemo(
+    () => getTopicProgressSummary(databaseId, questionsForDb, progressStore),
+    [databaseId, questionsForDb, progressStore],
+  )
+
+  const difficultyAnalytics = useMemo(
+    () => getDifficultyProgressSummary(databaseId, questionsForDb, progressStore),
+    [databaseId, questionsForDb, progressStore],
+  )
+
+  const weakestTopic = useMemo(
+    () => getWeakestTopic(databaseId, questionsForDb, progressStore),
+    [databaseId, questionsForDb, progressStore],
+  )
+
+  const weakestDifficulty = useMemo(
+    () => getWeakestDifficulty(databaseId, questionsForDb, progressStore),
+    [databaseId, questionsForDb, progressStore],
+  )
+
+  const suggestion = useMemo(
+    () => getSuggestedNextQuestion(databaseId, SQL_PRACTICE_QUESTIONS, progressStore, mistakes, question.id),
+    [databaseId, progressStore, mistakes, question.id],
+  )
+
+  const reviewQueue = useMemo(() => {
+    if (!activeReviewMode) return []
+    return getReviewQueue(activeReviewMode, databaseId, questionsForDb, progressStore, mistakes, {
+      topic: topicFilter !== 'all' ? topicFilter : undefined,
+      difficulty: difficultyFilter !== 'all' ? difficultyFilter : undefined,
+    })
+  }, [
+    activeReviewMode,
+    databaseId,
+    questionsForDb,
+    progressStore,
+    mistakes,
+    topicFilter,
+    difficultyFilter,
+  ])
+
+  const failedCount = analyticsSummary.failed
+  const unattemptedCount = analyticsSummary.unattempted
+  const weakTopicsCount = useMemo(
+    () => getWeakTopics(databaseId, questionsForDb, progressStore).length,
+    [databaseId, questionsForDb, progressStore],
+  )
+
+  const resolvedMistakeCount = useMemo(() => {
+    return mistakes.filter((m) => getQuestionProgressStatus(progressStore[m.questionId]) === 'passed').length
+  }, [mistakes, progressStore])
 
   const nextQuestion = useMemo(
     () => getNextQuestion(question.id, questionsForDb),
@@ -240,7 +328,70 @@ export function SqlPracticePage() {
   }, [similarQuestion, handleSelectQuestion])
 
   const handleReviewMistakes = useCallback(() => {
+    setActiveReviewMode('mistakes')
+    setStatusFilter('mistakes_only')
     setPreferredBottomTab('mistakes')
+  }, [])
+
+  const handleStartReview = useCallback(
+    (mode: SqlReviewMode) => {
+      setActiveReviewMode(mode)
+      if (mode === 'failed') setStatusFilter('needs_review')
+      else if (mode === 'mistakes') {
+        setStatusFilter('mistakes_only')
+        setPreferredBottomTab('mistakes')
+      } else if (mode === 'unattempted') setStatusFilter('not_started')
+      else if (mode === 'weak_topics') setStatusFilter('all')
+
+      const queue = getReviewQueue(mode, databaseId, questionsForDb, loadSqlProgress(), loadSqlMistakes(), {
+        topic: topicFilter !== 'all' ? topicFilter : undefined,
+        difficulty: difficultyFilter !== 'all' ? difficultyFilter : undefined,
+      })
+      if (queue[0]) {
+        const q = queue[0]
+        loadQuestionContext(q.id, q.databaseId, q.starterSql)
+      }
+    },
+    [databaseId, questionsForDb, topicFilter, difficultyFilter, loadQuestionContext],
+  )
+
+  const handlePracticeSuggested = useCallback(() => {
+    const result = getSuggestedNextQuestion(
+      databaseId,
+      SQL_PRACTICE_QUESTIONS,
+      loadSqlProgress(),
+      loadSqlMistakes(),
+      question.id,
+    )
+    if (result.question) {
+      loadQuestionContext(result.question.id, result.question.databaseId, result.question.starterSql)
+      setActiveReviewMode(null)
+    }
+  }, [databaseId, question.id, loadQuestionContext])
+
+  const handleLoadFailedSql = useCallback(
+    (qId: string, dbId: SqlDatabaseId, failedSql: string) => {
+      const q = getQuestionById(qId)
+      if (q && dbId !== databaseId) {
+        loadQuestionContext(qId, dbId, failedSql)
+      } else if (q) {
+        setQuestionId(qId)
+        setSql(failedSql)
+        setRunState('ready')
+        setAnswerFeedback(null)
+      } else {
+        setSql(failedSql)
+      }
+    },
+    [databaseId, loadQuestionContext],
+  )
+
+  const handleClearResolvedMistakes = useCallback(() => {
+    const store = loadSqlProgress()
+    const removed = clearResolvedMistakes(
+      (questionId) => getQuestionProgressStatus(store[questionId]) === 'passed',
+    )
+    if (removed > 0) setMistakesVersion((v) => v + 1)
   }, [])
 
   const handleViewExpectedOutput = useCallback(() => {
@@ -634,6 +785,18 @@ export function SqlPracticePage() {
           difficultyFilter={difficultyFilter}
           topicFilter={topicFilter}
           mistakesCount={mistakesCount}
+          mistakeQuestionIds={mistakeQuestionIds}
+          suggestion={suggestion}
+          reviewQueue={reviewQueue}
+          activeReviewMode={activeReviewMode}
+          analyticsSummary={analyticsSummary}
+          topicAnalytics={topicAnalytics}
+          difficultyAnalytics={difficultyAnalytics}
+          weakestTopic={weakestTopic}
+          weakestDifficulty={weakestDifficulty}
+          failedCount={failedCount}
+          unattemptedCount={unattemptedCount}
+          weakTopicsCount={weakTopicsCount}
           hasNextQuestion={Boolean(nextQuestion)}
           hasSameTopicQuestion={Boolean(sameTopicQuestion)}
           hasSimilarQuestion={Boolean(similarQuestion)}
@@ -650,6 +813,8 @@ export function SqlPracticePage() {
           onTryAgain={handleTryAgain}
           onViewExpectedOutput={handleViewExpectedOutput}
           onReviewSimilarQuestion={handleReviewSimilarQuestion}
+          onPracticeSuggested={handlePracticeSuggested}
+          onStartReview={handleStartReview}
           onInsertTemplate={handleInsertQueryTemplate}
           headerActions={
             resizableLayout.desktopLayout ? (
@@ -675,6 +840,9 @@ export function SqlPracticePage() {
           preferredTab={preferredBottomTab}
           onRetryQuestion={handleRetryQuestion}
           onLoadSql={handleLoadSql}
+          onLoadFailedSql={handleLoadFailedSql}
+          onClearResolvedMistakes={handleClearResolvedMistakes}
+          resolvedMistakeCount={resolvedMistakeCount}
           onInsertJoinTemplate={handleInsertJoinTemplate}
           headerActions={
             resizableLayout.desktopLayout ? (

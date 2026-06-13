@@ -173,7 +173,13 @@ export interface SqlDifficultyProgressSummary {
   passed: number
 }
 
-export type SqlQuestionFilterStatus = 'all' | 'not_started' | 'in_progress' | 'passed' | 'needs_review'
+export type SqlQuestionFilterStatus =
+  | 'all'
+  | 'not_started'
+  | 'in_progress'
+  | 'passed'
+  | 'needs_review'
+  | 'mistakes_only'
 
 export type SqlExpectedPreviewStatus = 'idle' | 'loading' | 'ready' | 'error'
 
