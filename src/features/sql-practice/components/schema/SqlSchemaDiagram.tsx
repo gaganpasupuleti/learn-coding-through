@@ -18,12 +18,14 @@ interface SqlSchemaDiagramProps {
   database: SqlDatabaseMeta
   fullscreen?: boolean
   onRequestFullscreen?: () => void
+  onInsertJoinTemplate?: (relationship: SqlSchemaRelationship) => void
 }
 
 export function SqlSchemaDiagram({
   database,
   fullscreen = false,
   onRequestFullscreen,
+  onInsertJoinTemplate,
 }: SqlSchemaDiagramProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTable, setSelectedTable] = useState<string | null>(null)
@@ -204,6 +206,7 @@ export function SqlSchemaDiagram({
             selectedRelationshipId={selectedRelationshipId}
             onSelect={handleSelectRelationship}
             expanded={fullscreen}
+            onInsertJoinTemplate={onInsertJoinTemplate}
           />
         </div>
       </aside>

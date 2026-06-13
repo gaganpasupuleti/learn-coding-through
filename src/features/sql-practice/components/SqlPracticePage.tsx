@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getDatabaseById } from '../data/databaseCatalog'
 import {
   getAnotherQuestionByTopic,
@@ -22,6 +22,7 @@ import type {
   SqlQueryGrid,
   SqlQuestionFilterStatus,
   SqlRunState,
+  SqlSchemaRelationship,
 } from '../types/sqlPractice.types'
 import { getValidationOptionsForQuestion } from '../types/sqlPractice.types'
 import {
@@ -42,13 +43,18 @@ import {
 import { SqlPracticeLayout } from './SqlPracticeLayout'
 import { SqlTopBar } from './SqlTopBar'
 import { SqlObjectExplorer } from './SqlObjectExplorer'
-import { SqlEditorPanel } from './SqlEditorPanel'
+import { SqlEditorPanel, type SqlEditorPanelHandle } from './SqlEditorPanel'
 import { SqlQuestionPanel } from './SqlQuestionPanel'
 import { SqlBottomPanel } from './SqlBottomPanel'
 import { SqlStatusBar } from './SqlStatusBar'
 import { useResizableSqlLayout } from '../hooks/useResizableSqlLayout'
 import { buildSqlErrorMessages } from '../utils/sqlExecutionMessages'
 import { SqlPaneCollapseButton } from './SqlPaneCollapseButton'
+import { formatSqlQuery } from '../utils/sqlFormatter'
+import {
+  buildJoinTemplate,
+  buildSelectTemplate,
+} from '../utils/sqlEditorInsert'
 
 const LATER_PHASE_RUN_MESSAGE = 'Execution for this database will be enabled in a later phase.'
 const LATER_PHASE_CHECK_MESSAGE = 'Answer checking for this database will be enabled in a later phase.'
@@ -62,6 +68,8 @@ const EMPTY_RESULT: SqlQueryGrid = {
 }
 
 export function SqlPracticePage() {
+  const editorRef = useRef<SqlEditorPanelHandle>(null)
+  const [editorStatus, setEditorStatus] = useState<string | null>(null)
   const [databaseId, setDatabaseId] = useState<SqlDatabaseId>('university_system')
   const [questionId, setQuestionId] = useState(() => getDefaultQuestionForDatabase('university_system').id)
   const [sql, setSql] = useState(() => getStarterQueryForDatabase('university_system'))
@@ -468,9 +476,58 @@ export function SqlPracticePage() {
     setAnswerFeedback(null)
   }, [question.starterSql])
 
-  const handleFormatSql = useCallback(() => {
-    // Format SQL deferred to a later phase.
+  const showEditorMessage = useCallback((message: string) => {
+    setMessages([message])
+    setEditorStatus(message)
+    setPreferredBottomTab('messages')
   }, [])
+
+  const handleFormatSql = useCallback(() => {
+    const formatted = formatSqlQuery(sql)
+    editorRef.current?.replaceSql(formatted)
+    setSql(formatted)
+    showEditorMessage('SQL formatted locally.')
+  }, [showEditorMessage, sql])
+
+  const handleInsertSnippet = useCallback(
+    (snippet: string, message: string) => {
+      editorRef.current?.insertSnippet(snippet)
+      showEditorMessage(message)
+    },
+    [showEditorMessage],
+  )
+
+  const handleInsertSelect = useCallback(
+    (tableName: string) => {
+      handleInsertSnippet(buildSelectTemplate(tableName), 'Template inserted. Review and run when ready.')
+    },
+    [handleInsertSnippet],
+  )
+
+  const handleInsertColumn = useCallback(
+    (_tableName: string, columnName: string) => {
+      const snippet = sql.trim().length > 0 ? ` ${columnName}` : columnName
+      handleInsertSnippet(snippet, 'Template inserted. Review and run when ready.')
+    },
+    [handleInsertSnippet, sql],
+  )
+
+  const handleInsertJoinTemplate = useCallback(
+    (relationship: SqlSchemaRelationship) => {
+      handleInsertSnippet(
+        buildJoinTemplate(relationship),
+        'JOIN template inserted from schema relationship.',
+      )
+    },
+    [handleInsertSnippet],
+  )
+
+  const handleInsertQueryTemplate = useCallback(
+    (templateSql: string) => {
+      handleInsertSnippet(templateSql, 'Template inserted. Review and run when ready.')
+    },
+    [handleInsertSnippet],
+  )
 
   const handleClearOutput = useCallback(() => {
     setMessages([])
@@ -478,6 +535,7 @@ export function SqlPracticePage() {
     setRunState('ready')
     setAnswerFeedback(null)
     setPreferredBottomTab(null)
+    setEditorStatus('Output cleared.')
   }, [])
 
   const handleRevealHint = useCallback(() => {
@@ -535,6 +593,8 @@ export function SqlPracticePage() {
           expandedTables={expandedTables}
           onToggleSection={toggleSection}
           onToggleTable={toggleTable}
+          onInsertSelect={handleInsertSelect}
+          onInsertColumn={handleInsertColumn}
           headerActions={
             resizableLayout.desktopLayout ? (
               <SqlPaneCollapseButton
@@ -548,11 +608,16 @@ export function SqlPracticePage() {
       }
       editorPanel={
         <SqlEditorPanel
+          ref={editorRef}
           sql={sql}
           databaseId={databaseId}
           database={database}
           onChange={setSql}
           onRun={handleRun}
+          onCheckAnswer={handleCheckAnswer}
+          onFormatSql={handleFormatSql}
+          onClearOutput={handleClearOutput}
+          editorStatus={editorStatus}
         />
       }
       questionPanel={
@@ -585,6 +650,7 @@ export function SqlPracticePage() {
           onTryAgain={handleTryAgain}
           onViewExpectedOutput={handleViewExpectedOutput}
           onReviewSimilarQuestion={handleReviewSimilarQuestion}
+          onInsertTemplate={handleInsertQueryTemplate}
           headerActions={
             resizableLayout.desktopLayout ? (
               <SqlPaneCollapseButton
@@ -609,6 +675,7 @@ export function SqlPracticePage() {
           preferredTab={preferredBottomTab}
           onRetryQuestion={handleRetryQuestion}
           onLoadSql={handleLoadSql}
+          onInsertJoinTemplate={handleInsertJoinTemplate}
           headerActions={
             resizableLayout.desktopLayout ? (
               <SqlPaneCollapseButton

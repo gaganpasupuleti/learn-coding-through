@@ -14,6 +14,8 @@ interface SqlObjectExplorerProps {
   expandedTables: Record<string, boolean>
   onToggleSection: (key: string) => void
   onToggleTable: (tableName: string) => void
+  onInsertSelect?: (tableName: string) => void
+  onInsertColumn?: (tableName: string, columnName: string) => void
   headerActions?: ReactNode
 }
 
@@ -24,6 +26,8 @@ export function SqlObjectExplorer({
   expandedTables,
   onToggleSection,
   onToggleTable,
+  onInsertSelect,
+  onInsertColumn,
   headerActions,
 }: SqlObjectExplorerProps) {
   const database = SQL_DATABASE_CATALOG.find((d) => d.id === activeDatabaseId)!
@@ -49,6 +53,8 @@ export function SqlObjectExplorer({
           expandedTables={expandedTables}
           onToggleSection={onToggleSection}
           onToggleTable={onToggleTable}
+          onInsertSelect={onInsertSelect}
+          onInsertColumn={onInsertColumn}
         />
       </div>
     </aside>

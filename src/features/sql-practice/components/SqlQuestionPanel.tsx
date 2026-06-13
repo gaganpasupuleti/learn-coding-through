@@ -22,6 +22,7 @@ import { SqlSolutionPanel } from './SqlSolutionPanel'
 import { SqlProgressBadge } from './SqlProgressBadge'
 import { SqlProgressSummary } from './SqlProgressSummary'
 import { SqlQuestionFilters } from './SqlQuestionFilters'
+import { SqlQueryTemplates, type SqlQueryTemplateId } from './SqlQueryTemplates'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
@@ -54,6 +55,7 @@ interface SqlQuestionPanelProps {
   onTryAgain: () => void
   onViewExpectedOutput: () => void
   onReviewSimilarQuestion: () => void
+  onInsertTemplate?: (sql: string, templateId: SqlQueryTemplateId) => void
   headerActions?: ReactNode
 }
 
@@ -97,6 +99,7 @@ export function SqlQuestionPanel({
   onTryAgain,
   onViewExpectedOutput,
   onReviewSimilarQuestion,
+  onInsertTemplate,
   headerActions,
 }: SqlQuestionPanelProps) {
   const db = getDatabaseById(question.databaseId)
@@ -131,6 +134,10 @@ export function SqlQuestionPanel({
       </div>
       <div className={cn('flex-1 space-y-4 overflow-y-auto p-4 text-[15px] leading-relaxed', wb.textSecondary)}>
         <SqlProgressSummary summary={databaseSummary} />
+
+        {onInsertTemplate && (
+          <SqlQueryTemplates database={db} question={question} onInsertTemplate={onInsertTemplate} />
+        )}
 
         <SqlQuestionFilters
           statusFilter={statusFilter}

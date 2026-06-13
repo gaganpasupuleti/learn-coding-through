@@ -6,6 +6,7 @@ import type {
   SqlExpectedOutputPreview,
   SqlPracticeQuestion,
   SqlQueryGrid,
+  SqlSchemaRelationship,
 } from '../types/sqlPractice.types'
 import { SqlResultsPanel } from './SqlResultsPanel'
 import { SqlMessagesPanel } from './SqlMessagesPanel'
@@ -41,6 +42,7 @@ interface SqlBottomPanelProps {
   preferredTab?: SqlBottomTab | null
   onRetryQuestion: (questionId: string, databaseId: SqlPracticeQuestion['databaseId'], sql: string) => void
   onLoadSql: (sql: string, questionId?: string, databaseId?: SqlPracticeQuestion['databaseId']) => void
+  onInsertJoinTemplate?: (relationship: SqlSchemaRelationship) => void
   headerActions?: ReactNode
 }
 
@@ -56,6 +58,7 @@ export function SqlBottomPanel({
   preferredTab,
   onRetryQuestion,
   onLoadSql,
+  onInsertJoinTemplate,
   headerActions,
 }: SqlBottomPanelProps) {
   const [tab, setTab] = useState<SqlBottomTab>('results')
@@ -122,6 +125,7 @@ export function SqlBottomPanel({
             <SqlSchemaDiagram
               database={database}
               onRequestFullscreen={() => setSchemaFullscreenOpen(true)}
+              onInsertJoinTemplate={onInsertJoinTemplate}
             />
           </div>
         )}
@@ -155,6 +159,7 @@ export function SqlBottomPanel({
         database={database}
         open={schemaFullscreenOpen}
         onClose={() => setSchemaFullscreenOpen(false)}
+        onInsertJoinTemplate={onInsertJoinTemplate}
       />
     </section>
   )
