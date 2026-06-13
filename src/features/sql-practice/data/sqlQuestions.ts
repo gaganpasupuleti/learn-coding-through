@@ -1,4 +1,9 @@
-import type { SqlDatabaseId, SqlPracticeQuestion } from '../types/sqlPractice.types'
+import type { SqlDatabaseId, SqlPracticeQuestion, SqlPracticeTopic } from '../types/sqlPractice.types'
+import {
+  HOSPITAL_QUESTIONS_EXPANSION,
+  SHIPPING_QUESTIONS_EXPANSION,
+  UNIVERSITY_QUESTIONS_EXPANSION,
+} from './sqlQuestionsExpansion'
 
 export const SQL_STARTER_QUERY = `SELECT *
 FROM students
@@ -564,9 +569,25 @@ ORDER BY order_date;`,
 
 export const SQL_PRACTICE_QUESTIONS: SqlPracticeQuestion[] = [
   ...UNIVERSITY_QUESTIONS,
+  ...UNIVERSITY_QUESTIONS_EXPANSION,
   ...HOSPITAL_QUESTIONS,
+  ...HOSPITAL_QUESTIONS_EXPANSION,
   ...SHIPPING_QUESTIONS,
+  ...SHIPPING_QUESTIONS_EXPANSION,
 ]
+
+/** Group practice questions by topic for a given database. */
+export function getQuestionsByTopic(
+  databaseId: SqlDatabaseId,
+  topic: SqlPracticeTopic,
+): SqlPracticeQuestion[] {
+  return SQL_PRACTICE_QUESTIONS.filter((q) => q.databaseId === databaseId && q.topic === topic)
+}
+
+/** Return all question IDs (for integrity checks). */
+export function getAllQuestionIds(): string[] {
+  return SQL_PRACTICE_QUESTIONS.map((q) => q.id)
+}
 
 export function getQuestionById(id: string): SqlPracticeQuestion | undefined {
   return SQL_PRACTICE_QUESTIONS.find((q) => q.id === id)
@@ -577,7 +598,7 @@ export function getQuestionsForDatabase(databaseId: SqlDatabaseId): SqlPracticeQ
 }
 
 export function getUniversityQuestions(): SqlPracticeQuestion[] {
-  return UNIVERSITY_QUESTIONS
+  return getQuestionsForDatabase('university_system')
 }
 
 export function getDefaultQuestionForDatabase(databaseId: SqlPracticeQuestion['databaseId']): SqlPracticeQuestion {
