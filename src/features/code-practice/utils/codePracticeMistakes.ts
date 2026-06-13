@@ -9,6 +9,7 @@ import type {
   CodePracticeQuestion,
 } from '../types/codePractice.types'
 import { JAVASCRIPT_SAFETY_USER_MESSAGE } from '../javascript/javascriptSafetyValidator'
+import { JAVA_SAFETY_USER_MESSAGE } from '../java/javaSafetyValidator'
 import { PYTHON_SAFETY_USER_MESSAGE } from '../python/pythonSafetyValidator'
 
 export type CodePracticeMistakeType =
@@ -327,6 +328,70 @@ export function recordJavaScriptRuntimeMistake(params: {
 }): CodePracticeMistake {
   return saveCodePracticeMistake({
     language: 'javascript',
+    question: params.question,
+    submittedCode: params.code,
+    attemptType: params.attemptType,
+    status: 'failed',
+    mistakeType: mistakeTypeFromFeedback(params.feedback),
+    inputUsed: params.stdin,
+    errorMessage: params.rawError,
+    feedback: params.feedback,
+  })
+}
+
+export function recordJavaSafetyBlockMistake(params: {
+  question?: CodePracticeQuestion | null
+  code: string
+  stdin: string
+  attemptType: CodePracticeMistakeAttemptType
+  ruleId: string
+  message: string
+}): CodePracticeMistake {
+  return saveCodePracticeMistake({
+    language: 'java',
+    question: params.question,
+    submittedCode: params.code,
+    attemptType: params.attemptType,
+    status: 'blocked',
+    mistakeType: 'safety-block',
+    inputUsed: params.stdin,
+    errorMessage: JAVA_SAFETY_USER_MESSAGE,
+    feedbackRuleId: params.ruleId,
+    feedbackTitle: 'Blocked for practice safety',
+    feedbackMessage: params.message,
+  })
+}
+
+export function recordJavaPrerunBlockMistake(params: {
+  question?: CodePracticeQuestion | null
+  code: string
+  stdin: string
+  attemptType: CodePracticeMistakeAttemptType
+  feedback: CodePracticeFeedback
+}): CodePracticeMistake {
+  return saveCodePracticeMistake({
+    language: 'java',
+    question: params.question,
+    submittedCode: params.code,
+    attemptType: params.attemptType,
+    status: 'blocked',
+    mistakeType: 'prerun-block',
+    inputUsed: params.stdin,
+    errorMessage: params.feedback.title,
+    feedback: params.feedback,
+  })
+}
+
+export function recordJavaRuntimeMistake(params: {
+  question?: CodePracticeQuestion | null
+  code: string
+  stdin: string
+  attemptType: CodePracticeMistakeAttemptType
+  rawError: string
+  feedback: CodePracticeFeedback
+}): CodePracticeMistake {
+  return saveCodePracticeMistake({
+    language: 'java',
     question: params.question,
     submittedCode: params.code,
     attemptType: params.attemptType,

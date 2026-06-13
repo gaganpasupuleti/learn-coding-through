@@ -10,9 +10,9 @@ function App() {
   return null;
 }
 `,
-  java: `public class Practice {
+  java: `public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello");
+        System.out.println("Hello, Java!");
     }
 }
 `,

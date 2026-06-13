@@ -125,6 +125,90 @@ export const CODE_PRACTICE_QUESTIONS: CodePracticeQuestion[] = [
     hints: ['Try text.split("").reverse().join("")', 'Or loop from the end of the string.'],
   },
 
+  // ── Java ──
+  {
+    id: 'java-hello-world',
+    title: 'Print Hello World',
+    language: 'java',
+    difficulty: 'easy',
+    topic: 'basics',
+    description: 'Write a program that prints exactly `Hello World` to standard output.',
+    examples: [
+      { input: '(none)', output: 'Hello World', explanation: 'Use System.out.println with the exact text.' },
+    ],
+    constraints: ['Class must be named `Main`', 'Use System.out.println', 'Output must match exactly'],
+    starterCode: `public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+    }
+}
+`,
+    expectedOutput: 'Hello World',
+    testCases: [
+      { id: 'java-hw-1', label: 'Sample case', expectedOutput: 'Hello World' },
+    ],
+    hints: ['Java programs need a public class and a main method.', 'Use System.out.println("Hello World");'],
+  },
+  {
+    id: 'java-add-two',
+    title: 'Add Two Numbers',
+    language: 'java',
+    difficulty: 'easy',
+    topic: 'basics',
+    description: 'Given two integers stored in variables `a` and `b`, print their sum.',
+    examples: [
+      { input: 'a=2, b=3', output: '5' },
+      { input: 'a=10, b=20', output: '30' },
+    ],
+    constraints: ['Variables a and b are pre-defined in starter', 'Print only the number'],
+    starterCode: `public class Main {
+    public static void main(String[] args) {
+        int a = 2;
+        int b = 3;
+        System.out.println(a + b);
+    }
+}
+`,
+    expectedOutput: '5',
+    defaultInput: 'a=2, b=3',
+    testCases: [
+      { id: 'java-add-1', label: '2 + 3', expectedOutput: '5' },
+      { id: 'java-add-2', label: '10 + 20 (change a/b in code)', expectedOutput: '30' },
+    ],
+    hints: ['Use System.out.println(a + b);', 'Change a and b in code to match other sample cases.'],
+  },
+  {
+    id: 'java-even-odd',
+    title: 'Check Even or Odd',
+    language: 'java',
+    difficulty: 'easy',
+    topic: 'basics',
+    description: 'Given an integer `n`, print `Even` if it is even, otherwise print `Odd`.',
+    examples: [
+      { input: 'n=4', output: 'Even' },
+      { input: 'n=7', output: 'Odd' },
+    ],
+    constraints: ['Use modulo (%) operator', 'Output must be exactly `Even` or `Odd`'],
+    starterCode: `public class Main {
+    public static void main(String[] args) {
+        int n = 4;
+        if (n % 2 == 0) {
+            System.out.println("Even");
+        } else {
+            System.out.println("Odd");
+        }
+    }
+}
+`,
+    expectedOutput: 'Even',
+    defaultInput: 'n=4',
+    testCases: [
+      { id: 'java-eo-1', label: 'Even (4)', expectedOutput: 'Even' },
+      { id: 'java-eo-2', label: 'Odd (7) (change n in code)', expectedOutput: 'Odd' },
+    ],
+    hints: ['A number is even when n % 2 == 0.', 'Use an if/else to choose the label.'],
+  },
+
   // ── React ──
   {
     id: 'react-button',

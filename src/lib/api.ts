@@ -501,6 +501,22 @@ export async function fetchSqlPracticeSchema(): Promise<SqlPracticeSchemaRespons
   return response.json() as Promise<SqlPracticeSchemaResponse>
 }
 
+export async function fetchHealthCapabilities(): Promise<{
+  capabilities?: { java?: { ready?: boolean; error?: string | null } }
+}> {
+  try {
+    const response = await fetchWithApiFallback('/health/capabilities')
+    if (!response.ok) {
+      return {}
+    }
+    return (await response.json()) as {
+      capabilities?: { java?: { ready?: boolean; error?: string | null } }
+    }
+  } catch {
+    return {}
+  }
+}
+
 export async function fetchDatabaseHealth(): Promise<DatabaseHealth> {
   try {
     const response = await fetchWithApiFallback('/health/db')
