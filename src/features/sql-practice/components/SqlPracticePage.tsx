@@ -7,6 +7,7 @@ import {
   getQuestionById,
   getQuestionsForDatabase,
   getStarterQueryForDatabase,
+  SQL_PRACTICE_QUESTIONS,
 } from '../data/sqlQuestions'
 import { isExecutableSqlDatabase } from '../engine/sqlEngine'
 import { runSelectQuery, runTrustedSql } from '../engine/sqlRunner'
@@ -169,8 +170,8 @@ export function SqlPracticePage() {
   )
 
   const suggestion = useMemo(
-    () => getSuggestedNextQuestion(databaseId, questionsForDb, progressStore, mistakes, question.id),
-    [databaseId, questionsForDb, progressStore, mistakes, question.id],
+    () => getSuggestedNextQuestion(databaseId, SQL_PRACTICE_QUESTIONS, progressStore, mistakes, question.id),
+    [databaseId, progressStore, mistakes, question.id],
   )
 
   const reviewQueue = useMemo(() => {
@@ -357,7 +358,7 @@ export function SqlPracticePage() {
   const handlePracticeSuggested = useCallback(() => {
     const result = getSuggestedNextQuestion(
       databaseId,
-      questionsForDb,
+      SQL_PRACTICE_QUESTIONS,
       loadSqlProgress(),
       loadSqlMistakes(),
       question.id,
@@ -366,7 +367,7 @@ export function SqlPracticePage() {
       loadQuestionContext(result.question.id, result.question.databaseId, result.question.starterSql)
       setActiveReviewMode(null)
     }
-  }, [databaseId, questionsForDb, question.id, loadQuestionContext])
+  }, [databaseId, question.id, loadQuestionContext])
 
   const handleLoadFailedSql = useCallback(
     (qId: string, dbId: SqlDatabaseId, failedSql: string) => {
