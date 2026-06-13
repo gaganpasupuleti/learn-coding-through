@@ -29,9 +29,18 @@ Phase 7 improves SQL Practice Ground editor productivity with a local SQL format
 
 - `formatSqlQuery(sql)` trims blank lines, uppercases SQL keywords, puts major clauses on new lines (`SELECT`, `FROM`, `WHERE`, `JOIN` variants, `GROUP BY`, `HAVING`, `ORDER BY`, `LIMIT`).
 - Preserves string literals (single-quoted, including escaped `''`).
-- Adds spacing around `=`, `>`, `<`, commas.
+- Adds spacing around `=`, `>`, `<`, `>=`, `<=`, `<>`, and `!=` (multi-character operators normalized before single-character ones).
 - Returns original SQL on failure.
 - Wired to Format SQL button and **Ctrl/Cmd + Shift + F**; shows message “SQL formatted locally.”
+
+**Operator smoke examples:**
+
+| Input | Expected spacing |
+|-------|------------------|
+| `amount >= 100` | `amount >= 100` |
+| `amount <= 100` | `amount <= 100` |
+| `status <> 'cancelled'` | `status <> 'cancelled'` |
+| `status != 'cancelled'` | `status != 'cancelled'` |
 
 ## E. Keyboard shortcuts
 

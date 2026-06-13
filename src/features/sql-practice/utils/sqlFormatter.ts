@@ -101,12 +101,13 @@ function tokenizeOutsideStrings(sql: string): Array<StringToken | TextToken> {
 
 function normalizeOperators(segment: string): string {
   return segment
-    .replace(/\s*=\s*/g, ' = ')
-    .replace(/\s*>\s*/g, ' > ')
-    .replace(/\s*<\s*/g, ' < ')
     .replace(/\s*>=\s*/g, ' >= ')
     .replace(/\s*<=\s*/g, ' <= ')
     .replace(/\s*<>\s*/g, ' <> ')
+    .replace(/\s*!=\s*/g, ' != ')
+    .replace(/\s*=\s*/g, ' = ')
+    .replace(/\s*>\s*/g, ' > ')
+    .replace(/\s*<\s*/g, ' < ')
     .replace(/\s*,\s*/g, ', ')
     .replace(/\s*;\s*/g, ';')
     .replace(/\s+/g, ' ')
