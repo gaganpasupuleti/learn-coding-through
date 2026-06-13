@@ -1,4 +1,5 @@
 import { getQuestionsForDatabase } from '../data/sqlQuestions'
+import { sanitizeProgressStore } from './sqlPracticeDataSafety'
 import type {
   SqlAttemptAction,
   SqlAttemptStatus,
@@ -34,7 +35,7 @@ function writeJson<T>(key: string, value: T): void {
 }
 
 export function loadSqlProgress(): SqlProgressStore {
-  return readJson<SqlProgressStore>(SQL_PROGRESS_STORAGE_KEY, {})
+  return sanitizeProgressStore(readJson<SqlProgressStore>(SQL_PROGRESS_STORAGE_KEY, {}))
 }
 
 export function saveSqlProgress(store: SqlProgressStore): void {

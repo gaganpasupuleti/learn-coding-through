@@ -189,6 +189,8 @@ export interface SqlExpectedOutputPreview {
   sampleRows: (string | null)[][]
   rowCount: number
   errorMessage?: string
+  /** Shown when sql.js returns no column metadata for a valid zero-row result. */
+  zeroRowMessage?: string
 }
 
 export interface SqlSchemaRelationship {
