@@ -208,6 +208,88 @@ export const CODE_PRACTICE_QUESTIONS: CodePracticeQuestion[] = [
     ],
     hints: ['A number is even when n % 2 == 0.', 'Use an if/else to choose the label.'],
   },
+  {
+    id: 'java-max-two',
+    title: 'Max of Two Numbers',
+    language: 'java',
+    difficulty: 'easy',
+    topic: 'basics',
+    description: 'Given integers `a` and `b`, print the larger value.',
+    examples: [
+      { input: 'a=7, b=12', output: '12' },
+      { input: 'a=20, b=5', output: '20' },
+    ],
+    constraints: ['Use in-code variables', 'Print only the number'],
+    starterCode: `public class Main {
+    public static void main(String[] args) {
+        int a = 7;
+        int b = 12;
+        System.out.println(Math.max(a, b));
+    }
+}
+`,
+    expectedOutput: '12',
+    defaultInput: 'a=7, b=12',
+    testCases: [
+      { id: 'java-max-1', label: 'max(7, 12)', expectedOutput: '12' },
+      { id: 'java-max-2', label: 'max(20, 5) change a/b', expectedOutput: '20' },
+    ],
+    hints: ['Try Math.max(a, b).', 'Change a and b in code for the second case.'],
+  },
+  {
+    id: 'java-print-one-to-five',
+    title: 'Print Numbers 1 to 5',
+    language: 'java',
+    difficulty: 'easy',
+    topic: 'loops',
+    description: 'Print the numbers 1 through 5, each on its own line.',
+    examples: [
+      { input: '(none)', output: '1\\n2\\n3\\n4\\n5' },
+    ],
+    constraints: ['Use a loop', 'One number per line'],
+    starterCode: `public class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(i);
+        }
+    }
+}
+`,
+    expectedOutput: '1\n2\n3\n4\n5',
+    testCases: [
+      { id: 'java-15-1', label: 'Lines 1–5', expectedOutput: '1\n2\n3\n4\n5' },
+    ],
+    hints: ['Use for (int i = 1; i <= 5; i++).', 'System.out.println(i) inside the loop.'],
+  },
+  {
+    id: 'java-sum-array',
+    title: 'Sum Array Values',
+    language: 'java',
+    difficulty: 'easy',
+    topic: 'loops',
+    description: 'Given `int[] nums = {1, 2, 3, 4}`, print the sum of all elements.',
+    examples: [
+      { input: 'nums = {1,2,3,4}', output: '10' },
+    ],
+    constraints: ['Use the provided array', 'Print only the sum'],
+    starterCode: `public class Main {
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 3, 4};
+        int sum = 0;
+        for (int n : nums) {
+            sum += n;
+        }
+        System.out.println(sum);
+    }
+}
+`,
+    expectedOutput: '10',
+    defaultInput: 'nums = {1,2,3,4}',
+    testCases: [
+      { id: 'java-sum-1', label: 'Sum 1+2+3+4', expectedOutput: '10' },
+    ],
+    hints: ['Loop with for (int n : nums).', 'Add each n to sum, then println(sum).'],
+  },
 
   // ── React ──
   {

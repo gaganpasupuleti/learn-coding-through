@@ -2,7 +2,7 @@ import type { CodePracticeLanguageMode } from '../types/codePractice.types'
 
 export type PracticeIntelligenceLanguage = Extract<
   CodePracticeLanguageMode,
-  'python' | 'javascript' | 'react'
+  'python' | 'javascript' | 'react' | 'java'
 >
 
 export interface PracticeSnippet {

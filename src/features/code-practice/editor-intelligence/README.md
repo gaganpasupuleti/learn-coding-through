@@ -9,6 +9,7 @@ Offline, rule-based Monaco autocomplete for beginner practice — **no AI/LLM**,
 | Python | Assignments, `for`, `def` | print, input, if, for, while, def, … | builtins |
 | JavaScript | const/let/var, functions | console.log, const, if, for, … | JS keywords |
 | React | Same as JS | React component, useState, map, … | hooks, JSX tags |
+| Java | int/String declarations, loops | main class, println, for, while, … | Java keywords |
 
 ## How it works
 
@@ -32,5 +33,6 @@ Press **Ctrl+Space** to open suggestions manually.
 ## Boundaries
 
 - Not enabled outside Code Workbench unless props are passed explicitly.
-- Java/C/C++ coming-soon modes do not register providers.
+- C/C++ coming-soon modes do not register providers.
+- Java suggestions are offline only — no stdin/Scanner execution in practice backend.
 - SQL is Issue #30 — not included here.

@@ -41,12 +41,37 @@ function parseParamList(params: string): string[] {
     .filter((p) => p && /^[a-zA-Z_$]/.test(p))
 }
 
+/** Java field/local declarations and enhanced-for loop variables. */
+export function extractJavaVariables(code: string): string[] {
+  const names = new Set<string>()
+  const declRe = new RegExp(`(?:int|double|boolean|String)\\s+(${IDENT})\\s*[=;]`, 'g')
+  const forClassicRe = new RegExp(`for\\s*\\(\\s*(?:int\\s+)?(${IDENT})\\s*=`, 'g')
+  const forEachRe = new RegExp(`for\\s*\\(\\s*(?:int|double|boolean|String)\\s+(${IDENT})\\s*:`, 'g')
+
+  let m: RegExpExecArray | null
+  while ((m = declRe.exec(code))) names.add(m[1])
+  while ((m = forClassicRe.exec(code))) names.add(m[1])
+  while ((m = forEachRe.exec(code))) names.add(m[1])
+
+  return [...names].sort()
+}
+
 export function extractVariablesForLanguage(
-  language: 'python' | 'javascript' | 'react',
+  language: 'python' | 'javascript' | 'react' | 'java',
   code: string,
 ): string[] {
   if (language === 'python') return extractPythonVariables(code)
+  if (language === 'java') return extractJavaVariables(code)
   return extractJavaScriptVariables(code)
+}
+
+/** True when cursor is inside System.out.print( or println( on the current line. */
+export function isInsideJavaPrintCall(lineContent: string): boolean {
+  if (!lineContent.includes('System.out')) return false
+  if (isInsideCallExpression(lineContent, 'println')) return true
+  const printIdx = lineContent.lastIndexOf('print(')
+  if (printIdx > 0 && lineContent.slice(printIdx - 2, printIdx) === 'ln') return false
+  return isInsideCallExpression(lineContent, 'print')
 }
 
 /** True when cursor is inside print( … ) or console.log( … ). */
