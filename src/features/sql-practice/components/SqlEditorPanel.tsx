@@ -68,11 +68,20 @@ export const SqlEditorPanel = forwardRef<SqlEditorPanelHandle, SqlEditorPanelPro
   const applySqlUpdate = useCallback(
     (nextSql: string, cursorOffset?: number) => {
       onChange(nextSql)
-      if (useFallback || !editorRef.current) return
-      const editor = editorRef.current
-      const model = editor.getModel()
-      if (!model) return
       const offset = cursorOffset ?? nextSql.length
+      if (useFallback) {
+        requestAnimationFrame(() => {
+          const el = textareaRef.current
+          if (!el) return
+          el.focus()
+          const safeOffset = Math.min(offset, nextSql.length)
+          el.setSelectionRange(safeOffset, safeOffset)
+        })
+        return
+      }
+      const editor = editorRef.current
+      const model = editor?.getModel()
+      if (!editor || !model) return
       const position = model.getPositionAt(Math.min(offset, nextSql.length))
       editor.setPosition(position)
       editor.focus()
@@ -120,7 +129,7 @@ export const SqlEditorPanel = forwardRef<SqlEditorPanelHandle, SqlEditorPanelPro
         return
       }
 
-      if (event.key.toLowerCase() === 'l' && !event.shiftKey) {
+      if (event.key.toLowerCase() === 'l' && event.shiftKey) {
         if (!onClearOutput) return
         event.preventDefault()
         onClearOutput()

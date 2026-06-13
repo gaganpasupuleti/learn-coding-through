@@ -85,6 +85,9 @@ export function SqlQueryTemplates({ database, question, onInsertTemplate }: SqlQ
         <FileCode2 className="h-4 w-4 text-emerald-400" />
         <h3 className={cn('text-xs font-semibold uppercase tracking-wide', wb.textMuted)}>Quick queries</h3>
       </div>
+      <p className={cn('mb-2 text-[11px]', wb.textMuted)}>
+        Templates are inserted only. Review and run when ready.
+      </p>
       <div className="flex flex-wrap gap-1.5">
         {TEMPLATE_ITEMS.map((item) => (
           <button
