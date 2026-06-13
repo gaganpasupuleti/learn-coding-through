@@ -1,5 +1,6 @@
 import { AlignLeft, CheckCircle2, Eraser, LayoutGrid, Loader2, Play, RotateCcw } from 'lucide-react'
 import type { SqlRunState } from '../types/sqlPractice.types'
+import { SqlShortcutHelp } from './SqlShortcutHelp'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
@@ -67,7 +68,7 @@ export function SqlTopBar({
           <RotateCcw className="h-4 w-4" />
           Reset Query
         </button>
-        <button type="button" onClick={onFormatSql} className={wb.toolbarBtn} title="Format SQL (later phase)">
+        <button type="button" onClick={onFormatSql} className={wb.toolbarBtn} title="Format SQL (Ctrl/Cmd + Shift + F)">
           <AlignLeft className="h-4 w-4" />
           Format SQL
         </button>
@@ -94,7 +95,7 @@ export function SqlTopBar({
         >
           {RUN_STATE_LABEL[runState]}
         </span>
-        <span>Ctrl+Enter / Cmd+Enter to run</span>
+        <SqlShortcutHelp className="justify-end" />
       </div>
     </header>
   )

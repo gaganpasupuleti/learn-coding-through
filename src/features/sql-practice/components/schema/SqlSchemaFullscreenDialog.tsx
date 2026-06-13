@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
-import type { SqlDatabaseMeta } from '../../types/sqlPractice.types'
+import type { SqlDatabaseMeta, SqlSchemaRelationship } from '../../types/sqlPractice.types'
 import { SqlSchemaDiagram } from './SqlSchemaDiagram'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
@@ -10,9 +10,15 @@ interface SqlSchemaFullscreenDialogProps {
   database: SqlDatabaseMeta
   open: boolean
   onClose: () => void
+  onInsertJoinTemplate?: (relationship: SqlSchemaRelationship) => void
 }
 
-export function SqlSchemaFullscreenDialog({ database, open, onClose }: SqlSchemaFullscreenDialogProps) {
+export function SqlSchemaFullscreenDialog({
+  database,
+  open,
+  onClose,
+  onInsertJoinTemplate,
+}: SqlSchemaFullscreenDialogProps) {
   useEffect(() => {
     if (!open) return
 
@@ -55,7 +61,7 @@ export function SqlSchemaFullscreenDialog({ database, open, onClose }: SqlSchema
         </button>
       </header>
       <div className="min-h-0 flex-1 overflow-hidden">
-        <SqlSchemaDiagram database={database} fullscreen />
+        <SqlSchemaDiagram database={database} fullscreen onInsertJoinTemplate={onInsertJoinTemplate} />
       </div>
     </div>,
     document.body,

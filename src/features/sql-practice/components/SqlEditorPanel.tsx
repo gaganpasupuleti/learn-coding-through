@@ -1,15 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type { Monaco } from '@monaco-editor/react'
-import type { IDisposable } from 'monaco-editor'
+import type { IDisposable, editor as MonacoEditor } from 'monaco-editor'
 import { Sparkles } from 'lucide-react'
 import { CodeEditor } from '@/components/CodeEditor'
 import type { SqlDatabaseId, SqlDatabaseMeta } from '../types/sqlPractice.types'
 import { registerSqlCompletionProvider } from '../editor-intelligence/sqlCompletionProvider'
 import { isExecutableSqlDatabase } from '../engine/sqlEngine'
+import { insertSnippetAtCursor } from '../utils/sqlEditorInsert'
+import { SqlShortcutHelp } from './SqlShortcutHelp'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
 const MONACO_MOUNT_TIMEOUT_MS = 12_000
+
+export interface SqlEditorPanelHandle {
+  insertSnippet: (snippet: string) => void
+  replaceSql: (sql: string) => void
+}
 
 interface SqlEditorPanelProps {
   sql: string
@@ -17,30 +24,112 @@ interface SqlEditorPanelProps {
   database: SqlDatabaseMeta
   onChange: (sql: string) => void
   onRun?: () => void
+  onCheckAnswer?: () => void
+  onFormatSql?: () => void
+  onClearOutput?: () => void
+  editorStatus?: string | null
 }
 
-export function SqlEditorPanel({ sql, databaseId, database, onChange, onRun }: SqlEditorPanelProps) {
+export const SqlEditorPanel = forwardRef<SqlEditorPanelHandle, SqlEditorPanelProps>(function SqlEditorPanel(
+  {
+    sql,
+    databaseId,
+    database,
+    onChange,
+    onRun,
+    onCheckAnswer,
+    onFormatSql,
+    onClearOutput,
+    editorStatus,
+  },
+  ref,
+) {
   const [useFallback, setUseFallback] = useState(false)
   const monacoMountedRef = useRef(false)
   const monacoRef = useRef<Monaco | null>(null)
+  const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor | null>(null)
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
   const sqlCompletionRef = useRef<IDisposable | null>(null)
   const executionNote = !isExecutableSqlDatabase(databaseId)
     ? 'Run and answer checking for this database will be enabled in a later phase.'
     : null
 
-  useEffect(() => {
-    if (!onRun) return
+  const getCursorOffset = useCallback((): number => {
+    if (useFallback && textareaRef.current) {
+      return textareaRef.current.selectionStart ?? sql.length
+    }
+    const editor = editorRef.current
+    const model = editor?.getModel()
+    const position = editor?.getPosition()
+    if (!editor || !model || !position) return sql.length
+    return model.getOffsetAt(position)
+  }, [sql.length, useFallback])
 
+  const applySqlUpdate = useCallback(
+    (nextSql: string, cursorOffset?: number) => {
+      onChange(nextSql)
+      if (useFallback || !editorRef.current) return
+      const editor = editorRef.current
+      const model = editor.getModel()
+      if (!model) return
+      const offset = cursorOffset ?? nextSql.length
+      const position = model.getPositionAt(Math.min(offset, nextSql.length))
+      editor.setPosition(position)
+      editor.focus()
+    },
+    [onChange, useFallback],
+  )
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      insertSnippet(snippet: string) {
+        const { text, cursorOffset } = insertSnippetAtCursor(sql, snippet, getCursorOffset())
+        applySqlUpdate(text, cursorOffset)
+      },
+      replaceSql(nextSql: string) {
+        applySqlUpdate(nextSql, nextSql.length)
+      },
+    }),
+    [applySqlUpdate, getCursorOffset, sql],
+  )
+
+  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+      const mod = event.ctrlKey || event.metaKey
+      if (!mod) return
+
+      if (event.key === 'Enter' && event.shiftKey) {
+        if (!onCheckAnswer) return
+        event.preventDefault()
+        onCheckAnswer()
+        return
+      }
+
+      if (event.key === 'Enter' && !event.shiftKey) {
+        if (!onRun) return
         event.preventDefault()
         onRun()
+        return
+      }
+
+      if (event.key.toLowerCase() === 'f' && event.shiftKey) {
+        if (!onFormatSql) return
+        event.preventDefault()
+        onFormatSql()
+        return
+      }
+
+      if (event.key.toLowerCase() === 'l' && !event.shiftKey) {
+        if (!onClearOutput) return
+        event.preventDefault()
+        onClearOutput()
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onRun])
+  }, [onCheckAnswer, onClearOutput, onFormatSql, onRun])
 
   useEffect(() => {
     monacoMountedRef.current = false
@@ -53,9 +142,10 @@ export function SqlEditorPanel({ sql, databaseId, database, onChange, onRun }: S
     return () => window.clearTimeout(timer)
   }, [])
 
-  const handleEditorMount = useCallback((_editor: unknown, monaco: Monaco) => {
+  const handleEditorMount = useCallback((editor: MonacoEditor.IStandaloneCodeEditor, monaco: Monaco) => {
     monacoMountedRef.current = true
     monacoRef.current = monaco
+    editorRef.current = editor
     setUseFallback(false)
   }, [])
 
@@ -75,18 +165,23 @@ export function SqlEditorPanel({ sql, databaseId, database, onChange, onRun }: S
 
   return (
     <div className={cn('flex h-full min-h-0 flex-col', wb.editor)}>
-      <div className={cn('flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3', wb.border, 'bg-[#252526]')}>
-        <div className="flex min-w-0 flex-wrap items-center gap-3">
-          <span className={cn('text-sm font-semibold', wb.textPrimary)}>Query Editor</span>
-          <span
-            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-700/50 bg-emerald-950/40 px-2.5 py-1 text-xs text-emerald-200"
-            title="Offline SQL suggestions — no AI"
-          >
-            <Sparkles className="h-3.5 w-3.5 text-emerald-300" aria-hidden />
-            SQL suggestions
-          </span>
+      <div className={cn('flex flex-col gap-2 border-b px-4 py-3', wb.border, 'bg-[#252526]')}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-3">
+            <span className={cn('text-sm font-semibold', wb.textPrimary)}>Query Editor</span>
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full border border-emerald-700/50 bg-emerald-950/40 px-2.5 py-1 text-xs text-emerald-200"
+              title="Offline SQL suggestions — no AI"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-emerald-300" aria-hidden />
+              SQL suggestions
+            </span>
+          </div>
+          {editorStatus && (
+            <span className={cn('text-xs text-emerald-300/90', wb.textMuted)}>{editorStatus}</span>
+          )}
         </div>
-        <span className={cn('text-xs', wb.textMuted)}>SQL · Monaco · Ctrl+Space</span>
+        <SqlShortcutHelp />
       </div>
 
       {executionNote && (
@@ -98,6 +193,7 @@ export function SqlEditorPanel({ sql, databaseId, database, onChange, onRun }: S
       <div className="sql-practice-editor relative min-h-0 flex-1 overflow-hidden">
         {useFallback ? (
           <textarea
+            ref={textareaRef}
             value={sql}
             onChange={(event) => onChange(event.target.value)}
             spellCheck={false}
@@ -123,4 +219,4 @@ export function SqlEditorPanel({ sql, databaseId, database, onChange, onRun }: S
       </div>
     </div>
   )
-}
+})
