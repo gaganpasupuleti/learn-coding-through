@@ -57,7 +57,7 @@ export function SqlRelationshipList({
                     'shrink-0 rounded-md border px-1.5 py-1 text-[10px] font-medium text-sky-300 hover:bg-sky-950/40',
                     wb.border,
                   )}
-                  aria-label="Insert JOIN"
+                  aria-label="Insert JOIN template"
                 >
                   JOIN
                 </button>

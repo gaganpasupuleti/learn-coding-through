@@ -6,7 +6,7 @@ export function SqlShortcutHelp({ className }: { className?: string }) {
     { label: 'Run', keys: 'Ctrl/Cmd + Enter' },
     { label: 'Check', keys: 'Ctrl/Cmd + Shift + Enter' },
     { label: 'Format', keys: 'Ctrl/Cmd + Shift + F' },
-    { label: 'Clear', keys: 'Ctrl/Cmd + L' },
+    { label: 'Clear', keys: 'Ctrl/Cmd + Shift + L' },
     { label: 'Suggestions', keys: 'Ctrl + Space' },
   ]
 

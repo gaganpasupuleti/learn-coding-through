@@ -72,7 +72,7 @@ export function SqlTopBar({
           <AlignLeft className="h-4 w-4" />
           Format SQL
         </button>
-        <button type="button" onClick={onClearOutput} className={wb.toolbarBtn}>
+        <button type="button" onClick={onClearOutput} className={wb.toolbarBtn} title="Clear Output (Ctrl/Cmd + Shift + L)">
           <Eraser className="h-4 w-4" />
           Clear Output
         </button>

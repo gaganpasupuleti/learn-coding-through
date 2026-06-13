@@ -105,13 +105,24 @@ function normalizeOperators(segment: string): string {
     .replace(/\s*<=\s*/g, ' <= ')
     .replace(/\s*<>\s*/g, ' <> ')
     .replace(/\s*!=\s*/g, ' != ')
-    .replace(/\s*=\s*/g, ' = ')
-    .replace(/\s*>\s*/g, ' > ')
-    .replace(/\s*<\s*/g, ' < ')
+    .replace(/(?<![<>!])\s*=\s*/g, ' = ')
+    .replace(/(?<![<=])\s*>\s*(?!=)/g, ' > ')
+    .replace(/(?<![=])\s*<\s*(?![>=])/g, ' < ')
     .replace(/\s*,\s*/g, ', ')
     .replace(/\s*;\s*/g, ';')
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+function joinFormattedTokens(tokens: Array<StringToken | TextToken>): string {
+  let formatted = ''
+  for (const token of tokens) {
+    if (token.type === 'str' && formatted.length > 0 && !/\s$/.test(formatted)) {
+      formatted += ' '
+    }
+    formatted += token.type === 'str' ? token.value : formatTextSegment(token.value)
+  }
+  return formatted
 }
 
 function uppercaseKeywords(segment: string): string {
@@ -151,9 +162,7 @@ export function formatSqlQuery(sql: string): string {
     if (!trimmed) return sql
 
     const tokens = tokenizeOutsideStrings(trimmed)
-    const formatted = tokens
-      .map((token) => (token.type === 'str' ? token.value : formatTextSegment(token.value)))
-      .join('')
+    const formatted = joinFormattedTokens(tokens)
 
     const withSelectLine = formatted.replace(/SELECT\s+/i, 'SELECT ')
     return collapseBlankLines(withSelectLine)

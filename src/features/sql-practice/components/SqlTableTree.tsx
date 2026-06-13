@@ -88,7 +88,7 @@ export function SqlTableTree({
                   {onInsertSelect && (
                     <button
                       type="button"
-                      title="Insert SELECT"
+                      title="Insert SELECT template"
                       onClick={(event) => {
                         event.stopPropagation()
                         onInsertSelect(tbl.name)
@@ -130,7 +130,7 @@ export function SqlTableTree({
                         {onInsertColumn && (
                           <button
                             type="button"
-                            title={`Insert ${col.name}`}
+                            title={`Insert column name: ${col.name}`}
                             onClick={(event) => {
                               event.stopPropagation()
                               onInsertColumn(tbl.name, col.name)
