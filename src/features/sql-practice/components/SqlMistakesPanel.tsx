@@ -41,11 +41,17 @@ export function SqlMistakesPanel({
 
   if (mistakes.length === 0) {
     return (
-      <div className={cn('p-4 text-sm', wb.textMuted)}>
-        No SQL mistakes tracked yet. Failed answer checks appear here.
+      <div className={cn('space-y-2 p-4 text-sm', wb.textMuted)} role="status">
+        <p className="font-medium text-slate-200">No mistakes recorded yet.</p>
+        <p className="text-xs leading-relaxed">
+          When <strong className="text-slate-300">Check Answer</strong> fails, the attempt appears here so you can
+          retry or reload your SQL. Mistakes are saved locally in this browser only.
+        </p>
       </div>
     )
   }
+
+  const allResolved = resolvedMistakeCount > 0 && resolvedMistakeCount >= mistakes.length
 
   const handleClearResolved = () => {
     if (!confirmClear) {
@@ -58,6 +64,11 @@ export function SqlMistakesPanel({
 
   return (
     <div className="space-y-3 p-4">
+      {allResolved && (
+        <p className={cn('rounded-md border border-emerald-700/40 bg-emerald-950/25 px-3 py-2 text-xs text-emerald-200/90')} role="status">
+          All tracked mistakes are for questions you have since passed. You can clear resolved entries below.
+        </p>
+      )}
       {resolvedMistakeCount > 0 && onClearResolved && (
         <div className="flex flex-wrap items-center gap-2">
           <button

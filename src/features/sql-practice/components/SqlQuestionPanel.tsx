@@ -175,6 +175,14 @@ export function SqlQuestionPanel({
       <div className={cn('flex-1 space-y-4 overflow-y-auto p-4 text-[15px] leading-relaxed', wb.textSecondary)}>
         <SqlProgressSummary summary={databaseSummary} />
 
+        <p
+          className={cn('rounded-md border border-slate-700/50 bg-slate-900/40 px-2.5 py-2 text-[11px] leading-relaxed', wb.textMuted)}
+          title="Progress is stored in this browser only"
+        >
+          Progress, attempts, and mistakes are saved locally in this browser (localStorage). They are not sent to a
+          server.
+        </p>
+
         <SqlProgressAnalytics
           summary={analyticsSummary}
           topicRows={topicAnalytics}
