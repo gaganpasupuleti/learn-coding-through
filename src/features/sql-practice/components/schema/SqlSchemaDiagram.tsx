@@ -10,14 +10,21 @@ import { SqlSchemaSearch } from './SqlSchemaSearch'
 import { SqlSchemaTableCard } from './SqlSchemaTableCard'
 import { SqlRelationshipLayer } from './SqlRelationshipLayer'
 import { SqlRelationshipList } from './SqlRelationshipList'
+import { Maximize2 } from 'lucide-react'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
 interface SqlSchemaDiagramProps {
   database: SqlDatabaseMeta
+  fullscreen?: boolean
+  onRequestFullscreen?: () => void
 }
 
-export function SqlSchemaDiagram({ database }: SqlSchemaDiagramProps) {
+export function SqlSchemaDiagram({
+  database,
+  fullscreen = false,
+  onRequestFullscreen,
+}: SqlSchemaDiagramProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTable, setSelectedTable] = useState<string | null>(null)
   const [selectedRelationshipId, setSelectedRelationshipId] = useState<string | null>(null)
@@ -86,17 +93,31 @@ export function SqlSchemaDiagram({ database }: SqlSchemaDiagramProps) {
     : null
 
   return (
-    <div className="flex h-full min-h-0 flex-col lg:flex-row">
+    <div className={cn('flex h-full min-h-0 flex-col', fullscreen ? 'flex-row' : 'lg:flex-row')}>
       <div className="flex min-h-0 min-w-0 flex-1 flex-col border-r border-transparent lg:border-[#334155]">
         <div className={cn('shrink-0 border-b p-3', wb.border)}>
-          <SqlSchemaSearch
-            value={searchQuery}
-            matchCount={searchMatches.length}
-            hasQuery={hasSearchQuery}
-            onChange={setSearchQuery}
-          />
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0 flex-1">
+              <SqlSchemaSearch
+                value={searchQuery}
+                matchCount={searchMatches.length}
+                hasQuery={hasSearchQuery}
+                onChange={setSearchQuery}
+              />
+            </div>
+            {!fullscreen && onRequestFullscreen && (
+              <button
+                type="button"
+                onClick={onRequestFullscreen}
+                className={cn(wb.toolbarBtn, 'shrink-0 self-start')}
+              >
+                <Maximize2 className="h-4 w-4" />
+                Expand schema
+              </button>
+            )}
+          </div>
         </div>
-        <div className="relative min-h-0 flex-1 overflow-auto p-2">
+        <div className={cn('relative min-h-0 flex-1 overflow-auto', fullscreen ? 'p-4' : 'p-2')}>
           <div
             className="relative"
             style={{ width: graph.width, height: graph.height, minWidth: graph.width, minHeight: graph.height }}
@@ -134,7 +155,13 @@ export function SqlSchemaDiagram({ database }: SqlSchemaDiagramProps) {
         </div>
       </div>
 
-      <aside className={cn('flex w-full shrink-0 flex-col gap-3 p-3 lg:w-72', wb.textSecondary)}>
+      <aside
+        className={cn(
+          'flex w-full shrink-0 flex-col gap-3 p-3',
+          fullscreen ? 'w-80 border-l border-[#334155]' : 'lg:w-72',
+          wb.textSecondary,
+        )}
+      >
         <div>
           <h3 className={cn('mb-1 text-xs font-semibold uppercase tracking-wide', wb.textMuted)}>
             Table details
@@ -168,7 +195,7 @@ export function SqlSchemaDiagram({ database }: SqlSchemaDiagramProps) {
           </div>
         )}
 
-        <div className="min-h-0 flex-1">
+        <div className={cn('min-h-0', fullscreen ? 'flex flex-1 flex-col' : '')}>
           <h3 className={cn('mb-2 text-xs font-semibold uppercase tracking-wide', wb.textMuted)}>
             Relationships ({graph.relationships.length})
           </h3>
@@ -176,6 +203,7 @@ export function SqlSchemaDiagram({ database }: SqlSchemaDiagramProps) {
             relationships={graph.relationships}
             selectedRelationshipId={selectedRelationshipId}
             onSelect={handleSelectRelationship}
+            expanded={fullscreen}
           />
         </div>
       </aside>

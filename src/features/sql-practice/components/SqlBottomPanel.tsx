@@ -17,6 +17,7 @@ import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 import { Box, History, LayoutGrid, MessageSquare, Table2, Target, AlertTriangle } from 'lucide-react'
 import { SqlSchemaDiagram } from './schema/SqlSchemaDiagram'
+import { SqlSchemaFullscreenDialog } from './schema/SqlSchemaFullscreenDialog'
 
 const TABS: Array<{ id: SqlBottomTab; label: string; icon: typeof Table2 }> = [
   { id: 'results', label: 'Results', icon: Table2 },
@@ -58,6 +59,7 @@ export function SqlBottomPanel({
   headerActions,
 }: SqlBottomPanelProps) {
   const [tab, setTab] = useState<SqlBottomTab>('results')
+  const [schemaFullscreenOpen, setSchemaFullscreenOpen] = useState(false)
   const attempts = loadSqlAttempts()
   const mistakes = loadSqlMistakes()
   void attemptHistoryVersion
@@ -66,6 +68,10 @@ export function SqlBottomPanel({
   useEffect(() => {
     if (preferredTab) setTab(preferredTab)
   }, [preferredTab])
+
+  useEffect(() => {
+    setSchemaFullscreenOpen(false)
+  }, [database.id])
 
   return (
     <section className={cn('flex h-full min-h-0 flex-col', wb.panel)}>
@@ -113,7 +119,10 @@ export function SqlBottomPanel({
         {tab === 'mistakes' && <SqlMistakesPanel mistakes={mistakes} onRetryQuestion={onRetryQuestion} />}
         {tab === 'schema' && (
           <div className="h-full min-h-[280px]">
-            <SqlSchemaDiagram database={database} />
+            <SqlSchemaDiagram
+              database={database}
+              onRequestFullscreen={() => setSchemaFullscreenOpen(true)}
+            />
           </div>
         )}
         {tab === 'schema3d' && (
@@ -122,7 +131,8 @@ export function SqlBottomPanel({
               <Box className="h-8 w-8 text-[#475569]" />
               <p className="text-sm font-medium">3D schema view — coming soon</p>
               <p className="max-w-md text-xs">
-                Interactive 3D exploration is planned for a future phase. Use the Schema Diagram tab for the full ERD.
+                3D schema view is planned for a later phase. Current Phase 6 provides the interactive 2D ERD — use the
+                Schema Diagram tab (or Expand schema) for full table and relationship exploration.
               </p>
             </div>
             <div className={cn('rounded-lg border p-4', wb.border, 'bg-[#111827]')}>
@@ -141,6 +151,11 @@ export function SqlBottomPanel({
           </div>
         )}
       </div>
+      <SqlSchemaFullscreenDialog
+        database={database}
+        open={schemaFullscreenOpen}
+        onClose={() => setSchemaFullscreenOpen(false)}
+      />
     </section>
   )
 }
