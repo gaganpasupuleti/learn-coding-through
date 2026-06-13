@@ -29,6 +29,9 @@ import { buildReactPreviewCheckResults, buildTestResultsFromCases } from '../uti
 import { createExecutionTimer } from '../utils/executionTimer'
 import {
   recordFailedTestCaseMistake,
+  recordJavaPrerunBlockMistake,
+  recordJavaRuntimeMistake,
+  recordJavaSafetyBlockMistake,
   recordJavaScriptPrerunBlockMistake,
   recordJavaScriptRuntimeMistake,
   recordJavaScriptSafetyBlockMistake,
@@ -51,6 +54,14 @@ import {
   getJavaScriptSafetyBlock,
   JAVASCRIPT_SAFETY_USER_MESSAGE,
 } from '../javascript/javascriptSafetyValidator'
+import {
+  explainJavaError,
+  getBlockingJavaPreRunFeedback,
+  getJavaPreRunHints,
+  JAVA_RUNTIME_UNAVAILABLE_MESSAGE,
+} from '../java/javaFeedback'
+import { getJavaSafetyBlock, JAVA_SAFETY_USER_MESSAGE } from '../java/javaSafetyValidator'
+import { checkJavaRuntimeStatus } from '../java/javaRuntime'
 import { resolveQuestionTestCases, resolveRunStdin } from '../utils/executionAdapter'
 import { isPyodideReady, runPythonWithPyodide } from '../python/pyodideRunner'
 import { getPythonSafetyBlock, PYTHON_SAFETY_USER_MESSAGE } from '../python/pythonSafetyValidator'
@@ -69,9 +80,10 @@ type ExecuteOnceResult = {
   feedback?: CodePracticeFeedback[]
   preRunHints?: CodePracticeFeedback[]
   rawError?: string | null
-  blockedBy?: 'safety' | 'prerun'
+  blockedBy?: 'safety' | 'prerun' | 'runtime-unavailable'
   safetyRuleId?: string
   safetyMessage?: string
+  errorCode?: string
 }
 
 function resolvePythonErrorDisplay(
@@ -140,6 +152,48 @@ function resolveJavaScriptErrorDisplay(
   }
 }
 
+function resolveJavaErrorDisplay(
+  runError: string,
+  options: {
+    rawError?: string | null
+    note?: string | null
+    feedback?: CodePracticeFeedback[]
+    blockedBy?: 'safety' | 'prerun' | 'runtime-unavailable'
+    errorCode?: string
+  },
+): { displayError: string; consoleLines: string[]; feedback: CodePracticeFeedback[] } {
+  if (options.blockedBy === 'runtime-unavailable') {
+    return {
+      displayError: runError,
+      consoleLines: [runError],
+      feedback: options.feedback ?? [explainJavaError(runError, 'runtime_unavailable')],
+    }
+  }
+
+  if (options.blockedBy === 'safety') {
+    return {
+      displayError: runError,
+      consoleLines: options.note ? [options.note] : [runError],
+      feedback: [],
+    }
+  }
+
+  if (options.blockedBy === 'prerun' && options.feedback?.[0]) {
+    return {
+      displayError: runError,
+      consoleLines: formatFeedbackForConsole(options.feedback[0]),
+      feedback: options.feedback,
+    }
+  }
+
+  const explained = explainJavaError(options.rawError ?? runError, options.errorCode)
+  return {
+    displayError: formatFeedbackForError(explained),
+    consoleLines: formatFeedbackForConsole(explained, options.rawError ?? runError),
+    feedback: [explained],
+  }
+}
+
 const ATTEMPTS_KEY = 'codequest-code-practice-attempts'
 
 function readAttempts(): CodePracticeAttempt[] {
@@ -161,9 +215,9 @@ function writeAttempts(items: CodePracticeAttempt[]) {
   }
 }
 
-/** Python uses Pyodide; JavaScript uses backend sandbox. */
+/** Python uses Pyodide; JavaScript and Java use backend sandbox. */
 function canRunInWorkbench(language: CodePracticeLanguageMode): boolean {
-  return language === 'python' || language === 'javascript'
+  return language === 'python' || language === 'javascript' || language === 'java'
 }
 
 function isComingSoonLanguage(language: CodePracticeLanguageMode): boolean {
@@ -195,6 +249,8 @@ export function CodePracticePage() {
   const [executionNote, setExecutionNote] = useState<string | null>(null)
   const [runtimeLabel, setRuntimeLabel] = useState<string | null>(null)
   const [workbenchFeedback, setWorkbenchFeedback] = useState<CodePracticeFeedback[]>([])
+  const [javaRuntimeReady, setJavaRuntimeReady] = useState<boolean | null>(null)
+  const [javaRuntimeError, setJavaRuntimeError] = useState<string | null>(null)
 
   const languageMeta = useMemo(
     () => CODE_PRACTICE_LANGUAGE_MODES.find((m) => m.id === language) ?? CODE_PRACTICE_LANGUAGE_MODES[0],
@@ -228,6 +284,18 @@ export function CodePracticePage() {
     setLanguage(nextLanguage)
     setQuestionId(qid)
     syncQuestionContext(qid, nextLanguage)
+    if (nextLanguage === 'java') {
+      void checkJavaRuntimeStatus(true).then((status) => {
+        setJavaRuntimeReady(status.ready)
+        setJavaRuntimeError(status.error)
+        if (!status.ready) {
+          setExecutionNote(JAVA_RUNTIME_UNAVAILABLE_MESSAGE)
+        }
+      })
+    } else {
+      setJavaRuntimeReady(null)
+      setJavaRuntimeError(null)
+    }
   }, [syncQuestionContext])
 
   const handleLanguageChange = (next: CodePracticeLanguageMode) => {
@@ -357,6 +425,70 @@ export function CodePracticePage() {
     bumpMistakes()
   }
 
+  const recordJavaExecutionMistake = (
+    attemptType: 'run' | 'submit',
+    stdin: string,
+    runError: string,
+    options: {
+      rawError?: string | null
+      feedback?: CodePracticeFeedback[]
+      blockedBy?: 'safety' | 'prerun' | 'runtime-unavailable'
+      safetyRuleId?: string
+      safetyMessage?: string
+      errorCode?: string
+    },
+  ) => {
+    if (options.blockedBy === 'runtime-unavailable') {
+      const explained = explainJavaError(runError, 'runtime_unavailable')
+      recordJavaRuntimeMistake({
+        question,
+        code,
+        stdin,
+        attemptType,
+        rawError: runError,
+        feedback: explained,
+      })
+      bumpMistakes()
+      return
+    }
+
+    if (options.blockedBy === 'safety' && options.safetyRuleId) {
+      recordJavaSafetyBlockMistake({
+        question,
+        code,
+        stdin,
+        attemptType,
+        ruleId: options.safetyRuleId,
+        message: options.safetyMessage ?? runError,
+      })
+      bumpMistakes()
+      return
+    }
+
+    if (options.blockedBy === 'prerun' && options.feedback?.[0]) {
+      recordJavaPrerunBlockMistake({
+        question,
+        code,
+        stdin,
+        attemptType,
+        feedback: options.feedback[0],
+      })
+      bumpMistakes()
+      return
+    }
+
+    const explained = explainJavaError(options.rawError ?? runError, options.errorCode)
+    recordJavaRuntimeMistake({
+      question,
+      code,
+      stdin,
+      attemptType,
+      rawError: options.rawError ?? runError,
+      feedback: explained,
+    })
+    bumpMistakes()
+  }
+
   const handleRetryMistake = useCallback((mistake: CodePracticeMistake) => {
     const q = mistake.questionId !== 'freeform' ? getQuestionById(mistake.questionId) : null
     const cases = q ? resolveQuestionTestCases(q) : []
@@ -373,6 +505,15 @@ export function CodePracticePage() {
     setCode(mistake.submittedCode)
     clearExecutionState()
     setRevealedHintCount(0)
+    if (mistake.language === 'java') {
+      void checkJavaRuntimeStatus(true).then((status) => {
+        setJavaRuntimeReady(status.ready)
+        setJavaRuntimeError(status.error)
+        if (!status.ready) {
+          setExecutionNote(JAVA_RUNTIME_UNAVAILABLE_MESSAGE)
+        }
+      })
+    }
     toast.message('Mistake loaded — fix your code and run again.')
   }, [])
 
@@ -487,6 +628,66 @@ export function CodePracticePage() {
       }
     }
 
+    if (language === 'java') {
+      const runtimeStatus = await checkJavaRuntimeStatus()
+      if (!runtimeStatus.ready) {
+        return {
+          output: '',
+          error: JAVA_RUNTIME_UNAVAILABLE_MESSAGE,
+          note: runtimeStatus.error ?? undefined,
+          executionTimeMs: 0,
+          blockedBy: 'runtime-unavailable' as const,
+        }
+      }
+
+      const preRunHints = getJavaPreRunHints(code)
+
+      const safetyBlock = getJavaSafetyBlock(code)
+      if (safetyBlock) {
+        return {
+          output: '',
+          error: JAVA_SAFETY_USER_MESSAGE,
+          note: `[${safetyBlock.ruleId}] ${safetyBlock.message}`,
+          executionTimeMs: 0,
+          blockedBy: 'safety',
+          safetyRuleId: safetyBlock.ruleId,
+          safetyMessage: safetyBlock.message,
+          preRunHints,
+        }
+      }
+
+      const preRunBlock = getBlockingJavaPreRunFeedback(code)
+      if (preRunBlock) {
+        return {
+          output: '',
+          error: formatFeedbackForError(preRunBlock),
+          note: preRunBlock.suggestion ?? preRunBlock.message,
+          executionTimeMs: 0,
+          feedback: [preRunBlock],
+          preRunHints,
+          blockedBy: 'prerun',
+        }
+      }
+
+      const result = await sandbox.execute(code, 'java')
+      if (result.error) {
+        return {
+          output: result.output || '',
+          error: result.error,
+          rawError: result.error,
+          note: null,
+          preRunHints,
+          errorCode: result.error_code,
+        }
+      }
+      return {
+        output: result.output || '',
+        error: null,
+        note: 'Runtime: Backend Java (javac + java)',
+        preRunHints,
+      }
+    }
+
     return { output: '', error: 'Language not executable yet.', note: null }
   }
 
@@ -529,7 +730,9 @@ export function CodePracticePage() {
         ? isPyodideReady()
           ? 'Running Python…'
           : 'Starting Python runtime…'
-        : 'Running…',
+        : language === 'java'
+          ? 'Compiling and running Java…'
+          : 'Running…',
     )
     const timer = createExecutionTimer()
 
@@ -545,6 +748,7 @@ export function CodePracticePage() {
         blockedBy,
         safetyRuleId,
         safetyMessage,
+        errorCode,
       } = await executeOnce(
         stdin,
         language === 'python' ? () => setOutput('Starting Python runtime…') : undefined,
@@ -555,6 +759,9 @@ export function CodePracticePage() {
       setExecutionNote(note)
       if (language === 'python' && !runError) {
         setRuntimeLabel('Pyodide')
+      }
+      if (language === 'java' && !runError) {
+        setRuntimeLabel('Java JDK')
       }
 
       if (runError) {
@@ -600,6 +807,36 @@ export function CodePracticePage() {
             safetyMessage,
           })
           if (blockedBy === 'safety') {
+            toast.error('Code blocked for practice safety.')
+          } else if (blockedBy === 'prerun') {
+            toast.error('Fix the issue above before running.')
+          } else {
+            toast.error('Run failed — see feedback in the output panel.')
+          }
+        } else if (language === 'java') {
+          const errorState = resolveJavaErrorDisplay(runError, {
+            rawError,
+            note,
+            feedback,
+            blockedBy: blockedBy === 'runtime-unavailable' ? 'runtime-unavailable' : blockedBy,
+            errorCode,
+          })
+          setError(errorState.displayError)
+          setWorkbenchFeedback(errorState.feedback)
+          setConsoleLines(errorState.consoleLines)
+          recordJavaExecutionMistake('run', stdin, runError, {
+            rawError,
+            feedback,
+            blockedBy: blockedBy === 'runtime-unavailable' ? 'runtime-unavailable' : blockedBy,
+            safetyRuleId,
+            safetyMessage,
+            errorCode,
+          })
+          if (blockedBy === 'runtime-unavailable') {
+            setJavaRuntimeReady(false)
+            setJavaRuntimeError(note ?? javaRuntimeError)
+            toast.error('Java runtime is not available on the backend.')
+          } else if (blockedBy === 'safety') {
             toast.error('Code blocked for practice safety.')
           } else if (blockedBy === 'prerun') {
             toast.error('Fix the issue above before running.')
@@ -667,6 +904,8 @@ export function CodePracticePage() {
     try {
       if (language === 'python') {
         setOutput(isPyodideReady() ? 'Running Python…' : 'Starting Python runtime…')
+      } else if (language === 'java') {
+        setOutput('Compiling and running Java…')
       }
 
       for (const testCase of cases) {
@@ -684,6 +923,7 @@ export function CodePracticePage() {
           blockedBy,
           safetyRuleId,
           safetyMessage,
+          errorCode,
         } = await executeOnce(
           stdin,
           language === 'python' ? () => setOutput('Starting Python runtime…') : undefined,
@@ -691,6 +931,7 @@ export function CodePracticePage() {
         )
         if (note) setExecutionNote(note)
         if (language === 'python' && !runError) setRuntimeLabel('Pyodide')
+        if (language === 'java' && !runError) setRuntimeLabel('Java JDK')
 
         if (runError) {
           hadError = true
@@ -737,6 +978,35 @@ export function CodePracticePage() {
               safetyMessage,
             })
             if (blockedBy === 'safety') {
+              toast.error('Code blocked for practice safety.')
+            } else if (blockedBy === 'prerun') {
+              toast.error('Fix the issue above before submitting.')
+            } else {
+              toast.error('Submit failed — see feedback in the output panel.')
+            }
+          } else if (language === 'java') {
+            const errorState = resolveJavaErrorDisplay(runError, {
+              rawError,
+              note,
+              feedback,
+              blockedBy: blockedBy === 'runtime-unavailable' ? 'runtime-unavailable' : blockedBy,
+              errorCode,
+            })
+            setError(errorState.displayError)
+            setWorkbenchFeedback(errorState.feedback)
+            setConsoleLines(errorState.consoleLines)
+            recordJavaExecutionMistake('submit', stdin, runError, {
+              rawError,
+              feedback,
+              blockedBy: blockedBy === 'runtime-unavailable' ? 'runtime-unavailable' : blockedBy,
+              safetyRuleId,
+              safetyMessage,
+              errorCode,
+            })
+            if (blockedBy === 'runtime-unavailable') {
+              setJavaRuntimeReady(false)
+              toast.error('Java runtime is not available on the backend.')
+            } else if (blockedBy === 'safety') {
               toast.error('Code blocked for practice safety.')
             } else if (blockedBy === 'prerun') {
               toast.error('Fix the issue above before submitting.')
@@ -870,7 +1140,11 @@ export function CodePracticePage() {
           consoleLines={consoleLines}
           lastRunMs={lastRunMs}
           sampleInput={runStdin || undefined}
-          executionNote={executionNote}
+          executionNote={
+            language === 'java' && javaRuntimeReady === false
+              ? JAVA_RUNTIME_UNAVAILABLE_MESSAGE
+              : executionNote
+          }
           runtimeLabel={runtimeLabel}
           feedbackItems={workbenchFeedback}
         />

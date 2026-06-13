@@ -14,7 +14,7 @@ export function ProblemPanel({ question, languageLabel }: ProblemPanelProps) {
       <aside className={`flex h-full flex-col border-r p-5 ${wb.panel} ${wb.border}`}>
         <p className={`text-base font-semibold ${wb.textPrimary}`}>{languageLabel}</p>
         <p className={`mt-3 text-[15px] leading-relaxed ${wb.textSecondary}`}>
-          Questions for this language are coming in a later phase. Select Python, JavaScript, or React.
+          Questions for this language are coming in a later phase. Select Python, JavaScript, Java, or React.
         </p>
       </aside>
     )

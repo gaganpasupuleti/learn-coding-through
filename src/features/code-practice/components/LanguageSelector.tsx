@@ -31,7 +31,13 @@ export function LanguageSelector({ value, onChange, onComingSoon }: LanguageSele
               !active && !comingSoon && wb.langInactive,
               comingSoon && `${wb.langSoon} px-3 py-1.5 text-xs`,
             )}
-            title={comingSoon ? `${mode.label} — Judge0-backed execution coming later` : mode.label}
+            title={
+              comingSoon
+                ? `${mode.label} — execution coming in a later phase`
+                : mode.id === 'java'
+                  ? `${mode.label} — backend JDK (javac + java)`
+                  : mode.label
+            }
           >
             {mode.label}
             {comingSoon ? ' · soon' : ''}

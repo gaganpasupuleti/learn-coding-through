@@ -254,11 +254,29 @@ async function main() {
       return 'sandpack iframe + react run guidance ok'
     })
 
-    await runCheck('06_java_coming_soon', async () => {
-      await dismissToasts(page)
-      await page.getByRole('button', { name: /Java · soon/i }).click()
-      await page.locator('[data-sonner-toast]').filter({ hasText: /Judge0/i }).first().waitFor({ state: 'visible', timeout: 10000 })
-      return 'java coming-soon toast ok'
+    await runCheck('06_java_tab_and_run', async () => {
+      await selectLanguage(page, 'Java')
+      await page.getByText('Print Hello World').first().waitFor({ state: 'visible', timeout: 15000 })
+      await setEditorText(
+        page,
+        `public class Main {
+    public static void main(String[] args) {
+        System.out.println("WORKBENCH_JAVA_OK");
+    }
+}`,
+      )
+      await waitForIdleRun(page)
+      await clickRun(page)
+      const outputAside = page.locator('aside').filter({ hasText: 'Output' }).first()
+      const okVisible = await outputAside.getByText('WORKBENCH_JAVA_OK', { exact: false }).isVisible().catch(() => false)
+      const unavailableVisible = await outputAside
+        .getByText(/Java execution is not available/i, { exact: false })
+        .isVisible()
+        .catch(() => false)
+      if (!okVisible && !unavailableVisible) {
+        throw new Error('Expected Java run output or clear runtime-unavailable message')
+      }
+      return okVisible ? 'java hello run ok' : 'java runtime unavailable message ok'
     })
 
     await runCheck('07_c_coming_soon', async () => {

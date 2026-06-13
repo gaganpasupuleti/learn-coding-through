@@ -109,7 +109,7 @@ export const CODE_PRACTICE_LANGUAGE_MODES: Array<{
   { id: 'python', label: 'Python', monacoLanguage: 'python', status: 'active' },
   { id: 'javascript', label: 'JavaScript', monacoLanguage: 'javascript', status: 'active' },
   { id: 'react', label: 'React', monacoLanguage: 'javascript', status: 'active' },
-  { id: 'java', label: 'Java', monacoLanguage: 'java', status: 'coming-soon' },
+  { id: 'java', label: 'Java', monacoLanguage: 'java', status: 'active' },
   { id: 'c', label: 'C', monacoLanguage: 'c', status: 'coming-soon' },
   { id: 'cpp', label: 'C++', monacoLanguage: 'cpp', status: 'coming-soon' },
 ]
