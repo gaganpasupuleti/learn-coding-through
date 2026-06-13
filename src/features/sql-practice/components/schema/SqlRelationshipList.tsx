@@ -7,12 +7,14 @@ interface SqlRelationshipListProps {
   relationships: SqlSchemaRelationship[]
   selectedRelationshipId: string | null
   onSelect: (relationship: SqlSchemaRelationship) => void
+  expanded?: boolean
 }
 
 export function SqlRelationshipList({
   relationships,
   selectedRelationshipId,
   onSelect,
+  expanded = false,
 }: SqlRelationshipListProps) {
   if (relationships.length === 0) {
     return (
@@ -21,7 +23,7 @@ export function SqlRelationshipList({
   }
 
   return (
-    <ul className="max-h-48 space-y-1 overflow-y-auto">
+    <ul className={cn('space-y-1 overflow-y-auto', expanded ? 'min-h-0 flex-1' : 'max-h-48')}>
       {relationships.map((relationship) => {
         const active = relationship.id === selectedRelationshipId
         return (
