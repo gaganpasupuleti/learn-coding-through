@@ -44,13 +44,18 @@ export function SqlExpectedOutputPreviewPanel({ question, preview }: SqlExpected
       <div>
         <p className={cn('mb-1 text-xs font-bold uppercase tracking-widest', wb.textMuted)}>Expected row count</p>
         <p className="font-mono text-sm">{preview.rowCount}</p>
+        {preview.zeroRowMessage && (
+          <p className={cn('mt-2 text-sm text-amber-200/90')}>{preview.zeroRowMessage}</p>
+        )}
       </div>
       <div>
         <p className={cn('mb-2 text-xs font-bold uppercase tracking-widest', wb.textMuted)}>
           Sample rows (first {preview.sampleRows.length} of {preview.rowCount})
         </p>
         {preview.sampleRows.length === 0 ? (
-          <p className={cn('text-sm', wb.textMuted)}>Expected result has no rows.</p>
+          <p className={cn('text-sm', wb.textMuted)}>
+            {preview.zeroRowMessage ? 'No sample rows to display.' : 'Expected result has no rows.'}
+          </p>
         ) : (
           <div className="overflow-auto">
             <table className="w-full min-w-max border-collapse text-sm">

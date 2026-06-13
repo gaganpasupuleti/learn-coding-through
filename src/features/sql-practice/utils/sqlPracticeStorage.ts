@@ -1,4 +1,5 @@
 import type { SqlAttemptRecord, SqlMistakeRecord, SqlMistakeErrorType } from '../types/sqlPractice.types'
+import { sanitizeMistakeRecords } from './sqlPracticeDataSafety'
 
 const ATTEMPTS_KEY = 'sql-practice-attempt-history'
 const MISTAKES_KEY = 'sql-practice-mistakes'
@@ -34,7 +35,7 @@ export function saveSqlAttempts(records: SqlAttemptRecord[]): void {
 }
 
 export function loadSqlMistakes(): SqlMistakeRecord[] {
-  const records = readJson<SqlMistakeRecord[]>(MISTAKES_KEY, [])
+  const records = sanitizeMistakeRecords(readJson<SqlMistakeRecord[]>(MISTAKES_KEY, []))
   return records.map((record) => ({
     errorType: 'other',
     feedback: record.message,

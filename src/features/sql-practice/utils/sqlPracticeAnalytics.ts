@@ -7,6 +7,7 @@ import type {
   SqlQuestionProgressRecord,
 } from '../types/sqlPractice.types'
 import { getQuestionProgressStatus, type SqlProgressStore } from './sqlPracticeProgress'
+import { sanitizeProgressStore } from './sqlPracticeDataSafety'
 
 export type SqlReviewMode =
   | 'failed'
@@ -66,7 +67,7 @@ export interface SuggestedQuestionResult {
 const WEAK_PASS_RATE_THRESHOLD = 0.6
 
 function getRecord(progress: SqlProgressStore, questionId: string): SqlQuestionProgressRecord | undefined {
-  return progress[questionId]
+  return sanitizeProgressStore(progress)[questionId]
 }
 
 function isFailedNotPassed(progress: SqlProgressStore, questionId: string): boolean {
@@ -88,6 +89,7 @@ export function getQuestionProgressSummary(
   questions: SqlPracticeQuestion[],
   progress: SqlProgressStore,
 ): SqlDetailedProgressSummary {
+  const safeProgress = sanitizeProgressStore(progress)
   let passed = 0
   let failed = 0
   let unattempted = 0
@@ -97,7 +99,7 @@ export function getQuestionProgressSummary(
   let questionsWithHints = 0
 
   for (const q of questions) {
-    const record = getRecord(progress, q.id)
+    const record = getRecord(safeProgress, q.id)
     const status = getQuestionProgressStatus(record)
     if (status === 'passed') passed += 1
     else if (status === 'needs_review') failed += 1
@@ -273,22 +275,28 @@ export function getReviewQueue(
   mistakes: SqlMistakeRecord[],
   options?: { topic?: SqlPracticeTopic; difficulty?: SqlPracticeDifficulty },
 ): SqlPracticeQuestion[] {
+  const safeProgress = sanitizeProgressStore(progress)
   const scoped = questions.filter((q) => q.databaseId === databaseId)
+  const knownIds = new Set(scoped.map((q) => q.id))
 
   switch (mode) {
     case 'failed':
-      return scoped.filter((q) => isFailedNotPassed(progress, q.id))
+      return scoped.filter((q) => isFailedNotPassed(safeProgress, q.id))
     case 'mistakes': {
-      const mistakeIds = new Set(uniqueMistakeQuestionIds(mistakes, databaseId))
-      return scoped.filter((q) => mistakeIds.has(q.id) && !getRecord(progress, q.id)?.firstPassedAt)
+      const mistakeIds = new Set(
+        uniqueMistakeQuestionIds(mistakes, databaseId).filter((id) => knownIds.has(id)),
+      )
+      return scoped.filter(
+        (q) => mistakeIds.has(q.id) && !getRecord(safeProgress, q.id)?.firstPassedAt,
+      )
     }
     case 'unattempted':
-      return scoped.filter((q) => isUnattempted(progress, q.id))
+      return scoped.filter((q) => isUnattempted(safeProgress, q.id))
     case 'weak_topics': {
-      const weakTopicSet = new Set(getWeakTopics(databaseId, questions, progress).map((t) => t.topic))
+      const weakTopicSet = new Set(getWeakTopics(databaseId, questions, safeProgress).map((t) => t.topic))
       return scoped.filter((q) => {
         if (!weakTopicSet.has(q.topic)) return false
-        const status = getQuestionProgressStatus(getRecord(progress, q.id))
+        const status = getQuestionProgressStatus(getRecord(safeProgress, q.id))
         return status === 'not_started' || status === 'needs_review'
       })
     }
@@ -310,10 +318,11 @@ export function getSuggestedNextQuestion(
   mistakes: SqlMistakeRecord[],
   currentQuestionId?: string,
 ): SuggestedQuestionResult {
+  const safeProgress = sanitizeProgressStore(progress)
   const scoped = questions.filter((q) => q.databaseId === databaseId)
   const current = currentQuestionId ? scoped.find((q) => q.id === currentQuestionId) : undefined
 
-  const failedQueue = scoped.filter((q) => isFailedNotPassed(progress, q.id))
+  const failedQueue = scoped.filter((q) => isFailedNotPassed(safeProgress, q.id))
   if (failedQueue.length > 0) {
     const pick = failedQueue.find((q) => q.id !== currentQuestionId) ?? failedQueue[0]
     return {
@@ -323,10 +332,10 @@ export function getSuggestedNextQuestion(
     }
   }
 
-  const weakTopics = getWeakTopics(databaseId, questions, progress)
+  const weakTopics = getWeakTopics(databaseId, questions, safeProgress)
   for (const weak of weakTopics) {
     const candidate = scoped.find(
-      (q) => q.topic === weak.topic && isUnattempted(progress, q.id) && q.id !== currentQuestionId,
+      (q) => q.topic === weak.topic && isUnattempted(safeProgress, q.id) && q.id !== currentQuestionId,
     )
     if (candidate) {
       return {
@@ -337,7 +346,7 @@ export function getSuggestedNextQuestion(
     }
   }
 
-  const unattemptedInDb = scoped.filter((q) => isUnattempted(progress, q.id))
+  const unattemptedInDb = scoped.filter((q) => isUnattempted(safeProgress, q.id))
   if (unattemptedInDb.length > 0) {
     const pick = unattemptedInDb.find((q) => q.id !== currentQuestionId) ?? unattemptedInDb[0]
     return {
@@ -349,7 +358,7 @@ export function getSuggestedNextQuestion(
 
   if (current) {
     const sameTopic = scoped.find(
-      (q) => q.topic === current.topic && isUnattempted(progress, q.id) && q.id !== current.id,
+      (q) => q.topic === current.topic && isUnattempted(safeProgress, q.id) && q.id !== current.id,
     )
     if (sameTopic) {
       return {
@@ -360,7 +369,7 @@ export function getSuggestedNextQuestion(
     }
   }
 
-  const anyUnattempted = questions.filter((q) => isUnattempted(progress, q.id))
+  const anyUnattempted = questions.filter((q) => isUnattempted(safeProgress, q.id))
   if (anyUnattempted.length > 0) {
     const pick = anyUnattempted[0]
     return {

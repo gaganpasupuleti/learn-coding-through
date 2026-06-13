@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Code2, RotateCcw, Trash2 } from 'lucide-react'
 import { getDatabaseById } from '../data/databaseCatalog'
-import { getQuestionById } from '../data/sqlQuestions'
 import type { SqlMistakeRecord } from '../types/sqlPractice.types'
-import { TOPIC_LABELS } from '../utils/sqlPracticeAnalytics'
+import { resolveQuestionDisplayMeta } from '../utils/sqlPracticeDataSafety'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
@@ -21,8 +20,8 @@ function groupMistakes(mistakes: SqlMistakeRecord[]): GroupedMistakes {
   const grouped: GroupedMistakes = {}
   for (const m of mistakes) {
     const db = getDatabaseById(m.databaseId).displayName
-    const question = getQuestionById(m.questionId)
-    const topic = question ? TOPIC_LABELS[question.topic] : 'Unknown'
+    const meta = resolveQuestionDisplayMeta(m.questionId)
+    const topic = meta.topicLabel
     grouped[db] ??= {}
     grouped[db][topic] ??= []
     grouped[db][topic].push(m)
@@ -96,8 +95,8 @@ export function SqlMistakesPanel({
               <p className={cn('text-[10px] font-semibold uppercase tracking-wide', wb.textMuted)}>{topic}</p>
               <ul className={cn('space-y-3 text-sm', wb.textMuted)}>
                 {items.map((m) => {
-                  const question = getQuestionById(m.questionId)
-                  const title = m.questionTitle ?? question?.title ?? m.questionId
+                  const meta = resolveQuestionDisplayMeta(m.questionId)
+                  const title = m.questionTitle ?? meta.title
 
                   return (
                     <li key={m.id} className={cn('rounded-lg border p-3', wb.border, 'bg-[#111827]')}>

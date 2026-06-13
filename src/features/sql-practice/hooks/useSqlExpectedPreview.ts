@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { isCheckableQuestion } from '../data/sqlQuestions'
 import { runTrustedSql } from '../engine/sqlRunner'
 import type { SqlExpectedOutputPreview, SqlPracticeQuestion } from '../types/sqlPractice.types'
+import { mapExpectedPreviewResult } from '../utils/sqlExpectedPreviewMapper'
 
 const EMPTY_PREVIEW: SqlExpectedOutputPreview = {
   status: 'idle',
@@ -24,24 +25,7 @@ export function useSqlExpectedPreview(question: SqlPracticeQuestion): SqlExpecte
 
     void runTrustedSql(question.databaseId, question.solutionSql).then((outcome) => {
       if (cancelled) return
-
-      if (!outcome.success) {
-        setPreview({
-          status: 'error',
-          columns: [],
-          sampleRows: [],
-          rowCount: 0,
-          errorMessage: outcome.error ?? 'Unable to load expected output preview.',
-        })
-        return
-      }
-
-      setPreview({
-        status: 'ready',
-        columns: outcome.columns,
-        sampleRows: outcome.rows.slice(0, 5),
-        rowCount: outcome.rowCount,
-      })
+      setPreview(mapExpectedPreviewResult(question, outcome))
     })
 
     return () => {
