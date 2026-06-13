@@ -68,7 +68,7 @@ Added (6 Java questions total):
 | `java-print-one-to-five` | Print Numbers 1 to 5 |
 | `java-sum-array` | Sum Array Values |
 
-All use in-code variables; no stdin.
+All use in-code variables; no stdin. Until Java stdin/per-case injection exists, each Java question has **one executable test case** (`java-add-two`, `java-even-odd`, and `java-max-two` trimmed to a single case after PR review).
 
 ## H. Safety confirmation
 
@@ -90,7 +90,7 @@ npx vitest run src/features/code-practice/editor-intelligence/javaCompletions.te
 npx vitest run src/features/code-practice/data/codeQuestions.test.ts
 ```
 
-**17 tests passed** (9 feedback + 6 completions + 2 questions)
+**18 tests passed** (9 feedback + 6 completions + 3 questions metadata)
 
 ## J. What was intentionally not changed
 
@@ -140,6 +140,7 @@ Not run in this session (dev server was unstable in prior session). Recommended 
 
 - Java suggestions do not include full `java.util` import insertion.
 - Scanner appears in keywords but stdin is not supported — feedback warns users.
+- Java Submit runs the same source for every case; in-code-variable questions are limited to one executable test case (enforced in `codeQuestions.test.ts`).
 - Multi-line Java output questions depend on exact newline matching in Submit.
 - Suggestions are prefix-based, not semantic.
 
