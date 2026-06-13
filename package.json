@@ -13,6 +13,7 @@
         "build": "tsc -b --noCheck && vite build",
         "test": "vitest run",
         "test:sql-practice": "vitest run src/features/sql-practice/utils/sqlFormatter.test.ts src/features/sql-practice/utils/sqlEditorInsert.test.ts src/features/sql-practice/data/sqlQuestions.test.ts src/features/sql-practice/utils/sqlPracticeAnalytics.test.ts src/features/sql-practice/data/sqlQuestionSolutions.test.ts src/features/sql-practice/utils/sqlExpectedPreviewMapper.test.ts src/features/sql-practice/utils/sqlPracticeDataSafety.test.ts",
+        "verify:sql-practice": "npm run test:sql-practice && npx vite-node scripts/verify-sql-questions.mjs",
         "lint": "eslint .",
         "qa:smoke": "node scripts/e2e-smoke.mjs",
         "qa:practice-smoke": "node scripts/practice-ground-smoke.mjs",

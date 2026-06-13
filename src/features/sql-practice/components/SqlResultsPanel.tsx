@@ -11,26 +11,36 @@ interface SqlResultsPanelProps {
 export function SqlResultsPanel({ result, emptyMessage }: SqlResultsPanelProps) {
   if (!result.hasRun) {
     return (
-      <div className={cn('flex min-h-[140px] flex-col items-center justify-center gap-2 p-6 text-center', wb.textMuted)}>
+      <div
+        className={cn('flex min-h-[140px] flex-col items-center justify-center gap-2 p-6 text-center', wb.textMuted)}
+        role="status"
+        aria-label="No query results yet"
+      >
         <TableProperties className="h-8 w-8 text-[#475569]" />
-        <p className="text-sm">No results yet.</p>
-        <p className="max-w-md text-xs leading-relaxed">Run a SELECT query to see the result grid.</p>
+        <p className="text-sm font-medium">No results yet.</p>
+        <p className="max-w-md text-xs leading-relaxed">
+          Write a SELECT query in the editor, then click <strong className="text-slate-300">Run</strong> to see
+          rows here.
+        </p>
       </div>
     )
   }
 
   if (result.errorMessage) {
     return (
-      <div className={cn('p-4 text-sm', wb.textMuted)}>
-        <p>This query failed. See the Messages tab for error details.</p>
+      <div className={cn('space-y-2 p-4 text-sm', wb.textMuted)} role="alert">
+        <p className="font-medium text-rose-200/90">This query did not return a result grid.</p>
+        <p className="text-xs">Open the <strong className="text-slate-300">Messages</strong> tab for the full error
+          details and hints.</p>
       </div>
     )
   }
 
   if (result.rowCount === 0 && result.columns.length === 0) {
     return (
-      <div className={cn('p-4 text-sm', wb.textMuted)}>
-        {emptyMessage ?? 'Query returned no rows.'}
+      <div className={cn('p-4 text-sm', wb.textMuted)} role="status">
+        <p>{emptyMessage ?? 'Query ran successfully but returned no rows.'}</p>
+        <p className="mt-1 text-xs">Zero rows is a valid result — check your WHERE filters.</p>
       </div>
     )
   }

@@ -17,8 +17,8 @@ interface SqlWeakTopicCardProps {
 export function SqlWeakTopicCard({ weakestTopic, weakestDifficulty }: SqlWeakTopicCardProps) {
   if (!weakestTopic && !weakestDifficulty) {
     return (
-      <div className={cn('rounded-lg border border-emerald-700/30 bg-emerald-950/20 p-3 text-xs text-emerald-200/90')}>
-        No weak topics detected yet. Keep practicing!
+      <div className={cn('rounded-lg border border-emerald-700/30 bg-emerald-950/20 p-3 text-xs text-emerald-200/90')} role="status">
+        No weak topics right now — keep practicing or try Review mode when you miss questions.
       </div>
     )
   }
