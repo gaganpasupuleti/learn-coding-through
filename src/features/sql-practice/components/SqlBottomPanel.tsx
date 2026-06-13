@@ -42,6 +42,9 @@ interface SqlBottomPanelProps {
   preferredTab?: SqlBottomTab | null
   onRetryQuestion: (questionId: string, databaseId: SqlPracticeQuestion['databaseId'], sql: string) => void
   onLoadSql: (sql: string, questionId?: string, databaseId?: SqlPracticeQuestion['databaseId']) => void
+  onLoadFailedSql?: (questionId: string, databaseId: SqlPracticeQuestion['databaseId'], sql: string) => void
+  onClearResolvedMistakes?: () => void
+  resolvedMistakeCount?: number
   onInsertJoinTemplate?: (relationship: SqlSchemaRelationship) => void
   headerActions?: ReactNode
 }
@@ -58,6 +61,9 @@ export function SqlBottomPanel({
   preferredTab,
   onRetryQuestion,
   onLoadSql,
+  onLoadFailedSql,
+  onClearResolvedMistakes,
+  resolvedMistakeCount = 0,
   onInsertJoinTemplate,
   headerActions,
 }: SqlBottomPanelProps) {
@@ -119,7 +125,15 @@ export function SqlBottomPanel({
         )}
         {tab === 'messages' && <SqlMessagesPanel messages={messages} answerFeedback={answerFeedback} />}
         {tab === 'history' && <SqlAttemptHistoryPanel attempts={attempts} onLoadSql={onLoadSql} />}
-        {tab === 'mistakes' && <SqlMistakesPanel mistakes={mistakes} onRetryQuestion={onRetryQuestion} />}
+        {tab === 'mistakes' && (
+          <SqlMistakesPanel
+            mistakes={mistakes}
+            onRetryQuestion={onRetryQuestion}
+            onLoadFailedSql={onLoadFailedSql ?? onRetryQuestion}
+            onClearResolved={onClearResolvedMistakes}
+            resolvedMistakeCount={resolvedMistakeCount}
+          />
+        )}
         {tab === 'schema' && (
           <div className="h-full min-h-[280px]">
             <SqlSchemaDiagram

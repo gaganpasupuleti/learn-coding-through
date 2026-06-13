@@ -23,6 +23,10 @@ import { SqlProgressBadge } from './SqlProgressBadge'
 import { SqlProgressSummary } from './SqlProgressSummary'
 import { SqlQuestionFilters } from './SqlQuestionFilters'
 import { SqlQueryTemplates, type SqlQueryTemplateId } from './SqlQueryTemplates'
+import { SqlReviewPanel } from './review/SqlReviewPanel'
+import { SqlProgressAnalytics } from './review/SqlProgressAnalytics'
+import { SqlWeakTopicCard } from './review/SqlWeakTopicCard'
+import type { SqlReviewMode, SuggestedQuestionResult } from '../utils/sqlPracticeAnalytics'
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 
@@ -39,6 +43,25 @@ interface SqlQuestionPanelProps {
   difficultyFilter: SqlPracticeDifficulty | 'all'
   topicFilter: SqlPracticeTopic | 'all'
   mistakesCount: number
+  mistakeQuestionIds: Set<string>
+  suggestion: SuggestedQuestionResult
+  reviewQueue: SqlPracticeQuestion[]
+  activeReviewMode: SqlReviewMode | null
+  analyticsSummary: {
+    passed: number
+    failed: number
+    unattempted: number
+    total: number
+    hintsUsedTotal: number
+    solutionsRevealedCount: number
+  }
+  topicAnalytics: Array<{ topic: SqlPracticeTopic; passed: number; total: number; failed: number; unattempted: number; attempted: number; passRate: number; isWeak: boolean }>
+  difficultyAnalytics: Array<{ difficulty: SqlPracticeDifficulty; passed: number; total: number; failed: number; unattempted: number; attempted: number; passRate: number; isWeak: boolean }>
+  weakestTopic: { topic: SqlPracticeTopic; passed: number; failed: number; passRate: number } | null
+  weakestDifficulty: { difficulty: SqlPracticeDifficulty; passed: number; total: number } | null
+  failedCount: number
+  unattemptedCount: number
+  weakTopicsCount: number
   hasNextQuestion: boolean
   hasSameTopicQuestion: boolean
   hasSimilarQuestion: boolean
@@ -55,6 +78,8 @@ interface SqlQuestionPanelProps {
   onTryAgain: () => void
   onViewExpectedOutput: () => void
   onReviewSimilarQuestion: () => void
+  onPracticeSuggested: () => void
+  onStartReview: (mode: SqlReviewMode) => void
   onInsertTemplate?: (sql: string, templateId: SqlQueryTemplateId) => void
   headerActions?: ReactNode
 }
@@ -83,6 +108,18 @@ export function SqlQuestionPanel({
   difficultyFilter,
   topicFilter,
   mistakesCount,
+  mistakeQuestionIds,
+  suggestion,
+  reviewQueue,
+  activeReviewMode,
+  analyticsSummary,
+  topicAnalytics,
+  difficultyAnalytics,
+  weakestTopic,
+  weakestDifficulty,
+  failedCount,
+  unattemptedCount,
+  weakTopicsCount,
   hasNextQuestion,
   hasSameTopicQuestion,
   hasSimilarQuestion,
@@ -99,6 +136,8 @@ export function SqlQuestionPanel({
   onTryAgain,
   onViewExpectedOutput,
   onReviewSimilarQuestion,
+  onPracticeSuggested,
+  onStartReview,
   onInsertTemplate,
   headerActions,
 }: SqlQuestionPanelProps) {
@@ -114,9 +153,10 @@ export function SqlQuestionPanel({
       if (difficultyFilter !== 'all' && q.difficulty !== difficultyFilter) return false
       if (topicFilter !== 'all' && q.topic !== topicFilter) return false
       if (statusFilter === 'all') return true
+      if (statusFilter === 'mistakes_only') return mistakeQuestionIds.has(q.id)
       return getQuestionProgressStatus(store[q.id]) === statusFilter
     })
-  }, [questions, difficultyFilter, topicFilter, statusFilter, progressVersion])
+  }, [questions, difficultyFilter, topicFilter, statusFilter, progressVersion, mistakeQuestionIds])
 
   const selectQuestions = displayQuestions.length > 0 ? displayQuestions : questions
 
@@ -134,6 +174,28 @@ export function SqlQuestionPanel({
       </div>
       <div className={cn('flex-1 space-y-4 overflow-y-auto p-4 text-[15px] leading-relaxed', wb.textSecondary)}>
         <SqlProgressSummary summary={databaseSummary} />
+
+        <SqlProgressAnalytics
+          summary={analyticsSummary}
+          topicRows={topicAnalytics}
+          difficultyRows={difficultyAnalytics}
+          compact
+        />
+
+        <SqlWeakTopicCard weakestTopic={weakestTopic} weakestDifficulty={weakestDifficulty} />
+
+        <SqlReviewPanel
+          suggestion={suggestion}
+          reviewQueue={reviewQueue}
+          activeReviewMode={activeReviewMode}
+          failedCount={failedCount}
+          mistakesCount={mistakesCount}
+          unattemptedCount={unattemptedCount}
+          weakTopicsCount={weakTopicsCount}
+          onPracticeSuggested={onPracticeSuggested}
+          onStartReview={onStartReview}
+          onSelectQuestion={onSelectQuestion}
+        />
 
         {onInsertTemplate && (
           <SqlQueryTemplates database={db} question={question} onInsertTemplate={onInsertTemplate} />
