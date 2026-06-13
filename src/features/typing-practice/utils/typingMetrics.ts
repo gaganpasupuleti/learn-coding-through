@@ -90,6 +90,17 @@ export function buildCompletionSummary(
   }
 }
 
+export function finalizeTypingSession(input: TypingMetricsInput) {
+  const mistakePositions = collectMistakePositions(input.sourceText, input.typedText)
+  const summary = buildCompletionSummary(input, mistakePositions)
+  return { mistakePositions, summary }
+}
+
+/** Prefer explicit override when auto-finishing before React state commits. */
+export function resolveFinishTypedText(stateTypedText: string, typedTextOverride?: string): string {
+  return typedTextOverride ?? stateTypedText
+}
+
 export function collectMistakePositions(sourceText: string, typedText: string) {
   const comparedLength = Math.min(sourceText.length, typedText.length)
   const mistakes: Array<{ position: number; expectedChar: string; typedChar: string }> = []

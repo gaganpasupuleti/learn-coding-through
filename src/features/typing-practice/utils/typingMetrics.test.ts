@@ -3,6 +3,8 @@ import {
   buildCompletionSummary,
   calculateTypingMetrics,
   collectMistakePositions,
+  finalizeTypingSession,
+  resolveFinishTypedText,
 } from './typingMetrics'
 
 describe('typingMetrics helpers', () => {
@@ -26,6 +28,28 @@ describe('typingMetrics helpers', () => {
     expect(mistakes).toEqual([
       { position: 1, expectedChar: 'b', typedChar: 'x' },
     ])
+  })
+
+  it('uses typed text override when state lags on auto-finish', () => {
+    const sourceText = 'abc'
+    const staleState = 'ab'
+    const next = 'abc'
+
+    const stale = finalizeTypingSession({
+      sourceText,
+      typedText: resolveFinishTypedText(staleState),
+      elapsedSeconds: 60,
+    })
+    const complete = finalizeTypingSession({
+      sourceText,
+      typedText: resolveFinishTypedText(staleState, next),
+      elapsedSeconds: 60,
+    })
+
+    expect(stale.summary.completionPct).toBeLessThan(100)
+    expect(stale.summary.correctChars).toBe(2)
+    expect(complete.summary.completionPct).toBe(100)
+    expect(complete.summary.correctChars).toBe(3)
   })
 
   it('builds weak character and token summary', () => {

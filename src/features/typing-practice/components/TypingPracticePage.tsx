@@ -18,10 +18,10 @@ import {
   pickTypingSample,
 } from '../data/typingSamples'
 import {
-  buildCompletionSummary,
   calculateTypingMetrics,
-  collectMistakePositions,
+  finalizeTypingSession,
   getUpcomingPromptSegment,
+  resolveFinishTypedText,
 } from '../utils/typingMetrics'
 import {
   clearTypingMistakes,
@@ -130,16 +130,17 @@ export function TypingPracticePage({ embedded = false }: TypingPracticePageProps
     startSample(sample)
   }, [activeSample, difficulty, language, mode, oldMistakes, selectedRetrySnippetId, startSample])
 
-  const finishSession = useCallback(() => {
+  const finishSession = useCallback((typedTextOverride?: string) => {
     if (!isRunning || !activeSample || isFinishingRef.current) return
     isFinishingRef.current = true
     setIsRunning(false)
 
-    const mistakePositions = collectMistakePositions(sourceText, typedText)
-    const summary = buildCompletionSummary(
-      { sourceText, typedText, elapsedSeconds },
-      mistakePositions,
-    )
+    const resolvedTypedText = resolveFinishTypedText(typedText, typedTextOverride)
+    const { mistakePositions, summary } = finalizeTypingSession({
+      sourceText,
+      typedText: resolvedTypedText,
+      elapsedSeconds,
+    })
     setCompletionSummary(summary)
 
     if (mistakePositions.length > 0) {
@@ -223,7 +224,7 @@ export function TypingPracticePage({ embedded = false }: TypingPracticePageProps
     }
 
     if (sourceText.length > 0 && next.length >= sourceText.length) {
-      window.setTimeout(() => finishSession(), 0)
+      window.setTimeout(() => finishSession(next), 0)
     }
   }
 
@@ -355,7 +356,7 @@ export function TypingPracticePage({ embedded = false }: TypingPracticePageProps
               </button>
               <button
                 type="button"
-                onClick={finishSession}
+                onClick={() => finishSession()}
                 disabled={!isRunning}
                 className={wb.toolbarBtn}
               >
