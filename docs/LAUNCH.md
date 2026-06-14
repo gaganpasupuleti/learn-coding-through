@@ -22,13 +22,24 @@ CodeQuest is a career-acceleration learning platform: students use projects, pra
 | `VITE_GOOGLE_CLIENT_ID` | Web client ID (optional until Google Sign-In needed) | Same as backend `GOOGLE_OAUTH_CLIENT_ID` |
 | `VITE_API_URL` / `VITE_API_BASE_URL` | **Leave empty** so the browser uses same-origin `/api/v1` and Vite proxies to the API | Full API origin, e.g. `https://api.example.com` |
 | `VITE_API_PROXY_TARGET` | `http://127.0.0.1:8000` (Vite dev **server** proxy only; not used as the browser API base) | N/A |
-| `VITE_JOBS_API_URL` | **Leave empty** — browser calls same-origin `/jobs-api` and Vite proxies to JobSpy on **8001** | Full JobSpy API origin (Railway URL) |
+| `VITE_JOBS_API_URL` | **Leave empty** — browser calls same-origin `/jobs-api` and Vite proxies to JobSpy on **8001** | Public JobSpy API origin on the **CodeQuest frontend** Railway service, e.g. `https://YOUR-JOBSPY-API-DOMAIN.up.railway.app` (injected into `runtime-config.js` at container start) |
 | `VITE_JOBS_API_PROXY_TARGET` | `http://127.0.0.1:8001` (Vite dev proxy only) | N/A |
-| `VITE_JOBS_ADMIN_API_KEY` | Optional default for admin **JobSpy Ops** scrape panel | Same; or set via runtime config |
+| `VITE_JOBS_ADMIN_API_KEY` | Optional local default for admin **JobSpy Ops** | **Do not set in production frontend.** Enter the admin key in the JobSpy Ops UI (stored in browser `localStorage`) or keep scrape triggers on the JobSpy service only. |
 
 **Google OAuth:** In Google Cloud Console, add **Authorized JavaScript origins** for your frontend origin(s) (e.g. `http://127.0.0.1:5000`, production URL). This app uses **ID token** verification; backend variable name is **`GOOGLE_OAUTH_CLIENT_ID`** (not `GOOGLE_CLIENT_ID`).
 
-**Job board (JobSpy):** Student **Job Board** and admin **JobSpy Ops** call a **separate** [JobSpy](https://github.com/gaganpasupuleti/JobSpy) FastAPI backend — not CodeQuest `/api/v1/jobs`. Clone JobSpy alongside this repo, run its API on **8001**, and set JobSpy `CORS_ORIGINS` to include CodeQuest frontend origins (`http://localhost:5000`, `http://127.0.0.1:5000`, production URL). In production, set `VITE_JOBS_API_URL` on the CodeQuest frontend build to the deployed JobSpy API URL.
+**Job board (JobSpy):** Student **Job Board** and admin **JobSpy Ops** call a **separate** [JobSpy](https://github.com/gaganpasupuleti/JobSpy) FastAPI backend — not CodeQuest `/api/v1/jobs`. Clone JobSpy alongside this repo, run its API on **8001**, and set JobSpy `CORS_ORIGINS` to include CodeQuest frontend origins (`http://localhost:5000`, `http://127.0.0.1:5000`, production URL). In production, set `VITE_JOBS_API_URL` on the **CodeQuest frontend** Railway service; `frontend-entrypoint.sh` writes it to `runtime-config.js` at container start. Production nginx does **not** proxy `/jobs-api` — the browser must call the JobSpy API URL directly.
+
+#### Production JobSpy wiring (CodeQuest + JobSpy)
+
+| Service | Variable | Example / notes |
+| --- | --- | --- |
+| CodeQuest frontend | `VITE_JOBS_API_URL` | `https://YOUR-JOBSPY-API-DOMAIN.up.railway.app` — public HTTPS origin only |
+| JobSpy API | `CORS_ORIGINS` | `https://acceptable-clarity-production-5fh7.up.railway.app,http://localhost:5000,http://127.0.0.1:5000` |
+| JobSpy API | `DATABASE_URL` | Railway Postgres reference — **JobSpy service only** |
+| JobSpy API | `ADMIN_API_KEY` | Server-side scrape/admin auth — **never** on CodeQuest frontend |
+
+**Never put on CodeQuest frontend:** `DATABASE_URL`, Postgres password, `ADMIN_API_KEY`, `AUTH_SECRET`, or other JobSpy secrets.
 
 ### Local two-backend setup
 

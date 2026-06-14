@@ -1,4 +1,4 @@
-// Injected at runtime in some deployments. Vite dev uses root `.env` instead.
+// Local dev fallback. Production containers overwrite this file at start (see frontend-entrypoint.sh).
 window.__RUNTIME_CONFIG__ = window.__RUNTIME_CONFIG__ || {
   VITE_API_URL: '',
   VITE_GOOGLE_CLIENT_ID: '',
