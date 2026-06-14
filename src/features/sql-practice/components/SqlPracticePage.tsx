@@ -623,8 +623,13 @@ export function SqlPracticePage() {
 
   const handleResetQuery = useCallback(() => {
     setSql(question.starterSql)
+    editorRef.current?.replaceSql(question.starterSql)
+    setMessages(['Starter SQL restored.'])
+    setResult(EMPTY_RESULT)
     setRunState('ready')
     setAnswerFeedback(null)
+    setPreferredBottomTab(null)
+    setEditorStatus('Starter SQL restored.')
   }, [question.starterSql])
 
   const showEditorMessage = useCallback((message: string) => {

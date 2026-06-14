@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type { Monaco } from '@monaco-editor/react'
 import type { IDisposable, editor as MonacoEditor } from 'monaco-editor'
-import { Sparkles } from 'lucide-react'
+import { Keyboard, Sparkles } from 'lucide-react'
 import { CodeEditor } from '@/components/CodeEditor'
 import type { SqlDatabaseId, SqlDatabaseMeta } from '../types/sqlPractice.types'
 import { registerSqlCompletionProvider } from '../editor-intelligence/sqlCompletionProvider'
@@ -30,6 +30,16 @@ interface SqlEditorPanelProps {
   editorStatus?: string | null
 }
 
+function isEditableShortcutTarget(active: Element | null, editorArea: HTMLElement | null): boolean {
+  if (!active || !editorArea) return false
+  if (!editorArea.contains(active)) return false
+  if (active instanceof HTMLTextAreaElement) return true
+  if (active instanceof HTMLInputElement || active instanceof HTMLSelectElement || active instanceof HTMLButtonElement) {
+    return false
+  }
+  return active.closest('.monaco-editor') !== null || active.getAttribute('contenteditable') === 'true'
+}
+
 export const SqlEditorPanel = forwardRef<SqlEditorPanelHandle, SqlEditorPanelProps>(function SqlEditorPanel(
   {
     sql,
@@ -49,6 +59,7 @@ export const SqlEditorPanel = forwardRef<SqlEditorPanelHandle, SqlEditorPanelPro
   const monacoRef = useRef<Monaco | null>(null)
   const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const editorAreaRef = useRef<HTMLDivElement | null>(null)
   const sqlCompletionRef = useRef<IDisposable | null>(null)
   const executionNote = !isExecutableSqlDatabase(databaseId)
     ? 'Run and answer checking for this database will be enabled in a later phase.'
@@ -105,6 +116,8 @@ export const SqlEditorPanel = forwardRef<SqlEditorPanelHandle, SqlEditorPanelPro
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isEditableShortcutTarget(document.activeElement, editorAreaRef.current)) return
+
       const mod = event.ctrlKey || event.metaKey
       if (!mod) return
 
@@ -174,23 +187,35 @@ export const SqlEditorPanel = forwardRef<SqlEditorPanelHandle, SqlEditorPanelPro
 
   return (
     <div className={cn('flex h-full min-h-0 flex-col', wb.editor)}>
-      <div className={cn('flex flex-col gap-2 border-b px-4 py-3', wb.border, 'bg-[#252526]')}>
+      <div className={cn('flex flex-col gap-2 border-b px-4 py-2.5 sm:py-3', wb.border, 'bg-[#252526]')}>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex min-w-0 flex-wrap items-center gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
             <span className={cn('text-sm font-semibold', wb.textPrimary)}>Query Editor</span>
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full border border-emerald-700/50 bg-emerald-950/40 px-2.5 py-1 text-xs text-emerald-200"
-              title="Offline SQL suggestions — no AI"
-            >
-              <Sparkles className="h-3.5 w-3.5 text-emerald-300" aria-hidden />
-              SQL suggestions
-            </span>
+            {useFallback ? (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-600/60 bg-slate-900/50 px-2.5 py-1 text-xs text-slate-300"
+                title="Monaco editor unavailable — basic textarea mode without SQL suggestions"
+              >
+                <Keyboard className="h-3.5 w-3.5 text-slate-400" aria-hidden />
+                Basic editor mode
+              </span>
+            ) : (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-700/50 bg-emerald-950/40 px-2.5 py-1 text-xs text-emerald-200"
+                title="Offline SQL suggestions — press Ctrl + Space in the editor"
+              >
+                <Sparkles className="h-3.5 w-3.5 text-emerald-300" aria-hidden />
+                SQL suggestions · Ctrl + Space
+              </span>
+            )}
           </div>
           {editorStatus && (
-            <span className={cn('text-xs text-emerald-300/90', wb.textMuted)}>{editorStatus}</span>
+            <span className={cn('max-w-[min(100%,280px)] truncate text-xs text-emerald-300/90', wb.textMuted)}>
+              {editorStatus}
+            </span>
           )}
         </div>
-        <SqlShortcutHelp />
+        <SqlShortcutHelp showSuggestions={!useFallback} compact />
       </div>
 
       {executionNote && (
@@ -199,7 +224,7 @@ export const SqlEditorPanel = forwardRef<SqlEditorPanelHandle, SqlEditorPanelPro
         </p>
       )}
 
-      <div className="sql-practice-editor relative min-h-0 flex-1 overflow-hidden">
+      <div ref={editorAreaRef} className="sql-practice-editor relative min-h-0 flex-1 overflow-hidden">
         {useFallback ? (
           <textarea
             ref={textareaRef}

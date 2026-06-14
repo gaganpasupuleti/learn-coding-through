@@ -9,19 +9,20 @@ export interface SqlPracticeLayoutState {
   isBottomCollapsed: boolean
 }
 
+/** Tuned for ~1280–1440px laptops: narrower side panes, more editor width. */
 export const DEFAULT_SQL_PRACTICE_LAYOUT: SqlPracticeLayoutState = {
-  leftWidth: 280,
-  rightWidth: 340,
-  bottomHeight: 220,
+  leftWidth: 240,
+  rightWidth: 300,
+  bottomHeight: 200,
   isLeftCollapsed: false,
   isRightCollapsed: false,
   isBottomCollapsed: false,
 }
 
 export const SQL_LAYOUT_LIMITS = {
-  left: { min: 220, max: 420, default: 280 },
-  right: { min: 280, max: 520, default: 340 },
-  bottom: { min: 120, default: 220, maxViewportRatio: 0.45 },
+  left: { min: 200, max: 360, default: 240 },
+  right: { min: 260, max: 400, default: 300 },
+  bottom: { min: 120, default: 200, maxViewportRatio: 0.4 },
 } as const
 
 function readJson<T>(key: string, fallback: T): T {

@@ -20,14 +20,14 @@ import { Box, History, LayoutGrid, MessageSquare, Table2, Target, AlertTriangle 
 import { SqlSchemaDiagram } from './schema/SqlSchemaDiagram'
 import { SqlSchemaFullscreenDialog } from './schema/SqlSchemaFullscreenDialog'
 
-const TABS: Array<{ id: SqlBottomTab; label: string; icon: typeof Table2 }> = [
-  { id: 'results', label: 'Results', icon: Table2 },
-  { id: 'expected', label: 'Expected Output', icon: Target },
-  { id: 'messages', label: 'Messages', icon: MessageSquare },
-  { id: 'history', label: 'Attempt History', icon: History },
-  { id: 'mistakes', label: 'Mistakes', icon: AlertTriangle },
-  { id: 'schema', label: 'Schema Diagram', icon: LayoutGrid },
-  { id: 'schema3d', label: '3D Schema', icon: Box },
+const TABS: Array<{ id: SqlBottomTab; label: string; shortLabel: string; icon: typeof Table2 }> = [
+  { id: 'results', label: 'Results', shortLabel: 'Results', icon: Table2 },
+  { id: 'expected', label: 'Expected Output', shortLabel: 'Expected', icon: Target },
+  { id: 'messages', label: 'Messages', shortLabel: 'Messages', icon: MessageSquare },
+  { id: 'history', label: 'Attempt History', shortLabel: 'History', icon: History },
+  { id: 'mistakes', label: 'Mistakes', shortLabel: 'Mistakes', icon: AlertTriangle },
+  { id: 'schema', label: 'Schema Diagram', shortLabel: 'Schema', icon: LayoutGrid },
+  { id: 'schema3d', label: '3D Schema', shortLabel: '3D', icon: Box },
 ]
 
 interface SqlBottomPanelProps {
@@ -84,8 +84,8 @@ export function SqlBottomPanel({
 
   return (
     <section className={cn('flex h-full min-h-0 flex-col', wb.panel)}>
-      <div className={cn('flex items-center gap-1 border-b pr-1', wb.border)}>
-        <div className={cn('flex min-w-0 flex-1 gap-0.5 overflow-x-auto px-2', wb.border)}>
+      <div className={cn('flex flex-wrap items-center gap-1 border-b pr-1', wb.border)}>
+        <div className={cn('flex min-w-0 flex-1 flex-wrap gap-0.5 px-1 sm:px-2', wb.border)}>
           {TABS.map((item) => {
             const Icon = item.icon
             const isActive = tab === item.id
@@ -93,16 +93,17 @@ export function SqlBottomPanel({
               <button
                 key={item.id}
                 type="button"
+                title={item.label}
                 onClick={() => setTab(item.id)}
                 className={cn(
-                  'flex shrink-0 items-center gap-1.5 px-3 py-2.5 text-sm font-medium transition-colors',
+                  'flex shrink-0 items-center gap-1 rounded-sm px-2 py-2 text-xs font-medium transition-colors sm:gap-1.5 sm:px-2.5 sm:text-sm',
                   isActive
                     ? 'border-b-2 border-emerald-400 bg-emerald-950/25 text-emerald-100'
                     : wb.tabInactive,
                 )}
               >
-                <Icon className="h-3.5 w-3.5" />
-                {item.label}
+                <Icon className="h-3.5 w-3.5 shrink-0" />
+                <span className="hidden min-[360px]:inline">{item.shortLabel}</span>
               </button>
             )
           })}
