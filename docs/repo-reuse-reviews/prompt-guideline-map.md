@@ -33,3 +33,20 @@ Maps [awesome-ai-dev-prompts](https://github.com/gaganpasupuleti/awesome-ai-dev-
 2. Implement CodeQuest-native components (no AGPL copy).
 3. Log repo inspiration in `ui-repo-review-registry.md`.
 4. Run the phase QA commands and note failures in PR body if pre-existing.
+
+---
+
+## Taste Skill guardrails (PR #58)
+
+Reference: [gaganpasupuleti/taste-skill](https://github.com/gaganpasupuleti/taste-skill) — **prompt/design guidance only, not runtime code.**
+
+| Taste Skill (install name) | CodeQuest application | Doc |
+| --- | --- | --- |
+| `redesign-existing-projects` | Primary UI audit for dashboard, calendar, progress, resume, `StudentShell` | [taste-skill-codequest-application.md](./taste-skill-codequest-application.md) |
+| `design-taste-frontend` | Light pass: login, resume preview, `AuthPromoPanel` | same |
+| `minimalist-ui` | Light pass: dashboard hierarchy, nav density | same |
+| `brandkit` | Deferred (post-PR #58) | — |
+
+**Cursor rule:** `.cursor/rules/codequest-ui-redesign.mdc` (applies when editing student UI globs).
+
+**Also still use** [awesome-ai-dev-prompts](https://github.com/gaganpasupuleti/awesome-ai-dev-prompts) for phase implementation; Taste Skill layers on top for visual polish guardrails only.

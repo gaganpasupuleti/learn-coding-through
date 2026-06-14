@@ -103,3 +103,41 @@ From [awesome-ai-dev-prompts](https://github.com/gaganpasupuleti/awesome-ai-dev-
 - Resume, calendar notes, and some assignment rows use **local/demo data** until backend endpoints exist
 - Resume readiness on dashboard reads localStorage only (not synced across devices)
 - Calendar resource links are placeholder URLs in demo mode
+
+---
+
+## Taste Skill — UI design guardrails (PR #58)
+
+**Date:** 2026-06-14  
+**Branch:** `ui-upgrade-final-integration`  
+**Reference:** [gaganpasupuleti/taste-skill](https://github.com/gaganpasupuleti/taste-skill)
+
+### Usage
+
+- **Guidance only** — read SKILL.md concepts in the reference repo; do **not** copy files into CodeQuest or add as a dependency.
+- Documented in `docs/repo-reuse-reviews/taste-skill-codequest-application.md`.
+- Enforced for agents via `.cursor/rules/codequest-ui-redesign.mdc`.
+
+### Skills applied (prompt level)
+
+| Skill | Role on CodeQuest |
+| --- | --- |
+| `redesign-existing-projects` | Audit/refine existing PR #58 surfaces (dashboard, calendar, progress, resume, shell) |
+| `design-taste-frontend` | Light polish on login, resume preview, auth promo |
+| `minimalist-ui` | Light dashboard/product density and hierarchy |
+| `brandkit` | **Not used in PR #58** |
+
+### What was avoided
+
+- Vendoring taste-skill into `src/`
+- New UI libraries not already in `package.json`
+- Rewriting practice tools, JobSpy, backend, or auth
+- Experimental landing-page aesthetics in the student product shell
+- AGPL or blind copy from external repos
+
+### Design direction captured
+
+- Modern student learning SaaS: clean, trustworthy, sharp
+- No generic AI gradient stacks, childish UI, or random card grids
+- Strong spacing, typography, dashboard hierarchy, mobile-first nav
+- Polished empty/loading/error states
