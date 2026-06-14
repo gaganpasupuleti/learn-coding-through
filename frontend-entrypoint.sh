@@ -5,6 +5,13 @@ PORT_TO_USE="${PORT:-8080}"
 RAW_API="${VITE_API_URL:-${VITE_API_BASE_URL:-${VITE_API_PROXY_TARGET:-}}}"
 RAW_API=$(printf '%s' "$RAW_API" | sed 's|[[:space:]]||g')
 GOOGLE_CLIENT_ID="${VITE_GOOGLE_CLIENT_ID:-}"
+RAW_JOBS_API="${VITE_JOBS_API_URL:-}"
+RAW_JOBS_API=$(printf '%s' "$RAW_JOBS_API" | sed 's|[[:space:]]||g')
+CLIENT_VISIBLE_JOBS_API_URL=""
+
+if [ -n "$RAW_JOBS_API" ] && printf '%s' "$RAW_JOBS_API" | grep -qE '^https?://' && ! printf '%s' "$RAW_JOBS_API" | grep -q '<'; then
+  CLIENT_VISIBLE_JOBS_API_URL=$(printf '%s' "$RAW_JOBS_API" | sed 's|/*$||')
+fi
 
 ENABLE_PROXY=false
 CLIENT_VISIBLE_API_URL="$RAW_API"
@@ -22,7 +29,9 @@ fi
 cat > /usr/share/nginx/html/runtime-config.js <<EOF
 window.__RUNTIME_CONFIG__ = {
   VITE_API_URL: "${CLIENT_VISIBLE_API_URL}",
-  VITE_GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+  VITE_GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}",
+  VITE_JOBS_API_URL: "${CLIENT_VISIBLE_JOBS_API_URL}",
+  VITE_JOBS_ADMIN_API_KEY: ""
 };
 EOF
 
