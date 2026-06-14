@@ -78,8 +78,12 @@ export interface JobSpyRole {
 }
 
 export interface JobSpyLocation {
-  slug: string
+  id: number
+  city: string
+  state?: string
+  country?: string
   display_name: string
+  is_active?: boolean
 }
 
 export interface JobSpyExperienceBand {
@@ -93,8 +97,10 @@ export interface JobSpySite {
   active_count: number
 }
 
+export type JobSpyJobId = string
+
 export interface JobSpyJob {
-  id: number
+  id: JobSpyJobId
   title: string
   company_name: string | null
   location_display?: string | null
@@ -111,9 +117,20 @@ export interface JobSpyJob {
   job_type?: string | null
   date_posted?: string | null
   job_url?: string | null
+  job_url_direct?: string | null
   description?: string | null
   job_level?: string | null
   experience_band?: string | null
+}
+
+export interface JobSpyApplyResponse {
+  redirect_url: string
+  application_id?: string
+}
+
+export interface JobSpySaveJobResponse {
+  saved: boolean
+  saved_job_id?: string
 }
 
 export interface JobSpyJobsResponse {
@@ -175,7 +192,19 @@ export const jobspyApi = {
     return jobspyRequest<JobSpyJobsResponse>(`/api/v1/jobs?${qs}`)
   },
 
-  getJob: (id: number) => jobspyRequest<JobSpyJob>(`/api/v1/jobs/${id}`),
+  getJob: (id: JobSpyJobId) => jobspyRequest<JobSpyJob>(`/api/v1/jobs/${id}`),
+
+  applyToJob: (id: JobSpyJobId, sessionId: string) =>
+    jobspyRequest<JobSpyApplyResponse>(`/api/v1/jobs/${id}/apply`, {
+      method: 'POST',
+      body: JSON.stringify({ session_id: sessionId }),
+    }),
+
+  saveJob: (id: JobSpyJobId, sessionId: string) =>
+    jobspyRequest<JobSpySaveJobResponse>(`/api/v1/jobs/${id}/save`, {
+      method: 'POST',
+      body: JSON.stringify({ session_id: sessionId }),
+    }),
 
   getDashboardStats: () => jobspyRequest<JobSpyDashboardStats>('/api/v1/dashboard/stats'),
   getDashboardRefreshStatus: () => jobspyRequest<{ in_progress: boolean }>('/api/v1/dashboard/refresh/status'),
@@ -242,4 +271,11 @@ export function formatJobSpySalary(job: JobSpyJob): string | null {
   const cur = job.currency ? `${job.currency} ` : ''
   if (job.min_amount && job.max_amount) return `${cur}${job.min_amount}–${job.max_amount}`
   return `${cur}${job.min_amount ?? job.max_amount}`
+}
+
+/** Best external URL for apply / view-original (direct link preferred). */
+export function jobSpyApplyUrl(job: JobSpyJob): string | null {
+  const direct = job.job_url_direct?.trim()
+  const url = job.job_url?.trim()
+  return direct || url || null
 }

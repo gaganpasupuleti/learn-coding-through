@@ -1,25 +1,40 @@
-import { ExternalLink, X } from 'lucide-react'
+import { ExternalLink, Star, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
   formatJobSpySalary,
+  jobSpyApplyUrl,
   jobSpySiteLabel,
   parseJobSpySkills,
   type JobSpyJob,
+  type JobSpyJobId,
 } from '@/lib/jobspy-api'
 
 interface JobSpyJobDetailProps {
   job: JobSpyJob
+  saved?: boolean
+  applying?: boolean
   onClose: () => void
+  onApply: () => void
+  onSave?: (id: JobSpyJobId) => void
+  onUnsave?: (id: JobSpyJobId) => void
 }
 
-export function JobSpyJobDetail({ job, onClose }: JobSpyJobDetailProps) {
+export function JobSpyJobDetail({
+  job,
+  saved = false,
+  applying = false,
+  onClose,
+  onApply,
+  onSave,
+  onUnsave,
+}: JobSpyJobDetailProps) {
   const salary = formatJobSpySalary(job)
   const skills = parseJobSpySkills(job.key_skills)
   const location =
     job.location_display || [job.city, job.state].filter(Boolean).join(', ') || 'India'
 
-  const applyUrl = job.job_url?.trim()
+  const hasApplyUrl = Boolean(jobSpyApplyUrl(job))
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50" onClick={onClose}>
@@ -39,9 +54,21 @@ export function JobSpyJobDetail({ job, onClose }: JobSpyJobDetailProps) {
             <p className="text-slate-600 mt-1">{job.company_name || 'Company not listed'}</p>
             <p className="text-sm text-slate-500">{location}</p>
           </div>
-          <button type="button" onClick={onClose} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100" aria-label="Close">
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-1 shrink-0">
+            {(onSave || onUnsave) && (
+              <button
+                type="button"
+                onClick={() => (saved ? onUnsave?.(job.id) : onSave?.(job.id))}
+                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
+                aria-label={saved ? 'Remove from saved jobs' : 'Save job'}
+              >
+                <Star className={`h-5 w-5 ${saved ? 'fill-amber-400 text-amber-500' : ''}`} />
+              </button>
+            )}
+            <button type="button" onClick={onClose} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100" aria-label="Close">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
         <div className="px-6 py-5 space-y-4">
           <div className="flex flex-wrap gap-3 text-sm text-slate-600">
@@ -62,12 +89,15 @@ export function JobSpyJobDetail({ job, onClose }: JobSpyJobDetailProps) {
           {job.description && (
             <div className="prose prose-sm max-w-none text-slate-700 whitespace-pre-wrap">{job.description}</div>
           )}
-          {applyUrl ? (
-            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
-              <a href={applyUrl} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="h-4 w-4" />
-                View original posting
-              </a>
+          {hasApplyUrl ? (
+            <Button
+              type="button"
+              className="w-full bg-blue-600 hover:bg-blue-700"
+              disabled={applying}
+              onClick={() => void onApply()}
+            >
+              <ExternalLink className="h-4 w-4" />
+              {applying ? 'Opening…' : 'Apply on original posting'}
             </Button>
           ) : (
             <p className="text-sm text-slate-500 text-center">No external apply link available for this listing.</p>
