@@ -65,13 +65,13 @@ export function OverallProgressCard({
         <dl className="grid grid-cols-2 gap-3 text-sm">
           <div className="rounded-lg bg-slate-50 px-3 py-2">
             <dt className="text-xs text-slate-500">Modules</dt>
-            <dd className="font-semibold text-slate-900">
+            <dd className="font-semibold tabular-nums text-slate-900">
               {loading ? '—' : `${stagesComplete}/${stageCount || '—'}`}
             </dd>
           </div>
           <div className="rounded-lg bg-slate-50 px-3 py-2">
             <dt className="text-xs text-slate-500">Catalog steps</dt>
-            <dd className="font-semibold text-slate-900">{loading ? '—' : catalogSteps ?? 0}</dd>
+            <dd className="font-semibold tabular-nums text-slate-900">{loading ? '—' : catalogSteps ?? 0}</dd>
           </div>
         </dl>
       </div>

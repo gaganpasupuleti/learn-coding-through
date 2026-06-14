@@ -32,15 +32,15 @@ export function OldMistakesReviewCard({ onReview }: OldMistakesReviewCardProps) 
           <ul className="space-y-2 text-sm">
             <li className="flex justify-between rounded-lg bg-slate-50 px-3 py-2">
               <span className="text-slate-600">SQL</span>
-              <span className="font-semibold text-slate-900">{mistakes.sql}</span>
+              <span className="font-semibold tabular-nums text-slate-900">{mistakes.sql}</span>
             </li>
             <li className="flex justify-between rounded-lg bg-slate-50 px-3 py-2">
               <span className="text-slate-600">Code</span>
-              <span className="font-semibold text-slate-900">{mistakes.code}</span>
+              <span className="font-semibold tabular-nums text-slate-900">{mistakes.code}</span>
             </li>
             <li className="flex justify-between rounded-lg bg-slate-50 px-3 py-2">
               <span className="text-slate-600">Typing</span>
-              <span className="font-semibold text-slate-900">{mistakes.typing}</span>
+              <span className="font-semibold tabular-nums text-slate-900">{mistakes.typing}</span>
             </li>
           </ul>
         )}

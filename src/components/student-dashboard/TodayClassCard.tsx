@@ -6,20 +6,21 @@ import type { UpcomingSession } from '@/lib/api'
 import { formatTime, toIsoDate } from '@/lib/dashboard-derive'
 import { cn } from '@/lib/utils'
 
-import { DASHBOARD_CARD, DASHBOARD_CARD_BODY } from './dashboard-styles'
+import { DASHBOARD_CARD, DASHBOARD_CARD_PRIMARY, DASHBOARD_CARD_BODY } from './dashboard-styles'
 
 interface TodayClassCardProps {
   sessions: UpcomingSession[]
   loading: boolean
   onOpenCalendar?: () => void
+  emphasized?: boolean
 }
 
-export function TodayClassCard({ sessions, loading, onOpenCalendar }: TodayClassCardProps) {
+export function TodayClassCard({ sessions, loading, onOpenCalendar, emphasized = false }: TodayClassCardProps) {
   const today = toIsoDate(new Date())
   const todaySession = sessions.find((s) => s.session_date === today)
 
   return (
-    <Card className={cn(DASHBOARD_CARD, 'h-full')}>
+    <Card className={cn(emphasized ? DASHBOARD_CARD_PRIMARY : DASHBOARD_CARD, 'h-full')}>
       <div className={DASHBOARD_CARD_BODY}>
         <div className="mb-4 flex items-center justify-between gap-2">
           <h2 className="text-lg font-semibold text-slate-900">Today&apos;s Class</h2>
