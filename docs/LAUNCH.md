@@ -93,18 +93,35 @@ The same steps are summarized as comments at the top of [backend/requirements.tx
 
 ## Smoke test script
 
+**Environment requirements**
+
+- **CodeQuest:** run `npm run dev:all` so the frontend (`:5000`) and API (`:8000`) are available before UI smoke tests.
+- **JobSpy:** `npm run qa:jobspy-smoke` requires the JobSpy API on `http://127.0.0.1:8001`. Failure is environmental when JobSpy is not running.
+- **Practice nav labels:** smoke scripts accept **Code Workbench** (current shell) or legacy **Code Practice Ground** via `scripts/smoke-nav-helpers.mjs`.
+
 Run before each release candidate:
 
-1. Start API and frontend (or use `npm run dev:all` / combined script).
+1. Start API and frontend (`npm run dev:all`).
 2. Open student app URL (e.g. `http://127.0.0.1:5000`).
 3. **Login:** email/password or Google (if configured) or **Demo mode**.
-4. **Home:** landing loads; navigate via shell.
-5. **Projects:** list loads; open one project; learning view loads; back returns to list.
-6. **Quiz / Typing:** open page; no unhandled blank screen.
-7. **Career Map** vs **Flow Path:** both open; content visible.
-8. **Job Board:** with JobSpy on `:8001`, listings load; external apply opens in new tab.
-9. **Admin:** log in as admin; dashboard loads; **JobSpy Ops** accepts admin key and shows stats.
-10. **Logout:** session clears; login screen returns.
+4. **Home:** landing loads; navigate via shell (Dashboard, Calendar, Progress, Resume).
+5. **Dashboard:** today’s class, deadlines, practice cards, resume readiness visible.
+6. **Calendar / Progress / Resume:** each page loads without blank screen; resume print dialog opens.
+7. **Projects:** list loads; open one project; learning view loads; back returns to list.
+8. **Quiz / Typing / Code / SQL practice:** open each route; no unhandled blank screen (`npm run qa:practice-smoke` after `dev:all`).
+9. **Career Map** vs **Flow Path:** both open; content visible.
+10. **Job Board:** with JobSpy on `:8001`, listings load; external apply opens in new tab (`npm run qa:jobspy-smoke`).
+11. **Admin:** log in as admin; dashboard loads; **JobSpy Ops** accepts admin key and shows stats.
+12. **Logout:** session clears; login screen returns.
+
+Optional automation:
+
+```bash
+npm run build && npm run lint
+npm run qa:practice-smoke
+npm run qa:quiz-smoke
+npm run qa:jobspy-smoke
+```
 
 ## Page inventory and polish status
 
@@ -118,6 +135,10 @@ Use: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ### Student pages
 
+- `[x]` **StudentDashboardPage** — daily cards: class, deadlines, streak, practice progress, readiness
+- `[x]` **StudentCalendarPage** — month view, notes, assignments, resources (demo where API pending)
+- `[x]` **StudentProgressPage** — course/quiz/project overview + mistakes summary
+- `[x]` **ResumeBuilderPage** — form + ATS preview, localStorage, print export
 - `[x]` **LandingPage** — Career Map vs Flow Path CTAs and footnote
 - `[x]` **ProjectsPage** / **ProjectLearningPage** — load error + retry; skeleton + not-found with back
 - `[x]` **PracticePage** — API note for runners / SQL schema

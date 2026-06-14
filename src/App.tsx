@@ -28,6 +28,12 @@ import { LearningPlannerPage } from '@/components/pages/LearningPlannerPage'
 
 import { StudentDashboardPage } from '@/components/pages/StudentDashboardPage'
 
+import { StudentCalendarPage } from '@/components/pages/StudentCalendarPage'
+
+import { StudentProgressPage } from '@/components/pages/StudentProgressPage'
+
+import { ResumeBuilderPage } from '@/components/pages/ResumeBuilderPage'
+
 import { StudentHubPage } from '@/components/pages/StudentHubPage'
 
 import { JobSpyPage } from '@/components/pages/JobSpyPage'
@@ -137,6 +143,12 @@ export type StudentPage =
   | 'jobspy'
 
   | 'learning-planner'
+
+  | 'calendar'
+
+  | 'progress'
+
+  | 'resume'
 
 
 
@@ -517,6 +529,22 @@ function App() {
           <StudentDashboardPage user={user} onNavigate={handleStudentNavigate} />
 
         )}
+
+
+
+        {studentPage === 'calendar' && <StudentCalendarPage user={user} />}
+
+
+
+        {studentPage === 'progress' && (
+
+          <StudentProgressPage user={user} onNavigate={handleStudentNavigate} />
+
+        )}
+
+
+
+        {studentPage === 'resume' && <ResumeBuilderPage user={user} />}
 
 
 

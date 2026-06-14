@@ -1,5 +1,7 @@
 import { chromium } from 'playwright'
 
+import { openCodePracticeFromLearningMenu } from './smoke-nav-helpers.mjs'
+
 const WEB_BASE = process.env.SMOKE_WEB_BASE ?? 'http://127.0.0.1:5001'
 const NAV_TIMEOUT_MS = Number(process.env.SMOKE_NAV_TIMEOUT_MS ?? 120000)
 const API_BASE = process.env.SMOKE_API_BASE ?? 'http://127.0.0.1:8000'
@@ -136,8 +138,7 @@ async function main() {
         return 'perfect score — no quiz mistakes expected'
       }
 
-      await page.getByRole('button', { name: 'Learning menu' }).click()
-      await page.getByRole('menuitem', { name: 'Code Practice Ground' }).click()
+      await openCodePracticeFromLearningMenu(page, NAV_TIMEOUT_MS)
       await page.getByTestId('practice-section-mistakes').click()
       const hasMistake = await page.getByText('[Quiz:', { exact: false }).first().isVisible().catch(() => false)
       if (!hasMistake) throw new Error('Quiz wrong answers were not saved to Mistakes Review')
