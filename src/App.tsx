@@ -48,7 +48,7 @@ import { SQL_PRACTICE_ROUTE } from '@/features/sql-practice/types/sqlPractice.ty
 
 import { PowerBiPracticePage } from '@/features/powerbi-practice/components/PowerBiPracticePage'
 
-import { POWERBI_PRACTICE_ROUTE } from '@/features/powerbi-practice/types/powerbiPractice.types'
+import { POWERBI_PRACTICE_ROUTE, DAX_PRACTICE_ROUTE } from '@/features/powerbi-practice/types/powerbiPractice.types'
 
 import { PasswordSetupGate } from '@/components/auth/PasswordSetupGate'
 
@@ -109,6 +109,8 @@ const PRACTICE_PATH_TO_PAGE: Record<string, StudentPage> = {
   [TYPING_PRACTICE_ROUTE]: 'practice-typing',
 
   [POWERBI_PRACTICE_ROUTE]: 'practice-powerbi',
+
+  [DAX_PRACTICE_ROUTE]: 'practice-powerbi',
 
 }
 
@@ -252,7 +254,9 @@ function App() {
 
     const current = window.location.pathname
 
-    if (Object.keys(PRACTICE_PATH_TO_PAGE).includes(current)) {
+    const onPowerBiSubRoute = current.startsWith(`${POWERBI_PRACTICE_ROUTE}/`)
+
+    if (Object.keys(PRACTICE_PATH_TO_PAGE).includes(current) || onPowerBiSubRoute) {
 
       window.history.replaceState(null, '', '/')
 

@@ -13,16 +13,21 @@ import {
 import { wb } from '@/lib/workbench-theme'
 import { cn } from '@/lib/utils'
 import type { PowerBiModuleDefinition } from '../types/powerbiPractice.types'
+import { DAX_PRACTICE_ROUTE } from '../types/powerbiPractice.types'
 import { PowerBiModuleCard } from './PowerBiModuleCard'
 
-const AVAILABLE_SOON_MODULES: PowerBiModuleDefinition[] = [
+const ACTIVE_MODULES: PowerBiModuleDefinition[] = [
   {
     id: 'dax-practice',
     title: 'DAX Practice',
     description:
       'Write measure and calculated-column formulas against sample datasets. Rule-based checking — no real DAX engine required.',
-    status: 'available-soon',
+    status: 'active',
+    href: DAX_PRACTICE_ROUTE,
   },
+]
+
+const AVAILABLE_SOON_MODULES: PowerBiModuleDefinition[] = [
   {
     id: 'powerbi-quiz',
     title: 'Power BI Quiz',
@@ -82,7 +87,7 @@ const MODULE_ICONS: Record<PowerBiModuleDefinition['id'], React.ReactNode> = {
   'report-lab': <Plug size={20} aria-hidden />,
 }
 
-export function PowerBiLandingPage() {
+export function PowerBiLandingPage({ onOpenDaxPractice }: { onOpenDaxPractice: () => void }) {
   return (
     <div className={cn('min-h-full', wb.root)}>
       <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-10">
@@ -128,6 +133,22 @@ export function PowerBiLandingPage() {
               </span>
             </li>
           </ul>
+        </section>
+
+        <section className="mb-10" aria-labelledby="available-now-heading">
+          <h2 id="available-now-heading" className={cn('mb-4', wb.sectionLabel)}>
+            Available Now
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {ACTIVE_MODULES.map((module) => (
+              <PowerBiModuleCard
+                key={module.id}
+                module={module}
+                icon={MODULE_ICONS[module.id]}
+                onOpen={module.id === 'dax-practice' ? onOpenDaxPractice : undefined}
+              />
+            ))}
+          </div>
         </section>
 
         <section className="mb-10" aria-labelledby="available-soon-heading">
