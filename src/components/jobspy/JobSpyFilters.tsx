@@ -69,7 +69,7 @@ export function JobSpyFilters({ filters, meta, loading, onChange, onSearch }: Jo
           <select id="jobspy-location" className={selectClass} value={filters.location ?? ''} onChange={(e) => onChange('location', e.target.value)}>
             <option value="">All cities</option>
             {meta.locations.map((l) => (
-              <option key={l.slug} value={l.slug}>{l.display_name}</option>
+              <option key={l.id} value={l.city}>{l.display_name}</option>
             ))}
           </select>
         </div>
