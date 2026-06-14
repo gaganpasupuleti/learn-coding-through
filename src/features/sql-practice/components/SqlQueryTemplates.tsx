@@ -30,14 +30,14 @@ interface SqlQueryTemplatesProps {
   onInsertTemplate: (sql: string, templateId: SqlQueryTemplateId) => void
 }
 
-const TEMPLATE_ITEMS: Array<{ id: SqlQueryTemplateId; label: string }> = [
-  { id: 'select_all', label: 'Select all rows' },
-  { id: 'where_filter', label: 'Filter with WHERE' },
-  { id: 'count_rows', label: 'Count rows' },
-  { id: 'group_by', label: 'Group by count' },
-  { id: 'join_tables', label: 'Join two tables' },
-  { id: 'having_filter', label: 'Having filter' },
-  { id: 'order_limit', label: 'Order and limit' },
+const TEMPLATE_ITEMS: Array<{ id: SqlQueryTemplateId; label: string; hint: string }> = [
+  { id: 'select_all', label: 'SELECT *', hint: 'Start with all columns from one table' },
+  { id: 'where_filter', label: 'WHERE filter', hint: 'Filter rows before grouping' },
+  { id: 'count_rows', label: 'COUNT rows', hint: 'Count all rows in a table' },
+  { id: 'group_by', label: 'GROUP BY', hint: 'Count rows per group — add non-aggregated columns to GROUP BY' },
+  { id: 'join_tables', label: 'INNER JOIN', hint: 'Combine two tables on matching keys' },
+  { id: 'having_filter', label: 'HAVING', hint: 'Filter grouped results after GROUP BY' },
+  { id: 'order_limit', label: 'ORDER BY + LIMIT', hint: 'Sort results (ASC/DESC) and cap row count' },
 ]
 
 function buildTemplateSql(
@@ -86,13 +86,14 @@ export function SqlQueryTemplates({ database, question, onInsertTemplate }: SqlQ
         <h3 className={cn('text-xs font-semibold uppercase tracking-wide', wb.textMuted)}>Quick queries</h3>
       </div>
       <p className={cn('mb-2 text-[11px]', wb.textMuted)}>
-        Templates are inserted only. Review and run when ready.
+        Inserts a starter pattern only — edit placeholders, then run when ready.
       </p>
       <div className="flex flex-wrap gap-1.5">
         {TEMPLATE_ITEMS.map((item) => (
           <button
             key={item.id}
             type="button"
+            title={item.hint}
             onClick={() => onInsertTemplate(buildTemplateSql(item.id, database, question), item.id)}
             className={cn(
               'rounded-md border px-2 py-1 text-left text-[11px] transition-colors',

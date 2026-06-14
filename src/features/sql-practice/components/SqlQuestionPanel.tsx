@@ -23,6 +23,7 @@ import { SqlProgressBadge } from './SqlProgressBadge'
 import { SqlProgressSummary } from './SqlProgressSummary'
 import { SqlQuestionFilters } from './SqlQuestionFilters'
 import { SqlQueryTemplates, type SqlQueryTemplateId } from './SqlQueryTemplates'
+import { SqlQuestionLearningGuide } from './SqlQuestionLearningGuide'
 import { SqlReviewPanel } from './review/SqlReviewPanel'
 import { SqlProgressAnalytics } from './review/SqlProgressAnalytics'
 import { SqlWeakTopicCard } from './review/SqlWeakTopicCard'
@@ -284,9 +285,11 @@ export function SqlQuestionPanel({
         </div>
 
         <h2 className={cn('text-lg font-semibold', wb.textPrimary)}>{question.title}</h2>
-        <p>{question.problemStatement}</p>
+        <p className="text-[15px]">{question.problemStatement}</p>
 
-        <div className={cn('rounded-lg border p-3.5', wb.border, 'bg-[#111827]')}>
+        <SqlQuestionLearningGuide question={question} />
+
+        <div className={cn('rounded-lg border p-3', wb.border, 'bg-[#111827]')}>
           <p className={cn('mb-1 text-xs font-bold uppercase tracking-widest', wb.textMuted)}>Learning objective</p>
           <p className="text-sm">{question.learningObjective}</p>
         </div>

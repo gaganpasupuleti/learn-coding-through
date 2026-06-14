@@ -54,7 +54,8 @@ FROM students;`,
     hints: ["Use WHERE city = 'Hyderabad'.", 'Select student_name and city.'],
     starterSql: `SELECT student_name, city
 FROM students
-WHERE city = 'Hyderabad';`,
+-- Filter by city (use quotes for text values)
+WHERE city = ;`,
     solutionSql: `SELECT student_name, city
 FROM students
 WHERE city = 'Hyderabad';`,
@@ -72,7 +73,8 @@ WHERE city = 'Hyderabad';`,
     hints: ['Add ORDER BY student_name.', 'Ascending order is the default.'],
     starterSql: `SELECT student_name, city
 FROM students
-ORDER BY student_name;`,
+-- Sort alphabetically by student_name (ASC is default)
+ORDER BY ;`,
     solutionSql: `SELECT student_name, city
 FROM students
 ORDER BY student_name;`,
@@ -91,7 +93,8 @@ ORDER BY student_name;`,
     starterSql: `SELECT student_name
 FROM students
 ORDER BY student_id
-LIMIT 5;`,
+-- Keep only the first 5 rows
+LIMIT ;`,
     solutionSql: `SELECT student_name
 FROM students
 ORDER BY student_id
@@ -128,7 +131,8 @@ FROM students;`,
     starterSql: `SELECT course_id, COUNT(*) AS enrollment_count
 FROM enrollments
 GROUP BY course_id
-ORDER BY enrollment_count DESC;`,
+-- Sort by enrollment_count from highest to lowest
+ORDER BY ;`,
     solutionSql: `SELECT course_id, COUNT(*) AS enrollment_count
 FROM enrollments
 GROUP BY course_id
@@ -149,7 +153,8 @@ ORDER BY enrollment_count DESC;`,
     starterSql: `SELECT course_id, COUNT(*) AS enrollment_count
 FROM enrollments
 GROUP BY course_id
-HAVING COUNT(*) > 1;`,
+-- Keep only courses with more than one enrollment
+HAVING ;`,
     solutionSql: `SELECT course_id, COUNT(*) AS enrollment_count
 FROM enrollments
 GROUP BY course_id
@@ -173,7 +178,8 @@ HAVING COUNT(*) > 1;`,
     starterSql: `SELECT s.student_name, c.course_name
 FROM students s
 JOIN enrollments e ON s.student_id = e.student_id
-JOIN courses c ON e.course_id = c.course_id;`,
+-- JOIN courses and match course_id
+JOIN courses c ON ;`,
     solutionSql: `SELECT s.student_name, c.course_name
 FROM students s
 JOIN enrollments e ON s.student_id = e.student_id
@@ -193,7 +199,8 @@ JOIN courses c ON e.course_id = c.course_id;`,
     hints: ['LEFT JOIN programs on program_id.', 'Start FROM students.'],
     starterSql: `SELECT s.student_name, p.program_name
 FROM students s
-LEFT JOIN programs p ON s.program_id = p.program_id;`,
+-- Keep every student even without a program
+LEFT JOIN programs p ON ;`,
     solutionSql: `SELECT s.student_name, p.program_name
 FROM students s
 LEFT JOIN programs p ON s.program_id = p.program_id;`,
@@ -216,7 +223,8 @@ LEFT JOIN programs p ON s.program_id = p.program_id;`,
     starterSql: `SELECT e.course_id, AVG(g.numeric_grade) AS avg_grade
 FROM grades g
 JOIN enrollments e ON g.enrollment_id = e.enrollment_id
-GROUP BY e.course_id;`,
+-- Group averages per course_id
+GROUP BY ;`,
     solutionSql: `SELECT e.course_id, ROUND(AVG(g.numeric_grade), 2) AS avg_grade
 FROM grades g
 JOIN enrollments e ON g.enrollment_id = e.enrollment_id
@@ -241,7 +249,8 @@ GROUP BY e.course_id;`,
     starterSql: `SELECT DISTINCT s.student_name
 FROM students s
 JOIN enrollments e ON s.student_id = e.student_id
-WHERE s.city = 'Hyderabad';`,
+-- Filter to Hyderabad students only
+WHERE s.city = ;`,
     solutionSql: `SELECT DISTINCT s.student_name
 FROM students s
 JOIN enrollments e ON s.student_id = e.student_id
@@ -260,7 +269,8 @@ WHERE s.city = 'Hyderabad';`,
     hints: ['SELECT DISTINCT city FROM students.', 'Add ORDER BY city.'],
     starterSql: `SELECT DISTINCT city
 FROM students
-ORDER BY city;`,
+-- Sort cities alphabetically
+ORDER BY ;`,
     solutionSql: `SELECT DISTINCT city
 FROM students
 ORDER BY city;`,
@@ -282,7 +292,8 @@ const HOSPITAL_QUESTIONS: SqlPracticeQuestion[] = [
     hints: ['Query the appointments table.', "Add WHERE status = 'scheduled'."],
     starterSql: `SELECT appointment_id, patient_id, scheduled_at
 FROM appointments
-WHERE status = 'scheduled';`,
+-- Filter to scheduled appointments only
+WHERE status = ;`,
     solutionSql: `SELECT appointment_id, patient_id, scheduled_at
 FROM appointments
 WHERE status = 'scheduled';`,
@@ -300,7 +311,7 @@ WHERE status = 'scheduled';`,
     hints: ['JOIN doctors and departments on department_id.', 'Alias departments.name AS department_name.'],
     starterSql: `SELECT d.full_name, dept.name AS department_name
 FROM doctors d
-JOIN departments dept ON d.department_id = dept.department_id;`,
+JOIN departments dept ON ;`,
     solutionSql: `SELECT d.full_name, dept.name AS department_name
 FROM doctors d
 JOIN departments dept ON d.department_id = dept.department_id;`,
@@ -333,7 +344,8 @@ FROM patients;`,
     hints: ['Query the billing table.', "WHERE status = 'pending'."],
     starterSql: `SELECT bill_id, patient_id, amount
 FROM billing
-WHERE status = 'pending';`,
+-- Filter to pending bills only
+WHERE status = ;`,
     solutionSql: `SELECT bill_id, patient_id, amount
 FROM billing
 WHERE status = 'pending';`,
@@ -351,7 +363,8 @@ WHERE status = 'pending';`,
     hints: ['GROUP BY doctor_id.', 'Use COUNT(*) AS appointment_count.'],
     starterSql: `SELECT doctor_id, COUNT(*) AS appointment_count
 FROM appointments
-GROUP BY doctor_id;`,
+-- Group counts per doctor_id
+GROUP BY ;`,
     solutionSql: `SELECT doctor_id, COUNT(*) AS appointment_count
 FROM appointments
 GROUP BY doctor_id;`,
@@ -369,7 +382,8 @@ GROUP BY doctor_id;`,
     hints: ['SELECT name, floor FROM departments.', 'ORDER BY floor.'],
     starterSql: `SELECT name, floor
 FROM departments
-ORDER BY floor;`,
+-- Sort by floor ascending (ASC is default)
+ORDER BY ;`,
     solutionSql: `SELECT name, floor
 FROM departments
 ORDER BY floor;`,
@@ -388,7 +402,8 @@ ORDER BY floor;`,
     hints: ['FROM patients LEFT JOIN insurance.', 'Select full_name and provider.'],
     starterSql: `SELECT p.full_name, i.provider
 FROM patients p
-LEFT JOIN insurance i ON p.patient_id = i.patient_id;`,
+-- Keep every patient even without insurance
+LEFT JOIN insurance i ON ;`,
     solutionSql: `SELECT p.full_name, i.provider
 FROM patients p
 LEFT JOIN insurance i ON p.patient_id = i.patient_id;`,
@@ -426,7 +441,8 @@ const SHIPPING_QUESTIONS: SqlPracticeQuestion[] = [
     hints: ['Query the orders table.', 'Use WHERE total_amount > 1000.'],
     starterSql: `SELECT order_id, customer_id, total_amount
 FROM orders
-WHERE total_amount > 1000;`,
+-- Filter orders above 1000
+WHERE total_amount > ;`,
     solutionSql: `SELECT order_id, customer_id, total_amount
 FROM orders
 WHERE total_amount > 1000;`,
@@ -459,7 +475,8 @@ FROM customers;`,
     hints: ['Query orders.', "WHERE status = 'shipped'."],
     starterSql: `SELECT order_id, order_date
 FROM orders
-WHERE status = 'shipped';`,
+-- Filter to shipped orders only
+WHERE status = ;`,
     solutionSql: `SELECT order_id, order_date
 FROM orders
 WHERE status = 'shipped';`,
@@ -479,7 +496,8 @@ WHERE status = 'shipped';`,
     starterSql: `SELECT c.name, COUNT(*) AS shipment_count
 FROM carriers c
 JOIN shipments s ON c.carrier_id = s.carrier_id
-GROUP BY c.name;`,
+-- Group shipment counts per carrier name
+GROUP BY ;`,
     solutionSql: `SELECT c.name, COUNT(*) AS shipment_count
 FROM carriers c
 JOIN shipments s ON c.carrier_id = s.carrier_id
@@ -500,7 +518,8 @@ GROUP BY c.name;`,
     starterSql: `SELECT c.company_name, SUM(o.total_amount) AS total_spent
 FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id
-GROUP BY c.company_name;`,
+-- Group totals per company_name
+GROUP BY ;`,
     solutionSql: `SELECT c.company_name, ROUND(SUM(o.total_amount), 2) AS total_spent
 FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id
@@ -520,7 +539,8 @@ GROUP BY c.company_name;`,
     hints: ['Query packages.', 'WHERE weight_kg > 20.'],
     starterSql: `SELECT package_id, weight_kg
 FROM packages
-WHERE weight_kg > 20;`,
+-- Packages heavier than 20 kg
+WHERE weight_kg > ;`,
     solutionSql: `SELECT package_id, weight_kg
 FROM packages
 WHERE weight_kg > 20;`,
@@ -540,7 +560,8 @@ WHERE weight_kg > 20;`,
     starterSql: `SELECT o.order_id
 FROM orders o
 LEFT JOIN shipments s ON o.order_id = s.order_id
-WHERE s.shipment_id IS NULL;`,
+-- Keep orders with no matching shipment
+WHERE ;`,
     solutionSql: `SELECT o.order_id
 FROM orders o
 LEFT JOIN shipments s ON o.order_id = s.order_id
@@ -559,7 +580,8 @@ WHERE s.shipment_id IS NULL;`,
     hints: ['SELECT order_id, order_date FROM orders.', 'ORDER BY order_date.'],
     starterSql: `SELECT order_id, order_date
 FROM orders
-ORDER BY order_date;`,
+-- Sort by order_date ascending
+ORDER BY ;`,
     solutionSql: `SELECT order_id, order_date
 FROM orders
 ORDER BY order_date;`,
