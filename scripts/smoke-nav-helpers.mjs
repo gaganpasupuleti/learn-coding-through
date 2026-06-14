@@ -124,3 +124,43 @@ export async function openProjectsFromLearnMenu(page) {
   const item = await clickStudentMenuItem(page, 'Projects')
   return `${menu} → ${item}`
 }
+
+export async function waitForSqlPracticePage(page, timeoutMs = 120000) {
+  const started = Date.now()
+  while (Date.now() - started < timeoutMs) {
+    const groundVisible = await page
+      .getByText('SQL Practice Ground', { exact: false })
+      .first()
+      .isVisible()
+      .catch(() => false)
+    const runVisible = await page.getByRole('button', { name: 'Run', exact: true }).isVisible().catch(() => false)
+    const checkVisible = await page.getByRole('button', { name: 'Check Answer' }).isVisible().catch(() => false)
+    const editorVisible = await page.locator('.monaco-editor').first().isVisible().catch(() => false)
+    if (groundVisible && runVisible && checkVisible && editorVisible) {
+      return 'sql-practice-ground'
+    }
+    await page.waitForTimeout(250)
+  }
+  throw new Error('SQL Practice page not ready (expected SQL Practice Ground, Run, Check Answer, editor)')
+}
+
+export async function openSqlPracticeFromPracticeMenu(page, timeoutMs = 120000) {
+  const menu = await openStudentMenu(page, 'practice')
+  const item = await clickStudentMenuItem(page, 'SQL Practice')
+  const ready = await waitForSqlPracticePage(page, timeoutMs)
+  return `${menu} → ${item} → ${ready}`
+}
+
+export async function waitForTypingPracticePage(page, timeoutMs = 120000) {
+  await page.getByRole('heading', { name: 'Typing Practice' }).waitFor({ state: 'visible', timeout: timeoutMs })
+  await page.getByRole('button', { name: 'Start', exact: true }).waitFor({ state: 'visible', timeout: timeoutMs })
+  await page.locator('textarea').first().waitFor({ state: 'visible', timeout: timeoutMs })
+  return 'typing-practice'
+}
+
+export async function openTypingPracticeFromPracticeMenu(page, timeoutMs = 120000) {
+  const menu = await openStudentMenu(page, 'practice')
+  const item = await clickStudentMenuItem(page, 'Typing Practice')
+  const ready = await waitForTypingPracticePage(page, timeoutMs)
+  return `${menu} → ${item} → ${ready}`
+}
