@@ -21,10 +21,10 @@ function NoteContent({ note }: { note: CalendarClassNote }) {
     <div className="space-y-3">
       <div>
         <h3 className="font-semibold text-slate-900">{note.title}</h3>
-        <p className="mt-1 text-sm text-slate-600">{note.summary}</p>
+        <p className="mt-1 text-sm leading-relaxed text-slate-600">{note.summary}</p>
       </div>
       {note.bullets.length > 0 && (
-        <ul className="space-y-1 text-sm text-slate-700">
+        <ul className="space-y-1.5 text-sm text-slate-700">
           {note.bullets.map((bullet) => (
             <li key={bullet} className="flex gap-2">
               <span className="text-slate-400">•</span>
@@ -56,7 +56,7 @@ export function DayClassNotes({ selectedDate, dayPlan, loading }: DayClassNotesP
       <div className={DASHBOARD_CARD_BODY}>
         <div className="mb-4 flex items-center gap-2">
           <BookOpen className="h-5 w-5 text-blue-600" aria-hidden />
-          <h2 className="text-lg font-semibold text-slate-900">Class notes</h2>
+          <h3 className="text-base font-semibold text-slate-900">Instructor notes</h3>
         </div>
 
         {loading ? (
@@ -66,16 +66,26 @@ export function DayClassNotes({ selectedDate, dayPlan, loading }: DayClassNotesP
         ) : dayPlan && dayPlan.objectives.length > 0 ? (
           <div className="space-y-3">
             <p className="text-sm font-medium text-slate-800">{dayPlan.topic}</p>
-            <ul className="space-y-1 text-sm text-slate-700">
+            <ul className="space-y-1.5 text-sm text-slate-700">
               {dayPlan.objectives.map((obj) => (
-                <li key={obj}>• {obj}</li>
+                <li key={obj} className="flex gap-2">
+                  <span className="text-slate-400">•</span>
+                  <span>{obj}</span>
+                </li>
               ))}
             </ul>
+            {dayPlan.estimatedMinutes > 0 && (
+              <p className="text-xs text-slate-500 tabular-nums">
+                ~{dayPlan.estimatedMinutes} min planned study
+              </p>
+            )}
           </div>
         ) : (
           <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/80 px-4 py-8 text-center">
-            <p className="text-sm font-medium text-slate-700">No notes for this date</p>
-            <p className="mt-1 text-xs text-slate-500">Select a marked day or check upcoming classes.</p>
+            <p className="text-sm font-medium text-slate-700">No class notes for this day</p>
+            <p className="mt-1 text-xs text-slate-500">
+              Notes appear after live sessions or when your instructor posts materials.
+            </p>
           </div>
         )}
       </div>

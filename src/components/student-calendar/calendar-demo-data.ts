@@ -52,19 +52,19 @@ export const CALENDAR_DEMO_RESOURCES: CalendarResourceLink[] = [
   {
     date: offsetDate(0),
     label: 'SQL joins slide deck',
-    url: 'https://example.com/sql-joins',
+    url: '',
     kind: 'slides',
   },
   {
     date: offsetDate(0),
     label: 'Class recording',
-    url: 'https://example.com/recording',
+    url: '',
     kind: 'recording',
   },
   {
     date: offsetDate(1),
     label: 'Python cheat sheet',
-    url: 'https://example.com/python-cheatsheet',
+    url: '',
     kind: 'doc',
   },
 ]

@@ -16,7 +16,7 @@ export function ResumePreview({ data }: ResumePreviewProps) {
   return (
     <article
       id="resume-print-root"
-      className="mx-auto max-w-[720px] bg-white px-8 py-10 text-[11pt] leading-relaxed text-slate-900 shadow-sm print:shadow-none print:px-0"
+      className="mx-auto max-w-[720px] bg-white text-[11pt] leading-relaxed text-slate-900 print:max-w-none"
     >
       <header className="border-b border-slate-300 pb-4 text-center">
         <h1 className="text-2xl font-bold tracking-tight">{personal.fullName || 'Your Name'}</h1>

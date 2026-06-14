@@ -18,7 +18,7 @@ export function ResumeForm({ data, onChange }: ResumeFormProps) {
   const update = (patch: Partial<ResumeData>) => onChange({ ...data, ...patch })
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <ResumeSectionCard title="Personal info" description="Name and contact details for recruiters">
         <ResumeTextField
           label="Full name"
@@ -85,7 +85,7 @@ export function ResumeForm({ data, onChange }: ResumeFormProps) {
               ],
             })
           }
-          className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+          className="inline-flex items-center gap-1 rounded text-sm font-medium text-blue-600 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
         >
           <Plus className="h-4 w-4" /> Add education
         </button>
@@ -130,7 +130,7 @@ export function ResumeForm({ data, onChange }: ResumeFormProps) {
               ],
             })
           }
-          className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+          className="inline-flex items-center gap-1 rounded text-sm font-medium text-blue-600 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
         >
           <Plus className="h-4 w-4" /> Add project
         </button>
@@ -166,7 +166,7 @@ export function ResumeForm({ data, onChange }: ResumeFormProps) {
               ],
             })
           }
-          className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+          className="inline-flex items-center gap-1 rounded text-sm font-medium text-blue-600 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
         >
           <Plus className="h-4 w-4" /> Add experience
         </button>
@@ -223,7 +223,7 @@ export function ResumeForm({ data, onChange }: ResumeFormProps) {
               ],
             })
           }
-          className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+          className="inline-flex items-center gap-1 rounded text-sm font-medium text-blue-600 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
         >
           <Plus className="h-4 w-4" /> Add certification
         </button>
@@ -276,7 +276,7 @@ function EducationRow({
   onRemove: () => void
 }) {
   return (
-    <div className="space-y-3 rounded-lg border border-slate-100 p-3">
+    <div className="space-y-3 rounded-lg border border-slate-100 bg-slate-50/50 p-4">
       <ResumeTextField label="School" value={entry.school} onChange={(school) => onChange({ ...entry, school })} />
       <div className="grid gap-3 sm:grid-cols-2">
         <ResumeTextField label="Degree" value={entry.degree} onChange={(degree) => onChange({ ...entry, degree })} />
@@ -299,7 +299,7 @@ function ProjectRow({
   onRemove: () => void
 }) {
   return (
-    <div className="space-y-3 rounded-lg border border-slate-100 p-3">
+    <div className="space-y-3 rounded-lg border border-slate-100 bg-slate-50/50 p-4">
       <ResumeTextField label="Project name" value={entry.name} onChange={(name) => onChange({ ...entry, name })} />
       <ResumeTextField
         label="Description"
@@ -326,7 +326,7 @@ function ExperienceRow({
   onRemove: () => void
 }) {
   return (
-    <div className="space-y-3 rounded-lg border border-slate-100 p-3">
+    <div className="space-y-3 rounded-lg border border-slate-100 bg-slate-50/50 p-4">
       <ResumeTextField label="Company" value={entry.company} onChange={(company) => onChange({ ...entry, company })} />
       <ResumeTextField label="Role" value={entry.role} onChange={(role) => onChange({ ...entry, role })} />
       <ResumeTextField
