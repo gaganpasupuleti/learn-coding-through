@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { Card } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import type { UpcomingDeadlines } from '@/lib/api'
 import {
   bucketDeadlines,
@@ -89,7 +90,11 @@ export function DeadlinesTaskBoard({ deadlines, loading }: DeadlinesTaskBoardPro
         <h2 className="mb-4 text-lg font-semibold text-slate-900">Deadlines</h2>
 
         {loading ? (
-          <p className="text-sm text-slate-500">Loading…</p>
+          <div className="flex flex-col gap-4 md:flex-row" aria-hidden>
+            <Skeleton className="h-32 flex-1 rounded-lg" />
+            <Skeleton className="h-32 flex-1 rounded-lg" />
+            <Skeleton className="h-32 flex-1 rounded-lg" />
+          </div>
         ) : !hasAny ? (
           <p className="py-6 text-center text-sm text-slate-500">No deadlines set yet.</p>
         ) : (

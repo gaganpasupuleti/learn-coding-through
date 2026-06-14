@@ -3,6 +3,7 @@ import { ArrowRight, CalendarDays } from 'lucide-react'
 import { PlannerMonthCalendar } from '@/components/learning-planner/PlannerMonthCalendar'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import type { DayLearningPlan } from '@/lib/learning-planner-derive'
 import { cn } from '@/lib/utils'
 
@@ -46,11 +47,15 @@ export function PlannerPreviewWidget({
           markedDates={markedDates}
         />
 
-        <div className="mt-4 rounded-xl bg-blue-50/60 p-3">
-          <p className="text-xs font-semibold uppercase text-blue-600">Selected day focus</p>
-          <p className="mt-1 text-sm font-medium text-slate-900">
-            {loading ? 'Loading…' : dayPlan?.topic ?? 'Select a date to preview'}
-          </p>
+        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <p className="text-xs font-semibold uppercase text-slate-500">Selected day focus</p>
+          {loading ? (
+            <Skeleton className="mt-2 h-5 w-3/4" />
+          ) : (
+            <p className="mt-1 text-sm font-medium text-slate-900">
+              {dayPlan?.topic ?? 'Select a date to preview'}
+            </p>
+          )}
           {dayPlan && !loading && (
             <p className="mt-1 text-xs text-slate-500">{dayPlan.estimatedMinutes} min estimated</p>
           )}
@@ -60,7 +65,7 @@ export function PlannerPreviewWidget({
           type="button"
           variant="outline"
           size="sm"
-          className="mt-4 w-full border-blue-200 text-blue-700 hover:bg-blue-50"
+          className="mt-4 w-full border-slate-200 text-slate-700 hover:bg-slate-50"
           onClick={onOpenPlanner}
         >
           Open full planner

@@ -1,5 +1,7 @@
 import { chromium } from 'playwright'
 
+import { openCodePracticeFromLearningMenu } from './smoke-nav-helpers.mjs'
+
 const WEB_BASE = process.env.SMOKE_WEB_BASE ?? 'http://127.0.0.1:5000'
 const NAV_TIMEOUT_MS = Number(process.env.SMOKE_NAV_TIMEOUT_MS ?? 120000)
 const DEMO_EMAIL = process.env.SMOKE_DEMO_EMAIL ?? 'demo@student.com'
@@ -30,9 +32,7 @@ async function loginAsDemoStudent(page) {
 }
 
 async function openPracticeGround(page) {
-  await page.getByRole('button', { name: 'Learning menu' }).click()
-  await page.getByRole('menuitem', { name: 'Code Practice Ground' }).click()
-  await page.getByRole('heading', { name: 'Code Practice Ground' }).waitFor({ state: 'visible', timeout: NAV_TIMEOUT_MS })
+  return openCodePracticeFromLearningMenu(page, NAV_TIMEOUT_MS)
 }
 
 async function selectSection(page, sectionId) {

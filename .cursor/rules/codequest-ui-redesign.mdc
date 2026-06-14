@@ -1,0 +1,57 @@
+---
+description: CodeQuest student UI redesign guardrails (Taste Skill guidance, PR #58)
+globs: src/components/pages/Student*.tsx,src/components/pages/ResumeBuilderPage.tsx,src/components/pages/LoginPage.tsx,src/components/shells/StudentShell.tsx,src/components/student-dashboard/**,src/components/student-calendar/**,src/components/student-progress/**,src/components/resume/**,src/components/auth/AuthPromoPanel.tsx
+alwaysApply: false
+---
+
+# CodeQuest UI redesign (Taste Skill guardrails)
+
+Apply when polishing **student-facing UI** on branch `ui-upgrade-final-integration` (PR #58).
+
+## Source of truth
+
+- Read: `docs/repo-reuse-reviews/taste-skill-codequest-application.md`
+- Reference repo (prompt only): https://github.com/gaganpasupuleti/taste-skill
+- **Never** copy SKILL.md or taste-skill code into `src/`. **Never** add taste-skill as a dependency.
+
+## Product identity
+
+CodeQuest is a **student learning SaaS** — clean, trustworthy, sharp. Not a generic AI landing page.
+
+## Skills to apply (guidance only)
+
+| Skill | Use |
+| --- | --- |
+| `redesign-existing-projects` | Primary audit for dashboard, calendar, progress, resume, shell |
+| `design-taste-frontend` | Light pass on login, resume preview, auth promo |
+| `minimalist-ui` | Light pass on dashboard density and nav |
+| `brandkit` | **Not in this PR** |
+
+## Hard constraints
+
+- Do **not** change SQL Practice, Code Workbench, or Typing Practice **execution** logic or routes.
+- Do **not** change backend, JobSpy API contract, auth flows, or production DB.
+- Do **not** add new UI npm packages unless already in root `package.json`.
+- Do **not** rewrite working features for aesthetics alone.
+- Keep existing page keys and practice path URLs.
+
+## Design rules
+
+**Do**
+
+- Strong spacing (`gap-6`, consistent card padding), clear typographic hierarchy
+- One primary action per section; purposeful empty/loading/error states
+- Mobile-first `StudentShell` (scrollable nav, touch targets)
+- Reuse `DASHBOARD_CARD`, shadcn `Card`, existing tokens
+
+**Avoid**
+
+- Generic purple/blue AI gradients on every surface
+- Childish or overly playful styling in daily learning UI
+- Bootstrap-dense forms, random equal-weight cards, decorative motion in tools
+
+## Before submitting UI changes
+
+1. Scope diff to student dashboard / calendar / progress / resume / login / shell only.
+2. Run `npm run build`.
+3. Note Taste Skill usage in `docs/repo-reuse-reviews/ui-repo-review-registry.md` if material.

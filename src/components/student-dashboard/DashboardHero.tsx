@@ -32,20 +32,17 @@ export function DashboardHero({
     <Card
       className={cn(
         DASHBOARD_CARD,
-        'overflow-hidden border-0 bg-gradient-to-br from-blue-600 via-blue-600 to-indigo-700 text-white shadow-xl shadow-blue-200/50',
+        'overflow-hidden border-slate-800 bg-slate-900 text-white shadow-md',
       )}
     >
-      <div className={cn(DASHBOARD_CARD_BODY, 'relative')}>
-        <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-        <div className="pointer-events-none absolute -bottom-12 -left-8 h-32 w-32 rounded-full bg-indigo-400/20 blur-2xl" />
-
-        <div className="relative flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div className={DASHBOARD_CARD_BODY}>
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="min-w-0 flex-1 space-y-4">
             <div>
               <h1 className="text-2xl font-bold tracking-tight md:text-[32px]">
                 Welcome back, {firstName}
               </h1>
-              <p className="mt-1 text-base text-blue-100 md:text-lg">{pathTitle}</p>
+              <p className="mt-1 text-base text-slate-300 md:text-lg">{pathTitle}</p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
@@ -54,7 +51,7 @@ export function DashboardHero({
                 {loading ? '…' : `${progressPct}% complete`}
               </span>
               {daysRemaining !== null && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-sm text-blue-100">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-sm text-slate-300">
                   <CalendarDays className="h-3.5 w-3.5" />
                   {daysRemaining} days left in program
                 </span>
@@ -62,7 +59,7 @@ export function DashboardHero({
             </div>
 
             {nextLessonTitle && (
-              <div className="flex items-start gap-2 text-sm text-blue-100">
+              <div className="flex items-start gap-2 text-sm text-slate-300">
                 <BookOpen className="mt-0.5 h-4 w-4 shrink-0" />
                 <span>
                   Next up: <span className="font-medium text-white">{nextLessonTitle}</span>
@@ -75,7 +72,7 @@ export function DashboardHero({
             type="button"
             size="lg"
             onClick={onContinueLearning}
-            className="shrink-0 bg-white text-blue-700 shadow-md hover:bg-blue-50"
+            className="shrink-0 bg-white text-slate-900 shadow-sm hover:bg-slate-100"
           >
             Continue Learning
             <ArrowRight className="ml-2 h-4 w-4" />

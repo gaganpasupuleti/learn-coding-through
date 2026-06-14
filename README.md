@@ -38,6 +38,10 @@ CodeQuest is a full-stack career-acceleration platform that guides learners from
 | Feature | Description |
 |---|---|
 | Role-based portals | Student shell and Admin shell with shared login |
+| Student dashboard | Daily view: today’s class, deadlines, practice streak, SQL/code/typing progress, job & resume readiness |
+| Student calendar | Month view with class notes, assignments, and resources (demo data where API pending) |
+| Progress tracker | Course, quiz, project, and mistake review across practice modules |
+| Resume builder | ATS-friendly template with local save and readiness score |
 | Route guards | Admin routes protected; demo users restricted by access rules |
 | Career Mapper | Public browsing with "Sign up free" CTA; full features after login |
 | SyllabusTimeline | Per-role, config-driven 4-month timeline/stepper (Month 1–4) |

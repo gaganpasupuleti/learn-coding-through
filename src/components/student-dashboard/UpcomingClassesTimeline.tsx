@@ -1,6 +1,7 @@
 import { ChevronDown } from 'lucide-react'
 
 import { Card } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import type { UpcomingSession } from '@/lib/api'
 import { formatSessionDate, formatTime } from '@/lib/dashboard-derive'
 import { cn } from '@/lib/utils'
@@ -67,7 +68,11 @@ export function UpcomingClassesTimeline({ sessions, loading }: UpcomingClassesTi
         <h2 className="mb-4 text-lg font-semibold text-slate-900">Upcoming Classes</h2>
 
         {loading ? (
-          <p className="text-sm text-slate-500">Loading schedule…</p>
+          <div className="space-y-3" aria-hidden>
+            <Skeleton className="h-24 w-full rounded-xl" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
         ) : sessions.length === 0 ? (
           <p className="py-6 text-center text-sm text-slate-500">
             No upcoming classes scheduled.
