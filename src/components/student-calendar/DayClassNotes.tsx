@@ -1,6 +1,7 @@
 import { BookOpen } from 'lucide-react'
 
 import { Card } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import type { DayLearningPlan } from '@/lib/learning-planner-derive'
 import {
   getDemoNotesForDate,
@@ -36,6 +37,17 @@ function NoteContent({ note }: { note: CalendarClassNote }) {
   )
 }
 
+function NotesSkeleton() {
+  return (
+    <div className="space-y-3" aria-hidden>
+      <Skeleton className="h-5 w-2/3" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-5/6" />
+      <Skeleton className="h-4 w-4/5" />
+    </div>
+  )
+}
+
 export function DayClassNotes({ selectedDate, dayPlan, loading }: DayClassNotesProps) {
   const demoNote = getDemoNotesForDate(selectedDate)
 
@@ -48,12 +60,9 @@ export function DayClassNotes({ selectedDate, dayPlan, loading }: DayClassNotesP
         </div>
 
         {loading ? (
-          <p className="text-sm text-slate-500">Loading…</p>
+          <NotesSkeleton />
         ) : demoNote ? (
-          <>
-            <NoteContent note={demoNote} />
-            <p className="mt-4 text-[11px] text-slate-400">Demo notes — TODO: backend calendar integration</p>
-          </>
+          <NoteContent note={demoNote} />
         ) : dayPlan && dayPlan.objectives.length > 0 ? (
           <div className="space-y-3">
             <p className="text-sm font-medium text-slate-800">{dayPlan.topic}</p>

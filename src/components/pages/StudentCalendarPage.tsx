@@ -6,6 +6,7 @@ import { ClassCalendar } from '@/components/student-calendar/ClassCalendar'
 import { DayClassNotes } from '@/components/student-calendar/DayClassNotes'
 import { useLearningPlanner } from '@/components/learning-planner/useLearningPlanner'
 import { useStudentDashboardSnapshot } from '@/components/student-dashboard/useStudentDashboardSnapshot'
+import { STUDENT_PAGE_BG } from '@/components/student-dashboard/dashboard-styles'
 
 interface StudentCalendarPageProps {
   user: AuthUser
@@ -16,7 +17,7 @@ export function StudentCalendarPage({ user }: StudentCalendarPageProps) {
   const snapshot = useStudentDashboardSnapshot(user)
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/40 p-4 md:p-6">
+    <div className={`${STUDENT_PAGE_BG} p-4 md:p-6`}>
       <div className="mx-auto max-w-7xl space-y-6">
         <header>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">Class calendar</h1>

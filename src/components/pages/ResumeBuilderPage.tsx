@@ -5,6 +5,7 @@ import type { AuthUser } from '@/lib/auth'
 import { ResumeForm } from '@/components/resume/ResumeForm'
 import { ResumePreview } from '@/components/resume/ResumePreview'
 import { CircularProgress } from '@/components/ui/circular-progress'
+import { STUDENT_PAGE_BG } from '@/components/student-dashboard/dashboard-styles'
 import { computeResumeReadinessScore } from '@/lib/resume-score'
 import { loadResumeData, resetResumeToSample, saveResumeData } from '@/lib/resume-storage'
 import type { ResumeData } from '@/components/resume/resume-demo-data'
@@ -33,7 +34,7 @@ export function ResumeBuilderPage({ user }: ResumeBuilderPageProps) {
   }, [])
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/40 p-4 md:p-6 print:bg-white print:p-0">
+    <div className={`${STUDENT_PAGE_BG} p-4 md:p-6 print:bg-white print:p-0`}>
       <div className="mx-auto max-w-7xl space-y-6 print:max-w-none print:space-y-0">
         <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between print:hidden">
           <div>
@@ -73,7 +74,7 @@ export function ResumeBuilderPage({ user }: ResumeBuilderPageProps) {
           <div className="print:hidden">
             <ResumeForm data={data} onChange={setData} />
           </div>
-          <div className="rounded-xl border border-slate-200 bg-slate-100/80 p-4 lg:sticky lg:top-6 lg:self-start print:border-0 print:bg-white print:p-0">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 lg:sticky lg:top-6 lg:self-start print:border-0 print:bg-white print:p-0">
             <p className="mb-3 text-xs font-medium uppercase tracking-wide text-slate-500 print:hidden">
               Live preview
             </p>

@@ -11,9 +11,9 @@ interface SkillProgressGridProps {
 }
 
 const ACCENT: Record<string, string> = {
-  sql: 'from-blue-500 to-indigo-500',
-  code: 'from-violet-500 to-purple-500',
-  typing: 'from-teal-500 to-emerald-500',
+  sql: 'bg-blue-600',
+  code: 'bg-violet-600',
+  typing: 'bg-teal-600',
 }
 
 export function SkillProgressGrid({ items, onNavigate }: SkillProgressGridProps) {
@@ -42,7 +42,7 @@ export function SkillProgressGrid({ items, onNavigate }: SkillProgressGridProps)
               <p className="text-2xl font-bold tabular-nums text-slate-900">{item.pct}%</p>
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
                 <div
-                  className={cn('h-full rounded-full bg-gradient-to-r', ACCENT[item.id])}
+                  className={cn('h-full rounded-full', ACCENT[item.id])}
                   style={{ width: `${item.pct}%` }}
                 />
               </div>

@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 
+import { cn } from '@/lib/utils'
+
 import { PlannerPreviewWidget } from '@/components/student-dashboard/PlannerPreviewWidget'
 import { DashboardHero, resolveNextLessonTitle } from '@/components/student-dashboard/DashboardHero'
 import { DeadlinesTaskBoard } from '@/components/student-dashboard/DeadlinesTaskBoard'
@@ -13,6 +15,7 @@ import { ResumeReadinessCard } from '@/components/student-dashboard/ResumeReadin
 import { TodayClassCard } from '@/components/student-dashboard/TodayClassCard'
 import { UpcomingClassesTimeline } from '@/components/student-dashboard/UpcomingClassesTimeline'
 import { useStudentDashboardSnapshot } from '@/components/student-dashboard/useStudentDashboardSnapshot'
+import { STUDENT_PAGE_BG } from '@/components/student-dashboard/dashboard-styles'
 import { useLearningPlanner } from '@/components/learning-planner/useLearningPlanner'
 import type { AuthUser } from '@/lib/auth'
 import { computeDaysRemaining, computeReadinessBreakdown } from '@/lib/dashboard-derive'
@@ -71,17 +74,6 @@ function RightSidebar({
         }}
       />
       <JobReadinessCard breakdown={readiness} loading={loading} />
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h3 className="font-semibold text-slate-900">Job Board</h3>
-        <p className="text-sm text-slate-600 mt-2">Browse live roles from JobSpy — LinkedIn, Indeed, and more.</p>
-        <button
-          type="button"
-          onClick={() => onNavigate('jobspy')}
-          className="mt-4 w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
-        >
-          Open Job Board
-        </button>
-      </div>
     </div>
   )
 }
@@ -208,7 +200,7 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   )
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/40 p-4 md:p-6">
+    <div className={cn(STUDENT_PAGE_BG, 'p-4 md:p-6')}>
       <div className="mx-auto hidden max-w-7xl lg:grid lg:grid-cols-12 lg:gap-6">{mainGrid}</div>
 
       <div className="mx-auto max-w-7xl space-y-6 lg:hidden">
@@ -248,14 +240,6 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
         <OldMistakesReviewCard onReview={() => onNavigate('progress')} />
         <ResumeReadinessCard onOpenResume={() => onNavigate('resume')} />
         <JobReadinessCard breakdown={readiness} loading={snapshot.loading} />
-        <button
-          type="button"
-          onClick={() => onNavigate('jobspy')}
-          className="w-full rounded-xl border border-slate-200 bg-white p-5 text-left shadow-sm hover:border-blue-300"
-        >
-          <span className="font-semibold text-slate-900">Job Board</span>
-          <p className="text-sm text-slate-600 mt-1">Browse live JobSpy listings</p>
-        </button>
         <PlannerPreviewWidget
           dayPlan={plannerPreview.dayPlan}
           viewMonth={plannerPreview.viewMonth}

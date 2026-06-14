@@ -1,6 +1,7 @@
 import { Clock, Video } from 'lucide-react'
 
 import { Card } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import type { UpcomingSession } from '@/lib/api'
 import { formatTime, toIsoDate } from '@/lib/dashboard-derive'
 import { cn } from '@/lib/utils'
@@ -34,7 +35,10 @@ export function TodayClassCard({ sessions, loading, onOpenCalendar }: TodayClass
         </div>
 
         {loading ? (
-          <p className="text-sm text-slate-500">Loading schedule…</p>
+          <div className="space-y-3" aria-hidden>
+            <Skeleton className="h-5 w-1/2" />
+            <Skeleton className="h-20 w-full rounded-xl" />
+          </div>
         ) : !todaySession ? (
           <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/80 px-4 py-8 text-center">
             <p className="text-sm font-medium text-slate-700">No class scheduled today</p>
@@ -42,7 +46,7 @@ export function TodayClassCard({ sessions, loading, onOpenCalendar }: TodayClass
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 p-4 ring-1 ring-blue-100">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <p className="font-semibold text-slate-900">{todaySession.title}</p>
               {todaySession.topic && (
                 <p className="mt-1 text-sm text-slate-600">{todaySession.topic}</p>

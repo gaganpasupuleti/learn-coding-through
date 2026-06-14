@@ -61,7 +61,7 @@ export function LearningJourneyCard({
 
         <div className="mb-5 h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
+            className="h-full rounded-full bg-blue-600 transition-all duration-500"
             style={{ width: loading ? '0%' : `${progressPct}%` }}
           />
         </div>

@@ -1,6 +1,7 @@
 import { CheckCircle2, Circle } from 'lucide-react'
 
 import { Card } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   getDemoAssignmentsForDate,
   type CalendarAssignmentDue,
@@ -32,6 +33,15 @@ function AssignmentRow({ item }: { item: CalendarAssignmentDue | DeadlineItem & 
   )
 }
 
+function AssignmentsSkeleton() {
+  return (
+    <ul className="space-y-2" aria-hidden>
+      <li><Skeleton className="h-10 w-full rounded-lg" /></li>
+      <li><Skeleton className="h-10 w-full rounded-lg" /></li>
+    </ul>
+  )
+}
+
 export function AssignmentList({ selectedDate, deadlines, loading }: AssignmentListProps) {
   const apiItems = mergeDeadlines(deadlines).filter((d) => d.due === selectedDate)
   const demoItems = getDemoAssignmentsForDate(selectedDate)
@@ -44,7 +54,7 @@ export function AssignmentList({ selectedDate, deadlines, loading }: AssignmentL
         <h2 className="mb-4 text-lg font-semibold text-slate-900">Assignments due</h2>
 
         {loading ? (
-          <p className="text-sm text-slate-500">Loading…</p>
+          <AssignmentsSkeleton />
         ) : !hasAny ? (
           <p className="text-sm text-slate-500">Nothing due on this date.</p>
         ) : (
@@ -56,10 +66,6 @@ export function AssignmentList({ selectedDate, deadlines, loading }: AssignmentL
               <AssignmentRow key={`demo-${item.title}`} item={item} />
             ))}
           </ul>
-        )}
-
-        {demoItems.length > 0 && (
-          <p className="mt-3 text-[11px] text-slate-400">Includes demo assignments — TODO: backend sync</p>
         )}
       </div>
     </Card>

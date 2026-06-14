@@ -369,22 +369,22 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
   }
 
   const inputClassName =
-    'w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus-visible:border-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25'
+    'w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25'
 
   const primaryButtonClass =
     'w-full rounded-lg bg-blue-600 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60'
 
   const secondaryButtonClass =
-    'w-full rounded-lg border border-gray-300 bg-white py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-200 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60'
+    'w-full rounded-lg border border-slate-300 bg-white py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60'
 
-  const labelClass = 'text-sm font-medium text-gray-700'
+  const labelClass = 'text-sm font-medium text-slate-700'
 
-  const mutedLinkClass = 'text-sm text-gray-500 underline-offset-2 hover:text-gray-700 hover:underline'
+  const mutedLinkClass = 'text-sm text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline'
 
-  const forgotLinkClass = 'text-xs font-normal text-gray-400 underline-offset-2 transition-colors hover:text-gray-600 hover:underline'
+  const forgotLinkClass = 'text-xs font-normal text-slate-400 underline-offset-2 transition-colors hover:text-slate-600 hover:underline'
 
   const authCardClass =
-    'w-full max-w-md rounded-2xl border border-gray-100 bg-white p-8 shadow-xl shadow-slate-200/50'
+    'w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-lg shadow-slate-200/40'
 
   const renderGoogleSection = () => {
     if (mode !== 'login' && mode !== 'signup') return null
@@ -431,11 +431,11 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
               <span className="font-mono">backend/.env</span> — mismatched IDs cause &quot;Invalid Google token&quot;.
             </p>
           ) : null}
-          <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-gray-400 before:h-px before:flex-1 before:bg-gray-200 before:content-[''] after:h-px after:flex-1 after:bg-gray-200 after:content-['']">
+          <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-slate-400 before:h-px before:flex-1 before:bg-slate-200 before:content-[''] after:h-px after:flex-1 after:bg-slate-200 after:content-['']">
             OR
           </div>
           <div
-            className="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-3 py-2.5 shadow-sm"
+            className="flex w-full justify-center rounded-lg border border-slate-300 bg-white px-3 py-2.5 shadow-sm"
             ref={googleButtonHostRef}
           >
             <div ref={attachGoogleButtonRef} className="w-full [&>div]:!w-full" />
@@ -473,13 +473,13 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md">
                 <Code2 size={20} strokeWidth={2.5} />
               </div>
-              <span className="text-xl font-bold tracking-tight text-gray-900">CodeQuest</span>
+              <span className="text-xl font-bold tracking-tight text-slate-900">CodeQuest</span>
             </div>
             {mode === 'forgotPassword' ? (
               <div className="space-y-6" onKeyDown={handleKeyDown}>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Reset password</h1>
-                  <p className="mt-2 text-sm text-gray-500">
+                  <h1 className="text-2xl font-bold text-slate-900">Reset password</h1>
+                  <p className="mt-2 text-sm text-slate-500">
                     Enter your email to request a reset, then set a new password with your token.
                   </p>
                 </div>
@@ -537,7 +537,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   </button>
                 </div>
 
-                <p className="text-center text-sm text-gray-500">
+                <p className="text-center text-sm text-slate-500">
                   Remembered your password?{' '}
                   <button type="button" className={mutedLinkClass} onClick={() => setMode('login')}>
                     Sign in
@@ -552,8 +552,8 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   </svg>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Registration submitted</h1>
-                  <p className="mt-2 text-sm leading-relaxed text-gray-500">
+                  <h1 className="text-2xl font-bold text-slate-900">Registration submitted</h1>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-500">
                     Your account is{' '}
                     <span className="font-semibold text-amber-600">pending admin approval</span>. You
                     can sign in once an admin approves your registration.
@@ -573,10 +573,10 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
             ) : (
               <div className="space-y-6" onKeyDown={handleKeyDown}>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">
+                  <h1 className="text-2xl font-bold text-slate-900">
                     {mode === 'login' ? 'Sign in' : 'Create account'}
                   </h1>
-                  <p className="mt-2 text-sm text-gray-500">
+                  <p className="mt-2 text-sm text-slate-500">
                     {mode === 'login'
                       ? 'Welcome back. Sign in to continue your learning journey.'
                       : 'New accounts require admin approval before you can sign in.'}
@@ -643,7 +643,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 </div>
 
                 {mode === 'login' && (
-                  <label className="flex cursor-pointer items-center gap-2.5 text-sm text-gray-600">
+                  <label className="flex cursor-pointer items-center gap-2.5 text-sm text-slate-600">
                     <Checkbox
                       checked={rememberMe}
                       onCheckedChange={(v) => handleRememberChange(v === true)}
@@ -665,14 +665,14 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 {renderGoogleSection()}
 
                 {mode === 'login' ? (
-                  <p className="text-center text-sm text-gray-500">
+                  <p className="text-center text-sm text-slate-500">
                     Don&apos;t have an account yet?{' '}
                     <button type="button" className={mutedLinkClass} onClick={() => setMode('signup')}>
                       Register
                     </button>
                   </p>
                 ) : (
-                  <p className="text-center text-sm text-gray-500">
+                  <p className="text-center text-sm text-slate-500">
                     Already have an account?{' '}
                     <button type="button" className={mutedLinkClass} onClick={() => setMode('login')}>
                       Sign in
@@ -683,10 +683,10 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
             )}
           </div>
 
-          <p className="w-full max-w-md text-center text-sm text-gray-500">
+          <p className="w-full max-w-md text-center text-sm text-slate-500">
             <button
               type="button"
-              className="text-gray-500 underline-offset-2 hover:text-gray-700 hover:underline"
+              className="text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline"
               onClick={() => setHelpOpen(true)}
             >
               Need help signing in?
@@ -699,37 +699,37 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
           </p>
 
           <Dialog open={helpOpen} onOpenChange={setHelpOpen}>
-            <DialogContent className="max-w-md rounded-2xl border-gray-100 sm:max-w-md">
+            <DialogContent className="max-w-md rounded-2xl border-slate-100 sm:max-w-md">
               <DialogHeader>
-                <DialogTitle className="text-gray-900">Sign-in help</DialogTitle>
+                <DialogTitle className="text-slate-900">Sign-in help</DialogTitle>
                 <DialogDescription>
                   Quick answers for common login issues. Everything stays on this page — no external links.
                 </DialogDescription>
               </DialogHeader>
-              <ul className="space-y-4 text-sm text-gray-600">
+              <ul className="space-y-4 text-sm text-slate-600">
                 <li>
-                  <p className="font-medium text-gray-900">Forgot your password?</p>
+                  <p className="font-medium text-slate-900">Forgot your password?</p>
                   <p className="mt-1">
                     Use <span className="font-medium">Forgot Password?</span> above the password field to request a
                     reset link, then set a new password with the token you receive.
                   </p>
                 </li>
                 <li>
-                  <p className="font-medium text-gray-900">Just registered?</p>
+                  <p className="font-medium text-slate-900">Just registered?</p>
                   <p className="mt-1">
                     New student accounts may need admin approval before the first sign-in. If you see a pending
                     approval message, wait for your program admin to approve your registration.
                   </p>
                 </li>
                 <li>
-                  <p className="font-medium text-gray-900">Google sign-in not working?</p>
+                  <p className="font-medium text-slate-900">Google sign-in not working?</p>
                   <p className="mt-1">
                     Use the same Google account email you registered with. If the button does not appear or sign-in
                     fails, try email and password instead, or contact your instructor or program admin.
                   </p>
                 </li>
                 <li>
-                  <p className="font-medium text-gray-900">Still stuck?</p>
+                  <p className="font-medium text-slate-900">Still stuck?</p>
                   <p className="mt-1">
                     Contact your course administrator or instructor with the email address you used to register.
                   </p>

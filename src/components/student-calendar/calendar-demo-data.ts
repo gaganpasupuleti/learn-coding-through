@@ -1,4 +1,4 @@
-// TODO: Replace demo calendar notes/resources with backend calendar API when available.
+// Sample calendar data for dates without backend notes/resources yet.
 
 export interface CalendarClassNote {
   date: string

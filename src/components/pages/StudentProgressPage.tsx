@@ -2,6 +2,7 @@ import type { AuthUser } from '@/lib/auth'
 
 import { LearningJourneyCard } from '@/components/student-dashboard/LearningJourneyCard'
 import { useStudentDashboardSnapshot } from '@/components/student-dashboard/useStudentDashboardSnapshot'
+import { STUDENT_PAGE_BG } from '@/components/student-dashboard/dashboard-styles'
 import { ProgressOverview } from '@/components/student-progress/ProgressOverview'
 import { buildSkillProgressItems } from '@/components/student-progress/skill-progress-items'
 import { SkillProgressGrid } from '@/components/student-progress/SkillProgressGrid'
@@ -19,7 +20,7 @@ export function StudentProgressPage({ user, onNavigate }: StudentProgressPagePro
   const skillItems = buildSkillProgressItems(snapshot.typingAttempts)
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/40 p-4 md:p-6">
+    <div className={`${STUDENT_PAGE_BG} p-4 md:p-6`}>
       <div className="mx-auto max-w-7xl space-y-6">
         <header>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">Your progress</h1>

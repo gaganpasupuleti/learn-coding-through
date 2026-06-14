@@ -11,9 +11,9 @@ interface PracticeProgressCardProps {
 }
 
 const ACCENT_BAR: Record<PracticeProgressCardProps['accent'], string> = {
-  blue: 'from-blue-500 to-indigo-500',
-  violet: 'from-violet-500 to-purple-500',
-  teal: 'from-teal-500 to-emerald-500',
+  blue: 'bg-blue-600',
+  violet: 'bg-violet-600',
+  teal: 'bg-teal-600',
 }
 
 export function PracticeProgressCard({ summary, accent, onOpen }: PracticeProgressCardProps) {
@@ -44,7 +44,7 @@ export function PracticeProgressCard({ summary, accent, onOpen }: PracticeProgre
 
         <div className="mb-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
           <div
-            className={cn('h-full rounded-full bg-gradient-to-r transition-all duration-500', ACCENT_BAR[accent])}
+            className={cn('h-full rounded-full transition-all duration-500', ACCENT_BAR[accent])}
             style={{ width: `${summary.pct}%` }}
           />
         </div>

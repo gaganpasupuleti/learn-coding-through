@@ -1,4 +1,4 @@
-import { ExternalLink } from 'lucide-react'
+import { FileText } from 'lucide-react'
 
 import { Card } from '@/components/ui/card'
 import { getDemoResourcesForDate } from '@/components/student-calendar/calendar-demo-data'
@@ -29,27 +29,23 @@ export function CalendarResources({ selectedDate }: CalendarResourcesProps) {
         ) : (
           <ul className="space-y-2">
             {resources.map((resource) => (
-              <li key={resource.url}>
-                <a
-                  href={resource.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 hover:border-blue-300 hover:bg-blue-50/50"
-                >
-                  <span>
+              <li key={resource.label}>
+                <div className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm">
+                  <span className="font-medium text-slate-800">
                     {resource.label}
                     <span className="ml-2 text-xs font-normal text-slate-500">
                       {KIND_LABEL[resource.kind]}
                     </span>
                   </span>
-                  <ExternalLink className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
-                </a>
+                  <span className="inline-flex shrink-0 items-center gap-1 text-xs text-slate-400">
+                    <FileText className="h-3.5 w-3.5" aria-hidden />
+                    Sample
+                  </span>
+                </div>
               </li>
             ))}
           </ul>
         )}
-
-        <p className="mt-3 text-[11px] text-slate-400">Demo links — TODO: faculty-uploaded resources</p>
       </div>
     </Card>
   )

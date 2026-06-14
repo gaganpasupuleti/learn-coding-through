@@ -30,18 +30,13 @@ export function AuthPromoPanel() {
 
   return (
     <aside
-      className="relative hidden min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-blue-600 via-blue-600 to-indigo-700 px-10 py-12 text-white lg:flex"
+      className="relative hidden min-h-screen flex-col items-center justify-center overflow-hidden bg-slate-900 px-10 py-12 text-white lg:flex"
       aria-label="CodeQuest product preview"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Geometric pattern */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/5" />
-        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-400/20" />
-        <div className="absolute right-1/4 top-1/3 h-32 w-32 rotate-45 bg-white/5" />
-        <div className="absolute bottom-1/4 left-1/3 h-24 w-24 rotate-12 border border-white/10" />
-        <svg className="absolute inset-0 h-full w-full opacity-[0.07]" xmlns="http://www.w3.org/2000/svg">
+        <svg className="absolute inset-0 h-full w-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="auth-grid" width="40" height="40" patternUnits="userSpaceOnUse">
               <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1" />
@@ -56,7 +51,7 @@ export function AuthPromoPanel() {
 
         <div className="min-h-[5.5rem] text-center">
           <h2 className="text-2xl font-bold tracking-tight">{slide.headline}</h2>
-          <p className="mt-2 text-sm leading-relaxed text-blue-100">{slide.subtext}</p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-300">{slide.subtext}</p>
         </div>
 
         <div className="flex items-center gap-2" role="tablist" aria-label="Product highlights">
