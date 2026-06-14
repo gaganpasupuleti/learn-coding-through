@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, type ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -7,6 +7,7 @@ import { DashboardHero, resolveNextLessonTitle } from '@/components/student-dash
 import { DeadlinesTaskBoard } from '@/components/student-dashboard/DeadlinesTaskBoard'
 import { JobReadinessCard } from '@/components/student-dashboard/JobReadinessCard'
 import { LearningJourneyCard } from '@/components/student-dashboard/LearningJourneyCard'
+import { NextDeadlineCard } from '@/components/student-dashboard/NextDeadlineCard'
 import { OldMistakesReviewCard } from '@/components/student-dashboard/OldMistakesReviewCard'
 import { OverallProgressCard } from '@/components/student-dashboard/OverallProgressCard'
 import { PracticeProgressCard } from '@/components/student-dashboard/PracticeProgressCard'
@@ -15,7 +16,10 @@ import { ResumeReadinessCard } from '@/components/student-dashboard/ResumeReadin
 import { TodayClassCard } from '@/components/student-dashboard/TodayClassCard'
 import { UpcomingClassesTimeline } from '@/components/student-dashboard/UpcomingClassesTimeline'
 import { useStudentDashboardSnapshot } from '@/components/student-dashboard/useStudentDashboardSnapshot'
-import { STUDENT_PAGE_BG } from '@/components/student-dashboard/dashboard-styles'
+import {
+  DASHBOARD_SECTION_LABEL,
+  STUDENT_PAGE_BG,
+} from '@/components/student-dashboard/dashboard-styles'
 import { useLearningPlanner } from '@/components/learning-planner/useLearningPlanner'
 import type { AuthUser } from '@/lib/auth'
 import { computeDaysRemaining, computeReadinessBreakdown } from '@/lib/dashboard-derive'
@@ -42,7 +46,36 @@ interface StudentDashboardPageProps {
   onNavigate: (page: DashboardNavTarget) => void
 }
 
-function RightSidebar({
+function DashboardSection({
+  title,
+  description,
+  children,
+  secondary = false,
+}: {
+  title: string
+  description?: string
+  children: ReactNode
+  secondary?: boolean
+}) {
+  return (
+    <section className={cn(secondary && 'pt-2')}>
+      <div className="mb-3">
+        <h2
+          className={cn(
+            DASHBOARD_SECTION_LABEL,
+            secondary && 'font-medium normal-case tracking-normal text-slate-400',
+          )}
+        >
+          {title}
+        </h2>
+        {description && <p className="mt-1 text-sm text-slate-500">{description}</p>}
+      </div>
+      {children}
+    </section>
+  )
+}
+
+function SupportSidebar({
   readiness,
   plannerPreview,
   onNavigate,
@@ -54,9 +87,9 @@ function RightSidebar({
   loading: boolean
 }) {
   return (
-    <div className="space-y-6">
-      <PracticeStreakCard />
-      <ResumeReadinessCard onOpenResume={() => onNavigate('resume')} />
+    <aside className="space-y-4 lg:space-y-5">
+      <PracticeStreakCard compact />
+      <ResumeReadinessCard compact onOpenResume={() => onNavigate('resume')} />
       <PlannerPreviewWidget
         dayPlan={plannerPreview.dayPlan}
         viewMonth={plannerPreview.viewMonth}
@@ -74,6 +107,38 @@ function RightSidebar({
         }}
       />
       <JobReadinessCard breakdown={readiness} loading={loading} />
+    </aside>
+  )
+}
+
+function PracticeRow({
+  sqlSummary,
+  codeSummary,
+  typingSummary,
+  onNavigate,
+}: {
+  sqlSummary: ReturnType<typeof getSqlPracticeSummary>
+  codeSummary: ReturnType<typeof getCodePracticeSummary>
+  typingSummary: ReturnType<typeof getTypingPracticeSummary>
+  onNavigate: (page: DashboardNavTarget) => void
+}) {
+  return (
+    <div className="grid gap-4 sm:grid-cols-3">
+      <PracticeProgressCard
+        summary={sqlSummary}
+        accent="blue"
+        onOpen={() => onNavigate('practice-sql')}
+      />
+      <PracticeProgressCard
+        summary={codeSummary}
+        accent="violet"
+        onOpen={() => onNavigate('practice-code')}
+      />
+      <PracticeProgressCard
+        summary={typingSummary}
+        accent="teal"
+        onOpen={() => onNavigate('practice-typing')}
+      />
     </div>
   )
 }
@@ -122,140 +187,93 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   const codeSummary = getCodePracticeSummary()
   const typingSummary = getTypingPracticeSummary(typingWpm)
 
-  const mainGrid = (
-    <>
-      <div className="col-span-12">
-        <DashboardHero
-          firstName={firstName}
-          careerJourney={snapshot.careerJourney}
-          nextLessonTitle={nextLessonTitle}
-          daysRemaining={daysRemaining}
-          loading={snapshot.loading}
-          onContinueLearning={() => onNavigate('roadmapper')}
-        />
-      </div>
+  const heroProps = {
+    firstName,
+    careerJourney: snapshot.careerJourney,
+    nextLessonTitle,
+    daysRemaining,
+    loading: snapshot.loading,
+    onContinueLearning: () => onNavigate('roadmapper'),
+  }
 
-      <div className="col-span-12 grid gap-6 md:grid-cols-2 lg:col-span-8 lg:grid-cols-1">
-        <TodayClassCard
-          sessions={snapshot.upcomingSessions}
-          loading={snapshot.loading}
-          onOpenCalendar={() => onNavigate('calendar')}
-        />
-        <UpcomingClassesTimeline sessions={snapshot.upcomingSessions} loading={snapshot.loading} />
-      </div>
-
-      <div className="col-span-12 lg:col-span-4 lg:row-span-2 lg:row-start-2">
-        <RightSidebar
-          readiness={readiness}
-          plannerPreview={plannerPreview}
-          onNavigate={onNavigate}
-          loading={snapshot.loading}
-        />
-      </div>
-
-      <div className="col-span-12 lg:col-span-8">
-        <LearningJourneyCard
-          careerJourney={snapshot.careerJourney}
-          stageRows={snapshot.stageRows}
-          loading={snapshot.loading}
-        />
-      </div>
-
-      <div className="col-span-12 lg:col-span-8">
-        <OverallProgressCard
-          careerJourney={snapshot.careerJourney}
-          stageRows={snapshot.stageRows}
-          catalogSteps={snapshot.catalogSteps}
-          loading={snapshot.loading}
-          onViewProgress={() => onNavigate('progress')}
-        />
-      </div>
-
-      <div className="col-span-12 grid gap-4 sm:grid-cols-3 lg:col-span-8">
-        <PracticeProgressCard
-          summary={sqlSummary}
-          accent="blue"
-          onOpen={() => onNavigate('practice-sql')}
-        />
-        <PracticeProgressCard
-          summary={codeSummary}
-          accent="violet"
-          onOpen={() => onNavigate('practice-code')}
-        />
-        <PracticeProgressCard
-          summary={typingSummary}
-          accent="teal"
-          onOpen={() => onNavigate('practice-typing')}
-        />
-      </div>
-
-      <div className="col-span-12 lg:col-span-8">
-        <DeadlinesTaskBoard deadlines={snapshot.deadlines} loading={snapshot.loading} />
-      </div>
-
-      <div className="col-span-12 lg:col-span-8">
-        <OldMistakesReviewCard onReview={() => onNavigate('progress')} />
-      </div>
-    </>
-  )
+  const sidebarProps = {
+    readiness,
+    plannerPreview,
+    onNavigate,
+    loading: snapshot.loading,
+  }
 
   return (
     <div className={cn(STUDENT_PAGE_BG, 'p-4 md:p-6')}>
-      <div className="mx-auto hidden max-w-7xl lg:grid lg:grid-cols-12 lg:gap-6">{mainGrid}</div>
+      <div className="mx-auto max-w-7xl space-y-6">
+        <DashboardHero {...heroProps} />
 
-      <div className="mx-auto max-w-7xl space-y-6 lg:hidden">
-        <DashboardHero
-          firstName={firstName}
-          careerJourney={snapshot.careerJourney}
-          nextLessonTitle={nextLessonTitle}
-          daysRemaining={daysRemaining}
-          loading={snapshot.loading}
-          onContinueLearning={() => onNavigate('roadmapper')}
-        />
-        <TodayClassCard
-          sessions={snapshot.upcomingSessions}
-          loading={snapshot.loading}
-          onOpenCalendar={() => onNavigate('calendar')}
-        />
-        <PracticeStreakCard />
-        <LearningJourneyCard
-          careerJourney={snapshot.careerJourney}
-          stageRows={snapshot.stageRows}
-          loading={snapshot.loading}
-        />
-        <OverallProgressCard
-          careerJourney={snapshot.careerJourney}
-          stageRows={snapshot.stageRows}
-          catalogSteps={snapshot.catalogSteps}
-          loading={snapshot.loading}
-          onViewProgress={() => onNavigate('progress')}
-        />
-        <div className="grid gap-4 sm:grid-cols-2">
-          <PracticeProgressCard summary={sqlSummary} accent="blue" onOpen={() => onNavigate('practice-sql')} />
-          <PracticeProgressCard summary={codeSummary} accent="violet" onOpen={() => onNavigate('practice-code')} />
-          <PracticeProgressCard summary={typingSummary} accent="teal" onOpen={() => onNavigate('practice-typing')} />
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+          <div className="space-y-6 lg:col-span-8">
+            <DashboardSection
+              title="Today"
+              description="Your class and the next deadline to focus on."
+            >
+              <div className="grid gap-4 md:grid-cols-2">
+                <TodayClassCard
+                  sessions={snapshot.upcomingSessions}
+                  loading={snapshot.loading}
+                  emphasized
+                  onOpenCalendar={() => onNavigate('calendar')}
+                />
+                <NextDeadlineCard deadlines={snapshot.deadlines} loading={snapshot.loading} />
+              </div>
+            </DashboardSection>
+
+            <DashboardSection
+              title="Practice"
+              description="Pick up where you left off in SQL, code, or typing."
+            >
+              <PracticeRow
+                sqlSummary={sqlSummary}
+                codeSummary={codeSummary}
+                typingSummary={typingSummary}
+                onNavigate={onNavigate}
+              />
+            </DashboardSection>
+
+            <DashboardSection title="Progress">
+              <div className="grid gap-4 md:grid-cols-2">
+                <OverallProgressCard
+                  careerJourney={snapshot.careerJourney}
+                  stageRows={snapshot.stageRows}
+                  catalogSteps={snapshot.catalogSteps}
+                  loading={snapshot.loading}
+                  onViewProgress={() => onNavigate('progress')}
+                />
+                <OldMistakesReviewCard onReview={() => onNavigate('progress')} />
+              </div>
+            </DashboardSection>
+
+            <DashboardSection title="Upcoming classes" secondary>
+              <UpcomingClassesTimeline
+                sessions={snapshot.upcomingSessions}
+                loading={snapshot.loading}
+              />
+            </DashboardSection>
+
+            <DashboardSection title="All deadlines" secondary>
+              <DeadlinesTaskBoard deadlines={snapshot.deadlines} loading={snapshot.loading} />
+            </DashboardSection>
+
+            <DashboardSection title="Syllabus overview" secondary>
+              <LearningJourneyCard
+                careerJourney={snapshot.careerJourney}
+                stageRows={snapshot.stageRows}
+                loading={snapshot.loading}
+              />
+            </DashboardSection>
+          </div>
+
+          <div className="lg:col-span-4">
+            <SupportSidebar {...sidebarProps} />
+          </div>
         </div>
-        <UpcomingClassesTimeline sessions={snapshot.upcomingSessions} loading={snapshot.loading} />
-        <DeadlinesTaskBoard deadlines={snapshot.deadlines} loading={snapshot.loading} />
-        <OldMistakesReviewCard onReview={() => onNavigate('progress')} />
-        <ResumeReadinessCard onOpenResume={() => onNavigate('resume')} />
-        <JobReadinessCard breakdown={readiness} loading={snapshot.loading} />
-        <PlannerPreviewWidget
-          dayPlan={plannerPreview.dayPlan}
-          viewMonth={plannerPreview.viewMonth}
-          onViewMonthChange={plannerPreview.setViewMonth}
-          selectedDate={plannerPreview.selectedDate}
-          markedDates={plannerPreview.markedDates}
-          loading={plannerPreview.loading}
-          onSelectDate={(date) => {
-            storeSelectedDateForPlanner(date)
-            plannerPreview.setSelectedDate(date)
-          }}
-          onOpenPlanner={() => {
-            storeSelectedDateForPlanner(plannerPreview.selectedDate)
-            onNavigate('calendar')
-          }}
-        />
       </div>
     </div>
   )
