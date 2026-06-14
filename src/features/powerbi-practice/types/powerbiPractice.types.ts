@@ -4,7 +4,9 @@
 
 export const POWERBI_PRACTICE_ROUTE = '/practice/powerbi'
 
-export type PowerBiModuleStatus = 'available-soon' | 'coming-soon'
+export const DAX_PRACTICE_ROUTE = '/practice/powerbi/dax'
+
+export type PowerBiModuleStatus = 'active' | 'available-soon' | 'coming-soon'
 
 export type PowerBiModuleId =
   | 'dax-practice'
@@ -21,4 +23,56 @@ export interface PowerBiModuleDefinition {
   title: string
   description: string
   status: PowerBiModuleStatus
+  href?: string
+}
+
+export type DaxDatasetId = 'retail_sales'
+
+export type DaxPracticeDifficulty = 'easy' | 'medium'
+
+export type DaxPracticeTopic = 'aggregation' | 'counting' | 'distinct'
+
+export interface DaxColumnMeta {
+  name: string
+  dataType: string
+}
+
+export interface DaxTableMeta {
+  name: string
+  columns: DaxColumnMeta[]
+}
+
+export interface DaxDatasetMeta {
+  id: DaxDatasetId
+  displayName: string
+  description: string
+  tables: DaxTableMeta[]
+}
+
+export interface DaxPlaceholderRules {
+  requiredFunctions?: string[]
+  requiredTableRefs?: string[]
+  requiredColumnRefs?: string[]
+}
+
+export interface DaxPracticeQuestion {
+  id: string
+  title: string
+  datasetId: DaxDatasetId
+  difficulty: DaxPracticeDifficulty
+  topic: DaxPracticeTopic
+  businessContext: string
+  learningObjective: string
+  problemStatement: string
+  starterFormula: string
+  hints: string[]
+  explanation: string
+  placeholderRules: DaxPlaceholderRules
+}
+
+export interface DaxAnswerFeedback {
+  passed: boolean
+  feedback: string[]
+  checkedAt: string
+  explanation?: string
 }
