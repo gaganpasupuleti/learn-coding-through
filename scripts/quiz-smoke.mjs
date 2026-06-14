@@ -1,6 +1,10 @@
 import { chromium } from 'playwright'
 
-import { openCodePracticeFromLearningMenu } from './smoke-nav-helpers.mjs'
+import {
+  openCodePracticeFromPracticeMenu,
+  openQuizFromPracticeMenu,
+  waitForStudentShell,
+} from './smoke-nav-helpers.mjs'
 
 const WEB_BASE = process.env.SMOKE_WEB_BASE ?? 'http://127.0.0.1:5001'
 const NAV_TIMEOUT_MS = Number(process.env.SMOKE_NAV_TIMEOUT_MS ?? 120000)
@@ -66,7 +70,7 @@ async function loginStudentUi(page) {
   await page.locator('#email').fill(DEMO_EMAIL)
   await page.locator('#password').fill(DEMO_PASSWORD)
   await page.getByRole('button', { name: 'Sign In', exact: true }).click()
-  await page.getByRole('button', { name: 'Learning menu' }).waitFor({ state: 'visible', timeout: NAV_TIMEOUT_MS })
+  await waitForStudentShell(page, NAV_TIMEOUT_MS)
 }
 
 async function main() {
@@ -90,10 +94,9 @@ async function main() {
 
     await runCheck('02_student_open_quiz', async () => {
       await loginStudentUi(page)
-      await page.getByRole('button', { name: 'Learning menu' }).click()
-      await page.getByRole('menuitem', { name: 'Quiz' }).click()
+      const nav = await openQuizFromPracticeMenu(page)
       await page.getByRole('heading', { name: 'Quiz Zone' }).waitFor({ state: 'visible', timeout: 30000 })
-      return 'quiz zone visible'
+      return `quiz zone visible (${nav})`
     })
 
     await runCheck('03_student_submit_quiz', async () => {
@@ -138,7 +141,7 @@ async function main() {
         return 'perfect score — no quiz mistakes expected'
       }
 
-      await openCodePracticeFromLearningMenu(page, NAV_TIMEOUT_MS)
+      await openCodePracticeFromPracticeMenu(page, NAV_TIMEOUT_MS)
       await page.getByTestId('practice-section-mistakes').click()
       const hasMistake = await page.getByText('[Quiz:', { exact: false }).first().isVisible().catch(() => false)
       if (!hasMistake) throw new Error('Quiz wrong answers were not saved to Mistakes Review')
