@@ -25,6 +25,7 @@ import {
   MessageSquare,
   Database,
   Keyboard,
+  BarChart3,
 } from 'lucide-react'
 import { SubmitFeedbackDialog } from '@/components/feedback/SubmitFeedbackDialog'
 import { type AuthUser, clearAuth, isDemoUser } from '@/lib/auth'
@@ -38,6 +39,7 @@ type StudentPage =
   | 'practice-code'
   | 'practice-sql'
   | 'practice-typing'
+  | 'practice-powerbi'
   | 'quiz'
   | 'roadmapper'
   | 'flow-roadmap'
@@ -66,6 +68,7 @@ const LEARNING_NAV: NavItem[] = [
   { page: 'practice-code', label: 'Code Workbench', icon: <Code2 size={14} aria-hidden /> },
   { page: 'practice-sql', label: 'SQL Practice Ground', icon: <Database size={14} aria-hidden /> },
   { page: 'practice-typing', label: 'Typing Practice', icon: <Keyboard size={14} aria-hidden /> },
+  { page: 'practice-powerbi', label: 'Power BI Practice Ground', icon: <BarChart3 size={14} aria-hidden /> },
   { page: 'quiz', label: 'Quiz', icon: <ClipboardList size={14} aria-hidden /> },
   { page: 'flow-roadmap', label: 'Flow Path', icon: <GitBranch size={14} aria-hidden /> },
 ]

@@ -40,6 +40,10 @@ import { SqlPracticePage } from '@/features/sql-practice/components/SqlPracticeP
 
 import { SQL_PRACTICE_ROUTE } from '@/features/sql-practice/types/sqlPractice.types'
 
+import { PowerBiPracticePage } from '@/features/powerbi-practice/components/PowerBiPracticePage'
+
+import { POWERBI_PRACTICE_ROUTE } from '@/features/powerbi-practice/types/powerbiPractice.types'
+
 import { PasswordSetupGate } from '@/components/auth/PasswordSetupGate'
 
 import {
@@ -98,6 +102,8 @@ const PRACTICE_PATH_TO_PAGE: Record<string, StudentPage> = {
 
   [TYPING_PRACTICE_ROUTE]: 'practice-typing',
 
+  [POWERBI_PRACTICE_ROUTE]: 'practice-powerbi',
+
 }
 
 
@@ -117,6 +123,8 @@ export type StudentPage =
   | 'practice-sql'
 
   | 'practice-typing'
+
+  | 'practice-powerbi'
 
   | 'quiz'
 
@@ -565,6 +573,18 @@ function App() {
 
 
         {studentPage === 'practice-typing' && <TypingTrainerPage />}
+
+
+
+        {studentPage === 'practice-powerbi' && (
+
+          <ErrorBoundary FallbackComponent={PracticeRouteErrorFallback}>
+
+            <PowerBiPracticePage />
+
+          </ErrorBoundary>
+
+        )}
 
 
 
