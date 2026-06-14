@@ -1,0 +1,60 @@
+import { Badge } from '@/components/ui/badge'
+import { wb } from '@/lib/workbench-theme'
+import { cn } from '@/lib/utils'
+import type { PowerBiModuleDefinition } from '../types/powerbiPractice.types'
+
+interface PowerBiModuleCardProps {
+  module: PowerBiModuleDefinition
+  icon: React.ReactNode
+}
+
+export function PowerBiModuleCard({ module, icon }: PowerBiModuleCardProps) {
+  const isComingSoon = module.status === 'coming-soon'
+  const isAvailableSoon = module.status === 'available-soon'
+
+  return (
+    <div
+      className={cn(
+        'flex h-full flex-col rounded-xl border p-5 transition-colors',
+        wb.border,
+        isComingSoon ? wb.langSoon : 'bg-[#111827]',
+        isAvailableSoon && 'border-amber-500/40 bg-[#111827] opacity-100',
+      )}
+      aria-disabled={isComingSoon || isAvailableSoon}
+    >
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div
+          className={cn(
+            'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border',
+            wb.border,
+            isComingSoon ? 'bg-[#0F172A] text-[#64748B]' : 'bg-amber-950/40 text-amber-300',
+          )}
+        >
+          {icon}
+        </div>
+        {isComingSoon ? (
+          <Badge variant="outline" className="border-[#475569] bg-[#0F172A] text-[#94A3B8]">
+            Coming Soon
+          </Badge>
+        ) : (
+          <Badge variant="outline" className="border-amber-500/50 bg-amber-950/40 text-amber-200">
+            Available Soon
+          </Badge>
+        )}
+      </div>
+
+      <h3 className={cn('text-base font-semibold', isComingSoon ? wb.textMuted : wb.textPrimary)}>
+        {module.title}
+      </h3>
+      <p className={cn('mt-2 flex-1 text-sm leading-relaxed', wb.textSecondary)}>{module.description}</p>
+
+      {(isComingSoon || isAvailableSoon) && (
+        <p className={cn('mt-4 text-xs', wb.textMuted)}>
+          {isComingSoon
+            ? 'This module is planned for a later phase.'
+            : 'Opens in Phase 24B or 24D — not wired yet.'}
+        </p>
+      )}
+    </div>
+  )
+}
