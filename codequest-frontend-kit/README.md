@@ -1,49 +1,58 @@
 # Code Quest Frontend Sandbox
 
-Brick-by-brick UI rebuild. **Dashboard** is the approved new page; existing product features are **wired to the main Code Quest app**.
+**Work branch only — do not merge to `main` until explicitly approved.**
 
-## Run locally (both apps)
+| | |
+|---|---|
+| **Branch** | `feature/codequest-legacy-feature-wiring` |
+| **PR (open, not for merge)** | https://github.com/gaganpasupuleti/learn-coding-through/pull/64 |
+| **Main repo** | `learn-coding-through` — all work happens on the branch above |
 
-**Terminal 1 — main app (existing features + APIs):**
+## Setup (first time)
+
 ```bash
-cd ..   # learn-coding-through repo root
-npm install
-npm run dev
-# http://localhost:5000
-```
-
-**Terminal 2 — sandbox (new UI):**
-```bash
+git clone https://github.com/gaganpasupuleti/learn-coding-through.git
+cd learn-coding-through
+git checkout feature/codequest-legacy-feature-wiring
 cd codequest-frontend-kit
 cp .env.example .env
 npm install
-npm run dev
-# http://localhost:3000/dashboard
 ```
 
-**Terminal 3 — backend (optional, for live data):**
+## Run locally (3 terminals)
+
+**Terminal 1 — backend (APIs)**
 ```bash
 cd backend
-# uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8000
 ```
 
-## What is wired
+**Terminal 2 — main app (existing features, port 5000)**
+```bash
+# from repo root
+npm install
+npm run dev
+```
 
-| Sandbox sidebar | Opens |
-|-----------------|--------|
-| **Practice → Code / SQL / Typing / Power BI** | `/practice/*` proxied to main app (port 5000) |
-| **Practice → Quiz, Flow Path** | Main app `/?page=...` deep link |
-| **Learn → Calendar, Projects, Hub, …** | Main app `/?page=...` |
-| **Career → Jobs, Career Map, Resume** | Main app `/?page=...` |
-| **Dashboard, Progress** | New sandbox UI |
+**Terminal 3 — sandbox (new UI, port 3000)**
+```bash
+cd codequest-frontend-kit
+npm run dev
+```
 
-API calls from proxied practice pages use `/api` → backend (port 8000).
+Log in once at http://localhost:5000 — token is shared with the sandbox.
 
-## Env
+## URLs
 
-Copy `.env.example` to `.env` and adjust `VITE_LEGACY_APP_URL` if main app is not on port 5000.
+| URL | What |
+|-----|------|
+| http://localhost:3000/dashboard | New approved dashboard |
+| http://localhost:3000/progress | Locked baseline |
+| http://localhost:3000/practice/sql | SQL Practice (proxied + backend) |
+| http://localhost:3000/open?page=jobspy | Jobs (proxied main app) |
 
-## Scope
+## Rules
 
-- **Approved UI:** `/dashboard`, locked `/progress`
-- **Redo later:** restyle legacy feature pages one by one inside the new shell
+- **No merge to `main`** without explicit approval
+- Push all changes to `feature/codequest-legacy-feature-wiring` only
+- Dashboard UI is approved; other pages redo one by one on this branch
