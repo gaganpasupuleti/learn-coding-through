@@ -270,6 +270,24 @@ function App() {
 
     if (typeof window === 'undefined') return
 
+    const params = new URLSearchParams(window.location.search)
+
+    const pageParam = params.get('page') as StudentPage | null
+
+  const DEEP_LINK_PAGES: StudentPage[] = [
+    'dashboard', 'calendar', 'progress', 'learning-planner', 'projects', 'hub',
+    'quiz', 'flow-roadmap', 'jobspy', 'roadmapper', 'resume', 'practice-code',
+    'practice-sql', 'practice-typing', 'practice-powerbi',
+  ]
+
+    if (pageParam && DEEP_LINK_PAGES.includes(pageParam)) {
+
+      setStudentPage(pageParam)
+
+      return
+
+    }
+
     const page = PRACTICE_PATH_TO_PAGE[window.location.pathname]
 
     if (page) {

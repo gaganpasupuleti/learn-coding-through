@@ -1,39 +1,32 @@
 # Code Quest Frontend Sandbox — Integration Guide
 
-Isolated workspace under `codequest-frontend-kit/` for the approved Code Quest theme rebuild.
+## Wired to existing Code Quest features
 
-## This PR scope (dashboard only)
+The sandbox **does not reimplement** SQL, Code, Typing, Power BI, Jobs, etc. It links to the **main app** at repo root.
 
-| Route | Status |
-|-------|--------|
-| `/progress` | Locked baseline — `static/progress/index.html` |
-| `/dashboard` | **Approved** — first React brick |
-| All other routes | Future PRs |
-
-## Run locally
+### Local dev (two terminals)
 
 ```bash
+# Terminal 1 — main app (port 5000)
+npm run dev
+
+# Terminal 2 — sandbox (port 3000)
 cd codequest-frontend-kit
-npm install
+cp .env.example .env
 npm run dev
 ```
 
-## Brick-by-brick plan (after merge)
+### How routing works
 
-1. **Merged** — Theme + shell + `/dashboard`
-2. **Next** — Redo one page at a time (Classes, Assignments, …) matching dashboard quality
-3. **Later** — Port into root `StudentShell` and wire SQL/code practice engines
+| Link type | Example | Mechanism |
+|-----------|---------|-----------|
+| Practice engines | `/practice/sql` | Vite proxy → main app on :5000 |
+| Jobs, Quiz, Calendar, … | `http://localhost:5000/?page=jobspy` | Deep link in `src/App.tsx` |
+| New UI | `/dashboard`, `/progress` | Sandbox React / static HTML |
+| APIs | `/api/v1/...` | Proxied to backend :8000 |
 
-## Mapping to main repo
+### Redo UI one by one
 
-| Sandbox | Main repo |
-|---------|-----------|
-| `/progress` | `StudentProgressPage` |
-| `/dashboard` | `StudentDashboardPage` |
-| `/sql-studio` | `src/features/sql-practice` |
-| `/python-lab` | `src/features/code-practice` |
-
-## Rules
-
-- Do not redesign `static/progress/index.html` without approval
-- Warm cream `#FAF3E0`, navy sidebar, pastel cards, Playfair + Inter
+1. Keep feature engines in `src/features/`
+2. Rebuild page chrome in `codequest-frontend-kit/`
+3. When approved, port shell into `StudentShell`

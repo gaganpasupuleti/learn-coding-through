@@ -1,30 +1,49 @@
 # Code Quest Frontend Sandbox
 
-Brick-by-brick UI rebuild workspace. **Dashboard-only** in this PR — other pages come later.
+Brick-by-brick UI rebuild. **Dashboard** is the approved new page; existing product features are **wired to the main Code Quest app**.
 
-## Run locally
+## Run locally (both apps)
 
+**Terminal 1 — main app (existing features + APIs):**
 ```bash
-cd codequest-frontend-kit
+cd ..   # learn-coding-through repo root
 npm install
 npm run dev
+# http://localhost:5000
 ```
 
-| URL | Status |
-|-----|--------|
-| http://localhost:3000/progress | Locked baseline (static HTML) |
-| http://localhost:3000/dashboard | **Approved React page** |
+**Terminal 2 — sandbox (new UI):**
+```bash
+cd codequest-frontend-kit
+cp .env.example .env
+npm install
+npm run dev
+# http://localhost:3000/dashboard
+```
 
-`/` redirects to `/progress`.
+**Terminal 3 — backend (optional, for live data):**
+```bash
+cd backend
+# uvicorn app.main:app --reload --port 8000
+```
 
-## This PR includes
+## What is wired
 
-- Locked `static/progress/index.html` baseline
-- Theme tokens + shared shell (`CodeQuestShell`, `CQ*` components)
-- **`/dashboard` only** — first approved React brick
+| Sandbox sidebar | Opens |
+|-----------------|--------|
+| **Practice → Code / SQL / Typing / Power BI** | `/practice/*` proxied to main app (port 5000) |
+| **Practice → Quiz, Flow Path** | Main app `/?page=...` deep link |
+| **Learn → Calendar, Projects, Hub, …** | Main app `/?page=...` |
+| **Career → Jobs, Career Map, Resume** | Main app `/?page=...` |
+| **Dashboard, Progress** | New sandbox UI |
 
-## Not in this PR
+API calls from proxied practice pages use `/api` → backend (port 8000).
 
-Classes, Assignments, Materials, Practice Studio, tool pages — built in follow-up PRs after dashboard is merged.
+## Env
 
-See `docs/CODEQUEST_FRONTEND_SANDBOX.md` for the full integration plan.
+Copy `.env.example` to `.env` and adjust `VITE_LEGACY_APP_URL` if main app is not on port 5000.
+
+## Scope
+
+- **Approved UI:** `/dashboard`, locked `/progress`
+- **Redo later:** restyle legacy feature pages one by one inside the new shell
