@@ -1,45 +1,30 @@
 # Code Quest Frontend Sandbox
 
-Build brick by brick from the **locked** `/progress` baseline. Stays separate from [learn-coding-through](https://github.com/gaganpasupuleti/learn-coding-through) until merge approval.
-
-## URLs
-
-| URL | Status |
-|-----|--------|
-| http://localhost:3000/progress | **Locked baseline** (static HTML) |
-| http://localhost:3000/dashboard | Student home — quick actions |
-| http://localhost:3000/classes | Live Classes |
-| http://localhost:3000/practice-studio | Practice Studio hub |
-| http://localhost:3000/materials | Study Materials |
-| http://localhost:3000/assignments | Assignments |
-
-`/` redirects to `/progress`.
+Brick-by-brick UI rebuild workspace. **Dashboard-only** in this PR — other pages come later.
 
 ## Run locally
 
 ```bash
+cd codequest-frontend-kit
 npm install
 npm run dev
 ```
 
-## Build plan
+| URL | Status |
+|-----|--------|
+| http://localhost:3000/progress | Locked baseline (static HTML) |
+| http://localhost:3000/dashboard | **Approved React page** |
 
-- [x] Phase 0 — Locked `/progress` baseline
-- [x] Phase 1 — Theme + shared shell + `/dashboard`
-- [ ] Phase 2 — `/classes`, `/assignments`, `/materials`, …
-- [ ] Phase 3 — Tool pages (Python Lab, SQL Studio, …)
-- [ ] Phase 4 — Merge into main repo (when approved)
+`/` redirects to `/progress`.
 
-## Structure
+## This PR includes
 
-```
-static/progress/index.html   # LOCKED — do not redesign
-src/
-  components/layout/         # CodeQuestShell, Sidebar, Header, …
-  components/ui/             # CQCard, CQStatCard, …
-  pages/DashboardPage.jsx    # Brick 1
-```
+- Locked `static/progress/index.html` baseline
+- Theme tokens + shared shell (`CodeQuestShell`, `CQ*` components)
+- **`/dashboard` only** — first approved React brick
 
-## Theme
+## Not in this PR
 
-Warm cream `#FAF3E0`, navy sidebar `#0A1020`, pastel cards, Playfair + Inter fonts. All pages must match `/progress`.
+Classes, Assignments, Materials, Practice Studio, tool pages — built in follow-up PRs after dashboard is merged.
+
+See `docs/CODEQUEST_FRONTEND_SANDBOX.md` for the full integration plan.
