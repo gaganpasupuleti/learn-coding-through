@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { checkApiHealth } from '../lib/api';
-import { getStoredUser, isLoggedIn } from '../lib/auth';
+import { checkApiHealth } from '../../lib/api';
+import { getStoredUser, isLoggedIn } from '../../lib/auth';
 
 export default function ConnectionStatus() {
   const [apiOk, setApiOk] = useState(null);
