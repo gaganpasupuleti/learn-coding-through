@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Student Progress Hub — Code Quest</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+
+    tailwind.config = {
+
+      theme: {
+
+        extend: {
+
+          colors: {
+
+            cream: { DEFAULT: '#faf3e0', soft: '#fff9ea' },
+
+            navy: { DEFAULT: '#0a1020', elevated: '#121a2e' },
+
+            charcoal: '#111827',
+
+            slate: '#708090',
+
+            cta: { DEFAULT: '#2563eb', hover: '#1d4ed8' },
+
+            progress: '#14b8a6',
+
+            gold: '#fbbf24',
+
+            card: {
+
+              yellow: '#f3dfa0',
+
+              pink: '#f5d0de',
+
+              sage: '#c2cdb0',
+
+              blue: '#b8c9e8',
+
+              lavender: '#ddd0f5',
+
+            },
+
+          },
+
+          fontFamily: {
+
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+
+          },
+
+          boxShadow: {
+
+            shell: '0 10px 36px rgba(10, 16, 32, 0.07)',
+
+          },
+
+        },
+
+      },
+
+    };
+
+  </script>
+
+  <style>
+    /* Approved Code Quest Progress Dashboard baseline — do not redesign structure without approval. */
+
+    [data-lucide] { width: 16px; height: 16px; stroke-width: 1.75; flex-shrink: 0; }
+
+    .pill-tab.active { background: #0a1020; color: #faf3e0; border-color: #0a1020; }
+
+    .nav-link.active { background: rgba(250,243,224,0.07); color: #faf3e0; border-left-color: #14b8a6; }
+
+    .mini-bar { height: 4px; background: rgba(17,24,39,0.1); border-radius: 999px; overflow: hidden; }
+
+    .mini-bar-fill { height: 100%; background: #0a1020; border-radius: 999px; opacity: 0.8; }
+
+    .chart-bar { flex: 1; background: rgba(17,24,39,0.14); border-radius: 2px 2px 0 0; min-width: 0; }
+
+    .timeline::before {
+
+      content: "";
+
+      position: absolute;
+
+      left: 2.25rem;
+
+      top: 6px;
+
+      bottom: 6px;
+
+      border-left: 1.5px dotted rgba(112,128,144,0.32);
+
+    }
+
+  </style>
+
+</head>
+
+<body class="w-full min-h-screen bg-cream p-4 overflow-x-hidden font-sans text-charcoal antialiased">
+
+    <!-- Approved Code Quest Progress Dashboard baseline — do not redesign structure without approval. -->
+
+    <div class="w-full min-h-[calc(100vh-32px)] rounded-[20px] border border-slate/20 bg-cream-soft shadow-shell overflow-hidden grid grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)_310px]">
+
+
+
+      <!-- Left navigation sidebar -->
+
+      <aside class="bg-navy text-cream/60 w-full min-w-0 flex flex-col p-4 lg:p-5 lg:overflow-y-auto
+
+                    max-lg:flex-row max-lg:overflow-x-auto max-lg:gap-1">
+
+        <div class="flex items-center gap-2 mb-0 lg:mb-5 px-1 shrink-0 max-lg:mr-2">
+
+          <div class="w-7 h-7 rounded-md bg-gradient-to-br from-cta to-progress grid place-items-center text-[8px] font-mono text-white font-medium">CQ</div>
+
+          <span class="font-display font-semibold text-sm text-cream max-lg:hidden">Code Quest</span>
+
+        </div>
+
+
+
+        <div class="max-lg:hidden">
+
+          <p class="text-[11px] font-semibold uppercase tracking-widest text-cream/50 px-2 mb-1">Menu</p>
+
+          <nav class="flex flex-col gap-px">
+
+            <a href="/dashboard" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+
+            <a href="#" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="graduation-cap"></i><span>Live Classes</span></a>
+
+            <a href="#" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="code-2"></i><span>Practice Studio</span></a>
+
+            <a href="#" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="book-open"></i><span>Study Materials</span></a>
+
+            <a href="#" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="clipboard-list"></i><span>Assignments</span></a>
+
+            <a href="#" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="file-text"></i><span>Resume Lab</span></a>
+
+            <a href="/progress" class="nav-link active flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="trending-up"></i><span>Progress</span></a>
+
+            <a href="#" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="settings"></i><span>Settings</span></a>
+
+          </nav>
+
+
+
+          <p class="text-[11px] font-semibold uppercase tracking-widest text-cream/50 px-2 mt-4 mb-1 pt-4 border-t border-cream/10">Tools</p>
+
+          <nav class="flex flex-col gap-px">
+
+            <a href="#" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="braces"></i><span>Python Lab</span></a>
+
+            <a href="#" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="database"></i><span>SQL Studio</span></a>
+
+            <a href="#" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="brain"></i><span>Aptitude Trainer</span></a>
+
+            <a href="#" class="nav-link flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium border-l-2 border-transparent hover:bg-cream/5 hover:text-cream transition-colors"><i data-lucide="target"></i><span>Mock Tests</span></a>
+
+          </nav>
+
+
+
+          <div class="mt-auto pt-3 border-t border-cream/10">
+
+            <a href="/progress" class="flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium hover:bg-red-500/10 hover:text-red-300 transition-colors"><i data-lucide="log-out"></i><span>Logout</span></a>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Mobile icon nav -->
+
+        <nav class="lg:hidden flex items-center gap-1">
+
+          <a href="/dashboard" class="nav-link p-2 rounded-lg"><i data-lucide="layout-dashboard"></i></a>
+
+          <a href="#" class="nav-link p-2 rounded-lg"><i data-lucide="graduation-cap"></i></a>
+
+          <a href="#" class="nav-link p-2 rounded-lg"><i data-lucide="code-2"></i></a>
+
+          <a href="#" class="nav-link p-2 rounded-lg"><i data-lucide="clipboard-list"></i></a>
+
+          <a href="/progress" class="nav-link active p-2 rounded-lg"><i data-lucide="trending-up"></i></a>
+
+        </nav>
+
+      </aside>
+
+
+
+      <main class="min-w-0 max-lg:overflow-visible lg:overflow-y-auto p-5 xl:p-6">
+
+        <div class="w-full max-w-none flex flex-col gap-5">
+
+
+
+          <!-- Header -->
+
+          <header class="flex flex-col gap-4">
+
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+
+              <div>
+
+                <h1 class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-charcoal leading-tight text-left align-top">Good morning, Gk</h1>
+
+                <p class="text-sm text-slate leading-relaxed mt-1 max-w-lg">Your learning plan is ready. Continue today's classes, practice goals, and progress checkpoints.</p>
+
+              </div>
+
+              <div class="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+
+                <button type="button" class="w-8 h-8 rounded-full border border-slate/20 bg-cream grid place-items-center text-slate hover:text-charcoal hover:bg-white transition-colors" aria-label="Search"><i data-lucide="search"></i></button>
+
+                <button type="button" class="w-8 h-8 rounded-full border border-slate/20 bg-cream grid place-items-center text-slate hover:text-charcoal hover:bg-white transition-colors" aria-label="Notifications"><i data-lucide="bell"></i></button>
+
+                <div class="w-8 h-8 rounded-full border border-slate/20 bg-cream grid place-items-center text-[11px] font-semibold">Gk</div>
+
+              </div>
+
+            </div>
+
+
+
+            <div class="flex items-center gap-2 bg-cream border border-slate/20 rounded-full px-3 py-2 w-full max-w-md">
+
+              <i data-lucide="search" class="text-slate"></i>
+
+              <input type="search" placeholder="Search lessons, practice sets, assignments..." class="bg-transparent border-0 outline-none text-sm w-full min-w-0 placeholder:text-slate" />
+
+            </div>
+
+
+
+            <div class="flex flex-wrap gap-1.5">
+
+              <button type="button" class="pill-tab active text-[13px] font-medium px-3 py-1.5 rounded-full border border-slate/20 bg-cream text-slate transition-colors">All</button>
+
+              <button type="button" class="pill-tab text-[13px] font-medium px-3 py-1.5 rounded-full border border-slate/20 bg-cream text-slate hover:text-charcoal transition-colors">Python</button>
+
+              <button type="button" class="pill-tab text-[13px] font-medium px-3 py-1.5 rounded-full border border-slate/20 bg-cream text-slate hover:text-charcoal transition-colors">SQL</button>
+
+              <button type="button" class="pill-tab text-[13px] font-medium px-3 py-1.5 rounded-full border border-slate/20 bg-cream text-slate hover:text-charcoal transition-colors">Aptitude</button>
+
+              <button type="button" class="pill-tab text-[13px] font-medium px-3 py-1.5 rounded-full border border-slate/20 bg-cream text-slate hover:text-charcoal transition-colors">Resume</button>
+
+              <button type="button" class="pill-tab text-[13px] font-medium px-3 py-1.5 rounded-full border border-slate/20 bg-cream text-slate hover:text-charcoal transition-colors">Assignments</button>
+
+            </div>
+
+          </header>
+
+
+
+          <!-- Summary cards — 4 across on xl -->
+
+          <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 w-full min-w-0">
+
+            <article class="h-full flex flex-col rounded-[18px] border border-slate/15 bg-card-yellow p-4 md:p-[18px] min-h-[145px] hover:shadow-md transition-shadow">
+
+              <h3 class="text-[13px] font-semibold uppercase tracking-wide text-charcoal/75 mb-2">Today's Plan</h3>
+
+              <p class="text-xl font-bold tracking-tight">2 live sessions</p>
+
+              <p class="text-[13px] text-slate mt-0.5">Python Fundamentals · SQL Aggregations</p>
+
+              <div class="mt-auto pt-3 space-y-1.5">
+
+                <div class="flex items-center gap-2 text-[13px] font-medium"><span class="w-12">Python</span><div class="mini-bar flex-1"><div class="mini-bar-fill" style="width:65%"></div></div></div>
+
+                <div class="flex items-center gap-2 text-[13px] font-medium"><span class="w-12">SQL</span><div class="mini-bar flex-1"><div class="mini-bar-fill" style="width:40%"></div></div></div>
+
+              </div>
+
+            </article>
+
+
+
+            <article class="h-full flex flex-col rounded-[18px] border border-slate/15 bg-card-pink p-4 md:p-[18px] min-h-[145px] hover:shadow-md transition-shadow">
+
+              <h3 class="text-[13px] font-semibold uppercase tracking-wide text-charcoal/75 mb-2">Weekly Mastery</h3>
+
+              <p class="text-xl font-bold tracking-tight">68%</p>
+
+              <div class="flex items-end gap-0.5 h-8 my-2">
+
+                <div class="chart-bar" style="height:35%"></div><div class="chart-bar" style="height:50%"></div><div class="chart-bar" style="height:42%"></div>
+
+                <div class="chart-bar" style="height:58%"></div><div class="chart-bar" style="height:68%"></div><div class="chart-bar" style="height:55%"></div><div class="chart-bar" style="height:72%"></div>
+
+              </div>
+
+              <p class="text-[13px] font-semibold text-teal-600 mt-auto">+12% this week</p>
+
+            </article>
+
+
+
+            <article class="h-full flex flex-col rounded-[18px] border border-slate/15 bg-card-sage p-4 md:p-[18px] min-h-[145px] hover:shadow-md transition-shadow">
+
+              <h3 class="text-[13px] font-semibold uppercase tracking-wide text-charcoal/75 mb-2">Skill Progress</h3>
+
+              <div class="space-y-1 mt-1 flex-1">
+
+                <div class="flex justify-between text-[13px] font-medium"><span>Python</span><span>74%</span></div>
+
+                <div class="flex justify-between text-[13px] font-medium"><span>SQL</span><span>61%</span></div>
+
+                <div class="flex justify-between text-[13px] font-medium"><span>Aptitude</span><span>48%</span></div>
+
+              </div>
+
+            </article>
+
+
+
+            <article class="h-full flex flex-col rounded-[18px] border border-slate/15 bg-card-blue p-4 md:p-[18px] min-h-[145px] hover:shadow-md transition-shadow">
+
+              <h3 class="text-[13px] font-semibold uppercase tracking-wide text-charcoal/75 mb-2">Practice Log</h3>
+
+              <div class="space-y-1 text-[13px] text-slate flex-1">
+
+                <p>24 problems solved</p>
+
+                <p>8 SQL queries</p>
+
+                <p>5 aptitude sets</p>
+
+              </div>
+
+            </article>
+
+          </section>
+
+
+
+          <!-- Study plan + Focus -->
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 min-w-0">
+
+            <div class="h-full flex flex-col">
+
+              <h2 class="text-sm font-semibold mb-3">Today's Study Plan</h2>
+
+              <div class="flex flex-col gap-2 flex-1">
+
+                <div class="flex items-center gap-2 px-3 py-2.5 bg-cream border border-slate/20 rounded-full text-sm">
+
+                  <span class="w-1.5 h-1.5 rounded-full bg-yellow-600 shrink-0"></span>
+
+                  <span class="text-[13px] font-semibold text-slate w-16 shrink-0">10:00 AM</span>
+
+                  <span class="font-semibold flex-1 truncate">Python Loops</span>
+
+                  <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 shrink-0">Starting Soon</span>
+
+                </div>
+
+                <div class="flex items-center gap-2 px-3 py-2.5 bg-cream border border-slate/20 rounded-full text-sm">
+
+                  <span class="w-1.5 h-1.5 rounded-full bg-pink-400 shrink-0"></span>
+
+                  <span class="text-[13px] font-semibold text-slate w-16 shrink-0">12:30 PM</span>
+
+                  <span class="font-semibold flex-1 truncate">SQL GROUP BY</span>
+
+                  <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate/10 text-slate shrink-0">Pending</span>
+
+                </div>
+
+                <div class="flex items-center gap-2 px-3 py-2.5 bg-cream border border-slate/20 rounded-full text-sm">
+
+                  <span class="w-1.5 h-1.5 rounded-full bg-green-700 shrink-0"></span>
+
+                  <span class="text-[13px] font-semibold text-slate w-16 shrink-0">5:00 PM</span>
+
+                  <span class="font-semibold flex-1 truncate">Aptitude Percentages</span>
+
+                  <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate/10 text-slate shrink-0">Pending</span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+
+            <div class="h-full flex flex-col">
+
+              <h2 class="text-sm font-semibold mb-3">Current Focus</h2>
+
+              <div class="h-full flex flex-col rounded-[18px] border border-slate/15 bg-card-lavender p-4 md:p-[18px]">
+
+                <p class="text-[11px] font-semibold uppercase tracking-wide text-slate mb-1">Current Focus</p>
+
+                <p class="text-base font-bold tracking-tight mb-2">SQL Aggregations</p>
+
+                <p class="text-sm text-slate leading-relaxed flex-1">Complete today's GROUP BY practice set and strengthen your query-building confidence.</p>
+
+                <button type="button" class="mt-4 self-start text-[13px] font-semibold px-4 py-2 bg-cta text-white rounded-full hover:bg-cta-hover transition-colors">Continue Practice</button>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+
+          <!-- Assignments + Resume -->
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 min-w-0">
+
+            <div class="h-full flex flex-col rounded-[18px] border border-slate/20 bg-cream p-4 md:p-[18px]">
+
+              <h3 class="text-sm font-semibold mb-3">Pending Assignments</h3>
+
+              <ul class="flex flex-col gap-2 flex-1">
+
+                <li class="flex items-center gap-2 px-3 py-2 bg-cream-soft border border-slate/20 rounded-full text-[13px] font-medium"><span class="w-1 h-1 rounded-full bg-gold shrink-0"></span>Python list practice</li>
+
+                <li class="flex items-center gap-2 px-3 py-2 bg-cream-soft border border-slate/20 rounded-full text-[13px] font-medium"><span class="w-1 h-1 rounded-full bg-gold shrink-0"></span>SQL joins worksheet</li>
+
+                <li class="flex items-center gap-2 px-3 py-2 bg-cream-soft border border-slate/20 rounded-full text-[13px] font-medium"><span class="w-1 h-1 rounded-full bg-gold shrink-0"></span>Aptitude percentage quiz</li>
+
+              </ul>
+
+            </div>
+
+
+
+            <div class="h-full flex flex-col rounded-[18px] border border-slate/20 bg-cream p-4 md:p-[18px]">
+
+              <h3 class="text-sm font-semibold mb-3">Resume Lab</h3>
+
+              <div class="flex items-center gap-2 mb-2">
+
+                <i data-lucide="badge-check" class="text-progress"></i>
+
+                <p class="text-xl font-bold tracking-tight">72% profile strength</p>
+
+              </div>
+
+              <p class="text-sm text-slate leading-relaxed flex-1"><strong class="text-charcoal font-semibold">Missing:</strong> Projects, skills summary, SQL keywords</p>
+
+              <button type="button" class="mt-4 self-start text-[13px] font-semibold px-4 py-2 bg-navy text-cream rounded-full hover:bg-navy-elevated transition-colors">Improve Resume</button>
+
+            </div>
+
+          </section>
+
+
+
+        </div>
+
+      </main>
+
+
+
+      <!-- Right sidebar: stacks below on < lg -->
+
+      <aside class="flex flex-col gap-5 min-w-0 w-full shrink-0 overflow-x-hidden max-lg:overflow-visible lg:overflow-y-auto p-4 lg:p-5 max-lg:border-t max-lg:border-slate/20 lg:border-t-0 lg:border-l lg:border-slate/20">
+
+
+
+          <div>
+
+            <div class="flex items-center justify-between mb-3">
+
+              <h3 class="text-sm font-semibold flex items-center gap-1.5"><i data-lucide="calendar-days"></i> Study Calendar</h3>
+
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-card-pink/50 border border-slate/15 text-slate">May 2024</span>
+
+            </div>
+
+
+
+            <div class="grid grid-cols-7 gap-px text-center text-[11px] mb-3">
+
+              <span class="font-semibold text-slate py-0.5">S</span><span class="font-semibold text-slate py-0.5">M</span><span class="font-semibold text-slate py-0.5">T</span>
+
+              <span class="font-semibold text-slate py-0.5">W</span><span class="font-semibold text-slate py-0.5">T</span><span class="font-semibold text-slate py-0.5">F</span><span class="font-semibold text-slate py-0.5">S</span>
+
+              <span></span><span></span><span></span>
+
+              <span class="py-1 text-slate relative">1</span><span class="py-1 text-slate">2</span><span class="py-1 text-slate relative">3</span><span class="py-1 text-slate">4</span>
+
+              <span class="py-1 text-slate">5</span><span class="py-1 text-slate relative">6</span><span class="py-1 text-slate">7</span><span class="py-1 text-slate">8</span><span class="py-1 text-slate">9</span>
+
+              <span class="py-1 text-slate relative">10</span><span class="py-1 text-slate">11</span><span class="py-1 text-slate">12</span><span class="py-1 text-slate">13</span>
+
+              <span class="py-1 font-semibold bg-navy text-cream rounded-full">14</span><span class="py-1 text-slate">15</span><span class="py-1 text-slate relative">16</span><span class="py-1 text-slate">17</span>
+
+              <span class="py-1 text-slate">18</span><span class="py-1 text-slate">19</span><span class="py-1 text-slate">20</span><span class="py-1 text-slate relative">21</span>
+
+              <span class="py-1 text-slate">22</span><span class="py-1 text-slate">23</span><span class="py-1 text-slate">24</span><span class="py-1 text-slate">25</span>
+
+              <span class="py-1 text-slate">26</span><span class="py-1 text-slate">27</span><span class="py-1 text-slate">28</span><span class="py-1 text-slate">29</span>
+
+              <span class="py-1 text-slate">30</span><span class="py-1 text-slate">31</span>
+
+            </div>
+
+
+
+            <button type="button" class="w-full text-[13px] font-semibold py-2 border border-slate/20 rounded-full hover:bg-white transition-colors">Add Study Plan</button>
+
+          </div>
+
+
+
+          <div>
+
+            <h4 class="text-sm font-semibold mb-3">Today's Timeline</h4>
+
+            <div class="timeline relative pl-12 space-y-2">
+
+              <div class="relative">
+
+                <span class="absolute -left-[51px] w-[35px] text-[10px] font-semibold text-slate text-right top-[7px]">10:00 AM</span>
+
+                <div class="ml-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-slate/15 bg-card-yellow/50">Python Class</div>
+
+              </div>
+
+              <div class="relative">
+
+                <span class="absolute -left-[51px] w-[35px] text-[10px] font-semibold text-slate text-right top-1">12:30 PM</span>
+
+                <div class="ml-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-slate/15 bg-card-pink/50">SQL Practice</div>
+
+              </div>
+
+              <div class="relative">
+
+                <span class="absolute -left-[51px] w-[35px] text-[10px] font-semibold text-slate text-right top-1.5">03:00 PM</span>
+
+                <div class="ml-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-slate/15 bg-card-sage/50">Assignment Review</div>
+
+              </div>
+
+              <div class="relative">
+
+                <span class="absolute -left-[51px] w-[35px] text-[10px] font-semibold text-slate text-right top-1.5">05:00 PM</span>
+
+                <div class="ml-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-slate/15 bg-card-blue/50">Aptitude Test</div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          <button type="button" class="w-full text-[13px] font-semibold py-2 border border-slate/20 rounded-full text-slate hover:bg-white hover:text-charcoal transition-colors mt-auto">View all details</button>
+
+      </aside>
+
+
+
+    </div>
+
+
+
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+
+  <script>
+
+    lucide.createIcons({ attrs: { 'stroke-width': 1.75 } });
+
+    document.querySelectorAll('.pill-tab').forEach(function (tab) {
+
+      tab.addEventListener('click', function () {
+
+        document.querySelectorAll('.pill-tab').forEach(function (t) { t.classList.remove('active'); });
+
+        tab.classList.add('active');
+
+      });
+
+    });
+
+  </script>
+
+</body>
+
+</html>
+
