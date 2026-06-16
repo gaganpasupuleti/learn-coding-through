@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CodeQuestPage from '../components/layout/CodeQuestPage';
 import CodeQuestTopHeader from '../components/layout/CodeQuestTopHeader';
 import CQStatCard from '../components/ui/CQStatCard';
@@ -6,16 +6,31 @@ import CQProgressBar from '../components/ui/CQProgressBar';
 import CQCard from '../components/ui/CQCard';
 import CQSectionTitle from '../components/ui/CQSectionTitle';
 import CQActionButton from '../components/ui/CQActionButton';
+import ConnectionStatus from '../components/ui/ConnectionStatus';
 import { CalendarTimelinePanel } from '../components/panels/SharedPanels';
 import { ROUTES } from '../config/navigation';
+import { fetchCurrentUser } from '../lib/api';
+import { getStoredUser } from '../lib/auth';
 
 export default function DashboardPage() {
   const [pill, setPill] = useState('All');
+  const [userName, setUserName] = useState(() => getStoredUser()?.full_name || 'Gk');
+
+  useEffect(() => {
+    fetchCurrentUser()
+      .then((user) => {
+        if (user?.full_name) setUserName(user.full_name.split(' ')[0]);
+      })
+      .catch(() => {
+        /* use cached or default name when API unavailable */
+      });
+  }, []);
 
   return (
     <CodeQuestPage activeKey="dashboard" rightPanel={<CalendarTimelinePanel />}>
+      <ConnectionStatus />
       <CodeQuestTopHeader
-        title="Good morning, Gk"
+        title={`Good morning, ${userName}`}
         subtitle="Your learning plan is ready. Continue today's classes, practice goals, and progress checkpoints."
         pills={['All', 'Python', 'SQL', 'Aptitude', 'Resume']}
         activePill={pill}

@@ -74,6 +74,11 @@ export default defineConfig(({ mode }) => {
         '/health': { target: apiTarget, changeOrigin: true },
         '/jobs-api': { target: jobsTarget, changeOrigin: true },
         '/practice': { target: legacyAppTarget, changeOrigin: true },
+        '/open': {
+          target: legacyAppTarget,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/open/, '') || '/',
+        },
       },
     },
     preview: {
@@ -82,6 +87,11 @@ export default defineConfig(({ mode }) => {
         '/health': { target: apiTarget, changeOrigin: true },
         '/jobs-api': { target: jobsTarget, changeOrigin: true },
         '/practice': { target: legacyAppTarget, changeOrigin: true },
+        '/open': {
+          target: legacyAppTarget,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/open/, '') || '/',
+        },
       },
     },
   };
