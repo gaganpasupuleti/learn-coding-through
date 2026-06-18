@@ -1,6 +1,11 @@
 import { chromium } from 'playwright'
 
-import { openCodePracticeFromLearningMenu } from './smoke-nav-helpers.mjs'
+import {
+  openCodePracticeFromPracticeMenu,
+  openProjectsFromLearnMenu,
+  openQuizFromPracticeMenu,
+  waitForStudentShell,
+} from './smoke-nav-helpers.mjs'
 
 const API_BASE = process.env.SMOKE_API_BASE ?? 'http://127.0.0.1:8000'
 const WEB_BASE = process.env.SMOKE_WEB_BASE ?? 'http://localhost:5000'
@@ -166,29 +171,29 @@ async function runUiChecks() {
       await page.locator('#email').fill('demo@student.com')
       await page.locator('#password').fill('DemoStudent@123')
       await page.getByRole('button', { name: 'Sign In', exact: true }).click()
-      await page.getByRole('button', { name: 'Learning menu' }).waitFor({ state: 'visible', timeout: 15000 })
-      return 'student shell loaded'
+      const shell = await waitForStudentShell(page, 15000)
+      return `student shell loaded (${shell})`
     })
 
     await runCheck('ui_projects_flow', async () => {
-      await page.getByRole('button', { name: 'Projects', exact: true }).click()
+      const nav = await openProjectsFromLearnMenu(page)
       await page.getByRole('button', { name: 'Start Project', exact: true }).first().waitFor({ state: 'visible', timeout: 10000 })
       const startCount = await page.getByRole('button', { name: 'Start Project', exact: true }).count()
       if (startCount === 0) throw new Error('No Start Project buttons found')
-      return `start_buttons=${startCount}`
+      return `${nav}; start_buttons=${startCount}`
     }, { maxDurationMs: MAX_UI_NAV_MS })
 
     await runCheck('ui_practice_flow', async () => {
-      await openCodePracticeFromLearningMenu(page, 10000)
+      const nav = await openCodePracticeFromPracticeMenu(page, 10000)
       await page.getByTestId('practice-section-python').click()
       await page.getByRole('button', { name: 'Run Code', exact: true }).waitFor({ state: 'visible', timeout: 10000 })
       const visible = await page.getByRole('button', { name: 'Run Code', exact: true }).isVisible()
       if (!visible) throw new Error('Run Code button not visible')
-      return 'practice ground loaded'
+      return `practice ground loaded (${nav})`
     }, { maxDurationMs: MAX_UI_NAV_MS })
 
     await runCheck('ui_quiz_flow', async () => {
-      await page.getByRole('button', { name: 'Quiz', exact: true }).click()
+      const nav = await openQuizFromPracticeMenu(page)
       await page.getByRole('button', { name: 'Start Quiz', exact: true }).first().waitFor({ state: 'visible', timeout: 10000 })
       const startCount = await page.getByRole('button', { name: 'Start Quiz', exact: true }).count()
       if (startCount === 0) throw new Error('No Start Quiz buttons found')
@@ -196,7 +201,7 @@ async function runUiChecks() {
       await page.getByRole('button', { name: 'Check Answer', exact: true }).waitFor({ state: 'visible', timeout: 10000 })
       const checkVisible = await page.getByRole('button', { name: 'Check Answer', exact: true }).isVisible()
       if (!checkVisible) throw new Error('Quiz question action button not visible')
-      return 'quiz runtime loaded'
+      return `quiz runtime loaded (${nav})`
     }, { maxDurationMs: MAX_UI_NAV_MS })
   } finally {
     await browser.close()
