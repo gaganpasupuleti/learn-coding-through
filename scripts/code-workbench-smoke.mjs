@@ -10,6 +10,8 @@
  */
 import { chromium } from 'playwright'
 
+import { waitForStudentShell } from './smoke-nav-helpers.mjs'
+
 const WEB_BASE = process.env.SMOKE_WEB_BASE ?? 'http://127.0.0.1:5000'
 const NAV_TIMEOUT_MS = Number(process.env.SMOKE_NAV_TIMEOUT_MS ?? 180000)
 const DEMO_EMAIL = process.env.SMOKE_DEMO_EMAIL ?? 'demo@student.com'
@@ -45,7 +47,8 @@ async function loginAsDemoStudent(page) {
   await page.locator('#email').fill(DEMO_EMAIL)
   await page.locator('#password').fill(DEMO_PASSWORD)
   await page.getByRole('button', { name: 'Sign In', exact: true }).click()
-  await page.getByRole('button', { name: 'Learning menu' }).waitFor({ state: 'visible', timeout: NAV_TIMEOUT_MS })
+  const shell = await waitForStudentShell(page, NAV_TIMEOUT_MS)
+  return shell
 }
 
 async function openCodeWorkbench(page) {
@@ -219,8 +222,8 @@ async function main() {
 
   try {
     await runCheck('01_login', async () => {
-      await loginAsDemoStudent(page)
-      return 'demo login ok'
+      const shell = await loginAsDemoStudent(page)
+      return `demo login ok (${shell})`
     }, { critical: true })
 
     await runCheck('02_open_workbench', async () => {

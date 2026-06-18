@@ -1,5 +1,7 @@
 import { chromium } from 'playwright'
 
+import { openFlowPathFromPracticeMenu, waitForStudentShell } from './smoke-nav-helpers.mjs'
+
 const WEB_BASE = process.env.SMOKE_WEB_BASE ?? 'http://127.0.0.1:5001'
 const NAV_TIMEOUT_MS = Number(process.env.SMOKE_NAV_TIMEOUT_MS ?? 120000)
 const DEMO_EMAIL = process.env.SMOKE_DEMO_EMAIL ?? 'demo@student.com'
@@ -26,13 +28,13 @@ async function loginAsDemoStudent(page) {
   await page.locator('#email').fill(DEMO_EMAIL)
   await page.locator('#password').fill(DEMO_PASSWORD)
   await page.getByRole('button', { name: 'Sign In', exact: true }).click()
-  await page.getByRole('button', { name: 'Learning menu' }).waitFor({ state: 'visible', timeout: NAV_TIMEOUT_MS })
+  await waitForStudentShell(page, NAV_TIMEOUT_MS)
 }
 
 async function openFlowPath(page) {
-  await page.getByRole('button', { name: 'Learning menu' }).click()
-  await page.getByRole('menuitem', { name: 'Flow Path' }).click()
+  const nav = await openFlowPathFromPracticeMenu(page)
   await page.getByRole('heading', { name: 'Flow Path' }).waitFor({ state: 'visible', timeout: NAV_TIMEOUT_MS })
+  return nav
 }
 
 async function main() {
@@ -51,8 +53,8 @@ async function main() {
     })
 
     await runCheck('02_open_flow_path', async () => {
-      await openFlowPath(page)
-      return 'flow path page visible'
+      const nav = await openFlowPath(page)
+      return `flow path page visible (${nav})`
     })
 
     await runCheck('03_load_roadmap', async () => {
