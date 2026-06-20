@@ -6,7 +6,7 @@ import fs from 'fs';
 const STATIC = resolve(__dirname, 'static');
 const PROGRESS_FILE = resolve(STATIC, 'progress/index.html');
 
-const APP_ROUTES = ['/dashboard'];
+const APP_ROUTES = ['/dashboard', '/classes'];
 
 function serveProgressHtml(res) {
   const distFile = resolve('dist/static/progress/index.html');

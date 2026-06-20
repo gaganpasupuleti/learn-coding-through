@@ -4,7 +4,7 @@ import { legacyPageHref, practiceHref } from '../lib/legacyApp';
 export const ROUTES = {
   dashboard: '/dashboard',
   progress: '/progress',
-  classes: legacyPageHref(LEGACY_PAGES.calendar),
+  classes: '/classes',
   materials: legacyPageHref(LEGACY_PAGES.learningPlanner),
   assignments: legacyPageHref(LEGACY_PAGES.projects),
   resumeLab: legacyPageHref(LEGACY_PAGES.resume),
@@ -21,7 +21,7 @@ export const ROUTES = {
 /** Sandbox pages — new Code Quest UI */
 export const MENU_ITEMS = [
   { key: 'dashboard', label: 'Dashboard', path: ROUTES.dashboard, icon: 'LayoutDashboard', external: false },
-  { key: 'classes', label: 'Live Classes', path: ROUTES.classes, icon: 'GraduationCap', external: true },
+  { key: 'classes', label: 'Live Classes', path: ROUTES.classes, icon: 'GraduationCap', external: false },
   { key: 'practice-studio', label: 'Practice Studio', path: ROUTES.practiceStudio, icon: 'Code2', external: true },
   { key: 'materials', label: 'Study Materials', path: ROUTES.materials, icon: 'BookOpen', external: true },
   { key: 'assignments', label: 'Assignments', path: ROUTES.assignments, icon: 'ClipboardList', external: true },
