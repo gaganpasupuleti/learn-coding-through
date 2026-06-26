@@ -185,7 +185,7 @@ export function JobSpyOpsView() {
             <form onSubmit={saveAdminKey} className="flex flex-col sm:flex-row gap-3 max-w-xl">
               <div className="flex-1 space-y-1">
                 <Label htmlFor="admin-key">X-Admin-Key</Label>
-                <Input id="admin-key" type="password" value={adminKeyInput} onChange={(e) => setAdminKeyInput(e.target.value)} placeholder="codequest-dev-jobs-key" />
+                <Input id="admin-key" type="password" value={adminKeyInput} onChange={(e) => setAdminKeyInput(e.target.value)} placeholder="Enter admin key" />
                 <p className="text-xs text-slate-500">Must match ADMIN_JOB_KEY in backend/.env</p>
               </div>
               <Button type="submit" className="self-end bg-blue-600 hover:bg-blue-700">Save key</Button>
