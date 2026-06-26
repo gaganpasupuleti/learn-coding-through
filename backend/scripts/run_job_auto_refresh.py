@@ -29,13 +29,15 @@ def main() -> int:
         results = run_auto_refresh_profiles(db, triggered_by="cron")
         for r in results:
             logger.info(
-                "profile=%s status=%s found=%s saved=%s dupes=%s location=%s",
+                "profile=%s status=%s found=%s saved=%s dupes=%s location=%s hours_old=%s range=%s",
                 r.get("profile"),
                 r.get("status"),
                 r.get("totalFound"),
                 r.get("savedCount"),
                 r.get("skippedDuplicates"),
                 r.get("location", "India"),
+                r.get("hoursOld"),
+                r.get("rangeLabel"),
             )
         failed = [r for r in results if r.get("status") == "failed"]
         return 1 if failed and len(failed) == len(results) else 0

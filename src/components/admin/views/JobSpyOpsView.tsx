@@ -20,6 +20,13 @@ const SOURCE_OPTIONS: { id: string; label: string; optional?: boolean }[] = [
   { id: 'linkedin', label: 'LinkedIn', optional: true },
 ]
 
+const MANUAL_RANGE_OPTIONS = [
+  { value: 1, label: 'Last 24 hours' },
+  { value: 3, label: 'Last 3 days' },
+  { value: 7, label: 'Last 7 days' },
+  { value: 14, label: 'Last 14 days' },
+] as const
+
 function StatCard({ label, value, hint, accent }: { label: string; value: string; hint?: string; accent?: string }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -53,6 +60,7 @@ export function JobSpyOpsView() {
   const [refreshing, setRefreshing] = useState<string | null>(null)
   const [lastRefresh, setLastRefresh] = useState<RefreshResponse | null>(null)
   const [sources, setSources] = useState<string[]>(['indeed', 'google', 'naukri'])
+  const [dateRangeDays, setDateRangeDays] = useState(3)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [adminKeyInput, setAdminKeyInput] = useState(() => getJobSpyAdminKey())
   const [showKeyForm, setShowKeyForm] = useState(!getJobSpyAdminKey())
@@ -113,7 +121,10 @@ export function JobSpyOpsView() {
     }
     setRefreshing(profile)
     try {
-      const res = await jobspyApi.refreshJobs({ profile, sources, runMode: 'manual' }, key)
+      const res = await jobspyApi.refreshJobs(
+        { profile, sources, runMode: 'manual', dateRangeDays },
+        key,
+      )
       setLastRefresh(res)
       toast.success(`${label}: ${res.savedCount} saved (${res.totalFound} found)`)
       await loadStats()
@@ -130,7 +141,10 @@ export function JobSpyOpsView() {
     setRefreshing('intern_fresher')
     try {
       for (const p of ['internship_india', 'fresher_india'] as const) {
-        const res = await jobspyApi.refreshJobs({ profile: p, sources, runMode: 'manual' }, key)
+        const res = await jobspyApi.refreshJobs(
+          { profile: p, sources, runMode: 'manual', dateRangeDays },
+          key,
+        )
         setLastRefresh(res)
       }
       toast.success('Intern & Fresher refresh complete')
@@ -205,6 +219,9 @@ export function JobSpyOpsView() {
             Railway cron every 8h runs <strong>internship_india</strong>, <strong>fresher_india</strong>, and{' '}
             <strong>entry_level_india</strong> only. Location locked to India. 1+ experience is manual-only.
           </p>
+          <p className="text-xs text-emerald-700">
+            Auto refresh derives range from the last successful auto run plus a 12h overlap buffer.
+          </p>
           <div className="flex flex-wrap gap-2 text-sm">
             <Badge className="bg-emerald-100 text-emerald-800">internship_india · auto</Badge>
             <Badge className="bg-emerald-100 text-emerald-800">fresher_india · auto</Badge>
@@ -241,6 +258,24 @@ export function JobSpyOpsView() {
             <p className="text-sm text-slate-600 mt-1">
               Location is fixed to <strong>India</strong> for Code Quest job alerts. No role typing needed — profiles use predefined search terms.
             </p>
+            <p className="text-xs text-slate-500 mt-2">
+              Manual refresh can go further back. Auto refresh uses the last successful run with overlap.
+            </p>
+          </div>
+
+          <div className="space-y-1.5 max-w-xs">
+            <Label htmlFor="manual-date-range">Date range</Label>
+            <select
+              id="manual-date-range"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus-visible:border-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25"
+              value={dateRangeDays}
+              onChange={(e) => setDateRangeDays(Number(e.target.value))}
+              disabled={!!refreshing}
+            >
+              {MANUAL_RANGE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
           </div>
 
           <div className="space-y-2">
@@ -284,7 +319,8 @@ export function JobSpyOpsView() {
           {lastRefresh && (
             <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-sm space-y-1">
               <p className="font-medium text-slate-900">Last refresh — {lastRefresh.profileLabel}</p>
-              <p>Location: <strong>{lastRefresh.location}</strong> · Found: {lastRefresh.totalFound} · Saved: {lastRefresh.savedCount} · Dupes: {lastRefresh.skippedDuplicates}</p>
+              <p>{lastRefresh.rangeLabel ?? `Range: last ${lastRefresh.hoursOld}h`} · Location: <strong>{lastRefresh.location}</strong></p>
+              <p>Found: {lastRefresh.totalFound} · Saved: {lastRefresh.savedCount} · Dupes: {lastRefresh.skippedDuplicates}</p>
               <p>DB: {lastRefresh.totalJobsBefore} → {lastRefresh.totalJobsAfter} · Run #{lastRefresh.scrapeRunId} · {lastRefresh.status}</p>
               <p className="text-slate-600">Sources: {Object.entries(lastRefresh.sourceBreakdown).map(([k, v]) => `${k}: ${v}`).join(' · ')}</p>
             </div>

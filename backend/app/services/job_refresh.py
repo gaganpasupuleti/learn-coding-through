@@ -4,30 +4,90 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import time
 from datetime import datetime
 from typing import Any
 
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.schemas.scraped_jobs import FIXED_JOB_LOCATION
 from app.services.job_profiles import (
+    ALLOWED_MANUAL_RANGE_DAYS,
+    AUTO_OVERLAP_BUFFER_HOURS,
     DEFAULT_HOURS_OLD,
+    DEFAULT_MANUAL_RANGE_DAYS,
     DEFAULT_SOURCES,
+    MAX_HOURS_OLD,
     MAX_PER_SOURCE_PER_QUERY,
     MAX_TOTAL_JOBS_PER_RUN,
-    ScrapeProfile,
     get_profile,
 )
 from app.services.job_scraper import scrape_jobs_safe
 from app.services.job_store import (
     count_total_jobs,
     create_scrape_run,
+    get_last_successful_auto_run,
     save_scraped_jobs,
     update_scrape_run,
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _fallback_hours_old() -> int:
+    return max(1, min(settings.jobspy_hours_old, MAX_HOURS_OLD))
+
+
+def compute_auto_hours_old(db: Session) -> tuple[int, str]:
+    """
+    Derive scrape window from last successful auto run + overlap buffer.
+    Falls back to JOBSPY_HOURS_OLD when no prior successful auto run exists.
+    """
+    fallback = _fallback_hours_old()
+    last = get_last_successful_auto_run(db)
+    if last is None or last.finished_at is None:
+        return fallback, f"Fallback: last {fallback}h (no prior successful auto run)"
+
+    elapsed_hours = (datetime.utcnow() - last.finished_at).total_seconds() / 3600.0
+    hours = int(math.ceil(elapsed_hours)) + AUTO_OVERLAP_BUFFER_HOURS
+    hours = max(AUTO_OVERLAP_BUFFER_HOURS, min(hours, MAX_HOURS_OLD))
+    return (
+        hours,
+        f"Auto range: since last run + {AUTO_OVERLAP_BUFFER_HOURS}h overlap ({hours}h)",
+    )
+
+
+def resolve_manual_hours_old(
+    *,
+    hours_old: int | None,
+    date_range_days: int | None,
+) -> tuple[int, int | None, str]:
+    """Resolve manual refresh window. Default: last 3 days."""
+    if date_range_days is not None:
+        if date_range_days not in ALLOWED_MANUAL_RANGE_DAYS:
+            allowed = ", ".join(str(d) for d in ALLOWED_MANUAL_RANGE_DAYS)
+            raise ValueError(f"dateRangeDays must be one of: {allowed}")
+        hours = date_range_days * 24
+        if date_range_days == 1:
+            label = "Range: last 24 hours"
+        else:
+            label = f"Range: last {date_range_days} days"
+        return hours, date_range_days, label
+
+    if hours_old is not None:
+        if hours_old < 1 or hours_old > MAX_HOURS_OLD:
+            raise ValueError(f"hoursOld must be between 1 and {MAX_HOURS_OLD}")
+        days = max(1, round(hours_old / 24))
+        if hours_old <= 24:
+            label = "Range: last 24 hours"
+        else:
+            label = f"Range: last {days} days"
+        return hours_old, None, label
+
+    days = DEFAULT_MANUAL_RANGE_DAYS
+    return days * 24, days, f"Range: last {days} days"
 
 
 def run_profile_refresh(
@@ -38,6 +98,8 @@ def run_profile_refresh(
     run_type: str,
     triggered_by: str | None,
     hours_old: int = DEFAULT_HOURS_OLD,
+    date_range_days: int | None = None,
+    range_label: str | None = None,
 ) -> dict[str, Any]:
     profile = get_profile(profile_key)
     if profile is None:
@@ -117,6 +179,9 @@ def run_profile_refresh(
         "profileLabel": profile.label,
         "location": FIXED_JOB_LOCATION,
         "runType": run_type,
+        "hoursOld": hours_old,
+        "dateRangeDays": date_range_days,
+        "rangeLabel": range_label,
         "totalFound": len(all_jobs),
         "savedCount": saved_count,
         "skippedDuplicates": skipped,
@@ -135,6 +200,9 @@ def run_profile_refresh(
 def run_auto_refresh_profiles(db: Session, *, triggered_by: str = "cron") -> list[dict[str, Any]]:
     from app.services.job_profiles import auto_profile_keys
 
+    hours_old, range_label = compute_auto_hours_old(db)
+    logger.info("Auto refresh hours_old=%s (%s)", hours_old, range_label)
+
     results = []
     for key in auto_profile_keys():
         try:
@@ -145,6 +213,8 @@ def run_auto_refresh_profiles(db: Session, *, triggered_by: str = "cron") -> lis
                     sources=list(DEFAULT_SOURCES),
                     run_type="auto",
                     triggered_by=triggered_by,
+                    hours_old=hours_old,
+                    range_label=range_label,
                 )
             )
         except Exception as exc:

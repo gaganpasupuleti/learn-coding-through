@@ -147,6 +147,20 @@ def get_last_run_by_type(db: Session, run_type: str) -> JobScrapeRun | None:
     )
 
 
+def get_last_successful_auto_run(db: Session) -> JobScrapeRun | None:
+    """Most recent auto refresh with success or partial_success."""
+    return (
+        db.query(JobScrapeRun)
+        .filter(
+            JobScrapeRun.run_type == "auto",
+            JobScrapeRun.status.in_(["success", "partial_success"]),
+            JobScrapeRun.finished_at.isnot(None),
+        )
+        .order_by(JobScrapeRun.finished_at.desc())
+        .first()
+    )
+
+
 def get_latest_jobs(db: Session, limit: int = 10, *, active_only: bool = True) -> list[ScrapedJob]:
     query = db.query(ScrapedJob)
     if active_only:
@@ -282,4 +296,5 @@ def scrape_run_to_dict(run: JobScrapeRun) -> dict[str, Any]:
         "sourceBreakdown": source_breakdown if isinstance(source_breakdown, dict) else {},
         "expiredCount": getattr(run, "expired_count", 0) or 0,
         "failedLinkCount": getattr(run, "failed_link_count", 0) or 0,
+        "hoursOld": run.hours_old,
     }

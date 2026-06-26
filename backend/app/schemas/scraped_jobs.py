@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 FIXED_JOB_LOCATION = "India"
 
@@ -54,6 +54,8 @@ class RefreshRequest(BaseModel):
     profile: str
     sources: list[str] = Field(default_factory=lambda: ["indeed", "google", "naukri"])
     runMode: str = "manual"
+    hoursOld: int | None = Field(default=None, ge=1, le=336)
+    dateRangeDays: int | None = None
 
     @field_validator("profile")
     @classmethod
@@ -62,12 +64,30 @@ class RefreshRequest(BaseModel):
             raise ValueError(f"profile must be one of: {', '.join(VALID_PROFILES)}")
         return value
 
+    @field_validator("dateRangeDays")
+    @classmethod
+    def validate_date_range_days(cls, value: int | None) -> int | None:
+        if value is None:
+            return None
+        if value not in (1, 3, 7, 14):
+            raise ValueError("dateRangeDays must be one of: 1, 3, 7, 14")
+        return value
+
+    @model_validator(mode="after")
+    def validate_range_inputs(self):
+        if self.hoursOld is not None and self.dateRangeDays is not None:
+            raise ValueError("Provide either hoursOld or dateRangeDays, not both")
+        return self
+
 
 class RefreshResponse(BaseModel):
     profile: str
     profileLabel: str
     location: str = FIXED_JOB_LOCATION
     runType: str
+    hoursOld: int
+    dateRangeDays: int | None = None
+    rangeLabel: str | None = None
     totalFound: int
     savedCount: int
     skippedDuplicates: int
@@ -139,6 +159,7 @@ class ScrapeRunSummary(BaseModel):
     sourceBreakdown: dict[str, int] = Field(default_factory=dict)
     expiredCount: int = 0
     failedLinkCount: int = 0
+    hoursOld: int | None = None
 
 
 class LatestJobSummary(BaseModel):

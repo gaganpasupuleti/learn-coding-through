@@ -266,6 +266,7 @@ export interface JobStatsScrapeRun {
   sourceBreakdown?: Record<string, number>
   expiredCount?: number
   failedLinkCount?: number
+  hoursOld?: number
 }
 
 export interface JobStatsLatestJob {
@@ -304,6 +305,8 @@ export interface RefreshRequestBody {
   profile: string
   sources: string[]
   runMode: 'manual' | 'auto'
+  dateRangeDays?: number
+  hoursOld?: number
 }
 
 export interface RefreshResponse {
@@ -311,6 +314,9 @@ export interface RefreshResponse {
   profileLabel: string
   location: string
   runType: string
+  hoursOld: number
+  dateRangeDays?: number | null
+  rangeLabel?: string | null
   totalFound: number
   savedCount: number
   skippedDuplicates: number

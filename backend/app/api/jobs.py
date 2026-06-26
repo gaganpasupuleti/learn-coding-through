@@ -35,7 +35,11 @@ from app.schemas.scraped_jobs import (
 from app.services.job_email import build_digest, send_email
 from app.services.job_link_checker import cleanup_job_links
 from app.services.job_profiles import get_profile
-from app.services.job_refresh import run_profile_refresh
+from app.services.job_refresh import (
+    compute_auto_hours_old,
+    resolve_manual_hours_old,
+    run_profile_refresh,
+)
 from app.services.job_scraper import scrape_jobs_safe
 from app.services.job_store import (
     count_active_jobs,
@@ -44,6 +48,7 @@ from app.services.job_store import (
     count_total_jobs,
     create_scrape_run,
     get_expired_jobs,
+    get_last_successful_auto_run,
     get_last_run_by_type,
     get_latest_jobs,
     get_latest_loaded_at,
@@ -184,7 +189,7 @@ def admin_job_stats(
     runs = get_recent_scrape_runs(db, days=days, limit=limit)
     latest = get_latest_jobs(db, limit=limit, active_only=True)
     expired_samples = get_expired_jobs(db, limit=limit)
-    last_auto = get_last_run_by_type(db, "auto")
+    last_auto = get_last_successful_auto_run(db)
     last_cleanup = get_last_run_by_type(db, "cleanup")
 
     return JobStatsResponse(
@@ -226,12 +231,23 @@ def admin_refresh_jobs(
 
     run_type = "auto" if payload.runMode == "auto" else "manual"
     try:
+        if run_type == "auto":
+            hours_old, range_label = compute_auto_hours_old(db)
+            date_range_days = None
+        else:
+            hours_old, date_range_days, range_label = resolve_manual_hours_old(
+                hours_old=payload.hoursOld,
+                date_range_days=payload.dateRangeDays,
+            )
         result = run_profile_refresh(
             db,
             profile_key=payload.profile,
             sources=payload.sources,
             run_type=run_type,
             triggered_by=_triggered_by_label(admin),
+            hours_old=hours_old,
+            date_range_days=date_range_days,
+            range_label=range_label,
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc

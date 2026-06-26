@@ -36,6 +36,7 @@ CodeQuest is a career-acceleration learning platform: students use projects, pra
 | `ADMIN_JOB_KEY` | **Yes in production** | Protects scrape/email admin endpoints via `X-Admin-Key` |
 | `JOBSPY_ENABLED` | No (default `true`) | Set `false` to disable scraping |
 | `JOBSPY_DEFAULT_COUNTRY` / `JOBSPY_DEFAULT_LOCATION` | No | Defaults: `India` |
+| `JOBSPY_HOURS_OLD` | No (default `48`) | **Fallback only** when no prior successful auto refresh exists. Auto cron derives `hours_old` from last successful auto run + 12h overlap. Manual refresh supports 1/3/7/14 day windows via the admin dashboard or `dateRangeDays` on `POST /api/admin/jobs/refresh`. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | For email | Required only when sending digests |
 | `JOB_MAIL_ENABLED` | No (default `false`) | Must be `true` for non-test student sends |
 | `JOB_MAIL_TEST_RECIPIENT` | For cron/test | Test digest recipient |
