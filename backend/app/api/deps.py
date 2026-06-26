@@ -1,11 +1,10 @@
 from typing import Optional
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, Header, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import ALGORITHM, get_password_hash
@@ -64,3 +63,37 @@ def require_admin(current_user: User = Depends(get_current_user)) -> User:
     if current_user.role not in (UserRole.ADMIN, UserRole.SUPER_ADMIN):
         raise HTTPException(status_code=403, detail="Admin access required")
     return current_user
+
+
+def get_optional_user(
+    db: Session = Depends(get_db), token: Optional[str] = Depends(oauth2_scheme)
+) -> Optional[User]:
+    if not token:
+        return None
+    return _try_legacy_auth(token, db)
+
+
+def require_jobs_admin(
+    db: Session = Depends(get_db),
+    token: Optional[str] = Depends(oauth2_scheme),
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+) -> User | None:
+    """JWT admin role OR X-Admin-Key matching ADMIN_JOB_KEY (required in production)."""
+    import secrets
+
+    user = get_optional_user(db, token)  # type: ignore[arg-type]
+    if user is not None and user.role in (UserRole.ADMIN, UserRole.SUPER_ADMIN):
+        return user
+
+    expected = (settings.admin_job_key or "").strip()
+    if settings.environment == "production" and not expected:
+        raise HTTPException(
+            status_code=403,
+            detail="ADMIN_JOB_KEY must be set in production for job admin endpoints",
+        )
+
+    provided = (x_admin_key or "").strip()
+    if expected and provided and secrets.compare_digest(provided, expected):
+        return None
+
+    raise HTTPException(status_code=403, detail="Admin access required (JWT admin or X-Admin-Key)")

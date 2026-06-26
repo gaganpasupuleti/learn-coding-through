@@ -16,7 +16,6 @@ const TABS: { id: JobSpyTab; label: string }[] = [
 export function JobSpyPage() {
   const {
     apiStatus,
-    meta,
     filters,
     tab,
     setTab,
@@ -42,16 +41,16 @@ export function JobSpyPage() {
     setFilters,
   } = useJobSpyJobs()
 
-  const showFilters = tab === 'browse' || tab === 'others'
+  const showFilters = tab === 'browse'
 
   return (
     <div className="min-h-screen bg-slate-50/80">
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-10 space-y-6">
         <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Spicy Jobs Board</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Code Quest Job Alerts</h1>
             <p className="text-slate-600 mt-2 max-w-2xl leading-relaxed">
-              Curated and scraped job listings for practice, internships, and entry-level roles.
+              Browse India-based jobs loaded for Code Quest students — internships, fresher, and entry-level roles.
             </p>
           </div>
           <JobSpyApiStatusBadge status={apiStatus} />
@@ -61,11 +60,8 @@ export function JobSpyPage() {
           <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-950 space-y-2">
             <p className="font-medium">Job service is currently offline.</p>
             <p>
-              Listings come from the JobSpy API. If you are developing locally, start the JobSpy API on port{' '}
-              <strong>8001</strong> (see <code className="text-xs bg-amber-100/80 px-1 rounded">docs/LAUNCH.md</code>), then refresh this page.
-            </p>
-            <p className="text-amber-800">
-              Saved jobs and apply tracking also need the service. Please try again later if you are not running a local stack.
+              Start the Code Quest backend on port <strong>8000</strong> and refresh. Jobs are served from{' '}
+              <code className="text-xs bg-amber-100/80 px-1 rounded">/api/jobs</code> on the same API.
             </p>
           </div>
         )}
@@ -106,9 +102,13 @@ export function JobSpyPage() {
         </div>
 
         {tab === 'others' && (
-          <p className="text-sm text-slate-600 rounded-lg bg-slate-100 px-4 py-3">
-            Jobs needing review: missing tags, uncertain role, or flagged mismatch. Fully tagged India jobs are under Browse.
-          </p>
+          <div className="rounded-xl border border-dashed border-slate-200 bg-white py-16 text-center px-6">
+            <p className="font-medium text-slate-800">Coming soon</p>
+            <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">
+              Curated and specialty job lists will appear here. All current India jobs are available under{' '}
+              <span className="font-medium">Browse</span>.
+            </p>
+          </div>
         )}
 
         {tab === 'saved' && (
@@ -123,7 +123,6 @@ export function JobSpyPage() {
           <>
             <JobSpyFilters
               filters={filters}
-              meta={meta}
               loading={loading}
               onChange={handleFilterChange}
               onSearch={handleSearch}
@@ -134,15 +133,10 @@ export function JobSpyPage() {
                 {loading ? 'Loading…' : (
                   <>
                     <span className="font-semibold text-slate-900">{total.toLocaleString('en-IN')}</span> jobs found
-                    {filters.role && meta.roles.find((r) => r.slug === filters.role) && (
-                      <> in <span className="font-medium">{meta.roles.find((r) => r.slug === filters.role)!.name}</span></>
-                    )}
                   </>
                 )}
               </p>
-              {tab === 'browse' && (
-                <span className="text-xs text-slate-500">Fully tagged: India + role + experience level</span>
-              )}
+              <span className="text-xs text-slate-500">India only</span>
             </div>
           </>
         )}
@@ -151,7 +145,7 @@ export function JobSpyPage() {
           <div className="rounded-xl border border-dashed border-slate-200 bg-white py-16 text-center px-6">
             <p className="font-medium text-slate-800">No listings available right now</p>
             <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">
-              The Spicy Jobs board needs the JobSpy API. Start it on port 8001 for local development, or check back later.
+              Job source blocked or unavailable. Try Indeed/Google or reduce results. An admin can run a scrape from Admin Station.
             </p>
           </div>
         ) : loading && displayJobs.length === 0 ? (
@@ -172,8 +166,8 @@ export function JobSpyPage() {
               {tab === 'saved'
                 ? 'Tap the star on any job card to bookmark it here.'
                 : tab === 'others'
-                  ? 'All scraped jobs are fully tagged, or run a scrape from JobSpy Ops.'
-                  : 'Try different filters or ask an admin to run a scrape.'}
+                  ? 'Nothing here yet.'
+                  : 'No jobs match these filters. Try clearing filters or a different keyword.'}
             </p>
           </div>
         ) : (
@@ -200,7 +194,7 @@ export function JobSpyPage() {
               onClick={() => {
                 const next = { ...filters, page: (filters.page ?? 1) - 1 }
                 setFilters(next)
-                void fetchJobs(next, tab === 'others' ? 'others' : 'tagged')
+                void fetchJobs(next)
               }}
             >
               Previous
@@ -215,7 +209,7 @@ export function JobSpyPage() {
               onClick={() => {
                 const next = { ...filters, page: (filters.page ?? 1) + 1 }
                 setFilters(next)
-                void fetchJobs(next, tab === 'others' ? 'others' : 'tagged')
+                void fetchJobs(next)
               }}
             >
               Next

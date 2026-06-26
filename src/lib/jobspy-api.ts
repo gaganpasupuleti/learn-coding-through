@@ -1,5 +1,7 @@
 type RuntimeConfig = {
   VITE_JOBS_API_URL?: string
+  VITE_API_URL?: string
+  VITE_API_BASE_URL?: string
 }
 
 const runtimeConfig: RuntimeConfig =
@@ -10,6 +12,10 @@ const runtimeConfig: RuntimeConfig =
 const RAW_JOBS_BASE =
   runtimeConfig.VITE_JOBS_API_URL ||
   import.meta.env.VITE_JOBS_API_URL ||
+  runtimeConfig.VITE_API_URL ||
+  runtimeConfig.VITE_API_BASE_URL ||
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.VITE_API_BASE_URL ||
   ''
 
 const JOBS_API_BASE = (RAW_JOBS_BASE || '').trim().replace(/\/$/, '')
@@ -18,7 +24,7 @@ const ADMIN_KEY_STORAGE = 'jobspy_admin_key'
 
 function jobsBaseUrl(): string {
   if (JOBS_API_BASE) return JOBS_API_BASE
-  if (typeof window !== 'undefined') return `${window.location.origin}/jobs-api`
+  if (typeof window !== 'undefined') return window.location.origin
   return ''
 }
 
@@ -143,15 +149,31 @@ export interface JobSpyJobsResponse {
 export interface JobSpyJobFilters {
   keyword?: string
   company?: string
-  role?: string
   location?: string
   experience?: string
   site?: string
-  is_remote?: string
   bucket?: string
   page?: number
   page_size?: number
 }
+
+export const JOBSPY_EXPERIENCE_OPTIONS: { value: string; label: string }[] = [
+  { value: '', label: 'All levels' },
+  { value: 'internship', label: 'Internship' },
+  { value: 'fresher', label: 'Fresher / Entry Level' },
+  { value: '1plus', label: '1+ years' },
+  { value: '2plus', label: '2+ years' },
+  { value: '3plus', label: '3+ years' },
+  { value: '5plus', label: '5+ years' },
+]
+
+export const JOBSPY_SOURCE_OPTIONS: { value: string; label: string }[] = [
+  { value: '', label: 'All sources' },
+  { value: 'indeed', label: 'Indeed' },
+  { value: 'google', label: 'Google' },
+  { value: 'naukri', label: 'Naukri' },
+  { value: 'linkedin', label: 'LinkedIn' },
+]
 
 export interface JobSpyDashboardStats {
   jobs: { live: number; inactive: number; total: number }
@@ -175,67 +197,337 @@ export interface JobSpyRefreshResult {
   message: string
 }
 
+export interface NormalizedJobApi {
+  id: string
+  source: string
+  title: string
+  company?: string | null
+  location?: string | null
+  jobType?: string | null
+  datePosted?: string | null
+  salaryMin?: number | null
+  salaryMax?: number | null
+  currency?: string | null
+  description?: string | null
+  jobUrl: string
+  applyUrl?: string | null
+  createdAt?: string | null
+}
+
+export interface ScrapeRequestBody {
+  searchTerm: string
+  location: string
+  resultsWanted: number
+  hoursOld: number
+  sources: string[]
+}
+
+export interface ScrapeSummaryResponse {
+  searchTerm: string
+  location: string
+  totalFound: number
+  savedCount: number
+  skippedDuplicates: number
+  sourceBreakdown: Record<string, number>
+  errors: string[]
+  jobs?: NormalizedJobApi[]
+  scrapeRunId?: number
+  status?: string
+  durationMs?: number
+  totalJobsBefore?: number
+  totalJobsAfter?: number
+}
+
+export interface JobStatsSourceItem {
+  source: string
+  count: number
+}
+
+export interface JobStatsLocationItem {
+  location: string
+  count: number
+}
+
+export interface JobStatsScrapeRun {
+  id: number
+  searchTerm: string
+  location: string
+  sources: string[]
+  totalFound: number
+  savedCount: number
+  skippedDuplicates: number
+  errorCount: number
+  status: string
+  startedAt: string
+  finishedAt: string | null
+  durationMs: number | null
+  runType?: string
+  profile?: string | null
+  sourceBreakdown?: Record<string, number>
+  expiredCount?: number
+  failedLinkCount?: number
+  hoursOld?: number
+}
+
+export interface JobStatsLatestJob {
+  id: string
+  source: string
+  title: string
+  company: string | null
+  location: string | null
+  datePosted: string | null
+  createdAt: string
+  jobUrl: string
+  linkStatus?: string
+}
+
+export interface JobStatsResponse {
+  totalJobs: number
+  activeJobs: number
+  loadedToday: number
+  loadedLast24Hours: number
+  loadedLast7Days: number
+  latestLoadedAt: string | null
+  expiredJobs: number
+  linkFailedJobs: number
+  unknownLinkJobs: number
+  lastAutoRefreshAt: string | null
+  lastCleanupAt: string | null
+  sourceBreakdown: JobStatsSourceItem[]
+  sourceFailureCounts: Record<string, number>
+  locationBreakdown: JobStatsLocationItem[]
+  recentScrapeRuns: JobStatsScrapeRun[]
+  latestJobs: JobStatsLatestJob[]
+  expiredJobSamples: JobStatsLatestJob[]
+}
+
+export interface RefreshRequestBody {
+  profile: string
+  sources: string[]
+  runMode: 'manual' | 'auto'
+  dateRangeDays?: number
+  hoursOld?: number
+}
+
+export interface RefreshResponse {
+  profile: string
+  profileLabel: string
+  location: string
+  runType: string
+  hoursOld: number
+  dateRangeDays?: number | null
+  rangeLabel?: string | null
+  totalFound: number
+  savedCount: number
+  skippedDuplicates: number
+  sourceBreakdown: Record<string, number>
+  errors: string[]
+  scrapeRunId?: number
+  status?: string
+  durationMs?: number
+  totalJobsBefore?: number
+  totalJobsAfter?: number
+}
+
+export interface CleanupLinksResponse {
+  checkedCount: number
+  markedActive: number
+  markedExpired: number
+  markedLinkFailed: number
+  markedUnknown: number
+  totalActive: number
+  totalExpired: number
+  totalLinkFailed: number
+  totalUnknown: number
+  scrapeRunId?: number
+}
+
+export interface EmailPreviewResponse {
+  subject: string
+  html: string
+  text: string
+}
+
+export interface SendDigestResponse {
+  sentCount: number
+  failedCount: number
+  failedEmails: string[]
+  mode: string
+  message: string
+}
+
+function mapApiJob(job: NormalizedJobApi): JobSpyJob {
+  return {
+    id: job.id,
+    title: job.title,
+    company_name: job.company ?? null,
+    location_display: job.location ?? null,
+    site: job.source ?? null,
+    min_amount: job.salaryMin ?? null,
+    max_amount: job.salaryMax ?? null,
+    currency: job.currency ?? null,
+    job_type: job.jobType ?? null,
+    date_posted: job.datePosted ?? null,
+    job_url: job.jobUrl ?? null,
+    job_url_direct: job.applyUrl ?? job.jobUrl ?? null,
+    description: job.description ?? null,
+    tag_status: 'complete',
+  }
+}
+
+function adminHeaders(adminKey: string): Record<string, string> {
+  return adminKey ? { 'X-Admin-Key': adminKey } : {}
+}
+
 export const jobspyApi = {
   health: () => jobspyRequest<{ status: string }>('/health'),
 
-  getRoles: () => jobspyRequest<JobSpyRole[]>('/api/v1/meta/roles'),
-  getLocations: () => jobspyRequest<JobSpyLocation[]>('/api/v1/meta/locations'),
-  getExperienceBands: () => jobspyRequest<JobSpyExperienceBand[]>('/api/v1/meta/experience-bands'),
-  getSites: () => jobspyRequest<JobSpySite[]>('/api/v1/meta/sites'),
-
-  getJobs: (params: JobSpyJobFilters) => {
-    const qs = new URLSearchParams()
-    Object.entries(params).forEach(([k, v]) => {
-      if (v !== '' && v !== null && v !== undefined) qs.set(k, String(v))
-    })
-    if (!qs.has('bucket')) qs.set('bucket', 'tagged')
-    return jobspyRequest<JobSpyJobsResponse>(`/api/v1/jobs?${qs}`)
+  getRoles: async (): Promise<JobSpyRole[]> => [],
+  getLocations: async (): Promise<JobSpyLocation[]> => [],
+  getExperienceBands: async (): Promise<JobSpyExperienceBand[]> => [],
+  getSites: async (): Promise<JobSpySite[]> => {
+    try {
+      const data = await jobspyRequest<{ jobs: NormalizedJobApi[]; total: number }>('/api/jobs?limit=1')
+      return [
+        { slug: 'indeed', label: 'Indeed', active_count: data.total },
+        { slug: 'google', label: 'Google', active_count: data.total },
+      ]
+    } catch {
+      return []
+    }
   },
 
-  getJob: (id: JobSpyJobId) => jobspyRequest<JobSpyJob>(`/api/v1/jobs/${id}`),
+  getJobs: async (params: JobSpyJobFilters): Promise<JobSpyJobsResponse> => {
+    const qs = new URLSearchParams()
+    if (params.keyword) qs.set('search', params.keyword)
+    if (params.company) qs.set('company', params.company)
+    if (params.location) qs.set('location', params.location)
+    if (params.site) qs.set('source', params.site)
+    if (params.experience) qs.set('experience', params.experience)
+    qs.set('page', String(params.page ?? 1))
+    qs.set('limit', String(params.page_size ?? 20))
+    const data = await jobspyRequest<{ jobs: NormalizedJobApi[]; total: number; page: number; limit: number }>(
+      `/api/jobs?${qs}`,
+    )
+    return {
+      items: data.jobs.map(mapApiJob),
+      total: data.total,
+      page: data.page,
+      page_size: data.limit,
+    }
+  },
 
-  applyToJob: (id: JobSpyJobId, sessionId: string) =>
-    jobspyRequest<JobSpyApplyResponse>(`/api/v1/jobs/${id}/apply`, {
-      method: 'POST',
-      body: JSON.stringify({ session_id: sessionId }),
-    }),
+  getJob: async (id: JobSpyJobId): Promise<JobSpyJob> => {
+    const job = await jobspyRequest<NormalizedJobApi>(`/api/jobs/${id}`)
+    return mapApiJob(job)
+  },
 
-  saveJob: (id: JobSpyJobId, sessionId: string) =>
-    jobspyRequest<JobSpySaveJobResponse>(`/api/v1/jobs/${id}/save`, {
-      method: 'POST',
-      body: JSON.stringify({ session_id: sessionId }),
-    }),
+  applyToJob: async (id: JobSpyJobId, _sessionId: string): Promise<JobSpyApplyResponse> => {
+    const job = await jobspyApi.getJob(id)
+    const url = jobSpyApplyUrl(job)
+    if (!url) throw new Error('No apply link available')
+    return { redirect_url: url }
+  },
 
-  getDashboardStats: () => jobspyRequest<JobSpyDashboardStats>('/api/v1/dashboard/stats'),
-  getDashboardRefreshStatus: () => jobspyRequest<{ in_progress: boolean }>('/api/v1/dashboard/refresh/status'),
+  saveJob: async (_id: JobSpyJobId, _sessionId: string): Promise<JobSpySaveJobResponse> => ({
+    saved: true,
+  }),
 
-  triggerDashboardRefresh: ({
+  getDashboardStats: async (): Promise<JobSpyDashboardStats> => {
+    const data = await jobspyRequest<{ jobs: NormalizedJobApi[]; total: number }>('/api/jobs?limit=1')
+    return {
+      jobs: { live: data.total, inactive: 0, total: data.total },
+      jobs_by_tag: { complete: data.total, partial: 0, untagged: 0, flagged: 0 },
+      scrape_in_progress: false,
+    }
+  },
+
+  getDashboardRefreshStatus: async () => ({ in_progress: false }),
+
+  triggerDashboardRefresh: async ({
     limit = 5,
     adminKey,
-    full = false,
+    full: _full = false,
   }: {
     limit?: number
     adminKey: string
     full?: boolean
   }) => {
-    const qs = new URLSearchParams({ limit: String(limit), full: String(full) })
-    return jobspyRequest<JobSpyRefreshResult>(`/api/v1/dashboard/refresh?${qs}`, {
-      method: 'POST',
-      headers: { 'X-Admin-Key': adminKey },
-    })
+    const res = await jobspyApi.runScrape(
+      {
+        searchTerm: 'python developer',
+        location: 'India',
+        resultsWanted: Math.min(limit * 5, 25),
+        hoursOld: 48,
+        sources: ['indeed', 'google'],
+      },
+      adminKey,
+    )
+    return { message: `Scrape complete: ${res.totalFound} found, ${res.savedCount} saved` }
   },
 
-  triggerScrapeRun: ({ limit = 5, adminKey }: { limit?: number; adminKey: string }) => {
-    const qs = new URLSearchParams({ limit: String(limit) })
-    return jobspyRequest<JobSpyRefreshResult>(`/api/v1/admin/scrape/run?${qs}`, {
-      method: 'POST',
-      headers: { 'X-Admin-Key': adminKey },
-    })
+  triggerScrapeRun: async ({ limit = 5, adminKey }: { limit?: number; adminKey: string }) => {
+    const res = await jobspyApi.runScrape(
+      {
+        searchTerm: 'python developer',
+        location: 'India',
+        resultsWanted: Math.min(limit * 5, 25),
+        hoursOld: 48,
+        sources: ['indeed', 'google'],
+      },
+      adminKey,
+    )
+    return { message: `Scrape complete: ${res.totalFound} found, ${res.savedCount} saved` }
   },
 
-  getScrapeRuns: (adminKey: string) =>
-    jobspyRequest<unknown[]>('/api/v1/admin/scrape/runs', {
-      headers: { 'X-Admin-Key': adminKey },
+  getScrapeRuns: async (_adminKey: string) => [],
+
+  runScrape: (body: ScrapeRequestBody, adminKey: string) =>
+    jobspyRequest<ScrapeSummaryResponse>('/api/admin/jobs/scrape', {
+      method: 'POST',
+      headers: adminHeaders(adminKey),
+      body: JSON.stringify(body),
+    }),
+
+  getJobStats: (adminKey: string, params?: { days?: number; limit?: number }) => {
+    const qs = new URLSearchParams()
+    if (params?.days) qs.set('days', String(params.days))
+    if (params?.limit) qs.set('limit', String(params.limit))
+    const query = qs.toString()
+    return jobspyRequest<JobStatsResponse>(
+      `/api/admin/jobs/stats${query ? `?${query}` : ''}`,
+      { headers: adminHeaders(adminKey) },
+    )
+  },
+
+  refreshJobs: (body: RefreshRequestBody, adminKey: string) =>
+    jobspyRequest<RefreshResponse>('/api/admin/jobs/refresh', {
+      method: 'POST',
+      headers: adminHeaders(adminKey),
+      body: JSON.stringify(body),
+    }),
+
+  cleanupLinks: (adminKey: string, limit = 50) =>
+    jobspyRequest<CleanupLinksResponse>(`/api/admin/jobs/cleanup-links?limit=${limit}`, {
+      method: 'POST',
+      headers: adminHeaders(adminKey),
+    }),
+
+  emailPreview: (body: { jobIds: string[]; searchTerm: string; location: string }, adminKey: string) =>
+    jobspyRequest<EmailPreviewResponse>('/api/admin/jobs/email-preview', {
+      method: 'POST',
+      headers: adminHeaders(adminKey),
+      body: JSON.stringify(body),
+    }),
+
+  sendDigest: (
+    body: { mode: 'test' | 'live'; testEmail?: string; jobIds: string[] },
+    adminKey: string,
+  ) =>
+    jobspyRequest<SendDigestResponse>('/api/admin/jobs/send-digest', {
+      method: 'POST',
+      headers: adminHeaders(adminKey),
+      body: JSON.stringify(body),
     }),
 }
 
