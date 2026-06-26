@@ -8,23 +8,17 @@ import {
 import {
   jobspyApi,
   jobSpyApplyUrl,
-  type JobSpyExperienceBand,
   type JobSpyJob,
   type JobSpyJobFilters,
   type JobSpyJobId,
-  type JobSpyLocation,
-  type JobSpyRole,
-  type JobSpySite,
 } from '@/lib/jobspy-api'
 
 export const DEFAULT_JOBSPY_FILTERS: JobSpyJobFilters = {
   keyword: '',
   company: '',
-  role: '',
   location: '',
   experience: '',
   site: '',
-  is_remote: '',
   page: 1,
   page_size: 12,
 }
@@ -35,12 +29,6 @@ export type JobSpyTab = 'browse' | 'others' | 'saved'
 export function useJobSpyJobs() {
   const sessionId = useMemo(() => getJobSpySessionId(), [])
   const [apiStatus, setApiStatus] = useState<JobSpyApiStatus>('loading')
-  const [meta, setMeta] = useState<{
-    roles: JobSpyRole[]
-    locations: JobSpyLocation[]
-    bands: JobSpyExperienceBand[]
-    sites: JobSpySite[]
-  }>({ roles: [], locations: [], bands: [], sites: [] })
   const [filters, setFilters] = useState<JobSpyJobFilters>(DEFAULT_JOBSPY_FILTERS)
   const [tab, setTab] = useState<JobSpyTab>('browse')
   const [jobs, setJobs] = useState<JobSpyJob[]>([])
@@ -59,14 +47,7 @@ export function useJobSpyJobs() {
     void (async () => {
       try {
         await jobspyApi.health()
-        const [roles, locations, bands, sites] = await Promise.all([
-          jobspyApi.getRoles(),
-          jobspyApi.getLocations(),
-          jobspyApi.getExperienceBands(),
-          jobspyApi.getSites().catch(() => []),
-        ])
         if (cancelled) return
-        setMeta({ roles, locations, bands, sites })
         setApiStatus('ok')
       } catch {
         if (!cancelled) setApiStatus('error')
@@ -77,13 +58,11 @@ export function useJobSpyJobs() {
     }
   }, [])
 
-  const bucketForTab = (t: JobSpyTab) => (t === 'others' ? 'others' : 'tagged')
-
-  const fetchJobs = useCallback(async (nextFilters = filters, bucket = bucketForTab(tab)) => {
+  const fetchJobs = useCallback(async (nextFilters = filters) => {
     setLoading(true)
     setError(null)
     try {
-      const data = await jobspyApi.getJobs({ ...nextFilters, bucket })
+      const data = await jobspyApi.getJobs(nextFilters)
       setJobs(data.items)
       setTotal(data.total)
     } catch (e) {
@@ -93,7 +72,7 @@ export function useJobSpyJobs() {
     } finally {
       setLoading(false)
     }
-  }, [filters, tab])
+  }, [filters])
 
   const loadSavedJobs = useCallback(async () => {
     const ids = getSavedJobIds()
@@ -124,13 +103,19 @@ export function useJobSpyJobs() {
       void loadSavedJobs()
       return
     }
-    void fetchJobs(filters, bucketForTab(tab))
+    if (tab === 'others') {
+      // Others is not implemented for India ingestion yet — keep it safe/empty.
+      setJobs([])
+      setTotal(0)
+      return
+    }
+    void fetchJobs(filters)
   }, [apiStatus, tab, filters.page, filters.page_size, fetchJobs, loadSavedJobs])
 
   const handleFilterChange = (key: keyof JobSpyJobFilters | 'reset', value: string) => {
     if (key === 'reset') {
       setFilters(DEFAULT_JOBSPY_FILTERS)
-      void fetchJobs(DEFAULT_JOBSPY_FILTERS, bucketForTab(tab))
+      void fetchJobs(DEFAULT_JOBSPY_FILTERS)
       return
     }
     setFilters((prev) => ({ ...prev, [key]: value, page: 1 }))
@@ -139,7 +124,7 @@ export function useJobSpyJobs() {
   const handleSearch = () => {
     const next = { ...filters, page: 1 }
     setFilters(next)
-    void fetchJobs(next, bucketForTab(tab))
+    void fetchJobs(next)
   }
 
   const openJob = async (id: JobSpyJobId) => {
@@ -207,7 +192,6 @@ export function useJobSpyJobs() {
 
   return {
     apiStatus,
-    meta,
     filters,
     tab,
     setTab,

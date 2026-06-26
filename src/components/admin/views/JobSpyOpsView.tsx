@@ -1,53 +1,78 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Loader2, RefreshCw } from 'lucide-react'
+import { ExternalLink, Loader2, RefreshCw, ShieldAlert } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import {
   getJobSpyAdminKey,
   jobspyApi,
   setJobSpyAdminKey,
-  type JobSpyDashboardStats,
+  type JobStatsResponse,
+  type RefreshResponse,
 } from '@/lib/jobspy-api'
 
-const POLL_MS = 5000
+const SOURCE_OPTIONS: { id: string; label: string; optional?: boolean }[] = [
+  { id: 'indeed', label: 'Indeed' },
+  { id: 'google', label: 'Google' },
+  { id: 'naukri', label: 'Naukri' },
+  { id: 'linkedin', label: 'LinkedIn', optional: true },
+]
 
-function StatCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function StatCard({ label, value, hint, accent }: { label: string; value: string; hint?: string; accent?: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="text-2xl font-bold text-slate-900 mt-2 tabular-nums">{value}</p>
-      {hint && <p className="text-xs text-slate-500 mt-2">{hint}</p>}
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{label}</p>
+      <p className={`text-2xl font-bold mt-1 tabular-nums ${accent ?? 'text-slate-900'}`}>{value}</p>
+      {hint && <p className="text-xs text-slate-500 mt-1">{hint}</p>}
     </div>
   )
 }
 
+function formatTs(v: string | null | undefined) {
+  if (!v) return '—'
+  return new Date(v).toLocaleString('en-IN')
+}
+
+function sourceLabel(s: string) {
+  const m: Record<string, string> = { indeed: 'Indeed', google: 'Google', naukri: 'Naukri', linkedin: 'LinkedIn' }
+  return m[s] ?? s
+}
+
+function statusClass(s: string) {
+  if (s === 'success') return 'bg-emerald-100 text-emerald-800'
+  if (s === 'partial_success') return 'bg-amber-100 text-amber-800'
+  return 'bg-red-100 text-red-800'
+}
+
 export function JobSpyOpsView() {
-  const [stats, setStats] = useState<JobSpyDashboardStats | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [apiStatus, setApiStatus] = useState<'loading' | 'ok' | 'error'>('loading')
-  const [refreshLimit, setRefreshLimit] = useState(5)
-  const [fullScrape, setFullScrape] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
-  const [refreshMessage, setRefreshMessage] = useState<string | null>(null)
+  const [stats, setStats] = useState<JobStatsResponse | null>(null)
+  const [statsLoading, setStatsLoading] = useState(true)
+  const [statsError, setStatsError] = useState<string | null>(null)
+  const [refreshing, setRefreshing] = useState<string | null>(null)
+  const [lastRefresh, setLastRefresh] = useState<RefreshResponse | null>(null)
+  const [sources, setSources] = useState<string[]>(['indeed', 'google', 'naukri'])
+  const [showAdvanced, setShowAdvanced] = useState(false)
   const [adminKeyInput, setAdminKeyInput] = useState(() => getJobSpyAdminKey())
   const [showKeyForm, setShowKeyForm] = useState(!getJobSpyAdminKey())
+  const [cleanupLoading, setCleanupLoading] = useState(false)
 
   const loadStats = useCallback(async () => {
+    const key = getJobSpyAdminKey()
+    if (!key) {
+      setStatsLoading(false)
+      setStatsError('Set ADMIN_JOB_KEY to view the Job Refresh Dashboard.')
+      return
+    }
+    setStatsLoading(true)
+    setStatsError(null)
     try {
-      const data = await jobspyApi.getDashboardStats()
-      setStats(data)
-      setApiStatus('ok')
-      setError(null)
-      return data
+      setStats(await jobspyApi.getJobStats(key, { days: 7, limit: 10 }))
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to load stats')
-      setApiStatus('error')
-      return null
+      setStatsError(e instanceof Error ? e.message : 'Failed to load dashboard')
     } finally {
-      setLoading(false)
+      setStatsLoading(false)
     }
   }, [])
 
@@ -57,227 +82,339 @@ export function JobSpyOpsView() {
         await jobspyApi.health()
         await loadStats()
       } catch {
-        setApiStatus('error')
-        setLoading(false)
+        setStatsError('Jobs API not reachable. Start backend on port 8000.')
+        setStatsLoading(false)
       }
     })()
   }, [loadStats])
-
-  useEffect(() => {
-    if (!stats?.scrape_in_progress) return undefined
-    const id = setInterval(() => void loadStats(), POLL_MS)
-    return () => clearInterval(id)
-  }, [stats?.scrape_in_progress, loadStats])
 
   const saveAdminKey = (e: React.FormEvent) => {
     e.preventDefault()
     setJobSpyAdminKey(adminKeyInput.trim())
     setShowKeyForm(false)
-    setRefreshMessage('Admin key saved in this browser.')
-    toast.success('JobSpy admin key saved')
+    toast.success('Admin key saved')
+    void loadStats()
   }
 
-  const handleRefresh = async () => {
+  const toggleSource = (id: string) => {
+    setSources((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]))
+  }
+
+  const runRefresh = async (profile: string, label: string) => {
     const key = getJobSpyAdminKey()
     if (!key) {
       setShowKeyForm(true)
-      setError('Set your JobSpy admin API key before triggering a scrape.')
+      toast.error('Save admin key first')
       return
     }
-    setRefreshing(true)
-    setRefreshMessage(null)
-    setError(null)
+    if (sources.length === 0) {
+      toast.error('Select at least one source')
+      return
+    }
+    setRefreshing(profile)
     try {
-      const res = await jobspyApi.triggerDashboardRefresh({
-        limit: refreshLimit,
-        adminKey: key,
-        full: fullScrape,
-      })
-      setRefreshMessage(res.message)
-      toast.success('Scrape started')
+      const res = await jobspyApi.refreshJobs({ profile, sources, runMode: 'manual' }, key)
+      setLastRefresh(res)
+      toast.success(`${label}: ${res.savedCount} saved (${res.totalFound} found)`)
       await loadStats()
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Scrape failed'
-      setError(msg)
-      toast.error(msg)
+      toast.error(e instanceof Error ? e.message : 'Refresh failed')
     } finally {
-      setRefreshing(false)
+      setRefreshing(null)
     }
   }
 
-  const lastUpdated = stats?.last_successful_scrape_at || stats?.last_job_scraped_at
+  const runInternFresher = async () => {
+    const key = getJobSpyAdminKey()
+    if (!key) return
+    setRefreshing('intern_fresher')
+    try {
+      for (const p of ['internship_india', 'fresher_india'] as const) {
+        const res = await jobspyApi.refreshJobs({ profile: p, sources, runMode: 'manual' }, key)
+        setLastRefresh(res)
+      }
+      toast.success('Intern & Fresher refresh complete')
+      await loadStats()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Refresh failed')
+    } finally {
+      setRefreshing(null)
+    }
+  }
+
+  const runCleanup = async () => {
+    const key = getJobSpyAdminKey()
+    if (!key) return
+    setCleanupLoading(true)
+    try {
+      const res = await jobspyApi.cleanupLinks(key, 25)
+      toast.success(`Checked ${res.checkedCount} links — ${res.markedExpired} expired, ${res.markedLinkFailed} failed`)
+      await loadStats()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Cleanup failed')
+    } finally {
+      setCleanupLoading(false)
+    }
+  }
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h2 className="text-xl font-bold text-slate-900">JobSpy Ops</h2>
-        <p className="text-sm text-slate-600 mt-1">
-          Live job board metrics and manual scrape control. Requires JobSpy backend and admin API key.
-        </p>
-      </header>
+    <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+      <div className="space-y-6 pb-8">
+        <header className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">Job Refresh Dashboard</h2>
+            <p className="text-sm text-slate-600 mt-1">
+              India-only job ingestion · Intern, fresher &amp; entry-level auto profiles ·{' '}
+              <Badge variant="secondary" className="text-xs">Location: India only</Badge>
+            </p>
+          </div>
+          <Button type="button" variant="outline" size="sm" disabled={statsLoading} onClick={() => void loadStats()}>
+            {statsLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <RefreshCw className="h-4 w-4 mr-2" />}
+            Refresh dashboard
+          </Button>
+        </header>
 
-      {apiStatus === 'error' && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          JobSpy API not reachable. Deploy or start JobSpy on port 8001 and set <code className="text-xs">VITE_JOBS_API_URL</code> in production.
-        </div>
-      )}
+        {statsError && (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">{statsError}</div>
+        )}
 
-      {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>
-      )}
-
-      {refreshMessage && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">{refreshMessage}</div>
-      )}
-
-      {stats?.scrape_in_progress && (
-        <div className="flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Scrape in progress — stats refresh every few seconds.
-        </div>
-      )}
-
-      <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-        <strong>Data last updated:</strong>{' '}
-        {loading ? 'Loading…' : lastUpdated ? new Date(lastUpdated).toLocaleString('en-IN') : 'Never'}
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          label="Fully tagged"
-          value={(stats?.jobs_by_tag?.complete ?? 0).toLocaleString('en-IN')}
-          hint="Browse tab (India + role + level)"
-        />
-        <StatCard
-          label="Others queue"
-          value={(
-            (stats?.jobs_by_tag?.partial ?? 0) +
-            (stats?.jobs_by_tag?.untagged ?? 0) +
-            (stats?.jobs_by_tag?.flagged ?? 0)
-          ).toLocaleString('en-IN')}
-          hint="Needs review"
-        />
-        <StatCard
-          label="Live jobs"
-          value={(stats?.jobs.live ?? 0).toLocaleString('en-IN')}
-          hint="Active in database"
-        />
-        <StatCard
-          label="Total in DB"
-          value={(stats?.jobs.total ?? 0).toLocaleString('en-IN')}
-        />
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-        <h3 className="font-semibold text-slate-900">Admin API key</h3>
-        {showKeyForm ? (
-          <form onSubmit={saveAdminKey} className="flex flex-col sm:flex-row gap-3 max-w-xl">
-            <div className="flex-1 space-y-1.5">
-              <Label htmlFor="jobspy-admin-key">X-Admin-Key</Label>
-              <Input
-                id="jobspy-admin-key"
-                type="password"
-                value={adminKeyInput}
-                onChange={(e) => setAdminKeyInput(e.target.value)}
-                placeholder="Paste ADMIN_API_KEY from JobSpy backend .env"
-                autoComplete="off"
-              />
+        {/* Admin key */}
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h3 className="font-semibold text-slate-900 mb-3">Access</h3>
+          {showKeyForm ? (
+            <form onSubmit={saveAdminKey} className="flex flex-col sm:flex-row gap-3 max-w-xl">
+              <div className="flex-1 space-y-1">
+                <Label htmlFor="admin-key">X-Admin-Key</Label>
+                <Input id="admin-key" type="password" value={adminKeyInput} onChange={(e) => setAdminKeyInput(e.target.value)} placeholder="codequest-dev-jobs-key" />
+                <p className="text-xs text-slate-500">Must match ADMIN_JOB_KEY in backend/.env</p>
+              </div>
+              <Button type="submit" className="self-end bg-blue-600 hover:bg-blue-700">Save key</Button>
+            </form>
+          ) : (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-emerald-700 font-medium">Admin key configured</span>
+              <Button type="button" variant="outline" size="sm" onClick={() => setShowKeyForm(true)}>Change</Button>
             </div>
-            <Button type="submit" className="self-end bg-blue-600 hover:bg-blue-700">Save key</Button>
-          </form>
-        ) : (
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-emerald-700 font-medium">Admin key configured</span>
-            <Button type="button" variant="outline" size="sm" onClick={() => setShowKeyForm(true)}>
-              Change key
+          )}
+        </section>
+
+        {/* Auto Refresh Status */}
+        <section className="rounded-2xl border border-emerald-200 bg-emerald-50/40 p-5 shadow-sm space-y-3">
+          <h3 className="font-semibold text-emerald-900">Auto Refresh Status</h3>
+          <p className="text-sm text-emerald-800">
+            Railway cron every 8h runs <strong>internship_india</strong>, <strong>fresher_india</strong>, and{' '}
+            <strong>entry_level_india</strong> only. Location locked to India. 1+ experience is manual-only.
+          </p>
+          <div className="flex flex-wrap gap-2 text-sm">
+            <Badge className="bg-emerald-100 text-emerald-800">internship_india · auto</Badge>
+            <Badge className="bg-emerald-100 text-emerald-800">fresher_india · auto</Badge>
+            <Badge className="bg-emerald-100 text-emerald-800">entry_level_india · auto</Badge>
+            <Badge variant="outline" className="border-slate-300">experienced_manual_india · manual only</Badge>
+          </div>
+          <p className="text-xs text-slate-600">
+            Last auto refresh: {statsLoading ? '…' : formatTs(stats?.lastAutoRefreshAt)} · Last cleanup:{' '}
+            {statsLoading ? '…' : formatTs(stats?.lastCleanupAt)}
+          </p>
+        </section>
+
+        {/* Job DB Overview */}
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+          <h3 className="font-semibold text-slate-900">Job DB Overview</h3>
+          <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+            <StatCard label="Total in DB" value={statsLoading ? '…' : String(stats?.totalJobs ?? 0)} />
+            <StatCard label="Active" value={statsLoading ? '…' : String(stats?.activeJobs ?? 0)} accent="text-emerald-700" />
+            <StatCard label="Loaded today" value={statsLoading ? '…' : String(stats?.loadedToday ?? 0)} />
+            <StatCard label="Last 24h" value={statsLoading ? '…' : String(stats?.loadedLast24Hours ?? 0)} />
+            <StatCard label="Last 7d" value={statsLoading ? '…' : String(stats?.loadedLast7Days ?? 0)} />
+            <StatCard label="Expired" value={statsLoading ? '…' : String(stats?.expiredJobs ?? 0)} accent="text-amber-700" />
+            <StatCard label="Dead links" value={statsLoading ? '…' : String(stats?.linkFailedJobs ?? 0)} accent="text-red-700" />
+            <StatCard label="Latest loaded" value={statsLoading ? '…' : formatTs(stats?.latestLoadedAt)} />
+            <StatCard label="Last auto refresh" value={statsLoading ? '…' : formatTs(stats?.lastAutoRefreshAt)} />
+            <StatCard label="Last cleanup" value={statsLoading ? '…' : formatTs(stats?.lastCleanupAt)} />
+          </div>
+        </section>
+
+        {/* Manual Refresh */}
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+          <div>
+            <h3 className="font-semibold text-slate-900">Manual Refresh</h3>
+            <p className="text-sm text-slate-600 mt-1">
+              Location is fixed to <strong>India</strong> for Code Quest job alerts. No role typing needed — profiles use predefined search terms.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Sources</Label>
+            <div className="flex flex-wrap gap-4">
+              {SOURCE_OPTIONS.map(({ id, label, optional }) => (
+                <label key={id} className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={sources.includes(id)} onChange={() => toggleSource(id)} disabled={!!refreshing} className="rounded" />
+                  {label}
+                  {optional && <span className="text-xs text-slate-400">(optional)</span>}
+                </label>
+              ))}
+            </div>
+            {sources.includes('linkedin') && (
+              <p className="flex items-start gap-2 text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5" />
+                LinkedIn may rate-limit, block, or return zero jobs.
+              </p>
+            )}
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Button className="bg-blue-600 hover:bg-blue-700" disabled={!!refreshing} onClick={() => void runInternFresher()}>
+              {refreshing === 'intern_fresher' && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Refresh Intern &amp; Fresher
+            </Button>
+            <Button className="bg-blue-600 hover:bg-blue-700" disabled={!!refreshing} onClick={() => void runRefresh('entry_level_india', 'Entry level')}>
+              {refreshing === 'entry_level_india' && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Refresh Entry-Level
+            </Button>
+            <Button variant="outline" disabled={!!refreshing} onClick={() => void runRefresh('experienced_manual_india', '1+ experience')}>
+              {refreshing === 'experienced_manual_india' && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Refresh 1+ Experience (manual)
+            </Button>
+            <Button variant="outline" disabled={cleanupLoading} onClick={() => void runCleanup()}>
+              {cleanupLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Run link cleanup
             </Button>
           </div>
-        )}
-      </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-        <h3 className="font-semibold text-slate-900">Run scrape</h3>
-        <label className="flex items-center gap-2 text-sm text-slate-700">
-          <input
-            type="checkbox"
-            checked={fullScrape}
-            onChange={(e) => setFullScrape(e.target.checked)}
-            disabled={refreshing || stats?.scrape_in_progress}
-            className="rounded border-gray-300"
-          />
-          Full India sync (~1080 profiles: all roles × cities × levels)
-        </label>
-        {!fullScrape && (
-          <div className="space-y-1.5 max-w-xs">
-            <Label htmlFor="scrape-limit">Profiles per run</Label>
-            <select
-              id="scrape-limit"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-              value={refreshLimit}
-              onChange={(e) => setRefreshLimit(Number(e.target.value))}
-              disabled={refreshing || stats?.scrape_in_progress}
-            >
-              {[1, 3, 5, 10, 15, 20].map((n) => (
-                <option key={n} value={n}>{n}</option>
+          {lastRefresh && (
+            <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-sm space-y-1">
+              <p className="font-medium text-slate-900">Last refresh — {lastRefresh.profileLabel}</p>
+              <p>Location: <strong>{lastRefresh.location}</strong> · Found: {lastRefresh.totalFound} · Saved: {lastRefresh.savedCount} · Dupes: {lastRefresh.skippedDuplicates}</p>
+              <p>DB: {lastRefresh.totalJobsBefore} → {lastRefresh.totalJobsAfter} · Run #{lastRefresh.scrapeRunId} · {lastRefresh.status}</p>
+              <p className="text-slate-600">Sources: {Object.entries(lastRefresh.sourceBreakdown).map(([k, v]) => `${k}: ${v}`).join(' · ')}</p>
+            </div>
+          )}
+        </section>
+
+        {/* Source Health */}
+        {stats && (
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+            <h3 className="font-semibold text-slate-900">Source Health</h3>
+            <div className="flex flex-wrap gap-2">
+              {stats.sourceBreakdown.map(({ source, count }) => (
+                <Badge key={source} variant="secondary" className="text-sm px-3 py-1">
+                  {sourceLabel(source)}: {count} jobs
+                  {stats.sourceFailureCounts[source] ? ` · ${stats.sourceFailureCounts[source]} failures` : ''}
+                </Badge>
               ))}
-            </select>
-          </div>
+            </div>
+          </section>
         )}
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            className="bg-blue-600 hover:bg-blue-700"
-            disabled={refreshing || stats?.scrape_in_progress}
-            onClick={() => void handleRefresh()}
-          >
-            <RefreshCw className={cnIcon(refreshing || stats?.scrape_in_progress)} />
-            {refreshing
-              ? 'Starting…'
-              : stats?.scrape_in_progress
-                ? 'Scrape running…'
-                : fullScrape
-                  ? 'Start full sync'
-                  : 'Refresh jobs now'}
-          </Button>
-          <Button type="button" variant="outline" onClick={() => void loadStats()}>
-            Reload stats
-          </Button>
-        </div>
-      </div>
 
-      {stats?.recent_scrape_runs && stats.recent_scrape_runs.length > 0 && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm overflow-x-auto">
-          <h3 className="font-semibold text-slate-900 mb-4">Recent scrape runs</h3>
-          <table className="w-full text-sm text-left">
-            <thead>
-              <tr className="border-b border-slate-200 text-slate-500">
-                <th className="py-2 pr-4">ID</th>
-                <th className="py-2 pr-4">Profile</th>
-                <th className="py-2 pr-4">Status</th>
-                <th className="py-2 pr-4">Found</th>
-                <th className="py-2 pr-4">Upserted</th>
-                <th className="py-2">Started</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.recent_scrape_runs.map((run) => (
-                <tr key={run.id} className="border-b border-slate-100">
-                  <td className="py-2 pr-4">{run.id}</td>
-                  <td className="py-2 pr-4">#{run.search_profile_id}</td>
-                  <td className="py-2 pr-4 capitalize">{run.status}</td>
-                  <td className="py-2 pr-4">{run.jobs_found}</td>
-                  <td className="py-2 pr-4">{run.jobs_upserted}</td>
-                  <td className="py-2">{new Date(run.started_at).toLocaleString('en-IN')}</td>
+        {/* Latest Jobs */}
+        {stats && stats.latestJobs.length > 0 && (
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm overflow-x-auto">
+            <h3 className="font-semibold text-slate-900 mb-3">Latest Jobs</h3>
+            <table className="w-full text-sm text-left">
+              <thead>
+                <tr className="border-b text-slate-500">
+                  <th className="py-2 pr-3">Title</th>
+                  <th className="py-2 pr-3">Company</th>
+                  <th className="py-2 pr-3">Source</th>
+                  <th className="py-2 pr-3">Loaded</th>
+                  <th className="py-2">Apply</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody>
+                {stats.latestJobs.map((j) => (
+                  <tr key={j.id} className="border-b border-slate-100">
+                    <td className="py-2 pr-3 font-medium max-w-[200px] truncate">{j.title}</td>
+                    <td className="py-2 pr-3 text-slate-600">{j.company ?? '—'}</td>
+                    <td className="py-2 pr-3"><Badge variant="outline">{sourceLabel(j.source)}</Badge></td>
+                    <td className="py-2 pr-3 text-slate-500 whitespace-nowrap">{formatTs(j.createdAt)}</td>
+                    <td className="py-2">
+                      <a href={j.jobUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline inline-flex items-center gap-1">
+                        Open <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )}
+
+        {/* Expired links */}
+        {stats && stats.expiredJobSamples.length > 0 && (
+          <section className="rounded-2xl border border-amber-200 bg-amber-50/50 p-5 shadow-sm overflow-x-auto">
+            <h3 className="font-semibold text-amber-900 mb-3">Expired / Invalid Links ({stats.expiredJobs + stats.linkFailedJobs})</h3>
+            <table className="w-full text-sm text-left">
+              <thead>
+                <tr className="border-b border-amber-200 text-amber-800">
+                  <th className="py-2 pr-3">Title</th>
+                  <th className="py-2 pr-3">Status</th>
+                  <th className="py-2">Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.expiredJobSamples.map((j) => (
+                  <tr key={j.id} className="border-b border-amber-100">
+                    <td className="py-2 pr-3">{j.title}</td>
+                    <td className="py-2 pr-3"><Badge className="bg-amber-200 text-amber-900">{j.linkStatus}</Badge></td>
+                    <td className="py-2">{sourceLabel(j.source)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )}
+
+        {/* Recent Runs */}
+        {stats && stats.recentScrapeRuns.length > 0 && (
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm overflow-x-auto">
+            <h3 className="font-semibold text-slate-900 mb-3">Recent Runs</h3>
+            <table className="w-full text-sm text-left">
+              <thead>
+                <tr className="border-b text-slate-500">
+                  <th className="py-2 pr-2">#</th>
+                  <th className="py-2 pr-2">Type</th>
+                  <th className="py-2 pr-2">Profile</th>
+                  <th className="py-2 pr-2">Location</th>
+                  <th className="py-2 pr-2">Found</th>
+                  <th className="py-2 pr-2">Saved</th>
+                  <th className="py-2 pr-2">Dupes</th>
+                  <th className="py-2 pr-2">Status</th>
+                  <th className="py-2">Started</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.recentScrapeRuns.map((r) => (
+                  <tr key={r.id} className="border-b border-slate-100">
+                    <td className="py-2 pr-2">{r.id}</td>
+                    <td className="py-2 pr-2 capitalize">{r.runType ?? 'manual'}</td>
+                    <td className="py-2 pr-2">{r.profile ?? '—'}</td>
+                    <td className="py-2 pr-2">{r.location}</td>
+                    <td className="py-2 pr-2">{r.totalFound}</td>
+                    <td className="py-2 pr-2">{r.savedCount}</td>
+                    <td className="py-2 pr-2">{r.skippedDuplicates}</td>
+                    <td className="py-2 pr-2"><Badge className={statusClass(r.status)}>{r.status}</Badge></td>
+                    <td className="py-2 whitespace-nowrap">{formatTs(r.startedAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )}
+
+        {/* Advanced collapsed */}
+        <section className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 p-4">
+          <button type="button" className="text-sm font-medium text-slate-700" onClick={() => setShowAdvanced((v) => !v)}>
+            {showAdvanced ? '▼' : '▶'} Advanced / cron notes
+          </button>
+          {showAdvanced && (
+            <div className="mt-3 text-xs text-slate-600 space-y-1">
+              <p>Auto cron (every 8h): <code>python scripts/run_job_auto_refresh.py</code> — internship, fresher, entry-level only.</p>
+              <p>Daily cleanup: <code>python scripts/run_job_link_cleanup.py</code> — marks expired links, never deletes.</p>
+              <p>1+ experience profile is manual-only and excluded from auto cron.</p>
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   )
-}
-
-function cnIcon(spin: boolean | undefined) {
-  return spin ? 'h-4 w-4 animate-spin' : 'h-4 w-4'
 }
