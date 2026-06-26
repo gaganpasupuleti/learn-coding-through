@@ -209,6 +209,7 @@ class EmailPreviewResponse(BaseModel):
     subject: str
     html: str
     text: str
+    jobCount: int
 
 
 class SendDigestRequest(BaseModel):
@@ -223,3 +224,5 @@ class SendDigestResponse(BaseModel):
     failedEmails: list[str]
     mode: str
     message: str
+    recipientCount: int | None = None
+    jobCount: int | None = None
