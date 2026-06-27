@@ -1,7 +1,7 @@
 # Code Quest — Project Roadmap (Live)
 
 **Last updated:** 2026-06-27  
-**Branch:** `phase-24e-admin-email-station-client-ready-digest`  
+**Branch:** `phase-25b-frontend-redesign-plan`  
 **Purpose:** Single source of truth for Cursor sessions, ChatGPT project chats, and human reviewers. Update this file at the end of every phase branch.
 
 ---
@@ -17,7 +17,7 @@
 | **Production test email** | Delivered | Brevo test mode `sentCount=1`, `failedCount=0` (see `backend/scripts/proof_prod_brevo_output.txt`). |
 | **Projects section** | **LOCKED / FROZEN** | No new features or redesign until master frontend plan completes. |
 | **Progress Tracker** | Stable baseline | Do not modify without explicit phase. |
-| **Frontend shell** | Redesign planned | Master plan governed by [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md). |
+| **Frontend shell** | Redesign planned | Master plan in [FRONTEND_REDESIGN_MASTER_PLAN.md](./FRONTEND_REDESIGN_MASTER_PLAN.md), governed by [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md). |
 | **Library module** | Not started | Backlog in [MODULE_BACKLOG.md](./MODULE_BACKLOG.md). |
 | **Aptitude module** | Not started | Backlog in [MODULE_BACKLOG.md](./MODULE_BACKLOG.md). |
 | **Admin Email Station** | Production-verified | Phase 24E merged (PR #78). Client-ready digest preview, summary cards, safe test/dry-run; live blocked. |
@@ -66,8 +66,8 @@ SQL workbench, Code Workbench (Python/Java), typing upgrade, Power BI practice g
 
 | Priority | Branch (planned) | Scope |
 | --- | --- | --- |
-| **Next** | `phase-25b-frontend-redesign-plan` | Master redesign doc + page-by-page rollout order (no feature creep) |
-| **Planned** | `phase-25c-frontend-shell-integration` | Port approved sandbox UI into `StudentShell` (one page at a time) |
+| **Now** | `phase-25b-frontend-redesign-plan` | Master redesign doc + page-by-page rollout order (no feature creep) |
+| **Next implementation** | `phase-25c-frontend-shell-integration` | StudentShell + Dashboard only; first production port |
 | **Planned** | `phase-26a-library-module-foundation` | Library read-only student surface + content model |
 | **Planned** | `phase-27a-aptitude-module-foundation` | Aptitude question bank + practice loop MVP |
 | **Backlog** | `phase-21a`–`21d` | Auth logout wiring, native kit pages, APIs, progress sync — see [FRONTEND_SANDBOX_CONTRACT.md](./FRONTEND_SANDBOX_CONTRACT.md) |
@@ -163,4 +163,4 @@ All 13 tests green on `ubuntu-latest`. Verified: PR #77 merge commit `e0189c8947
 
 ---
 
-_Related: [LIVE_ISSUE_TRACKER.md](./LIVE_ISSUE_TRACKER.md) · [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md) · [MODULE_BACKLOG.md](./MODULE_BACKLOG.md) · [LAUNCH.md](./LAUNCH.md)_
+_Related: [LIVE_ISSUE_TRACKER.md](./LIVE_ISSUE_TRACKER.md) · [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md) · [FRONTEND_REDESIGN_MASTER_PLAN.md](./FRONTEND_REDESIGN_MASTER_PLAN.md) · [MODULE_BACKLOG.md](./MODULE_BACKLOG.md) · [LAUNCH.md](./LAUNCH.md)_
