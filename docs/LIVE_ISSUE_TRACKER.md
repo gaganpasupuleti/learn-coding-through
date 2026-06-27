@@ -11,11 +11,13 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 
 | Severity | Open | In progress | Verified fixed |
 | --- | ---: | ---: | ---: |
-| P0 — blocks release/CI | 1 | 0 | 0 |
+| P0 — blocks release/CI | 0 | 0 | 1 |
 | P1 — user-facing / admin | 0 | 0 | 3 |
-| P2 — polish / debt | 4 | 1 | 0 |
+| P2 — polish / debt | 4 | 0 | 0 |
 
 **P1 verified fixed (Jobs/email family):** 24A ingestion, 24B safety modes, 24C Brevo transport — see proof table below.
+
+**P0 verified fixed (CI):** ISSUE-001 Sandbox Smoke — Phase 24D merged (PR #77).
 
 ---
 
@@ -29,24 +31,6 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 ---
 
 ## Active issues
-
-### ISSUE-001 — Sandbox Smoke CI fails (Java / JDK / RLIMIT_AS)
-
-| Field | Value |
-| --- | --- |
-| **Severity** | P0 |
-| **Status** | Open |
-| **Branch** | `phase-24d-ci-sandbox-smoke-stabilization` |
-| **Component** | `.github/workflows/sandbox-smoke.yml`, `backend/executors/common.py` (context) |
-| **Symptom** | `Sandbox Smoke` workflow red on `main` when Java tests run on `ubuntu-latest` |
-| **Root cause** | JVM reserves >1GB virtual address space; executor `RLIMIT_AS=384MB` prevents `javac` start on Linux CI |
-| **Unrelated to** | Jobs, email, Progress Tracker, Projects |
-| **Fix approach** | Workflow env: `JAVA_TOOL_OPTIONS` + `MALLOC_ARENA_MAX` (see `.run/pr-24d-body.md`) |
-| **Proof required** | GitHub Actions run: all 13 `test_sandbox_smoke.py` tests pass |
-
-**Not verified fixed** until merged to `main` and workflow green.
-
----
 
 ### ISSUE-002 — Admin Email Station post-deploy smoke incomplete
 
@@ -105,6 +89,19 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 | **FIX-24A** | Jobs ingestion + admin refresh + student listing | 24A | PR #74; Railway/local refresh; student Jobs page loads |
 | **FIX-24B** | Email preview, dry_run, test-only, live 403 | 24B | PR #75; `.run/pr-24b-body.md` HTTP table; unit tests |
 | **FIX-24C** | Brevo HTTPS transport | 24C | PR #76; `proof_prod_brevo_output.txt` — test delivered, live blocked, 0 student sends |
+| **FIX-24D** | Sandbox Smoke CI (Java/JVM under `RLIMIT_AS`) | 24D | PR #77 merged (`e0189c8947f71470b34befabd189af5450cf297b`); Actions run `28291205306` — 13/13 `test_sandbox_smoke.py` pass on `ubuntu-latest` |
+
+### ISSUE-001 — Sandbox Smoke CI fails (Java / JDK / RLIMIT_AS) — **VERIFIED FIXED**
+
+| Field | Value |
+| --- | --- |
+| **Severity** | P0 (was) |
+| **Status** | **Verified fixed** |
+| **Phase** | 24D |
+| **PR** | #77 merged |
+| **Merge commit** | `e0189c8947f71470b34befabd189af5450cf297b` |
+| **Proof** | GitHub Actions run `28291205306` — `Ran 13 tests in 8.064s` → `OK` on `ubuntu-latest` |
+| **Fix** | Java executor skips `RLIMIT_AS` for JVM subprocesses; workflow `JAVA_TOOL_OPTIONS`/`MALLOC_ARENA_MAX` as CI optimization |
 
 ---
 
@@ -112,7 +109,7 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 
 | Item | Tracker |
 | --- | --- |
-| Live roadmap docs | Phase 25A (this PR) |
+| Admin Email Station post-deploy proof | Phase 24E — ISSUE-002 open |
 | Frontend master redesign | [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md) |
 | Library module | [MODULE_BACKLOG.md](./MODULE_BACKLOG.md) |
 | Aptitude module | [MODULE_BACKLOG.md](./MODULE_BACKLOG.md) |
@@ -123,7 +120,7 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 
 | Risk | Issue link | Notes |
 | --- | --- | --- |
-| Merging with red CI | ISSUE-001 | Masks future backend regressions |
+| Sandbox Smoke regression | FIX-24D | Re-run workflow on backend PRs; do not silence tests |
 | Closing email issues without inbox proof | FIX-24C | Keep `student_emails_sent: 0` in proof scripts |
 | Projects scope creep via “small fixes” | ISSUE-004 | Route to MODULE_BACKLOG or post-25c |
 
@@ -131,11 +128,9 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 
 ## Next branch order
 
-1. `phase-25a-project-roadmap-live-tracker` — establishes this tracker  
-2. `phase-24d-ci-sandbox-smoke-stabilization` — close ISSUE-001  
-3. `phase-24e-admin-email-station-client-ready-digest` — close ISSUE-002  
-4. `phase-25b-frontend-redesign-plan` — address ISSUE-003 strategy  
-5. Module foundations per [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md)  
+1. `phase-24e-admin-email-station-client-ready-digest` — close ISSUE-002  
+2. `phase-25b-frontend-redesign-plan` — address ISSUE-003 strategy  
+3. Module foundations per [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md)  
 
 ---
 
@@ -149,11 +144,11 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 - [ ] No unrelated files (Jobs/email/Progress/Projects unless in scope)  
 - [ ] Roadmap + this file updated in same PR or immediate follow-up  
 
-### CI (ISSUE-001)
+### CI (Sandbox Smoke — regression guard)
 
 ```bash
 python -m unittest discover -s backend/tests -p "test_sandbox_smoke.py" -v
-# Expect: 13 tests, 0 failures, on Linux with 24D env vars
+# Expect: 13 tests, 0 failures, on ubuntu-latest (verified run 28291205306)
 ```
 
 ### Jobs/email regression (any backend touch near jobs)
