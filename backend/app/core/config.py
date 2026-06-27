@@ -67,6 +67,7 @@ class Settings(BaseSettings):
     job_mail_enabled: bool = False
     job_mail_test_recipient: str | None = None
     job_mail_max_recipients_per_run: int = 50
+    job_digest_cta_url: str | None = None
     # Email transport: smtp (default) or brevo (HTTPS API)
     email_provider: str = "smtp"
     brevo_api_key: str | None = None

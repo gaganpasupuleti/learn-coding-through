@@ -45,7 +45,8 @@ def main() -> int:
             logger.warning("No jobs to email — exiting")
             return 0
 
-        subject, html_body, text_body = build_digest(jobs)
+        content = build_digest(jobs)
+        subject, html_body, text_body = content.subject, content.html, content.text
         recipient = (settings.job_mail_test_recipient or "").strip()
         if not recipient:
             logger.error("JOB_MAIL_ENABLED=true but JOB_MAIL_TEST_RECIPIENT is not set — aborting send")

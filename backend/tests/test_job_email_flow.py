@@ -1,4 +1,4 @@
-"""Phase 24B/24C: job digest preview, test, dry_run, live-block, and Brevo transport tests."""
+"""Phase 24B/24C/24E: job digest preview, transport, and client-ready template tests."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ os.environ.setdefault("ADMIN_JOB_KEY", "test-jobs-admin-key")
 
 from app.core.config import settings
 from app.main import app
-from app.services.email_brevo import send_brevo_email
+from app.services.job_email import build_digest, sanitize_plain_text, validate_safe_https_url
 
 
 class JobEmailFlowTests(unittest.TestCase):
@@ -32,6 +32,51 @@ class JobEmailFlowTests(unittest.TestCase):
         self.assertIn("subject", data)
         self.assertIn("jobCount", data)
         self.assertIsInstance(data["jobCount"], int)
+        self.assertIn("summary", data)
+        summary = data["summary"]
+        self.assertIn("totalActiveJobs", summary)
+        self.assertIn("selectedJobsCount", summary)
+        self.assertIn("sourceSplit", summary)
+
+    def test_email_preview_accepts_editable_fields(self) -> None:
+        r = self.client.post(
+            "/api/admin/jobs/email-preview",
+            headers=self.headers,
+            json={
+                "jobIds": [],
+                "searchTerm": "data analyst",
+                "location": "India",
+                "subjectOverride": "Custom Subject Line",
+                "introMessage": "Hello from Code Quest.",
+                "maxJobs": 5,
+            },
+        )
+        if r.status_code == 400:
+            self.skipTest("No active jobs in test database")
+        self.assertEqual(r.status_code, 200, r.text)
+        data = r.json()
+        self.assertEqual(data["subject"], "Custom Subject Line")
+        self.assertIn("Hello from Code Quest.", data["text"])
+        self.assertLessEqual(data["jobCount"], 5)
+
+    def test_email_preview_strips_html_injection(self) -> None:
+        r = self.client.post(
+            "/api/admin/jobs/email-preview",
+            headers=self.headers,
+            json={
+                "jobIds": [],
+                "searchTerm": "developer",
+                "introMessage": "<script>alert(1)</script>Safe text",
+                "subjectOverride": "<b>Bad</b> Subject",
+            },
+        )
+        if r.status_code == 400:
+            self.skipTest("No active jobs in test database")
+        self.assertEqual(r.status_code, 200, r.text)
+        data = r.json()
+        self.assertNotIn("<script>", data["html"])
+        self.assertNotIn("<b>", data["subject"])
+        self.assertIn("Safe text", data["text"])
 
     @patch("app.api.jobs.send_email", return_value=(1, []))
     def test_send_digest_test_mode(self, mock_send) -> None:
@@ -152,8 +197,35 @@ class BrevoEmailTransportTests(unittest.TestCase):
         self.assertEqual(len(to_addrs), 1)
 
 
+class DigestTemplateUnitTests(unittest.TestCase):
+    def test_sanitize_plain_text_strips_tags(self) -> None:
+        self.assertEqual(sanitize_plain_text("<img src=x onerror=1>Hi", max_len=50), "Hi")
+
+    def test_validate_safe_https_url_rejects_javascript(self) -> None:
+        self.assertIsNone(validate_safe_https_url("javascript:alert(1)"))
+
+    def test_build_digest_summary_fields(self) -> None:
+        jobs = [
+            {
+                "title": "Python Dev",
+                "company": "Acme",
+                "location": "Bengaluru",
+                "source": "indeed",
+                "applyUrl": "https://example.com/1",
+                "createdAt": __import__("datetime").datetime.utcnow(),
+            },
+        ]
+        content = build_digest(jobs, total_active_jobs=100, max_jobs=1)
+        self.assertEqual(content.summary.total_active_jobs, 100)
+        self.assertEqual(content.summary.selected_jobs_count, 1)
+        self.assertIn("Acme", content.summary.top_companies)
+        self.assertIn("Code Quest", content.html)
+
+
 class BrevoUnitTests(unittest.TestCase):
     def test_send_brevo_raises_without_api_key(self) -> None:
+        from app.services.email_brevo import send_brevo_email
+
         with patch.object(settings, "brevo_api_key", None):
             with self.assertRaises(ValueError) as ctx:
                 send_brevo_email(

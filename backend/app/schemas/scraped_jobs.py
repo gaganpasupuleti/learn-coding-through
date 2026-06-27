@@ -194,10 +194,25 @@ class JobStatsResponse(BaseModel):
     expiredJobSamples: list[LatestJobSummary]
 
 
-class EmailPreviewRequest(BaseModel):
+class DigestSummary(BaseModel):
+    totalActiveJobs: int
+    selectedJobsCount: int
+    recentJobsCount: int
+    topRoles: list[str] = Field(default_factory=list)
+    topCompanies: list[str] = Field(default_factory=list)
+    topLocations: list[str] = Field(default_factory=list)
+    sourceSplit: dict[str, int] = Field(default_factory=dict)
+
+
+class EmailDigestFields(BaseModel):
     jobIds: list[str] = Field(default_factory=list)
     searchTerm: str = "python developer"
     location: str = FIXED_JOB_LOCATION
+    subjectOverride: str | None = None
+    introMessage: str | None = None
+    maxJobs: int = Field(default=20, ge=1, le=50)
+    ctaLabel: str | None = None
+    ctaUrl: str | None = None
 
     @field_validator("location", mode="before")
     @classmethod
@@ -205,17 +220,21 @@ class EmailPreviewRequest(BaseModel):
         return FIXED_JOB_LOCATION
 
 
+class EmailPreviewRequest(EmailDigestFields):
+    pass
+
+
 class EmailPreviewResponse(BaseModel):
     subject: str
     html: str
     text: str
     jobCount: int
+    summary: DigestSummary
 
 
-class SendDigestRequest(BaseModel):
+class SendDigestRequest(EmailDigestFields):
     mode: str = "test"
     testEmail: str | None = None
-    jobIds: list[str] = Field(default_factory=list)
 
 
 class SendDigestResponse(BaseModel):

@@ -15,6 +15,8 @@ from app.core.database import get_db
 from app.models.models import ScrapedJob, User, UserRole
 from app.schemas.scraped_jobs import (
     CleanupLinksResponse,
+    DigestSummary,
+    EmailDigestFields,
     EmailPreviewRequest,
     EmailPreviewResponse,
     FIXED_JOB_LOCATION,
@@ -330,13 +332,14 @@ def admin_email_preview(
     db: Session = Depends(get_db),
     _admin: User | None = Depends(require_jobs_admin),
 ):
-    jobs = _load_jobs_for_digest(db, payload.jobIds)
-    subject, html_body, text_body = build_digest(
-        jobs,
-        search_term=payload.searchTerm,
-        location=FIXED_JOB_LOCATION,
+    content = _build_digest_content(db, payload)
+    return EmailPreviewResponse(
+        subject=content.subject,
+        html=content.html,
+        text=content.text,
+        jobCount=content.job_count,
+        summary=_summary_to_schema(content.summary),
     )
-    return EmailPreviewResponse(subject=subject, html=html_body, text=text_body, jobCount=len(jobs))
 
 
 @admin_router.post("/send-digest", response_model=SendDigestResponse)
@@ -354,12 +357,12 @@ def admin_send_digest(
             detail="Live student digests are disabled. Set JOB_MAIL_ENABLED=true to allow.",
         )
 
-    jobs = _load_jobs_for_digest(db, payload.jobIds)
-    if not jobs:
+    content = _build_digest_content(db, payload)
+    if not content.job_count:
         raise HTTPException(status_code=400, detail="No jobs available for digest")
 
-    subject, html_body, text_body = build_digest(jobs)
-    job_count = len(jobs)
+    subject, html_body, text_body = content.subject, content.html, content.text
+    job_count = content.job_count
 
     if mode == "test":
         recipient = (payload.testEmail or settings.job_mail_test_recipient or "").strip()
@@ -429,7 +432,36 @@ def admin_send_digest(
     )
 
 
-def _load_jobs_for_digest(db: Session, job_ids: list[str]) -> list[dict]:
+def _count_active_jobs(db: Session) -> int:
+    return (
+        db.query(ScrapedJob)
+        .filter(ScrapedJob.link_status == "active")
+        .count()
+    )
+
+
+def _summary_to_schema(summary) -> DigestSummary:
+    d = summary.as_dict()
+    return DigestSummary(**d)
+
+
+def _build_digest_content(db: Session, payload: EmailDigestFields):
+    jobs = _load_jobs_for_digest(db, payload.jobIds, max_jobs=payload.maxJobs)
+    return build_digest(
+        jobs,
+        search_term=payload.searchTerm,
+        location=FIXED_JOB_LOCATION,
+        max_jobs=payload.maxJobs,
+        total_active_jobs=_count_active_jobs(db),
+        subject_override=payload.subjectOverride,
+        intro_message=payload.introMessage,
+        cta_label=payload.ctaLabel,
+        cta_url=payload.ctaUrl,
+    )
+
+
+def _load_jobs_for_digest(db: Session, job_ids: list[str], *, max_jobs: int = 20) -> list[dict]:
+    limit = max(1, min(max_jobs, 50))
     if job_ids:
         rows = db.query(ScrapedJob).filter(ScrapedJob.id.in_(job_ids)).all()
     else:
@@ -437,7 +469,7 @@ def _load_jobs_for_digest(db: Session, job_ids: list[str]) -> list[dict]:
             db.query(ScrapedJob)
             .filter(ScrapedJob.link_status == "active")
             .order_by(ScrapedJob.created_at.desc())
-            .limit(20)
+            .limit(limit)
             .all()
         )
     return [scraped_job_to_dict(r) for r in rows]
