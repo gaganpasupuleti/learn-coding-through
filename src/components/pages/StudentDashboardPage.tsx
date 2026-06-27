@@ -63,6 +63,7 @@ function DashboardSection({
         <h2
           className={cn(
             DASHBOARD_SECTION_LABEL,
+            !secondary && 'text-slate-700',
             secondary && 'font-medium normal-case tracking-normal text-slate-400',
           )}
         >
@@ -204,12 +205,12 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   }
 
   return (
-    <div className={cn(STUDENT_PAGE_BG, 'p-4 md:p-6')}>
-      <div className="mx-auto max-w-7xl space-y-6">
+    <div className={cn(STUDENT_PAGE_BG, 'px-4 py-6 md:px-6 md:py-8')}>
+      <div className="mx-auto max-w-7xl space-y-6 md:space-y-8">
         <DashboardHero {...heroProps} />
 
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
-          <div className="space-y-6 lg:col-span-8">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-start lg:gap-8">
+          <div className="space-y-6 lg:col-span-8 lg:space-y-8">
             <DashboardSection
               title="Today"
               description="Your class and the next deadline to focus on."

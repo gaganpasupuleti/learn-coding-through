@@ -246,13 +246,13 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
 
   return (
     <div className="flex h-dvh max-h-dvh min-h-0 flex-col overflow-hidden bg-white">
-      <nav className="z-50 border-b border-slate-200 bg-white/80 backdrop-blur-sm" aria-label="Primary">
+      <nav className="z-50 border-b border-slate-200 bg-white/85 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur-md" aria-label="Primary">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-0">
           <div className="h-10 md:h-14 flex items-center justify-between gap-3 md:gap-4">
             <button
               type="button"
               onClick={() => onNavigate('dashboard')}
-              className="flex items-center gap-2.5 flex-shrink-0 group"
+              className="flex items-center gap-2.5 flex-shrink-0 group rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
               aria-label="CodeQuest dashboard"
             >
               <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm group-hover:bg-blue-700 transition-colors duration-150">
@@ -312,7 +312,7 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
             </div>
           </div>
 
-          <div className="md:hidden -mx-4 px-4 pb-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="md:hidden -mx-4 mt-0.5 border-t border-slate-100 px-4 pb-2 pt-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div className="flex items-center gap-1 min-w-max">
               <PrimaryNav currentPage={currentPage} onNavigate={onNavigate} compact />
             </div>
