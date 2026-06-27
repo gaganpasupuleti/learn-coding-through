@@ -1,4 +1,10 @@
 import { useMemo, type ReactNode } from 'react'
+import {
+  CalendarClock,
+  FileText,
+  Flame,
+  GraduationCap,
+} from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
@@ -6,28 +12,33 @@ import { PlannerPreviewWidget } from '@/components/student-dashboard/PlannerPrev
 import { DashboardHero, resolveNextLessonTitle } from '@/components/student-dashboard/DashboardHero'
 import { DeadlinesTaskBoard } from '@/components/student-dashboard/DeadlinesTaskBoard'
 import { JobReadinessCard } from '@/components/student-dashboard/JobReadinessCard'
+import { JobsCareerCard } from '@/components/student-dashboard/JobsCareerCard'
 import { LearningJourneyCard } from '@/components/student-dashboard/LearningJourneyCard'
 import { NextDeadlineCard } from '@/components/student-dashboard/NextDeadlineCard'
 import { OldMistakesReviewCard } from '@/components/student-dashboard/OldMistakesReviewCard'
 import { OverallProgressCard } from '@/components/student-dashboard/OverallProgressCard'
 import { PracticeProgressCard } from '@/components/student-dashboard/PracticeProgressCard'
 import { PracticeStreakCard } from '@/components/student-dashboard/PracticeStreakCard'
+import { QuickStatsStrip, type DashboardStat } from '@/components/student-dashboard/QuickStatsStrip'
 import { ResumeReadinessCard } from '@/components/student-dashboard/ResumeReadinessCard'
 import { TodayClassCard } from '@/components/student-dashboard/TodayClassCard'
 import { UpcomingClassesTimeline } from '@/components/student-dashboard/UpcomingClassesTimeline'
 import { useStudentDashboardSnapshot } from '@/components/student-dashboard/useStudentDashboardSnapshot'
-import {
-  DASHBOARD_SECTION_LABEL,
-  STUDENT_PAGE_BG,
-} from '@/components/student-dashboard/dashboard-styles'
+import { STUDENT_PAGE_BG } from '@/components/student-dashboard/dashboard-styles'
 import { useLearningPlanner } from '@/components/learning-planner/useLearningPlanner'
 import type { AuthUser } from '@/lib/auth'
-import { computeDaysRemaining, computeReadinessBreakdown } from '@/lib/dashboard-derive'
+import {
+  computeDaysRemaining,
+  computeReadinessBreakdown,
+  mergeDeadlines,
+} from '@/lib/dashboard-derive'
 import {
   getCodePracticeSummary,
+  getPracticeStreakSummary,
   getSqlPracticeSummary,
   getTypingPracticeSummary,
 } from '@/lib/practice-progress-summary'
+import { computeResumeReadinessScore } from '@/lib/resume-score'
 import { storeSelectedDateForPlanner } from '@/lib/learning-planner-derive'
 
 type DashboardNavTarget =
@@ -46,51 +57,76 @@ interface StudentDashboardPageProps {
   onNavigate: (page: DashboardNavTarget) => void
 }
 
-function DashboardSection({
+function SectionHeading({
   title,
   description,
-  children,
-  secondary = false,
+  tone = 'primary',
 }: {
   title: string
   description?: string
-  children: ReactNode
-  secondary?: boolean
+  tone?: 'primary' | 'muted'
 }) {
   return (
-    <section className={cn(secondary && 'pt-2')}>
-      <div className="mb-3">
+    <div className="mb-4 flex items-center gap-3">
+      <span
+        className={cn(
+          'h-5 w-1 rounded-full',
+          tone === 'primary' ? 'bg-blue-600' : 'bg-slate-300',
+        )}
+        aria-hidden
+      />
+      <div>
         <h2
           className={cn(
-            DASHBOARD_SECTION_LABEL,
-            !secondary && 'text-slate-700',
-            secondary && 'font-medium normal-case tracking-normal text-slate-400',
+            'text-sm font-bold uppercase tracking-wide',
+            tone === 'primary' ? 'text-slate-800' : 'text-slate-500',
           )}
         >
           {title}
         </h2>
-        {description && <p className="mt-1 text-sm text-slate-500">{description}</p>}
+        {description && <p className="mt-0.5 text-sm text-slate-500">{description}</p>}
       </div>
+    </div>
+  )
+}
+
+function DashboardSection({
+  title,
+  description,
+  tone = 'primary',
+  children,
+}: {
+  title: string
+  description?: string
+  tone?: 'primary' | 'muted'
+  children: ReactNode
+}) {
+  return (
+    <section>
+      <SectionHeading title={title} description={description} tone={tone} />
       {children}
     </section>
   )
 }
 
-function SupportSidebar({
+function CommandRail({
   readiness,
   plannerPreview,
+  careerJourney,
   onNavigate,
   loading,
 }: {
   readiness: ReturnType<typeof computeReadinessBreakdown>
   plannerPreview: ReturnType<typeof useLearningPlanner>
+  careerJourney: ReturnType<typeof useStudentDashboardSnapshot>['careerJourney']
   onNavigate: (page: DashboardNavTarget) => void
   loading: boolean
 }) {
   return (
-    <aside className="space-y-4 lg:space-y-5">
+    <aside className="space-y-5">
       <PracticeStreakCard compact />
       <ResumeReadinessCard compact onOpenResume={() => onNavigate('resume')} />
+      <JobsCareerCard careerJourney={careerJourney} onOpenJobs={() => onNavigate('jobspy')} />
       <PlannerPreviewWidget
         dayPlan={plannerPreview.dayPlan}
         viewMonth={plannerPreview.viewMonth}
@@ -177,6 +213,14 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
     ],
   )
 
+  const openDeadlines = useMemo(
+    () => mergeDeadlines(snapshot.deadlines).filter((item) => !item.done).length,
+    [snapshot.deadlines],
+  )
+
+  const streak = getPracticeStreakSummary()
+  const resumeScore = computeResumeReadinessScore()
+
   const typingWpm =
     snapshot.typingAttempts.length > 0
       ? Math.round(
@@ -188,29 +232,67 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   const codeSummary = getCodePracticeSummary()
   const typingSummary = getTypingPracticeSummary(typingWpm)
 
-  const heroProps = {
-    firstName,
-    careerJourney: snapshot.careerJourney,
-    nextLessonTitle,
-    daysRemaining,
-    loading: snapshot.loading,
-    onContinueLearning: () => onNavigate('roadmapper'),
-  }
-
-  const sidebarProps = {
-    readiness,
-    plannerPreview,
-    onNavigate,
-    loading: snapshot.loading,
-  }
+  const stats: DashboardStat[] = [
+    {
+      id: 'course',
+      label: 'Course progress',
+      value: `${snapshot.careerJourney?.pct ?? 0}%`,
+      hint: snapshot.careerJourney?.currentStageLabel ?? 'Pick a path',
+      icon: <GraduationCap className="h-5 w-5" aria-hidden />,
+      accent: 'blue',
+      onClick: () => onNavigate('progress'),
+    },
+    {
+      id: 'streak',
+      label: 'Practice streak',
+      value: `${streak.currentStreak}d`,
+      hint: streak.practicedToday ? 'Practiced today' : 'Keep it going',
+      icon: <Flame className="h-5 w-5" aria-hidden />,
+      accent: 'amber',
+      onClick: () => onNavigate('practice-code'),
+    },
+    {
+      id: 'resume',
+      label: 'Resume readiness',
+      value: `${resumeScore.overall}%`,
+      hint: 'ATS-friendly draft',
+      icon: <FileText className="h-5 w-5" aria-hidden />,
+      accent: 'violet',
+      onClick: () => onNavigate('resume'),
+    },
+    {
+      id: 'deadlines',
+      label: 'Open deadlines',
+      value: `${openDeadlines}`,
+      hint: openDeadlines === 0 ? 'All clear' : 'Stay on track',
+      icon: <CalendarClock className="h-5 w-5" aria-hidden />,
+      accent: 'teal',
+      onClick: () => onNavigate('calendar'),
+    },
+  ]
 
   return (
     <div className={cn(STUDENT_PAGE_BG, 'px-4 py-6 md:px-6 md:py-8')}>
-      <div className="mx-auto max-w-7xl space-y-6 md:space-y-8">
-        <DashboardHero {...heroProps} />
+      <div className="mx-auto max-w-7xl space-y-8">
+        <DashboardHero
+          firstName={firstName}
+          careerJourney={snapshot.careerJourney}
+          nextLessonTitle={nextLessonTitle}
+          daysRemaining={daysRemaining}
+          currentStreak={streak.currentStreak}
+          practicedToday={streak.practicedToday}
+          loading={snapshot.loading}
+          onContinuePractice={() => onNavigate('practice-code')}
+          onContinueLearning={() => onNavigate('roadmapper')}
+          onOpenCalendar={() => onNavigate('calendar')}
+          onOpenResume={() => onNavigate('resume')}
+          onOpenJobs={() => onNavigate('jobspy')}
+        />
+
+        <QuickStatsStrip stats={stats} loading={snapshot.loading} />
 
         <div className="grid gap-6 lg:grid-cols-12 lg:items-start lg:gap-8">
-          <div className="space-y-6 lg:col-span-8 lg:space-y-8">
+          <div className="space-y-8 lg:col-span-8">
             <DashboardSection
               title="Today"
               description="Your class and the next deadline to focus on."
@@ -251,18 +333,18 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
               </div>
             </DashboardSection>
 
-            <DashboardSection title="Upcoming classes" secondary>
+            <DashboardSection title="Upcoming classes" tone="muted">
               <UpcomingClassesTimeline
                 sessions={snapshot.upcomingSessions}
                 loading={snapshot.loading}
               />
             </DashboardSection>
 
-            <DashboardSection title="All deadlines" secondary>
+            <DashboardSection title="All deadlines" tone="muted">
               <DeadlinesTaskBoard deadlines={snapshot.deadlines} loading={snapshot.loading} />
             </DashboardSection>
 
-            <DashboardSection title="Syllabus overview" secondary>
+            <DashboardSection title="Syllabus overview" tone="muted">
               <LearningJourneyCard
                 careerJourney={snapshot.careerJourney}
                 stageRows={snapshot.stageRows}
@@ -272,7 +354,13 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           </div>
 
           <div className="lg:col-span-4">
-            <SupportSidebar {...sidebarProps} />
+            <CommandRail
+              readiness={readiness}
+              plannerPreview={plannerPreview}
+              careerJourney={snapshot.careerJourney}
+              onNavigate={onNavigate}
+              loading={snapshot.loading}
+            />
           </div>
         </div>
       </div>
