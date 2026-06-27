@@ -531,7 +531,7 @@ export function JobSpyOpsView() {
             <Badge variant="secondary" className="text-[10px]">JOB_MAIL_ENABLED=false</Badge>
           </div>
           <p className="text-xs text-indigo-900/80">
-            Compose a client-ready digest with editable subject and intro. Preview sends nothing. Test mode sends only to the test recipient.
+            Compose a premium client-ready digest with editable subject and intro. Preview sends nothing. Test mode sends only to the test recipient.
           </p>
           <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 flex items-start gap-2">
             <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5" />
@@ -619,31 +619,40 @@ export function JobSpyOpsView() {
                 <div className="grid grid-cols-3 gap-2 text-center text-xs">
                   <div className="rounded-lg bg-indigo-50 p-2">
                     <div className="font-bold text-indigo-900">{emailPreview.summary.totalActiveJobs}</div>
-                    <div className="text-indigo-600">Active</div>
+                    <div className="text-indigo-600">Active Jobs</div>
                   </div>
                   <div className="rounded-lg bg-emerald-50 p-2">
                     <div className="font-bold text-emerald-900">{emailPreview.summary.selectedJobsCount}</div>
-                    <div className="text-emerald-600">Selected</div>
+                    <div className="text-emerald-600">In Digest</div>
                   </div>
                   <div className="rounded-lg bg-orange-50 p-2">
                     <div className="font-bold text-orange-900">{emailPreview.summary.recentJobsCount}</div>
-                    <div className="text-orange-600">New (7d)</div>
+                    <div className="text-orange-600">New This Week</div>
+                  </div>
+                </div>
+              )}
+              {emailPreview.summary && (
+                <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                  <div className="rounded-lg bg-cyan-50 p-2">
+                    <div className="font-bold text-cyan-900">{emailPreview.summary.internships24h}</div>
+                    <div className="text-cyan-600">Internships · 24h</div>
+                  </div>
+                  <div className="rounded-lg bg-fuchsia-50 p-2">
+                    <div className="font-bold text-fuchsia-900">{emailPreview.summary.freshers24h}</div>
+                    <div className="text-fuchsia-600">Fresher jobs · 24h</div>
                   </div>
                 </div>
               )}
               {emailPreview.summary && (
                 <div className="text-xs text-slate-600 space-y-1 border-t pt-2">
+                  {emailPreview.summary.topRoles.length > 0 && (
+                    <p><span className="font-medium">Top roles:</span> {emailPreview.summary.topRoles.join(', ')}</p>
+                  )}
                   {emailPreview.summary.topCompanies.length > 0 && (
                     <p><span className="font-medium">Top companies:</span> {emailPreview.summary.topCompanies.join(', ')}</p>
                   )}
                   {emailPreview.summary.topLocations.length > 0 && (
-                    <p><span className="font-medium">Locations:</span> {emailPreview.summary.topLocations.join(', ')}</p>
-                  )}
-                  {Object.keys(emailPreview.summary.sourceSplit).length > 0 && (
-                    <p>
-                      <span className="font-medium">Sources:</span>{' '}
-                      {Object.entries(emailPreview.summary.sourceSplit).map(([k, v]) => `${k}: ${v}`).join(', ')}
-                    </p>
+                    <p><span className="font-medium">Top cities:</span> {emailPreview.summary.topLocations.join(', ')}</p>
                   )}
                 </div>
               )}
