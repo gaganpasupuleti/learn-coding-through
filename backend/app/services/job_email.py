@@ -1,4 +1,4 @@
-"""Job digest email preview and SMTP send for Code Quest jobs feature."""
+"""Job digest email preview and send for Code Quest jobs feature."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ from email.mime.text import MIMEText
 from typing import Any
 
 from app.core.config import settings
+from app.services.email_brevo import send_brevo_email
 
 logger = logging.getLogger(__name__)
 
@@ -100,8 +101,33 @@ def _smtp_configured() -> bool:
     return bool(settings.smtp_host and settings.smtp_from)
 
 
+def _active_provider() -> str:
+    return (settings.email_provider or "smtp").strip().lower()
+
+
 def send_email(*, to_addrs: list[str], subject: str, html_body: str, text_body: str) -> tuple[int, list[str]]:
-    """Send one message to multiple recipients. Returns (sent_count, failed_emails)."""
+    """Send one message per recipient via the configured provider. Returns (sent_count, failed_emails)."""
+    provider = _active_provider()
+    if provider == "brevo":
+        return send_brevo_email(
+            to_addrs=to_addrs,
+            subject=subject,
+            html_body=html_body,
+            text_body=text_body,
+        )
+    if provider != "smtp":
+        raise ValueError(f"Unknown email provider: {provider} (use smtp or brevo)")
+    return _send_via_smtp(
+        to_addrs=to_addrs,
+        subject=subject,
+        html_body=html_body,
+        text_body=text_body,
+    )
+
+
+def _send_via_smtp(
+    *, to_addrs: list[str], subject: str, html_body: str, text_body: str
+) -> tuple[int, list[str]]:
     if not _smtp_configured():
         raise ValueError("SMTP is not configured (SMTP_HOST, SMTP_FROM required)")
 
