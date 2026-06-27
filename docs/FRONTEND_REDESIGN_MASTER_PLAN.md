@@ -275,6 +275,21 @@ Performance checks:
 
 ---
 
+## Merge Safety Rule
+
+Before marking any future frontend PR ready to merge:
+
+1. Fetch latest `origin/main`.
+2. Confirm whether `origin/main` has new commits after the branch point.
+3. If `origin/main` moved, update the branch with latest main.
+4. Re-run the required checks after updating.
+5. Re-check changed files against latest main.
+6. Do not merge stale branches.
+
+For 25C specifically, this means re-running build/lint, route smoke checks, screenshot proof, and frozen-surface file checks after any branch update.
+
+---
+
 ## Persona Checklist
 
 | Persona | 25B rule |
