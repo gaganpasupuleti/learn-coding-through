@@ -254,7 +254,7 @@ class DigestTemplateUnitTests(unittest.TestCase):
         self.assertEqual(d["internships24h"], 7)
         self.assertEqual(d["freshers24h"], 12)
 
-    def test_premium_template_kpi_and_insights(self) -> None:
+    def test_radar_kpi_labels(self) -> None:
         content = build_digest(
             self._sample_jobs(4),
             total_active_jobs=200,
@@ -264,29 +264,55 @@ class DigestTemplateUnitTests(unittest.TestCase):
         )
         h = content.html
         self.assertIn("Active Jobs", h)
-        self.assertIn("In Digest", h)
-        self.assertIn("New This Week", h)
-        self.assertIn("Internships opened", h)
-        self.assertIn("Fresher jobs opened", h)
-        self.assertIn("Top roles", h)
-        self.assertIn("Top companies", h)
-        self.assertIn("Top cities", h)
+        self.assertIn("Handpicked Roles", h)
+        self.assertIn("Fresh This Week", h)
+        self.assertIn("Internships Today", h)
+        self.assertIn("Fresher Roles Today", h)
+        # Old 24F labels must be gone
+        self.assertNotIn("In Digest", h)
+        self.assertNotIn("New This Week", h)
+
+    def test_radar_insight_cards(self) -> None:
+        content = build_digest(self._sample_jobs(4), total_active_jobs=200, max_jobs=4)
+        h = content.html
+        self.assertIn("Top Roles", h)
+        self.assertIn("Hot Cities", h)
+        self.assertIn("Hiring Companies", h)
+        self.assertIn("Market insights", h)
         self.assertIn("Featured roles", h)
 
-    def test_premium_template_renames_new_7d(self) -> None:
-        content = build_digest(self._sample_jobs(2), total_active_jobs=10, max_jobs=2)
-        self.assertNotIn("New (7d)", content.html)
+    def test_radar_hero_and_why_section(self) -> None:
+        content = build_digest(self._sample_jobs(4), total_active_jobs=200, max_jobs=4)
+        h = content.html
+        self.assertIn("Jobs Radar", h)
+        self.assertIn("Active jobs scanned", h)
+        self.assertIn("Handpicked roles", h)
+        self.assertIn("Why these roles?", h)
 
-    def test_premium_template_hides_sources_block(self) -> None:
+    def test_radar_source_split_hidden(self) -> None:
         content = build_digest(self._sample_jobs(3), total_active_jobs=10, max_jobs=3)
-        self.assertNotIn(">Sources<", content.html)
-        self.assertNotIn("Sources</td>", content.html)
+        h = content.html
+        self.assertNotIn("New (7d)", h)
+        self.assertNotIn(">Sources<", h)
+        self.assertNotIn("Sources</td>", h)
+        self.assertNotIn("Source split", h)
+        # source split data still present in summary payload
+        self.assertIn("linkedin", content.summary.source_split)
 
-    def test_premium_template_two_column_featured(self) -> None:
+    def test_radar_two_column_featured_with_badges(self) -> None:
         content = build_digest(self._sample_jobs(4), total_active_jobs=10, max_jobs=4)
-        self.assertIn("width:50%", content.html)
+        h = content.html
+        self.assertIn("width:50%", h)
+        # source badge rendered in job card
+        self.assertIn("linkedin", h)
 
-    def test_premium_text_fallback_readable(self) -> None:
+    def test_radar_featured_caps_at_eight(self) -> None:
+        content = build_digest(self._sample_jobs(12), total_active_jobs=100, max_jobs=12)
+        # summary still reflects all selected, but featured cards cap at 8
+        self.assertEqual(content.summary.selected_jobs_count, 12)
+        self.assertEqual(content.html.count("Apply &rarr;"), 8)
+
+    def test_radar_text_fallback_readable(self) -> None:
         content = build_digest(
             self._sample_jobs(2),
             total_active_jobs=50,
@@ -295,8 +321,10 @@ class DigestTemplateUnitTests(unittest.TestCase):
             freshers_24h=5,
         )
         t = content.text
-        self.assertIn("Internships opened (24h): 3", t)
-        self.assertIn("Fresher jobs opened (24h): 5", t)
+        self.assertIn("Jobs Radar", t)
+        self.assertIn("Internships Today: 3", t)
+        self.assertIn("Fresher Roles Today: 5", t)
+        self.assertIn("Why these roles?", t)
         self.assertIn("Featured roles:", t)
         self.assertNotIn("<", t)
 

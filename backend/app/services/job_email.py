@@ -23,10 +23,20 @@ _TAG_RE = re.compile(r"<[^>]+>")
 _MAX_SUBJECT = 120
 _MAX_INTRO = 500
 _MAX_CTA_LABEL = 40
+_MAX_FEATURED = 8
+
+# Code Quest design tokens (email-safe hex)
+_INK = "#0f172a"
+_INK_SOFT = "#334155"
+_MUTED = "#64748b"
+_FAINT = "#94a3b8"
+_BORDER = "#e2e8f0"
+_INDIGO = "#4f46e5"
+_INDIGO_SOFT = "#6366f1"
 
 FOOTER_TEXT = (
-    "This is a Code Quest job alert. Listings are scraped from public job boards for practice and discovery. "
-    "Apply via the original posting links."
+    "Code Quest Jobs Radar — fresh, India-focused roles aggregated from public job boards for "
+    "practice and discovery. Always apply via the original posting links."
 )
 
 
@@ -215,7 +225,7 @@ def build_digest(
     if opts.subject_override:
         subject = opts.subject_override
     else:
-        subject = f"Code Quest Job Alert: {opts.search_term} in {opts.location} ({role_count} roles)"
+        subject = f"Code Quest Jobs Radar: {role_count} handpicked {opts.search_term} roles in {opts.location}"
 
     intro_html = ""
     intro_text = ""
@@ -226,90 +236,85 @@ def build_digest(
         )
         intro_text = f"{opts.intro_message}\n\n"
 
-    cta_label_final = opts.cta_label or "Browse all jobs on Code Quest"
-    cta_html = ""
+    cta_label_final = opts.cta_label or "Open Jobs Dashboard"
     cta_text = ""
+    hero_cta_html = ""
+    footer_cta_html = ""
     if opts.cta_url:
-        safe_url = html.escape(opts.cta_url, quote=True)
-        cta_html = (
-            "<table role='presentation' width='100%' cellspacing='0' cellpadding='0' style='margin:28px 0 8px;'>"
-            "<tr><td align='center'>"
-            f"<a href='{safe_url}' style='display:inline-block;background:#4f46e5;color:#ffffff;"
-            "font-weight:700;text-decoration:none;padding:14px 32px;border-radius:10px;font-size:15px;"
-            "box-shadow:0 4px 14px rgba(79,70,229,0.35);'>"
-            f"{html.escape(cta_label_final)} &rarr;</a>"
-            "</td></tr></table>"
-        )
+        hero_cta_html = _cta_button(opts.cta_url, cta_label_final, on_dark=True)
+        footer_cta_html = _cta_button(opts.cta_url, cta_label_final, on_dark=False)
         cta_text = f"{cta_label_final}: {opts.cta_url}\n\n"
 
-    kpi_cards = _kpi_cards(summary)
-    pipeline_strip = _pipeline_strip(summary)
+    featured = selected[:_MAX_FEATURED]
 
+    hero_html = _hero(topic, loc, summary, hero_cta_html)
+    kpi_cards = _kpi_cards(summary)
     role_counts = _top_value_counts(selected, "title")
     company_counts = _top_value_counts(selected, "company")
     city_counts = _top_value_counts(selected, "location")
-    insights_html = _insights_section(role_counts, company_counts, city_counts)
-
-    featured_html = _featured_two_col(selected, opts.location)
+    insights_html = _insights_section(role_counts, city_counts, company_counts)
+    why_html = _why_section(topic, loc)
+    featured_html = _featured_two_col(featured, opts.location)
 
     text_lines = [
-        f"Code Quest Job Alert — {opts.search_term} in {opts.location}",
-        (
-            f"Active jobs: {summary.total_active_jobs} | In digest: {summary.selected_jobs_count} "
-            f"| New this week: {summary.recent_jobs_count}"
-        ),
-        f"Internships opened (24h): {summary.internships_24h} | Fresher jobs opened (24h): {summary.freshers_24h}",
+        f"Code Quest Jobs Radar — {opts.search_term} in {opts.location}",
+        f"{summary.total_active_jobs} active jobs scanned · {summary.selected_jobs_count} handpicked roles",
+        "",
+        "Snapshot:",
+        f"  Active Jobs: {summary.total_active_jobs}",
+        f"  Handpicked Roles: {summary.selected_jobs_count}",
+        f"  Fresh This Week: {summary.recent_jobs_count}",
+        f"  Internships Today: {summary.internships_24h}",
+        f"  Fresher Roles Today: {summary.freshers_24h}",
         "",
     ]
     if opts.intro_message:
-        text_lines.insert(3, opts.intro_message)
+        text_lines.insert(2, opts.intro_message)
 
     if summary.top_roles:
-        text_lines.append("Top roles: " + ", ".join(summary.top_roles[:5]))
-    if summary.top_companies:
-        text_lines.append("Top companies: " + ", ".join(summary.top_companies[:5]))
+        text_lines.append("Top Roles: " + ", ".join(summary.top_roles[:5]))
     if summary.top_locations:
-        text_lines.append("Top cities: " + ", ".join(summary.top_locations[:5]))
+        text_lines.append("Hot Cities: " + ", ".join(summary.top_locations[:5]))
+    if summary.top_companies:
+        text_lines.append("Hiring Companies: " + ", ".join(summary.top_companies[:5]))
+    text_lines.append("")
+    text_lines.append(
+        "Why these roles? Fresh, India-focused listings filtered for interns, freshers and "
+        "early-career engineers, deduplicated so you only see live postings."
+    )
     text_lines.append("")
     text_lines.append("Featured roles:")
 
-    for job in selected:
+    for job in featured:
         title = job.get("title") or "Untitled"
         company = job.get("company") or "Company not listed"
         job_loc = job.get("location") or opts.location
+        posted = _format_job_date(job)
+        source = (job.get("source") or "").strip()
+        meta = " · ".join(p for p in [job_loc, posted, source] if p)
         apply_url = job.get("applyUrl") or job.get("jobUrl") or "#"
-        desc = _short_description(job.get("description"))
-        text_lines.extend([f"• {title}", f"  {company} · {job_loc}", f"  {apply_url}"])
-        if desc:
-            text_lines.append(f"  {desc}")
-        text_lines.append("")
+        text_lines.extend([f"• {title}", f"  {company} · {meta}", f"  {apply_url}", ""])
 
     html_body = (
-        "<div style='background:#eef2f8;padding:24px 0;'>"
+        f"<div style='background:#f1f5f9;padding:24px 0;'>"
         "<div style='font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;"
-        "max-width:640px;margin:0 auto;color:#0f172a;background:#ffffff;border-radius:16px;overflow:hidden;"
-        "box-shadow:0 10px 30px rgba(15,23,42,0.08);'>"
-        # Hero
-        "<div style='background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 50%,#312e81 100%);padding:32px 28px;color:#ffffff;'>"
-        "<div style='font-size:12px;text-transform:uppercase;letter-spacing:0.18em;font-weight:700;opacity:0.9;'>"
-        "&#9889; Code Quest</div>"
-        "<h1 style='margin:10px 0 0;font-size:26px;font-weight:800;line-height:1.2;'>Weekly Job Digest</h1>"
-        f"<p style='margin:10px 0 0;opacity:0.92;font-size:14px;'>{topic} &middot; {loc} &middot; curated for learners</p>"
-        "</div>"
-        # Body
+        f"max-width:640px;margin:0 auto;color:{_INK};background:#ffffff;border-radius:18px;overflow:hidden;"
+        "box-shadow:0 12px 32px rgba(15,23,42,0.10);'>"
+        f"{hero_html}"
         "<div style='padding:28px;'>"
         f"{intro_html}"
         f"{kpi_cards}"
-        f"{pipeline_strip}"
         f"{insights_html}"
-        "<h2 style='font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:#475569;margin:28px 0 14px;'>"
-        "Featured roles</h2>"
+        f"{why_html}"
+        f"<h2 style='font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:{_MUTED};"
+        "margin:28px 0 14px;'>Featured roles</h2>"
         f"{featured_html}"
-        f"{cta_html}"
-        "<p style='color:#94a3b8;font-size:11px;margin:28px 0 0;line-height:1.6;border-top:1px solid #e2e8f0;padding-top:18px;'>"
-        "This is a <strong>Code Quest</strong> job alert. Listings are aggregated from public job boards for "
-        "practice and discovery. Always apply via the original posting links.</p>"
-        "</div></div></div>"
+        f"{footer_cta_html}"
+        f"<p style='color:{_FAINT};font-size:11px;margin:28px 0 0;line-height:1.6;border-top:1px solid {_BORDER};"
+        "padding-top:18px;'>"
+        "<strong>Code Quest Jobs Radar</strong> — fresh, India-focused roles aggregated from public job boards "
+        "for practice and discovery. Always apply via the original posting links."
+        "</p></div></div></div>"
     )
 
     text_lines.append(FOOTER_TEXT)
@@ -325,93 +330,161 @@ def build_digest(
     )
 
 
-def _kpi_card(value: int, label: str, value_color: str, label_color: str, bg: str) -> str:
+def _format_job_date(job: dict[str, Any]) -> str:
+    raw = job.get("datePosted") or job.get("createdAt")
+    if raw is None:
+        return ""
+    if isinstance(raw, str):
+        try:
+            raw = datetime.fromisoformat(raw.replace("Z", "+00:00")).replace(tzinfo=None)
+        except ValueError:
+            return ""
+    if isinstance(raw, datetime):
+        return raw.strftime("%d %b")
+    return ""
+
+
+def _cta_button(url: str, label: str, *, on_dark: bool) -> str:
+    safe_url = html.escape(url, quote=True)
+    if on_dark:
+        style = (
+            "display:inline-block;background:#ffffff;color:#1e293b;font-weight:700;text-decoration:none;"
+            "padding:12px 26px;border-radius:10px;font-size:14px;"
+        )
+        wrap_margin = "18px 0 0"
+        align = "left"
+    else:
+        style = (
+            f"display:inline-block;background:{_INDIGO};color:#ffffff;font-weight:700;text-decoration:none;"
+            "padding:14px 32px;border-radius:10px;font-size:15px;box-shadow:0 4px 14px rgba(79,70,229,0.32);"
+        )
+        wrap_margin = "28px 0 8px"
+        align = "center"
     return (
-        f"<td style='background:{bg};border-radius:12px;padding:16px 10px;text-align:center;width:33%;'>"
-        f"<div style='font-size:28px;font-weight:800;color:{value_color};line-height:1;'>{value}</div>"
+        f"<table role='presentation' width='100%' cellspacing='0' cellpadding='0' style='margin:{wrap_margin};'>"
+        f"<tr><td align='{align}'>"
+        f"<a href='{safe_url}' style='{style}'>{html.escape(label)} &rarr;</a>"
+        "</td></tr></table>"
+    )
+
+
+def _hero(topic: str, loc: str, summary: DigestSummary, hero_cta_html: str) -> str:
+    """Dashboard-style hero: brand tag, title, topic/location, scanned + handpicked stats, CTA."""
+    return (
+        "<div style='background:linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#312e81 100%);"
+        "padding:32px 28px;color:#ffffff;'>"
+        "<div style='font-size:12px;text-transform:uppercase;letter-spacing:0.18em;font-weight:700;"
+        f"color:#a5b4fc;'>&#128225; Code Quest &middot; Jobs Radar</div>"
+        "<h1 style='margin:10px 0 0;font-size:27px;font-weight:800;line-height:1.2;'>"
+        "Your weekly jobs dashboard</h1>"
+        f"<p style='margin:8px 0 0;color:#cbd5e1;font-size:14px;'>{topic} &middot; {loc}</p>"
+        "<table role='presentation' cellspacing='0' cellpadding='0' style='margin:18px 0 0;'><tr>"
+        "<td style='padding:0 28px 0 0;'>"
+        f"<div style='font-size:24px;font-weight:800;line-height:1;'>{summary.total_active_jobs}</div>"
+        "<div style='font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px;'>"
+        "Active jobs scanned</div></td>"
+        "<td style='padding:0;border-left:1px solid rgba(148,163,184,0.35);padding-left:28px;'>"
+        f"<div style='font-size:24px;font-weight:800;line-height:1;'>{summary.selected_jobs_count}</div>"
+        "<div style='font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px;'>"
+        "Handpicked roles</div></td>"
+        "</tr></table>"
+        f"{hero_cta_html}"
+        "</div>"
+    )
+
+
+def _kpi_card(value: int, label: str, value_color: str, label_color: str, bg: str, width: str) -> str:
+    return (
+        f"<td style='background:{bg};border-radius:12px;padding:16px 10px;text-align:center;width:{width};'>"
+        f"<div style='font-size:26px;font-weight:800;color:{value_color};line-height:1;'>{value}</div>"
         f"<div style='font-size:11px;font-weight:600;color:{label_color};text-transform:uppercase;"
         f"letter-spacing:0.04em;margin-top:6px;'>{label}</div></td>"
     )
 
 
 def _kpi_cards(summary: DigestSummary) -> str:
+    """Five KPI cards in an email-safe 3 + 2 grid."""
+    row1 = (
+        "<tr>"
+        + _kpi_card(summary.total_active_jobs, "Active Jobs", "#312e81", "#6366f1", "#eef2ff", "33%")
+        + _kpi_card(summary.selected_jobs_count, "Handpicked Roles", "#14532d", "#16a34a", "#f0fdf4", "33%")
+        + _kpi_card(summary.recent_jobs_count, "Fresh This Week", "#9a3412", "#ea580c", "#fff7ed", "33%")
+        + "</tr>"
+    )
+    row2 = (
+        "<tr>"
+        + _kpi_card(summary.internships_24h, "Internships Today", "#0e7490", "#0891b2", "#ecfeff", "50%")
+        + _kpi_card(summary.freshers_24h, "Fresher Roles Today", "#a21caf", "#c026d3", "#fdf4ff", "50%")
+        + "</tr>"
+    )
     return (
         "<table role='presentation' width='100%' cellspacing='0' cellpadding='0' "
-        "style='border-collapse:separate;border-spacing:8px;margin:0 0 4px;'>"
-        "<tr>"
-        + _kpi_card(summary.total_active_jobs, "Active Jobs", "#312e81", "#6366f1", "#eef2ff")
-        + _kpi_card(summary.selected_jobs_count, "In Digest", "#14532d", "#16a34a", "#f0fdf4")
-        + _kpi_card(summary.recent_jobs_count, "New This Week", "#9a3412", "#ea580c", "#fff7ed")
-        + "</tr></table>"
+        f"style='border-collapse:separate;border-spacing:8px;margin:0 0 4px;'>{row1}{row2}</table>"
     )
 
 
-def _pipeline_strip(summary: DigestSummary) -> str:
-    """Two email-safe highlight blocks: internships + fresher jobs opened in last 24h."""
-    return (
-        "<table role='presentation' width='100%' cellspacing='0' cellpadding='0' "
-        "style='border-collapse:separate;border-spacing:8px;margin:0 0 18px;'>"
-        "<tr>"
-        "<td style='background:#ecfeff;border:1px solid #cffafe;border-radius:12px;padding:14px 16px;width:50%;'>"
-        f"<div style='font-size:22px;font-weight:800;color:#0e7490;line-height:1;'>{summary.internships_24h}</div>"
-        "<div style='font-size:12px;font-weight:600;color:#0891b2;margin-top:5px;'>Internships opened &middot; last 24h</div>"
-        "</td>"
-        "<td style='background:#fdf4ff;border:1px solid #f5d0fe;border-radius:12px;padding:14px 16px;width:50%;'>"
-        f"<div style='font-size:22px;font-weight:800;color:#a21caf;line-height:1;'>{summary.freshers_24h}</div>"
-        "<div style='font-size:12px;font-weight:600;color:#c026d3;margin-top:5px;'>Fresher jobs opened &middot; last 24h</div>"
-        "</td>"
-        "</tr></table>"
-    )
-
-
-def _ranked_list(label: str, items: list[tuple[str, int]], bar_color: str) -> str:
+def _insight_card(title: str, items: list[tuple[str, int]], accent: str) -> str:
     if not items:
         return ""
     top = max((c for _, c in items), default=1) or 1
     rows = [
-        f"<div style='font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;"
-        f"color:#64748b;margin:0 0 10px;'>{html.escape(label)}</div>"
+        f"<div style='font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;"
+        f"color:{accent};margin:0 0 12px;'>{html.escape(title)}</div>"
     ]
     for name, count in items[:5]:
         pct = max(8, round((count / top) * 100))
         rows.append(
-            "<table role='presentation' width='100%' cellspacing='0' cellpadding='0' style='margin:0 0 8px;'>"
-            "<tr><td style='font-size:13px;color:#334155;padding:0 0 3px;'>"
+            "<table role='presentation' width='100%' cellspacing='0' cellpadding='0' style='margin:0 0 9px;'>"
+            f"<tr><td style='font-size:13px;color:{_INK_SOFT};padding:0 0 4px;'>"
             f"<span style='font-weight:600;'>{html.escape(name)}</span>"
-            f"<span style='color:#94a3b8;'> &middot; {count}</span></td></tr>"
-            "<tr><td style='background:#f1f5f9;border-radius:6px;height:7px;line-height:7px;font-size:0;'>"
-            f"<div style='background:{bar_color};width:{pct}%;height:7px;border-radius:6px;font-size:0;line-height:7px;'>&nbsp;</div>"
-            "</td></tr></table>"
+            f"<span style='color:{_FAINT};'> &middot; {count}</span></td></tr>"
+            "<tr><td style='background:#eef2f6;border-radius:6px;height:6px;line-height:6px;font-size:0;'>"
+            f"<div style='background:{accent};width:{pct}%;height:6px;border-radius:6px;font-size:0;line-height:6px;'>"
+            "&nbsp;</div></td></tr></table>"
         )
     return (
-        "<td style='vertical-align:top;padding:0 6px;width:33%;'>" + "".join(rows) + "</td>"
+        f"<td style='vertical-align:top;width:33%;padding:0 6px;'>"
+        f"<div style='background:#ffffff;border:1px solid {_BORDER};border-radius:14px;padding:16px;height:100%;'>"
+        + "".join(rows)
+        + "</div></td>"
     )
 
 
 def _insights_section(
     role_counts: list[tuple[str, int]],
-    company_counts: list[tuple[str, int]],
     city_counts: list[tuple[str, int]],
+    company_counts: list[tuple[str, int]],
 ) -> str:
     cells = (
-        _ranked_list("Top roles", role_counts, "#6366f1")
-        + _ranked_list("Top companies", company_counts, "#16a34a")
-        + _ranked_list("Top cities", city_counts, "#ea580c")
+        _insight_card("Top Roles", role_counts, "#4f46e5")
+        + _insight_card("Hot Cities", city_counts, "#ea580c")
+        + _insight_card("Hiring Companies", company_counts, "#16a34a")
     )
     if not cells:
         return ""
     return (
-        "<div style='background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:18px 12px;margin:0 0 4px;'>"
-        "<h2 style='font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:#475569;margin:0 0 16px;padding:0 6px;'>"
-        "Market insights</h2>"
-        "<table role='presentation' width='100%' cellspacing='0' cellpadding='0'><tr>"
-        f"{cells}"
-        "</tr></table></div>"
+        f"<h2 style='font-size:13px;text-transform:uppercase;letter-spacing:0.08em;color:{_MUTED};"
+        "margin:24px 0 14px;'>Market insights</h2>"
+        "<table role='presentation' width='100%' cellspacing='0' cellpadding='0' "
+        f"style='border-collapse:separate;border-spacing:0;'><tr>{cells}</tr></table>"
+    )
+
+
+def _why_section(topic: str, loc: str) -> str:
+    return (
+        f"<div style='background:#f8fafc;border:1px solid {_BORDER};border-radius:14px;padding:18px 20px;"
+        "margin:24px 0 4px;'>"
+        f"<div style='font-size:13px;font-weight:700;color:{_INK};margin:0 0 8px;'>"
+        "&#128161; Why these roles?</div>"
+        f"<p style='font-size:13px;line-height:1.6;color:{_INK_SOFT};margin:0;'>"
+        f"We scan public job boards daily for <strong>{topic}</strong> roles across <strong>{loc}</strong>, "
+        "then filter for intern, fresher and early-career openings, drop expired links, and deduplicate so you "
+        "only see fresh, live postings worth your time.</p></div>"
     )
 
 
 def _featured_two_col(selected: list[dict[str, Any]], default_loc: str) -> str:
-    """Render featured roles in an email-safe 2-column card grid."""
+    """Render featured roles in an email-safe 2-column job-card grid."""
     if not selected:
         return ""
 
@@ -419,22 +492,40 @@ def _featured_two_col(selected: list[dict[str, Any]], default_loc: str) -> str:
         title = html.escape(job.get("title") or "Untitled")
         company = html.escape(job.get("company") or "Company not listed")
         job_loc = html.escape(job.get("location") or default_loc)
+        posted = _format_job_date(job)
+        source = (job.get("source") or "").strip()
         apply_url = html.escape(str(job.get("applyUrl") or job.get("jobUrl") or "#"), quote=True)
-        desc = _short_description(job.get("description"), limit=110)
-        desc_html = (
-            f"<p style='color:#64748b;font-size:12px;margin:8px 0 0;line-height:1.5;'>{html.escape(desc)}</p>"
-            if desc
-            else ""
+
+        badge_html = ""
+        if source:
+            badge_html = (
+                f"<span style='display:inline-block;background:#eef2ff;color:{_INDIGO};font-size:10px;"
+                "font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:3px 8px;"
+                f"border-radius:999px;'>{html.escape(source)}</span>"
+            )
+        date_html = (
+            f"<span style='color:{_FAINT};font-size:11px;'>{html.escape(posted)}</span>" if posted else ""
         )
+        meta_row = ""
+        if badge_html or date_html:
+            sep = (
+                f"<span style='color:{_FAINT};font-size:11px;margin:0 6px;'>&middot;</span>"
+                if badge_html and date_html
+                else ""
+            )
+            meta_row = f"<div style='margin:10px 0 0;'>{badge_html}{sep}{date_html}</div>"
+
         return (
-            "<div style='border:1px solid #e2e8f0;border-radius:12px;padding:14px;background:#ffffff;height:100%;'>"
-            f"<div style='font-weight:700;font-size:15px;margin:0 0 4px;color:#0f172a;line-height:1.3;'>{title}</div>"
-            f"<div style='color:#475569;font-size:13px;'>{company}</div>"
-            f"<div style='color:#94a3b8;font-size:12px;margin-top:2px;'>{job_loc}</div>"
-            f"{desc_html}"
+            f"<div style='border:1px solid {_BORDER};border-radius:14px;padding:16px;background:#ffffff;"
+            "height:100%;'>"
+            f"<div style='font-weight:700;font-size:15px;margin:0 0 5px;color:{_INK};line-height:1.3;'>{title}</div>"
+            f"<div style='color:{_INK_SOFT};font-size:13px;font-weight:600;'>{company}</div>"
+            f"<div style='color:{_FAINT};font-size:12px;margin-top:2px;'>{job_loc}</div>"
+            f"{meta_row}"
             f"<p style='margin:12px 0 0;'><a href='{apply_url}' "
-            "style='display:inline-block;color:#4f46e5;font-weight:700;text-decoration:none;font-size:13px;'>"
-            "Apply &rarr;</a></p></div>"
+            f"style='display:inline-block;background:#eef2ff;color:{_INDIGO};font-weight:700;"
+            "text-decoration:none;font-size:13px;padding:8px 16px;border-radius:8px;'>Apply &rarr;</a></p>"
+            "</div>"
         )
 
     rows: list[str] = []
