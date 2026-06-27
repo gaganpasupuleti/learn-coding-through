@@ -5,15 +5,19 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { Textarea } from '@/components/ui/textarea'
 import {
   getJobSpyAdminKey,
   jobspyApi,
   setJobSpyAdminKey,
+  type EmailDigestBody,
   type JobStatsResponse,
   type RefreshResponse,
   type EmailPreviewResponse,
   type SendDigestResponse,
 } from '@/lib/jobspy-api'
+
+const EMAIL_MAX_JOBS_OPTIONS = [5, 10, 20, 30, 50] as const
 
 const SOURCE_OPTIONS: { id: string; label: string; optional?: boolean }[] = [
   { id: 'indeed', label: 'Indeed' },
@@ -68,6 +72,9 @@ export function JobSpyOpsView() {
   const [showKeyForm, setShowKeyForm] = useState(!getJobSpyAdminKey())
   const [cleanupLoading, setCleanupLoading] = useState(false)
   const [emailSearchTerm, setEmailSearchTerm] = useState('python developer')
+  const [emailSubject, setEmailSubject] = useState('')
+  const [emailIntro, setEmailIntro] = useState('')
+  const [emailMaxJobs, setEmailMaxJobs] = useState<number>(20)
   const [testEmail, setTestEmail] = useState('')
   const [emailPreview, setEmailPreview] = useState<EmailPreviewResponse | null>(null)
   const [emailResult, setEmailResult] = useState<SendDigestResponse | null>(null)
@@ -178,6 +185,15 @@ export function JobSpyOpsView() {
     }
   }
 
+  const buildEmailBody = (): EmailDigestBody => ({
+    jobIds: [],
+    searchTerm: emailSearchTerm.trim() || 'python developer',
+    location: 'India',
+    subjectOverride: emailSubject.trim() || undefined,
+    introMessage: emailIntro.trim() || undefined,
+    maxJobs: emailMaxJobs,
+  })
+
   const runEmailPreview = async () => {
     const key = getJobSpyAdminKey()
     if (!key) {
@@ -188,10 +204,7 @@ export function JobSpyOpsView() {
     setEmailLoading('preview')
     setEmailResult(null)
     try {
-      const res = await jobspyApi.emailPreview(
-        { jobIds: [], searchTerm: emailSearchTerm.trim() || 'python developer', location: 'India' },
-        key,
-      )
+      const res = await jobspyApi.emailPreview(buildEmailBody(), key)
       setEmailPreview(res)
       toast.success(`Preview ready — ${res.jobCount} job(s)`)
     } catch (e) {
@@ -212,7 +225,7 @@ export function JobSpyOpsView() {
     setEmailResult(null)
     try {
       const res = await jobspyApi.sendDigest(
-        { mode: 'test', testEmail: testEmail.trim() || undefined, jobIds: [] },
+        { ...buildEmailBody(), mode: 'test', testEmail: testEmail.trim() || undefined },
         key,
       )
       setEmailResult(res)
@@ -234,37 +247,11 @@ export function JobSpyOpsView() {
     setEmailLoading('dry_run')
     setEmailResult(null)
     try {
-      const res = await jobspyApi.sendDigest({ mode: 'dry_run', jobIds: [] }, key)
+      const res = await jobspyApi.sendDigest({ ...buildEmailBody(), mode: 'dry_run' }, key)
       setEmailResult(res)
       toast.success(`Dry run — ${res.recipientCount ?? 0} student(s), ${res.sentCount} sent`)
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Dry run failed')
-    } finally {
-      setEmailLoading(null)
-    }
-  }
-
-  const tryLiveSend = async () => {
-    const key = getJobSpyAdminKey()
-    if (!key) return
-    setEmailLoading('live')
-    setEmailResult(null)
-    try {
-      const res = await jobspyApi.sendDigest({ mode: 'live', jobIds: [] }, key)
-      setEmailResult(res)
-      toast.success(res.message)
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Live send blocked'
-      setEmailResult({
-        sentCount: 0,
-        failedCount: 0,
-        failedEmails: [],
-        mode: 'live',
-        message: msg,
-        recipientCount: null,
-        jobCount: emailPreview?.jobCount ?? null,
-      })
-      toast.error(msg)
     } finally {
       setEmailLoading(null)
     }
@@ -536,34 +523,74 @@ export function JobSpyOpsView() {
           </section>
         )}
 
-        {/* Email Station (test / dry-run only — live blocked until JOB_MAIL_ENABLED=true) */}
+        {/* Email Station — client-ready digest preview & safe test send */}
         <section className="rounded-2xl border border-indigo-200 bg-indigo-50/40 p-5 shadow-sm space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <Mail className="h-5 w-5 text-indigo-700" />
             <h3 className="font-semibold text-indigo-950">Email Station</h3>
-            <Badge variant="secondary" className="text-[10px]">JOB_MAIL_ENABLED=false → live blocked</Badge>
+            <Badge variant="secondary" className="text-[10px]">JOB_MAIL_ENABLED=false</Badge>
           </div>
           <p className="text-xs text-indigo-900/80">
-            Preview uses latest active jobs. Test mode sends only to the test recipient. Dry run counts registered students without sending.
+            Compose a client-ready digest with editable subject and intro. Preview sends nothing. Test mode sends only to the test recipient.
           </p>
-          <div className="grid gap-4 sm:grid-cols-2 max-w-3xl">
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 flex items-start gap-2">
+            <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5" />
+            <span>
+              Live send to all registered students is <strong>disabled</strong> until{' '}
+              <code className="text-[10px]">JOB_MAIL_ENABLED=true</code> is explicitly approved in production.
+            </span>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 max-w-4xl">
             <div className="space-y-1">
-              <Label htmlFor="email-search-term" className="text-xs">Digest search label</Label>
+              <Label htmlFor="email-subject" className="text-xs">Subject (optional override)</Label>
               <Input
-                id="email-search-term"
+                id="email-subject"
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+                placeholder="Auto-generated if empty"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="email-topic" className="text-xs">Keyword / topic</Label>
+              <Input
+                id="email-topic"
                 value={emailSearchTerm}
                 onChange={(e) => setEmailSearchTerm(e.target.value)}
                 placeholder="python developer"
               />
             </div>
+            <div className="space-y-1 sm:col-span-2">
+              <Label htmlFor="email-intro" className="text-xs">Intro message (plain text)</Label>
+              <Textarea
+                id="email-intro"
+                value={emailIntro}
+                onChange={(e) => setEmailIntro(e.target.value)}
+                placeholder="Short note for students — no HTML"
+                rows={3}
+                className="resize-y text-sm"
+              />
+            </div>
             <div className="space-y-1">
-              <Label htmlFor="test-email" className="text-xs">Test recipient (or JOB_MAIL_TEST_RECIPIENT)</Label>
+              <Label htmlFor="email-max-jobs" className="text-xs">Max jobs in digest</Label>
+              <select
+                id="email-max-jobs"
+                className="flex h-9 w-full rounded-md border border-input bg-white px-3 text-sm"
+                value={emailMaxJobs}
+                onChange={(e) => setEmailMaxJobs(Number(e.target.value))}
+              >
+                {EMAIL_MAX_JOBS_OPTIONS.map((n) => (
+                  <option key={n} value={n}>{n} roles</option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="test-email" className="text-xs">Test recipient</Label>
               <Input
                 id="test-email"
                 type="email"
                 value={testEmail}
                 onChange={(e) => setTestEmail(e.target.value)}
-                placeholder="admin@example.com"
+                placeholder="Or JOB_MAIL_TEST_RECIPIENT on server"
               />
             </div>
           </div>
@@ -580,19 +607,50 @@ export function JobSpyOpsView() {
               {emailLoading === 'dry_run' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Dry run (students)
             </Button>
-            <Button type="button" variant="destructive" size="sm" disabled={!!emailLoading} onClick={() => void tryLiveSend()}>
-              {emailLoading === 'live' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Try live send
+            <Button type="button" variant="outline" size="sm" disabled title="Live student send disabled (JOB_MAIL_ENABLED=false)">
+              Live send — blocked
             </Button>
           </div>
           {emailPreview && (
-            <div className="rounded-xl border border-indigo-100 bg-white p-4 text-sm space-y-2">
+            <div className="rounded-xl border border-indigo-100 bg-white p-4 text-sm space-y-3">
               <p><span className="font-medium text-slate-700">Subject:</span> {emailPreview.subject}</p>
               <p className="text-xs text-slate-500">Jobs in digest: {emailPreview.jobCount}</p>
+              {emailPreview.summary && (
+                <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                  <div className="rounded-lg bg-indigo-50 p-2">
+                    <div className="font-bold text-indigo-900">{emailPreview.summary.totalActiveJobs}</div>
+                    <div className="text-indigo-600">Active</div>
+                  </div>
+                  <div className="rounded-lg bg-emerald-50 p-2">
+                    <div className="font-bold text-emerald-900">{emailPreview.summary.selectedJobsCount}</div>
+                    <div className="text-emerald-600">Selected</div>
+                  </div>
+                  <div className="rounded-lg bg-orange-50 p-2">
+                    <div className="font-bold text-orange-900">{emailPreview.summary.recentJobsCount}</div>
+                    <div className="text-orange-600">New (7d)</div>
+                  </div>
+                </div>
+              )}
+              {emailPreview.summary && (
+                <div className="text-xs text-slate-600 space-y-1 border-t pt-2">
+                  {emailPreview.summary.topCompanies.length > 0 && (
+                    <p><span className="font-medium">Top companies:</span> {emailPreview.summary.topCompanies.join(', ')}</p>
+                  )}
+                  {emailPreview.summary.topLocations.length > 0 && (
+                    <p><span className="font-medium">Locations:</span> {emailPreview.summary.topLocations.join(', ')}</p>
+                  )}
+                  {Object.keys(emailPreview.summary.sourceSplit).length > 0 && (
+                    <p>
+                      <span className="font-medium">Sources:</span>{' '}
+                      {Object.entries(emailPreview.summary.sourceSplit).map(([k, v]) => `${k}: ${v}`).join(', ')}
+                    </p>
+                  )}
+                </div>
+              )}
               <details>
                 <summary className="cursor-pointer text-xs font-medium text-indigo-800">HTML preview</summary>
                 <div
-                  className="mt-2 max-h-48 overflow-auto rounded border border-slate-100 p-2 text-xs"
+                  className="mt-2 max-h-64 overflow-auto rounded border border-slate-100 p-2 text-xs bg-slate-50"
                   dangerouslySetInnerHTML={{ __html: emailPreview.html }}
                 />
               </details>

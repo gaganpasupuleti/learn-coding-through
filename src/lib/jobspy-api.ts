@@ -342,11 +342,33 @@ export interface CleanupLinksResponse {
   scrapeRunId?: number
 }
 
+export interface DigestSummary {
+  totalActiveJobs: number
+  selectedJobsCount: number
+  recentJobsCount: number
+  topRoles: string[]
+  topCompanies: string[]
+  topLocations: string[]
+  sourceSplit: Record<string, number>
+}
+
+export interface EmailDigestBody {
+  jobIds: string[]
+  searchTerm: string
+  location: string
+  subjectOverride?: string | null
+  introMessage?: string | null
+  maxJobs?: number
+  ctaLabel?: string | null
+  ctaUrl?: string | null
+}
+
 export interface EmailPreviewResponse {
   subject: string
   html: string
   text: string
   jobCount: number
+  summary: DigestSummary
 }
 
 export interface SendDigestResponse {
@@ -516,7 +538,7 @@ export const jobspyApi = {
       headers: adminHeaders(adminKey),
     }),
 
-  emailPreview: (body: { jobIds: string[]; searchTerm: string; location: string }, adminKey: string) =>
+  emailPreview: (body: EmailDigestBody, adminKey: string) =>
     jobspyRequest<EmailPreviewResponse>('/api/admin/jobs/email-preview', {
       method: 'POST',
       headers: adminHeaders(adminKey),
@@ -524,7 +546,7 @@ export const jobspyApi = {
     }),
 
   sendDigest: (
-    body: { mode: 'test' | 'dry_run' | 'live'; testEmail?: string; jobIds: string[] },
+    body: EmailDigestBody & { mode: 'test' | 'dry_run' | 'live'; testEmail?: string },
     adminKey: string,
   ) =>
     jobspyRequest<SendDigestResponse>('/api/admin/jobs/send-digest', {
