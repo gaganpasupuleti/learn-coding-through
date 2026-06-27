@@ -336,7 +336,7 @@ def admin_email_preview(
         search_term=payload.searchTerm,
         location=FIXED_JOB_LOCATION,
     )
-    return EmailPreviewResponse(subject=subject, html=html_body, text=text_body)
+    return EmailPreviewResponse(subject=subject, html=html_body, text=text_body, jobCount=len(jobs))
 
 
 @admin_router.post("/send-digest", response_model=SendDigestResponse)
@@ -346,10 +346,12 @@ def admin_send_digest(
     _admin: User | None = Depends(require_jobs_admin),
 ):
     mode = (payload.mode or "test").strip().lower()
-    if mode != "test" and not settings.job_mail_enabled:
+    if mode not in {"test", "dry_run", "live"}:
+        raise HTTPException(status_code=400, detail="mode must be test, dry_run, or live")
+    if mode == "live" and not settings.job_mail_enabled:
         raise HTTPException(
             status_code=403,
-            detail="Real student digests are disabled. Set JOB_MAIL_ENABLED=true to allow.",
+            detail="Live student digests are disabled. Set JOB_MAIL_ENABLED=true to allow.",
         )
 
     jobs = _load_jobs_for_digest(db, payload.jobIds)
@@ -357,6 +359,7 @@ def admin_send_digest(
         raise HTTPException(status_code=400, detail="No jobs available for digest")
 
     subject, html_body, text_body = build_digest(jobs)
+    job_count = len(jobs)
 
     if mode == "test":
         recipient = (payload.testEmail or settings.job_mail_test_recipient or "").strip()
@@ -377,13 +380,32 @@ def admin_send_digest(
             failedEmails=failed,
             mode="test",
             message=f"Test digest sent to {recipient}" if sent else "Test send failed",
+            recipientCount=1,
+            jobCount=job_count,
+        )
+
+    if mode == "dry_run":
+        recipients = _student_recipient_emails(db)
+        cap = settings.job_mail_max_recipients_per_run
+        capped = recipients[:cap]
+        return SendDigestResponse(
+            sentCount=0,
+            failedCount=0,
+            failedEmails=[],
+            mode="dry_run",
+            message=(
+                f"Dry run: {len(capped)} registered student(s) would receive digest "
+                f"({len(recipients)} unique emails in roster; cap {cap}). No emails sent."
+            ),
+            recipientCount=len(capped),
+            jobCount=job_count,
         )
 
     recipients = _student_recipient_emails(db)
     if not recipients:
         raise HTTPException(
             status_code=400,
-            detail="No student emails in database. Test mode only until student roster is available.",
+            detail="No student emails in database. Use test or dry_run mode until student roster is available.",
         )
     cap = settings.job_mail_max_recipients_per_run
     recipients = recipients[:cap]
@@ -402,6 +424,8 @@ def admin_send_digest(
         failedEmails=failed,
         mode="live",
         message=f"Digest sent to {sent} of {len(recipients)} students",
+        recipientCount=len(recipients),
+        jobCount=job_count,
     )
 
 
@@ -426,4 +450,15 @@ def _student_recipient_emails(db: Session) -> list[str]:
         .order_by(User.id.asc())
         .all()
     )
-    return [r[0] for r in rows if r[0]]
+    seen: set[str] = set()
+    unique: list[str] = []
+    for row in rows:
+        raw = (row[0] or "").strip()
+        if not raw:
+            continue
+        key = raw.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(raw)
+    return unique

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ExternalLink, Loader2, RefreshCw, ShieldAlert } from 'lucide-react'
+import { ExternalLink, Loader2, Mail, RefreshCw, ShieldAlert } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,6 +11,8 @@ import {
   setJobSpyAdminKey,
   type JobStatsResponse,
   type RefreshResponse,
+  type EmailPreviewResponse,
+  type SendDigestResponse,
 } from '@/lib/jobspy-api'
 
 const SOURCE_OPTIONS: { id: string; label: string; optional?: boolean }[] = [
@@ -65,6 +67,11 @@ export function JobSpyOpsView() {
   const [adminKeyInput, setAdminKeyInput] = useState(() => getJobSpyAdminKey())
   const [showKeyForm, setShowKeyForm] = useState(!getJobSpyAdminKey())
   const [cleanupLoading, setCleanupLoading] = useState(false)
+  const [emailSearchTerm, setEmailSearchTerm] = useState('python developer')
+  const [testEmail, setTestEmail] = useState('')
+  const [emailPreview, setEmailPreview] = useState<EmailPreviewResponse | null>(null)
+  const [emailResult, setEmailResult] = useState<SendDigestResponse | null>(null)
+  const [emailLoading, setEmailLoading] = useState<string | null>(null)
 
   const loadStats = useCallback(async () => {
     const key = getJobSpyAdminKey()
@@ -168,6 +175,98 @@ export function JobSpyOpsView() {
       toast.error(e instanceof Error ? e.message : 'Cleanup failed')
     } finally {
       setCleanupLoading(false)
+    }
+  }
+
+  const runEmailPreview = async () => {
+    const key = getJobSpyAdminKey()
+    if (!key) {
+      setShowKeyForm(true)
+      toast.error('Save admin key first')
+      return
+    }
+    setEmailLoading('preview')
+    setEmailResult(null)
+    try {
+      const res = await jobspyApi.emailPreview(
+        { jobIds: [], searchTerm: emailSearchTerm.trim() || 'python developer', location: 'India' },
+        key,
+      )
+      setEmailPreview(res)
+      toast.success(`Preview ready — ${res.jobCount} job(s)`)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Preview failed')
+    } finally {
+      setEmailLoading(null)
+    }
+  }
+
+  const runTestSend = async () => {
+    const key = getJobSpyAdminKey()
+    if (!key) {
+      setShowKeyForm(true)
+      toast.error('Save admin key first')
+      return
+    }
+    setEmailLoading('test')
+    setEmailResult(null)
+    try {
+      const res = await jobspyApi.sendDigest(
+        { mode: 'test', testEmail: testEmail.trim() || undefined, jobIds: [] },
+        key,
+      )
+      setEmailResult(res)
+      toast.success(res.message)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Test send failed')
+    } finally {
+      setEmailLoading(null)
+    }
+  }
+
+  const runDryRun = async () => {
+    const key = getJobSpyAdminKey()
+    if (!key) {
+      setShowKeyForm(true)
+      toast.error('Save admin key first')
+      return
+    }
+    setEmailLoading('dry_run')
+    setEmailResult(null)
+    try {
+      const res = await jobspyApi.sendDigest({ mode: 'dry_run', jobIds: [] }, key)
+      setEmailResult(res)
+      toast.success(`Dry run — ${res.recipientCount ?? 0} student(s), ${res.sentCount} sent`)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Dry run failed')
+    } finally {
+      setEmailLoading(null)
+    }
+  }
+
+  const tryLiveSend = async () => {
+    const key = getJobSpyAdminKey()
+    if (!key) return
+    setEmailLoading('live')
+    setEmailResult(null)
+    try {
+      const res = await jobspyApi.sendDigest({ mode: 'live', jobIds: [] }, key)
+      setEmailResult(res)
+      toast.success(res.message)
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Live send blocked'
+      setEmailResult({
+        sentCount: 0,
+        failedCount: 0,
+        failedEmails: [],
+        mode: 'live',
+        message: msg,
+        recipientCount: null,
+        jobCount: emailPreview?.jobCount ?? null,
+      })
+      toast.error(msg)
+    } finally {
+      setEmailLoading(null)
     }
   }
 
@@ -436,6 +535,79 @@ export function JobSpyOpsView() {
             </table>
           </section>
         )}
+
+        {/* Email Station (test / dry-run only — live blocked until JOB_MAIL_ENABLED=true) */}
+        <section className="rounded-2xl border border-indigo-200 bg-indigo-50/40 p-5 shadow-sm space-y-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <Mail className="h-5 w-5 text-indigo-700" />
+            <h3 className="font-semibold text-indigo-950">Email Station</h3>
+            <Badge variant="secondary" className="text-[10px]">JOB_MAIL_ENABLED=false → live blocked</Badge>
+          </div>
+          <p className="text-xs text-indigo-900/80">
+            Preview uses latest active jobs. Test mode sends only to the test recipient. Dry run counts registered students without sending.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2 max-w-3xl">
+            <div className="space-y-1">
+              <Label htmlFor="email-search-term" className="text-xs">Digest search label</Label>
+              <Input
+                id="email-search-term"
+                value={emailSearchTerm}
+                onChange={(e) => setEmailSearchTerm(e.target.value)}
+                placeholder="python developer"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="test-email" className="text-xs">Test recipient (or JOB_MAIL_TEST_RECIPIENT)</Label>
+              <Input
+                id="test-email"
+                type="email"
+                value={testEmail}
+                onChange={(e) => setTestEmail(e.target.value)}
+                placeholder="admin@example.com"
+              />
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" size="sm" disabled={!!emailLoading} onClick={() => void runEmailPreview()}>
+              {emailLoading === 'preview' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Preview digest
+            </Button>
+            <Button type="button" size="sm" disabled={!!emailLoading} onClick={() => void runTestSend()}>
+              {emailLoading === 'test' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Send test email
+            </Button>
+            <Button type="button" variant="secondary" size="sm" disabled={!!emailLoading} onClick={() => void runDryRun()}>
+              {emailLoading === 'dry_run' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Dry run (students)
+            </Button>
+            <Button type="button" variant="destructive" size="sm" disabled={!!emailLoading} onClick={() => void tryLiveSend()}>
+              {emailLoading === 'live' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Try live send
+            </Button>
+          </div>
+          {emailPreview && (
+            <div className="rounded-xl border border-indigo-100 bg-white p-4 text-sm space-y-2">
+              <p><span className="font-medium text-slate-700">Subject:</span> {emailPreview.subject}</p>
+              <p className="text-xs text-slate-500">Jobs in digest: {emailPreview.jobCount}</p>
+              <details>
+                <summary className="cursor-pointer text-xs font-medium text-indigo-800">HTML preview</summary>
+                <div
+                  className="mt-2 max-h-48 overflow-auto rounded border border-slate-100 p-2 text-xs"
+                  dangerouslySetInnerHTML={{ __html: emailPreview.html }}
+                />
+              </details>
+            </div>
+          )}
+          {emailResult && (
+            <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm space-y-1">
+              <p><span className="font-medium">Mode:</span> {emailResult.mode}</p>
+              <p><span className="font-medium">Message:</span> {emailResult.message}</p>
+              {emailResult.jobCount != null && <p>Jobs: {emailResult.jobCount}</p>}
+              {emailResult.recipientCount != null && <p>Recipients: {emailResult.recipientCount}</p>}
+              <p>Sent: {emailResult.sentCount} · Failed: {emailResult.failedCount}</p>
+            </div>
+          )}
+        </section>
 
         {/* Advanced collapsed */}
         <section className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 p-4">

@@ -346,6 +346,7 @@ export interface EmailPreviewResponse {
   subject: string
   html: string
   text: string
+  jobCount: number
 }
 
 export interface SendDigestResponse {
@@ -354,6 +355,8 @@ export interface SendDigestResponse {
   failedEmails: string[]
   mode: string
   message: string
+  recipientCount?: number | null
+  jobCount?: number | null
 }
 
 function mapApiJob(job: NormalizedJobApi): JobSpyJob {
@@ -521,7 +524,7 @@ export const jobspyApi = {
     }),
 
   sendDigest: (
-    body: { mode: 'test' | 'live'; testEmail?: string; jobIds: string[] },
+    body: { mode: 'test' | 'dry_run' | 'live'; testEmail?: string; jobIds: string[] },
     adminKey: string,
   ) =>
     jobspyRequest<SendDigestResponse>('/api/admin/jobs/send-digest', {
