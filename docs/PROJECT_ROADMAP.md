@@ -1,7 +1,7 @@
 # Code Quest — Project Roadmap (Live)
 
 **Last updated:** 2026-06-27  
-**Branch:** `phase-25a-project-roadmap-live-tracker`  
+**Branch:** `phase-24d-roadmap-status-update`  
 **Purpose:** Single source of truth for Cursor sessions, ChatGPT project chats, and human reviewers. Update this file at the end of every phase branch.
 
 ---
@@ -20,8 +20,8 @@
 | **Frontend shell** | Redesign planned | Master plan governed by [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md). |
 | **Library module** | Not started | Backlog in [MODULE_BACKLOG.md](./MODULE_BACKLOG.md). |
 | **Aptitude module** | Not started | Backlog in [MODULE_BACKLOG.md](./MODULE_BACKLOG.md). |
-| **Sandbox Smoke CI** | **RED** | Java/JDK + `RLIMIT_AS` on Linux runners; fix on branch `phase-24d-ci-sandbox-smoke-stabilization` (not merged). |
-| **This tracker** | In progress | Phase 25A — docs only, no app code. |
+| **Sandbox Smoke CI** | **Green / resolved** | Phase 24D merged (PR #77). Linux CI run `28291205306` — 13/13 `test_sandbox_smoke.py` pass. |
+| **Live roadmap tracker** | Merged | Phase 25A (PR #79). Phase 24D status update in this PR. |
 
 ---
 
@@ -46,13 +46,13 @@ Only phases with **documented output proof** at time of last update.
 | **24A** | Job ingestion, admin refresh dashboard, student Jobs listing, India profiles | Merged PR #74; `docs/LAUNCH.md` job env matrix; local/Railway refresh + listing smoke |
 | **24B** | Email preview, dry_run (`sentCount=0`), test recipient only, live 403 | Merged PR #75; `tests/test_job_email_flow.py`; HTTP proof in `.run/pr-24b-body.md` |
 | **24C** | Brevo HTTPS email transport for Railway | Merged PR #76; production `proof_prod_brevo_output.txt` — preview 200, dry_run 0 sent, live 403, test `sentCount=1` |
+| **24D** | Sandbox Smoke CI stabilization (Java/JVM under `RLIMIT_AS`) | Merged PR #77 (`e0189c8947f71470b34befabd189af5450cf297b`); GitHub Actions run `28291205306` — 13/13 `test_sandbox_smoke.py` pass on `ubuntu-latest` |
 
 **Explicitly not complete (merged or not):**
 
 | Item | Why not “complete” |
 | --- | --- |
-| **24D** CI Sandbox Smoke | Workflow still red on `main`; branch exists, not merged |
-| **24E** Admin Email Station digest polish | Branch exists, not merged; post-deploy browser smoke unchecked |
+| **24E** Admin Email Station digest polish | Post-deploy browser smoke unchecked; not output-verified in tracker |
 | **Live student digests** | `JOB_MAIL_ENABLED=false`; zero student sends by design |
 
 ### Historical shipped work (pre–Phase 25A tracker)
@@ -65,9 +65,7 @@ SQL workbench, Code Workbench (Python/Java), typing upgrade, Power BI practice g
 
 | Priority | Branch (planned) | Scope |
 | --- | --- | --- |
-| **Now** | `phase-25a-project-roadmap-live-tracker` | Live roadmap + issue tracker docs (this PR) |
-| **Next** | `phase-24d-ci-sandbox-smoke-stabilization` | Fix Sandbox Smoke Java/JDK on GitHub Actions (workflow env only) |
-| **Then** | `phase-24e-admin-email-station-client-ready-digest` | Client-ready digest preview + Email Station controls |
+| **Next** | `phase-24e-admin-email-station-client-ready-digest` | Client-ready digest preview + Email Station controls — post-deploy proof pending |
 | **Planned** | `phase-25b-frontend-redesign-plan` | Master redesign doc + page-by-page rollout order (no feature creep) |
 | **Planned** | `phase-25c-frontend-shell-integration` | Port approved sandbox UI into `StudentShell` (one page at a time) |
 | **Planned** | `phase-26a-library-module-foundation` | Library read-only student surface + content model |
@@ -87,8 +85,8 @@ Active bugs and CI: [LIVE_ISSUE_TRACKER.md](./LIVE_ISSUE_TRACKER.md).
 | --- | --- | --- |
 | Accidental live email send | Student trust / compliance | Keep `JOB_MAIL_ENABLED=false`; test/dry_run only until signed phase; never commit secrets |
 | Frontend redesign scope creep | Delays Library/Aptitude | Locked Projects; page-by-page phases; FRONTEND_REDESIGN_RULES enforcers |
-| CI red blocks merges | Slow delivery | Prioritize 24D; do not silence tests |
-| JVM `RLIMIT_AS` on Linux | Java practice unreliable in prod executor | 24D is CI-only; future executor phase if prod Java fails on Linux |
+| CI red blocks merges | Slow delivery | 24D merged — keep Sandbox Smoke green on every backend PR |
+| JVM `RLIMIT_AS` on Linux | Java practice unreliable in prod executor | 24D fixed JVM subprocess cap; monitor prod Java on Linux if issues recur |
 | Dual frontend (main + kit) | Auth/session drift | Main app = truth; integration phases only |
 | Marking phases “done” without proof | False confidence | Output-based checklist required per phase |
 
@@ -96,15 +94,13 @@ Active bugs and CI: [LIVE_ISSUE_TRACKER.md](./LIVE_ISSUE_TRACKER.md).
 
 ## Next branch order (recommended)
 
-1. **`phase-25a-project-roadmap-live-tracker`** — merge this docs PR  
-2. **`phase-24d-ci-sandbox-smoke-stabilization`** — green Sandbox Smoke on `main`  
-3. **`phase-24e-admin-email-station-client-ready-digest`** — admin digest UX + post-deploy proof  
-4. **`phase-25b-frontend-redesign-plan`** — rollout plan aligned with FRONTEND_REDESIGN_RULES  
-5. **`phase-25c-frontend-shell-integration`** — first production page port (likely Dashboard)  
-6. **`phase-26a-library-module-foundation`**  
-7. **`phase-27a-aptitude-module-foundation`**  
+1. **`phase-24e-admin-email-station-client-ready-digest`** — admin digest UX + post-deploy proof  
+2. **`phase-25b-frontend-redesign-plan`** — rollout plan aligned with FRONTEND_REDESIGN_RULES  
+3. **`phase-25c-frontend-shell-integration`** — first production page port (likely Dashboard)  
+4. **`phase-26a-library-module-foundation`**  
+5. **`phase-27a-aptitude-module-foundation`**  
 
-Do **not** start Library/Aptitude before 25A merges and 24D is green unless explicitly reprioritized in this file.
+Do **not** start Library/Aptitude before 24E post-deploy proof or explicit reprioritization in this file.
 
 ---
 
@@ -141,7 +137,7 @@ Scripts: `backend/scripts/proof_job_refresh.py`, `proof_job_email_flow.py`, `pro
 python -m unittest discover -s backend/tests -p "test_sandbox_smoke.py" -v
 ```
 
-All 13 tests green on `ubuntu-latest` with `JAVA_TOOL_OPTIONS` / `MALLOC_ARENA_MAX` per 24D PR body.
+All 13 tests green on `ubuntu-latest`. Verified: PR #77 merge commit `e0189c8947f71470b34befabd189af5450cf297b`, Actions run `28291205306` (`Ran 13 tests … OK`).
 
 ### Frontend redesign phases
 
