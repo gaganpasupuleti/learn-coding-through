@@ -1,7 +1,7 @@
 # Code Quest — Project Roadmap (Live)
 
 **Last updated:** 2026-06-27  
-**Branch:** `phase-24d-roadmap-status-update`  
+**Branch:** `phase-24e-admin-email-station-client-ready-digest`  
 **Purpose:** Single source of truth for Cursor sessions, ChatGPT project chats, and human reviewers. Update this file at the end of every phase branch.
 
 ---
@@ -20,8 +20,9 @@
 | **Frontend shell** | Redesign planned | Master plan governed by [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md). |
 | **Library module** | Not started | Backlog in [MODULE_BACKLOG.md](./MODULE_BACKLOG.md). |
 | **Aptitude module** | Not started | Backlog in [MODULE_BACKLOG.md](./MODULE_BACKLOG.md). |
+| **Admin Email Station** | Production-verified | Phase 24E merged (PR #78). Client-ready digest preview, summary cards, safe test/dry-run; live blocked. |
 | **Sandbox Smoke CI** | **Green / resolved** | Phase 24D merged (PR #77). Linux CI run `28291205306` — 13/13 `test_sandbox_smoke.py` pass. |
-| **Live roadmap tracker** | Merged | Phase 25A (PR #79). Phase 24D status update in this PR. |
+| **Live roadmap tracker** | Merged | Phase 25A (PR #79). Phase 24D/24E status updates merged. |
 
 ---
 
@@ -47,12 +48,12 @@ Only phases with **documented output proof** at time of last update.
 | **24B** | Email preview, dry_run (`sentCount=0`), test recipient only, live 403 | Merged PR #75; `tests/test_job_email_flow.py`; HTTP proof in `.run/pr-24b-body.md` |
 | **24C** | Brevo HTTPS email transport for Railway | Merged PR #76; production `proof_prod_brevo_output.txt` — preview 200, dry_run 0 sent, live 403, test `sentCount=1` |
 | **24D** | Sandbox Smoke CI stabilization (Java/JVM under `RLIMIT_AS`) | Merged PR #77 (`e0189c8947f71470b34befabd189af5450cf297b`); GitHub Actions run `28291205306` — 13/13 `test_sandbox_smoke.py` pass on `ubuntu-latest` |
+| **24E** | Admin Email Station client-ready digest + controls | Merged PR #78 (`4a18596ec8a847f59168b2effba4fe71d93dd59e`); `proof_prod_24e_output.txt` — preview 200 + summary, dry_run `sentCount=0`, live 403, test `sentCount=1`, student sends **0** |
 
 **Explicitly not complete (merged or not):**
 
 | Item | Why not “complete” |
 | --- | --- |
-| **24E** Admin Email Station digest polish | Post-deploy browser smoke unchecked; not output-verified in tracker |
 | **Live student digests** | `JOB_MAIL_ENABLED=false`; zero student sends by design |
 
 ### Historical shipped work (pre–Phase 25A tracker)
@@ -65,8 +66,7 @@ SQL workbench, Code Workbench (Python/Java), typing upgrade, Power BI practice g
 
 | Priority | Branch (planned) | Scope |
 | --- | --- | --- |
-| **Next** | `phase-24e-admin-email-station-client-ready-digest` | Client-ready digest preview + Email Station controls — post-deploy proof pending |
-| **Planned** | `phase-25b-frontend-redesign-plan` | Master redesign doc + page-by-page rollout order (no feature creep) |
+| **Next** | `phase-25b-frontend-redesign-plan` | Master redesign doc + page-by-page rollout order (no feature creep) |
 | **Planned** | `phase-25c-frontend-shell-integration` | Port approved sandbox UI into `StudentShell` (one page at a time) |
 | **Planned** | `phase-26a-library-module-foundation` | Library read-only student surface + content model |
 | **Planned** | `phase-27a-aptitude-module-foundation` | Aptitude question bank + practice loop MVP |
@@ -94,13 +94,12 @@ Active bugs and CI: [LIVE_ISSUE_TRACKER.md](./LIVE_ISSUE_TRACKER.md).
 
 ## Next branch order (recommended)
 
-1. **`phase-24e-admin-email-station-client-ready-digest`** — admin digest UX + post-deploy proof  
-2. **`phase-25b-frontend-redesign-plan`** — rollout plan aligned with FRONTEND_REDESIGN_RULES  
-3. **`phase-25c-frontend-shell-integration`** — first production page port (likely Dashboard)  
-4. **`phase-26a-library-module-foundation`**  
-5. **`phase-27a-aptitude-module-foundation`**  
+1. **`phase-25b-frontend-redesign-plan`** — rollout plan aligned with FRONTEND_REDESIGN_RULES  
+2. **`phase-25c-frontend-shell-integration`** — first production page port (likely Dashboard)  
+3. **`phase-26a-library-module-foundation`**  
+4. **`phase-27a-aptitude-module-foundation`**  
 
-Do **not** start Library/Aptitude before 24E post-deploy proof or explicit reprioritization in this file.
+Do **not** start Library/Aptitude before explicit reprioritization in this file.
 
 ---
 
@@ -129,7 +128,7 @@ cd backend && python -m unittest discover -s tests -v
 | `send-digest` `test` | `sentCount=1`, only test inbox; **0** student roster sends |
 | Production Brevo | Inbox received; sender = `EMAIL_FROM_ADDRESS` |
 
-Scripts: `backend/scripts/proof_job_refresh.py`, `proof_job_email_flow.py`, `proof_prod_brevo.py`.
+Scripts: `backend/scripts/proof_job_refresh.py`, `proof_job_email_flow.py`, `proof_prod_brevo.py`, `proof_prod_24e.py`.
 
 ### CI (24D)
 

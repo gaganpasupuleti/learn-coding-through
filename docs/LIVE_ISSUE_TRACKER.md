@@ -13,9 +13,9 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 | --- | ---: | ---: | ---: |
 | P0 — blocks release/CI | 0 | 0 | 1 |
 | P1 — user-facing / admin | 0 | 0 | 3 |
-| P2 — polish / debt | 4 | 0 | 0 |
+| P2 — polish / debt | 3 | 0 | 1 |
 
-**P1 verified fixed (Jobs/email family):** 24A ingestion, 24B safety modes, 24C Brevo transport — see proof table below.
+**P1 verified fixed (Jobs/email family):** 24A ingestion, 24B safety modes, 24C Brevo transport, 24E Email Station — see proof table below.
 
 **P0 verified fixed (CI):** ISSUE-001 Sandbox Smoke — Phase 24D merged (PR #77).
 
@@ -31,19 +31,6 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 ---
 
 ## Active issues
-
-### ISSUE-002 — Admin Email Station post-deploy smoke incomplete
-
-| Field | Value |
-| --- | --- |
-| **Severity** | P2 |
-| **Status** | Open |
-| **Branch** | `phase-24e-admin-email-station-client-ready-digest` |
-| **Component** | Admin Job Refresh Dashboard / Email Station UI |
-| **Symptom** | PR checklist items for browser smoke and post-deploy Brevo test unchecked |
-| **Proof required** | Admin UI: preview, summary cards, dry run, test send, live button blocked; production test `sentCount=1` |
-
----
 
 ### ISSUE-003 — Dual frontend auth/session drift
 
@@ -90,6 +77,7 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 | **FIX-24B** | Email preview, dry_run, test-only, live 403 | 24B | PR #75; `.run/pr-24b-body.md` HTTP table; unit tests |
 | **FIX-24C** | Brevo HTTPS transport | 24C | PR #76; `proof_prod_brevo_output.txt` — test delivered, live blocked, 0 student sends |
 | **FIX-24D** | Sandbox Smoke CI (Java/JVM under `RLIMIT_AS`) | 24D | PR #77 merged (`e0189c8947f71470b34befabd189af5450cf297b`); Actions run `28291205306` — 13/13 `test_sandbox_smoke.py` pass on `ubuntu-latest` |
+| **FIX-24E** | Admin Email Station client-ready digest | 24E | PR #78 merged (`4a18596ec8a847f59168b2effba4fe71d93dd59e`); `proof_prod_24e_output.txt` — preview + summary, dry_run 0 sent, live 403, test `sentCount=1`, student sends 0 |
 
 ### ISSUE-001 — Sandbox Smoke CI fails (Java / JDK / RLIMIT_AS) — **VERIFIED FIXED**
 
@@ -103,14 +91,26 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 | **Proof** | GitHub Actions run `28291205306` — `Ran 13 tests in 8.064s` → `OK` on `ubuntu-latest` |
 | **Fix** | Java executor skips `RLIMIT_AS` for JVM subprocesses; workflow `JAVA_TOOL_OPTIONS`/`MALLOC_ARENA_MAX` as CI optimization |
 
+### ISSUE-002 — Admin Email Station post-deploy smoke incomplete — **VERIFIED FIXED**
+
+| Field | Value |
+| --- | --- |
+| **Severity** | P2 (was) |
+| **Status** | **Verified fixed** |
+| **Phase** | 24E |
+| **PR** | #78 merged |
+| **Merge commit** | `4a18596ec8a847f59168b2effba4fe71d93dd59e` |
+| **Proof** | `proof_prod_24e_output.txt` — preview HTTP 200 + summary counts; dry_run `sentCount=0`; live HTTP 403; test `sentCount=1` to test recipient only; `student_emails_sent: 0` |
+| **Unit tests** | `tests.test_job_email_flow` — 20/20 pass |
+| **Admin UI** | Email Station: preview, summary cards, dry run, test send, live button blocked (`JOB_MAIL_ENABLED=false`) |
+
 ---
 
 ## Pending work (not issues — planned phases)
 
 | Item | Tracker |
 | --- | --- |
-| Admin Email Station post-deploy proof | Phase 24E — ISSUE-002 open |
-| Frontend master redesign | [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md) |
+| Frontend master redesign | [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md) — next: `phase-25b-frontend-redesign-plan` |
 | Library module | [MODULE_BACKLOG.md](./MODULE_BACKLOG.md) |
 | Aptitude module | [MODULE_BACKLOG.md](./MODULE_BACKLOG.md) |
 
@@ -128,9 +128,8 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 
 ## Next branch order
 
-1. `phase-24e-admin-email-station-client-ready-digest` — close ISSUE-002  
-2. `phase-25b-frontend-redesign-plan` — address ISSUE-003 strategy  
-3. Module foundations per [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md)  
+1. `phase-25b-frontend-redesign-plan` — address ISSUE-003 strategy  
+2. Module foundations per [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md)  
 
 ---
 
@@ -155,7 +154,7 @@ python -m unittest discover -s backend/tests -p "test_sandbox_smoke.py" -v
 
 ```bash
 cd backend && python -m unittest tests.test_job_email_flow -v
-# Optional production: python scripts/proof_prod_brevo.py (secrets via env only)
+# Optional production: python scripts/proof_prod_24e.py (secrets via env only)
 ```
 
 ### Frontend (ISSUE-002, redesign)
