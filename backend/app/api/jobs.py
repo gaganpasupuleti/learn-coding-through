@@ -6,7 +6,7 @@ import time
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import or_
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_jobs_admin
@@ -440,6 +440,43 @@ def _count_active_jobs(db: Session) -> int:
     )
 
 
+def _count_recent_by_category(db: Session, *, hours: int = 24) -> tuple[int, int]:
+    """Count active internship and fresher jobs opened within the last `hours`.
+
+    Classification uses the ingest profile first, then title/job_type keyword fallbacks.
+    Returns (internships_count, freshers_count).
+    """
+    cutoff = datetime.utcnow() - timedelta(hours=hours)
+    base = db.query(ScrapedJob).filter(
+        ScrapedJob.link_status == "active",
+        ScrapedJob.created_at >= cutoff,
+    )
+
+    title_lower = func.lower(func.coalesce(ScrapedJob.title, ""))
+    type_lower = func.lower(func.coalesce(ScrapedJob.job_type, ""))
+
+    internships = base.filter(
+        or_(
+            ScrapedJob.ingest_profile == "internship_india",
+            title_lower.like("%intern%"),
+            type_lower.like("%intern%"),
+        )
+    ).count()
+
+    freshers = base.filter(
+        or_(
+            ScrapedJob.ingest_profile == "fresher_india",
+            title_lower.like("%fresher%"),
+            title_lower.like("%graduate%"),
+            title_lower.like("%entry level%"),
+            title_lower.like("%entry-level%"),
+            title_lower.like("%trainee%"),
+        )
+    ).count()
+
+    return internships, freshers
+
+
 def _summary_to_schema(summary) -> DigestSummary:
     d = summary.as_dict()
     return DigestSummary(**d)
@@ -447,12 +484,15 @@ def _summary_to_schema(summary) -> DigestSummary:
 
 def _build_digest_content(db: Session, payload: EmailDigestFields):
     jobs = _load_jobs_for_digest(db, payload.jobIds, max_jobs=payload.maxJobs)
+    internships_24h, freshers_24h = _count_recent_by_category(db, hours=24)
     return build_digest(
         jobs,
         search_term=payload.searchTerm,
         location=FIXED_JOB_LOCATION,
         max_jobs=payload.maxJobs,
         total_active_jobs=_count_active_jobs(db),
+        internships_24h=internships_24h,
+        freshers_24h=freshers_24h,
         subject_override=payload.subjectOverride,
         intro_message=payload.introMessage,
         cta_label=payload.ctaLabel,

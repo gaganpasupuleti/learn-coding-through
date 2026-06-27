@@ -346,6 +346,8 @@ export interface DigestSummary {
   totalActiveJobs: number
   selectedJobsCount: number
   recentJobsCount: number
+  internships24h: number
+  freshers24h: number
   topRoles: string[]
   topCompanies: string[]
   topLocations: string[]

@@ -36,7 +36,11 @@ class JobEmailFlowTests(unittest.TestCase):
         summary = data["summary"]
         self.assertIn("totalActiveJobs", summary)
         self.assertIn("selectedJobsCount", summary)
-        self.assertIn("sourceSplit", summary)
+        self.assertIn("recentJobsCount", summary)
+        self.assertIn("internships24h", summary)
+        self.assertIn("freshers24h", summary)
+        self.assertIsInstance(summary["internships24h"], int)
+        self.assertIsInstance(summary["freshers24h"], int)
 
     def test_email_preview_accepts_editable_fields(self) -> None:
         r = self.client.post(
@@ -220,6 +224,81 @@ class DigestTemplateUnitTests(unittest.TestCase):
         self.assertEqual(content.summary.selected_jobs_count, 1)
         self.assertIn("Acme", content.summary.top_companies)
         self.assertIn("Code Quest", content.html)
+
+    def _sample_jobs(self, n: int = 4) -> list[dict]:
+        now = __import__("datetime").datetime.utcnow()
+        return [
+            {
+                "title": f"Backend Engineer {i}",
+                "company": f"Company {i % 2}",
+                "location": "Bengaluru" if i % 2 == 0 else "Pune",
+                "source": "linkedin",
+                "applyUrl": f"https://example.com/{i}",
+                "description": "Build APIs and services.",
+                "createdAt": now,
+            }
+            for i in range(n)
+        ]
+
+    def test_premium_summary_carries_24h_counts(self) -> None:
+        content = build_digest(
+            self._sample_jobs(2),
+            total_active_jobs=200,
+            max_jobs=2,
+            internships_24h=7,
+            freshers_24h=12,
+        )
+        self.assertEqual(content.summary.internships_24h, 7)
+        self.assertEqual(content.summary.freshers_24h, 12)
+        d = content.summary.as_dict()
+        self.assertEqual(d["internships24h"], 7)
+        self.assertEqual(d["freshers24h"], 12)
+
+    def test_premium_template_kpi_and_insights(self) -> None:
+        content = build_digest(
+            self._sample_jobs(4),
+            total_active_jobs=200,
+            max_jobs=4,
+            internships_24h=7,
+            freshers_24h=12,
+        )
+        h = content.html
+        self.assertIn("Active Jobs", h)
+        self.assertIn("In Digest", h)
+        self.assertIn("New This Week", h)
+        self.assertIn("Internships opened", h)
+        self.assertIn("Fresher jobs opened", h)
+        self.assertIn("Top roles", h)
+        self.assertIn("Top companies", h)
+        self.assertIn("Top cities", h)
+        self.assertIn("Featured roles", h)
+
+    def test_premium_template_renames_new_7d(self) -> None:
+        content = build_digest(self._sample_jobs(2), total_active_jobs=10, max_jobs=2)
+        self.assertNotIn("New (7d)", content.html)
+
+    def test_premium_template_hides_sources_block(self) -> None:
+        content = build_digest(self._sample_jobs(3), total_active_jobs=10, max_jobs=3)
+        self.assertNotIn(">Sources<", content.html)
+        self.assertNotIn("Sources</td>", content.html)
+
+    def test_premium_template_two_column_featured(self) -> None:
+        content = build_digest(self._sample_jobs(4), total_active_jobs=10, max_jobs=4)
+        self.assertIn("width:50%", content.html)
+
+    def test_premium_text_fallback_readable(self) -> None:
+        content = build_digest(
+            self._sample_jobs(2),
+            total_active_jobs=50,
+            max_jobs=2,
+            internships_24h=3,
+            freshers_24h=5,
+        )
+        t = content.text
+        self.assertIn("Internships opened (24h): 3", t)
+        self.assertIn("Fresher jobs opened (24h): 5", t)
+        self.assertIn("Featured roles:", t)
+        self.assertNotIn("<", t)
 
 
 class BrevoUnitTests(unittest.TestCase):

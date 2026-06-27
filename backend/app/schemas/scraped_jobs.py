@@ -198,6 +198,8 @@ class DigestSummary(BaseModel):
     totalActiveJobs: int
     selectedJobsCount: int
     recentJobsCount: int
+    internships24h: int = 0
+    freshers24h: int = 0
     topRoles: list[str] = Field(default_factory=list)
     topCompanies: list[str] = Field(default_factory=list)
     topLocations: list[str] = Field(default_factory=list)
