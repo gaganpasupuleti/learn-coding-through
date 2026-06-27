@@ -107,7 +107,11 @@ def execute_java(code: str, timeout: int = 5) -> Dict[str, Any]:
                     ["javac", "-J-Xms32m", "-J-Xmx128m", java_file],
                     timeout=compile_timeout,
                     cwd=temp_dir,
-                    max_memory_mb=384,
+                    # Skip POSIX RLIMIT_AS for the JVM (same reason as Node/V8):
+                    # a JVM reserves far more *virtual* address space than a tight
+                    # cap allows, so javac cannot start under it on Linux. Heap is
+                    # still bounded by -Xmx128m and wall time by the timeout.
+                    max_memory_mb=0,
                 )
             except subprocess.TimeoutExpired:
                 return build_result(
@@ -154,7 +158,10 @@ def execute_java(code: str, timeout: int = 5) -> Dict[str, Any]:
                     ["java", "-Xms32m", "-Xmx128m", class_name],
                     timeout=timeout,
                     cwd=temp_dir,
-                    max_memory_mb=384,
+                    # Skip POSIX RLIMIT_AS for the JVM (same reason as Node/V8):
+                    # virtual address-space reservation exceeds a tight cap. Heap
+                    # stays bounded by -Xmx128m and wall time by the timeout.
+                    max_memory_mb=0,
                 )
             except subprocess.TimeoutExpired:
                 return build_result(
