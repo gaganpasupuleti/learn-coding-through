@@ -125,7 +125,7 @@ export function PlannerCard({
         )}
       </div>
 
-      <CQActionButton variant="ghost" className="mt-auto w-full" onClick={onOpenPlanner}>
+      <CQActionButton variant="ghost" className="mt-3 w-full" onClick={onOpenPlanner}>
         Open full planner
         <ArrowRight className="h-3.5 w-3.5" />
       </CQActionButton>

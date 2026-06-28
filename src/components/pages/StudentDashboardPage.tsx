@@ -20,7 +20,6 @@ import type { AuthUser } from '@/lib/auth'
 import { computeDaysRemaining, computeReadinessBreakdown } from '@/lib/dashboard-derive'
 import {
   getCodePracticeSummary,
-  getMistakesSummary,
   getPracticeStreakSummary,
   getSqlPracticeSummary,
   getTypingPracticeSummary,
@@ -87,7 +86,6 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   const codeSummary = getCodePracticeSummary()
   const typingSummary = getTypingPracticeSummary(typingWpm)
   const streak = getPracticeStreakSummary()
-  const mistakes = getMistakesSummary()
 
   const progressPct = snapshot.careerJourney?.pct ?? 0
   const pathTitle = snapshot.careerJourney?.title ?? 'Choose your career path'
@@ -140,7 +138,6 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
             careerJourney={snapshot.careerJourney}
             stageRows={snapshot.stageRows}
             catalogSteps={snapshot.catalogSteps}
-            mistakes={mistakes}
             loading={snapshot.loading}
             onViewProgress={() => onNavigate('progress')}
           />
@@ -167,7 +164,8 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           </div>
         </div>
 
-        {/* Right: Planner sticks to top, grows naturally */}
+        {/* Right: Planner — sticky so it stays visible as left column scrolls */}
+        <div className="lg:sticky lg:top-3">
         <PlannerCard
           viewMonth={plannerPreview.viewMonth}
           onViewMonthChange={plannerPreview.setViewMonth}
@@ -179,11 +177,12 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           markedDates={plannerPreview.markedDates}
           dayPlan={plannerPreview.dayPlan}
           plannerLoading={plannerPreview.loading}
-          onOpenPlanner={() => {
-            storeSelectedDateForPlanner(plannerPreview.selectedDate)
-            onNavigate('calendar')
-          }}
-        />
+            onOpenPlanner={() => {
+              storeSelectedDateForPlanner(plannerPreview.selectedDate)
+              onNavigate('calendar')
+            }}
+          />
+        </div>
       </div>
     </div>
   )

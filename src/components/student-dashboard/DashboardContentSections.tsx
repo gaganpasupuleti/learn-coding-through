@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import {
-  AlertCircle,
   ArrowRight,
   CalendarClock,
   ChevronDown,
@@ -20,7 +19,7 @@ import {
   toIsoDate,
   type DeadlineItem,
 } from '@/lib/dashboard-derive'
-import type { MistakesSummary, PracticeAreaSummary } from '@/lib/practice-progress-summary'
+import type { PracticeAreaSummary } from '@/lib/practice-progress-summary'
 import { cn } from '@/lib/utils'
 
 import { CQActionButton, CQCard, CQInlineLink, CQProgressBar } from './cq/CQKit'
@@ -135,21 +134,19 @@ function PracticeCard({
 }) {
   return (
     <CQCard interactive className="flex h-full flex-col">
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <h3 className="flex items-center gap-2 text-sm font-semibold text-[#111827]">
-          <span className={cn('h-2 w-2 rounded-full', PRACTICE_DOT[dot])} />
+      <div className="mb-1.5 flex items-center justify-between gap-2">
+        <h3 className="flex items-center gap-1.5 text-[13px] font-semibold text-[#111827]">
+          <span className={cn('h-2 w-2 flex-shrink-0 rounded-full', PRACTICE_DOT[dot])} />
           {summary.label}
         </h3>
         <CQInlineLink onClick={onOpen}>Open</CQInlineLink>
       </div>
-      <div className="flex items-end gap-2">
-        <span className="text-2xl font-bold tabular-nums text-[#111827]">{summary.pct}%</span>
-        <span className="pb-1 text-[12px] text-[#708090]">
-          {summary.completed}/{summary.total}
-        </span>
+      <div className="flex items-baseline gap-1.5">
+        <span className="text-[22px] font-bold leading-none tabular-nums text-[#111827]">{summary.pct}%</span>
+        <span className="text-[11px] text-[#708090]">{summary.completed}/{summary.total}</span>
       </div>
       <CQProgressBar value={summary.pct} className="mt-2" />
-      <p className="mt-2 text-[12px] text-[#708090]">{summary.detail}</p>
+      <p className="mt-1.5 text-[11px] leading-snug text-[#708090]">{summary.detail}</p>
     </CQCard>
   )
 }
@@ -184,14 +181,12 @@ export function ProgressPanel({
   careerJourney,
   stageRows,
   catalogSteps,
-  mistakes,
   loading,
   onViewProgress,
 }: {
   careerJourney: CareerJourneySummary | null
   stageRows: StageProgressRecord[] | null
   catalogSteps: number | null
-  mistakes: MistakesSummary
   loading: boolean
   onViewProgress: () => void
 }) {
@@ -204,83 +199,36 @@ export function ProgressPanel({
     0
 
   return (
-    <div className="grid gap-3 md:grid-cols-2">
-      <CQCard className="flex flex-col">
-        <div className="mb-3 flex items-start justify-between gap-2">
-          <div>
-            <h3 className="text-sm font-semibold text-[#111827]">Overall progress</h3>
-            <p className="text-[12px] text-[#708090]">{stageLabel}</p>
-          </div>
-          <CQInlineLink onClick={onViewProgress}>Details</CQInlineLink>
+    <CQCard className="flex flex-col">
+      <div className="mb-3 flex items-start justify-between gap-2">
+        <div>
+          <h3 className="text-sm font-semibold text-[#111827]">Overall progress</h3>
+          <p className="text-[12px] text-[#708090]">{stageLabel}</p>
         </div>
-        <div className="flex items-end gap-2">
-          <span className="text-[34px] font-bold leading-none tabular-nums text-[#111827]">
-            {loading ? '…' : `${progressPct}%`}
-          </span>
-          <span className="pb-1 text-[12px] text-[#708090]">course complete</span>
+        <CQInlineLink onClick={onViewProgress}>Details</CQInlineLink>
+      </div>
+      <div className="flex items-end gap-2">
+        <span className="text-[34px] font-bold leading-none tabular-nums text-[#111827]">
+          {loading ? '…' : `${progressPct}%`}
+        </span>
+        <span className="pb-1 text-[12px] text-[#708090]">course complete</span>
+      </div>
+      <CQProgressBar value={progressPct} className="mt-3" />
+      <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
+        <div className="rounded-lg border border-[#708090]/15 bg-[#FAF3E0]/60 px-3 py-2">
+          <dt className="text-[12px] text-[#708090]">Modules</dt>
+          <dd className="font-semibold tabular-nums text-[#111827]">
+            {loading ? '—' : `${stagesComplete}/${stageCount || '—'}`}
+          </dd>
         </div>
-        <CQProgressBar value={progressPct} className="mt-3" />
-        <dl className="mt-4 grid grid-cols-2 gap-2.5 text-sm">
-          <div className="rounded-lg border border-[#708090]/15 bg-[#FAF3E0]/60 px-3 py-2">
-            <dt className="text-[12px] text-[#708090]">Modules</dt>
-            <dd className="font-semibold tabular-nums text-[#111827]">
-              {loading ? '—' : `${stagesComplete}/${stageCount || '—'}`}
-            </dd>
-          </div>
-          <div className="rounded-lg border border-[#708090]/15 bg-[#FAF3E0]/60 px-3 py-2">
-            <dt className="text-[12px] text-[#708090]">Catalog steps</dt>
-            <dd className="font-semibold tabular-nums text-[#111827]">
-              {loading ? '—' : catalogSteps ?? 0}
-            </dd>
-          </div>
-        </dl>
-      </CQCard>
-
-      <CQCard className="flex flex-col">
-        <div className="mb-3 flex items-center gap-2">
-          <AlertCircle className="h-4 w-4 text-[#0A1020]/70" strokeWidth={1.75} />
-          <h3 className="text-sm font-semibold text-[#111827]">Mistakes to review</h3>
+        <div className="rounded-lg border border-[#708090]/15 bg-[#FAF3E0]/60 px-3 py-2">
+          <dt className="text-[12px] text-[#708090]">Catalog steps</dt>
+          <dd className="font-semibold tabular-nums text-[#111827]">
+            {loading ? '—' : catalogSteps ?? 0}
+          </dd>
         </div>
-        {mistakes.total === 0 ? (
-          <div className="flex flex-1 flex-col items-start justify-center">
-            <p className="text-sm font-medium text-[#374151]">Nothing to revisit right now</p>
-            <p className="mt-1 text-[12px] text-[#708090]">
-              Saved mistakes from practice will show up here.
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className="flex items-end gap-2">
-              <span className="text-[34px] font-bold leading-none tabular-nums text-[#111827]">
-                {mistakes.total}
-              </span>
-              <span className="pb-1 text-[12px] text-[#708090]">saved locally</span>
-            </div>
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {[
-                { label: 'SQL', n: mistakes.sql },
-                { label: 'Code', n: mistakes.code },
-                { label: 'Typing', n: mistakes.typing },
-              ]
-                .filter((m) => m.n > 0)
-                .map((m) => (
-                  <span
-                    key={m.label}
-                    className="inline-flex items-center gap-1 rounded-full border border-[#708090]/20 bg-[#FAF3E0]/70 px-2.5 py-1 text-[12px] font-medium text-[#374151]"
-                  >
-                    {m.label}
-                    <span className="tabular-nums text-[#708090]">{m.n}</span>
-                  </span>
-                ))}
-            </div>
-          </>
-        )}
-        <CQActionButton variant="ghost" className="mt-auto self-start pt-0" onClick={onViewProgress}>
-          Review in Progress
-          <ArrowRight className="h-3.5 w-3.5" />
-        </CQActionButton>
-      </CQCard>
-    </div>
+      </dl>
+    </CQCard>
   )
 }
 

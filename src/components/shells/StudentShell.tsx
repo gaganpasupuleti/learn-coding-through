@@ -72,9 +72,10 @@ const ICON = 16
 
 const NAV_GROUPS: SidebarGroup[] = [
   {
-    label: 'Menu',
+      label: 'Menu',
     items: [
       { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={ICON} aria-hidden /> },
+      { page: 'jobspy', label: 'Jobs', icon: <Briefcase size={ICON} aria-hidden /> },
       { label: 'Live Classes', icon: <GraduationCap size={ICON} aria-hidden />, soon: true },
       { label: 'Practice Studio', icon: <FlaskConical size={ICON} aria-hidden />, soon: true },
       { label: 'Study Materials', icon: <BookOpen size={ICON} aria-hidden />, soon: true },
@@ -108,7 +109,6 @@ const NAV_GROUPS: SidebarGroup[] = [
     label: 'Career',
     items: [
       { page: 'roadmapper', label: 'Career Map', icon: <Map size={ICON} aria-hidden /> },
-      { page: 'jobspy', label: 'Jobs', icon: <Briefcase size={ICON} aria-hidden /> },
     ],
   },
 ]
@@ -204,7 +204,7 @@ function SidebarBody({
         )}
       </button>
 
-      <nav className="flex-1 overflow-y-auto px-3 pb-3" aria-label="Primary">
+      <nav className="flex-1 overflow-y-auto px-3 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Primary">
         {NAV_GROUPS.map((group) => (
           <div key={group.label} className="mb-1">
             <p className="px-3 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/35">
