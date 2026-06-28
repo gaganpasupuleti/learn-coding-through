@@ -149,7 +149,7 @@ function SidebarLink({
       aria-current={active ? 'page' : undefined}
       className={cn(
         base,
-        active ? 'bg-[#2563EB] text-white shadow-sm' : 'text-white/65 hover:bg-white/10 hover:text-white',
+        active ? 'bg-white/15 text-white' : 'text-white/65 hover:bg-white/10 hover:text-white',
       )}
     >
       {item.icon}
