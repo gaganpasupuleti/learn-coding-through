@@ -12,7 +12,7 @@ import { QuizPage } from '@/components/pages/QuizPage'
 
 import { TypingTrainerPage } from '@/components/pages/TypingTrainerPage'
 
-import { CareerMapperPage } from '@/components/career-mapper'
+import { CareerFlowPage } from '@/components/career-flow/CareerFlowPage'
 
 import { AdminPage } from '@/components/pages/AdminPage'
 
@@ -642,7 +642,7 @@ function App() {
 
 
 
-        {studentPage === 'roadmapper' && <CareerMapperPage />}
+        {studentPage === 'roadmapper' && <CareerFlowPage />}
 
 
 
