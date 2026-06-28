@@ -92,18 +92,9 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   const progressPct = snapshot.careerJourney?.pct ?? 0
   const pathTitle = snapshot.careerJourney?.title ?? 'Choose your career path'
 
-  // Single-screen bento: hero band on top, then a height-filling grid.
-  // Desktop fills the viewport with no page scroll; cards clip rather than
-  // push the page taller. Mobile/tablet collapse to a normal scrolling stack.
-  const cell = 'min-h-0 overflow-hidden [&>*]:h-full'
-
   return (
-    <div
-      className={cn(
-        CQ_PAGE_BG,
-        'flex min-h-full flex-col gap-2.5 p-2.5 md:gap-3 md:p-3 lg:h-full lg:min-h-0',
-      )}
-    >
+    <div className={cn(CQ_PAGE_BG, 'min-h-full p-3 md:p-4')}>
+      {/* Hero */}
       <DashboardTopHeader
         firstName={firstName}
         pathTitle={pathTitle}
@@ -120,19 +111,20 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
         onOpenJobs={() => onNavigate('jobspy')}
       />
 
-      <div className="grid gap-2.5 md:gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-12">
-        {/* Left: 9-col, 4-row bento that fills the available height */}
-        <div className="grid gap-2.5 md:gap-3 lg:col-span-9 lg:min-h-0 lg:grid-cols-9 lg:auto-rows-fr">
-          <div className={cn(cell, 'lg:col-span-4')}>
+      {/* Main grid: left content + right planner */}
+      <div className="mt-2 grid gap-2 lg:grid-cols-[1fr_280px] lg:items-start">
+
+        {/* Left column: stacked rows, tight gaps */}
+        <div className="flex flex-col gap-2">
+
+          {/* Row 1: Today + Practice side-by-side */}
+          <div className="grid gap-2 lg:grid-cols-[1fr_1.4fr] lg:items-stretch">
             <TodayPanel
               sessions={snapshot.upcomingSessions}
               deadlines={snapshot.deadlines}
               loading={snapshot.loading}
               onOpenCalendar={() => onNavigate('calendar')}
             />
-          </div>
-
-          <div className={cn(cell, 'lg:col-span-5')}>
             <PracticeProgressGrid
               sql={sqlSummary}
               code={codeSummary}
@@ -143,22 +135,19 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
             />
           </div>
 
-          <div className={cn(cell, 'lg:col-span-9')}>
-            <ProgressPanel
-              careerJourney={snapshot.careerJourney}
-              stageRows={snapshot.stageRows}
-              catalogSteps={snapshot.catalogSteps}
-              mistakes={mistakes}
-              loading={snapshot.loading}
-              onViewProgress={() => onNavigate('progress')}
-            />
-          </div>
+          {/* Row 2: Progress + Mistakes full width */}
+          <ProgressPanel
+            careerJourney={snapshot.careerJourney}
+            stageRows={snapshot.stageRows}
+            catalogSteps={snapshot.catalogSteps}
+            mistakes={mistakes}
+            loading={snapshot.loading}
+            onViewProgress={() => onNavigate('progress')}
+          />
 
-          <div className={cn(cell, 'lg:col-span-4')}>
+          {/* Row 3: Upcoming + Syllabus side-by-side */}
+          <div className="grid gap-2 lg:grid-cols-2 lg:items-stretch">
             <UpcomingClassesPanel sessions={snapshot.upcomingSessions} loading={snapshot.loading} />
-          </div>
-
-          <div className={cn(cell, 'lg:col-span-5')}>
             <SyllabusPanel
               careerJourney={snapshot.careerJourney}
               stageRows={snapshot.stageRows}
@@ -167,11 +156,9 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
             />
           </div>
 
-          <div className={cn(cell, 'lg:col-span-4')}>
+          {/* Row 4: Deadlines + Career readiness side-by-side */}
+          <div className="grid gap-2 lg:grid-cols-[1.4fr_1fr] lg:items-stretch">
             <DeadlinesPanel deadlines={snapshot.deadlines} loading={snapshot.loading} />
-          </div>
-
-          <div className={cn(cell, 'lg:col-span-5')}>
             <JobReadinessPanel
               readiness={readiness}
               loading={snapshot.loading}
@@ -180,26 +167,23 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           </div>
         </div>
 
-        {/* Right: full-height planner rail */}
-        <div className={cn(cell, 'lg:col-span-3')}>
-          <PlannerCard
-            className="h-full"
-            viewMonth={plannerPreview.viewMonth}
-            onViewMonthChange={plannerPreview.setViewMonth}
-            selectedDate={plannerPreview.selectedDate}
-            onSelectDate={(date) => {
-              storeSelectedDateForPlanner(date)
-              plannerPreview.setSelectedDate(date)
-            }}
-            markedDates={plannerPreview.markedDates}
-            dayPlan={plannerPreview.dayPlan}
-            plannerLoading={plannerPreview.loading}
-            onOpenPlanner={() => {
-              storeSelectedDateForPlanner(plannerPreview.selectedDate)
-              onNavigate('calendar')
-            }}
-          />
-        </div>
+        {/* Right: Planner sticks to top, grows naturally */}
+        <PlannerCard
+          viewMonth={plannerPreview.viewMonth}
+          onViewMonthChange={plannerPreview.setViewMonth}
+          selectedDate={plannerPreview.selectedDate}
+          onSelectDate={(date) => {
+            storeSelectedDateForPlanner(date)
+            plannerPreview.setSelectedDate(date)
+          }}
+          markedDates={plannerPreview.markedDates}
+          dayPlan={plannerPreview.dayPlan}
+          plannerLoading={plannerPreview.loading}
+          onOpenPlanner={() => {
+            storeSelectedDateForPlanner(plannerPreview.selectedDate)
+            onNavigate('calendar')
+          }}
+        />
       </div>
     </div>
   )
