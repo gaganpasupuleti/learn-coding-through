@@ -1,7 +1,7 @@
 # Code Quest — Frontend Redesign Rules
 
-**Last updated:** 2026-06-27  
-**Status:** Planning — no whole-app redesign execution until `phase-25b-frontend-redesign-plan` merges.  
+**Last updated:** 2026-06-28  
+**Status:** Master plan merged (25B); first production port partial (25C PR #85). Continue page-by-page rollout.  
 **Scope:** Student + shared shell surfaces. Admin, practice **engines**, Jobs/email, and Progress Tracker logic are out of scope unless a phase explicitly includes them.
 
 ---
@@ -10,12 +10,13 @@
 
 | Item | State |
 | --- | --- |
-| Master redesign plan | **Not started** (25B) |
+| Master redesign plan | **Merged** — PR #83; [FRONTEND_REDESIGN_MASTER_PLAN.md](./FRONTEND_REDESIGN_MASTER_PLAN.md) |
+| StudentShell + Dashboard | **Partial** — PR #85 (25C first port) |
 | Frontend-kit sandbox | Merged PR #63 — dashboard prototype only; not production shell |
 | UI upgrade (PR #58) | Shipped on `main` — baseline for dashboard/calendar/progress/resume |
 | Projects section | **LOCKED / FROZEN** — no redesign |
 | Progress Tracker page | **Do not redesign** — link/reference only |
-| Taste Skill guardrails | Documented in `docs/repo-reuse-reviews/taste-skill-codequest-application.md` |
+| Jobs/email UI | **Frozen** except admin Email Station (24E–24G complete) |
 
 ---
 
@@ -25,16 +26,17 @@
 2. **Projects: frozen.** No Projects page work in redesign phases until explicitly unlocked in [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md).
 3. **Progress Tracker: frozen.** No layout/data model changes; dashboard may link to it.
 4. **Practice execution: frozen.** `/practice/code`, `/practice/sql`, `/practice/typing`, Power BI **engines** — link only, do not refactor runners/validators.
-5. **Jobs/email UI: frozen** except admin Email Station phases already scoped (24E).
+5. **Jobs/email UI: frozen** — admin Email Station phases complete (24E–24G).
 6. **No new UI dependencies** without approval and `package.json` justification.
 7. **One primary action per screen** — enforcer personas reject duplicate CTAs.
 8. **Completion requires UI proof** — before/after captures + smoke scripts, not subjective “looks better.”
+9. **PR merge safety rule** — [CODE_QUEST_ENGINEERING_RULES.md](./CODE_QUEST_ENGINEERING_RULES.md).
 
 ---
 
 ## Persona stack (use in order)
 
-Each phase PR names which personas were applied. Prompts are **guidance**, not copied AGPL code.
+Each phase PR names which personas were applied.
 
 | Persona | Role | Mandate |
 | --- | --- | --- |
@@ -78,10 +80,12 @@ Each phase PR names which personas were applied. Prompts are **guidance**, not c
 
 | Phase | Scope | Verification |
 | --- | --- | --- |
-| **UI upgrade PR #58** | Dashboard, calendar, progress, resume, shell polish | Merged; `npm run build` — **not re-smoked in Phase 25A cycle** |
-| **Frontend sandbox PR #63** | Kit dashboard prototype | Merged; kit-only — **not production shell** |
+| **UI upgrade PR #58** | Dashboard, calendar, progress, resume, shell polish | Merged; baseline — not re-smoked in 25A cycle |
+| **Frontend sandbox PR #63** | Kit dashboard prototype | Merged; kit-only — not production shell |
+| **25B** | Master redesign plan (docs) | Merged PR #83 |
+| **25C (partial)** | StudentShell chrome + StudentDashboardPage hierarchy | Merged PR #85 |
 
-**Not complete:** whole-app master redesign, shell integration (25C), native kit pages (21B series).
+**Not complete:** remaining master-plan pages (Calendar, Resume, Career Map, Jobs visual, admin shell).
 
 ---
 
@@ -89,8 +93,7 @@ Each phase PR names which personas were applied. Prompts are **guidance**, not c
 
 | Phase | Scope |
 | --- | --- |
-| **25B** | Master redesign plan — page order, mock vs API, integration criteria |
-| **25C** | Port approved kit patterns into `StudentShell` (start with Dashboard) |
+| **25C (continued)** | Next pages per [FRONTEND_REDESIGN_MASTER_PLAN.md](./FRONTEND_REDESIGN_MASTER_PLAN.md) |
 | **21A** | Auth logout + session wiring |
 | **21B** | Native kit pages (classes, materials, assignments prototypes) |
 | **21C** | API wiring for 21B pages |
@@ -117,11 +120,11 @@ Code Quest should read as a **modern student learning SaaS**:
 
 ---
 
-## Page rollout order (recommended — confirm in 25B)
+## Page rollout order (from master plan — 25C continues here)
 
-1. Login + `StudentShell` chrome  
-2. Student Dashboard  
-3. Calendar  
+1. ~~Login + `StudentShell` chrome~~ — partial (PR #85)  
+2. ~~Student Dashboard~~ — partial (PR #85)  
+3. **Calendar** — next recommended  
 4. Resume builder  
 5. Career Map / Flow Path (copy + hierarchy only)  
 6. Jobs listing (visual only — no API changes)  
@@ -140,16 +143,16 @@ Code Quest should read as a **modern student learning SaaS**:
 | Design system sprawl | Design System Enforcer blocks ad-hoc tokens |
 | Accessibility regressions | Accessibility Reviewer sign-off on each page PR |
 | Performance regression on dashboard | Performance Reviewer reviews chart bundles and re-renders |
+| Stale PR merge | PR merge safety rule |
 
 ---
 
 ## Next branch order
 
-1. `phase-25a-project-roadmap-live-tracker` — this rules doc  
-2. `phase-24d-ci-sandbox-smoke-stabilization` — unrelated CI; unblock merges  
-3. `phase-24e-admin-email-station-client-ready-digest` — admin UI only  
-4. **`phase-25b-frontend-redesign-plan`** — page map + persona sign-off  
-5. **`phase-25c-frontend-shell-integration`** — first production port  
+1. **`phase-25a-project-roadmap-live-tracker`** — docs refresh (current)  
+2. **`phase-25c-frontend-shell-integration`** (continued) — Calendar or next master-plan page  
+3. **`phase-26a-library-module-foundation`** — after shell nav slot stable  
+4. **`phase-27a-aptitude-module-foundation`**  
 
 ---
 
@@ -174,26 +177,18 @@ npm run qa:quiz-smoke
 
 - [ ] Desktop screenshot — primary happy path  
 - [ ] Mobile width (~375px) — nav + primary CTA reachable  
-- [ ] Loading state visible (throttle network or skeleton)  
-- [ ] Empty state copy present where lists exist  
-- [ ] Error + retry if API-backed  
+- [ ] Loading / empty / error states where applicable  
 - [ ] Keyboard: Tab reaches primary action; visible focus  
 - [ ] **Projects / Progress / practice engines untouched** (or list exception in PR)  
-
-### Regression guardrails
-
-- Demo mode still respects `demo-limits.ts`  
-- Admin routes still gated  
-- Jobs page still loads listings (no JobSpy contract change)  
+- [ ] **PR merge safety** checklist before merge  
 
 ---
 
 ## References
 
+- [FRONTEND_REDESIGN_MASTER_PLAN.md](./FRONTEND_REDESIGN_MASTER_PLAN.md)  
 - [FRONTEND_SANDBOX_CONTRACT.md](./FRONTEND_SANDBOX_CONTRACT.md)  
-- [docs/repo-reuse-reviews/taste-skill-codequest-application.md](./repo-reuse-reviews/taste-skill-codequest-application.md)  
-- [docs/repo-reuse-reviews/prompt-guideline-map.md](./repo-reuse-reviews/prompt-guideline-map.md)  
-- `.cursor/rules/codequest-ui-redesign.mdc` (when editing student UI globs)  
+- [CODE_QUEST_ENGINEERING_RULES.md](./CODE_QUEST_ENGINEERING_RULES.md)  
 
 ---
 

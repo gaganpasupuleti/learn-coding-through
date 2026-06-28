@@ -1,6 +1,6 @@
 # Code Quest — Module Backlog
 
-**Last updated:** 2026-06-27  
+**Last updated:** 2026-06-28  
 **Status:** Planning only — no Library or Aptitude app code until dedicated phases merge.
 
 ---
@@ -12,7 +12,7 @@
 | **Projects** | **LOCKED / FROZEN** | Existing list + learning view | Unchanged | Unchanged |
 | **Library** | Not started | — | Publish later | — |
 | **Aptitude** | Not started | — | Question bank later | — |
-| **Jobs** | Production-verified (24A–C) | Student Jobs page | Job Refresh + Email Station | `/api/jobs`, `/api/admin/jobs/*` |
+| **Jobs** | Production-verified (24A–24G) | Student Jobs page | Job Refresh + Email Station (Jobs Radar) | `/api/jobs`, `/api/admin/jobs/*` |
 | **Practice (code/SQL/typing/PBI)** | Historical baseline | Shipped | — | Executors + localStorage |
 
 ---
@@ -25,6 +25,7 @@
 4. **Admin publishing** for Library is a **later sub-phase** — student read-only MVP first.
 5. **Aptitude progress** is module-local initially; unified sync deferred to `phase-21d-unified-progress-sync`.
 6. **Verification rule:** modules are “complete” only with API JSON + UI route proof + smoke script output.
+7. **PR merge safety rule** — [CODE_QUEST_ENGINEERING_RULES.md](./CODE_QUEST_ENGINEERING_RULES.md).
 
 ---
 
@@ -44,7 +45,7 @@
 
 ### Vision
 
-Curated learning resources: articles, books, interview tips, roadmaps, cheat sheets — student browse/read; admin publish in a later phase.
+Curated learning resources: **articles**, **books**, **interview tips**, **roadmaps**, **cheat sheets** — student browse/read; **admin publishing later**.
 
 ### Planned content types
 
@@ -74,12 +75,11 @@ Curated learning resources: articles, books, interview tips, roadmaps, cheat she
 
 ### Output-based testing (26A)
 
-- [ ] `GET /library` (or agreed path) renders without blank screen  
+- [ ] `/library` renders without blank screen  
 - [ ] Category filter returns expected count (fixture JSON)  
 - [ ] Detail page loads for one article and one cheat sheet  
 - [ ] Empty category shows empty state copy  
 - [ ] `npm run build` passes  
-- [ ] Demo mode: document limits if any  
 
 ---
 
@@ -87,7 +87,7 @@ Curated learning resources: articles, books, interview tips, roadmaps, cheat she
 
 ### Vision
 
-Quantitative and logical aptitude practice: question bank, topic practice, timed tests, explanations, scoring, mistake review, progress tracking.
+Quantitative and logical aptitude practice: **question bank**, **topic practice**, **timed tests**, **explanations**, **scoring**, **mistake review**, **progress tracking**.
 
 ### Planned capabilities
 
@@ -124,8 +124,7 @@ Quantitative and logical aptitude practice: question bank, topic practice, timed
 - [ ] Start practice → 5 questions navigable  
 - [ ] Submit answer → explanation visible  
 - [ ] Score shown at end (`correct/total`)  
-- [ ] Refresh preserves progress if persistence scoped in 27A  
-- [ ] `npm run qa:practice-smoke` still passes (no practice engine regression)  
+- [ ] `npm run qa:practice-smoke` still passes  
 
 ---
 
@@ -135,7 +134,10 @@ Quantitative and logical aptitude practice: question bank, topic practice, timed
 | --- | --- | --- |
 | **24A** | Jobs | Ingestion + listing — PR #74 |
 | **24B** | Jobs/email safety | PR #75 |
-| **24C** | Jobs/email transport | PR #76 + `proof_prod_brevo_output.txt` |
+| **24C** | Jobs/email transport | PR #76 |
+| **24E** | Jobs/email admin station | PR #78 |
+| **24F** | Jobs/email premium digest | PR #81 |
+| **24G** | Jobs/email Jobs Radar digest | PR #84 |
 
 **Not verified in this tracker:** SQL, Code Workbench, typing, Power BI, Resume, Calendar APIs — treat as baseline only.
 
@@ -168,13 +170,10 @@ flowchart LR
 
 ## Next branch order
 
-1. `phase-25a-project-roadmap-live-tracker` — this backlog doc  
-2. `phase-24d-ci-sandbox-smoke-stabilization`  
-3. `phase-24e-admin-email-station-client-ready-digest`  
-4. `phase-25b-frontend-redesign-plan`  
-5. `phase-25c-frontend-shell-integration` — **before** Library/Aptitude so nav slot exists  
-6. `phase-26a-library-module-foundation`  
-7. `phase-27a-aptitude-module-foundation`  
+1. **`phase-25a-project-roadmap-live-tracker`** — docs refresh (current)  
+2. **`phase-25c-frontend-shell-integration`** (continued) — next master-plan page; nav slot for Library/Aptitude  
+3. **`phase-26a-library-module-foundation`**  
+4. **`phase-27a-aptitude-module-foundation`**  
 
 ---
 
@@ -186,7 +185,6 @@ flowchart LR
 npm run build
 npm run lint
 npm run dev:all
-# Module-specific route manual smoke
 npm run qa:practice-smoke   # ensure practice untouched
 ```
 
@@ -194,15 +192,14 @@ npm run qa:practice-smoke   # ensure practice untouched
 
 ```bash
 cd backend && python -m unittest discover -s tests -v
-# PR must include sample JSON response or OpenAPI diff
 ```
 
 ### Documentation
 
 - Update [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md) status table  
 - Add issues to [LIVE_ISSUE_TRACKER.md](./LIVE_ISSUE_TRACKER.md) if blockers found  
-- Do not mark module “complete” without student route screenshot + API sample  
+- Complete **PR merge safety** checklist before merge  
 
 ---
 
-_Related: [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md) · [LIVE_ISSUE_TRACKER.md](./LIVE_ISSUE_TRACKER.md) · [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md)_
+_Related: [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md) · [LIVE_ISSUE_TRACKER.md](./LIVE_ISSUE_TRACKER.md) · [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md) · [CODE_QUEST_ENGINEERING_RULES.md](./CODE_QUEST_ENGINEERING_RULES.md)_
