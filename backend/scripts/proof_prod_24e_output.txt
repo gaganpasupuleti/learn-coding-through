@@ -1,0 +1,46 @@
+backend: https://learn-coding-through-production.up.railway.app
+auth: JWT admin (admin@example.com)
+
+=== email-preview HTTP 200 (expect 200) ===
+subject: Code Quest — Weekly Job Picks
+jobCount: 10
+--- summary counts ---
+totalActiveJobs: 457
+selectedJobsCount: 10
+recentJobsCount: 10
+topRoles: ['Java Developer', 'Associate', 'Associate Software Engineer', 'Software Engineer Junior', 'Entry Level Software Engineer']
+topCompanies: ['Infosys', 'PwC India', 'Anaplan', 'Gentrack Ltd (Global)', 'Medpace']
+topLocations: ['Pune Division, Maharashtra, India', 'Gurugram, Haryana, India', 'Navi Mumbai, Maharashtra, India', 'Mumbai, Maharashtra, India', 'Chennai, Tamil Nadu, India']
+sourceSplit: {'linkedin': 10}
+
+=== send-digest dry_run HTTP 200 (expect 200, sentCount=0) ===
+{
+  "sentCount": 0,
+  "failedCount": 0,
+  "failedEmails": [],
+  "mode": "dry_run",
+  "message": "Dry run: 50 registered student(s) would receive digest (53 unique emails in roster; cap 50). No emails sent.",
+  "recipientCount": 50,
+  "jobCount": 20
+}
+
+=== send-digest live HTTP 403 (expect 403) ===
+{
+  "detail": "Live student digests are disabled. Set JOB_MAIL_ENABLED=true to allow."
+}
+
+=== send-digest test HTTP 200 (Brevo, server JOB_MAIL_TEST_RECIPIENT) ===
+{
+  "sentCount": 1,
+  "failedCount": 0,
+  "failedEmails": [],
+  "mode": "test",
+  "message": "Test digest sent to gaganpasupuleti@gmail.com",
+  "recipientCount": 1,
+  "jobCount": 20
+}
+test_recipient_used: gaganpasupuleti@gmail.com
+sentCount: 1 failedCount: 0
+
+student_emails_sent: 0 (test mode only; live blocked with JOB_MAIL_ENABLED=false)
+inbox: confirm manually — sender should match EMAIL_FROM_ADDRESS on Railway

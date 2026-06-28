@@ -72,6 +72,9 @@ export function JobSpyJobCard({ job, saved = false, onSelect, onSave, onUnsave }
       <h3 className="text-base font-semibold text-slate-900 line-clamp-2">{job.title}</h3>
       <p className="text-sm text-slate-600 mt-1">{job.company_name || 'Company not listed'}</p>
       <p className="text-xs text-slate-500 mt-1">{location}</p>
+      {job.description && (
+        <p className="text-xs text-slate-500 mt-2 line-clamp-2">{job.description.replace(/\s+/g, ' ').slice(0, 180)}</p>
+      )}
       {skills.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-3">
           {skills.map((skill) => (

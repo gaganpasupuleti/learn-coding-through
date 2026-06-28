@@ -30,6 +30,38 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
+      - name: Warm up Java toolchain
+        # CI-only stabilization. The first javac/java invocation on a fresh
+        # runner pays a cold-start cost (loading the JDK off disk into the page
+        # cache, class verification, etc.). The first timed Java smoke test
+        # (test_java_compile_error_is_structured, timeout=3s) could intermittently
+        # exceed that budget and return error_code "timeout" instead of
+        # "compile_error". Compiling and running a trivial program once here warms
+        # the JDK page cache so the timed tests start hot. No app code or test
+        # logic changes; this only affects CI timing.
+        env:
+          JAVA_TOOL_OPTIONS: "-XX:+UseSerialGC -XX:CompressedClassSpaceSize=24m -XX:ReservedCodeCacheSize=24m -XX:MaxMetaspaceSize=96m -Xss512k"
+        run: |
+          mkdir -p "${RUNNER_TEMP}/jwarm"
+          cat > "${RUNNER_TEMP}/jwarm/Warm.java" <<'EOF'
+          public class Warm {
+              public static void main(String[] args) {
+                  System.out.println("warm");
+              }
+          }
+          EOF
+          javac "${RUNNER_TEMP}/jwarm/Warm.java"
+          java -cp "${RUNNER_TEMP}/jwarm" Warm
+
       - name: Run sandbox smoke tests
+        env:
+          # Secondary CI-only optimization. The primary fix lives in the Java
+          # executor: it no longer applies POSIX RLIMIT_AS to the JVM (a JVM
+          # reserves far more *virtual* address space than a tight cap allows,
+          # so javac/java could not start on Linux). These options additionally
+          # keep the CI JVM lean and fast; heap is still bounded by -Xmx128m and
+          # wall time by the per-test timeout. CI-only; no application behavior.
+          MALLOC_ARENA_MAX: "1"
+          JAVA_TOOL_OPTIONS: "-XX:+UseSerialGC -XX:CompressedClassSpaceSize=24m -XX:ReservedCodeCacheSize=24m -XX:MaxMetaspaceSize=96m -Xss512k"
         run: |
           python -m unittest discover -s backend/tests -p "test_sandbox_smoke.py" -v

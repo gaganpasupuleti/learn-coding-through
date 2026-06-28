@@ -474,6 +474,64 @@ class JobApplication(Base):
     student = relationship("User", foreign_keys=[student_user_id])
 
 
+class ScrapedJob(Base):
+    """Job listings scraped via python-jobspy (distinct from internal job_posts portal)."""
+
+    __tablename__ = "scraped_jobs"
+    __table_args__ = (
+        UniqueConstraint("source", "job_url", name="uq_scraped_jobs_source_url"),
+        Index("ix_scraped_jobs_created", "created_at"),
+        Index("ix_scraped_jobs_source", "source"),
+    )
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    source: Mapped[str] = mapped_column(String(40), nullable=False)
+    title: Mapped[str] = mapped_column(String(300), nullable=False)
+    company: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    location: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    job_type: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    date_posted: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    salary_min: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    salary_max: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    currency: Mapped[str | None] = mapped_column(String(8), nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    job_url: Mapped[str] = mapped_column(String(2048), nullable=False)
+    apply_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    link_status: Mapped[str] = mapped_column(String(32), nullable=False, default="active")
+    link_checked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    ingest_profile: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+
+class JobScrapeRun(Base):
+    """Audit log for admin JobSpy scrape runs."""
+
+    __tablename__ = "job_scrape_runs"
+    __table_args__ = (Index("ix_job_scrape_runs_started", "started_at"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    search_term: Mapped[str] = mapped_column(String(200), nullable=False)
+    location: Mapped[str] = mapped_column(String(120), nullable=False)
+    sources_json: Mapped[str] = mapped_column(Text, nullable=False)
+    results_wanted: Mapped[int] = mapped_column(Integer, nullable=False)
+    hours_old: Mapped[int] = mapped_column(Integer, nullable=False)
+    total_found: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    saved_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    skipped_duplicates: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    error_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    errors_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    source_breakdown_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    run_type: Mapped[str] = mapped_column(String(32), nullable=False, default="manual")
+    profile: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    expired_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    failed_link_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    started_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    triggered_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="failed")
+
+
 # ---------------------------------------------------------------------------
 # Catalog models ΓÇö standalone learning content (quizzes & projects)
 # These are NOT linked to the Stage/Role hierarchy; they are the

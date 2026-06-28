@@ -39,12 +39,12 @@ export function JobSpyJobDetail({
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50" onClick={onClose}>
       <div
-        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-xl"
+        className="flex flex-col w-full max-w-2xl max-h-[90vh] rounded-2xl border border-slate-200 bg-white shadow-xl"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Job details"
       >
-        <div className="sticky top-0 flex items-start justify-between gap-4 border-b border-slate-100 bg-white px-6 py-4">
+        <div className="shrink-0 flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-4">
           <div className="min-w-0">
             <div className="flex flex-wrap gap-2 mb-2">
               <Badge variant="secondary">{jobSpySiteLabel(job.site)}</Badge>
@@ -70,7 +70,8 @@ export function JobSpyJobDetail({
             </button>
           </div>
         </div>
-        <div className="px-6 py-5 space-y-4">
+
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4 min-h-0">
           <div className="flex flex-wrap gap-3 text-sm text-slate-600">
             {salary && <span><strong className="text-slate-800">Salary:</strong> {salary}</span>}
             {job.job_type && <span><strong className="text-slate-800">Type:</strong> {job.job_type}</span>}
@@ -86,9 +87,14 @@ export function JobSpyJobDetail({
               ))}
             </div>
           )}
-          {job.description && (
+          {job.description ? (
             <div className="prose prose-sm max-w-none text-slate-700 whitespace-pre-wrap">{job.description}</div>
+          ) : (
+            <p className="text-sm text-slate-500">No description available.</p>
           )}
+        </div>
+
+        <div className="shrink-0 border-t border-slate-100 bg-white px-6 py-4 rounded-b-2xl">
           {hasApplyUrl ? (
             <Button
               type="button"

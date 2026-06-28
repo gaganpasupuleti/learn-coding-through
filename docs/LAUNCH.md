@@ -22,32 +22,49 @@ CodeQuest is a career-acceleration learning platform: students use projects, pra
 | `VITE_GOOGLE_CLIENT_ID` | Web client ID (optional until Google Sign-In needed) | Same as backend `GOOGLE_OAUTH_CLIENT_ID` |
 | `VITE_API_URL` / `VITE_API_BASE_URL` | **Leave empty** so the browser uses same-origin `/api/v1` and Vite proxies to the API | Full API origin, e.g. `https://api.example.com` |
 | `VITE_API_PROXY_TARGET` | `http://127.0.0.1:8000` (Vite dev **server** proxy only; not used as the browser API base) | N/A |
-| `VITE_JOBS_API_URL` | **Leave empty** — browser calls same-origin `/jobs-api` and Vite proxies to JobSpy on **8001** | Public JobSpy API origin on the **CodeQuest frontend** Railway service, e.g. `https://YOUR-JOBSPY-API-DOMAIN.up.railway.app` (injected into `runtime-config.js` at container start) |
-| `VITE_JOBS_API_PROXY_TARGET` | `http://127.0.0.1:8001` (Vite dev proxy only) | N/A |
-| `VITE_JOBS_ADMIN_API_KEY` | Optional local default for admin **JobSpy Ops** | **Do not set in production frontend.** Enter the admin key in the JobSpy Ops UI (stored in browser `localStorage`) or keep scrape triggers on the JobSpy service only. |
+| `VITE_JOBS_API_URL` | **Leave empty** — jobs use the same Code Quest API at `/api/jobs` (same origin as `/api/v1`) | Optional override if jobs API is on a different host; otherwise leave empty |
+| `VITE_JOBS_ADMIN_API_KEY` | Optional local default for admin **JobSpy Ops** | **Do not set in production frontend.** Enter `ADMIN_JOB_KEY` in JobSpy Ops UI (browser `localStorage`) |
 
-**Google OAuth:** In Google Cloud Console, add **Authorized JavaScript origins** for your frontend origin(s) (e.g. `http://127.0.0.1:5000`, production URL). This app uses **ID token** verification; backend variable name is **`GOOGLE_OAUTH_CLIENT_ID`** (not `GOOGLE_CLIENT_ID`).
+**Job board:** Student **Jobs** page and admin **Job Refresh Dashboard** call the **Code Quest backend** at `/api/jobs` and `/api/admin/jobs/*`. No separate JobSpy service on port 8001 is required. Ingestion uses `python-jobspy` inside the main API with **India-only** location lock.
 
-**Job board (JobSpy):** Student **Job Board** and admin **JobSpy Ops** call a **separate** [JobSpy](https://github.com/gaganpasupuleti/JobSpy) FastAPI backend — not CodeQuest `/api/v1/jobs`. Clone JobSpy alongside this repo, run its API on **8001**, and set JobSpy `CORS_ORIGINS` to include CodeQuest frontend origins (`http://localhost:5000`, `http://127.0.0.1:5000`, production URL). In production, set `VITE_JOBS_API_URL` on the **CodeQuest frontend** Railway service; `frontend-entrypoint.sh` writes it to `runtime-config.js` at container start. Production nginx does **not** proxy `/jobs-api` — the browser must call the JobSpy API URL directly.
+**Job Refresh Dashboard (admin):** `GET /api/admin/jobs/stats` returns DB overview, active/expired counts, source health, recent runs, and latest jobs. Manual refresh: `POST /api/admin/jobs/refresh` with `{ profile, sources, runMode }`. Link cleanup: `POST /api/admin/jobs/cleanup-links`. Profiles: `internship_india`, `fresher_india`, `entry_level_india` (auto cron), `experienced_manual_india` (manual only).
 
-#### Production JobSpy wiring (CodeQuest + JobSpy)
+#### Railway — jobs (backend service)
 
-| Service | Variable | Example / notes |
+| Variable | Required | Notes |
 | --- | --- | --- |
-| CodeQuest frontend | `VITE_JOBS_API_URL` | `https://YOUR-JOBSPY-API-DOMAIN.up.railway.app` — public HTTPS origin only |
-| JobSpy API | `CORS_ORIGINS` | `https://acceptable-clarity-production-5fh7.up.railway.app,http://localhost:5000,http://127.0.0.1:5000` |
-| JobSpy API | `DATABASE_URL` | Railway Postgres reference — **JobSpy service only** |
-| JobSpy API | `ADMIN_API_KEY` | Server-side scrape/admin auth — **never** on CodeQuest frontend |
+| `ADMIN_JOB_KEY` | **Yes in production** | Protects scrape/email admin endpoints via `X-Admin-Key` |
+| `JOBSPY_ENABLED` | No (default `true`) | Set `false` to disable scraping |
+| `JOBSPY_DEFAULT_COUNTRY` / `JOBSPY_DEFAULT_LOCATION` | No | Defaults: `India` |
+| `JOBSPY_HOURS_OLD` | No (default `48`) | **Fallback only** when no prior successful auto refresh exists. Auto cron derives `hours_old` from last successful auto run + 12h overlap. Manual refresh supports 1/3/7/14 day windows via the admin dashboard or `dateRangeDays` on `POST /api/admin/jobs/refresh`. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | For email | Required only when sending digests |
+| `JOB_MAIL_ENABLED` | No (default `false`) | Must be `true` for non-test student sends |
+| `JOB_MAIL_TEST_RECIPIENT` | For cron/test | Test digest recipient |
+| `JOB_MAIL_MAX_RECIPIENTS_PER_RUN` | No (default `50`) | Caps live send batch size |
 
-**Never put on CodeQuest frontend:** `DATABASE_URL`, Postgres password, `ADMIN_API_KEY`, `AUTH_SECRET`, or other JobSpy secrets.
+**Start command:** `bash scripts/railway_start.sh` (unchanged) — runs Alembic then Uvicorn.
 
-### Local two-backend setup
+**Cron (Railway Cron services — create two cron jobs pointing at this backend repo, root `backend/`):**
+
+| Schedule | Command | Purpose |
+| --- | --- | --- |
+| `0 */8 * * *` (every 8 hours) | `python scripts/run_job_auto_refresh.py` | Auto-refresh `internship_india`, `fresher_india`, `entry_level_india` (India only). Saves new jobs, skips duplicates, exits cleanly. |
+| `0 3 * * *` (daily 03:00 UTC) | `python scripts/run_job_link_cleanup.py` | HEAD-check job URLs; mark `expired` / `link_failed` / `unknown` — never deletes rows. |
+
+Local SQLite dev: if Alembic upgrade fails, run `python scripts/ensure_job_schema.py` once.
+
+**Email digests (optional, not enabled by default):** `python scripts/send_job_digest.py` — sends only when `JOB_MAIL_ENABLED=true`.
+
+**Python:** 3.10+ required (`python-jobspy`); Dockerfile uses 3.11-slim.
+
+### Local setup
 
 | Service | Port | Start |
 | --- | --- | --- |
 | CodeQuest API | **8000** | `npm run dev:all` or Uvicorn from `backend/` |
 | CodeQuest frontend | **5000** | Vite (included in `dev:all`) |
-| JobSpy API | **8001** | Clone [JobSpy](https://github.com/gaganpasupuleti/JobSpy), `cd backend`, follow its README (PostgreSQL + `uvicorn` on 8001) |
+
+Jobs scrape/email admin: set `ADMIN_JOB_KEY` in `backend/.env`, enter the same key in **JobSpy Ops** admin UI.
 
 Smoke: `npm run qa:jobspy-smoke` (optional `JOBS_ADMIN_API_KEY` for dashboard stats).
 

@@ -52,6 +52,28 @@ class Settings(BaseSettings):
     )
     cors_origin_regex: str | None = None
 
+    # JobSpy scrape + job mail (Code Quest integrated jobs feature)
+    admin_job_key: str | None = None
+    jobspy_enabled: bool = True
+    jobspy_default_country: str = "India"
+    jobspy_default_location: str = "India"
+    jobspy_results_wanted: int = 50
+    jobspy_hours_old: int = 48
+    smtp_host: str | None = None
+    smtp_port: int = 587
+    smtp_user: str | None = None
+    smtp_pass: str | None = None
+    smtp_from: str | None = None
+    job_mail_enabled: bool = False
+    job_mail_test_recipient: str | None = None
+    job_mail_max_recipients_per_run: int = 50
+    job_digest_cta_url: str | None = None
+    # Email transport: smtp (default) or brevo (HTTPS API)
+    email_provider: str = "smtp"
+    brevo_api_key: str | None = None
+    email_from_address: str | None = None
+    email_from_name: str = "Code Quest"
+
     @field_validator("database_url", mode="before")
     @classmethod
     def normalize_database_url(cls, value: str) -> str:
