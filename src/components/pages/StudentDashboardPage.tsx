@@ -146,8 +146,9 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   ]
 
   return (
-    <div className={cn(CQ_PAGE_BG, 'min-h-full px-4 py-4 md:px-6 md:py-5')}>
-      <div className="mx-auto max-w-7xl space-y-4">
+    <div className={cn(CQ_PAGE_BG, 'min-h-full')}>
+      {/* px lives inside max-w-7xl so content edges align exactly with the nav container */}
+      <div className="mx-auto max-w-7xl space-y-4 px-4 py-4 md:px-6 md:py-5">
         <DashboardTopHeader
           firstName={firstName}
           pathTitle={pathTitle}
@@ -181,21 +182,22 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           onOpenProgress={() => onNavigate('progress')}
         />
 
-        {/* Command region: left actions/today/practice + right planner (height-matched) */}
+        {/* Quick actions — own full row, 4-up */}
+        <section>
+          <CQSectionTitle sub="Jump straight back into practice or your resume.">
+            Quick actions
+          </CQSectionTitle>
+          <DashboardActionCards
+            onPracticeCode={() => onNavigate('practice-code')}
+            onPracticeSql={() => onNavigate('practice-sql')}
+            onPracticeTyping={() => onNavigate('practice-typing')}
+            onOpenResume={() => onNavigate('resume')}
+          />
+        </section>
+
+        {/* Command row: left Today + Practice (height-matched to right Planner) */}
         <div className="grid gap-4 lg:grid-cols-12 lg:items-stretch">
           <div className="flex flex-col gap-4 lg:col-span-8">
-            <section>
-              <CQSectionTitle sub="Jump straight back into practice or your resume.">
-                Quick actions
-              </CQSectionTitle>
-              <DashboardActionCards
-                onPracticeCode={() => onNavigate('practice-code')}
-                onPracticeSql={() => onNavigate('practice-sql')}
-                onPracticeTyping={() => onNavigate('practice-typing')}
-                onOpenResume={() => onNavigate('resume')}
-              />
-            </section>
-
             <section>
               <CQSectionTitle sub="Your class and the next deadline to focus on.">
                 Today

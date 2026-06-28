@@ -91,7 +91,7 @@ export function PlannerCard({
               type="button"
               onClick={() => onSelectDate(iso)}
               className={cn(
-                'relative mx-auto grid h-8 w-8 place-items-center rounded-full text-[12px] transition-colors',
+                'relative mx-auto grid h-7 w-7 place-items-center rounded-full text-[12px] transition-colors',
                 CQ_FOCUS,
                 iso === selectedDate
                   ? 'bg-[#0A1020] font-semibold text-[#FAF3E0]'
@@ -125,7 +125,7 @@ export function PlannerCard({
         )}
       </div>
 
-      <CQActionButton variant="ghost" className="mt-3 w-full" onClick={onOpenPlanner}>
+      <CQActionButton variant="ghost" className="mt-auto w-full" onClick={onOpenPlanner}>
         Open full planner
         <ArrowRight className="h-3.5 w-3.5" />
       </CQActionButton>

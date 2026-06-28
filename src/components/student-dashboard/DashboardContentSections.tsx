@@ -133,7 +133,7 @@ function PracticeCard({
   onOpen: () => void
 }) {
   return (
-    <CQCard interactive className="flex flex-col">
+    <CQCard interactive className="flex h-full flex-col">
       <div className="mb-2 flex items-center justify-between gap-2">
         <h3 className="flex items-center gap-2 text-sm font-semibold text-[#111827]">
           <span className={cn('h-2 w-2 rounded-full', PRACTICE_DOT[dot])} />
@@ -169,7 +169,7 @@ export function PracticeProgressGrid({
   onPracticeTyping: () => void
 }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
+    <div className="grid h-full gap-3 sm:grid-cols-3">
       <PracticeCard summary={sql} dot="blue" onOpen={onPracticeSql} />
       <PracticeCard summary={code} dot="violet" onOpen={onPracticeCode} />
       <PracticeCard summary={typing} dot="teal" onOpen={onPracticeTyping} />
