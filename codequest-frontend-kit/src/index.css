@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply overflow-x-hidden;
+  }
+
+  body {
+    @apply min-h-screen overflow-x-hidden bg-cream font-sans text-charcoal antialiased;
+  }
+}
+
+@layer components {
+  .cq-nav-link {
+    @apply flex items-center gap-2 rounded-lg border-l-2 border-transparent px-2 py-2 text-sm font-medium text-cream/60 transition-colors hover:bg-cream/5 hover:text-cream;
+  }
+
+  .cq-nav-link.active {
+    @apply border-progress bg-cream/[0.07] text-cream;
+  }
+
+  .cq-pill {
+    @apply rounded-full border border-slate/20 bg-cream text-[13px] font-medium text-slate transition-colors hover:text-charcoal;
+  }
+
+  .cq-pill.active {
+    @apply border-navy bg-navy text-cream;
+  }
+
+  .cq-mini-bar {
+    @apply h-1 overflow-hidden rounded-full bg-charcoal/10;
+  }
+
+  .cq-mini-bar-fill {
+    @apply h-full rounded-full bg-navy opacity-80;
+  }
+
+  .cq-chart-bar {
+    @apply min-h-[4px] min-w-0 flex-1 rounded-t-sm bg-charcoal/15;
+  }
+
+  .cq-badge-soon {
+    @apply rounded-full bg-red-500/10 px-2 py-0.5 text-[11px] font-semibold text-red-500;
+  }
+
+  .cq-badge-pending {
+    @apply rounded-full bg-slate/10 px-2 py-0.5 text-[11px] font-semibold text-slate;
+  }
+
+  .cq-timeline::before {
+    content: '';
+    position: absolute;
+    left: 2.25rem;
+    top: 6px;
+    bottom: 6px;
+    border-left: 1.5px dotted rgba(112, 128, 144, 0.32);
+  }
+
+  .cq-icon-btn {
+    @apply grid h-8 w-8 place-items-center rounded-full border border-slate/20 bg-cream text-slate transition-colors hover:bg-cream-soft hover:text-charcoal;
+  }
+}
