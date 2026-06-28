@@ -145,8 +145,8 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   ]
 
   return (
-    <div className={cn(CQ_PAGE_BG, 'px-4 py-6 md:px-6 md:py-8')}>
-      <div className="mx-auto max-w-7xl space-y-5 md:space-y-6">
+    <div className={cn(CQ_PAGE_BG, 'px-3 py-4 md:px-5 md:py-5')}>
+      <div className="mx-auto max-w-[1500px] space-y-4">
         <DashboardTopHeader
           firstName={firstName}
           pathTitle={pathTitle}
@@ -180,8 +180,8 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           onOpenProgress={() => onNavigate('progress')}
         />
 
-        <div className="grid gap-5 lg:grid-cols-12 lg:items-start lg:gap-6">
-          <div className="space-y-6 lg:col-span-8">
+        <div className="grid gap-4 lg:grid-cols-12 lg:items-start">
+          <div className="space-y-4 lg:col-span-8">
             <section>
               <CQSectionTitle sub="Jump straight back into practice or your resume.">
                 Quick actions
@@ -234,31 +234,33 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
               />
             </section>
 
-            <section>
-              <CQSectionTitle>Upcoming classes</CQSectionTitle>
-              <UpcomingClassesPanel
-                sessions={snapshot.upcomingSessions}
-                loading={snapshot.loading}
-              />
-            </section>
+            <div className="grid gap-4 xl:grid-cols-2">
+              <section className="flex flex-col">
+                <CQSectionTitle>Upcoming classes</CQSectionTitle>
+                <UpcomingClassesPanel
+                  sessions={snapshot.upcomingSessions}
+                  loading={snapshot.loading}
+                />
+              </section>
+
+              <section className="flex flex-col">
+                <CQSectionTitle>Syllabus overview</CQSectionTitle>
+                <SyllabusPanel
+                  careerJourney={snapshot.careerJourney}
+                  stageRows={snapshot.stageRows}
+                  loading={snapshot.loading}
+                  onOpenCareer={() => onNavigate('roadmapper')}
+                />
+              </section>
+            </div>
 
             <section>
               <CQSectionTitle>All deadlines</CQSectionTitle>
               <DeadlinesPanel deadlines={snapshot.deadlines} loading={snapshot.loading} />
             </section>
-
-            <section>
-              <CQSectionTitle>Syllabus overview</CQSectionTitle>
-              <SyllabusPanel
-                careerJourney={snapshot.careerJourney}
-                stageRows={snapshot.stageRows}
-                loading={snapshot.loading}
-                onOpenCareer={() => onNavigate('roadmapper')}
-              />
-            </section>
           </div>
 
-          <div className="lg:col-span-4 lg:sticky lg:top-6">
+          <div className="lg:col-span-4 lg:sticky lg:top-4">
             <DashboardCalendarPanel
               viewMonth={plannerPreview.viewMonth}
               onViewMonthChange={plannerPreview.setViewMonth}

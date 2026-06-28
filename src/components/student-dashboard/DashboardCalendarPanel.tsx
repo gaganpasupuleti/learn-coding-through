@@ -57,7 +57,7 @@ export function DashboardCalendarPanel({
   const timeline = sessions.slice(0, 4)
 
   return (
-    <aside className="space-y-3.5">
+    <aside className="space-y-3">
       {/* Calendar */}
       <CQCard>
         <div className="mb-3 flex items-center justify-between gap-2">

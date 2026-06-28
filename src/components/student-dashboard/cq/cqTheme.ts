@@ -36,23 +36,28 @@ export const CQ_TONE_SOFT: Record<CQTone, string> = {
   cream: 'bg-[#FFF9EA]',
 }
 
-/** Page background — cream canvas. Scoped to the dashboard page wrapper only. */
-export const CQ_PAGE_BG = 'min-h-full bg-[#FAF3E0] text-[#111827]'
+/**
+ * Page background — one warm canvas for the whole dashboard. Slightly deeper
+ * cream than the cards so cards read as cards (no muddy same-tone banding).
+ * Scoped to the dashboard page wrapper only.
+ */
+export const CQ_PAGE_BG = 'min-h-full bg-[#F2EBD6] text-[#111827]'
 
-/** Base card surface (content cards) — cream-soft on slate hairline border. */
+/** Base card surface — near-white warm cream on a slate hairline. */
 export const CQ_CARD =
-  'rounded-[18px] border border-[#708090]/20 bg-[#FFF9EA] shadow-[0_12px_32px_-22px_rgba(10,16,32,0.55)] transition-shadow'
+  'rounded-2xl border border-[#708090]/18 bg-[#FFFDF6] shadow-[0_8px_22px_-18px_rgba(10,16,32,0.5)] transition-shadow'
 
 export const CQ_CARD_HOVER =
-  'hover:shadow-[0_18px_44px_-22px_rgba(10,16,32,0.6)]'
+  'hover:shadow-[0_14px_30px_-18px_rgba(10,16,32,0.55)]'
 
-export const CQ_CARD_BODY = 'p-4 md:p-[18px]'
+/** Compact card padding — SaaS density, not landing-page spacing. */
+export const CQ_CARD_BODY = 'p-3.5 md:p-4'
 
-/** Section heading — editorial serif, charcoal. */
+/** Section heading — editorial serif, charcoal. One size across all sections. */
 export const CQ_SECTION_TITLE =
-  'font-serif text-[17px] font-semibold tracking-tight text-[#111827]'
+  'font-serif text-[15px] font-semibold tracking-tight text-[#111827]'
 
-export const CQ_SECTION_SUB = 'mt-0.5 text-[13px] text-[#708090]'
+export const CQ_SECTION_SUB = 'mt-0.5 text-[12px] text-[#708090]'
 
 /** Inline link styling (cta blue). */
 export const CQ_LINK =

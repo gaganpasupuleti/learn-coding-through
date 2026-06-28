@@ -52,7 +52,7 @@ export function TodayPanel({
   )
 
   return (
-    <div className="grid gap-3.5 md:grid-cols-2">
+    <div className="grid gap-3 md:grid-cols-2">
       <CQCard className="flex flex-col">
         <div className="mb-3 flex items-center justify-between gap-2">
           <h3 className="flex items-center gap-2 text-sm font-semibold text-[#111827]">
@@ -169,7 +169,7 @@ export function PracticeProgressGrid({
   onPracticeTyping: () => void
 }) {
   return (
-    <div className="grid gap-3.5 sm:grid-cols-3">
+    <div className="grid gap-3 sm:grid-cols-3">
       <PracticeCard summary={sql} dot="blue" onOpen={onPracticeSql} />
       <PracticeCard summary={code} dot="violet" onOpen={onPracticeCode} />
       <PracticeCard summary={typing} dot="teal" onOpen={onPracticeTyping} />
@@ -203,7 +203,7 @@ export function ProgressPanel({
     0
 
   return (
-    <div className="grid gap-3.5 md:grid-cols-2">
+    <div className="grid gap-3 md:grid-cols-2">
       <CQCard className="flex flex-col">
         <div className="mb-3 flex items-start justify-between gap-2">
           <div>

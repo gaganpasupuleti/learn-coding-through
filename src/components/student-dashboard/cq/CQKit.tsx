@@ -67,31 +67,31 @@ export function CQStatCard({
       className={cn(
         CQ_CARD,
         CQ_TONE_BG[tone],
-        'flex h-full min-h-[140px] flex-col p-4 text-left md:p-[18px]',
+        'flex h-full flex-col p-3.5 text-left',
         interactive && cn(CQ_CARD_HOVER, CQ_FOCUS, 'cursor-pointer'),
         className,
       )}
     >
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <h3 className="text-[12px] font-semibold uppercase tracking-wide text-[#111827]/70">
+      <div className="mb-1.5 flex items-center justify-between gap-2">
+        <h3 className="text-[11px] font-semibold uppercase tracking-wide text-[#111827]/70">
           {label}
         </h3>
         {icon && <span className="shrink-0 text-[#0A1020]/55">{icon}</span>}
       </div>
       {value != null && value !== '' && (
-        <p className="text-xl font-bold tracking-tight text-[#111827]">{value}</p>
+        <p className="text-[19px] font-bold leading-tight tracking-tight text-[#111827]">{value}</p>
       )}
       {detail && (
         <p
           className={cn(
-            'mt-0.5 text-[13px]',
+            'mt-0.5 text-[12px]',
             detailHighlight ? 'font-semibold text-[#0F9488]' : 'text-[#4B5563]',
           )}
         >
           {detail}
         </p>
       )}
-      {footer && <div className="mt-auto pt-3">{footer}</div>}
+      {footer && <div className="mt-auto pt-2.5">{footer}</div>}
     </Wrapper>
   )
 }
@@ -128,7 +128,7 @@ interface CQSectionTitleProps {
 
 export function CQSectionTitle({ children, sub, icon, action, className }: CQSectionTitleProps) {
   return (
-    <div className={cn('mb-3 flex items-end justify-between gap-3', className)}>
+    <div className={cn('mb-2 flex items-end justify-between gap-3', className)}>
       <div className="min-w-0">
         <h2 className={cn(CQ_SECTION_TITLE, 'flex items-center gap-2')}>
           {icon && <span className="text-[#0A1020]/70">{icon}</span>}
@@ -196,7 +196,7 @@ export function CQInlineLink({
 export function CQWeeklyChart({ heights }: { heights?: number[] }) {
   const bars = heights && heights.length > 0 ? heights : [35, 50, 42, 58, 68, 55, 72]
   return (
-    <div className="my-1 flex h-9 items-end gap-1">
+    <div className="my-0.5 flex h-7 items-end gap-1">
       {bars.map((h, i) => (
         <div
           key={i}
