@@ -23,6 +23,7 @@ import {
   Settings,
   Menu,
   X,
+  Lock,
 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
@@ -64,8 +65,8 @@ interface StudentShellProps {
   children: React.ReactNode
 }
 
-/** A real, navigable destination or a not-yet-built placeholder (`soon`). */
-type SidebarItem = { page?: StudentPage; label: string; icon: React.ReactNode; soon?: boolean }
+/** A real, navigable destination, a placeholder (`soon`), or a locked feature (`locked`). */
+type SidebarItem = { page?: StudentPage; label: string; icon: React.ReactNode; soon?: boolean; locked?: boolean }
 type SidebarGroup = { label: string; items: SidebarItem[] }
 
 const ICON = 16
@@ -80,7 +81,7 @@ const NAV_GROUPS: SidebarGroup[] = [
       { label: 'Practice Studio', icon: <FlaskConical size={ICON} aria-hidden />, soon: true },
       { label: 'Study Materials', icon: <BookOpen size={ICON} aria-hidden />, soon: true },
       { label: 'Assignments', icon: <ClipboardList size={ICON} aria-hidden />, soon: true },
-      { page: 'resume', label: 'Resume Lab', icon: <FileText size={ICON} aria-hidden /> },
+      { page: 'resume', label: 'Resume Lab', icon: <FileText size={ICON} aria-hidden />, locked: true },
       { page: 'progress', label: 'Progress', icon: <TrendingUp size={ICON} aria-hidden /> },
       { label: 'Settings', icon: <Settings size={ICON} aria-hidden />, soon: true },
     ],
@@ -101,7 +102,7 @@ const NAV_GROUPS: SidebarGroup[] = [
     items: [
       { page: 'calendar', label: 'Calendar', icon: <CalendarDays size={ICON} aria-hidden /> },
       { page: 'learning-planner', label: 'Learning Planner', icon: <BookOpen size={ICON} aria-hidden /> },
-      { page: 'projects', label: 'Projects', icon: <Boxes size={ICON} aria-hidden /> },
+      { page: 'projects', label: 'Projects', icon: <Boxes size={ICON} aria-hidden />, locked: true },
       { page: 'hub', label: 'Hub', icon: <LayoutGrid size={ICON} aria-hidden /> },
     ],
   },
@@ -124,6 +125,20 @@ function SidebarLink({
 }) {
   const base =
     'group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-blue-400/50'
+
+  if (item.locked) {
+    return (
+      <span
+        aria-disabled
+        title="Locked"
+        className={cn(base, 'cursor-not-allowed text-white/35')}
+      >
+        {item.icon}
+        <span className="truncate">{item.label}</span>
+        <Lock size={12} className="ml-auto flex-shrink-0 text-white/35" aria-hidden />
+      </span>
+    )
+  }
 
   if (item.soon || !item.page) {
     return (
