@@ -1,9 +1,9 @@
 import { useMemo, type ReactNode } from 'react'
 import {
+  AlertCircle,
+  Briefcase,
   CalendarClock,
   FileText,
-  Flame,
-  GraduationCap,
 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -11,16 +11,13 @@ import { cn } from '@/lib/utils'
 import { PlannerPreviewWidget } from '@/components/student-dashboard/PlannerPreviewWidget'
 import { DashboardHero, resolveNextLessonTitle } from '@/components/student-dashboard/DashboardHero'
 import { DeadlinesTaskBoard } from '@/components/student-dashboard/DeadlinesTaskBoard'
-import { JobReadinessCard } from '@/components/student-dashboard/JobReadinessCard'
 import { JobsCareerCard } from '@/components/student-dashboard/JobsCareerCard'
 import { LearningJourneyCard } from '@/components/student-dashboard/LearningJourneyCard'
 import { NextDeadlineCard } from '@/components/student-dashboard/NextDeadlineCard'
 import { OldMistakesReviewCard } from '@/components/student-dashboard/OldMistakesReviewCard'
 import { OverallProgressCard } from '@/components/student-dashboard/OverallProgressCard'
 import { PracticeProgressCard } from '@/components/student-dashboard/PracticeProgressCard'
-import { PracticeStreakCard } from '@/components/student-dashboard/PracticeStreakCard'
 import { QuickStatsStrip, type DashboardStat } from '@/components/student-dashboard/QuickStatsStrip'
-import { ResumeReadinessCard } from '@/components/student-dashboard/ResumeReadinessCard'
 import { TodayClassCard } from '@/components/student-dashboard/TodayClassCard'
 import { UpcomingClassesTimeline } from '@/components/student-dashboard/UpcomingClassesTimeline'
 import { useStudentDashboardSnapshot } from '@/components/student-dashboard/useStudentDashboardSnapshot'
@@ -34,6 +31,7 @@ import {
 } from '@/lib/dashboard-derive'
 import {
   getCodePracticeSummary,
+  getMistakesSummary,
   getPracticeStreakSummary,
   getSqlPracticeSummary,
   getTypingPracticeSummary,
@@ -110,23 +108,16 @@ function DashboardSection({
 }
 
 function CommandRail({
-  readiness,
   plannerPreview,
   careerJourney,
   onNavigate,
-  loading,
 }: {
-  readiness: ReturnType<typeof computeReadinessBreakdown>
   plannerPreview: ReturnType<typeof useLearningPlanner>
   careerJourney: ReturnType<typeof useStudentDashboardSnapshot>['careerJourney']
   onNavigate: (page: DashboardNavTarget) => void
-  loading: boolean
 }) {
   return (
-    <aside className="space-y-5">
-      <PracticeStreakCard compact />
-      <ResumeReadinessCard compact onOpenResume={() => onNavigate('resume')} />
-      <JobsCareerCard careerJourney={careerJourney} onOpenJobs={() => onNavigate('jobspy')} />
+    <aside className="space-y-5 lg:sticky lg:top-6">
       <PlannerPreviewWidget
         dayPlan={plannerPreview.dayPlan}
         viewMonth={plannerPreview.viewMonth}
@@ -143,7 +134,7 @@ function CommandRail({
           onNavigate('calendar')
         }}
       />
-      <JobReadinessCard breakdown={readiness} loading={loading} />
+      <JobsCareerCard careerJourney={careerJourney} onOpenJobs={() => onNavigate('jobspy')} />
     </aside>
   )
 }
@@ -220,6 +211,7 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
 
   const streak = getPracticeStreakSummary()
   const resumeScore = computeResumeReadinessScore()
+  const mistakes = getMistakesSummary()
 
   const typingWpm =
     snapshot.typingAttempts.length > 0
@@ -232,24 +224,26 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   const codeSummary = getCodePracticeSummary()
   const typingSummary = getTypingPracticeSummary(typingWpm)
 
+  // Quick stats are actionable summaries only. Progress and streak live in the
+  // hero chips, so they are intentionally not repeated here.
   const stats: DashboardStat[] = [
     {
-      id: 'course',
-      label: 'Course progress',
-      value: `${snapshot.careerJourney?.pct ?? 0}%`,
-      hint: snapshot.careerJourney?.currentStageLabel ?? 'Pick a path',
-      icon: <GraduationCap className="h-5 w-5" aria-hidden />,
-      accent: 'blue',
-      onClick: () => onNavigate('progress'),
+      id: 'deadlines',
+      label: 'Open deadlines',
+      value: `${openDeadlines}`,
+      hint: openDeadlines === 0 ? 'All clear' : 'Stay on track',
+      icon: <CalendarClock className="h-5 w-5" aria-hidden />,
+      accent: 'amber',
+      onClick: () => onNavigate('calendar'),
     },
     {
-      id: 'streak',
-      label: 'Practice streak',
-      value: `${streak.currentStreak}d`,
-      hint: streak.practicedToday ? 'Practiced today' : 'Keep it going',
-      icon: <Flame className="h-5 w-5" aria-hidden />,
-      accent: 'amber',
-      onClick: () => onNavigate('practice-code'),
+      id: 'mistakes',
+      label: 'Mistakes to review',
+      value: `${mistakes.total}`,
+      hint: mistakes.total === 0 ? 'Nothing to revisit' : 'Revisit weak spots',
+      icon: <AlertCircle className="h-5 w-5" aria-hidden />,
+      accent: 'blue',
+      onClick: () => onNavigate('progress'),
     },
     {
       id: 'resume',
@@ -261,13 +255,13 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
       onClick: () => onNavigate('resume'),
     },
     {
-      id: 'deadlines',
-      label: 'Open deadlines',
-      value: `${openDeadlines}`,
-      hint: openDeadlines === 0 ? 'All clear' : 'Stay on track',
-      icon: <CalendarClock className="h-5 w-5" aria-hidden />,
+      id: 'jobready',
+      label: 'Job readiness',
+      value: `${snapshot.loading ? 0 : readiness.overall}%`,
+      hint: 'Career prep snapshot',
+      icon: <Briefcase className="h-5 w-5" aria-hidden />,
       accent: 'teal',
-      onClick: () => onNavigate('calendar'),
+      onClick: () => onNavigate('jobspy'),
     },
   ]
 
@@ -355,11 +349,9 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
 
           <div className="lg:col-span-4">
             <CommandRail
-              readiness={readiness}
               plannerPreview={plannerPreview}
               careerJourney={snapshot.careerJourney}
               onNavigate={onNavigate}
-              loading={snapshot.loading}
             />
           </div>
         </div>

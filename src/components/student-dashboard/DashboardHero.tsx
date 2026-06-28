@@ -50,7 +50,7 @@ function SecondaryLink({
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-100 transition-colors hover:bg-white/10 outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+      className="inline-flex min-h-11 w-full flex-col items-center justify-center gap-1 rounded-xl border border-white/15 bg-white/5 px-2 py-2.5 text-xs font-medium text-slate-100 transition-colors hover:bg-white/10 outline-none focus-visible:ring-2 focus-visible:ring-white/40 sm:min-h-0 sm:flex-row sm:gap-1.5 sm:rounded-lg sm:py-1.5 sm:text-sm"
     >
       {icon}
       {label}
