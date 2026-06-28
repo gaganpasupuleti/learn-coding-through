@@ -251,63 +251,45 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           </section>
         </div>
 
-        {/* Progress + mistakes (balanced 2-up, full width) */}
-        <section>
-          <CQSectionTitle sub="Your overall growth and what to revisit.">Progress</CQSectionTitle>
-          <ProgressPanel
+        {/* Lower half: self-contained card rows (headers live inside the cards,
+            so there are no floating section-title strips with blank space beside them) */}
+
+        {/* Progress + Mistakes */}
+        <ProgressPanel
+          careerJourney={snapshot.careerJourney}
+          stageRows={snapshot.stageRows}
+          catalogSteps={snapshot.catalogSteps}
+          mistakes={mistakes}
+          loading={snapshot.loading}
+          onViewProgress={() => onNavigate('progress')}
+        />
+
+        {/* Upcoming classes + Syllabus */}
+        <div className="grid gap-4 lg:grid-cols-2 lg:items-stretch">
+          <UpcomingClassesPanel
+            sessions={snapshot.upcomingSessions}
+            loading={snapshot.loading}
+          />
+          <SyllabusPanel
             careerJourney={snapshot.careerJourney}
             stageRows={snapshot.stageRows}
-            catalogSteps={snapshot.catalogSteps}
-            mistakes={mistakes}
             loading={snapshot.loading}
-            onViewProgress={() => onNavigate('progress')}
+            onOpenCareer={() => onNavigate('roadmapper')}
           />
-        </section>
-
-        {/* Upcoming classes + syllabus (balanced 2-up, full width) */}
-        <div className="grid gap-4 lg:grid-cols-2 lg:items-stretch">
-          <section className="flex flex-col">
-            <CQSectionTitle>Upcoming classes</CQSectionTitle>
-            <div className="flex-1">
-              <UpcomingClassesPanel
-                sessions={snapshot.upcomingSessions}
-                loading={snapshot.loading}
-              />
-            </div>
-          </section>
-
-          <section className="flex flex-col">
-            <CQSectionTitle>Syllabus overview</CQSectionTitle>
-            <div className="flex-1">
-              <SyllabusPanel
-                careerJourney={snapshot.careerJourney}
-                stageRows={snapshot.stageRows}
-                loading={snapshot.loading}
-                onOpenCareer={() => onNavigate('roadmapper')}
-              />
-            </div>
-          </section>
         </div>
 
-        {/* Deadlines board + job readiness (12-col, no detached rail) */}
+        {/* Deadlines + Career readiness */}
         <div className="grid gap-4 lg:grid-cols-12 lg:items-stretch">
-          <section className="flex flex-col lg:col-span-8">
-            <CQSectionTitle>All deadlines</CQSectionTitle>
-            <div className="flex-1">
-              <DeadlinesPanel deadlines={snapshot.deadlines} loading={snapshot.loading} />
-            </div>
-          </section>
-
-          <section className="flex flex-col lg:col-span-4">
-            <CQSectionTitle>Career readiness</CQSectionTitle>
-            <div className="flex-1">
-              <JobReadinessPanel
-                readiness={readiness}
-                loading={snapshot.loading}
-                onOpenJobs={() => onNavigate('jobspy')}
-              />
-            </div>
-          </section>
+          <div className="lg:col-span-8">
+            <DeadlinesPanel deadlines={snapshot.deadlines} loading={snapshot.loading} />
+          </div>
+          <div className="lg:col-span-4">
+            <JobReadinessPanel
+              readiness={readiness}
+              loading={snapshot.loading}
+              onOpenJobs={() => onNavigate('jobspy')}
+            />
+          </div>
         </div>
       </div>
     </div>

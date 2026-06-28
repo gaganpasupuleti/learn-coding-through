@@ -151,7 +151,7 @@ export function JobReadinessPanel({
       <div className="mb-3 flex items-center justify-between gap-2">
         <h3 className="flex items-center gap-1.5 text-sm font-semibold text-[#111827]">
           <Briefcase className="h-4 w-4 text-[#0A1020]/70" strokeWidth={1.75} />
-          Job readiness
+          Career readiness
         </h3>
         <span className="rounded-full bg-[#C2CDB0]/45 px-2.5 py-1 text-[13px] font-semibold tabular-nums text-[#3F6212]">
           {loading ? '…' : `${readiness.overall}%`}

@@ -6,6 +6,7 @@ import {
   ChevronDown,
   Clock3,
   GraduationCap,
+  ListChecks,
 } from 'lucide-react'
 
 import type { StageProgressRecord, UpcomingDeadlines, UpcomingSession } from '@/lib/api'
@@ -332,14 +333,27 @@ export function UpcomingClassesPanel({
 }) {
   const [next, ...rest] = sessions
   return (
-    <CQCard className="h-full">
+    <CQCard className="flex h-full flex-col">
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <h3 className="flex items-center gap-2 text-sm font-semibold text-[#111827]">
+          <CalendarClock className="h-4 w-4 text-[#0A1020]/70" strokeWidth={1.75} />
+          Upcoming classes
+        </h3>
+        {sessions.length > 0 && (
+          <span className="rounded-full bg-[#B8C9E8]/40 px-2.5 py-1 text-[12px] font-semibold tabular-nums text-[#1D4ED8]">
+            {sessions.length}
+          </span>
+        )}
+      </div>
       {loading ? (
         <div className="space-y-3">
           <CQSkeleton className="h-20 w-full rounded-xl" />
           <CQSkeleton className="h-9 w-full" />
         </div>
       ) : sessions.length === 0 ? (
-        <p className="py-6 text-center text-sm text-[#708090]">No upcoming classes scheduled.</p>
+        <p className="flex flex-1 items-center justify-center py-6 text-center text-sm text-[#708090]">
+          No upcoming classes scheduled.
+        </p>
       ) : (
         <div className="space-y-3">
           {next && <SessionRow session={next} featured />}
@@ -432,10 +446,22 @@ export function DeadlinesPanel({
 }) {
   const today = toIsoDate(new Date())
   const buckets = useMemo(() => bucketDeadlines(mergeDeadlines(deadlines)), [deadlines])
+  const openCount = buckets.today.length + buckets.thisWeek.length
   const hasAny = buckets.today.length + buckets.thisWeek.length + buckets.completed.length > 0
 
   return (
-    <CQCard className="h-full">
+    <CQCard className="flex h-full flex-col">
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <h3 className="flex items-center gap-2 text-sm font-semibold text-[#111827]">
+          <ListChecks className="h-4 w-4 text-[#0A1020]/70" strokeWidth={1.75} />
+          All deadlines
+        </h3>
+        {openCount > 0 && (
+          <span className="rounded-full bg-[#FBBF24]/25 px-2.5 py-1 text-[12px] font-semibold tabular-nums text-[#92400E]">
+            {openCount} open
+          </span>
+        )}
+      </div>
       {loading ? (
         <div className="flex flex-col gap-4 md:flex-row">
           <CQSkeleton className="h-28 flex-1" />
@@ -443,9 +469,11 @@ export function DeadlinesPanel({
           <CQSkeleton className="h-28 flex-1" />
         </div>
       ) : !hasAny ? (
-        <p className="py-6 text-center text-sm text-[#708090]">No deadlines set yet.</p>
+        <p className="flex flex-1 items-center justify-center py-6 text-center text-sm text-[#708090]">
+          No deadlines set yet.
+        </p>
       ) : (
-        <div className="flex flex-col gap-6 md:flex-row md:gap-4">
+        <div className="flex flex-1 flex-col gap-6 md:flex-row md:gap-4">
           <DeadlineColumn title="Due today" items={buckets.today} today={today} emptyLabel="Nothing due today" />
           <DeadlineColumn title="This week" items={buckets.thisWeek} today={today} emptyLabel="Clear for the week" />
           <DeadlineColumn title="Completed" items={buckets.completed} today={today} emptyLabel="None completed yet" />
@@ -501,7 +529,7 @@ export function SyllabusPanel({
         <div>
           <h3 className="flex items-center gap-2 text-sm font-semibold text-[#111827]">
             <GraduationCap className="h-4 w-4 text-[#0A1020]/70" strokeWidth={1.75} />
-            Learning journey
+            Syllabus overview
           </h3>
           <p className="mt-0.5 text-[12px] text-[#708090]">{stageLabel}</p>
         </div>
