@@ -21,12 +21,15 @@ export function PracticeProgressCard({ summary, accent, onOpen }: PracticeProgre
     <Card className={cn(DASHBOARD_CARD, 'h-full')}>
       <div className={DASHBOARD_CARD_BODY}>
         <div className="mb-3 flex items-start justify-between gap-2">
-          <h3 className="text-sm font-semibold text-slate-900">{summary.label}</h3>
+          <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+            <span className={cn('h-2.5 w-2.5 rounded-full', ACCENT_BAR[accent])} aria-hidden />
+            {summary.label}
+          </h3>
           {onOpen && (
             <button
               type="button"
               onClick={onOpen}
-              className="text-xs font-medium text-blue-600 hover:text-blue-700"
+              className="rounded text-xs font-medium text-blue-600 outline-none hover:text-blue-700 focus-visible:ring-2 focus-visible:ring-blue-500/40"
             >
               Open
             </button>
