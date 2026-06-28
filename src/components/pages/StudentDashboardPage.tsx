@@ -1,11 +1,8 @@
 import { useMemo } from 'react'
-import { CalendarDays } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
-import { DashboardActionCards } from '@/components/student-dashboard/DashboardActionCards'
 import { JobReadinessPanel, PlannerCard } from '@/components/student-dashboard/DashboardCalendarPanel'
-import { DashboardStatsRow } from '@/components/student-dashboard/DashboardStatsRow'
 import { DashboardTopHeader } from '@/components/student-dashboard/DashboardTopHeader'
 import {
   DeadlinesPanel,
@@ -15,17 +12,12 @@ import {
   TodayPanel,
   UpcomingClassesPanel,
 } from '@/components/student-dashboard/DashboardContentSections'
-import { CQSectionTitle } from '@/components/student-dashboard/cq/CQKit'
 import { CQ_PAGE_BG } from '@/components/student-dashboard/cq/cqTheme'
 import { resolveNextLessonTitle } from '@/components/student-dashboard/DashboardHero'
 import { useStudentDashboardSnapshot } from '@/components/student-dashboard/useStudentDashboardSnapshot'
 import { useLearningPlanner } from '@/components/learning-planner/useLearningPlanner'
 import type { AuthUser } from '@/lib/auth'
-import {
-  computeDaysRemaining,
-  computeReadinessBreakdown,
-  formatSessionDate,
-} from '@/lib/dashboard-derive'
+import { computeDaysRemaining, computeReadinessBreakdown } from '@/lib/dashboard-derive'
 import {
   getCodePracticeSummary,
   getMistakesSummary,
@@ -49,10 +41,6 @@ type DashboardNavTarget =
 interface StudentDashboardPageProps {
   user: AuthUser
   onNavigate: (page: DashboardNavTarget) => void
-}
-
-function clampPct(n: number): number {
-  return Math.max(0, Math.min(100, Math.round(n)))
 }
 
 export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageProps) {
@@ -104,192 +92,113 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   const progressPct = snapshot.careerJourney?.pct ?? 0
   const pathTitle = snapshot.careerJourney?.title ?? 'Choose your career path'
 
-  const stageCount = snapshot.stageRows?.length ?? 0
-  const stagesComplete =
-    snapshot.stageRows?.filter((r) => r.total_lessons > 0 && r.lessons_completed >= r.total_lessons)
-      .length ?? 0
-
-  const todaySessions = snapshot.upcomingSessions.filter(
-    (s) => formatSessionDate(s.session_date) === 'Today',
-  )
-  const nextSession = snapshot.upcomingSessions[0]
-  const todayValue =
-    todaySessions.length > 0
-      ? `${todaySessions.length} live session${todaySessions.length > 1 ? 's' : ''}`
-      : nextSession
-        ? `Next: ${formatSessionDate(nextSession.session_date)}`
-        : 'No classes today'
-  const todayDetail = nextSession
-    ? nextSession.topic ?? nextSession.title
-    : 'Use the calendar to plan your week'
-
-  const practiceAvg = clampPct((sqlSummary.pct + codeSummary.pct + typingSummary.pct) / 3)
-  const courseBars = [
-    { label: 'Course', value: progressPct },
-    { label: 'Practice', value: practiceAvg },
-  ]
-  const masteryDetail =
-    stageCount > 0 ? `${stagesComplete}/${stageCount} modules complete` : 'Career roadmap progress'
-  const weeklyHeights = [
-    sqlSummary.pct,
-    codeSummary.pct,
-    typingSummary.pct,
-    readiness.skill,
-    readiness.interview,
-    progressPct,
-    readiness.overall,
-  ]
-  const skills = [
-    { label: 'SQL', value: sqlSummary.pct },
-    { label: 'Code', value: codeSummary.pct },
-    { label: 'Typing', value: typingSummary.pct },
-  ]
+  // Single-screen bento: hero band on top, then a height-filling grid.
+  // Desktop fills the viewport with no page scroll; cards clip rather than
+  // push the page taller. Mobile/tablet collapse to a normal scrolling stack.
+  const cell = 'min-h-0 overflow-hidden [&>*]:h-full'
 
   return (
-    <div className={cn(CQ_PAGE_BG, 'min-h-full')}>
-      {/* px lives inside max-w-7xl so content edges align exactly with the nav container */}
-      <div className="mx-auto max-w-7xl space-y-4 px-4 py-4 md:px-6 md:py-5">
-        <DashboardTopHeader
-          firstName={firstName}
-          pathTitle={pathTitle}
-          progressPct={progressPct}
-          currentStreak={streak.currentStreak}
-          practicedToday={streak.practicedToday}
-          daysRemaining={daysRemaining}
-          nextLessonTitle={nextLessonTitle}
-          loading={snapshot.loading}
-          onContinuePractice={() => onNavigate('practice-code')}
-          onOpenCareer={() => onNavigate('roadmapper')}
-          onOpenCalendar={() => onNavigate('calendar')}
-          onOpenResume={() => onNavigate('resume')}
-          onOpenJobs={() => onNavigate('jobspy')}
-        />
+    <div
+      className={cn(
+        CQ_PAGE_BG,
+        'flex min-h-full flex-col gap-2.5 p-2.5 md:gap-3 md:p-3 lg:h-full lg:min-h-0',
+      )}
+    >
+      <DashboardTopHeader
+        firstName={firstName}
+        pathTitle={pathTitle}
+        progressPct={progressPct}
+        currentStreak={streak.currentStreak}
+        practicedToday={streak.practicedToday}
+        daysRemaining={daysRemaining}
+        nextLessonTitle={nextLessonTitle}
+        loading={snapshot.loading}
+        onContinuePractice={() => onNavigate('practice-code')}
+        onOpenCareer={() => onNavigate('roadmapper')}
+        onOpenCalendar={() => onNavigate('calendar')}
+        onOpenResume={() => onNavigate('resume')}
+        onOpenJobs={() => onNavigate('jobspy')}
+      />
 
-        <DashboardStatsRow
-          loading={snapshot.loading}
-          todayValue={todayValue}
-          todayDetail={todayDetail}
-          courseBars={courseBars}
-          progressPct={progressPct}
-          masteryDetail={masteryDetail}
-          weeklyHeights={weeklyHeights}
-          skills={skills}
-          currentStreak={streak.currentStreak}
-          bestStreak={streak.bestStreak}
-          mistakesTotal={mistakes.total}
-          practiceSessions={typingSummary.completed}
-          onOpenCalendar={() => onNavigate('calendar')}
-          onOpenProgress={() => onNavigate('progress')}
-        />
-
-        {/* Quick actions — own full row, 4-up */}
-        <section>
-          <CQSectionTitle sub="Jump straight back into practice or your resume.">
-            Quick actions
-          </CQSectionTitle>
-          <DashboardActionCards
-            onPracticeCode={() => onNavigate('practice-code')}
-            onPracticeSql={() => onNavigate('practice-sql')}
-            onPracticeTyping={() => onNavigate('practice-typing')}
-            onOpenResume={() => onNavigate('resume')}
-          />
-        </section>
-
-        {/* Command row: left Today + Practice (height-matched to right Planner) */}
-        <div className="grid gap-4 lg:grid-cols-12 lg:items-stretch">
-          <div className="flex flex-col gap-4 lg:col-span-8">
-            <section>
-              <CQSectionTitle sub="Your class and the next deadline to focus on.">
-                Today
-              </CQSectionTitle>
-              <TodayPanel
-                sessions={snapshot.upcomingSessions}
-                deadlines={snapshot.deadlines}
-                loading={snapshot.loading}
-                onOpenCalendar={() => onNavigate('calendar')}
-              />
-            </section>
-
-            <section className="flex flex-1 flex-col">
-              <CQSectionTitle sub="Pick up where you left off in SQL, code, or typing.">
-                Practice
-              </CQSectionTitle>
-              <div className="flex-1">
-                <PracticeProgressGrid
-                  sql={sqlSummary}
-                  code={codeSummary}
-                  typing={typingSummary}
-                  onPracticeSql={() => onNavigate('practice-sql')}
-                  onPracticeCode={() => onNavigate('practice-code')}
-                  onPracticeTyping={() => onNavigate('practice-typing')}
-                />
-              </div>
-            </section>
+      <div className="grid gap-2.5 md:gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-12">
+        {/* Left: 9-col, 4-row bento that fills the available height */}
+        <div className="grid gap-2.5 md:gap-3 lg:col-span-9 lg:min-h-0 lg:grid-cols-9 lg:auto-rows-fr">
+          <div className={cn(cell, 'lg:col-span-4')}>
+            <TodayPanel
+              sessions={snapshot.upcomingSessions}
+              deadlines={snapshot.deadlines}
+              loading={snapshot.loading}
+              onOpenCalendar={() => onNavigate('calendar')}
+            />
           </div>
 
-          <section className="flex flex-col lg:col-span-4">
-            <CQSectionTitle icon={<CalendarDays className="h-4 w-4" strokeWidth={1.75} />}>
-              Planner
-            </CQSectionTitle>
-            <PlannerCard
-              className="flex-1"
-              viewMonth={plannerPreview.viewMonth}
-              onViewMonthChange={plannerPreview.setViewMonth}
-              selectedDate={plannerPreview.selectedDate}
-              onSelectDate={(date) => {
-                storeSelectedDateForPlanner(date)
-                plannerPreview.setSelectedDate(date)
-              }}
-              markedDates={plannerPreview.markedDates}
-              dayPlan={plannerPreview.dayPlan}
-              plannerLoading={plannerPreview.loading}
-              onOpenPlanner={() => {
-                storeSelectedDateForPlanner(plannerPreview.selectedDate)
-                onNavigate('calendar')
-              }}
+          <div className={cn(cell, 'lg:col-span-5')}>
+            <PracticeProgressGrid
+              sql={sqlSummary}
+              code={codeSummary}
+              typing={typingSummary}
+              onPracticeSql={() => onNavigate('practice-sql')}
+              onPracticeCode={() => onNavigate('practice-code')}
+              onPracticeTyping={() => onNavigate('practice-typing')}
             />
-          </section>
-        </div>
+          </div>
 
-        {/* Lower half: self-contained card rows (headers live inside the cards,
-            so there are no floating section-title strips with blank space beside them) */}
+          <div className={cn(cell, 'lg:col-span-9')}>
+            <ProgressPanel
+              careerJourney={snapshot.careerJourney}
+              stageRows={snapshot.stageRows}
+              catalogSteps={snapshot.catalogSteps}
+              mistakes={mistakes}
+              loading={snapshot.loading}
+              onViewProgress={() => onNavigate('progress')}
+            />
+          </div>
 
-        {/* Progress + Mistakes */}
-        <ProgressPanel
-          careerJourney={snapshot.careerJourney}
-          stageRows={snapshot.stageRows}
-          catalogSteps={snapshot.catalogSteps}
-          mistakes={mistakes}
-          loading={snapshot.loading}
-          onViewProgress={() => onNavigate('progress')}
-        />
+          <div className={cn(cell, 'lg:col-span-4')}>
+            <UpcomingClassesPanel sessions={snapshot.upcomingSessions} loading={snapshot.loading} />
+          </div>
 
-        {/* Upcoming classes + Syllabus */}
-        <div className="grid gap-4 lg:grid-cols-2 lg:items-stretch">
-          <UpcomingClassesPanel
-            sessions={snapshot.upcomingSessions}
-            loading={snapshot.loading}
-          />
-          <SyllabusPanel
-            careerJourney={snapshot.careerJourney}
-            stageRows={snapshot.stageRows}
-            loading={snapshot.loading}
-            onOpenCareer={() => onNavigate('roadmapper')}
-          />
-        </div>
+          <div className={cn(cell, 'lg:col-span-5')}>
+            <SyllabusPanel
+              careerJourney={snapshot.careerJourney}
+              stageRows={snapshot.stageRows}
+              loading={snapshot.loading}
+              onOpenCareer={() => onNavigate('roadmapper')}
+            />
+          </div>
 
-        {/* Deadlines + Career readiness */}
-        <div className="grid gap-4 lg:grid-cols-12 lg:items-stretch">
-          <div className="lg:col-span-8">
+          <div className={cn(cell, 'lg:col-span-4')}>
             <DeadlinesPanel deadlines={snapshot.deadlines} loading={snapshot.loading} />
           </div>
-          <div className="lg:col-span-4">
+
+          <div className={cn(cell, 'lg:col-span-5')}>
             <JobReadinessPanel
               readiness={readiness}
               loading={snapshot.loading}
               onOpenJobs={() => onNavigate('jobspy')}
             />
           </div>
+        </div>
+
+        {/* Right: full-height planner rail */}
+        <div className={cn(cell, 'lg:col-span-3')}>
+          <PlannerCard
+            className="h-full"
+            viewMonth={plannerPreview.viewMonth}
+            onViewMonthChange={plannerPreview.setViewMonth}
+            selectedDate={plannerPreview.selectedDate}
+            onSelectDate={(date) => {
+              storeSelectedDateForPlanner(date)
+              plannerPreview.setSelectedDate(date)
+            }}
+            markedDates={plannerPreview.markedDates}
+            dayPlan={plannerPreview.dayPlan}
+            plannerLoading={plannerPreview.loading}
+            onOpenPlanner={() => {
+              storeSelectedDateForPlanner(plannerPreview.selectedDate)
+              onNavigate('calendar')
+            }}
+          />
         </div>
       </div>
     </div>
