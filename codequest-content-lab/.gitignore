@@ -1,0 +1,25 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# Downloaded content files (never commit real books, PDFs, or article bodies)
+downloaded/
+output/
+*.epub
+*.pdf
+*.mobi
+*.txt.gz
+
+# Secrets and credentials
+.env
+.env.*
+secrets.json
+credentials.json
+
+# OS files
+.DS_Store
+Thumbs.db

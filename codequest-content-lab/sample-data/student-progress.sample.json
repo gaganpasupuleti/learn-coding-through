@@ -1,0 +1,83 @@
+{
+  "_note": "Mock student reading progress records. These represent the student_reading_progress and student_saved_content schema entities. No real user data.",
+  "_rules": [
+    "progress_percent range is 0.00 to 100.00.",
+    "completed_at is set only when progress_percent >= 95.",
+    "current_position is a content-type-specific marker: page number, chapter slug, or scroll offset.",
+    "These records are per-student per-item and are private — not visible to other students.",
+    "saved_items represent the student_saved_content entity — a simple bookmark list."
+  ],
+  "reading_progress": [
+    {
+      "id": "prog-001",
+      "user_id": "student-mock-001",
+      "content_item_id": "art-001",
+      "progress_percent": 100.0,
+      "current_position": "end",
+      "last_read_at": "2025-02-10T14:32:00Z",
+      "completed_at": "2025-02-10T14:32:00Z"
+    },
+    {
+      "id": "prog-002",
+      "user_id": "student-mock-001",
+      "content_item_id": "art-002",
+      "progress_percent": 47.50,
+      "current_position": "section-3",
+      "last_read_at": "2025-03-05T09:15:00Z",
+      "completed_at": null
+    },
+    {
+      "id": "prog-003",
+      "user_id": "student-mock-001",
+      "content_item_id": "book-002",
+      "progress_percent": 22.00,
+      "current_position": "chapter-3",
+      "last_read_at": "2025-03-12T20:45:00Z",
+      "completed_at": null
+    },
+    {
+      "id": "prog-004",
+      "user_id": "student-mock-002",
+      "content_item_id": "paper-001",
+      "progress_percent": 95.00,
+      "current_position": "conclusion",
+      "last_read_at": "2025-01-28T17:00:00Z",
+      "completed_at": "2025-01-28T17:00:00Z"
+    },
+    {
+      "id": "prog-005",
+      "user_id": "student-mock-002",
+      "content_item_id": "art-006",
+      "progress_percent": 10.00,
+      "current_position": "intro",
+      "last_read_at": "2025-04-01T08:30:00Z",
+      "completed_at": null
+    }
+  ],
+  "saved_items": [
+    {
+      "id": "saved-001",
+      "user_id": "student-mock-001",
+      "content_item_id": "art-002",
+      "saved_at": "2025-03-04T11:00:00Z"
+    },
+    {
+      "id": "saved-002",
+      "user_id": "student-mock-001",
+      "content_item_id": "book-002",
+      "saved_at": "2025-03-10T16:20:00Z"
+    },
+    {
+      "id": "saved-003",
+      "user_id": "student-mock-002",
+      "content_item_id": "paper-001",
+      "saved_at": "2025-01-20T10:00:00Z"
+    },
+    {
+      "id": "saved-004",
+      "user_id": "student-mock-002",
+      "content_item_id": "col-003",
+      "saved_at": "2025-02-15T14:45:00Z"
+    }
+  ]
+}
