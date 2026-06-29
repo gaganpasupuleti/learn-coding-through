@@ -1,30 +1,58 @@
 # Code Quest Frontend Sandbox
 
-Brick-by-brick UI rebuild workspace. **Dashboard-only** in this PR — other pages come later.
+**Work branch only — do not merge to `main` until explicitly approved.**
 
-## Run locally
+| | |
+|---|---|
+| **Branch** | `feature/codequest-legacy-feature-wiring` |
+| **PR (open, not for merge)** | https://github.com/gaganpasupuleti/learn-coding-through/pull/64 |
+| **Main repo** | `learn-coding-through` — all work happens on the branch above |
+
+## Setup (first time)
 
 ```bash
+git clone https://github.com/gaganpasupuleti/learn-coding-through.git
+cd learn-coding-through
+git checkout feature/codequest-legacy-feature-wiring
 cd codequest-frontend-kit
+cp .env.example .env
+npm install
+```
+
+## Run locally (3 terminals)
+
+**Terminal 1 — backend (APIs)**
+```bash
+cd backend
+uvicorn app.main:app --reload --port 8000
+```
+
+**Terminal 2 — main app (existing features, port 5000)**
+```bash
+# from repo root
 npm install
 npm run dev
 ```
 
-| URL | Status |
-|-----|--------|
-| http://localhost:3000/progress | Locked baseline (static HTML) |
-| http://localhost:3000/dashboard | **Approved React page** |
+**Terminal 3 — sandbox (new UI, port 3000)**
+```bash
+cd codequest-frontend-kit
+npm run dev
+```
 
-`/` redirects to `/progress`.
+Log in once at http://localhost:5000 — token is shared with the sandbox.
 
-## This PR includes
+## URLs
 
-- Locked `static/progress/index.html` baseline
-- Theme tokens + shared shell (`CodeQuestShell`, `CQ*` components)
-- **`/dashboard` only** — first approved React brick
+| URL | What |
+|-----|------|
+| http://localhost:3000/dashboard | New approved dashboard |
+| http://localhost:3000/progress | Locked baseline |
+| http://localhost:3000/practice/sql | SQL Practice (proxied + backend) |
+| http://localhost:3000/open?page=jobspy | Jobs (proxied main app) |
 
-## Not in this PR
+## Rules
 
-Classes, Assignments, Materials, Practice Studio, tool pages — built in follow-up PRs after dashboard is merged.
-
-See `docs/CODEQUEST_FRONTEND_SANDBOX.md` for the full integration plan.
+- **No merge to `main`** without explicit approval
+- Push all changes to `feature/codequest-legacy-feature-wiring` only
+- Dashboard UI is approved; other pages redo one by one on this branch

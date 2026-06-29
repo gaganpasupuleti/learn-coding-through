@@ -12,7 +12,7 @@ import { QuizPage } from '@/components/pages/QuizPage'
 
 import { TypingTrainerPage } from '@/components/pages/TypingTrainerPage'
 
-import { CareerMapperPage } from '@/components/career-mapper'
+import { CareerFlowPage } from '@/components/career-flow/CareerFlowPage'
 
 import { AdminPage } from '@/components/pages/AdminPage'
 
@@ -269,6 +269,24 @@ function App() {
   useEffect(() => {
 
     if (typeof window === 'undefined') return
+
+    const params = new URLSearchParams(window.location.search)
+
+    const pageParam = params.get('page') as StudentPage | null
+
+  const DEEP_LINK_PAGES: StudentPage[] = [
+    'dashboard', 'calendar', 'progress', 'learning-planner', 'projects', 'hub',
+    'quiz', 'flow-roadmap', 'jobspy', 'roadmapper', 'resume', 'practice-code',
+    'practice-sql', 'practice-typing', 'practice-powerbi',
+  ]
+
+    if (pageParam && DEEP_LINK_PAGES.includes(pageParam)) {
+
+      setStudentPage(pageParam)
+
+      return
+
+    }
 
     const page = PRACTICE_PATH_TO_PAGE[window.location.pathname]
 
@@ -624,7 +642,7 @@ function App() {
 
 
 
-        {studentPage === 'roadmapper' && <CareerMapperPage />}
+        {studentPage === 'roadmapper' && <CareerFlowPage />}
 
 
 

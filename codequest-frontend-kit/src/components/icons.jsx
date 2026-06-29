@@ -12,6 +12,14 @@ import {
   Brain,
   Target,
   LogOut,
+  Keyboard,
+  BarChart3,
+  GitBranch,
+  Briefcase,
+  Map,
+  CalendarDays,
+  LayoutGrid,
+  Boxes,
 } from 'lucide-react';
 
 const ICONS = {
@@ -28,6 +36,14 @@ const ICONS = {
   Brain,
   Target,
   LogOut,
+  Keyboard,
+  BarChart3,
+  GitBranch,
+  Briefcase,
+  Map,
+  CalendarDays,
+  LayoutGrid,
+  Boxes,
 };
 
 export function NavIcon({ name, className = 'h-4 w-4 shrink-0', strokeWidth = 1.75 }) {

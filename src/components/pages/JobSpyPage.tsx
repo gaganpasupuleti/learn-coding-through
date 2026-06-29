@@ -60,8 +60,7 @@ export function JobSpyPage() {
           <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-950 space-y-2">
             <p className="font-medium">Job service is currently offline.</p>
             <p>
-              Start the Code Quest backend on port <strong>8000</strong> and refresh. Jobs are served from{' '}
-              <code className="text-xs bg-amber-100/80 px-1 rounded">/api/jobs</code> on the same API.
+              The job listing service is temporarily unavailable. Please check back shortly or contact support.
             </p>
           </div>
         )}
@@ -145,7 +144,7 @@ export function JobSpyPage() {
           <div className="rounded-xl border border-dashed border-slate-200 bg-white py-16 text-center px-6">
             <p className="font-medium text-slate-800">No listings available right now</p>
             <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">
-              Job source blocked or unavailable. Try Indeed/Google or reduce results. An admin can run a scrape from Admin Station.
+              Job listings are temporarily unavailable. Please try again later or adjust your filters.
             </p>
           </div>
         ) : loading && displayJobs.length === 0 ? (
@@ -230,7 +229,7 @@ export function JobSpyPage() {
         )}
 
         <p className="text-center text-xs text-slate-400 pt-4">
-          CodeQuest Job Board · Spicy Jobs · Apply via original job posting
+          CodeQuest Job Board · Jobs updated daily · Apply via original posting
         </p>
       </div>
     </div>

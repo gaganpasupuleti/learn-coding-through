@@ -35,9 +35,9 @@ export function JobSpyFilters({ filters, loading, onChange, onSearch }: JobSpyFi
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="space-y-1.5">
-          <Label htmlFor="jobspy-keyword" className={labelClass}>Keyword</Label>
+          <Label htmlFor="cq-jobs-keyword" className={labelClass}>Keyword</Label>
           <Input
-            id="jobspy-keyword"
+            id="cq-jobs-keyword"
             value={filters.keyword ?? ''}
             onChange={(e) => onChange('keyword', e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && onSearch()}
@@ -47,9 +47,9 @@ export function JobSpyFilters({ filters, loading, onChange, onSearch }: JobSpyFi
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="jobspy-company" className={labelClass}>Company</Label>
+          <Label htmlFor="cq-jobs-company" className={labelClass}>Company</Label>
           <Input
-            id="jobspy-company"
+            id="cq-jobs-company"
             value={filters.company ?? ''}
             onChange={(e) => onChange('company', e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && onSearch()}
@@ -59,9 +59,9 @@ export function JobSpyFilters({ filters, loading, onChange, onSearch }: JobSpyFi
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="jobspy-location" className={labelClass}>City / location</Label>
+          <Label htmlFor="cq-jobs-location" className={labelClass}>City / location</Label>
           <Input
-            id="jobspy-location"
+            id="cq-jobs-location"
             value={filters.location ?? ''}
             onChange={(e) => onChange('location', e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && onSearch()}
@@ -71,9 +71,9 @@ export function JobSpyFilters({ filters, loading, onChange, onSearch }: JobSpyFi
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="jobspy-experience" className={labelClass}>Experience</Label>
+          <Label htmlFor="cq-jobs-experience" className={labelClass}>Experience</Label>
           <select
-            id="jobspy-experience"
+            id="cq-jobs-experience"
             className={selectClass}
             value={filters.experience ?? ''}
             onChange={(e) => onChange('experience', e.target.value)}
@@ -85,9 +85,9 @@ export function JobSpyFilters({ filters, loading, onChange, onSearch }: JobSpyFi
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="jobspy-site" className={labelClass}>Source</Label>
+          <Label htmlFor="cq-jobs-source" className={labelClass}>Source</Label>
           <select
-            id="jobspy-site"
+            id="cq-jobs-source"
             className={selectClass}
             value={filters.site ?? ''}
             onChange={(e) => onChange('site', e.target.value)}

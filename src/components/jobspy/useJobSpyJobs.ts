@@ -138,7 +138,7 @@ export function useJobSpyJobs() {
 
   const handleSave = async (jobId: JobSpyJobId) => {
     if (apiStatus !== 'ok') {
-      setError('Job service is offline — saved jobs need the JobSpy API. Try again later.')
+      setError('Job service is offline — saved job details cannot load right now. Try again later.')
       return
     }
     if (!sessionId) {

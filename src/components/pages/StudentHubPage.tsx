@@ -100,7 +100,7 @@ export function StudentHubPage({ onOpenJobBoard }: StudentHubPageProps) {
                   <div>
                     <h2 className="font-semibold text-slate-900">Job Board</h2>
                     <p className="text-sm text-slate-600 mt-1">
-                      Browse live roles scraped from LinkedIn, Indeed, and more via JobSpy.
+                      Browse live roles curated for Code Quest students — internships, fresher, and entry-level positions.
                     </p>
                   </div>
                 </div>

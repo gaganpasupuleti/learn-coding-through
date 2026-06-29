@@ -1,4 +1,4 @@
-import { MENU_ITEMS, TOOL_ITEMS } from '../../config/navigation';
+import { MENU_ITEMS, PRACTICE_ITEMS, LEARN_ITEMS, CAREER_ITEMS } from '../../config/navigation';
 import { NavIcon } from '../icons';
 
 function NavLink({ item, activeKey }) {
@@ -8,6 +8,23 @@ function NavLink({ item, activeKey }) {
       <NavIcon name={item.icon} />
       <span>{item.label}</span>
     </a>
+  );
+}
+
+function NavSection({ title, items, activeKey, first = false }) {
+  return (
+    <>
+      <p
+        className={`text-[11px] font-semibold uppercase tracking-widest text-cream/50 px-2 mb-1 ${first ? '' : 'mt-4 pt-4 border-t border-cream/10'}`}
+      >
+        {title}
+      </p>
+      <nav className="flex flex-col gap-px">
+        {items.map((item) => (
+          <NavLink key={item.key} item={item} activeKey={activeKey} />
+        ))}
+      </nav>
+    </>
   );
 }
 
@@ -29,21 +46,10 @@ export default function CodeQuestSidebar({ activeKey }) {
       </a>
 
       <div className="max-lg:hidden flex flex-col flex-1 min-h-0">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-cream/50 px-2 mb-1">Menu</p>
-        <nav className="flex flex-col gap-px">
-          {MENU_ITEMS.map((item) => (
-            <NavLink key={item.key} item={item} activeKey={activeKey} />
-          ))}
-        </nav>
-
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-cream/50 px-2 mt-4 mb-1 pt-4 border-t border-cream/10">
-          Tools
-        </p>
-        <nav className="flex flex-col gap-px">
-          {TOOL_ITEMS.map((item) => (
-            <NavLink key={item.key} item={item} activeKey={activeKey} />
-          ))}
-        </nav>
+        <NavSection title="Menu" items={MENU_ITEMS} activeKey={activeKey} first />
+        <NavSection title="Practice" items={PRACTICE_ITEMS} activeKey={activeKey} />
+        <NavSection title="Learn" items={LEARN_ITEMS} activeKey={activeKey} />
+        <NavSection title="Career" items={CAREER_ITEMS} activeKey={activeKey} />
 
         <div className="mt-auto pt-3 border-t border-cream/10">
           <a

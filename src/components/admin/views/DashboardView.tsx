@@ -267,7 +267,7 @@ export function DashboardView() {
                 className="h-7 border-primary-foreground/30 bg-primary-foreground/12 px-2.5 text-[11px] text-primary-foreground hover:bg-primary-foreground/22"
                 onClick={() => setSection('jobspy-ops')}
               >
-                JobSpy Ops
+                Job Board Ops
               </Button>
             </div>
           </div>
@@ -277,7 +277,7 @@ export function DashboardView() {
                 <span className="font-semibold tabular-nums">{waitlistPending}</span> waitlist pending.{' '}
               </>
             ) : (
-              <>Waitlist clear. Job board listings are powered by JobSpy. </>
+              <>Waitlist clear. Job board listings are live. </>
             )}
           </p>
         </Card>
