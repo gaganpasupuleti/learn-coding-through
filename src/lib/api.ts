@@ -133,7 +133,7 @@ async function fetchWithApiFallback(path: string, init?: RequestInit): Promise<R
             continue
           }
           throw new Error(
-            'This URL returned a web page (HTML) instead of API JSON. Set VITE_API_URL on the frontend service to your backend HTTPS URL so nginx can proxy /api and /health (see frontend-entrypoint.sh), or fix your reverse proxy.',
+            'Service configuration error: the API endpoint is not responding correctly. Please try again or contact support.',
           )
         }
         return response
@@ -186,7 +186,7 @@ async function fetchWithApiFallbackMultipart(
             continue
           }
           throw new Error(
-            'This URL returned HTML instead of an API response. Check /api proxy and VITE_API_URL on the frontend container.',
+            'Service configuration error: the API endpoint is not responding correctly. Please try again or contact support.',
           )
         }
         return response
@@ -460,7 +460,7 @@ export async function executeCode(
     if (!response.ok) {
       if (response.status === 405 && !API_BASE_URL) {
         throw new Error(
-          'Sandbox backend is not configured for production. Set VITE_API_URL to your backend Railway URL and redeploy frontend.'
+          'Code execution service is currently unavailable. Please try again later.'
         )
       }
       const errorData = await response.json().catch(() => ({}))
@@ -598,8 +598,8 @@ async function parseOrThrow(response: Response) {
   if (trimmed.startsWith('<')) {
     throw new Error(
       !response.ok
-        ? `HTTP ${response.status}: received HTML instead of a JSON error. Likely /api is not proxied to FastAPI.`
-        : 'Received HTML instead of JSON (the SPA shell is answering /api). Set VITE_API_URL on the Railway frontend service to your backend HTTPS URL so nginx proxies /api and /health — see frontend-entrypoint.sh.',
+        ? `Request failed (${response.status}). Please try again or contact support.`
+        : 'Service error: unexpected response from the server. Please try again.',
     )
   }
 
