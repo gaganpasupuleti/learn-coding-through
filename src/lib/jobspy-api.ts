@@ -20,7 +20,7 @@ const RAW_JOBS_BASE =
 
 const JOBS_API_BASE = (RAW_JOBS_BASE || '').trim().replace(/\/$/, '')
 
-const ADMIN_KEY_STORAGE = 'jobspy_admin_key'
+const ADMIN_KEY_STORAGE = 'cq_jobs_admin_key'
 
 function jobsBaseUrl(): string {
   if (JOBS_API_BASE) return JOBS_API_BASE

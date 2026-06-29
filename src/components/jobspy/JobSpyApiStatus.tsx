@@ -19,7 +19,7 @@ export function JobSpyApiStatusBadge({ status }: { status: JobSpyApiStatus }) {
           status === 'error' && 'bg-amber-500',
         )}
       />
-      {status === 'ok' ? 'JobSpy API connected' : status === 'loading' ? 'Connecting…' : 'JobSpy API offline'}
+      {status === 'ok' ? 'Job service connected' : status === 'loading' ? 'Connecting…' : 'Job service offline'}
     </span>
   )
 }
