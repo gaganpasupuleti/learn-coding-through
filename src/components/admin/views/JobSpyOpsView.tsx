@@ -10,6 +10,7 @@ import {
   getJobSpyAdminKey,
   jobspyApi,
   setJobSpyAdminKey,
+  exportJobsCsv,
   type EmailDigestBody,
   type JobStatsResponse,
   type RefreshResponse,
@@ -345,28 +346,20 @@ export function JobSpyOpsView() {
                   toast.error('No admin key configured — set it in the Access section first.')
                   return
                 }
-                const base = typeof window !== 'undefined' ? window.location.origin : ''
-                const url = `${base}/api/admin/jobs/export?limit=5000`
-                void fetch(url, { headers: { 'X-Admin-Key': key } })
-                  .then(async (res) => {
-                    if (!res.ok) {
-                      const body = await res.json().catch(() => ({}))
-                      toast.error(`Export failed (${res.status}): ${(body as { detail?: string }).detail ?? 'Unknown error'}`)
-                      return
-                    }
-                    const disposition = res.headers.get('Content-Disposition') ?? ''
-                    const match = disposition.match(/filename="?([^";\n]+)"?/)
-                    const filename = match?.[1] ?? 'jobs_export.csv'
-                    const blob = await res.blob()
+                void exportJobsCsv(key)
+                  .then(({ blob, filename }) => {
                     const objUrl = URL.createObjectURL(blob)
                     const a = document.createElement('a')
                     a.href = objUrl
                     a.download = filename
                     a.click()
                     URL.revokeObjectURL(objUrl)
+                    toast.success(`Downloaded ${filename}`)
                   })
                   .catch((err: unknown) => {
-                    toast.error(`Export failed: ${err instanceof Error ? err.message : String(err)}`)
+                    const msg = err instanceof Error ? err.message : String(err)
+                    const isNetwork = msg.toLowerCase().includes('failed to fetch')
+                    toast.error(isNetwork ? 'Export failed: network/CORS/API URL issue' : msg)
                   })
               }}
             >
