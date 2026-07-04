@@ -1,7 +1,7 @@
 """drop resumes table
 
 Revision ID: drop_resumes_20260505
-Revises: 
+Revises: 20260413_10
 Create Date: 2026-05-05 00:00:00.000000
 
 """
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'drop_resumes_20260505'
-down_revision = None
+down_revision = "20260413_10"
 branch_labels = None
 depends_on = None
 
