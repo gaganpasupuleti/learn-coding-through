@@ -14,6 +14,7 @@ from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_jobs_admin
+from app.api.deps import get_optional_user, oauth2_scheme
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.datetime_utils import format_ist
@@ -569,11 +570,12 @@ def export_jobs_csv(
     include_inactive: bool = Query(False),
     admin_key: str | None = Query(None),
     db: Session = Depends(get_db),
-    token_user: User | None = Depends(require_jobs_admin),
     x_admin_key: str | None = Header(None, alias="X-Admin-Key"),
+    token: str | None = Depends(oauth2_scheme),
 ) -> StreamingResponse:
     """Stream active scraped jobs as a downloadable CSV file."""
-    _check_export_auth(token_user, x_admin_key, admin_key)
+    user = get_optional_user(db, token)  # type: ignore[arg-type]
+    _check_export_auth(user, x_admin_key, admin_key)
 
     query = db.query(ScrapedJob)
     if not include_inactive:
