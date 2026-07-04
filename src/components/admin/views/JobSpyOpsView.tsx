@@ -45,7 +45,18 @@ function StatCard({ label, value, hint, accent }: { label: string; value: string
 
 function formatTs(v: string | null | undefined) {
   if (!v) return '—'
-  return new Date(v).toLocaleString('en-IN')
+  const d = new Date(v)
+  return (
+    d.toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    }) + ' IST'
+  )
 }
 
 function sourceLabel(s: string) {

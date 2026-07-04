@@ -480,11 +480,13 @@ class ScrapedJob(Base):
     __tablename__ = "scraped_jobs"
     __table_args__ = (
         UniqueConstraint("source", "job_url", name="uq_scraped_jobs_source_url"),
+        UniqueConstraint("job_id", name="uq_scraped_jobs_job_id"),
         Index("ix_scraped_jobs_created", "created_at"),
         Index("ix_scraped_jobs_source", "source"),
     )
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    job_id: Mapped[str | None] = mapped_column(String(32), nullable=True, unique=True, index=True)
     source: Mapped[str] = mapped_column(String(40), nullable=False)
     title: Mapped[str] = mapped_column(String(300), nullable=False)
     company: Mapped[str | None] = mapped_column(String(200), nullable=True)

@@ -14,6 +14,7 @@ VALID_PROFILES = (
 
 class NormalizedJob(BaseModel):
     id: str
+    jobId: str | None = None
     source: str
     title: str
     company: str | None = None
@@ -27,6 +28,7 @@ class NormalizedJob(BaseModel):
     jobUrl: str
     applyUrl: str | None = None
     createdAt: datetime | None = None
+    createdAtIST: str | None = None
     linkStatus: str | None = "active"
 
 
@@ -164,12 +166,14 @@ class ScrapeRunSummary(BaseModel):
 
 class LatestJobSummary(BaseModel):
     id: str
+    jobId: str | None = None
     source: str
     title: str
     company: str | None
     location: str | None
     datePosted: datetime | None
     createdAt: datetime
+    createdAtIST: str | None = None
     jobUrl: str
     linkStatus: str | None = "active"
 
