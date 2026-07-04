@@ -1,7 +1,7 @@
 """job_posts: external_apply_url and listing_metadata
 
 Revision ID: 20260509_11
-Revises: 20260413_10
+Revises: drop_resumes_20260505
 Create Date: 2026-05-09 00:00:00.000000
 """
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 revision = "20260509_11"
-down_revision = "20260413_10"
+down_revision = "drop_resumes_20260505"
 branch_labels = None
 depends_on = None
 
