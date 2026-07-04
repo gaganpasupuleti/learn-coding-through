@@ -598,3 +598,29 @@ export function jobSpyApplyUrl(job: JobSpyJob): string | null {
   const url = job.job_url?.trim()
   return direct || url || null
 }
+
+/**
+ * Fetch /api/admin/jobs/export as a Blob using the correct API base and X-Admin-Key header.
+ * Returns { blob, filename } on success, throws on failure.
+ */
+export async function exportJobsCsv(adminKey: string, limit = 5000): Promise<{ blob: Blob; filename: string }> {
+  const base = jobsBaseUrl()
+  const url = `${base}/api/admin/jobs/export?limit=${limit}`
+  const res = await fetch(url, {
+    headers: { 'X-Admin-Key': adminKey },
+  })
+  if (!res.ok) {
+    let detail = res.statusText
+    try {
+      const body = (await res.json()) as { detail?: string }
+      if (body.detail) detail = body.detail
+    } catch { /* ignore */ }
+    console.error('[exportJobsCsv] failed', { url, status: res.status, detail })
+    throw new Error(`Export failed (${res.status}): ${detail}`)
+  }
+  const disposition = res.headers.get('Content-Disposition') ?? ''
+  const match = disposition.match(/filename="?([^";\n]+)"?/)
+  const filename = match?.[1] ?? 'jobs_export.csv'
+  const blob = await res.blob()
+  return { blob, filename }
+}
