@@ -341,9 +341,33 @@ export function JobSpyOpsView() {
               className="gap-1.5 text-slate-700"
               onClick={() => {
                 const key = getJobSpyAdminKey()
+                if (!key) {
+                  toast.error('No admin key configured — set it in the Access section first.')
+                  return
+                }
                 const base = typeof window !== 'undefined' ? window.location.origin : ''
-                const url = `${base}/api/admin/jobs/export?limit=5000${key ? `&admin_key=${encodeURIComponent(key)}` : ''}`
-                window.open(url, '_blank')
+                const url = `${base}/api/admin/jobs/export?limit=5000`
+                void fetch(url, { headers: { 'X-Admin-Key': key } })
+                  .then(async (res) => {
+                    if (!res.ok) {
+                      const body = await res.json().catch(() => ({}))
+                      toast.error(`Export failed (${res.status}): ${(body as { detail?: string }).detail ?? 'Unknown error'}`)
+                      return
+                    }
+                    const disposition = res.headers.get('Content-Disposition') ?? ''
+                    const match = disposition.match(/filename="?([^";\n]+)"?/)
+                    const filename = match?.[1] ?? 'jobs_export.csv'
+                    const blob = await res.blob()
+                    const objUrl = URL.createObjectURL(blob)
+                    const a = document.createElement('a')
+                    a.href = objUrl
+                    a.download = filename
+                    a.click()
+                    URL.revokeObjectURL(objUrl)
+                  })
+                  .catch((err: unknown) => {
+                    toast.error(`Export failed: ${err instanceof Error ? err.message : String(err)}`)
+                  })
               }}
             >
               <Download className="h-4 w-4" />
