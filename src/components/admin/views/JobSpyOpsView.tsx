@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ExternalLink, Loader2, Mail, RefreshCw, ShieldAlert } from 'lucide-react'
+import { Download, ExternalLink, Loader2, Mail, RefreshCw, ShieldAlert } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -333,7 +333,23 @@ export function JobSpyOpsView() {
 
         {/* Job DB Overview */}
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
-          <h3 className="font-semibold text-slate-900">Job DB Overview</h3>
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="font-semibold text-slate-900">Job DB Overview</h3>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5 text-slate-700"
+              onClick={() => {
+                const key = getJobSpyAdminKey()
+                const base = typeof window !== 'undefined' ? window.location.origin : ''
+                const url = `${base}/api/admin/jobs/export?limit=5000${key ? `&admin_key=${encodeURIComponent(key)}` : ''}`
+                window.open(url, '_blank')
+              }}
+            >
+              <Download className="h-4 w-4" />
+              Export CSV
+            </Button>
+          </div>
           <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
             <StatCard label="Total in DB" value={statsLoading ? '…' : String(stats?.totalJobs ?? 0)} />
             <StatCard label="Active" value={statsLoading ? '…' : String(stats?.activeJobs ?? 0)} accent="text-emerald-700" />
