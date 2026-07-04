@@ -9,12 +9,41 @@ from typing import Any
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from app.core.datetime_utils import format_ist
 from app.models.models import JobScrapeRun, ScrapedJob
 
 
+# ---------------------------------------------------------------------------
+# job_id generation
+# ---------------------------------------------------------------------------
+
+def _next_job_id(db: Session, date_str: str) -> str:
+    """
+    Return the next available CQJ-YYYYMMDD-NNNN for the given date string.
+    Thread-safe within a single DB session (SQLite single-writer, Postgres uses
+    the unique constraint as the collision guard).
+    """
+    prefix = f"CQJ-{date_str}-"
+    existing = (
+        db.query(ScrapedJob.job_id)
+        .filter(ScrapedJob.job_id.like(f"{prefix}%"))
+        .all()
+    )
+    max_seq = 0
+    for (jid,) in existing:
+        if jid:
+            try:
+                max_seq = max(max_seq, int(jid.rsplit("-", 1)[-1]))
+            except ValueError:
+                pass
+    return f"{prefix}{max_seq + 1:04d}"
+
+
 def scraped_job_to_dict(row: ScrapedJob) -> dict[str, Any]:
+    created_at = row.created_at
     return {
         "id": row.id,
+        "jobId": getattr(row, "job_id", None),
         "source": row.source,
         "title": row.title,
         "company": row.company,
@@ -27,7 +56,8 @@ def scraped_job_to_dict(row: ScrapedJob) -> dict[str, Any]:
         "description": row.description,
         "jobUrl": row.job_url,
         "applyUrl": row.apply_url or row.job_url,
-        "createdAt": row.created_at,
+        "createdAt": created_at,
+        "createdAtIST": format_ist(created_at),
         "linkStatus": getattr(row, "link_status", None) or "active",
         "ingestProfile": getattr(row, "ingest_profile", None),
     }
@@ -65,6 +95,10 @@ def save_scraped_jobs(
             link_status="active",
             ingest_profile=job.get("ingestProfile") or profile_key,
         )
+        # Assign a stable public job_id before insert
+        created = row.created_at or datetime.utcnow()
+        date_str = created.strftime("%Y%m%d")
+        row.job_id = _next_job_id(db, date_str)
         db.add(row)
         saved += 1
     if saved:
@@ -289,7 +323,9 @@ def scrape_run_to_dict(run: JobScrapeRun) -> dict[str, Any]:
         "errorCount": run.error_count,
         "status": run.status,
         "startedAt": run.started_at,
+        "startedAtIST": format_ist(run.started_at),
         "finishedAt": run.finished_at,
+        "finishedAtIST": format_ist(run.finished_at),
         "durationMs": run.duration_ms,
         "runType": getattr(run, "run_type", None) or "manual",
         "profile": getattr(run, "profile", None),

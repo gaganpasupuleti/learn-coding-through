@@ -1,0 +1,20 @@
+{
+  "_note": "Mock seed data for content_domains table. Not connected to any database in Phase 26b.",
+  "domains": [
+    { "id": "dom-001", "name": "Mathematics", "slug": "maths", "display_order": 1, "icon": "maths", "is_active": true },
+    { "id": "dom-002", "name": "Data Science", "slug": "data-science", "display_order": 2, "icon": "data-science", "is_active": true },
+    { "id": "dom-003", "name": "Engineering", "slug": "engineering", "display_order": 3, "icon": "engineering", "is_active": true },
+    { "id": "dom-004", "name": "Frontend", "slug": "frontend", "display_order": 4, "icon": "frontend", "is_active": true },
+    { "id": "dom-005", "name": "Backend", "slug": "backend", "display_order": 5, "icon": "backend", "is_active": true },
+    { "id": "dom-006", "name": "Python", "slug": "python", "display_order": 6, "icon": "python", "is_active": true },
+    { "id": "dom-007", "name": "SQL", "slug": "sql", "display_order": 7, "icon": "sql", "is_active": true },
+    { "id": "dom-008", "name": "Power BI", "slug": "power-bi", "display_order": 8, "icon": "power-bi", "is_active": true },
+    { "id": "dom-009", "name": "Aptitude", "slug": "aptitude", "display_order": 9, "icon": "aptitude", "is_active": true },
+    { "id": "dom-010", "name": "Data Structures & Algorithms", "slug": "dsa", "display_order": 10, "icon": "dsa", "is_active": true },
+    { "id": "dom-011", "name": "AI / Machine Learning", "slug": "ai-ml", "display_order": 11, "icon": "ai-ml", "is_active": true },
+    { "id": "dom-012", "name": "Cloud", "slug": "cloud", "display_order": 12, "icon": "cloud", "is_active": true },
+    { "id": "dom-013", "name": "Career", "slug": "career", "display_order": 13, "icon": "career", "is_active": true },
+    { "id": "dom-014", "name": "Resume", "slug": "resume", "display_order": 14, "icon": "resume", "is_active": true },
+    { "id": "dom-015", "name": "Interview Prep", "slug": "interview-prep", "display_order": 15, "icon": "interview-prep", "is_active": true }
+  ]
+}

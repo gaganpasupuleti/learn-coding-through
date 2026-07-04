@@ -2,16 +2,21 @@
 
 from __future__ import annotations
 
+import csv
+import io
+import secrets
 import time
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
+from fastapi.responses import StreamingResponse
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_jobs_admin
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.datetime_utils import format_ist
 from app.models.models import ScrapedJob, User, UserRole
 from app.schemas.scraped_jobs import (
     CleanupLinksResponse,
@@ -534,3 +539,94 @@ def _student_recipient_emails(db: Session) -> list[str]:
         seen.add(key)
         unique.append(raw)
     return unique
+
+
+# ---------------------------------------------------------------------------
+# CSV export — admin only
+# Browser-friendly: accepts admin_key as query param so native file downloads work.
+# ---------------------------------------------------------------------------
+
+def _check_export_auth(
+    token_user: User | None,
+    x_admin_key: str | None,
+    admin_key_query: str | None,
+) -> None:
+    """Accepts JWT admin role, X-Admin-Key header, or admin_key query param."""
+    if token_user is not None and token_user.role in (UserRole.ADMIN, UserRole.SUPER_ADMIN):
+        return
+    expected = (settings.admin_job_key or "").strip()
+    if settings.environment == "production" and not expected:
+        raise HTTPException(status_code=403, detail="ADMIN_JOB_KEY must be set in production")
+    provided = (x_admin_key or admin_key_query or "").strip()
+    if expected and provided and secrets.compare_digest(provided, expected):
+        return
+    raise HTTPException(status_code=403, detail="Admin access required (JWT admin or admin_key)")
+
+
+@admin_router.get("/export")
+def export_jobs_csv(
+    limit: int = Query(500, ge=1, le=5000),
+    include_inactive: bool = Query(False),
+    admin_key: str | None = Query(None),
+    db: Session = Depends(get_db),
+    token_user: User | None = Depends(require_jobs_admin),
+    x_admin_key: str | None = Header(None, alias="X-Admin-Key"),
+) -> StreamingResponse:
+    """Stream active scraped jobs as a downloadable CSV file."""
+    _check_export_auth(token_user, x_admin_key, admin_key)
+
+    query = db.query(ScrapedJob)
+    if not include_inactive:
+        query = query.filter(ScrapedJob.link_status == "active")
+    rows = query.order_by(ScrapedJob.created_at.desc()).limit(limit).all()
+
+    def _salary(row: ScrapedJob) -> str:
+        lo = float(row.salary_min) if row.salary_min else None
+        hi = float(row.salary_max) if row.salary_max else None
+        cur = row.currency or ""
+        if lo and hi:
+            return f"{cur} {int(lo):,} – {int(hi):,}".strip()
+        if lo:
+            return f"{cur} {int(lo):,}+".strip()
+        if hi:
+            return f"up to {cur} {int(hi):,}".strip()
+        return ""
+
+    def _date(v: datetime | None) -> str:
+        return v.strftime("%Y-%m-%d") if v else ""
+
+    buf = io.StringIO()
+    writer = csv.writer(buf)
+    writer.writerow([
+        "#", "Job ID", "Title", "Company", "Location", "Source",
+        "Type", "Date Posted", "Salary", "Status", "Profile",
+        "Apply Link", "Job URL", "Added (IST)",
+    ])
+    for seq, row in enumerate(rows, start=1):
+        job_id = getattr(row, "job_id", None) or row.id
+        apply = row.apply_url or row.job_url or ""
+        writer.writerow([
+            seq,
+            job_id,
+            row.title,
+            row.company or "",
+            row.location or "",
+            row.source,
+            row.job_type or "",
+            _date(row.date_posted),
+            _salary(row),
+            getattr(row, "link_status", "active") or "active",
+            getattr(row, "ingest_profile", "") or "",
+            apply,
+            row.job_url or "",
+            format_ist(row.created_at) or "",
+        ])
+
+    buf.seek(0)
+    filename = f"jobs_export_{datetime.utcnow().strftime('%Y%m%d_%H%M')}.csv"
+    return StreamingResponse(
+        iter([buf.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
