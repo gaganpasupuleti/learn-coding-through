@@ -1,15 +1,19 @@
-"""Parse and validate job enrichment CSV uploads (preview only — no DB writes)."""
+"""Parse and validate job enrichment CSV uploads; preview (read-only) and commit (upsert)."""
 
 from __future__ import annotations
 
 import csv
 import io
 from collections import Counter
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any
 
 from sqlalchemy.orm import Session
 
-from app.models.models import JobRole, JobRoleLevel, QuizPack, ScrapedJob
+from app.models.models import JobEnrichment, JobRole, JobRoleLevel, QuizPack, ScrapedJob
 from app.schemas.job_enrichment_import import (
+    JobEnrichmentImportCommitResponse,
     JobEnrichmentImportPreviewResponse,
     JobEnrichmentRowPreview,
     QuizPackSummaryItem,
@@ -43,6 +47,15 @@ JD_FETCH_STATUSES = frozenset({"FETCHED", "BLOCKED", "PARTIAL", "UNKNOWN"})
 MANUAL_REVIEW_VALUES = frozenset({"yes", "no"})
 
 
+@dataclass
+class ValidatedEnrichmentRow:
+    row_number: int
+    job_id: str
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    payload: dict[str, Any] | None = None
+
+
 def _parse_csv_rows(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     text = raw.decode("utf-8-sig")
     reader = csv.DictReader(io.StringIO(text))
@@ -56,6 +69,11 @@ def _parse_csv_rows(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     for record in reader:
         rows.append({col: (record.get(col) or "").strip() for col in REQUIRED_COLUMNS})
     return headers, rows
+
+
+def _pipe_list(value: str) -> list[str] | None:
+    items = [part.strip() for part in value.split("|") if part.strip()]
+    return items or None
 
 
 def _load_reference_data(db: Session) -> tuple[
@@ -74,18 +92,13 @@ def _load_reference_data(db: Session) -> tuple[
     return role_ids, level_to_role, level_to_experience, scraped_job_ids, quiz_pack_ids
 
 
-def preview_job_enrichment_import(db: Session, raw: bytes) -> JobEnrichmentImportPreviewResponse:
-    _, rows = _parse_csv_rows(raw)
+def _validate_parsed_rows(
+    db: Session,
+    rows: list[dict[str, str]],
+) -> list[ValidatedEnrichmentRow]:
     role_ids, level_to_role, level_to_experience, scraped_job_ids, quiz_pack_ids = _load_reference_data(db)
-
     job_id_counts = Counter(row["job_id"] for row in rows if row["job_id"])
-    previews: list[JobEnrichmentRowPreview] = []
-
-    role_counter: Counter[str] = Counter()
-    live_status_counter: Counter[str] = Counter()
-    jd_status_counter: Counter[str] = Counter()
-    review_counter: Counter[str] = Counter()
-    quiz_pack_counter: Counter[str] = Counter()
+    validated: list[ValidatedEnrichmentRow] = []
 
     for idx, row in enumerate(rows, start=2):
         errors: list[str] = []
@@ -140,14 +153,15 @@ def preview_job_enrichment_import(db: Session, raw: bytes) -> JobEnrichmentImpor
             errors.append(f"Invalid manual_review_needed: {row['manual_review_needed']}")
 
         confidence_raw = row["mapping_confidence"]
+        confidence_value: float | None = None
         if not confidence_raw:
             errors.append("mapping_confidence is required")
         else:
             try:
-                confidence = float(confidence_raw)
-                if confidence < 0 or confidence > 1:
+                confidence_value = float(confidence_raw)
+                if confidence_value < 0 or confidence_value > 1:
                     errors.append("mapping_confidence must be between 0 and 1")
-                elif confidence < 0.70:
+                elif confidence_value < 0.70:
                     warnings.append("mapping_confidence below 0.70")
             except ValueError:
                 errors.append("mapping_confidence must be numeric")
@@ -167,36 +181,100 @@ def preview_job_enrichment_import(db: Session, raw: bytes) -> JobEnrichmentImpor
         if jd_status in {"PARTIAL", "UNKNOWN"}:
             warnings.append(f"jd_fetch_status is {jd_status}")
 
-        quiz_pack_id = row["quiz_pack_id"]
-        if quiz_pack_id:
-            quiz_pack_counter[quiz_pack_id] += 1
-            if quiz_pack_id not in quiz_pack_ids:
-                warnings.append(f"Unknown quiz_pack_id: {quiz_pack_id}")
+        quiz_pack_raw = row["quiz_pack_id"]
+        quiz_pack_id: str | None = None
+        if quiz_pack_raw:
+            if quiz_pack_raw in quiz_pack_ids:
+                quiz_pack_id = quiz_pack_raw
+            else:
+                warnings.append(f"Unknown quiz_pack_id: {quiz_pack_raw}")
 
-        if not errors and actual_role_id:
-            role_counter[actual_role_id] += 1
-        if live_status in JOB_LIVE_STATUSES:
-            live_status_counter[live_status] += 1
-        if jd_status in JD_FETCH_STATUSES:
-            jd_status_counter[jd_status] += 1
-        if review in MANUAL_REVIEW_VALUES:
-            review_counter[review] += 1
+        payload: dict[str, Any] | None = None
+        if not errors and job_id and confidence_value is not None:
+            payload = {
+                "job_id": job_id,
+                "actual_role_id": actual_role_id,
+                "actual_role_name": row["actual_role_name"],
+                "role_level_id": role_level_id,
+                "experience_level": experience_level,
+                "job_live_status": live_status,
+                "jd_fetch_status": jd_status,
+                "jd_summary": row["jd_summary"] or None,
+                "required_skills": _pipe_list(row["required_skills"]),
+                "good_to_have_skills": _pipe_list(row["good_to_have_skills"]),
+                "tools": _pipe_list(row["tools"]),
+                "programming_languages": _pipe_list(row["programming_languages"]),
+                "databases": _pipe_list(row["databases"]),
+                "frameworks": _pipe_list(row["frameworks"]),
+                "student_preparation_topics": _pipe_list(row["student_preparation_topics"]),
+                "quiz_pack_id": quiz_pack_id,
+                "mapping_confidence": confidence_value,
+                "manual_review_needed": review == "yes",
+                "approved_status": "NEEDS_REVIEW" if review == "yes" else "PENDING",
+            }
 
-        previews.append(
-            JobEnrichmentRowPreview(
+        validated.append(
+            ValidatedEnrichmentRow(
                 row_number=idx,
                 job_id=job_id,
                 errors=errors,
                 warnings=warnings,
+                payload=payload,
             )
         )
+
+    return validated
+
+
+def _validate_enrichment_rows(db: Session, raw: bytes) -> list[ValidatedEnrichmentRow]:
+    _, rows = _parse_csv_rows(raw)
+    return _validate_parsed_rows(db, rows)
+
+
+def _row_previews(validated: list[ValidatedEnrichmentRow]) -> list[JobEnrichmentRowPreview]:
+    return [
+        JobEnrichmentRowPreview(
+            row_number=row.row_number,
+            job_id=row.job_id,
+            errors=row.errors,
+            warnings=row.warnings,
+        )
+        for row in validated
+    ]
+
+
+def preview_job_enrichment_import(db: Session, raw: bytes) -> JobEnrichmentImportPreviewResponse:
+    _, rows = _parse_csv_rows(raw)
+    validated = _validate_parsed_rows(db, rows)
+    previews = _row_previews(validated)
+    _, _, _, _, quiz_pack_ids = _load_reference_data(db)
+
+    role_counter: Counter[str] = Counter()
+    live_status_counter: Counter[str] = Counter()
+    jd_status_counter: Counter[str] = Counter()
+    review_counter: Counter[str] = Counter()
+    quiz_pack_counter: Counter[str] = Counter()
+
+    for row in validated:
+        if row.errors or not row.payload:
+            continue
+        payload = row.payload
+        role_counter[str(payload["actual_role_id"])] += 1
+        live_status_counter[str(payload["job_live_status"])] += 1
+        jd_status_counter[str(payload["jd_fetch_status"])] += 1
+        review_counter["yes" if payload["manual_review_needed"] else "no"] += 1
+
+    for row in rows:
+        pack = row["quiz_pack_id"]
+        if pack:
+            quiz_pack_counter[pack] += 1
 
     valid_rows = sum(1 for p in previews if not p.errors)
     invalid_rows = sum(1 for p in previews if p.errors)
     warning_rows = sum(1 for p in previews if p.warnings)
 
     return JobEnrichmentImportPreviewResponse(
-        total_rows=len(rows),
+        total_rows=len(validated),
         valid_rows=valid_rows,
         invalid_rows=invalid_rows,
         warning_rows=warning_rows,
@@ -218,4 +296,53 @@ def preview_job_enrichment_import(db: Session, raw: bytes) -> JobEnrichmentImpor
             )
             for pack_id, count in sorted(quiz_pack_counter.items())
         ],
+    )
+
+
+def commit_job_enrichment_import(db: Session, raw: bytes) -> JobEnrichmentImportCommitResponse:
+    validated = _validate_enrichment_rows(db, raw)
+    previews = _row_previews(validated)
+
+    inserted_count = 0
+    updated_count = 0
+    skipped_count = 0
+    saved_job_ids: list[str] = []
+    skipped_job_ids: list[str] = []
+
+    for row in validated:
+        if row.errors or not row.payload:
+            skipped_count += 1
+            skipped_job_ids.append(row.job_id or f"row-{row.row_number}")
+            continue
+
+        payload = dict(row.payload)
+        job_id = str(payload.pop("job_id"))
+        now = datetime.utcnow()
+        existing = db.get(JobEnrichment, job_id)
+        if existing:
+            for key, value in payload.items():
+                setattr(existing, key, value)
+            existing.updated_at = now
+            updated_count += 1
+        else:
+            db.add(JobEnrichment(job_id=job_id, created_at=now, updated_at=now, **payload))
+            inserted_count += 1
+        saved_job_ids.append(job_id)
+
+    if inserted_count or updated_count:
+        db.commit()
+
+    invalid_rows = sum(1 for p in previews if p.errors)
+    warning_rows = sum(1 for p in previews if p.warnings)
+
+    return JobEnrichmentImportCommitResponse(
+        total_rows=len(validated),
+        inserted_count=inserted_count,
+        updated_count=updated_count,
+        skipped_count=skipped_count,
+        invalid_rows=invalid_rows,
+        warning_rows=warning_rows,
+        row_errors=previews,
+        saved_job_ids=saved_job_ids,
+        skipped_job_ids=skipped_job_ids,
     )

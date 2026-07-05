@@ -587,9 +587,8 @@ class JobEnrichment(Base):
         Index("ix_job_enrichments_approved_status", "approved_status"),
     )
 
-    job_id: Mapped[str] = mapped_column(
-        String(32), ForeignKey("scraped_jobs.job_id"), primary_key=True
-    )
+    # ponytail: no FK to scraped_jobs — manual import may save enrichment before/alongside scrape row
+    job_id: Mapped[str] = mapped_column(String(32), primary_key=True)
     actual_role_id: Mapped[str] = mapped_column(ForeignKey("job_roles.role_id"), nullable=False)
     actual_role_name: Mapped[str] = mapped_column(String(120), nullable=False)
     role_level_id: Mapped[str] = mapped_column(ForeignKey("job_role_levels.role_level_id"), nullable=False)

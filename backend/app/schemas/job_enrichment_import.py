@@ -1,4 +1,4 @@
-"""Schemas for job enrichment CSV import preview."""
+"""Schemas for job enrichment CSV import preview and commit."""
 
 from __future__ import annotations
 
@@ -32,3 +32,15 @@ class JobEnrichmentImportPreviewResponse(BaseModel):
     role_summary: list[RoleSummaryItem]
     status_summary: dict[str, dict[str, int]]
     quiz_pack_summary: list[QuizPackSummaryItem]
+
+
+class JobEnrichmentImportCommitResponse(BaseModel):
+    total_rows: int
+    inserted_count: int
+    updated_count: int
+    skipped_count: int
+    invalid_rows: int
+    warning_rows: int
+    row_errors: list[JobEnrichmentRowPreview]
+    saved_job_ids: list[str]
+    skipped_job_ids: list[str]
