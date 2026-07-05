@@ -428,6 +428,18 @@ export interface JobEnrichmentImportPreviewResponse {
   quiz_pack_summary: Array<{ quiz_pack_id: string; count: number; exists: boolean }>
 }
 
+export interface JobEnrichmentImportCommitResponse {
+  total_rows: number
+  inserted_count: number
+  updated_count: number
+  skipped_count: number
+  invalid_rows: number
+  warning_rows: number
+  row_errors: JobEnrichmentRowPreview[]
+  saved_job_ids: string[]
+  skipped_job_ids: string[]
+}
+
 function mapApiJob(job: NormalizedJobApi): JobSpyJob {
   return {
     id: job.id,
@@ -625,6 +637,16 @@ export const jobspyApi = {
     form.append('file', file)
     return jobspyAdminRequest<JobEnrichmentImportPreviewResponse>(
       '/api/admin/jobs/enrichment/import-preview',
+      adminKey,
+      { method: 'POST', body: form },
+    )
+  },
+
+  enrichmentImportCommit: (adminKey: string, file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return jobspyAdminRequest<JobEnrichmentImportCommitResponse>(
+      '/api/admin/jobs/enrichment/import-commit',
       adminKey,
       { method: 'POST', body: form },
     )

@@ -7,9 +7,12 @@ import { Badge } from '@/components/ui/badge'
 import {
   getJobSpyAdminKey,
   jobspyApi,
+  type JobEnrichmentImportCommitResponse,
   type JobEnrichmentImportPreviewResponse,
   type JobEnrichmentSummaryResponse,
 } from '@/lib/jobspy-api'
+
+const COMMIT_CONFIRM_TEXT = 'CONFIRM IMPORT'
 
 function StatCard({ label, value, accent }: { label: string; value: string | number; accent?: string }) {
   return (
@@ -40,6 +43,13 @@ export function JobEnrichmentView() {
   const [previewError, setPreviewError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const [confirmText, setConfirmText] = useState('')
+  const [commitLoading, setCommitLoading] = useState(false)
+  const [commitError, setCommitError] = useState<string | null>(null)
+  const [commitResult, setCommitResult] = useState<JobEnrichmentImportCommitResponse | null>(null)
+  // Repeat-commit guard: true only after a fresh successful preview, cleared on commit.
+  const [previewedSinceCommit, setPreviewedSinceCommit] = useState(false)
+
   const loadSummary = useCallback(async () => {
     const key = getJobSpyAdminKey()
     if (!key) {
@@ -65,6 +75,9 @@ export function JobEnrichmentView() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null
+    setPreviewedSinceCommit(false)
+    setConfirmText('')
+    setCommitError(null)
     if (file && !file.name.toLowerCase().endsWith('.csv')) {
       setPreviewError('Only .csv files are accepted.')
       setCsvFile(null)
@@ -86,13 +99,61 @@ export function JobEnrichmentView() {
 
     setPreviewLoading(true)
     setPreviewError(null)
+    setCommitError(null)
     try {
       setPreview(await jobspyApi.enrichmentImportPreview(key, csvFile))
+      setPreviewedSinceCommit(true)
+      setConfirmText('')
     } catch (e) {
       setPreviewError(authErrorMessage(e))
       setPreview(null)
+      setPreviewedSinceCommit(false)
     } finally {
       setPreviewLoading(false)
+    }
+  }
+
+  const commitAllowed =
+    preview !== null &&
+    preview.invalid_rows === 0 &&
+    csvFile !== null &&
+    previewedSinceCommit &&
+    !commitLoading
+
+  const commitEnabled = commitAllowed && confirmText === COMMIT_CONFIRM_TEXT
+
+  const handleCommit = async () => {
+    const key = getJobSpyAdminKey()
+    if (!key) {
+      setCommitError('Set ADMIN_JOB_KEY in JobSpy Ops before committing an import.')
+      return
+    }
+    if (!csvFile) {
+      setCommitError('Select and preview a CSV file before committing.')
+      return
+    }
+    if (!preview || !previewedSinceCommit) {
+      setCommitError('Preview the CSV before committing.')
+      return
+    }
+    if (preview.invalid_rows > 0) {
+      setCommitError('Commit blocked: fix invalid rows and preview again.')
+      return
+    }
+    if (confirmText !== COMMIT_CONFIRM_TEXT) return
+
+    setCommitLoading(true)
+    setCommitError(null)
+    try {
+      const result = await jobspyApi.enrichmentImportCommit(key, csvFile)
+      setCommitResult(result)
+      setConfirmText('')
+      setPreviewedSinceCommit(false)
+      await loadSummary()
+    } catch (e) {
+      setCommitError(authErrorMessage(e))
+    } finally {
+      setCommitLoading(false)
     }
   }
 
@@ -241,8 +302,6 @@ export function JobEnrichmentView() {
           </Button>
         </div>
 
-        <p className="mt-3 text-xs text-slate-500 italic">Commit import will be added in the next phase.</p>
-
         {previewError && (
           <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800" role="alert">
             {previewError}
@@ -262,7 +321,7 @@ export function JobEnrichmentView() {
               <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
                 <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" aria-hidden />
                 <span>
-                  {preview.warning_rows} row(s) have warnings. Warnings do not block preview validation; review them before a future commit import.
+                  {preview.warning_rows} row(s) have warnings. Warnings do not block commit; review them before committing the import.
                 </span>
               </div>
             )}
@@ -313,6 +372,119 @@ export function JobEnrichmentView() {
                 </tbody>
               </table>
             </div>
+
+            {preview.invalid_rows === 0 && (
+              <div className="rounded-lg border border-red-200 bg-red-50/60 p-4 space-y-3">
+                <div className="flex items-start gap-2">
+                  <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-red-700" aria-hidden />
+                  <p className="text-sm font-medium text-red-900">
+                    This will write enriched job data into the database. Only continue after reviewing warnings.
+                  </p>
+                </div>
+
+                <p className="text-xs text-slate-600 tabular-nums">
+                  total_rows: {preview.total_rows} · valid_rows: {preview.valid_rows} · invalid_rows:{' '}
+                  {preview.invalid_rows} · warning_rows: {preview.warning_rows}
+                </p>
+
+                {!previewedSinceCommit && (
+                  <p className="text-sm text-amber-900 rounded-md border border-amber-300 bg-amber-50 px-3 py-2">
+                    Preview again before another commit.
+                  </p>
+                )}
+
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                  <div className="flex-1">
+                    <Label htmlFor="commit-confirm">Type CONFIRM IMPORT to enable commit</Label>
+                    <Input
+                      id="commit-confirm"
+                      type="text"
+                      autoComplete="off"
+                      className="mt-1"
+                      value={confirmText}
+                      onChange={(e) => setConfirmText(e.target.value)}
+                      disabled={!commitAllowed}
+                      aria-describedby="commit-confirm-hint"
+                    />
+                    <p id="commit-confirm-hint" className="text-xs text-slate-500 mt-1">
+                      Must match exactly: {COMMIT_CONFIRM_TEXT}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => void handleCommit()}
+                    disabled={!commitEnabled}
+                    aria-busy={commitLoading}
+                  >
+                    {commitLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden />
+                        Committing…
+                      </>
+                    ) : (
+                      'Commit Import'
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {commitError && (
+          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800" role="alert">
+            {commitError}
+          </div>
+        )}
+
+        {commitResult && (
+          <div className="mt-4 space-y-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
+            <p className="text-sm font-semibold text-emerald-800" role="status">
+              Import committed successfully.
+            </p>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+              <StatCard label="Inserted" value={commitResult.inserted_count} accent="text-emerald-700" />
+              <StatCard label="Updated" value={commitResult.updated_count} />
+              <StatCard
+                label="Skipped"
+                value={commitResult.skipped_count}
+                accent={commitResult.skipped_count ? 'text-red-700' : undefined}
+              />
+              <StatCard label="Invalid Rows" value={commitResult.invalid_rows} />
+              <StatCard label="Warning Rows" value={commitResult.warning_rows} accent="text-amber-700" />
+            </div>
+
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Saved Job IDs</h3>
+              {commitResult.saved_job_ids.length === 0 ? (
+                <p className="text-sm text-slate-500">None</p>
+              ) : (
+                <div className="flex flex-wrap gap-1">
+                  {commitResult.saved_job_ids.map((id) => (
+                    <Badge key={id} variant="outline" className="font-mono text-xs">
+                      {id}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {commitResult.skipped_job_ids.length > 0 && (
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-red-700 mb-1">
+                  Skipped Job IDs (not saved)
+                </h3>
+                <div className="flex flex-wrap gap-1">
+                  {commitResult.skipped_job_ids.map((id) => (
+                    <Badge key={id} variant="outline" className="border-red-300 bg-red-50 font-mono text-xs text-red-900">
+                      {id}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
