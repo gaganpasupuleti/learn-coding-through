@@ -4,6 +4,7 @@ export type AdminSection =
   | 'students'
   | 'classes'
   | 'jobspy-ops'
+  | 'job-enrichment'
   | 'quizzes'
   | 'activity'
   | 'feedback'

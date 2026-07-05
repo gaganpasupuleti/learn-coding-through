@@ -18,6 +18,7 @@ import { BoardView } from '@/components/admin/views/BoardView'
 import { ClassesView } from '@/components/admin/views/ClassesView'
 import { DashboardView } from '@/components/admin/views/DashboardView'
 import { JobSpyOpsView } from '@/components/admin/views/JobSpyOpsView'
+import { JobEnrichmentView } from '@/components/admin/views/JobEnrichmentView'
 import { QuizzesView } from '@/components/admin/views/QuizzesView'
 import { StudentsView } from '@/components/admin/views/StudentsView'
 import type { AuthUser } from '@/lib/auth'
@@ -109,6 +110,7 @@ export function AdminPage({ user, onLogout }: AdminPageProps) {
                 {ws.section === 'students' && <StudentsView />}
                 {ws.section === 'classes' && <ClassesView />}
                 {ws.section === 'jobspy-ops' && <JobSpyOpsView />}
+                {ws.section === 'job-enrichment' && <JobEnrichmentView />}
                 {ws.section === 'quizzes' && <QuizzesView />}
                 {ws.section === 'activity' && <ActivityView />}
                 {ws.section === 'feedback' && <FeedbackView />}

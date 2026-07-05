@@ -383,6 +383,51 @@ export interface SendDigestResponse {
   jobCount?: number | null
 }
 
+export interface EnrichmentRoleSummaryItem {
+  role_id: string
+  role_name: string
+  count: number
+}
+
+export interface EnrichmentLevelSummaryItem {
+  role_level_id: string
+  experience_level: string
+  count: number
+}
+
+export interface JobEnrichmentSummaryResponse {
+  total_enrichments: number
+  pending_count: number
+  needs_review_count: number
+  approved_count: number
+  rejected_count: number
+  live_count: number
+  expired_count: number
+  unknown_live_status_count: number
+  role_summary: EnrichmentRoleSummaryItem[]
+  level_summary: EnrichmentLevelSummaryItem[]
+  quiz_pack_linked_count: number
+  quiz_pack_missing_count: number
+}
+
+export interface JobEnrichmentRowPreview {
+  row_number: number
+  job_id: string
+  errors: string[]
+  warnings: string[]
+}
+
+export interface JobEnrichmentImportPreviewResponse {
+  total_rows: number
+  valid_rows: number
+  invalid_rows: number
+  warning_rows: number
+  row_errors: JobEnrichmentRowPreview[]
+  role_summary: Array<{ role_id: string; count: number }>
+  status_summary: Record<string, Record<string, number>>
+  quiz_pack_summary: Array<{ quiz_pack_id: string; count: number; exists: boolean }>
+}
+
 function mapApiJob(job: NormalizedJobApi): JobSpyJob {
   return {
     id: job.id,
@@ -404,6 +449,21 @@ function mapApiJob(job: NormalizedJobApi): JobSpyJob {
 
 function adminHeaders(adminKey: string): Record<string, string> {
   return adminKey ? { 'X-Admin-Key': adminKey } : {}
+}
+
+async function jobspyAdminRequest<T>(path: string, adminKey: string, options: RequestInit = {}): Promise<T> {
+  const base = jobsBaseUrl()
+  const headers: Record<string, string> = {
+    ...adminHeaders(adminKey),
+    ...(options.headers as Record<string, string> | undefined),
+  }
+  const res = await fetch(`${base}${path}`, { ...options, headers })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }))
+    throw new Error(formatApiError((err as { detail?: unknown }).detail, res.status))
+  }
+  if (res.status === 204) return undefined as T
+  return res.json() as Promise<T>
 }
 
 export const jobspyApi = {
@@ -556,6 +616,19 @@ export const jobspyApi = {
       headers: adminHeaders(adminKey),
       body: JSON.stringify(body),
     }),
+
+  getEnrichmentSummary: (adminKey: string) =>
+    jobspyAdminRequest<JobEnrichmentSummaryResponse>('/api/admin/jobs/enrichment/summary', adminKey),
+
+  enrichmentImportPreview: (adminKey: string, file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return jobspyAdminRequest<JobEnrichmentImportPreviewResponse>(
+      '/api/admin/jobs/enrichment/import-preview',
+      adminKey,
+      { method: 'POST', body: form },
+    )
+  },
 }
 
 export function parseJobSpySkills(raw: JobSpyJob['key_skills']): string[] {
