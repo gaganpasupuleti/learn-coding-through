@@ -8,7 +8,7 @@ import secrets
 import time
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Query
+from fastapi import APIRouter, Depends, File, Header, HTTPException, Query, UploadFile
 from fastapi.responses import StreamingResponse
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
@@ -19,6 +19,7 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.datetime_utils import format_ist
 from app.models.models import ScrapedJob, User, UserRole
+from app.schemas.job_enrichment_import import JobEnrichmentImportPreviewResponse
 from app.schemas.scraped_jobs import (
     CleanupLinksResponse,
     DigestSummary,
@@ -40,6 +41,7 @@ from app.schemas.scraped_jobs import (
     SendDigestResponse,
     SourceBreakdownItem,
 )
+from app.services.job_enrichment_import import preview_job_enrichment_import
 from app.services.job_email import build_digest, send_email
 from app.services.job_link_checker import cleanup_job_links
 from app.services.job_profiles import get_profile
@@ -631,4 +633,25 @@ def export_jobs_csv(
         media_type="text/csv",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+@admin_router.post("/enrichment/import-preview", response_model=JobEnrichmentImportPreviewResponse)
+async def admin_job_enrichment_import_preview(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentImportPreviewResponse:
+    """Validate enriched job CSV without writing to job_enrichments or quiz tables."""
+    filename = (file.filename or "").strip().lower()
+    if not filename.endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Upload a .csv file")
+
+    raw = await file.read()
+    if not raw.strip():
+        raise HTTPException(status_code=400, detail="CSV file is empty")
+
+    try:
+        return preview_job_enrichment_import(db, raw)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
