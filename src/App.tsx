@@ -38,6 +38,8 @@ import { StudentHubPage } from '@/components/pages/StudentHubPage'
 
 import { JobSpyPage } from '@/components/pages/JobSpyPage'
 
+import { StudyMaterialsPage } from '@/components/pages/StudyMaterialsPage'
+
 import { CodePracticePage } from '@/features/code-practice/components/CodePracticePage'
 
 import { CODE_PRACTICE_ROUTE } from '@/features/code-practice/types/codePractice.types'
@@ -143,6 +145,8 @@ export type StudentPage =
   | 'hub'
 
   | 'jobspy'
+
+  | 'study-materials'
 
   | 'learning-planner'
 
@@ -276,7 +280,7 @@ function App() {
 
   const DEEP_LINK_PAGES: StudentPage[] = [
     'dashboard', 'calendar', 'progress', 'learning-planner', 'projects', 'hub',
-    'quiz', 'flow-roadmap', 'jobspy', 'roadmapper', 'resume', 'practice-code',
+    'quiz', 'flow-roadmap', 'jobspy', 'study-materials', 'roadmapper', 'resume', 'practice-code',
     'practice-sql', 'practice-typing', 'practice-powerbi',
   ]
 
@@ -579,6 +583,10 @@ function App() {
 
 
         {studentPage === 'jobspy' && <JobSpyPage />}
+
+
+
+        {studentPage === 'study-materials' && <StudyMaterialsPage />}
 
 
 
