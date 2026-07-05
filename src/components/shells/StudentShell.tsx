@@ -44,6 +44,7 @@ type StudentPage =
   | 'dashboard'
   | 'hub'
   | 'jobspy'
+  | 'study-materials'
   | 'projects'
   | 'practice-code'
   | 'practice-sql'
@@ -79,7 +80,7 @@ const NAV_GROUPS: SidebarGroup[] = [
       { page: 'jobspy', label: 'Jobs', icon: <Briefcase size={ICON} aria-hidden /> },
       { label: 'Live Classes', icon: <GraduationCap size={ICON} aria-hidden />, soon: true },
       { label: 'Practice Studio', icon: <FlaskConical size={ICON} aria-hidden />, soon: true },
-      { label: 'Study Materials', icon: <BookOpen size={ICON} aria-hidden />, soon: true },
+      { page: 'study-materials', label: 'Study Materials', icon: <BookOpen size={ICON} aria-hidden /> },
       { label: 'Assignments', icon: <ClipboardList size={ICON} aria-hidden />, soon: true },
       { page: 'resume', label: 'Resume Lab', icon: <FileText size={ICON} aria-hidden />, locked: true },
       { page: 'progress', label: 'Progress', icon: <TrendingUp size={ICON} aria-hidden /> },
