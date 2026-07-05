@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Materials Lab Viewer — Code Quest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header__badge">Lab only · not student-visible</div>
+      <h1 class="header__title">Study Materials Viewer</h1>
+      <p class="header__subtitle">Preview normalized ingestion output — metadata only, no full text or downloaded files.</p>
+    </header>
+
+    <section class="toolbar" aria-label="Filters and search">
+      <div class="toolbar__row">
+        <label class="field">
+          <span class="field__label">Search</span>
+          <input id="search" type="search" placeholder="Title, author, or tag…" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span class="field__label">Content type</span>
+          <select id="filter-type">
+            <option value="">All types</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Domain</span>
+          <select id="filter-domain">
+            <option value="">All domains</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">License</span>
+          <select id="filter-license">
+            <option value="">All licenses</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Review status</span>
+          <select id="filter-review">
+            <option value="">All statuses</option>
+          </select>
+        </label>
+        <button id="reset-filters" type="button" class="btn btn--ghost">Reset</button>
+      </div>
+      <div class="stats" id="stats" aria-live="polite"></div>
+    </section>
+
+    <main>
+      <div id="error" class="state state--error hidden" role="alert"></div>
+      <div id="empty" class="state state--empty hidden">
+        <h2>No items match</h2>
+        <p>Try clearing filters or changing your search terms.</p>
+      </div>
+      <div id="cards" class="cards" aria-live="polite"></div>
+    </main>
+
+    <footer class="footer">
+      <p>Isolated lab viewer · loads <code>sample-normalized-content.json</code> · no backend or API</p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
