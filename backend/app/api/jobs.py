@@ -19,6 +19,12 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.datetime_utils import format_ist
 from app.models.models import ScrapedJob, User, UserRole
+from app.schemas.job_enrichment import (
+    JobEnrichmentListResponse,
+    JobEnrichmentReviewResponse,
+    JobEnrichmentRow,
+    JobEnrichmentSummaryResponse,
+)
 from app.schemas.job_enrichment_import import (
     JobEnrichmentImportCommitResponse,
     JobEnrichmentImportPreviewResponse,
@@ -47,6 +53,12 @@ from app.schemas.scraped_jobs import (
 from app.services.job_enrichment_import import (
     commit_job_enrichment_import,
     preview_job_enrichment_import,
+)
+from app.services.job_enrichment_read import (
+    get_job_enrichment_by_id,
+    get_job_enrichment_review_rows,
+    get_job_enrichment_summary,
+    list_job_enrichments,
 )
 from app.services.job_email import build_digest, send_email
 from app.services.job_link_checker import cleanup_job_links
@@ -639,6 +651,62 @@ def export_jobs_csv(
         media_type="text/csv",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+@admin_router.get("/enrichment/summary", response_model=JobEnrichmentSummaryResponse)
+def admin_job_enrichment_summary(
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentSummaryResponse:
+    """Aggregate counts for saved job enrichment rows."""
+    return get_job_enrichment_summary(db)
+
+
+@admin_router.get("/enrichment/review", response_model=JobEnrichmentReviewResponse)
+def admin_job_enrichment_review(
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentReviewResponse:
+    """Rows needing admin review (NEEDS_REVIEW or manual_review_needed)."""
+    return get_job_enrichment_review_rows(db)
+
+
+@admin_router.get("/enrichment", response_model=JobEnrichmentListResponse)
+def admin_job_enrichment_list(
+    approved_status: str | None = Query(None),
+    actual_role_id: str | None = Query(None),
+    experience_level: str | None = Query(None),
+    job_live_status: str | None = Query(None),
+    manual_review_needed: bool | None = Query(None),
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentListResponse:
+    """Paginated list of saved job enrichment rows."""
+    return list_job_enrichments(
+        db,
+        approved_status=approved_status,
+        actual_role_id=actual_role_id,
+        experience_level=experience_level,
+        job_live_status=job_live_status,
+        manual_review_needed=manual_review_needed,
+        limit=limit,
+        offset=offset,
+    )
+
+
+@admin_router.get("/enrichment/{job_id}", response_model=JobEnrichmentRow)
+def admin_job_enrichment_detail(
+    job_id: str,
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentRow:
+    """One saved job enrichment row by job_id."""
+    row = get_job_enrichment_by_id(db, job_id)
+    if not row:
+        raise HTTPException(status_code=404, detail="Job enrichment not found")
+    return row
 
 
 @admin_router.post("/enrichment/import-preview", response_model=JobEnrichmentImportPreviewResponse)
