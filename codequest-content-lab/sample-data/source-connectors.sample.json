@@ -1,0 +1,432 @@
+{
+  "_note": "Placeholder source connector registry for Study Materials lab. No real URLs, credentials, or active ingestion. Phase 26c planning only.",
+  "_rules": [
+    "Every external source: Do not fork. Do not merge.",
+    "APIs and libraries are references only in this branch.",
+    "full_text_allowed defaults to false for all article sources.",
+    "download_files_allowed defaults to false for all book/ebook/audiobook sources in this branch.",
+    "No real network calls or file downloads from this sample data."
+  ],
+  "connectors": [
+    {
+      "id": "conn-art-rss-001",
+      "source_name": "RSS / Atom Feed Parser",
+      "source_type": "rss",
+      "repo_or_api_name": "kurtmckee/feedparser",
+      "content_types": ["article"],
+      "purpose": "Parse RSS/Atom feeds for article metadata (title, summary, link, author, date)",
+      "allowed_content": ["feed title", "short description", "canonical source_url", "author", "published_date"],
+      "forbidden_content": ["full article body", "paywalled text", "scraped page content"],
+      "license_safety_rule": "Default license_type=no-full-text; content_body must remain null unless full_text_allowed=true with confirmed license",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P0",
+      "status": "planned",
+      "config": {
+        "feed_url": "https://example-feed-placeholder.invalid/feed.xml",
+        "full_text_allowed": false,
+        "domain": "PLACEHOLDER-domain",
+        "poll_interval_hours": 24
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "summary",
+        "source_url",
+        "author",
+        "published_date",
+        "source_type",
+        "license_type",
+        "content_body",
+        "domain",
+        "tags",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "summary", "source_url", "license_type", "content_body", "review_status"]
+      }
+    },
+    {
+      "id": "conn-art-hn-001",
+      "source_name": "Hacker News Public API",
+      "source_type": "web-api",
+      "repo_or_api_name": "HackerNews/API",
+      "content_types": ["article"],
+      "purpose": "Fetch HN story metadata and outbound links",
+      "allowed_content": ["story title", "HN item id", "source_url", "author handle", "timestamp"],
+      "forbidden_content": ["linked article full text", "comment thread bodies"],
+      "license_safety_rule": "license_type=no-full-text; never fetch linked page content in MVP",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P1",
+      "status": "planned",
+      "config": {
+        "api_base_url": "https://hacker-news.firebaseio.com/v0",
+        "story_types": ["topstories"],
+        "max_items_per_run": 25,
+        "full_text_allowed": false,
+        "domain": "PLACEHOLDER-domain"
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "source_url",
+        "author",
+        "published_date",
+        "hn_score",
+        "source_type",
+        "license_type",
+        "content_body",
+        "domain",
+        "tags",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["external_id", "title", "source_url", "content_body", "review_status"]
+      }
+    },
+    {
+      "id": "conn-art-dev-001",
+      "source_name": "DEV Community API",
+      "source_type": "web-api",
+      "repo_or_api_name": "Forem/DEV API",
+      "content_types": ["article"],
+      "purpose": "Fetch DEV.to article metadata for developer learning content",
+      "allowed_content": ["title", "short description", "canonical URL", "tags", "author username"],
+      "forbidden_content": ["body_markdown", "body_html", "full post text"],
+      "license_safety_rule": "Use API description as summary only; license_type=no-full-text",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P1",
+      "status": "planned",
+      "config": {
+        "api_base_url": "https://dev.to/api",
+        "tag_filter": "PLACEHOLDER-tag",
+        "max_items_per_run": 30,
+        "full_text_allowed": false,
+        "domain": "PLACEHOLDER-domain"
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "summary",
+        "source_url",
+        "author",
+        "published_date",
+        "tags",
+        "source_type",
+        "license_type",
+        "content_body",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "summary", "source_url", "content_body", "review_status"]
+      }
+    },
+    {
+      "id": "conn-art-trafilatura-001",
+      "source_name": "Trafilatura Web Extractor",
+      "source_type": "library",
+      "repo_or_api_name": "adbar/trafilatura",
+      "content_types": ["article"],
+      "purpose": "Optional prototype for licensed full-text extraction — disabled in MVP",
+      "allowed_content": ["metadata when license confirmed"],
+      "forbidden_content": ["default bulk body extraction", "copyrighted full text"],
+      "license_safety_rule": "Disabled by default; requires full_text_allowed=true and confirmed license_type",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P2",
+      "status": "disabled",
+      "config": {
+        "enabled": false,
+        "allowed_url_patterns": [],
+        "full_text_allowed": false
+      },
+      "future_ingestion_fields": ["title", "source_url", "license_type", "content_body", "extraction_method"],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "source_url", "content_body", "license_type"]
+      }
+    },
+    {
+      "id": "conn-art-newspaper4k-001",
+      "source_name": "Newspaper4k Article Parser",
+      "source_type": "library",
+      "repo_or_api_name": "AndyTheFactory/newspaper4k",
+      "content_types": ["article"],
+      "purpose": "Metadata enrichment prototype — not default body storage",
+      "allowed_content": ["title", "author", "published_date", "canonical URL"],
+      "forbidden_content": ["full article text by default", "locally stored images without license"],
+      "license_safety_rule": "Metadata-only mode; content_body must remain null in MVP",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P2",
+      "status": "disabled",
+      "config": {
+        "enabled": false,
+        "metadata_only": true,
+        "full_text_allowed": false
+      },
+      "future_ingestion_fields": ["title", "author", "published_date", "source_url", "top_image_url", "license_type", "content_body"],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "author", "source_url", "content_body"]
+      }
+    },
+    {
+      "id": "conn-book-gutendex-001",
+      "source_name": "Gutendex",
+      "source_type": "metadata-api",
+      "repo_or_api_name": "garethbjohnson/gutendex",
+      "content_types": ["book", "ebook"],
+      "purpose": "Query Project Gutenberg catalog metadata via Gutendex API",
+      "allowed_content": ["title", "authors", "subjects", "languages", "gutenberg_id", "source_url links"],
+      "forbidden_content": ["book file download in this branch", "full text without license proof"],
+      "license_safety_rule": "license_type=public-domain for Gutenberg US; file_path and sha256_hash null until approved download phase",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P0",
+      "status": "planned",
+      "config": {
+        "api_base_url": "https://example-gutendex-placeholder.invalid/books/",
+        "search_topics": ["PLACEHOLDER-topic"],
+        "download_files_allowed": false,
+        "domain": "PLACEHOLDER-domain"
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "author",
+        "source_url",
+        "gutenberg_id",
+        "subjects",
+        "languages",
+        "file_format",
+        "license_type",
+        "attribution",
+        "license_proof_url",
+        "file_path",
+        "sha256_hash",
+        "domain",
+        "tags",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "author", "gutenberg_id", "license_type", "file_path", "sha256_hash", "review_status"]
+      }
+    },
+    {
+      "id": "conn-book-se-001",
+      "source_name": "Standard Ebooks Catalog",
+      "source_type": "metadata-api",
+      "repo_or_api_name": "Standard Ebooks public GitHub ebook repos",
+      "content_types": ["ebook"],
+      "purpose": "Discover curated public-domain EPUB editions",
+      "allowed_content": ["title", "author", "SE canonical URL", "subjects", "cover link"],
+      "forbidden_content": ["EPUB download in this branch", "cloning SE repos into Code Quest"],
+      "license_safety_rule": "license_type=public-domain with Standard Ebooks attribution before any file storage",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P1",
+      "status": "planned",
+      "config": {
+        "catalog_base_url": "https://example-standardebooks-placeholder.invalid/ebooks/",
+        "download_files_allowed": false,
+        "domain": "PLACEHOLDER-domain"
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "author",
+        "source_url",
+        "file_format",
+        "source_type",
+        "license_type",
+        "attribution",
+        "license_proof_url",
+        "file_path",
+        "sha256_hash",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "author", "source_url", "file_path", "review_status"]
+      }
+    },
+    {
+      "id": "conn-book-ol-001",
+      "source_name": "Open Library",
+      "source_type": "metadata-api",
+      "repo_or_api_name": "Open Library API",
+      "content_types": ["book"],
+      "purpose": "Enrich bibliographic metadata and PD flags",
+      "allowed_content": ["title", "authors", "subjects", "olid", "cover URL link"],
+      "forbidden_content": ["assuming all OL works are public domain", "in-copyright full text"],
+      "license_safety_rule": "Set license_type=public-domain only when PD confirmed; otherwise link-only or reject",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P1",
+      "status": "planned",
+      "config": {
+        "api_base_url": "https://example-openlibrary-placeholder.invalid/",
+        "download_files_allowed": false,
+        "domain": "PLACEHOLDER-domain"
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "author",
+        "source_url",
+        "openlibrary_id",
+        "subjects",
+        "cover_image_url",
+        "license_type",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "openlibrary_id", "license_type", "file_path"]
+      }
+    },
+    {
+      "id": "conn-audio-librivox-001",
+      "source_name": "LibriVox",
+      "source_type": "metadata-api",
+      "repo_or_api_name": "LibriVox API",
+      "content_types": ["audiobook"],
+      "purpose": "Fetch public-domain audiobook project metadata",
+      "allowed_content": ["title", "author", "narrator", "language", "duration", "LibriVox URL", "section titles as links"],
+      "forbidden_content": ["MP3/M4B download in this branch", "local audio binaries"],
+      "license_safety_rule": "license_type=public-domain; audio_file_path null until approved download with sha256_hash",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P0",
+      "status": "planned",
+      "config": {
+        "api_base_url": "https://example-librivox-placeholder.invalid/api/",
+        "download_files_allowed": false,
+        "domain": "PLACEHOLDER-domain"
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "author",
+        "narrator",
+        "language",
+        "duration_secs",
+        "source_url",
+        "section_count",
+        "license_type",
+        "attribution",
+        "license_proof_url",
+        "audio_file_path",
+        "sha256_hash",
+        "domain",
+        "tags",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "author", "source_url", "audio_file_path", "license_type", "review_status"]
+      }
+    },
+    {
+      "id": "conn-audio-ia-001",
+      "source_name": "Internet Archive Audiobooks",
+      "source_type": "library",
+      "repo_or_api_name": "jjjake/internetarchive",
+      "content_types": ["audiobook"],
+      "purpose": "Future optional IA audio search with strict license filtering",
+      "allowed_content": ["metadata with confirmed licenseurl", "outbound IA detail link"],
+      "forbidden_content": ["CDL/borrow-only items", "ambiguous license", "audio download in this branch"],
+      "license_safety_rule": "Deferred; reject unless licenseurl confirms PD or allowed CC; admin review required",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "deferred",
+      "status": "disabled",
+      "config": {
+        "enabled": false,
+        "download_files_allowed": false,
+        "reject_cdl": true,
+        "require_licenseurl": true
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "author",
+        "source_url",
+        "license_type",
+        "license_proof_url",
+        "attribution",
+        "audio_file_path",
+        "ia_collection",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["external_id", "title", "license_proof_url", "audio_file_path", "rejected_unsafe_count"]
+      }
+    },
+    {
+      "id": "conn-research-arxiv-001",
+      "source_name": "arXiv",
+      "source_type": "research-api",
+      "repo_or_api_name": "lukasschwab/arxiv.py",
+      "content_types": ["research_paper"],
+      "purpose": "Optional later: fetch paper metadata and abstracts from arXiv",
+      "allowed_content": ["title", "authors", "abstract", "arxiv_id", "pdf_url link"],
+      "forbidden_content": ["local PDF download without open-access confirmation"],
+      "license_safety_rule": "license_type=open-access; abstract in content_body; pdf_url link only",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P1",
+      "status": "planned",
+      "config": {
+        "search_categories": ["PLACEHOLDER-cs.XX"],
+        "download_files_allowed": false,
+        "domain": "PLACEHOLDER-domain"
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "authors",
+        "abstract",
+        "arxiv_id",
+        "pdf_url",
+        "source_url",
+        "license_type",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "arxiv_id", "abstract", "pdf_url", "review_status"]
+      }
+    },
+    {
+      "id": "conn-research-openalex-001",
+      "source_name": "OpenAlex",
+      "source_type": "research-api",
+      "repo_or_api_name": "J535D165/pyalex / OpenAlex API",
+      "content_types": ["research_paper"],
+      "purpose": "Optional later: scholarly metadata enrichment via OpenAlex",
+      "allowed_content": ["title", "authors", "abstract", "openalex_id", "source_url link"],
+      "forbidden_content": ["closed-access full text", "PDF download without license proof"],
+      "license_safety_rule": "Store abstract only when open-access; link to publisher or OA copy",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P2",
+      "status": "planned",
+      "config": {
+        "api_base_url": "https://example-openalex-placeholder.invalid/",
+        "download_files_allowed": false,
+        "domain": "PLACEHOLDER-domain"
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "authors",
+        "abstract",
+        "openalex_id",
+        "source_url",
+        "license_type",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "openalex_id", "abstract", "license_type", "review_status"]
+      }
+    }
+  ]
+}

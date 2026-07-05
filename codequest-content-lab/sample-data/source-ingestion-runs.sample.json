@@ -1,0 +1,168 @@
+{
+  "_note": "Placeholder ingestion run logs for Study Materials source connectors. No real runs executed. Counts and ids are fictional placeholders.",
+  "_rules": [
+    "Every run must log output_proof_required counts before completion.",
+    "downloaded_file_count must be 0 for all runs in this branch and MVP metadata phase.",
+    "All new items must enter review_status=pending_review.",
+    "No real API calls or file downloads occurred to produce this sample."
+  ],
+  "ingestion_runs": [
+    {
+      "id": "run-PLACEHOLDER-001",
+      "connector_id": "conn-art-rss-001",
+      "source_name": "RSS / Atom Feed Parser",
+      "repo_or_api_name": "kurtmckee/feedparser",
+      "content_types": ["article"],
+      "mvp_priority": "P0",
+      "status": "planned",
+      "started_at": "PLACEHOLDER-2026-07-05T10:00:00Z",
+      "finished_at": "PLACEHOLDER-2026-07-05T10:00:05Z",
+      "environment": "content-lab-dev-placeholder",
+      "counts": {
+        "source_count": 0,
+        "imported_count": 0,
+        "skipped_duplicate_count": 0,
+        "rejected_unsafe_count": 0,
+        "downloaded_file_count": 0
+      },
+      "output_proof_required": {
+        "sample_item": {
+          "title": "PLACEHOLDER Article Title",
+          "summary": "PLACEHOLDER short summary (1-3 sentences). Not extracted article body.",
+          "source_url": "https://example-article-placeholder.invalid/post/001",
+          "author": "PLACEHOLDER Author",
+          "published_date": "PLACEHOLDER-2026-01-01",
+          "license_type": "no-full-text",
+          "content_body": null,
+          "review_status": "pending_review"
+        }
+      },
+      "notes": "Metadata-only RSS run. No full copyrighted article text stored."
+    },
+    {
+      "id": "run-PLACEHOLDER-002",
+      "connector_id": "conn-book-gutendex-001",
+      "source_name": "Gutendex",
+      "repo_or_api_name": "garethbjohnson/gutendex",
+      "content_types": ["book", "ebook"],
+      "mvp_priority": "P0",
+      "status": "planned",
+      "started_at": "PLACEHOLDER-2026-07-05T11:00:00Z",
+      "finished_at": "PLACEHOLDER-2026-07-05T11:00:08Z",
+      "environment": "content-lab-dev-placeholder",
+      "counts": {
+        "source_count": 0,
+        "imported_count": 0,
+        "skipped_duplicate_count": 0,
+        "rejected_unsafe_count": 0,
+        "downloaded_file_count": 0
+      },
+      "output_proof_required": {
+        "sample_item": {
+          "title": "PLACEHOLDER Book Title",
+          "author": "PLACEHOLDER Author Name",
+          "gutenberg_id": 0,
+          "source_url": "https://example-gutenberg-placeholder.invalid/ebooks/0",
+          "license_type": "public-domain",
+          "attribution": "PLACEHOLDER public-domain attribution string",
+          "license_proof_url": "https://example-gutenberg-placeholder.invalid/ebooks/0",
+          "file_format": "txt",
+          "file_path": null,
+          "sha256_hash": null,
+          "review_status": "pending_review"
+        }
+      },
+      "notes": "Gutendex metadata-only run. Book files not downloaded in this branch."
+    },
+    {
+      "id": "run-PLACEHOLDER-003",
+      "connector_id": "conn-audio-librivox-001",
+      "source_name": "LibriVox",
+      "repo_or_api_name": "LibriVox API",
+      "content_types": ["audiobook"],
+      "mvp_priority": "P0",
+      "status": "planned",
+      "started_at": "PLACEHOLDER-2026-07-05T12:00:00Z",
+      "finished_at": "PLACEHOLDER-2026-07-05T12:00:06Z",
+      "environment": "content-lab-dev-placeholder",
+      "counts": {
+        "source_count": 0,
+        "imported_count": 0,
+        "skipped_duplicate_count": 0,
+        "rejected_unsafe_count": 0,
+        "downloaded_file_count": 0
+      },
+      "output_proof_required": {
+        "sample_item": {
+          "title": "PLACEHOLDER Audiobook Title",
+          "author": "PLACEHOLDER Author Name",
+          "narrator": "PLACEHOLDER Narrator Name",
+          "language": "en",
+          "duration_secs": 0,
+          "source_url": "https://example-librivox-placeholder.invalid/project/0",
+          "license_type": "public-domain",
+          "attribution": "PLACEHOLDER LibriVox attribution string",
+          "license_proof_url": "https://example-librivox-placeholder.invalid/project/0",
+          "audio_file_path": null,
+          "sha256_hash": null,
+          "review_status": "pending_review"
+        }
+      },
+      "notes": "LibriVox metadata-only run. Audiobook files not downloaded in this branch."
+    },
+    {
+      "id": "run-PLACEHOLDER-004",
+      "connector_id": "conn-art-hn-001",
+      "source_name": "Hacker News Public API",
+      "repo_or_api_name": "HackerNews/API",
+      "content_types": ["article"],
+      "mvp_priority": "P1",
+      "status": "planned",
+      "started_at": "PLACEHOLDER-2026-07-06T09:00:00Z",
+      "finished_at": "PLACEHOLDER-2026-07-06T09:00:04Z",
+      "environment": "content-lab-dev-placeholder",
+      "counts": {
+        "source_count": 0,
+        "imported_count": 0,
+        "skipped_duplicate_count": 0,
+        "rejected_unsafe_count": 0,
+        "downloaded_file_count": 0
+      },
+      "output_proof_required": {
+        "sample_item": {
+          "external_id": "PLACEHOLDER-hn-id",
+          "title": "PLACEHOLDER HN Story Title",
+          "source_url": "https://example-outbound-link-placeholder.invalid/story",
+          "license_type": "no-full-text",
+          "content_body": null,
+          "review_status": "pending_review"
+        }
+      },
+      "notes": "HN story metadata only. Linked article content not fetched."
+    },
+    {
+      "id": "run-PLACEHOLDER-005",
+      "connector_id": "conn-audio-ia-001",
+      "source_name": "Internet Archive Audiobooks",
+      "repo_or_api_name": "jjjake/internetarchive",
+      "content_types": ["audiobook"],
+      "mvp_priority": "deferred",
+      "status": "skipped",
+      "started_at": null,
+      "finished_at": null,
+      "environment": "content-lab-dev-placeholder",
+      "counts": {
+        "source_count": 0,
+        "imported_count": 0,
+        "skipped_duplicate_count": 0,
+        "rejected_unsafe_count": 0,
+        "downloaded_file_count": 0
+      },
+      "output_proof_required": {
+        "skip_reason": "Connector deferred until strict licenseurl filtering and admin review workflow exist",
+        "sample_item": null
+      },
+      "notes": "Internet Archive connector not run. Do not fork. Do not merge."
+    }
+  ]
+}
