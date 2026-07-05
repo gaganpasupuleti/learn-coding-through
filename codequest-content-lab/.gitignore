@@ -8,7 +8,8 @@ __pycache__/
 
 # Downloaded content files (never commit real books, PDFs, or article bodies)
 downloaded/
-output/
+ingestion/output/*
+!ingestion/output/.gitkeep
 *.epub
 *.pdf
 *.mobi

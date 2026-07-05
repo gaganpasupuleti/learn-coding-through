@@ -1,0 +1,39 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 37134,
+      "title": "The Elements of Style",
+      "authors": [{ "name": "William Strunk Jr.", "birth_year": 1869, "death_year": 1946 }],
+      "summaries": ["A classic guide to English writing style and usage."],
+      "translators": [],
+      "subjects": ["English language", "Style manuals"],
+      "bookshelves": ["Language Education"],
+      "languages": ["en"],
+      "copyright": false,
+      "media_type": "Text",
+      "formats": {
+        "text/plain; charset=us-ascii": "https://example-gutenberg-placeholder.invalid/ebooks/37134.txt"
+      },
+      "download_count": 0
+    },
+    {
+      "id": 5001,
+      "title": "Relativity: The Special and General Theory",
+      "authors": [{ "name": "Albert Einstein", "birth_year": 1879, "death_year": 1955 }],
+      "summaries": ["Einstein explains special and general relativity for general readers."],
+      "translators": [],
+      "subjects": ["Relativity (Physics)", "Physics"],
+      "bookshelves": ["Science"],
+      "languages": ["en"],
+      "copyright": false,
+      "media_type": "Text",
+      "formats": {
+        "text/plain; charset=utf-8": "https://example-gutenberg-placeholder.invalid/ebooks/5001.txt"
+      },
+      "download_count": 0
+    }
+  ]
+}
