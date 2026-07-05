@@ -1,0 +1,31 @@
+{
+  "_note": "Example run log shape produced by run_ingestion.py. Paths are relative to codequest-content-lab/ingestion/.",
+  "command": "python run_ingestion.py --mode fixture --sources all --limit 5",
+  "mode": "fixture",
+  "sources": ["gutendex", "librivox", "rss"],
+  "input_count": 6,
+  "normalized_count": 6,
+  "rejected_count": 0,
+  "rejection_reasons": [],
+  "connector_errors": [],
+  "downloaded_file_count": 0,
+  "generated_json_path": "output/normalized-PLACEHOLDER.json",
+  "sample_normalized_item": {
+    "external_id": "37134",
+    "title": "The Elements of Style",
+    "content_type": "book",
+    "source_type": "gutenberg",
+    "source_name": "Gutendex",
+    "source_url": "https://www.gutenberg.org/ebooks/37134",
+    "author_or_creator": "William Strunk Jr.",
+    "summary": "A classic guide to English writing style and usage.",
+    "domains": ["career"],
+    "tags": ["English language", "Style manuals"],
+    "license_status": "public-domain",
+    "review_status": "pending_review",
+    "published_date": null,
+    "file_path": null,
+    "audio_file_path": null,
+    "sha256_hash": null
+  }
+}
