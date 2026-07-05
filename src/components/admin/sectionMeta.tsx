@@ -6,6 +6,7 @@ import {
   ClockCounterClockwise,
   Kanban,
   ListChecks,
+  ListMagnifyingGlass,
   ShieldCheck,
   UsersThree,
 } from '@phosphor-icons/react'
@@ -19,6 +20,7 @@ export const sectionMeta: Record<AdminSection, { title: string; icon: ReactNode 
   students: { title: 'Students', icon: <UsersThree size={18} weight="bold" /> },
   classes: { title: 'Classes & Batches', icon: <CalendarBlank size={18} weight="bold" /> },
   'jobspy-ops': { title: 'Job Board Ops', icon: <Briefcase size={18} weight="bold" /> },
+  'job-enrichment': { title: 'Job Enrichment', icon: <ListMagnifyingGlass size={18} weight="bold" /> },
   quizzes: { title: 'Quiz Bank', icon: <ListChecks size={18} weight="bold" /> },
   activity: { title: 'Activity Log', icon: <ClockCounterClockwise size={18} weight="bold" /> },
   feedback: { title: 'Student Feedback', icon: <ChatCircle size={18} weight="bold" /> },
