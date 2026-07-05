@@ -19,7 +19,10 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.datetime_utils import format_ist
 from app.models.models import ScrapedJob, User, UserRole
-from app.schemas.job_enrichment_import import JobEnrichmentImportPreviewResponse
+from app.schemas.job_enrichment_import import (
+    JobEnrichmentImportCommitResponse,
+    JobEnrichmentImportPreviewResponse,
+)
 from app.schemas.scraped_jobs import (
     CleanupLinksResponse,
     DigestSummary,
@@ -41,7 +44,10 @@ from app.schemas.scraped_jobs import (
     SendDigestResponse,
     SourceBreakdownItem,
 )
-from app.services.job_enrichment_import import preview_job_enrichment_import
+from app.services.job_enrichment_import import (
+    commit_job_enrichment_import,
+    preview_job_enrichment_import,
+)
 from app.services.job_email import build_digest, send_email
 from app.services.job_link_checker import cleanup_job_links
 from app.services.job_profiles import get_profile
@@ -652,6 +658,27 @@ async def admin_job_enrichment_import_preview(
 
     try:
         return preview_job_enrichment_import(db, raw)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@admin_router.post("/enrichment/import-commit", response_model=JobEnrichmentImportCommitResponse)
+async def admin_job_enrichment_import_commit(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentImportCommitResponse:
+    """Validate and upsert enriched job rows into job_enrichments."""
+    filename = (file.filename or "").strip().lower()
+    if not filename.endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Upload a .csv file")
+
+    raw = await file.read()
+    if not raw.strip():
+        raise HTTPException(status_code=400, detail="CSV file is empty")
+
+    try:
+        return commit_job_enrichment_import(db, raw)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
