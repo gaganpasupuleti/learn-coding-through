@@ -1,6 +1,8 @@
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, computed_field, field_serializer
+
+from app.core.datetime_utils import format_ist, utc_iso_z
 
 
 class AdminStudentResponse(BaseModel):
@@ -17,6 +19,15 @@ class AdminStudentResponse(BaseModel):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+
+    @field_serializer("created_at", "updated_at")
+    def _serialize_utc(self, value: datetime) -> str:
+        return utc_iso_z(value) or ""
+
+    @computed_field
+    @property
+    def created_at_ist(self) -> str | None:
+        return format_ist(self.created_at)
 
     class Config:
         from_attributes = True
@@ -75,6 +86,15 @@ class AdminActivityLogResponse(BaseModel):
     action: str
     details: str | None
     created_at: datetime
+
+    @field_serializer("created_at")
+    def _serialize_utc(self, value: datetime) -> str:
+        return utc_iso_z(value) or ""
+
+    @computed_field
+    @property
+    def created_at_ist(self) -> str | None:
+        return format_ist(self.created_at)
 
     class Config:
         from_attributes = True
@@ -142,6 +162,15 @@ class JobPostResponse(BaseModel):
     applications_count: int
     created_at: datetime
 
+    @field_serializer("created_at")
+    def _serialize_utc(self, value: datetime) -> str:
+        return utc_iso_z(value) or ""
+
+    @computed_field
+    @property
+    def created_at_ist(self) -> str | None:
+        return format_ist(self.created_at)
+
 
 class RoleInsightItem(BaseModel):
     label: str
@@ -163,6 +192,20 @@ class AdminRegistrationWaitlistResponse(BaseModel):
     first_attempted_at: datetime
     last_attempted_at: datetime
 
+    @field_serializer("first_attempted_at", "last_attempted_at")
+    def _serialize_utc(self, value: datetime) -> str:
+        return utc_iso_z(value) or ""
+
+    @computed_field
+    @property
+    def last_attempted_at_ist(self) -> str | None:
+        return format_ist(self.last_attempted_at)
+
+    @computed_field
+    @property
+    def first_attempted_at_ist(self) -> str | None:
+        return format_ist(self.first_attempted_at)
+
     class Config:
         from_attributes = True
 
@@ -181,6 +224,15 @@ class AdminUserActivityResponse(BaseModel):
     duration_ms: int | None
     metadata_json: str | None
     occurred_at: datetime
+
+    @field_serializer("occurred_at")
+    def _serialize_utc(self, value: datetime) -> str:
+        return utc_iso_z(value) or ""
+
+    @computed_field
+    @property
+    def occurred_at_ist(self) -> str | None:
+        return format_ist(self.occurred_at)
 
     class Config:
         from_attributes = True

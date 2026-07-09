@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field, field_serializer
+
+from app.core.datetime_utils import format_ist, utc_iso_z
 
 
 FeedbackCategoryLiteral = Literal["general", "concern", "bug", "suggestion"]
@@ -43,6 +43,20 @@ class AdminFeedbackItem(BaseModel):
     reviewed_by_user_id: int | None
     reviewed_at: datetime | None
     created_at: datetime
+
+    @field_serializer("created_at", "reviewed_at")
+    def _serialize_utc(self, value: datetime | None) -> str | None:
+        return utc_iso_z(value)
+
+    @computed_field
+    @property
+    def created_at_ist(self) -> str | None:
+        return format_ist(self.created_at)
+
+    @computed_field
+    @property
+    def reviewed_at_ist(self) -> str | None:
+        return format_ist(self.reviewed_at)
 
     class Config:
         from_attributes = True

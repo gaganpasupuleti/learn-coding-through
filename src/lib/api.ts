@@ -311,6 +311,7 @@ export interface AdminActivityLog {
   action: string
   details: string | null
   created_at: string
+  created_at_ist?: string | null
 }
 
 export interface AdminPieSlice {
@@ -368,6 +369,8 @@ export interface AdminRegistrationWaitlistEntry {
   attempt_count: number
   first_attempted_at: string
   last_attempted_at: string
+  first_attempted_at_ist?: string | null
+  last_attempted_at_ist?: string | null
 }
 
 export interface AdminUserActivity {
@@ -380,6 +383,7 @@ export interface AdminUserActivity {
   duration_ms: number | null
   metadata_json: string | null
   occurred_at: string
+  occurred_at_ist?: string | null
 }
 
 export interface DatabaseHealth {
@@ -1374,6 +1378,8 @@ export interface AdminFeedbackItem {
   reviewed_by_user_id: number | null
   reviewed_at: string | null
   created_at: string
+  created_at_ist?: string | null
+  reviewed_at_ist?: string | null
 }
 
 export async function submitStudentFeedback(

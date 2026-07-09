@@ -9,7 +9,7 @@ from typing import Any
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.core.datetime_utils import format_ist
+from app.core.datetime_utils import format_ist, ist_date_yyyymmdd
 from app.models.models import JobScrapeRun, ScrapedJob
 
 
@@ -98,7 +98,7 @@ def save_scraped_jobs(
             ingest_profile=job.get("ingestProfile") or profile_key,
         )
         created = row.created_at or datetime.utcnow()
-        date_str = created.strftime("%Y%m%d")
+        date_str = ist_date_yyyymmdd(created)
         if date_str not in next_seq_by_date:
             next_seq_by_date[date_str] = _next_job_id_seq(db, date_str)
         else:

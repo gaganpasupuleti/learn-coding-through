@@ -17,7 +17,7 @@ from app.api.deps import require_jobs_admin
 from app.api.deps import get_optional_user, oauth2_scheme
 from app.core.config import settings
 from app.core.database import get_db
-from app.core.datetime_utils import format_ist
+from app.core.datetime_utils import format_ist, now_utc, to_ist
 from app.models.models import ScrapedJob, User, UserRole
 from app.schemas.job_enrichment import (
     JobEnrichmentListResponse,
@@ -645,7 +645,8 @@ def export_jobs_csv(
         ])
 
     buf.seek(0)
-    filename = f"jobs_export_{datetime.utcnow().strftime('%Y%m%d_%H%M')}.csv"
+    now_ist = to_ist(now_utc())
+    filename = f"jobs_export_{now_ist.strftime('%Y%m%d_%H%M')}_IST.csv"
     return StreamingResponse(
         iter([buf.getvalue()]),
         media_type="text/csv",

@@ -17,6 +17,7 @@ import {
   type EmailPreviewResponse,
   type SendDigestResponse,
 } from '@/lib/jobspy-api'
+import { formatDateTimeISTShort } from '@/lib/formatDateTimeIST'
 
 const EMAIL_MAX_JOBS_OPTIONS = [5, 10, 20, 30, 50] as const
 
@@ -45,19 +46,7 @@ function StatCard({ label, value, hint, accent }: { label: string; value: string
 }
 
 function formatTs(v: string | null | undefined) {
-  if (!v) return '—'
-  const d = new Date(v)
-  return (
-    d.toLocaleString('en-IN', {
-      timeZone: 'Asia/Kolkata',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    }) + ' IST'
-  )
+  return formatDateTimeISTShort(v)
 }
 
 function sourceLabel(s: string) {
