@@ -1,6 +1,6 @@
 # Code Quest — Live Issue Tracker
 
-**Last updated:** 2026-06-27  
+**Last updated:** 2026-06-28  
 **Maintainer:** Update on every phase branch; link PRs and proof artifacts.
 
 This is the **operational** issue list. Strategic sequencing lives in [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md).
@@ -12,12 +12,14 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 | Severity | Open | In progress | Verified fixed |
 | --- | ---: | ---: | ---: |
 | P0 — blocks release/CI | 0 | 0 | 1 |
-| P1 — user-facing / admin | 0 | 0 | 3 |
-| P2 — polish / debt | 3 | 0 | 1 |
+| P1 — user-facing / admin | 0 | 0 | 5 |
+| P2 — polish / debt | 3 | 1 | 1 |
 
-**P1 verified fixed (Jobs/email family):** 24A ingestion, 24B safety modes, 24C Brevo transport, 24E Email Station — see proof table below.
+**P0 verified fixed (CI):** ISSUE-001 Sandbox Smoke — Phase 24D PR #77 + PR #86 Java warm-up; `main` run `28299100814` green.
 
-**P0 verified fixed (CI):** ISSUE-001 Sandbox Smoke — Phase 24D merged (PR #77).
+**P1 verified fixed (Jobs/email family):** 24A–24G ingestion, safety, transport, Email Station, premium digest, Jobs Radar digest.
+
+**In progress:** ISSUE-003 dual-frontend drift — partial relief via 25C shell polish; full fix deferred to continued 25C / 21A.
 
 ---
 
@@ -27,6 +29,7 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 - **Projects section:** no new issues filed for feature requests — section frozen; only P0 production breakages.
 - **Jobs/email:** no live-send issues until `JOB_MAIL_ENABLED` phase; track safety regressions as P0.
 - **Progress Tracker:** no redesign tickets; bug fixes need explicit phase owner.
+- **PR merge safety rule is mandatory** — [CODE_QUEST_ENGINEERING_RULES.md](./CODE_QUEST_ENGINEERING_RULES.md).
 
 ---
 
@@ -37,10 +40,11 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 | Field | Value |
 | --- | --- |
 | **Severity** | P2 |
-| **Status** | Documented / deferred |
+| **Status** | In progress (partial) |
 | **Component** | Main app `:5000` vs frontend-kit `:3000` |
 | **Symptom** | localStorage auth not shared across origins; kit logout not production-grade |
-| **Fix phase** | `phase-21a-auth-logout-wiring`, `phase-25c-frontend-shell-integration` |
+| **Progress** | 25C merged (PR #85) — `StudentShell` + dashboard polish on main app |
+| **Fix phase** | Continued `phase-25c-frontend-shell-integration`, `phase-21a-auth-logout-wiring` |
 | **Proof required** | Single-origin student shell; logout clears session; smoke login/logout |
 
 ---
@@ -51,7 +55,7 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 | --- | --- |
 | **Severity** | P2 (process) |
 | **Status** | **LOCKED** |
-| **Policy** | No new Projects features until frontend master redesign completes |
+| **Policy** | No new Projects features until frontend master redesign completes and Projects explicitly unlocked |
 | **Allowed** | P0 production breakage fixes only, with minimal diff |
 | **Proof required** | Regression smoke: Projects list + ProjectLearningPage load |
 
@@ -73,23 +77,24 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 
 | ID | Title | Phase | Proof |
 | --- | --- | --- | --- |
-| **FIX-24A** | Jobs ingestion + admin refresh + student listing | 24A | PR #74; Railway/local refresh; student Jobs page loads |
-| **FIX-24B** | Email preview, dry_run, test-only, live 403 | 24B | PR #75; `.run/pr-24b-body.md` HTTP table; unit tests |
-| **FIX-24C** | Brevo HTTPS transport | 24C | PR #76; `proof_prod_brevo_output.txt` — test delivered, live blocked, 0 student sends |
-| **FIX-24D** | Sandbox Smoke CI (Java/JVM under `RLIMIT_AS`) | 24D | PR #77 merged (`e0189c8947f71470b34befabd189af5450cf297b`); Actions run `28291205306` — 13/13 `test_sandbox_smoke.py` pass on `ubuntu-latest` |
-| **FIX-24E** | Admin Email Station client-ready digest | 24E | PR #78 merged (`4a18596ec8a847f59168b2effba4fe71d93dd59e`); `proof_prod_24e_output.txt` — preview + summary, dry_run 0 sent, live 403, test `sentCount=1`, student sends 0 |
+| **FIX-24A** | Jobs ingestion + admin refresh + student listing | 24A | PR #74 |
+| **FIX-24B** | Email preview, dry_run, test-only, live 403 | 24B | PR #75 |
+| **FIX-24C** | Brevo HTTPS transport | 24C | PR #76; `proof_prod_brevo_output.txt` |
+| **FIX-24D** | Sandbox Smoke CI (JVM + cold-start flake) | 24D | PR #77 + PR #86; `main` run `28299100814` — 13/13 OK |
+| **FIX-24E** | Admin Email Station client-ready digest | 24E | PR #78; `proof_prod_24e_output.txt` |
+| **FIX-24F** | Premium digest redesign | 24F | PR #81; unit tests + local HTML preview |
+| **FIX-24G** | Jobs Radar portal-style digest | 24G | PR #84; `proof_prod_24g` — 30/30 checks; test `sentCount=1`, student sends **0** |
 
-### ISSUE-001 — Sandbox Smoke CI fails (Java / JDK / RLIMIT_AS) — **VERIFIED FIXED**
+### ISSUE-001 — Sandbox Smoke CI fails (Java cold-start / timeout flake) — **VERIFIED FIXED**
 
 | Field | Value |
 | --- | --- |
 | **Severity** | P0 (was) |
 | **Status** | **Verified fixed** |
 | **Phase** | 24D |
-| **PR** | #77 merged |
-| **Merge commit** | `e0189c8947f71470b34befabd189af5450cf297b` |
-| **Proof** | GitHub Actions run `28291205306` — `Ran 13 tests in 8.064s` → `OK` on `ubuntu-latest` |
-| **Fix** | Java executor skips `RLIMIT_AS` for JVM subprocesses; workflow `JAVA_TOOL_OPTIONS`/`MALLOC_ARENA_MAX` as CI optimization |
+| **PRs** | #77 merged (`RLIMIT_AS` JVM fix); #86 merged (Java toolchain warm-up step) |
+| **Proof** | Post-merge `main` run `28299100814` on commit `4d7a4a0c` — `test_java_compile_error_is_structured … ok`, `Ran 13 tests … OK` |
+| **Fix** | Executor skips `RLIMIT_AS` for JVM; workflow warm-up compiles/runs trivial Java before timed smoke tests |
 
 ### ISSUE-002 — Admin Email Station post-deploy smoke incomplete — **VERIFIED FIXED**
 
@@ -97,12 +102,10 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 | --- | --- |
 | **Severity** | P2 (was) |
 | **Status** | **Verified fixed** |
-| **Phase** | 24E |
-| **PR** | #78 merged |
-| **Merge commit** | `4a18596ec8a847f59168b2effba4fe71d93dd59e` |
-| **Proof** | `proof_prod_24e_output.txt` — preview HTTP 200 + summary counts; dry_run `sentCount=0`; live HTTP 403; test `sentCount=1` to test recipient only; `student_emails_sent: 0` |
-| **Unit tests** | `tests.test_job_email_flow` — 20/20 pass |
-| **Admin UI** | Email Station: preview, summary cards, dry run, test send, live button blocked (`JOB_MAIL_ENABLED=false`) |
+| **Phase** | 24E → 24G |
+| **PRs** | #78, #81, #84 |
+| **Proof** | Production preview 200 + summary; dry_run `sentCount=0`; live 403; test `sentCount=1`; `student_emails_sent: 0` |
+| **Admin UI** | Email Station: Jobs Radar KPI labels, preview, dry run, test send, live blocked |
 
 ---
 
@@ -110,7 +113,8 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 
 | Item | Tracker |
 | --- | --- |
-| Frontend master redesign | [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md) — next: `phase-25b-frontend-redesign-plan` |
+| Docs refresh for Cursor continuity | `phase-25a-project-roadmap-live-tracker` (this phase) |
+| Frontend shell rollout (continued) | [FRONTEND_REDESIGN_MASTER_PLAN.md](./FRONTEND_REDESIGN_MASTER_PLAN.md) — 25C next pages |
 | Library module | [MODULE_BACKLOG.md](./MODULE_BACKLOG.md) |
 | Aptitude module | [MODULE_BACKLOG.md](./MODULE_BACKLOG.md) |
 
@@ -121,15 +125,18 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 | Risk | Issue link | Notes |
 | --- | --- | --- |
 | Sandbox Smoke regression | FIX-24D | Re-run workflow on backend PRs; do not silence tests |
-| Closing email issues without inbox proof | FIX-24C | Keep `student_emails_sent: 0` in proof scripts |
+| Closing email issues without inbox proof | FIX-24C–24G | Keep `student_emails_sent: 0` in proof scripts |
 | Projects scope creep via “small fixes” | ISSUE-004 | Route to MODULE_BACKLOG or post-25c |
+| Stale PR merge | Process | PR merge safety rule — [CODE_QUEST_ENGINEERING_RULES.md](./CODE_QUEST_ENGINEERING_RULES.md) |
 
 ---
 
 ## Next branch order
 
-1. `phase-25b-frontend-redesign-plan` — address ISSUE-003 strategy  
-2. Module foundations per [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md)  
+1. `phase-25a-project-roadmap-live-tracker` — docs (current)  
+2. `phase-25c-frontend-shell-integration` (continued) — next master-plan pages  
+3. `phase-26a-library-module-foundation`  
+4. `phase-27a-aptitude-module-foundation`  
 
 ---
 
@@ -142,26 +149,26 @@ This is the **operational** issue list. Strategic sequencing lives in [PROJECT_R
 - [ ] Proof artifact committed or pasted in PR (`.run/`, `backend/scripts/*_output.txt`, or CI URL)  
 - [ ] No unrelated files (Jobs/email/Progress/Projects unless in scope)  
 - [ ] Roadmap + this file updated in same PR or immediate follow-up  
+- [ ] **PR merge safety** checklist completed before merge  
 
 ### CI (Sandbox Smoke — regression guard)
 
 ```bash
 python -m unittest discover -s backend/tests -p "test_sandbox_smoke.py" -v
-# Expect: 13 tests, 0 failures, on ubuntu-latest (verified run 28291205306)
+# Expect: 13 tests, 0 failures, on ubuntu-latest
+# Verified main: Actions run 28299100814
 ```
 
 ### Jobs/email regression (any backend touch near jobs)
 
 ```bash
 cd backend && python -m unittest tests.test_job_email_flow -v
-# Optional production: python scripts/proof_prod_24e.py (secrets via env only)
 ```
 
-### Frontend (ISSUE-002, redesign)
+### Frontend (redesign)
 
 ```bash
 npm run dev:all
-# Manual: Admin → Job Refresh → Email Station — preview, dry run, test, live blocked
 npm run qa:practice-smoke   # when student routes touched
 ```
 
@@ -184,4 +191,4 @@ npm run qa:practice-smoke   # when student routes touched
 
 ---
 
-_Related: [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md) · [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md) · [MODULE_BACKLOG.md](./MODULE_BACKLOG.md)_
+_Related: [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md) · [FRONTEND_REDESIGN_RULES.md](./FRONTEND_REDESIGN_RULES.md) · [MODULE_BACKLOG.md](./MODULE_BACKLOG.md) · [CODE_QUEST_ENGINEERING_RULES.md](./CODE_QUEST_ENGINEERING_RULES.md)_
