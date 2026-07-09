@@ -1,5 +1,5 @@
 from datetime import date, datetime, time, timedelta
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from fastapi.responses import JSONResponse, Response
@@ -318,7 +318,7 @@ def get_metrics(
 ):
     total_students = db.query(User).filter(User.role == UserRole.STUDENT).count()
     total_admins = db.query(User).filter(
-        User.role.in_((UserRole.ADMIN.value, UserRole.SUPER_ADMIN.value))
+        or_(User.role == UserRole.ADMIN, User.role == UserRole.SUPER_ADMIN)
     ).count()
     active_students = db.query(User).filter(User.role == UserRole.STUDENT, User.is_active.is_(True)).count()
     inactive_students = db.query(User).filter(User.role == UserRole.STUDENT, User.is_active.is_(False)).count()
@@ -623,7 +623,7 @@ def get_platform_overview(
     total_users = db.query(User).count()
     active_users = db.query(User).filter(User.is_active.is_(True)).count()
     total_admins = db.query(User).filter(
-        User.role.in_((UserRole.ADMIN.value, UserRole.SUPER_ADMIN.value))
+        or_(User.role == UserRole.ADMIN, User.role == UserRole.SUPER_ADMIN)
     ).count()
 
     total_batches = db.query(LearningBatch).count()
