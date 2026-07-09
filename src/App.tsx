@@ -58,6 +58,10 @@ import {
 
   getStoredUser,
 
+  getAuthToken,
+
+  clearAuth,
+
   isDemoUser,
 
   type AuthUser,
@@ -206,6 +210,8 @@ function App() {
 
   const [authState, setAuthState] = useState<AuthState>(() => getStoredUser())
 
+  const [authChecked, setAuthChecked] = useState(() => getStoredUser() === null)
+
   const [studentPage, setStudentPage] = useState<StudentPage>('dashboard')
 
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
@@ -230,6 +236,8 @@ function App() {
 
   const handleLogout = () => {
 
+    clearAuth()
+
     setAuthState(null)
 
     setStudentPage('dashboard')
@@ -239,6 +247,68 @@ function App() {
     toast.success('Logged out successfully.')
 
   }
+
+
+
+  useEffect(() => {
+
+    const storedUser = getStoredUser()
+
+    if (!storedUser) {
+
+      setAuthChecked(true)
+
+      return
+
+    }
+
+    const token = getAuthToken()
+
+    if (!token) {
+
+      clearAuth()
+
+      setAuthState(null)
+
+      setAuthChecked(true)
+
+      return
+
+    }
+
+    let cancelled = false
+
+    void fetchCurrentUser(token).then((currentUser) => {
+
+      if (cancelled) return
+
+      if (!currentUser) {
+
+        clearAuth()
+
+        setAuthState(null)
+
+        toast.error('Your session expired. Please sign in again.')
+
+      } else {
+
+        storeUser(currentUser)
+
+        setAuthState(currentUser)
+
+      }
+
+      setAuthChecked(true)
+
+    })
+
+    return () => {
+
+      cancelled = true
+
+    }
+
+  }, [])
 
 
 
@@ -460,6 +530,26 @@ function App() {
 
 
 
+  if (!authChecked) {
+
+    return (
+
+      <div className={wrapperClass}>
+
+        <div className="flex min-h-screen items-center justify-center bg-[#050807] px-6 text-center text-sm font-medium text-[#FAF3E0]/70">
+
+          Checking your CodeQuest session…
+
+        </div>
+
+      </div>
+
+    )
+
+  }
+
+
+
   if (!authState) {
 
     return (
@@ -533,6 +623,8 @@ function App() {
       <StudentShell
 
         currentPage={studentPage === 'learning' ? 'projects' : studentPage}
+
+        canvasVariant={studentPage === 'dashboard' ? 'mission-control' : 'default'}
 
         user={user}
 

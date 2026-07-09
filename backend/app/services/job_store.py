@@ -17,12 +17,8 @@ from app.models.models import JobScrapeRun, ScrapedJob
 # job_id generation
 # ---------------------------------------------------------------------------
 
-def _next_job_id(db: Session, date_str: str) -> str:
-    """
-    Return the next available CQJ-YYYYMMDD-NNNN for the given date string.
-    Thread-safe within a single DB session (SQLite single-writer, Postgres uses
-    the unique constraint as the collision guard).
-    """
+def _next_job_id_seq(db: Session, date_str: str) -> int:
+    """Next sequence number for CQJ-YYYYMMDD-NNNN (reads committed rows only)."""
     prefix = f"CQJ-{date_str}-"
     existing = (
         db.query(ScrapedJob.job_id)
@@ -36,7 +32,11 @@ def _next_job_id(db: Session, date_str: str) -> str:
                 max_seq = max(max_seq, int(jid.rsplit("-", 1)[-1]))
             except ValueError:
                 pass
-    return f"{prefix}{max_seq + 1:04d}"
+    return max_seq + 1
+
+
+def _format_job_id(date_str: str, seq: int) -> str:
+    return f"CQJ-{date_str}-{seq:04d}"
 
 
 def scraped_job_to_dict(row: ScrapedJob) -> dict[str, Any]:
@@ -72,6 +72,8 @@ def save_scraped_jobs(
     """Insert new jobs, skip duplicates. Returns (saved_count, skipped_duplicates)."""
     saved = 0
     skipped = 0
+    # ponytail: bump in-memory per date — unflushed rows are invisible to _next_job_id_seq.
+    next_seq_by_date: dict[str, int] = {}
     for job in jobs:
         existing = db.query(ScrapedJob).filter(ScrapedJob.id == job["id"]).first()
         if existing:
@@ -95,10 +97,13 @@ def save_scraped_jobs(
             link_status="active",
             ingest_profile=job.get("ingestProfile") or profile_key,
         )
-        # Assign a stable public job_id before insert
         created = row.created_at or datetime.utcnow()
         date_str = created.strftime("%Y%m%d")
-        row.job_id = _next_job_id(db, date_str)
+        if date_str not in next_seq_by_date:
+            next_seq_by_date[date_str] = _next_job_id_seq(db, date_str)
+        else:
+            next_seq_by_date[date_str] += 1
+        row.job_id = _format_job_id(date_str, next_seq_by_date[date_str])
         db.add(row)
         saved += 1
     if saved:
