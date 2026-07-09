@@ -317,7 +317,9 @@ def get_metrics(
     _: User = Depends(require_admin),
 ):
     total_students = db.query(User).filter(User.role == UserRole.STUDENT).count()
-    total_admins = db.query(User).filter(User.role.in_((UserRole.ADMIN, UserRole.SUPER_ADMIN))).count()
+    total_admins = db.query(User).filter(
+        User.role.in_((UserRole.ADMIN.value, UserRole.SUPER_ADMIN.value))
+    ).count()
     active_students = db.query(User).filter(User.role == UserRole.STUDENT, User.is_active.is_(True)).count()
     inactive_students = db.query(User).filter(User.role == UserRole.STUDENT, User.is_active.is_(False)).count()
 
@@ -620,7 +622,9 @@ def get_platform_overview(
 
     total_users = db.query(User).count()
     active_users = db.query(User).filter(User.is_active.is_(True)).count()
-    total_admins = db.query(User).filter(User.role.in_((UserRole.ADMIN, UserRole.SUPER_ADMIN))).count()
+    total_admins = db.query(User).filter(
+        User.role.in_((UserRole.ADMIN.value, UserRole.SUPER_ADMIN.value))
+    ).count()
 
     total_batches = db.query(LearningBatch).count()
     active_batches = 0
