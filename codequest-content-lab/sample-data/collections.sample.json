@@ -1,5 +1,5 @@
 {
-  "_note": "Mock learning path collection records. Items reference sample IDs from articles.sample.json, books.sample.json, and papers.sample.json.",
+  "_note": "Mock learning path collection records. Items reference sample IDs from articles.sample.json, books.sample.json, papers.sample.json, and curated-external-links.sample.json.",
   "_rules": [
     "Collections contain only approved content items.",
     "Position field defines the reading order within the collection.",
@@ -61,6 +61,26 @@
       "items": [
         { "position": 1, "content_item_id": "book-001", "note": "Strong writing is essential for professional communication." },
         { "position": 2, "content_item_id": "book-004", "note": "Strategic thinking applies directly to career planning." }
+      ]
+    },
+    {
+      "id": "col-005",
+      "title": "Free Programming & Data Science Resources",
+      "slug": "free-programming-data-science-resources",
+      "description": "Curated GitHub lists and open curricula — books, courses, tutorials and self-study paths. Link-only; no content hosted in Code Quest.",
+      "domain": "data-science",
+      "difficulty_level": "beginner",
+      "status": "published",
+      "created_by": "admin-001",
+      "items": [
+        { "position": 1, "content_item_id": "link-001", "note": "Best overall starting point for free programming books and courses." },
+        { "position": 2, "content_item_id": "link-002", "note": "Hands-on Python data science with notebooks." },
+        { "position": 3, "content_item_id": "link-003", "note": "Data science and statistics book list." },
+        { "position": 4, "content_item_id": "link-004", "note": "Broader data-science topic index." },
+        { "position": 5, "content_item_id": "link-005", "note": "ML and statistics books section." },
+        { "position": 6, "content_item_id": "link-006", "note": "Full CS self-study curriculum." },
+        { "position": 7, "content_item_id": "link-007", "note": "Structured data-science degree path." },
+        { "position": 8, "content_item_id": "link-008", "note": "University CS courses with materials." }
       ]
     }
   ]

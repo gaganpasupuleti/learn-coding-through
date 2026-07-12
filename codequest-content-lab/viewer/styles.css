@@ -5,6 +5,8 @@
   --card-book: #dbeafe;
   --card-article: #dcfce7;
   --card-audio: #fce7f3;
+  --card-link: #fef3c7;
+  --card-notes: #ede9fe;
   --text: #0a1020;
   --muted: #5c6478;
   --border: rgba(10, 16, 32, 0.12);
@@ -156,6 +158,8 @@ select:focus {
 .card--book { border-top: 4px solid #3b82f6; background: linear-gradient(180deg, var(--card-book) 0%, #fff 40%); }
 .card--article { border-top: 4px solid #22c55e; background: linear-gradient(180deg, var(--card-article) 0%, #fff 40%); }
 .card--audiobook { border-top: 4px solid #ec4899; background: linear-gradient(180deg, var(--card-audio) 0%, #fff 40%); }
+.card--external-link { border-top: 4px solid #f59e0b; background: linear-gradient(180deg, var(--card-link) 0%, #fff 40%); }
+.card--notes { border-top: 4px solid #8b5cf6; background: linear-gradient(180deg, var(--card-notes) 0%, #fff 40%); }
 
 .card__meta {
   display: flex;

@@ -427,6 +427,42 @@
         "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
         "sample_item_fields": ["title", "openalex_id", "abstract", "license_type", "review_status"]
       }
+    },
+    {
+      "id": "conn-curated-github-001",
+      "source_name": "Curated GitHub Resources",
+      "source_type": "manual",
+      "repo_or_api_name": "Admin-maintained external-link registry",
+      "content_types": ["external-link"],
+      "purpose": "Hand-curated awesome-list and open-curriculum links (books, courses, tutorials). No repo ingestion.",
+      "allowed_content": ["title", "admin-written summary", "source_url", "domain", "tags", "curator attribution"],
+      "forbidden_content": ["forking upstream repos", "merging list contents", "downloading linked books or course files", "scraping GitHub markdown bodies"],
+      "license_safety_rule": "license_type=no-full-text; outbound links only; each linked resource keeps its own license",
+      "fork_merge_decision": "Do not fork. Do not merge.",
+      "mvp_priority": "P0",
+      "status": "active-sample",
+      "config": {
+        "sample_data_file": "sample-data/curated-external-links.sample.json",
+        "auto_ingest": false,
+        "domain": "data-science"
+      },
+      "future_ingestion_fields": [
+        "external_id",
+        "title",
+        "summary",
+        "source_url",
+        "author_or_creator",
+        "content_type",
+        "source_type",
+        "license_type",
+        "domain",
+        "tags",
+        "review_status"
+      ],
+      "output_proof_required": {
+        "counts": ["source_count", "imported_count", "skipped_duplicate_count", "rejected_unsafe_count", "downloaded_file_count"],
+        "sample_item_fields": ["title", "summary", "source_url", "license_type", "review_status"]
+      }
     }
   ]
 }

@@ -119,3 +119,22 @@ Book and ebook connectors target **confirmed public-domain or open-license** wor
 | Full text in DB | Only after confirmed PD + approved download phase |
 
 See [SOURCE_PRIORITY_MVP.md](./SOURCE_PRIORITY_MVP.md) for rollout order.
+
+---
+
+## Curated GitHub resource lists (external-link)
+
+Admin-curated awesome-list and open-curriculum hubs. Stored as **`external-link`** items in `sample-data/curated-external-links.sample.json` — title, summary, and outbound URL only.
+
+| Field | Value |
+|---|---|
+| **source_name** | Curated GitHub Resources |
+| **source_type** | `manual` |
+| **content_types** | `external-link` |
+| **allowed_content** | Title, admin summary, `source_url`, domain, tags, curator name |
+| **forbidden_content** | Forking or merging upstream repos; scraping list markdown; downloading linked books or course files |
+| **license_safety_rule** | `license_type = no-full-text`; each outbound resource keeps its own license |
+| **fork_merge_decision** | **Do not fork. Do not merge.** |
+| **mvp_priority** | **P0** — sample data active in lab viewer |
+
+Initial curated links include Free Programming Books, Python Data Science Handbook, OSSU CS/DS curricula, and related awesome lists. Collection: **Free Programming & Data Science Resources** (`col-005` in `collections.sample.json`).
