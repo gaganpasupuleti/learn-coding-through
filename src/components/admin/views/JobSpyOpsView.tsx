@@ -159,7 +159,7 @@ export function JobSpyOpsView() {
       return
     }
     const label =
-      stats?.profileBreakdown.find((p) => p.profile === refreshProfile)?.label ?? refreshProfile
+      stats?.profileBreakdown?.find((p) => p.profile === refreshProfile)?.label ?? refreshProfile
     setRefreshing(refreshProfile)
     try {
       const res = await jobspyApi.refreshJobs(
@@ -315,7 +315,7 @@ export function JobSpyOpsView() {
         </section>
 
         {/* Scrape family KPIs */}
-        {stats && stats.profileBreakdown.length > 0 && (
+        {stats && (stats.profileBreakdown?.length ?? 0) > 0 && (
           <section className="rounded-2xl border border-blue-200 bg-blue-50/40 p-5 shadow-sm space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="font-semibold text-blue-950">Scrape families (active jobs)</h3>
@@ -347,7 +347,7 @@ export function JobSpyOpsView() {
         )}
 
         {/* Enriched role family KPIs */}
-        {stats && stats.enrichmentRoleSummary.length > 0 && (
+        {stats && (stats.enrichmentRoleSummary?.length ?? 0) > 0 && (
           <section className="rounded-2xl border border-violet-200 bg-violet-50/40 p-5 shadow-sm space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="font-semibold text-violet-950">Enriched role families</h3>
@@ -572,7 +572,7 @@ export function JobSpyOpsView() {
                     }}
                   >
                     <option value="all">All scrape families</option>
-                    {stats.profileBreakdown.map((p) => (
+                    {(stats.profileBreakdown ?? []).map((p) => (
                       <option key={p.profile} value={p.profile}>{p.label} ({p.count})</option>
                     ))}
                   </select>
@@ -589,14 +589,14 @@ export function JobSpyOpsView() {
                     }}
                   >
                     <option value="all">All enriched roles</option>
-                    {stats.enrichmentRoleSummary.map((r) => (
+                    {(stats.enrichmentRoleSummary ?? []).map((r) => (
                       <option key={r.roleId} value={r.roleId}>{r.roleName} ({r.count})</option>
                     ))}
                   </select>
                 </div>
               </div>
             </div>
-            {stats.latestJobs.length > 0 ? (
+            {(stats.latestJobs?.length ?? 0) > 0 ? (
             <table className="w-full text-sm text-left">
               <thead>
                 <tr className="border-b text-slate-500">
@@ -615,7 +615,7 @@ export function JobSpyOpsView() {
                     <td className="py-2 pr-3 font-medium max-w-[200px] truncate">{j.title}</td>
                     <td className="py-2 pr-3 text-slate-600">{j.company ?? '—'}</td>
                     <td className="py-2 pr-3 text-slate-600 whitespace-nowrap">
-                      {profileKeyLabel(j.ingestProfile, stats.profileBreakdown)}
+                      {profileKeyLabel(j.ingestProfile, stats.profileBreakdown ?? [])}
                     </td>
                     <td className="py-2 pr-3 text-slate-600 max-w-[140px] truncate" title={j.actualRoleName ?? undefined}>
                       {j.actualRoleName ?? '—'}

@@ -606,17 +606,28 @@ export const jobspyApi = {
       body: JSON.stringify(body),
     }),
 
-  getJobStats: (adminKey: string, params?: { days?: number; limit?: number; profile?: string; roleId?: string }) => {
+  getJobStats: async (adminKey: string, params?: { days?: number; limit?: number; profile?: string; roleId?: string }) => {
     const qs = new URLSearchParams()
     if (params?.days) qs.set('days', String(params.days))
     if (params?.limit) qs.set('limit', String(params.limit))
     if (params?.profile) qs.set('profile', params.profile)
     if (params?.roleId) qs.set('roleId', params.roleId)
     const query = qs.toString()
-    return jobspyRequest<JobStatsResponse>(
+    const data = await jobspyRequest<JobStatsResponse>(
       `/api/admin/jobs/stats${query ? `?${query}` : ''}`,
       { headers: adminHeaders(adminKey) },
     )
+    // ponytail: old backend builds omit new stats fields; default empty arrays here once.
+    return {
+      ...data,
+      profileBreakdown: data.profileBreakdown ?? [],
+      enrichmentRoleSummary: data.enrichmentRoleSummary ?? [],
+      latestJobs: data.latestJobs ?? [],
+      expiredJobSamples: data.expiredJobSamples ?? [],
+      recentScrapeRuns: data.recentScrapeRuns ?? [],
+      sourceBreakdown: data.sourceBreakdown ?? [],
+      locationBreakdown: data.locationBreakdown ?? [],
+    }
   },
 
   refreshJobs: (body: RefreshRequestBody, adminKey: string) =>
