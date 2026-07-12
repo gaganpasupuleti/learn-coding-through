@@ -1,0 +1,135 @@
+{
+  "id": "project-csv-to-warehouse-batch-pipeline",
+  "title": "Project Report: CSV-to-Warehouse Batch Pipeline — Data Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "data-engineer",
+  "family_name": "Data Engineer",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "CSV-to-Warehouse Batch Pipeline",
+  "project_index": 1,
+  "duration": "2 weeks",
+  "summary": "Python ETL script: extract CSV, transform with pandas, load to PostgreSQL with logging.",
+  "objectives": [
+    "Extract from CSV/API",
+    "Transform and validate",
+    "Load to PostgreSQL",
+    "Idempotent daily run"
+  ],
+  "tools": [
+    "Python",
+    "pandas",
+    "PostgreSQL"
+  ],
+  "deliverables": [
+    "Pipeline script",
+    "SQL DDL",
+    "Run log sample"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**CSV-to-Warehouse Batch Pipeline** is a beginner-level end-to-end project for Data Engineer. Duration: 2 weeks. Python ETL script: extract CSV, transform with pandas, load to PostgreSQL with logging. Tools: Python, pandas, PostgreSQL.\n\nCode Reference:\n```text\nObjective: Extract from CSV/API\nObjective: Transform and validate\nObjective: Load to PostgreSQL\nObjective: Idempotent daily run\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nData Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Data Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Data Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Data Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Data Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Extract",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Extract** *(Level: Beginner)*\n\nRead CSV with pandas. Complete these tasks: Schema detection; Error rows. Deliverable for this phase: Raw landing table.\n\nCode Reference:\n```text\n- [ ] Schema detection\n- [ ] Error rows\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Extract is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nData Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Raw landing table to the teacher.",
+      "key_takeaways": [
+        "Phase Extract is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Raw landing table to the teacher."
+      ],
+      "what_it_is": "Phase Extract is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Data Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Raw landing table to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Transform",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Transform** *(Level: Beginner)*\n\nClean and enrich. Complete these tasks: Dedup; Type cast. Deliverable for this phase: Staging table.\n\nCode Reference:\n```text\n- [ ] Dedup\n- [ ] Type cast\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Transform is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nData Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Staging table to the teacher.",
+      "key_takeaways": [
+        "Phase Transform is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Staging table to the teacher."
+      ],
+      "what_it_is": "Phase Transform is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Data Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Staging table to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Load",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Load** *(Level: Beginner)*\n\nUpsert to warehouse. Complete these tasks: ON CONFLICT; Transaction. Deliverable for this phase: Final table populated.\n\nCode Reference:\n```text\n- [ ] ON CONFLICT\n- [ ] Transaction\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Load is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nData Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Final table populated to the teacher.",
+      "key_takeaways": [
+        "Phase Load is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Final table populated to the teacher."
+      ],
+      "what_it_is": "Phase Load is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Data Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Final table populated to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Schedule",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Schedule** *(Level: Beginner)*\n\nCron + logging. Complete these tasks: Log rotation; Alert on fail. Deliverable for this phase: Scheduled job running.\n\nCode Reference:\n```text\n- [ ] Log rotation\n- [ ] Alert on fail\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Schedule is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nData Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Scheduled job running to the teacher.",
+      "key_takeaways": [
+        "Phase Schedule is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Scheduled job running to the teacher."
+      ],
+      "what_it_is": "Phase Schedule is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Data Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Scheduled job running to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: Pipeline script; SQL DDL; Run log sample. Skills demonstrated: ETL, Python, SQL. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Pipeline script\nDeliverable: SQL DDL\nDeliverable: Run log sample\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Pipeline script and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Pipeline script and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Pipeline script and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

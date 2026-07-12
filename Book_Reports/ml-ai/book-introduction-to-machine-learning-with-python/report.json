@@ -1,0 +1,140 @@
+{
+  "id": "book-introduction-to-machine-learning-with-python",
+  "title": "Study Report: Introduction to Machine Learning with Python — ML / AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "ml-ai",
+  "family_name": "ML / AI Engineer",
+  "level": "Beginner",
+  "report_type": "role_book_study",
+  "book_title": "Introduction to Machine Learning with Python",
+  "book_author": "Andreas Müller & Sarah Guido",
+  "book_index": 1,
+  "summary": "Study report for *Introduction to Machine Learning with Python* by Andreas Müller & Sarah Guido (Beginner level) mapped to the ML / AI Engineer role. scikit-learn workflow: preprocessing, models, and evaluation.",
+  "sources": [
+    "https://www.oreilly.com/library/view/introduction-to-machine/9781449369880/",
+    "Book_Reports/06-machine-learning/study-report-introduction-to-machine-learning-with-python-a-guide-for/report.json"
+  ],
+  "source_file": "Reference: Introduction to Machine Learning with Python — Andreas Müller & Sarah Guido",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Introduction to Machine Learning with Python",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Introduction to Machine Learning with Python** *(Level: Beginner)*\n\nThis study report summarizes *Introduction to Machine Learning with Python* by Andreas Müller & Sarah Guido for the ML / AI Engineer role. The resource is rated Beginner level. scikit-learn workflow: preprocessing, models, and evaluation. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Introduction to Machine Learning with Python\n# Author: Andreas Müller & Sarah Guido\n# Role: ML / AI Engineer\n# Level: Beginner\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Introduction to Machine Learning with Python.\n\n### When to use it\nWhen learning ML / AI Engineer skills at Beginner level.\n\n### Where to use it\nML / AI Engineer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Introduction to Machine Learning with Python.",
+        "When learning ML / AI Engineer skills at Beginner level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Introduction to Machine Learning with Python.",
+      "when_to_use": "When learning ML / AI Engineer skills at Beginner level.",
+      "where_to_use": "ML / AI Engineer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Beginner)*\n\nML / AI Engineer professionals use ideas from Introduction to Machine Learning with Python to solve real workplace problems. scikit-learn workflow: preprocessing, models, and evaluation. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: ML / AI Engineer\nBook focus: scikit-learn workflow: preprocessing, models, and evaluation.\nRecommended level: Beginner\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nML / AI Engineer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a beginner skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a beginner skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "ML / AI Engineer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a beginner skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Beginner)*\n\nThe main topics in Introduction to Machine Learning with Python include practical concepts described as: scikit-learn workflow: preprocessing, models, and evaluation. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in ML / AI Engineer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: ML/AI Engineer Role in 2024-2026",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: ML/AI Engineer Role in 2024-2026** *(Level: Beginner)*\n\nML engineers ship models to production — not just notebook accuracy. You own features, training, evaluation, deployment, and monitoring. LLM tooling augments feature work but classical ML remains core for tabular prediction, ranking, and fraud.\n\nCode Reference:\n```python\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\n\npipe = Pipeline([('scale', StandardScaler()), ('clf', LogisticRegression())])\n```\nWhat it shows: Pipeline chains preprocessing and model — prevents train-serve skew.\n\n### What it actually is\nAn ML engineer builds and operates predictive systems in production.\n\n### When to use it\nWhen rules-based systems fail at scale or personalization is needed.\n\n### Where to use it\nRecommendations, churn, fraud, demand forecast, and ed-tech risk scoring.\n\n### Real use example\nCodeQuest predicts which students need nudges — you own the weekly retrain job.",
+      "key_takeaways": [
+        "An ML engineer builds and operates predictive systems in production.",
+        "When rules-based systems fail at scale or personalization is needed.",
+        "CodeQuest predicts which students need nudges — you own the weekly retrain job."
+      ],
+      "what_it_is": "An ML engineer builds and operates predictive systems in production.",
+      "when_to_use": "When rules-based systems fail at scale or personalization is needed.",
+      "where_to_use": "Recommendations, churn, fraud, demand forecast, and ed-tech risk scoring.",
+      "real_use_example": "CodeQuest predicts which students need nudges — you own the weekly retrain job."
+    },
+    {
+      "number": 5,
+      "title": "Applied: scikit-learn Pipelines",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: scikit-learn Pipelines** *(Level: Beginner)*\n\nPipelines bundle preprocessing and estimators. Fit on train only; transform val/test to prevent leakage. ColumnTransformer applies different steps per column type.\n\nCode Reference:\n```python\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.preprocessing import OneHotEncoder\nfrom sklearn.impute import SimpleImputer\n\nnum_pipe = Pipeline([('impute', SimpleImputer()), ('scale', StandardScaler())])\npreprocess = ColumnTransformer([('num', num_pipe, num_cols), ('cat', OneHotEncoder(), cat_cols)])\n```\nWhat it shows: ColumnTransformer keeps numeric and categorical handling explicit.\n\n### What it actually is\nsklearn Pipelines standardize reproducible ML workflows.\n\n### When to use it\nEvery tabular ML project before custom deep learning.\n\n### Where to use it\nMarketing uplift, credit scoring, and maintenance prediction.\n\n### Real use example\nOne Pipeline.pkl deployed to API — training and serving use identical transforms.",
+      "key_takeaways": [
+        "sklearn Pipelines standardize reproducible ML workflows.",
+        "Every tabular ML project before custom deep learning.",
+        "One Pipeline."
+      ],
+      "what_it_is": "sklearn Pipelines standardize reproducible ML workflows.",
+      "when_to_use": "Every tabular ML project before custom deep learning.",
+      "where_to_use": "Marketing uplift, credit scoring, and maintenance prediction.",
+      "real_use_example": "One Pipeline.pkl deployed to API — training and serving use identical transforms."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Train/Validation/Test Splits",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Train/Validation/Test Splits** *(Level: Beginner)*\n\nHoldout test set is touched once. Validation tunes hyperparameters. Use stratified splits for imbalanced classes; TimeSeriesSplit for temporal data.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)\n```\nWhat it shows: stratify preserves class ratio in both splits.\n\n### What it actually is\nProper splits estimate real-world generalization.\n\n### When to use it\nBefore any metric comparison or model selection.\n\n### Where to use it\nAll supervised learning projects.\n\n### Real use example\nTuning on test by mistake inflated AUC — validation split catches overfitting.",
+      "key_takeaways": [
+        "Proper splits estimate real-world generalization.",
+        "Before any metric comparison or model selection.",
+        "Tuning on test by mistake inflated AUC — validation split catches overfitting."
+      ],
+      "what_it_is": "Proper splits estimate real-world generalization.",
+      "when_to_use": "Before any metric comparison or model selection.",
+      "where_to_use": "All supervised learning projects.",
+      "real_use_example": "Tuning on test by mistake inflated AUC — validation split catches overfitting."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Beginner)*\n\nFinish Introduction to Machine Learning with Python with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to ML / AI Engineer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a beginner project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a beginner project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a beginner project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

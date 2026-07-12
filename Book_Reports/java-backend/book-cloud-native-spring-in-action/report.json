@@ -1,0 +1,139 @@
+{
+  "id": "book-cloud-native-spring-in-action",
+  "title": "Study Report: Cloud Native Spring in Action — Java Backend Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "java-backend",
+  "family_name": "Java Backend Developer",
+  "level": "Advanced",
+  "report_type": "role_book_study",
+  "book_title": "Cloud Native Spring in Action",
+  "book_author": "Thomas Vitale",
+  "book_index": 5,
+  "summary": "Study report for *Cloud Native Spring in Action* by Thomas Vitale (Advanced level) mapped to the Java Backend Developer role. Microservices, Kubernetes, and cloud-native Spring patterns.",
+  "sources": [
+    "https://www.manning.com/books/cloud-native-spring-in-action"
+  ],
+  "source_file": "Reference: Cloud Native Spring in Action — Thomas Vitale",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Cloud Native Spring in Action",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Cloud Native Spring in Action** *(Level: Advanced)*\n\nThis study report summarizes *Cloud Native Spring in Action* by Thomas Vitale for the Java Backend Developer role. The resource is rated Advanced level. Microservices, Kubernetes, and cloud-native Spring patterns. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Cloud Native Spring in Action\n# Author: Thomas Vitale\n# Role: Java Backend Developer\n# Level: Advanced\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Cloud Native Spring in Action.\n\n### When to use it\nWhen learning Java Backend Developer skills at Advanced level.\n\n### Where to use it\nJava Backend Developer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Cloud Native Spring in Action.",
+        "When learning Java Backend Developer skills at Advanced level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Cloud Native Spring in Action.",
+      "when_to_use": "When learning Java Backend Developer skills at Advanced level.",
+      "where_to_use": "Java Backend Developer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Advanced)*\n\nJava Backend Developer professionals use ideas from Cloud Native Spring in Action to solve real workplace problems. Microservices, Kubernetes, and cloud-native Spring patterns. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Java Backend Developer\nBook focus: Microservices, Kubernetes, and cloud-native Spring patterns.\nRecommended level: Advanced\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nJava Backend Developer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a advanced skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a advanced skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Java Backend Developer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a advanced skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Advanced",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Advanced)*\n\nThe main topics in Cloud Native Spring in Action include practical concepts described as: Microservices, Kubernetes, and cloud-native Spring patterns. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Java Backend Developer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Kubernetes Deployment for Java Services",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Kubernetes Deployment for Java Services** *(Level: Advanced)*\n\nKubernetes schedules pods across nodes with declarative Deployments and Services. Probes (liveness, readiness, startup) integrate with Spring Actuator health endpoints. Resource requests/limits prevent noisy neighbors and enable autoscaling. Ingress controllers terminate TLS and route hostnames to backend services.\n\nCode Reference:\n```yaml\nlivenessProbe:\n  httpGet:\n    path: /actuator/health/liveness\n    port: 8080\n  initialDelaySeconds: 30\nreadinessProbe:\n  httpGet:\n    path: /actuator/health/readiness\n    port: 8080\n```\nWhat it shows: Liveness restarts unhealthy pods; readiness removes pods from load balancing until ready.\n\n### What it actually is\nKubernetes orchestrates containerized workloads with self-healing and horizontal scaling.\n\n### When to use it\nUse when running multiple Java microservices that need automated rollout and scaling.\n\n### Where to use it\nCloud-native production environments on AWS EKS, GKE, Azure AKS, or on-prem clusters.\n\n### Real use example\nBlack Friday traffic triggers HPA to scale order-service from 3 to 30 pods automatically.",
+      "key_takeaways": [
+        "Kubernetes orchestrates containerized workloads with self-healing and horizontal scaling.",
+        "Use when running multiple Java microservices that need automated rollout and scaling.",
+        "Black Friday traffic triggers HPA to scale order-service from 3 to 30 pods automatically."
+      ],
+      "what_it_is": "Kubernetes orchestrates containerized workloads with self-healing and horizontal scaling.",
+      "when_to_use": "Use when running multiple Java microservices that need automated rollout and scaling.",
+      "where_to_use": "Cloud-native production environments on AWS EKS, GKE, Azure AKS, or on-prem clusters.",
+      "real_use_example": "Black Friday traffic triggers HPA to scale order-service from 3 to 30 pods automatically."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Event-Driven Architecture with Kafka",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Event-Driven Architecture with Kafka** *(Level: Advanced)*\n\nEvents capture facts that happened (OrderPlaced) rather than commands (CreateOrder). Kafka provides durable, partitioned logs with consumer groups for parallel processing. Idempotent consumers and exactly-once semantics require careful offset and key design. Schema Registry enforces Avro/JSON schema evolution across producer and consumer teams.\n\nCode Reference:\n```java\n@KafkaListener(topics = \"orders\", groupId = \"inventory-service\")\npublic void onOrderPlaced(OrderPlacedEvent event) {\n    inventoryService.reserve(event.orderId(), event.lines());\n}\n```\nWhat it shows: Listener consumes order events; groupId ensures each message processed once per consumer group.\n\n### What it actually is\nEvent-driven systems decouple services through asynchronous, durable message streams.\n\n### When to use it\nUse when workflows span teams, require replay, or tolerate eventual consistency.\n\n### Where to use it\nOrder fulfillment, notification pipelines, audit logs, and CDC-driven integrations.\n\n### Real use example\nInventory service replays last week's events to rebuild stock state after a bug fix.",
+      "key_takeaways": [
+        "Event-driven systems decouple services through asynchronous, durable message streams.",
+        "Use when workflows span teams, require replay, or tolerate eventual consistency.",
+        "Inventory service replays last week's events to rebuild stock state after a bug fix."
+      ],
+      "what_it_is": "Event-driven systems decouple services through asynchronous, durable message streams.",
+      "when_to_use": "Use when workflows span teams, require replay, or tolerate eventual consistency.",
+      "where_to_use": "Order fulfillment, notification pipelines, audit logs, and CDC-driven integrations.",
+      "real_use_example": "Inventory service replays last week's events to rebuild stock state after a bug fix."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Distributed Tracing and Observability",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Distributed Tracing and Observability** *(Level: Advanced)*\n\nMicrometer exports metrics; OpenTelemetry traces requests across service boundaries. Trace context propagates via W3C traceparent headers on outbound HTTP and Kafka messages. Structured JSON logs with traceId tie together metrics, traces, and log lines in Grafana. SLO dashboards alert on error rate and latency percentiles before users notice outages.\n\nCode Reference:\n```yaml\nmanagement:\n  tracing:\n    sampling:\n      probability: 1.0\n  otlp:\n    tracing:\n      endpoint: http://tempo:4318/v1/traces\n```\nWhat it shows: 100% trace sampling in dev; OTLP exporter sends spans to Tempo backend.\n\n### What it actually is\nObservability combines metrics, logs, and traces for production system understanding.\n\n### When to use it\nInstrument every microservice before production; define SLOs for critical user journeys.\n\n### Where to use it\nOn-call runbooks, capacity planning, and post-incident reviews.\n\n### Real use example\nAn engineer traces a 502 error through gateway → auth → orders in Jaeger within two minutes.",
+      "key_takeaways": [
+        "Observability combines metrics, logs, and traces for production system understanding.",
+        "Instrument every microservice before production; define SLOs for critical user journeys.",
+        "An engineer traces a 502 error through gateway → auth → orders in Jaeger within two minutes."
+      ],
+      "what_it_is": "Observability combines metrics, logs, and traces for production system understanding.",
+      "when_to_use": "Instrument every microservice before production; define SLOs for critical user journeys.",
+      "where_to_use": "On-call runbooks, capacity planning, and post-incident reviews.",
+      "real_use_example": "An engineer traces a 502 error through gateway → auth → orders in Jaeger within two minutes."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Advanced)*\n\nFinish Cloud Native Spring in Action with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Java Backend Developer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a advanced project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a advanced project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a advanced project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

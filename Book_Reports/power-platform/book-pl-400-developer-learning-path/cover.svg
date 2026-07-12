@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="440" viewBox="0 0 320 440" role="img" aria-label="Cover">
+  <rect width="320" height="440" rx="10" fill="#FAF5FF"/>
+  <rect width="320" height="80" rx="10" fill="#0A1020"/>
+  <rect y="70" width="320" height="10" fill="#0A1020"/>
+  <text x="20" y="34" font-family="Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="0.08em" fill="#FAF3E0">CODE QUEST</text>
+  <text x="20" y="58" font-family="Arial, sans-serif" font-size="10" fill="#7E22CE">Power Platform</text>
+  <rect x="20" y="92" width="40" height="3" rx="1.5" fill="#7E22CE"/>
+  <text x="20" y="108" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#0A1020">PL-400 Developer</text><text x="20" y="130" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#0A1020">Learning Path —</text><text x="20" y="152" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#0A1020">Microsoft Power</text><text x="20" y="174" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#0A1020">Platform Developer</text>
+  <text x="20" y="216" font-family="Arial, sans-serif" font-size="11" font-weight="600" fill="#7E22CE">Advanced</text>
+  <line x1="20" y1="380" x2="300" y2="380" stroke="#0A1020" stroke-opacity="0.12" stroke-width="1"/>
+  <text x="20" y="404" font-family="Arial, sans-serif" font-size="10" fill="#64748B">Gagan Pasupuleti</text>
+  <text x="20" y="422" font-family="Arial, sans-serif" font-size="9" fill="#94A3B8">Book study</text>
+</svg>

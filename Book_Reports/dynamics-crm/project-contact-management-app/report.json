@@ -1,0 +1,134 @@
+{
+  "id": "project-contact-management-app",
+  "title": "Project Report: Contact Management App — Dynamics 365 CRM Consultant",
+  "author": "Gagan Pasupuleti",
+  "family_id": "dynamics-crm",
+  "family_name": "Dynamics 365 CRM Consultant",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Contact Management App",
+  "project_index": 1,
+  "duration": "2 weeks",
+  "summary": "Model-driven app for contacts and accounts with custom views, forms, and business rules on Dataverse.",
+  "objectives": [
+    "Custom views for active contacts",
+    "Form customization with business rules",
+    "Business rule for required phone",
+    "Quick create form for accounts"
+  ],
+  "tools": [
+    "Power Apps",
+    "Dataverse"
+  ],
+  "deliverables": [
+    "App screenshot",
+    "Schema doc",
+    "Published app link"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Contact Management App** is a beginner-level end-to-end project for Dynamics 365 CRM Consultant. Duration: 2 weeks. Model-driven app for contacts and accounts with custom views, forms, and business rules on Dataverse. Tools: Power Apps, Dataverse.\n\nCode Reference:\n```text\nObjective: Custom views for active contacts\nObjective: Form customization with business rules\nObjective: Business rule for required phone\nObjective: Quick create form for accounts\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nDynamics 365 CRM Consultant portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Dynamics 365 CRM Consultant resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Dynamics 365 CRM Consultant resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Dynamics 365 CRM Consultant portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Dynamics 365 CRM Consultant resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Tables",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Tables** *(Level: Beginner)*\n\nContact + Account setup. Complete these tasks: Custom fields; Relationships. Deliverable for this phase: Schema screenshot.\n\nCode Reference:\n```text\n- [ ] Custom fields\n- [ ] Relationships\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Tables is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Schema screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase Tables is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Schema screenshot to the teacher."
+      ],
+      "what_it_is": "Phase Tables is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Schema screenshot to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Forms",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Forms** *(Level: Beginner)*\n\nMain + quick create. Complete these tasks: Sections; Business rules. Deliverable for this phase: Form screenshots.\n\nCode Reference:\n```text\n- [ ] Sections\n- [ ] Business rules\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Forms is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Form screenshots to the teacher.",
+      "key_takeaways": [
+        "Phase Forms is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Form screenshots to the teacher."
+      ],
+      "what_it_is": "Phase Forms is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Form screenshots to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Views",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Views** *(Level: Beginner)*\n\nFiltered views. Complete these tasks: Active contacts; My accounts. Deliverable for this phase: View list screenshot.\n\nCode Reference:\n```text\n- [ ] Active contacts\n- [ ] My accounts\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Views is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the View list screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase Views is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the View list screenshot to the teacher."
+      ],
+      "what_it_is": "Phase Views is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the View list screenshot to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: App",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: App** *(Level: Beginner)*\n\nModel-driven app. Complete these tasks: Sitemap; Dashboard. Deliverable for this phase: Published app URL.\n\nCode Reference:\n```text\n- [ ] Sitemap\n- [ ] Dashboard\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase App is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Published app URL to the teacher.",
+      "key_takeaways": [
+        "Phase App is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Published app URL to the teacher."
+      ],
+      "what_it_is": "Phase App is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Published app URL to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: App screenshot; Schema doc; Published app link. Skills demonstrated: Dataverse, Model-driven apps. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: App screenshot\nDeliverable: Schema doc\nDeliverable: Published app link\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits App screenshot and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits App screenshot and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits App screenshot and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

@@ -1,0 +1,605 @@
+{
+  "id": "study-report-microsoft-power-platform-career-path",
+  "title": "Study Report: Microsoft Power Platform Developer — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "power-platform",
+  "family_name": "Microsoft Power Platform Developer",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "Microsoft Power Platform developer path spanning canvas and model-driven Power Apps, Power Automate cloud and desktop flows, Dataverse ALM, component libraries, custom connectors, Power BI embed, and enterprise governance. Aligned to PL-400, PL-200, and Microsoft Learn Power Platform documentation.",
+  "skill_stack": {
+    "core": [
+      "Canvas app formulas and component libraries",
+      "Model-driven apps on Dataverse",
+      "Power Automate cloud, desktop, and child flows",
+      "Dataverse ALM with solutions and pipelines",
+      "Custom connectors and Azure API Management",
+      "Power BI embed and Dataverse analytics"
+    ],
+    "tools": [
+      "Power Apps Studio",
+      "Power Automate designer",
+      "Power Platform CLI (PAC)",
+      "Azure DevOps / GitHub Actions",
+      "Power BI Desktop and Service"
+    ],
+    "platforms": [
+      "Microsoft 365",
+      "Azure",
+      "Dataverse",
+      "SharePoint",
+      "Teams"
+    ],
+    "certifications": [
+      "Microsoft Power Platform Developer (PL-400)",
+      "Microsoft Power Platform Functional Consultant (PL-200)",
+      "Microsoft Power Platform App Maker (PL-100)"
+    ]
+  },
+  "sources": [
+    "https://learn.microsoft.com/power-platform/",
+    "https://learn.microsoft.com/power-apps/",
+    "https://learn.microsoft.com/power-automate/",
+    "https://learn.microsoft.com/power-bi/",
+    "https://learn.microsoft.com/power-platform/alm/",
+    "https://learn.microsoft.com/power-platform/guidance/adoption/"
+  ],
+  "recommended_books": [
+    {
+      "title": "Beginning Power Apps",
+      "author": "Tim Leung",
+      "level": "Beginner",
+      "focus": "Canvas apps, connectors, galleries, and SharePoint integration.",
+      "url": "https://www.apress.com/gp/book/9781484298794",
+      "free_online": false
+    },
+    {
+      "title": "Microsoft Power Platform Documentation",
+      "author": "Microsoft Learn",
+      "level": "Beginner",
+      "focus": "Official docs for Power Apps, Automate, BI, and Dataverse.",
+      "url": "https://learn.microsoft.com/power-platform/",
+      "free_online": true
+    },
+    {
+      "title": "Pro Power BI Architecture",
+      "author": "Reza Rad & Miloš Radivojević",
+      "level": "Advanced",
+      "focus": "Enterprise BI design, deployment, and governance.",
+      "url": "https://www.sqlbi.com/books/pro-power-bi-architecture/",
+      "free_online": false
+    },
+    {
+      "title": "Power Automate Documentation",
+      "author": "Microsoft Learn",
+      "level": "Intermediate",
+      "focus": "Cloud flows, desktop flows, and approval automation patterns.",
+      "url": "https://learn.microsoft.com/power-automate/",
+      "free_online": true
+    },
+    {
+      "title": "PL-400 Developer Learning Path",
+      "author": "Microsoft Learn",
+      "level": "Advanced",
+      "focus": "Official path for Power Platform developer certification.",
+      "url": "https://learn.microsoft.com/certifications/exams/pl-400",
+      "free_online": true
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Employee Expense Canvas App",
+      "level": "Beginner",
+      "duration": "2 weeks",
+      "overview": "Canvas app for expense submission with SharePoint list backend, approval gallery, and mobile layout.",
+      "objectives": [
+        "Canvas app with form and gallery",
+        "SharePoint list as data source",
+        "Submit and view expenses",
+        "Mobile-optimized layout"
+      ],
+      "phases": [
+        {
+          "name": "Data",
+          "description": "SharePoint list.",
+          "tasks": [
+            "Columns",
+            "Choices"
+          ],
+          "deliverable": "SharePoint list created"
+        },
+        {
+          "name": "App",
+          "description": "Canvas screens.",
+          "tasks": [
+            "Submit form",
+            "My expenses gallery"
+          ],
+          "deliverable": "App screenshot"
+        },
+        {
+          "name": "Logic",
+          "description": "Submit + validation.",
+          "tasks": [
+            "Required fields",
+            "Success message"
+          ],
+          "deliverable": "Working submit flow"
+        },
+        {
+          "name": "Mobile",
+          "description": "Phone layout.",
+          "tasks": [
+            "Responsive",
+            "Icons"
+          ],
+          "deliverable": "Mobile screenshot"
+        }
+      ],
+      "skills_applied": [
+        "Canvas apps",
+        "SharePoint"
+      ],
+      "tools": [
+        "Power Apps",
+        "SharePoint"
+      ],
+      "deliverables": [
+        "Published app link",
+        "SharePoint list",
+        "Mobile screenshot"
+      ]
+    },
+    {
+      "title": "Approval Workflow with Power Automate",
+      "level": "Intermediate",
+      "duration": "2–3 weeks",
+      "overview": "Purchase request app + automated approval flow with Teams adaptive cards and Dataverse audit log.",
+      "objectives": [
+        "Canvas app for purchase requests",
+        "Automated approval flow with conditions",
+        "Teams adaptive card notification",
+        "Dataverse table for audit trail"
+      ],
+      "phases": [
+        {
+          "name": "App",
+          "description": "Request form.",
+          "tasks": [
+            "Amount",
+            "Category",
+            "Justification"
+          ],
+          "deliverable": "Canvas app"
+        },
+        {
+          "name": "Flow",
+          "description": "Approval logic.",
+          "tasks": [
+            "Manager if >$500",
+            "Finance if >$5000"
+          ],
+          "deliverable": "Flow diagram export"
+        },
+        {
+          "name": "Teams",
+          "description": "Adaptive card.",
+          "tasks": [
+            "Approve/Reject buttons",
+            "Comments"
+          ],
+          "deliverable": "Teams notification screenshot"
+        },
+        {
+          "name": "Audit",
+          "description": "Dataverse log table.",
+          "tasks": [
+            "Request ID",
+            "Decision",
+            "Timestamp"
+          ],
+          "deliverable": "Audit report view"
+        }
+      ],
+      "skills_applied": [
+        "Power Automate",
+        "Approvals",
+        "Teams"
+      ],
+      "tools": [
+        "Power Apps",
+        "Power Automate",
+        "Dataverse",
+        "Teams"
+      ],
+      "deliverables": [
+        "App + flow exports",
+        "Teams screenshot",
+        "Audit view screenshot"
+      ]
+    },
+    {
+      "title": "CodeQuest Admin Power Platform Suite",
+      "level": "Advanced",
+      "duration": "4–5 weeks",
+      "overview": "Model-driven app + embedded Power BI + ALM across environments for school admin reporting.",
+      "objectives": [
+        "Model-driven app for student/report management",
+        "Embedded Power BI class performance tile",
+        "Solution ALM dev → test → prod",
+        "Security roles for admin and teacher"
+      ],
+      "phases": [
+        {
+          "name": "Model App",
+          "description": "Dataverse tables.",
+          "tasks": [
+            "Students",
+            "Reports",
+            "Marks"
+          ],
+          "deliverable": "Model app published"
+        },
+        {
+          "name": "BI Embed",
+          "description": "Power BI in app.",
+          "tasks": [
+            "Class avg tile",
+            "Drill-through"
+          ],
+          "deliverable": "Embedded BI screenshot"
+        },
+        {
+          "name": "ALM",
+          "description": "Solution pipeline.",
+          "tasks": [
+            "Unmanaged dev",
+            "Managed prod"
+          ],
+          "deliverable": "ALM documentation"
+        },
+        {
+          "name": "Security",
+          "description": "Role definitions.",
+          "tasks": [
+            "Admin full",
+            "Teacher limited"
+          ],
+          "deliverable": "Security test results"
+        }
+      ],
+      "skills_applied": [
+        "Model-driven apps",
+        "Power BI",
+        "ALM"
+      ],
+      "tools": [
+        "Power Apps",
+        "Power BI",
+        "Dataverse",
+        "Solutions"
+      ],
+      "deliverables": [
+        "Published app",
+        "BI dashboard embed",
+        "ALM doc",
+        "Security matrix"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Power Platform Components Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Power Platform Components Overview** *(Level: Beginner)*\n\nPower Platform bundles Power Apps (canvas + model-driven), Power Automate, Power BI, Power Pages, and Copilot Studio on Dataverse and connectors. Makers build low-code solutions; developers extend with code. Licensing varies by per-user and per-app plans.\n\nCode Reference:\n```powershell\nGet-Command -Module Microsoft.PowerApps.*\n# Explore available admin and maker modules\n```\nWhat it shows: PowerShell module discovery supports tenant administration tasks.\n\n### What it actually is\nPower Platform is Microsoft's low-code suite for business applications.\n\n### When to use it\nReplacing spreadsheets, automating workflows, and rapid app delivery.\n\n### Where to use it\nEnterprises on Microsoft 365 and Azure.\n\n### Real use example\nCodeQuest IT replaces Excel roster with SharePoint + canvas app in two sprints.",
+      "key_takeaways": [
+        "Power Platform is Microsoft's low-code suite for business applications.",
+        "Replacing spreadsheets, automating workflows, and rapid app delivery.",
+        "CodeQuest IT replaces Excel roster with SharePoint + canvas app in two sprints."
+      ],
+      "what_it_is": "Power Platform is Microsoft's low-code suite for business applications.",
+      "when_to_use": "Replacing spreadsheets, automating workflows, and rapid app delivery.",
+      "where_to_use": "Enterprises on Microsoft 365 and Azure.",
+      "real_use_example": "CodeQuest IT replaces Excel roster with SharePoint + canvas app in two sprints."
+    },
+    {
+      "number": 2,
+      "title": "Canvas App Controls and Formulas",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Canvas App Controls and Formulas** *(Level: Beginner)*\n\nCanvas apps use Excel-like formulas: Filter, LookUp, Patch, Collect, Gallery controls, forms, and navigation. Delegation warnings mean formulas may not run server-side—understand data source limits for SharePoint and Dataverse.\n\nCode Reference:\n```powershell\n// Filter(Devices, Status = \"Needs Repair\")\n// Patch(Inspections, Defaults(Inspections), {DeviceId: galDevices.Selected.ID})\n```\nWhat it shows: Filter and Patch patterns are daily canvas app bread and butter.\n\n### What it actually is\nCanvas apps offer flexible pixel-perfect mobile and web UX.\n\n### When to use it\nField apps, approvals, and lightweight replacements for paper forms.\n\n### Where to use it\nFrontline workers, events, and inventory walks.\n\n### Real use example\nTeacher inspection app captures photo and notes per classroom device.",
+      "key_takeaways": [
+        "Canvas apps offer flexible pixel-perfect mobile and web UX.",
+        "Field apps, approvals, and lightweight replacements for paper forms.",
+        "Teacher inspection app captures photo and notes per classroom device."
+      ],
+      "what_it_is": "Canvas apps offer flexible pixel-perfect mobile and web UX.",
+      "when_to_use": "Field apps, approvals, and lightweight replacements for paper forms.",
+      "where_to_use": "Frontline workers, events, and inventory walks.",
+      "real_use_example": "Teacher inspection app captures photo and notes per classroom device."
+    },
+    {
+      "number": 3,
+      "title": "Data Sources: SharePoint and Excel",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Data Sources: SharePoint and Excel** *(Level: Beginner)*\n\nMakers often start with SharePoint lists and Excel tables in OneDrive. Know column types, choice columns, and permissions inheritance. Migrate to Dataverse when needing relational model, security roles, or ALM.\n\nCode Reference:\n```powershell\n# SharePoint list: Inspections | Columns: Title, DeviceId, Photo, Score, InspectorEmail\n```\nWhat it shows: List schema comments guide citizen developer setup.\n\n### What it actually is\nSharePoint is the quickest citizen-developer data store.\n\n### When to use it\nTeam-level apps before enterprise ALM investment.\n\n### Where to use it\nDepartments already on Microsoft 365.\n\n### Real use example\nHR attendance list backs canvas app until row count triggers Dataverse migration.",
+      "key_takeaways": [
+        "SharePoint is the quickest citizen-developer data store.",
+        "Team-level apps before enterprise ALM investment.",
+        "HR attendance list backs canvas app until row count triggers Dataverse migration."
+      ],
+      "what_it_is": "SharePoint is the quickest citizen-developer data store.",
+      "when_to_use": "Team-level apps before enterprise ALM investment.",
+      "where_to_use": "Departments already on Microsoft 365.",
+      "real_use_example": "HR attendance list backs canvas app until row count triggers Dataverse migration."
+    },
+    {
+      "number": 4,
+      "title": "Power Automate Flow Triggers and Actions",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Power Automate Flow Triggers and Actions** *(Level: Beginner)*\n\nFlows start with triggers: manual button, scheduled recurrence, SharePoint item created, Dataverse row updated, or HTTP webhook. Actions chain connectors with dynamic content tokens. Use Compose and variables for intermediate values.\n\nCode Reference:\n```powershell\n# Trigger: When an item is created (SharePoint)\n# Action: Send email + Create row (Dataverse)\n```\nWhat it shows: Trigger-action outline documents common flow skeleton.\n\n### What it actually is\nPower Automate connects hundreds of SaaS and on-prem systems.\n\n### When to use it\nEmail alerts, approvals, sync, and scheduled maintenance.\n\n### Where to use it\nEvery Power Platform tenant.\n\n### Real use example\nNew inspection item triggers manager approval before repair ticket creation.",
+      "key_takeaways": [
+        "Power Automate connects hundreds of SaaS and on-prem systems.",
+        "Email alerts, approvals, sync, and scheduled maintenance.",
+        "New inspection item triggers manager approval before repair ticket creation."
+      ],
+      "what_it_is": "Power Automate connects hundreds of SaaS and on-prem systems.",
+      "when_to_use": "Email alerts, approvals, sync, and scheduled maintenance.",
+      "where_to_use": "Every Power Platform tenant.",
+      "real_use_example": "New inspection item triggers manager approval before repair ticket creation."
+    },
+    {
+      "number": 5,
+      "title": "Introduction to Dataverse",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Introduction to Dataverse** *(Level: Beginner)*\n\nDataverse provides relational tables, business rules, plugins, and enterprise security. Premium connectors and per-app licensing often require Dataverse. Use solutions for metadata packaging from day one on team projects.\n\nCode Reference:\n```powershell\npac org who  # displays current Dataverse environment and user\n```\nWhat it shows: PAC CLI confirms target environment before solution operations.\n\n### What it actually is\nDataverse is the enterprise data backbone of Power Platform.\n\n### When to use it\nApps needing role-based security, complex relationships, or ALM.\n\n### Where to use it\nDynamics apps and standalone Power Apps.\n\n### Real use example\nTeam graduates canvas prototype to Dataverse with proper cq_ publisher prefix.",
+      "key_takeaways": [
+        "Dataverse is the enterprise data backbone of Power Platform.",
+        "Apps needing role-based security, complex relationships, or ALM.",
+        "Team graduates canvas prototype to Dataverse with proper cq_ publisher prefix."
+      ],
+      "what_it_is": "Dataverse is the enterprise data backbone of Power Platform.",
+      "when_to_use": "Apps needing role-based security, complex relationships, or ALM.",
+      "where_to_use": "Dynamics apps and standalone Power Apps.",
+      "real_use_example": "Team graduates canvas prototype to Dataverse with proper cq_ publisher prefix."
+    },
+    {
+      "number": 6,
+      "title": "Power BI Basics for App Makers",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Power BI Basics for App Makers** *(Level: Beginner)*\n\nPower BI Desktop imports or connects to data, models relationships, and publishes reports to service. App makers embed tiles or reports in Teams and model-driven apps. Understand import vs DirectQuery vs Dataverse connector trade-offs.\n\nCode Reference:\n```powershell\n# Measure: Completion Rate = DIVIDE(COUNTROWS(FILTER(Enrollments, Status=\"Complete\")), COUNTROWS(Enrollments))\n```\nWhat it shows: DAX measure example calculates course completion KPI.\n\n### What it actually is\nPower BI visualizes data for decisions inside Microsoft ecosystem.\n\n### When to use it\nExecutive dashboards complement operational canvas apps.\n\n### Where to use it\nOrganizations standardized on Microsoft analytics.\n\n### Real use example\nPrincipal views embedded completion report inside Teams channel.",
+      "key_takeaways": [
+        "Power BI visualizes data for decisions inside Microsoft ecosystem.",
+        "Executive dashboards complement operational canvas apps.",
+        "Principal views embedded completion report inside Teams channel."
+      ],
+      "what_it_is": "Power BI visualizes data for decisions inside Microsoft ecosystem.",
+      "when_to_use": "Executive dashboards complement operational canvas apps.",
+      "where_to_use": "Organizations standardized on Microsoft analytics.",
+      "real_use_example": "Principal views embedded completion report inside Teams channel."
+    },
+    {
+      "number": 7,
+      "title": "Model-Driven Apps vs Canvas Apps",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Model-Driven Apps vs Canvas Apps** *(Level: Intermediate)*\n\nChoose model-driven when process-centric with complex Dataverse schema; canvas for tailored UX and mixed connectors. Hybrid patterns embed canvas pages in model-driven apps. Align choice to maintainability and team skills.\n\nCode Reference:\n```powershell\n# Decision: Dataverse-heavy CRM process -> Model-driven\n# Field inspection UX -> Canvas\n```\nWhat it shows: Decision comments prevent wrong app type selection.\n\n### What it actually is\nApp type selection affects delivery speed and long-term maintenance.\n\n### When to use it\nProject kickoff architecture decisions.\n\n### Where to use it\nConsulting engagements and internal COE reviews.\n\n### Real use example\nCOE steers district portal to model-driven; warehouse scanner stays canvas.",
+      "key_takeaways": [
+        "App type selection affects delivery speed and long-term maintenance.",
+        "Project kickoff architecture decisions.",
+        "COE steers district portal to model-driven; warehouse scanner stays canvas."
+      ],
+      "what_it_is": "App type selection affects delivery speed and long-term maintenance.",
+      "when_to_use": "Project kickoff architecture decisions.",
+      "where_to_use": "Consulting engagements and internal COE reviews.",
+      "real_use_example": "COE steers district portal to model-driven; warehouse scanner stays canvas."
+    },
+    {
+      "number": 8,
+      "title": "Component Libraries and Reusable UX",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Component Libraries and Reusable UX** *(Level: Intermediate)*\n\nComponent libraries share screens and controls across apps. Publish updates propagate to dependent apps—plan versioning. Use input/output properties for parameterized components.\n\nCode Reference:\n```powershell\n// Component: HeaderBar | Inputs: TitleText, UserName | Outputs: OnHomeSelect\n```\nWhat it shows: Component contract documents reusable UI modules.\n\n### What it actually is\nComponent libraries enforce consistent UX and reduce duplication.\n\n### When to use it\nMulti-app portfolios in large tenants.\n\n### Where to use it\nEnterprises with branded app standards.\n\n### Real use example\nHeaderBar component update rolls branding fix to twelve apps automatically.",
+      "key_takeaways": [
+        "Component libraries enforce consistent UX and reduce duplication.",
+        "Multi-app portfolios in large tenants.",
+        "HeaderBar component update rolls branding fix to twelve apps automatically."
+      ],
+      "what_it_is": "Component libraries enforce consistent UX and reduce duplication.",
+      "when_to_use": "Multi-app portfolios in large tenants.",
+      "where_to_use": "Enterprises with branded app standards.",
+      "real_use_example": "HeaderBar component update rolls branding fix to twelve apps automatically."
+    },
+    {
+      "number": 9,
+      "title": "Power Automate Advanced Patterns",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Power Automate Advanced Patterns** *(Level: Intermediate)*\n\nChild flows promote reuse. Try-Catch scopes handle errors. HTTP with Azure AD OAuth calls custom APIs. Desktop flows automate legacy Win32 apps alongside cloud flows in attended/unattended mode.\n\nCode Reference:\n```powershell\n# Child flow: Resolve-ManagerEmail | Input: UserId | Output: ManagerEmail\n```\nWhat it shows: Child flow signatures document reusable automation modules.\n\n### What it actually is\nAdvanced flow patterns scale automation reliably.\n\n### When to use it\nEnterprise integrations and RPA hybrids.\n\n### Where to use it\nFinance, HR, and IT operations automation.\n\n### Real use example\nDesktop flow reads legacy grading system export; cloud flow imports to Dataverse.",
+      "key_takeaways": [
+        "Advanced flow patterns scale automation reliably.",
+        "Enterprise integrations and RPA hybrids.",
+        "Desktop flow reads legacy grading system export; cloud flow imports to Dataverse."
+      ],
+      "what_it_is": "Advanced flow patterns scale automation reliably.",
+      "when_to_use": "Enterprise integrations and RPA hybrids.",
+      "where_to_use": "Finance, HR, and IT operations automation.",
+      "real_use_example": "Desktop flow reads legacy grading system export; cloud flow imports to Dataverse."
+    },
+    {
+      "number": 10,
+      "title": "Custom Connectors and Azure API Management",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Custom Connectors and Azure API Management** *(Level: Intermediate)*\n\nCustom connectors wrap OpenAPI definitions for proprietary APIs. APIM policies add rate limit, JWT validation, and logging. Store secrets in Azure Key Vault referenced by connector.\n\nCode Reference:\n```powershell\n# OpenAPI: POST /enrollments { studentId, courseId } -> 201 Created\n```\nWhat it shows: OpenAPI snippet defines connector action contract.\n\n### What it actually is\nCustom connectors extend Power Platform to any REST API.\n\n### When to use it\nProprietary LMS, billing, and internal microservices.\n\n### Where to use it\nOrganizations with API-first backends.\n\n### Real use example\nCodeQuest enrollment API exposed as custom connector for canvas app Patch calls.",
+      "key_takeaways": [
+        "Custom connectors extend Power Platform to any REST API.",
+        "Proprietary LMS, billing, and internal microservices.",
+        "CodeQuest enrollment API exposed as custom connector for canvas app Patch calls."
+      ],
+      "what_it_is": "Custom connectors extend Power Platform to any REST API.",
+      "when_to_use": "Proprietary LMS, billing, and internal microservices.",
+      "where_to_use": "Organizations with API-first backends.",
+      "real_use_example": "CodeQuest enrollment API exposed as custom connector for canvas app Patch calls."
+    },
+    {
+      "number": 11,
+      "title": "Dataverse Business Rules and Low-Code Logic",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Dataverse Business Rules and Low-Code Logic** *(Level: Intermediate)*\n\nBusiness rules show/hide fields, set defaults, and validate without code. Combine with calculated and rollup columns. When rules conflict with plugins, document execution order.\n\nCode Reference:\n```powershell\n# Rule: If Status = Inactive -> Lock Email field | Scope: Entity + Form\n```\nWhat it shows: Business rule scope comments clarify where logic applies.\n\n### What it actually is\nBusiness rules keep simple logic maintainable by makers.\n\n### When to use it\nField validation and dynamic forms on Dataverse.\n\n### Where to use it\nFunctional consultants configuring CRM apps.\n\n### Real use example\nInactive contact rule prevents accidental outreach during audit hold.",
+      "key_takeaways": [
+        "Business rules keep simple logic maintainable by makers.",
+        "Field validation and dynamic forms on Dataverse.",
+        "Inactive contact rule prevents accidental outreach during audit hold."
+      ],
+      "what_it_is": "Business rules keep simple logic maintainable by makers.",
+      "when_to_use": "Field validation and dynamic forms on Dataverse.",
+      "where_to_use": "Functional consultants configuring CRM apps.",
+      "real_use_example": "Inactive contact rule prevents accidental outreach during audit hold."
+    },
+    {
+      "number": 12,
+      "title": "ALM: Solutions, Layers, and Pipelines",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: ALM: Solutions, Layers, and Pipelines** *(Level: Intermediate)*\n\nSplit solutions: base (managed), patch, and optional unmanaged dev layer. Environment variables hold config; connection references abstract auth. Pipelines deploy with approval gates and automated tests.\n\nCode Reference:\n```powershell\npac solution import --path ./CodeQuestCore_managed.zip --environment https://test.crm.dynamics.com\n```\nWhat it shows: PAC import command is CI/CD building block for releases.\n\n### What it actually is\nALM disciplines prevent production-breaking citizen changes.\n\n### When to use it\nMulti-environment enterprise programs.\n\n### Where to use it\nRegulated industries requiring change audit trails.\n\n### Real use example\nPipeline rejects import when Solution Checker finds critical security issue.",
+      "key_takeaways": [
+        "ALM disciplines prevent production-breaking citizen changes.",
+        "Multi-environment enterprise programs.",
+        "Pipeline rejects import when Solution Checker finds critical security issue."
+      ],
+      "what_it_is": "ALM disciplines prevent production-breaking citizen changes.",
+      "when_to_use": "Multi-environment enterprise programs.",
+      "where_to_use": "Regulated industries requiring change audit trails.",
+      "real_use_example": "Pipeline rejects import when Solution Checker finds critical security issue."
+    },
+    {
+      "number": 13,
+      "title": "Monitoring with Power Platform Admin Center",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Monitoring with Power Platform Admin Center** *(Level: Intermediate)*\n\nAdmin center shows environment health, capacity, DLP policies, and analytics. Monitor flow run failures, connector throttling, and premium request consumption. Set alerts for unused apps and orphaned connections.\n\nCode Reference:\n```powershell\nGet-AdminFlow | Where-Object {$_.Enabled -eq $true -and $_.State -eq 'Suspended'}\n```\nWhat it shows: PowerShell helps audit flows needing owner reassignment.\n\n### What it actually is\nTenant monitoring prevents outages and security drift.\n\n### When to use it\nCOE ongoing operations.\n\n### Where to use it\nLarge tenants with hundreds of makers.\n\n### Real use example\nWeekly report flags flows owned by departed users for cleanup.",
+      "key_takeaways": [
+        "Tenant monitoring prevents outages and security drift.",
+        "COE ongoing operations.",
+        "Weekly report flags flows owned by departed users for cleanup."
+      ],
+      "what_it_is": "Tenant monitoring prevents outages and security drift.",
+      "when_to_use": "COE ongoing operations.",
+      "where_to_use": "Large tenants with hundreds of makers.",
+      "real_use_example": "Weekly report flags flows owned by departed users for cleanup."
+    },
+    {
+      "number": 14,
+      "title": "Power Apps Component Framework (PCF)",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Power Apps Component Framework (PCF)** *(Level: Advanced)*\n\nPCF builds custom controls with TypeScript for model-driven and canvas apps. Use for specialized visuals, masked inputs, or integrating third-party JS libraries not available natively. Bundle with solution and document manifest features.\n\nCode Reference:\n```powershell\n// PCF manifest: bound property Dataset | React virtualized grid for 10k rows\n```\nWhat it shows: PCF manifest comment describes control binding strategy.\n\n### What it actually is\nPCF extends UI when native controls insufficient.\n\n### When to use it\nComplex grids, maps, and bespoke visualizations.\n\n### Where to use it\nPro-dev teams supporting citizen makers.\n\n### Real use example\nVirtualized enrollment grid PCF replaces slow default subgrid on large districts.",
+      "key_takeaways": [
+        "PCF extends UI when native controls insufficient.",
+        "Complex grids, maps, and bespoke visualizations.",
+        "Virtualized enrollment grid PCF replaces slow default subgrid on large districts."
+      ],
+      "what_it_is": "PCF extends UI when native controls insufficient.",
+      "when_to_use": "Complex grids, maps, and bespoke visualizations.",
+      "where_to_use": "Pro-dev teams supporting citizen makers.",
+      "real_use_example": "Virtualized enrollment grid PCF replaces slow default subgrid on large districts."
+    },
+    {
+      "number": 15,
+      "title": "Power BI Embed and Row-Level Security",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Power BI Embed and Row-Level Security** *(Level: Advanced)*\n\nEmbed reports in apps using user-owns-data or app-owns-data models. Map Dataverse teams to Power BI RLS roles with USERNAME() or custom DAX. Manage embed token refresh and capacity SKUs for production SLAs.\n\nCode Reference:\n```powershell\n// RLS: [Email] = USERNAME() for manager-only district view\n```\nWhat it shows: RLS DAX ties Power BI rows to logged-in maker identity.\n\n### What it actually is\nEmbedded analytics deliver contextual insights inside apps.\n\n### When to use it\nExecutive and manager dashboards in CRM apps.\n\n### Where to use it\nSaaS products white-labeling analytics for customers.\n\n### Real use example\nDistrict manager sees only their schools in embedded completion dashboard.",
+      "key_takeaways": [
+        "Embedded analytics deliver contextual insights inside apps.",
+        "Executive and manager dashboards in CRM apps.",
+        "District manager sees only their schools in embedded completion dashboard."
+      ],
+      "what_it_is": "Embedded analytics deliver contextual insights inside apps.",
+      "when_to_use": "Executive and manager dashboards in CRM apps.",
+      "where_to_use": "SaaS products white-labeling analytics for customers.",
+      "real_use_example": "District manager sees only their schools in embedded completion dashboard."
+    },
+    {
+      "number": 16,
+      "title": "Environment Variables and Secret Management",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Environment Variables and Secret Management** *(Level: Advanced)*\n\nEnvironment variables store text, JSON, and secret values per environment. Reference in flows and plugins instead of hardcoding. Rotate secrets with pipeline automation and document in runbooks—never commit secrets to Git.\n\nCode Reference:\n```powershell\n# Variable: cq_ApiBaseUrl (text) | cq_ApiKey (secret) | current: https://api.test.codequest.app\n```\nWhat it shows: Variable inventory documents ALM-safe configuration.\n\n### What it actually is\nEnvironment variables enable portable solutions across stages.\n\n### When to use it\nMulti-stage ALM and ISV packaged solutions.\n\n### Where to use it\nPartners shipping managed solutions to customers.\n\n### Real use example\nProd secret rotated quarterly via pipeline without editing flows manually.",
+      "key_takeaways": [
+        "Environment variables enable portable solutions across stages.",
+        "Multi-stage ALM and ISV packaged solutions.",
+        "Prod secret rotated quarterly via pipeline without editing flows manually."
+      ],
+      "what_it_is": "Environment variables enable portable solutions across stages.",
+      "when_to_use": "Multi-stage ALM and ISV packaged solutions.",
+      "where_to_use": "Partners shipping managed solutions to customers.",
+      "real_use_example": "Prod secret rotated quarterly via pipeline without editing flows manually."
+    },
+    {
+      "number": 17,
+      "title": "Performance and Delegation Strategy",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Performance and Delegation Strategy** *(Level: Advanced)*\n\nCanvas delegation limits Filter/Search on large Dataverse sets—pre-filter with views or use StartsWith on delegable columns. Monitor Premium API usage. Archive historical data to keep apps fast.\n\nCode Reference:\n```powershell\n// Delegable: Filter(Accounts, StartsWith(Name, \"North\"))\n// Non-delegable warning: Search() on 50k rows\n```\nWhat it shows: Delegable vs non-delegable examples teach formula fixes.\n\n### What it actually is\nPerformance work keeps apps usable at enterprise data volumes.\n\n### When to use it\nSlow galleries and timeout errors in production apps.\n\n### Where to use it\nApps exceeding 2000 row delegation threshold.\n\n### Real use example\nView pre-filtered to active districts fixes gallery load timeout.",
+      "key_takeaways": [
+        "Performance work keeps apps usable at enterprise data volumes.",
+        "Slow galleries and timeout errors in production apps.",
+        "View pre-filtered to active districts fixes gallery load timeout."
+      ],
+      "what_it_is": "Performance work keeps apps usable at enterprise data volumes.",
+      "when_to_use": "Slow galleries and timeout errors in production apps.",
+      "where_to_use": "Apps exceeding 2000 row delegation threshold.",
+      "real_use_example": "View pre-filtered to active districts fixes gallery load timeout."
+    },
+    {
+      "number": 18,
+      "title": "Copilot Studio and AI Builder in Solutions",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Copilot Studio and AI Builder in Solutions** *(Level: Advanced)*\n\nCopilot Studio agents orchestrate topics with Dataverse and connector actions. AI Builder provides prebuilt models for prediction and form processing. Govern AI with DLP, logging, and human escalation paths for wrong answers.\n\nCode Reference:\n```powershell\n# Agent topic: ResetPassword -> Verify identity -> Power Automate AD reset flow\n```\nWhat it shows: Topic flow ties conversational AI to governed automation.\n\n### What it actually is\nAI services extend Power Platform with NLP and document intelligence.\n\n### When to use it\nSelf-service portals and document-heavy workflows.\n\n### Where to use it\nEnterprises adopting Microsoft Copilot stack.\n\n### Real use example\nAI Builder extracts invoice fields into Dataverse; agent handles employee FAQs.",
+      "key_takeaways": [
+        "AI services extend Power Platform with NLP and document intelligence.",
+        "Self-service portals and document-heavy workflows.",
+        "AI Builder extracts invoice fields into Dataverse; agent handles employee FAQs."
+      ],
+      "what_it_is": "AI services extend Power Platform with NLP and document intelligence.",
+      "when_to_use": "Self-service portals and document-heavy workflows.",
+      "where_to_use": "Enterprises adopting Microsoft Copilot stack.",
+      "real_use_example": "AI Builder extracts invoice fields into Dataverse; agent handles employee FAQs."
+    }
+  ],
+  "chapter_count": 18
+}

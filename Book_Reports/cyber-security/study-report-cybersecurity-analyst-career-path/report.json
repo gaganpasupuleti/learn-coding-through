@@ -1,0 +1,608 @@
+{
+  "id": "study-report-cybersecurity-analyst-career-path",
+  "title": "Study Report: Cybersecurity Analyst — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "cyber-security",
+  "family_name": "Cybersecurity Analyst",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "Cybersecurity analyst path covering OWASP Top 10 2021, NIST Cybersecurity Framework, MITRE ATT&CK tactics and techniques, SIEM detection engineering, incident response playbooks, vulnerability management, and zero trust architecture. Emphasizes hands-on blue-team skills with Python automation for log analysis and threat hunting.",
+  "skill_stack": {
+    "core": [
+      "OWASP Top 10 2021 web application risks",
+      "NIST CSF: Identify, Protect, Detect, Respond, Recover",
+      "MITRE ATT&CK mapping for detections",
+      "SIEM query writing and alert tuning",
+      "Incident response and digital forensics basics",
+      "Zero trust identity and network segmentation"
+    ],
+    "tools": [
+      "Splunk / Microsoft Sentinel / Elastic SIEM",
+      "Wireshark / tcpdump / Zeek",
+      "Nmap / Nessus / OpenVAS",
+      "Kali Linux and detection lab VMs",
+      "Python security scripting"
+    ],
+    "platforms": [
+      "AWS",
+      "Azure",
+      "Active Directory",
+      "Kubernetes",
+      "Endpoint (EDR)"
+    ],
+    "certifications": [
+      "CompTIA Security+",
+      "CySA+",
+      "GIAC GCIA / GCIH",
+      "Microsoft SC-200"
+    ]
+  },
+  "sources": [
+    "https://owasp.org/Top10/",
+    "https://www.nist.gov/cyberframework",
+    "https://attack.mitre.org/",
+    "https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final",
+    "https://learn.microsoft.com/security/",
+    "https://www.cisa.gov/topics/cybersecurity-best-practices"
+  ],
+  "recommended_books": [
+    {
+      "title": "The Web Application Hacker's Handbook",
+      "author": "Dafydd Stuttard & Marcus Pinto",
+      "level": "Advanced",
+      "focus": "OWASP-style web attacks, testing methodology, and defenses.",
+      "url": "https://www.wiley.com/en-us/The+Web+Application+Hacker%27s+Handbook%2C+2nd+Edition-p-9781118026472",
+      "free_online": false
+    },
+    {
+      "title": "OWASP Top Ten",
+      "author": "OWASP Foundation",
+      "level": "Beginner",
+      "focus": "Free guide to the ten most critical web application risks (2021).",
+      "url": "https://owasp.org/www-project-top-ten/",
+      "free_online": true
+    },
+    {
+      "title": "Blue Team Handbook",
+      "author": "Don Murdoch",
+      "level": "Intermediate",
+      "focus": "SOC operations, log analysis, and incident triage playbooks.",
+      "url": "https://www.blueteamhandbook.com/",
+      "free_online": false
+    },
+    {
+      "title": "NIST Cybersecurity Framework",
+      "author": "NIST",
+      "level": "Intermediate",
+      "focus": "Identify, Protect, Detect, Respond, Recover — free official guide.",
+      "url": "https://www.nist.gov/cyberframework",
+      "free_online": true
+    },
+    {
+      "title": "Practical Malware Analysis",
+      "author": "Michael Sikorski & Andrew Honig",
+      "level": "Advanced",
+      "focus": "Reverse engineering and malware triage for security analysts.",
+      "url": "https://nostarch.com/malware",
+      "free_online": false
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Home Lab Security Hardening",
+      "level": "Beginner",
+      "duration": "2 weeks",
+      "overview": "Harden a Linux VM: firewall, SSH keys, fail2ban, updates, and document baseline checklist.",
+      "objectives": [
+        "UFW firewall rules configured",
+        "SSH key-only auth (no passwords)",
+        "fail2ban installed",
+        "Security baseline checklist completed"
+      ],
+      "phases": [
+        {
+          "name": "Baseline",
+          "description": "Document current state.",
+          "tasks": [
+            "Open ports scan",
+            "User accounts"
+          ],
+          "deliverable": "Baseline audit"
+        },
+        {
+          "name": "Harden",
+          "description": "Apply CIS basics.",
+          "tasks": [
+            "UFW",
+            "SSH keys",
+            "fail2ban"
+          ],
+          "deliverable": "Hardened VM"
+        },
+        {
+          "name": "Verify",
+          "description": "Re-scan after hardening.",
+          "tasks": [
+            "nmap scan",
+            "SSH test"
+          ],
+          "deliverable": "Before/after comparison"
+        },
+        {
+          "name": "Document",
+          "description": "Runbook.",
+          "tasks": [
+            "Steps",
+            "Rollback"
+          ],
+          "deliverable": "Hardening runbook PDF"
+        }
+      ],
+      "skills_applied": [
+        "Linux security",
+        "Hardening"
+      ],
+      "tools": [
+        "Linux",
+        "UFW",
+        "fail2ban",
+        "nmap"
+      ],
+      "deliverables": [
+        "Baseline audit",
+        "Hardening runbook",
+        "Scan comparison"
+      ]
+    },
+    {
+      "title": "Web App Security Assessment",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "OWASP Top 10 assessment of a demo web app: ZAP scan, manual testing, remediation report.",
+      "objectives": [
+        "OWASP ZAP automated scan",
+        "Manual test for auth and injection",
+        "Risk-rated findings report",
+        "Remediation recommendations with priority"
+      ],
+      "phases": [
+        {
+          "name": "Recon",
+          "description": "Map application.",
+          "tasks": [
+            "Endpoints",
+            "Tech stack"
+          ],
+          "deliverable": "App inventory"
+        },
+        {
+          "name": "Scan",
+          "description": "ZAP baseline + active.",
+          "tasks": [
+            "Authentication",
+            "Spider crawl"
+          ],
+          "deliverable": "ZAP report HTML"
+        },
+        {
+          "name": "Manual",
+          "description": "Top 10 manual tests.",
+          "tasks": [
+            "SQLi",
+            "XSS",
+            "Auth bypass"
+          ],
+          "deliverable": "Manual test log"
+        },
+        {
+          "name": "Report",
+          "description": "Findings + remediation.",
+          "tasks": [
+            "Critical/High/Med/Low",
+            "Fix guidance"
+          ],
+          "deliverable": "Security assessment PDF"
+        }
+      ],
+      "skills_applied": [
+        "OWASP",
+        "Pen testing",
+        "Reporting"
+      ],
+      "tools": [
+        "OWASP ZAP",
+        "Burp Suite Community",
+        "Browser devtools"
+      ],
+      "deliverables": [
+        "ZAP report",
+        "Manual test log",
+        "Assessment report PDF"
+      ]
+    },
+    {
+      "title": "SOC Alert Triage Playbook",
+      "level": "Advanced",
+      "duration": "4–5 weeks",
+      "overview": "Build SIEM detection rules, triage 10 alert scenarios, write IR playbook, conduct tabletop exercise.",
+      "objectives": [
+        "5 SIEM detection rules (Sigma or Splunk SPL)",
+        "Triage playbook for 10 alert types",
+        "Incident response playbook",
+        "Tabletop exercise report"
+      ],
+      "phases": [
+        {
+          "name": "Detect",
+          "description": "Write detection rules.",
+          "tasks": [
+            "Brute force",
+            "Data exfil",
+            "Malware beacon"
+          ],
+          "deliverable": "Rule definitions"
+        },
+        {
+          "name": "Triage",
+          "description": "Playbook per alert.",
+          "tasks": [
+            "Steps",
+            "Escalation",
+            "Evidence"
+          ],
+          "deliverable": "Triage playbook PDF"
+        },
+        {
+          "name": "IR",
+          "description": "Incident response plan.",
+          "tasks": [
+            "Containment",
+            "Forensics",
+            "Recovery"
+          ],
+          "deliverable": "IR playbook"
+        },
+        {
+          "name": "Exercise",
+          "description": "Tabletop 3 scenarios.",
+          "tasks": [
+            "Timeline",
+            "Lessons learned"
+          ],
+          "deliverable": "Exercise report"
+        }
+      ],
+      "skills_applied": [
+        "SIEM",
+        "Detection",
+        "Incident response"
+      ],
+      "tools": [
+        "Sigma",
+        "Splunk/Elastic",
+        "NIST IR"
+      ],
+      "deliverables": [
+        "Detection rules",
+        "Triage playbook",
+        "IR playbook",
+        "Tabletop report"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Security Analyst Role and Defense in Depth",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Security Analyst Role and Defense in Depth** *(Level: Beginner)*\n\nSecurity analysts protect confidentiality, integrity, and availability. Defense in depth layers controls: policies, network segmentation, identity, endpoint, application, and monitoring. Blue team focuses on detect-and-respond; understand red team findings without becoming adversarial. Document everything—incidents become legal evidence.\n\nCode Reference:\n```python\nlayers = ['Policy', 'Perimeter', 'Network', 'Host', 'App', 'Data', 'Monitoring']\n```\nWhat it shows: Layer model explains where controls belong in architecture reviews.\n\n### What it actually is\nCybersecurity analysts detect threats and reduce organizational risk.\n\n### When to use it\nContinuous monitoring of enterprise IT and cloud estates.\n\n### Where to use it\nSOCs, MSSPs, internal security teams, and compliance-heavy orgs.\n\n### Real use example\nCodeQuest SOC analyst spots unusual API traffic pattern during nightly log review.",
+      "key_takeaways": [
+        "Cybersecurity analysts detect threats and reduce organizational risk.",
+        "Continuous monitoring of enterprise IT and cloud estates.",
+        "CodeQuest SOC analyst spots unusual API traffic pattern during nightly log review."
+      ],
+      "what_it_is": "Cybersecurity analysts detect threats and reduce organizational risk.",
+      "when_to_use": "Continuous monitoring of enterprise IT and cloud estates.",
+      "where_to_use": "SOCs, MSSPs, internal security teams, and compliance-heavy orgs.",
+      "real_use_example": "CodeQuest SOC analyst spots unusual API traffic pattern during nightly log review."
+    },
+    {
+      "number": 2,
+      "title": "OWASP Top 10 2021 Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: OWASP Top 10 2021 Overview** *(Level: Beginner)*\n\nOWASP Top 10 lists critical web risks: Broken Access Control, Cryptographic Failures, Injection, Insecure Design, Security Misconfiguration, Vulnerable Components, Auth Failures, Integrity Failures, Logging Failures, and SSRF. Developers and analysts share this vocabulary for prioritization.\n\nCode Reference:\n```python\nowasp_2021 = ['A01 Broken Access Control', 'A02 Crypto Failures', 'A03 Injection',\n              'A04 Insecure Design', 'A05 Misconfiguration']\n```\nWhat it shows: Enumerating categories structures appsec assessment checklists.\n\n### What it actually is\nOWASP Top 10 is the industry standard web application risk list.\n\n### When to use it\nWeb app pen tests, secure SDLC training, and bug bounty triage.\n\n### Where to use it\nSaaS products, education portals, and e-commerce platforms.\n\n### Real use example\nIDOR in quiz API lets student A view student B grades—A01 broken access control.",
+      "key_takeaways": [
+        "OWASP Top 10 is the industry standard web application risk list.",
+        "Web app pen tests, secure SDLC training, and bug bounty triage.",
+        "IDOR in quiz API lets student A view student B grades—A01 broken access control."
+      ],
+      "what_it_is": "OWASP Top 10 is the industry standard web application risk list.",
+      "when_to_use": "Web app pen tests, secure SDLC training, and bug bounty triage.",
+      "where_to_use": "SaaS products, education portals, and e-commerce platforms.",
+      "real_use_example": "IDOR in quiz API lets student A view student B grades—A01 broken access control."
+    },
+    {
+      "number": 3,
+      "title": "CIA Triad and Authentication Basics",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: CIA Triad and Authentication Basics** *(Level: Beginner)*\n\nConfidentiality (encryption, access control), Integrity (hashing, signing), Availability (redundancy, DDoS mitigation). Authentication proves identity; authorization grants permissions. MFA blocks most credential stuffing. Password policies alone are insufficient.\n\nCode Reference:\n```python\nimport hashlib\nhashlib.sha256(b'password123').hexdigest()  # never store plaintext\n```\nWhat it shows: Hashing demos why databases must not store raw passwords.\n\n### What it actually is\nCIA triad frames every security control decision.\n\n### When to use it\nDesigning systems handling student PII and payment data.\n\n### Where to use it\nIdentity systems, databases, and API gateways.\n\n### Real use example\nMFA rollout stops 99% of spray attempts against teacher admin portal.",
+      "key_takeaways": [
+        "CIA triad frames every security control decision.",
+        "Designing systems handling student PII and payment data.",
+        "MFA rollout stops 99% of spray attempts against teacher admin portal."
+      ],
+      "what_it_is": "CIA triad frames every security control decision.",
+      "when_to_use": "Designing systems handling student PII and payment data.",
+      "where_to_use": "Identity systems, databases, and API gateways.",
+      "real_use_example": "MFA rollout stops 99% of spray attempts against teacher admin portal."
+    },
+    {
+      "number": 4,
+      "title": "Network Security Fundamentals",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Network Security Fundamentals** *(Level: Beginner)*\n\nUnderstand TCP/IP, ports, firewalls, VPNs, TLS, and DNS security. North-south traffic crosses perimeter; east-west traffic between servers needs microsegmentation. PCAP analysis with Wireshark reveals malware beaconing and data exfil.\n\nCode Reference:\n```python\n# tshark filter: tls.handshake.extensions_server_name contains 'codequest'\n# Suricata rule alerts on suspicious outbound 443\n```\nWhat it shows: Packet filters isolate TLS SNI and IDS alert patterns.\n\n### What it actually is\nNetwork security controls traffic paths and visibility.\n\n### When to use it\nInvestigating C2 traffic and firewall change requests.\n\n### Where to use it\nCorporate LAN, cloud VPCs, and hybrid connectivity.\n\n### Real use example\nFirewall log shows workstation contacting rare IP on 4444—quarantine triggered.",
+      "key_takeaways": [
+        "Network security controls traffic paths and visibility.",
+        "Investigating C2 traffic and firewall change requests.",
+        "Firewall log shows workstation contacting rare IP on 4444—quarantine triggered."
+      ],
+      "what_it_is": "Network security controls traffic paths and visibility.",
+      "when_to_use": "Investigating C2 traffic and firewall change requests.",
+      "where_to_use": "Corporate LAN, cloud VPCs, and hybrid connectivity.",
+      "real_use_example": "Firewall log shows workstation contacting rare IP on 4444—quarantine triggered."
+    },
+    {
+      "number": 5,
+      "title": "Vulnerability Management Lifecycle",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Vulnerability Management Lifecycle** *(Level: Beginner)*\n\nDiscover assets, scan for CVEs, prioritize by exploitability and asset criticality, patch or mitigate, verify closure. CVSS provides base scores; contextual risk adds internet exposure and data sensitivity. SLAs: critical internet-facing in 72 hours.\n\nCode Reference:\n```python\nfinding = {'cve': 'CVE-2024-1234', 'cvss': 9.8, 'asset': 'web-prod-01', 'sla_days': 3}\n```\nWhat it shows: Structured finding dicts feed ticketing and SLA dashboards.\n\n### What it actually is\nVulnerability management reduces known exploitable weaknesses.\n\n### When to use it\nMonthly patch cycles and audit preparation.\n\n### Where to use it\nServers, containers, SaaS connectors, and third-party libs.\n\n### Real use example\nCritical OpenSSL flaw on CodeQuest edge node patched within 48-hour SLA.",
+      "key_takeaways": [
+        "Vulnerability management reduces known exploitable weaknesses.",
+        "Monthly patch cycles and audit preparation.",
+        "Critical OpenSSL flaw on CodeQuest edge node patched within 48-hour SLA."
+      ],
+      "what_it_is": "Vulnerability management reduces known exploitable weaknesses.",
+      "when_to_use": "Monthly patch cycles and audit preparation.",
+      "where_to_use": "Servers, containers, SaaS connectors, and third-party libs.",
+      "real_use_example": "Critical OpenSSL flaw on CodeQuest edge node patched within 48-hour SLA."
+    },
+    {
+      "number": 6,
+      "title": "Security Policies and Compliance Basics",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Security Policies and Compliance Basics** *(Level: Beginner)*\n\nPolicies define acceptable use, data classification, incident reporting, and access reviews. Frameworks: ISO 27001, SOC 2, GDPR, FERPA for education data. Analysts translate controls into technical implementations auditors can test.\n\nCode Reference:\n```python\nclassifications = {'Public': 0, 'Internal': 1, 'Confidential': 2, 'Restricted': 3}\n```\nWhat it shows: Data classification drives encryption and DLP requirements.\n\n### What it actually is\nPolicies and compliance align security with legal obligations.\n\n### When to use it\nOnboarding vendors, student data platforms, and annual audits.\n\n### Where to use it\nSchools, healthcare, fintech, and government contractors.\n\n### Real use example\nFERPA review requires student quiz data encrypted at rest and role-scoped access.",
+      "key_takeaways": [
+        "Policies and compliance align security with legal obligations.",
+        "Onboarding vendors, student data platforms, and annual audits.",
+        "FERPA review requires student quiz data encrypted at rest and role-scoped access."
+      ],
+      "what_it_is": "Policies and compliance align security with legal obligations.",
+      "when_to_use": "Onboarding vendors, student data platforms, and annual audits.",
+      "where_to_use": "Schools, healthcare, fintech, and government contractors.",
+      "real_use_example": "FERPA review requires student quiz data encrypted at rest and role-scoped access."
+    },
+    {
+      "number": 7,
+      "title": "NIST Cybersecurity Framework",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: NIST Cybersecurity Framework** *(Level: Intermediate)*\n\nNIST CSF functions: Identify (asset management), Protect (access control), Detect (anomalies), Respond (incidents), Recover (backups). Create Current Profile vs Target Profile gap reports for leadership funding asks.\n\nCode Reference:\n```python\nfunctions = ['Identify', 'Protect', 'Detect', 'Respond', 'Recover']\n```\nWhat it shows: CSF functions organize control maturity assessments.\n\n### What it actually is\nNIST CSF provides a common risk management vocabulary.\n\n### When to use it\nEnterprise security program design and board reporting.\n\n### Where to use it\nUS critical infrastructure and widely adopted globally.\n\n### Real use example\nGap analysis shows Detect immature—funds SIEM and SOC headcount.",
+      "key_takeaways": [
+        "NIST CSF provides a common risk management vocabulary.",
+        "Enterprise security program design and board reporting.",
+        "Gap analysis shows Detect immature—funds SIEM and SOC headcount."
+      ],
+      "what_it_is": "NIST CSF provides a common risk management vocabulary.",
+      "when_to_use": "Enterprise security program design and board reporting.",
+      "where_to_use": "US critical infrastructure and widely adopted globally.",
+      "real_use_example": "Gap analysis shows Detect immature—funds SIEM and SOC headcount."
+    },
+    {
+      "number": 8,
+      "title": "MITRE ATT&CK for Detection",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: MITRE ATT&CK for Detection** *(Level: Intermediate)*\n\nATT&CK catalogs adversary tactics (Initial Access, Execution, Persistence…) and techniques (T1059 PowerShell). Map detections and purple team tests to technique IDs. Navigator layers visualize coverage gaps.\n\nCode Reference:\n```python\ntechnique = {'id': 'T1110.001', 'name': 'Password Guessing', 'tactic': 'Credential Access'}\n```\nWhat it shows: Technique metadata enriches SIEM alert descriptions.\n\n### What it actually is\nMITRE ATT&CK standardizes threat behavior knowledge.\n\n### When to use it\nDetection engineering, threat intel, and purple teaming.\n\n### Where to use it\nSOCs building coverage dashboards for leadership.\n\n### Real use example\nNew rule detects T1110.001 brute force—closes Navigator gap for Credential Access.",
+      "key_takeaways": [
+        "MITRE ATT&CK standardizes threat behavior knowledge.",
+        "Detection engineering, threat intel, and purple teaming.",
+        "New rule detects T1110."
+      ],
+      "what_it_is": "MITRE ATT&CK standardizes threat behavior knowledge.",
+      "when_to_use": "Detection engineering, threat intel, and purple teaming.",
+      "where_to_use": "SOCs building coverage dashboards for leadership.",
+      "real_use_example": "New rule detects T1110.001 brute force—closes Navigator gap for Credential Access."
+    },
+    {
+      "number": 9,
+      "title": "SIEM Architecture and Log Sources",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: SIEM Architecture and Log Sources** *(Level: Intermediate)*\n\nSIEM aggregates logs: AD, EDR, firewall, cloud trail, app logs. Normalization, retention, and correlation rules produce alerts. Tune noisy rules—alert fatigue causes missed true positives. Store raw logs immutably for forensics.\n\nCode Reference:\n```python\n# Sentinel table: SecurityEvent | where EventID == 4625 | summarize count() by Account\n```\nWhat it shows: Failed logon aggregation detects brute-force patterns.\n\n### What it actually is\nSIEM is the central nervous system for security monitoring.\n\n### When to use it\n24/7 SOC operations and compliance log retention.\n\n### Where to use it\nMicrosoft Sentinel, Splunk Enterprise Security, Elastic.\n\n### Real use example\nSpike in 4625 events across VPN—correlation opens incident within minutes.",
+      "key_takeaways": [
+        "SIEM is the central nervous system for security monitoring.",
+        "24/7 SOC operations and compliance log retention.",
+        "Spike in 4625 events across VPN—correlation opens incident within minutes."
+      ],
+      "what_it_is": "SIEM is the central nervous system for security monitoring.",
+      "when_to_use": "24/7 SOC operations and compliance log retention.",
+      "where_to_use": "Microsoft Sentinel, Splunk Enterprise Security, Elastic.",
+      "real_use_example": "Spike in 4625 events across VPN—correlation opens incident within minutes."
+    },
+    {
+      "number": 10,
+      "title": "Incident Response Phases",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Incident Response Phases** *(Level: Intermediate)*\n\nNIST IR: Preparation, Detection & Analysis, Containment, Eradication, Recovery, Post-Incident. Preserve chain of custody for disk images. Communicate via predefined templates—avoid leaking indicators in public channels.\n\nCode Reference:\n```python\nphases = ['Prepare', 'Detect', 'Contain', 'Eradicate', 'Recover', 'Lessons']\n```\nWhat it shows: Phase checklist ensures no step skipped during chaos.\n\n### What it actually is\nIncident response minimizes damage from confirmed breaches.\n\n### When to use it\nActive malware, account compromise, and data breach events.\n\n### Where to use it\nCERT teams, MSSP escalations, and internal IR retainers.\n\n### Real use example\nRansomware contained by VLAN isolation while backups verified offline.",
+      "key_takeaways": [
+        "Incident response minimizes damage from confirmed breaches.",
+        "Active malware, account compromise, and data breach events.",
+        "Ransomware contained by VLAN isolation while backups verified offline."
+      ],
+      "what_it_is": "Incident response minimizes damage from confirmed breaches.",
+      "when_to_use": "Active malware, account compromise, and data breach events.",
+      "where_to_use": "CERT teams, MSSP escalations, and internal IR retainers.",
+      "real_use_example": "Ransomware contained by VLAN isolation while backups verified offline."
+    },
+    {
+      "number": 11,
+      "title": "Endpoint Detection and Response",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Endpoint Detection and Response** *(Level: Intermediate)*\n\nEDR agents record process trees, file hashes, registry changes, and network connections. Hunt for living-off-the-land binaries (lolbas) like certutil and powershell -enc. Isolate hosts from console before wiping reimages.\n\nCode Reference:\n```python\n# EDR query: parent_process == 'winword.exe' AND child_process == 'powershell.exe'\n```\nWhat it shows: Parent-child process anomalies indicate macro malware.\n\n### What it actually is\nEDR provides deep endpoint telemetry beyond antivirus signatures.\n\n### When to use it\nMalware outbreaks and insider threat investigations.\n\n### Where to use it\nCrowdStrike, Microsoft Defender for Endpoint, SentinelOne.\n\n### Real use example\nWord spawns encoded PowerShell—EDR auto-isolates laptop before lateral scan.",
+      "key_takeaways": [
+        "EDR provides deep endpoint telemetry beyond antivirus signatures.",
+        "Malware outbreaks and insider threat investigations.",
+        "Word spawns encoded PowerShell—EDR auto-isolates laptop before lateral scan."
+      ],
+      "what_it_is": "EDR provides deep endpoint telemetry beyond antivirus signatures.",
+      "when_to_use": "Malware outbreaks and insider threat investigations.",
+      "where_to_use": "CrowdStrike, Microsoft Defender for Endpoint, SentinelOne.",
+      "real_use_example": "Word spawns encoded PowerShell—EDR auto-isolates laptop before lateral scan."
+    },
+    {
+      "number": 12,
+      "title": "Web App Security Testing",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Web App Security Testing** *(Level: Intermediate)*\n\nManual and automated testing for SQLi, XSS, CSRF, SSRF, and auth bypass. Burp Suite intercepts HTTP traffic; ZAP automates baseline scans. Always test in scoped environments with written authorization—unauthorized testing is illegal.\n\nCode Reference:\n```python\n# sqlmap authorized test only on lab.codequest.local\n# python -m pip install sqlmap\n```\nWhat it shows: Tooling reminders stress authorized scope boundaries.\n\n### What it actually is\nAppsec testing finds flaws before attackers exploit production.\n\n### When to use it\nRelease gates for customer-facing web applications.\n\n### Where to use it\nBug bounty, internal QA security, and dev team training.\n\n### Real use example\nBurp reveals admin API missing auth—fixed before production release.",
+      "key_takeaways": [
+        "Appsec testing finds flaws before attackers exploit production.",
+        "Release gates for customer-facing web applications.",
+        "Burp reveals admin API missing auth—fixed before production release."
+      ],
+      "what_it_is": "Appsec testing finds flaws before attackers exploit production.",
+      "when_to_use": "Release gates for customer-facing web applications.",
+      "where_to_use": "Bug bounty, internal QA security, and dev team training.",
+      "real_use_example": "Burp reveals admin API missing auth—fixed before production release."
+    },
+    {
+      "number": 13,
+      "title": "Phishing Analysis and Email Security",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Phishing Analysis and Email Security** *(Level: Intermediate)*\n\nAnalyze headers (SPF, DKIM, DMARC), extract URLs and attachments in sandbox. User reporting buttons feed SOC queues. Run simulated phishing campaigns to measure click rates and train high-risk departments.\n\nCode Reference:\n```python\nimport re\nurls = re.findall(r'https?://\\S+', email_body)\n```\nWhat it shows: Regex extraction feeds URL reputation checks.\n\n### What it actually is\nEmail security blocks primary initial access vector.\n\n### When to use it\nDaily SOC triage and security awareness programs.\n\n### Where to use it\nMicrosoft 365 Defender, Proofpoint, Mimecast.\n\n### Real use example\nFake payroll email links to credential harvest—blocked at gateway after header fail.",
+      "key_takeaways": [
+        "Email security blocks primary initial access vector.",
+        "Daily SOC triage and security awareness programs.",
+        "Fake payroll email links to credential harvest—blocked at gateway after header fail."
+      ],
+      "what_it_is": "Email security blocks primary initial access vector.",
+      "when_to_use": "Daily SOC triage and security awareness programs.",
+      "where_to_use": "Microsoft 365 Defender, Proofpoint, Mimecast.",
+      "real_use_example": "Fake payroll email links to credential harvest—blocked at gateway after header fail."
+    },
+    {
+      "number": 14,
+      "title": "Zero Trust Architecture",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Zero Trust Architecture** *(Level: Advanced)*\n\nZero trust assumes breach: verify explicitly, least privilege, assume breach. Identity becomes perimeter via Conditional Access, device compliance, and microsegmentation. Replace flat network VPN with app-level access policies.\n\nCode Reference:\n```python\npolicy = {'user': 'teacher', 'device': 'compliant', 'app': 'gradebook', 'action': 'allow'}\n```\nWhat it shows: Policy tuples express zero trust decision logic.\n\n### What it actually is\nZero trust modernizes perimeter-centric security models.\n\n### When to use it\nCloud migration, remote work, and high-value data protection.\n\n### Where to use it\nAzure AD Conditional Access, Zscaler, BeyondCorp patterns.\n\n### Real use example\nNon-compliant phone blocked from admin portal even on corporate Wi-Fi.",
+      "key_takeaways": [
+        "Zero trust modernizes perimeter-centric security models.",
+        "Cloud migration, remote work, and high-value data protection.",
+        "Non-compliant phone blocked from admin portal even on corporate Wi-Fi."
+      ],
+      "what_it_is": "Zero trust modernizes perimeter-centric security models.",
+      "when_to_use": "Cloud migration, remote work, and high-value data protection.",
+      "where_to_use": "Azure AD Conditional Access, Zscaler, BeyondCorp patterns.",
+      "real_use_example": "Non-compliant phone blocked from admin portal even on corporate Wi-Fi."
+    },
+    {
+      "number": 15,
+      "title": "Threat Hunting with Python",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Threat Hunting with Python** *(Level: Advanced)*\n\nProactive hunts query SIEM and endpoint data for hypotheses: uncommon parent-child pairs, rare process command lines, beaconing intervals. Python pandas ingests exported logs for statistical anomaly detection beyond static rules.\n\nCode Reference:\n```python\nimport pandas as pd\nev = pd.read_json('edr_events.jsonl', lines=True)\nrare = ev.groupby('process').size().sort_values().head(20)\n```\nWhat it shows: pandas surfaces rare processes worthy of manual investigation.\n\n### What it actually is\nThreat hunting finds undetected adversary activity.\n\n### When to use it\nMature SOCs after baseline detections are tuned.\n\n### Where to use it\nFortune 500 SOCs and critical infrastructure CSIRTs.\n\n### Real use example\nHunt finds periodic 90-second HTTPS beacons missed by threshold alerts.",
+      "key_takeaways": [
+        "Threat hunting finds undetected adversary activity.",
+        "Mature SOCs after baseline detections are tuned.",
+        "Hunt finds periodic 90-second HTTPS beacons missed by threshold alerts."
+      ],
+      "what_it_is": "Threat hunting finds undetected adversary activity.",
+      "when_to_use": "Mature SOCs after baseline detections are tuned.",
+      "where_to_use": "Fortune 500 SOCs and critical infrastructure CSIRTs.",
+      "real_use_example": "Hunt finds periodic 90-second HTTPS beacons missed by threshold alerts."
+    },
+    {
+      "number": 16,
+      "title": "Cloud Security and IAM",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Cloud Security and IAM** *(Level: Advanced)*\n\nMisconfigured S3 buckets, overly broad IAM roles, and public security groups cause breaches. Enforce least privilege, MFA on root, CloudTrail logging, and CSPM scanning. Understand shared responsibility model per provider.\n\nCode Reference:\n```python\n# aws iam simulate-principal-policy (conceptual)\n# Azure PIM for just-in-time admin\n```\nWhat it shows: IAM simulation tests effective permissions before deployment.\n\n### What it actually is\nCloud security secures ephemeral infrastructure and identities.\n\n### When to use it\nAWS/Azure/GCP migrations and multi-cloud estates.\n\n### Where to use it\nSaaS backends and data lakes storing learner analytics.\n\n### Real use example\nCSPM flags public S3 bucket with grade exports—emergency lockdown.",
+      "key_takeaways": [
+        "Cloud security secures ephemeral infrastructure and identities.",
+        "AWS/Azure/GCP migrations and multi-cloud estates.",
+        "CSPM flags public S3 bucket with grade exports—emergency lockdown."
+      ],
+      "what_it_is": "Cloud security secures ephemeral infrastructure and identities.",
+      "when_to_use": "AWS/Azure/GCP migrations and multi-cloud estates.",
+      "where_to_use": "SaaS backends and data lakes storing learner analytics.",
+      "real_use_example": "CSPM flags public S3 bucket with grade exports—emergency lockdown."
+    },
+    {
+      "number": 17,
+      "title": "Digital Forensics Essentials",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Digital Forensics Essentials** *(Level: Advanced)*\n\nAcquire disk images write-blocked; hash with SHA-256; analyze with Autopsy or Volatility for memory forensics. Timeline analysis correlates events. Legal hold preserves evidence for potential litigation—chain of custody forms mandatory.\n\nCode Reference:\n```python\nsha256 = 'a3f2...'  # verify image integrity before analysis\n```\nWhat it shows: Hash verification proves evidence not tampered.\n\n### What it actually is\nForensics supports IR root cause and legal proceedings.\n\n### When to use it\nConfirmed breaches requiring evidence preservation.\n\n### Where to use it\nLaw enforcement liaison and internal fraud cases.\n\n### Real use example\nMemory dump reveals attacker RDP session artifacts for timeline.",
+      "key_takeaways": [
+        "Forensics supports IR root cause and legal proceedings.",
+        "Confirmed breaches requiring evidence preservation.",
+        "Memory dump reveals attacker RDP session artifacts for timeline."
+      ],
+      "what_it_is": "Forensics supports IR root cause and legal proceedings.",
+      "when_to_use": "Confirmed breaches requiring evidence preservation.",
+      "where_to_use": "Law enforcement liaison and internal fraud cases.",
+      "real_use_example": "Memory dump reveals attacker RDP session artifacts for timeline."
+    },
+    {
+      "number": 18,
+      "title": "Security Automation and SOAR",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Security Automation and SOAR** *(Level: Advanced)*\n\nSOAR playbooks automate enrichment (WHOIS, VirusTotal), ticket creation, and containment actions with human approval gates. Python scripts glue APIs when commercial SOAR unavailable. Measure MTTR improvement after automation.\n\nCode Reference:\n```python\ndef enrich_ip(ip):\n    return {'ip': ip, 'vt_score': query_vt(ip), 'action': 'block_if_malicious'}\n```\nWhat it shows: Enrichment functions feed playbook decision branches.\n\n### What it actually is\nSecurity automation scales analyst capacity and speeds response.\n\n### When to use it\nHigh-volume alert environments and repetitive tier-1 tasks.\n\n### Where to use it\nSplunk SOAR, Palo Alto XSOAR, custom Lambda responders.\n\n### Real use example\nPhishing playbook auto-quarantines attachment in 90 seconds vs 25-minute manual average.",
+      "key_takeaways": [
+        "Security automation scales analyst capacity and speeds response.",
+        "High-volume alert environments and repetitive tier-1 tasks.",
+        "Phishing playbook auto-quarantines attachment in 90 seconds vs 25-minute manual average."
+      ],
+      "what_it_is": "Security automation scales analyst capacity and speeds response.",
+      "when_to_use": "High-volume alert environments and repetitive tier-1 tasks.",
+      "where_to_use": "Splunk SOAR, Palo Alto XSOAR, custom Lambda responders.",
+      "real_use_example": "Phishing playbook auto-quarantines attachment in 90 seconds vs 25-minute manual average."
+    }
+  ],
+  "chapter_count": 18
+}

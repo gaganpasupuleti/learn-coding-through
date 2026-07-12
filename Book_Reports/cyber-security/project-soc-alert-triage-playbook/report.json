@@ -1,0 +1,136 @@
+{
+  "id": "project-soc-alert-triage-playbook",
+  "title": "Project Report: SOC Alert Triage Playbook — Cybersecurity Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "cyber-security",
+  "family_name": "Cybersecurity Analyst",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "SOC Alert Triage Playbook",
+  "project_index": 3,
+  "duration": "4–5 weeks",
+  "summary": "Build SIEM detection rules, triage 10 alert scenarios, write IR playbook, conduct tabletop exercise.",
+  "objectives": [
+    "5 SIEM detection rules (Sigma or Splunk SPL)",
+    "Triage playbook for 10 alert types",
+    "Incident response playbook",
+    "Tabletop exercise report"
+  ],
+  "tools": [
+    "Sigma",
+    "Splunk/Elastic",
+    "NIST IR"
+  ],
+  "deliverables": [
+    "Detection rules",
+    "Triage playbook",
+    "IR playbook",
+    "Tabletop report"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**SOC Alert Triage Playbook** is a advanced-level end-to-end project for Cybersecurity Analyst. Duration: 4–5 weeks. Build SIEM detection rules, triage 10 alert scenarios, write IR playbook, conduct tabletop exercise. Tools: Sigma, Splunk/Elastic, NIST IR.\n\nCode Reference:\n```text\nObjective: 5 SIEM detection rules (Sigma or Splunk SPL)\nObjective: Triage playbook for 10 alert types\nObjective: Incident response playbook\nObjective: Tabletop exercise report\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nCybersecurity Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Cybersecurity Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Cybersecurity Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Cybersecurity Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Cybersecurity Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Detect",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Detect** *(Level: Advanced)*\n\nWrite detection rules. Complete these tasks: Brute force; Data exfil; Malware beacon. Deliverable for this phase: Rule definitions.\n\nCode Reference:\n```text\n- [ ] Brute force\n- [ ] Data exfil\n- [ ] Malware beacon\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Detect is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Rule definitions to the teacher.",
+      "key_takeaways": [
+        "Phase Detect is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Rule definitions to the teacher."
+      ],
+      "what_it_is": "Phase Detect is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Rule definitions to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Triage",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Triage** *(Level: Advanced)*\n\nPlaybook per alert. Complete these tasks: Steps; Escalation; Evidence. Deliverable for this phase: Triage playbook PDF.\n\nCode Reference:\n```text\n- [ ] Steps\n- [ ] Escalation\n- [ ] Evidence\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Triage is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Triage playbook PDF to the teacher.",
+      "key_takeaways": [
+        "Phase Triage is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Triage playbook PDF to the teacher."
+      ],
+      "what_it_is": "Phase Triage is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Triage playbook PDF to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: IR",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: IR** *(Level: Advanced)*\n\nIncident response plan. Complete these tasks: Containment; Forensics; Recovery. Deliverable for this phase: IR playbook.\n\nCode Reference:\n```text\n- [ ] Containment\n- [ ] Forensics\n- [ ] Recovery\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase IR is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the IR playbook to the teacher.",
+      "key_takeaways": [
+        "Phase IR is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the IR playbook to the teacher."
+      ],
+      "what_it_is": "Phase IR is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the IR playbook to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Exercise",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Exercise** *(Level: Advanced)*\n\nTabletop 3 scenarios. Complete these tasks: Timeline; Lessons learned. Deliverable for this phase: Exercise report.\n\nCode Reference:\n```text\n- [ ] Timeline\n- [ ] Lessons learned\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Exercise is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Exercise report to the teacher.",
+      "key_takeaways": [
+        "Phase Exercise is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Exercise report to the teacher."
+      ],
+      "what_it_is": "Phase Exercise is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Exercise report to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Detection rules; Triage playbook; IR playbook; Tabletop report. Skills demonstrated: SIEM, Detection, Incident response. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Detection rules\nDeliverable: Triage playbook\nDeliverable: IR playbook\nDeliverable: Tabletop report\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Detection rules and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Detection rules and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Detection rules and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

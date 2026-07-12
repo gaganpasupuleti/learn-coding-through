@@ -1,0 +1,136 @@
+{
+  "id": "project-home-lab-security-hardening",
+  "title": "Project Report: Home Lab Security Hardening — Cybersecurity Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "cyber-security",
+  "family_name": "Cybersecurity Analyst",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Home Lab Security Hardening",
+  "project_index": 1,
+  "duration": "2 weeks",
+  "summary": "Harden a Linux VM: firewall, SSH keys, fail2ban, updates, and document baseline checklist.",
+  "objectives": [
+    "UFW firewall rules configured",
+    "SSH key-only auth (no passwords)",
+    "fail2ban installed",
+    "Security baseline checklist completed"
+  ],
+  "tools": [
+    "Linux",
+    "UFW",
+    "fail2ban",
+    "nmap"
+  ],
+  "deliverables": [
+    "Baseline audit",
+    "Hardening runbook",
+    "Scan comparison"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Home Lab Security Hardening** is a beginner-level end-to-end project for Cybersecurity Analyst. Duration: 2 weeks. Harden a Linux VM: firewall, SSH keys, fail2ban, updates, and document baseline checklist. Tools: Linux, UFW, fail2ban, nmap.\n\nCode Reference:\n```text\nObjective: UFW firewall rules configured\nObjective: SSH key-only auth (no passwords)\nObjective: fail2ban installed\nObjective: Security baseline checklist completed\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nCybersecurity Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Cybersecurity Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Cybersecurity Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Cybersecurity Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Cybersecurity Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Baseline",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Baseline** *(Level: Beginner)*\n\nDocument current state. Complete these tasks: Open ports scan; User accounts. Deliverable for this phase: Baseline audit.\n\nCode Reference:\n```text\n- [ ] Open ports scan\n- [ ] User accounts\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Baseline is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Baseline audit to the teacher.",
+      "key_takeaways": [
+        "Phase Baseline is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Baseline audit to the teacher."
+      ],
+      "what_it_is": "Phase Baseline is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Baseline audit to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Harden",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Harden** *(Level: Beginner)*\n\nApply CIS basics. Complete these tasks: UFW; SSH keys; fail2ban. Deliverable for this phase: Hardened VM.\n\nCode Reference:\n```text\n- [ ] UFW\n- [ ] SSH keys\n- [ ] fail2ban\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Harden is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Hardened VM to the teacher.",
+      "key_takeaways": [
+        "Phase Harden is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Hardened VM to the teacher."
+      ],
+      "what_it_is": "Phase Harden is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Hardened VM to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Verify",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Verify** *(Level: Beginner)*\n\nRe-scan after hardening. Complete these tasks: nmap scan; SSH test. Deliverable for this phase: Before/after comparison.\n\nCode Reference:\n```text\n- [ ] nmap scan\n- [ ] SSH test\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Verify is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Before/after comparison to the teacher.",
+      "key_takeaways": [
+        "Phase Verify is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Before/after comparison to the teacher."
+      ],
+      "what_it_is": "Phase Verify is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Before/after comparison to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Document",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Document** *(Level: Beginner)*\n\nRunbook. Complete these tasks: Steps; Rollback. Deliverable for this phase: Hardening runbook PDF.\n\nCode Reference:\n```text\n- [ ] Steps\n- [ ] Rollback\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Document is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Hardening runbook PDF to the teacher.",
+      "key_takeaways": [
+        "Phase Document is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Hardening runbook PDF to the teacher."
+      ],
+      "what_it_is": "Phase Document is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Hardening runbook PDF to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: Baseline audit; Hardening runbook; Scan comparison. Skills demonstrated: Linux security, Hardening. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Baseline audit\nDeliverable: Hardening runbook\nDeliverable: Scan comparison\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Baseline audit and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Baseline audit and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Baseline audit and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

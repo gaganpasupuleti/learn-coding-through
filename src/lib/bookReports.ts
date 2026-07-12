@@ -30,7 +30,8 @@ export function getReportRoleIds(report: CatalogReport): string[] {
 }
 
 export function getFamilyName(familyId: string): string {
-  return familyLabel(familyId)
+  const fam = BOOK_REPORTS_CATALOG.families.find((f) => f.id === familyId)
+  return fam?.name ?? familyLabel(familyId)
 }
 
 export function loadStudyReport(path: string): StudyReport | null {

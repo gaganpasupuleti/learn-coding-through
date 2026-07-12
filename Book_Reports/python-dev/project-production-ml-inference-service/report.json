@@ -1,0 +1,137 @@
+{
+  "id": "project-production-ml-inference-service",
+  "title": "Project Report: Production ML Inference Service — Python Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "python-dev",
+  "family_name": "Python Developer",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "Production ML Inference Service",
+  "project_index": 3,
+  "duration": "4–6 weeks",
+  "summary": "FastAPI service serving a scikit-learn model with batch prediction, caching, OpenTelemetry, and k6 load tests.",
+  "objectives": [
+    "Load and version ML model with joblib",
+    "Batch and single prediction endpoints",
+    "Redis result cache",
+    "OpenTelemetry traces and k6 load test"
+  ],
+  "tools": [
+    "FastAPI",
+    "sklearn",
+    "Redis",
+    "k6"
+  ],
+  "deliverables": [
+    "Model artifact",
+    "k6 report",
+    "Grafana/traces screenshot",
+    "API docs"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**Production ML Inference Service** is a advanced-level end-to-end project for Python Developer. Duration: 4–6 weeks. FastAPI service serving a scikit-learn model with batch prediction, caching, OpenTelemetry, and k6 load tests. Tools: FastAPI, sklearn, Redis, k6.\n\nCode Reference:\n```text\nObjective: Load and version ML model with joblib\nObjective: Batch and single prediction endpoints\nObjective: Redis result cache\nObjective: OpenTelemetry traces and k6 load test\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nPython Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Python Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Python Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Python Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Python Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Model",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Model** *(Level: Advanced)*\n\nTrain and serialize model. Complete these tasks: sklearn pipeline; MLflow log. Deliverable for this phase: model.pkl v1.\n\nCode Reference:\n```text\n- [ ] sklearn pipeline\n- [ ] MLflow log\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Model is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nPython Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the model.pkl v1 to the teacher.",
+      "key_takeaways": [
+        "Phase Model is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the model."
+      ],
+      "what_it_is": "Phase Model is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Python Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the model.pkl v1 to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: API",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: API** *(Level: Advanced)*\n\nPrediction endpoints. Complete these tasks: /predict; /predict/batch. Deliverable for this phase: Latency benchmarks.\n\nCode Reference:\n```text\n- [ ] /predict\n- [ ] /predict/batch\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase API is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nPython Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Latency benchmarks to the teacher.",
+      "key_takeaways": [
+        "Phase API is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Latency benchmarks to the teacher."
+      ],
+      "what_it_is": "Phase API is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Python Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Latency benchmarks to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Cache",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Cache** *(Level: Advanced)*\n\nRedis for repeated inputs. Complete these tasks: Cache key hash; TTL config. Deliverable for this phase: Cache hit metrics.\n\nCode Reference:\n```text\n- [ ] Cache key hash\n- [ ] TTL config\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Cache is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nPython Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Cache hit metrics to the teacher.",
+      "key_takeaways": [
+        "Phase Cache is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Cache hit metrics to the teacher."
+      ],
+      "what_it_is": "Phase Cache is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Python Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Cache hit metrics to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Load Test",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Load Test** *(Level: Advanced)*\n\nk6 script 1000 RPS. Complete these tasks: p95 latency; Error rate. Deliverable for this phase: k6 HTML report.\n\nCode Reference:\n```text\n- [ ] p95 latency\n- [ ] Error rate\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Load Test is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nPython Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the k6 HTML report to the teacher.",
+      "key_takeaways": [
+        "Phase Load Test is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the k6 HTML report to the teacher."
+      ],
+      "what_it_is": "Phase Load Test is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Python Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the k6 HTML report to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Model artifact; k6 report; Grafana/traces screenshot; API docs. Skills demonstrated: ML serving, Caching, Observability. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Model artifact\nDeliverable: k6 report\nDeliverable: Grafana/traces screenshot\nDeliverable: API docs\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Model artifact and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Model artifact and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Model artifact and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

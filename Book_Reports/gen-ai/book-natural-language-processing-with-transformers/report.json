@@ -1,0 +1,139 @@
+{
+  "id": "book-natural-language-processing-with-transformers",
+  "title": "Study Report: Natural Language Processing with Transformers — Generative AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "gen-ai",
+  "family_name": "Generative AI Engineer",
+  "level": "Advanced",
+  "report_type": "role_book_study",
+  "book_title": "Natural Language Processing with Transformers",
+  "book_author": "Lewis Tunstall et al.",
+  "book_index": 4,
+  "summary": "Study report for *Natural Language Processing with Transformers* by Lewis Tunstall et al. (Advanced level) mapped to the Generative AI Engineer role. Hugging Face transformers, fine-tuning, and NLP tasks.",
+  "sources": [
+    "https://www.oreilly.com/library/view/natural-language-processing/9781098136789/"
+  ],
+  "source_file": "Reference: Natural Language Processing with Transformers — Lewis Tunstall et al.",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Natural Language Processing with Transformers",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Natural Language Processing with Transformers** *(Level: Advanced)*\n\nThis study report summarizes *Natural Language Processing with Transformers* by Lewis Tunstall et al. for the Generative AI Engineer role. The resource is rated Advanced level. Hugging Face transformers, fine-tuning, and NLP tasks. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Natural Language Processing with Transformers\n# Author: Lewis Tunstall et al.\n# Role: Generative AI Engineer\n# Level: Advanced\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Natural Language Processing with Transformers.\n\n### When to use it\nWhen learning Generative AI Engineer skills at Advanced level.\n\n### Where to use it\nGenerative AI Engineer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Natural Language Processing with Transformers.",
+        "When learning Generative AI Engineer skills at Advanced level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Natural Language Processing with Transformers.",
+      "when_to_use": "When learning Generative AI Engineer skills at Advanced level.",
+      "where_to_use": "Generative AI Engineer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Advanced)*\n\nGenerative AI Engineer professionals use ideas from Natural Language Processing with Transformers to solve real workplace problems. Hugging Face transformers, fine-tuning, and NLP tasks. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Generative AI Engineer\nBook focus: Hugging Face transformers, fine-tuning, and NLP tasks.\nRecommended level: Advanced\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nGenerative AI Engineer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a advanced skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a advanced skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Generative AI Engineer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a advanced skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Advanced",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Advanced)*\n\nThe main topics in Natural Language Processing with Transformers include practical concepts described as: Hugging Face transformers, fine-tuning, and NLP tasks. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Generative AI Engineer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Multimodal Models (Vision + Text)",
+      "topic": "ml_intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Multimodal Models (Vision + Text)** *(Level: Advanced)*\n\nGPT-4o, Claude 3.5+, and Gemini accept images + text. Use for diagram explanation, receipt OCR, and UI screenshot debugging. Watch image token pricing.\n\nCode Reference:\n```python\nresponse = client.chat.completions.create(\n  model='gpt-4o',\n  messages=[{'role':'user','content':[\n    {'type':'text','text':'What error is shown?'},\n    {'type':'image_url','image_url':{'url': 'data:image/png;base64,...'}}\n  ]}]\n)\n```\nWhat it shows: image_url content block sends screenshot with question in one call.\n\n### What it actually is\nMultimodal LLMs reason over pixels and text jointly.\n\n### When to use it\nVisual troubleshooting, document understanding, and accessibility.\n\n### Where to use it\nEd-tech diagram help, insurance claims, and field service apps.\n\n### Real use example\nStudent uploads stats plot — tutor explains axis mislabel from vision input.",
+      "key_takeaways": [
+        "Multimodal LLMs reason over pixels and text jointly.",
+        "Visual troubleshooting, document understanding, and accessibility.",
+        "Student uploads stats plot — tutor explains axis mislabel from vision input."
+      ],
+      "what_it_is": "Multimodal LLMs reason over pixels and text jointly.",
+      "when_to_use": "Visual troubleshooting, document understanding, and accessibility.",
+      "where_to_use": "Ed-tech diagram help, insurance claims, and field service apps.",
+      "real_use_example": "Student uploads stats plot — tutor explains axis mislabel from vision input."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Production RAG with Re-Ranking",
+      "topic": "ml_intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Production RAG with Re-Ranking** *(Level: Advanced)*\n\nBi-encoder retrieval is fast but coarse; cross-encoder rerankers (Cohere rerank v3, bge-reranker) rescore top-50 to top-5 precisely. Latency tradeoff ~100-200ms.\n\nCode Reference:\n```python\nfrom cohere import Client\nr = cohere_client.rerank(model='rerank-v3.5', query=q, documents=chunks, top_n=5)\n```\nWhat it shows: Rerank pushes truly relevant chunk to top for generation.\n\n### What it actually is\nRe-ranking dramatically improves answer quality on noisy corpora.\n\n### When to use it\nLarge wikis and multi-topic enterprise search.\n\n### Where to use it\nCompliance corpora where wrong paragraph is costly.\n\n### Real use example\nRerank fixes case where BM25 top hit was glossary not procedure.",
+      "key_takeaways": [
+        "Re-ranking dramatically improves answer quality on noisy corpora.",
+        "Large wikis and multi-topic enterprise search.",
+        "Rerank fixes case where BM25 top hit was glossary not procedure."
+      ],
+      "what_it_is": "Re-ranking dramatically improves answer quality on noisy corpora.",
+      "when_to_use": "Large wikis and multi-topic enterprise search.",
+      "where_to_use": "Compliance corpora where wrong paragraph is costly.",
+      "real_use_example": "Rerank fixes case where BM25 top hit was glossary not procedure."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Fine-Tuning vs RAG vs Prompting",
+      "topic": "ml_intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Fine-Tuning vs RAG vs Prompting** *(Level: Advanced)*\n\nPrompt when model knows task; RAG when knowledge is private/fresh; fine-tune when style/format/tool-use must be consistent and data is labeled. RLHF/DPO is vendor territory for most teams.\n\nCode Reference:\n```markdown\n# Decision matrix\n# Private docs -> RAG\n# Brand tone / JSON tool style -> fine-tune LoRA\n# General reasoning -> prompt + best model\n```\nWhat it shows: Matrix prevents expensive fine-tune on problems RAG solves.\n\n### What it actually is\nArchitecture choice affects cost, maintenance, and quality ceiling.\n\n### When to use it\nGreenfield GenAI feature planning.\n\n### Where to use it\nSupport tone fine-tune + policy RAG is common hybrid.\n\n### Real use example\nLoRA on 2k examples fixes JSON extraction; RAG still supplies facts.",
+      "key_takeaways": [
+        "Architecture choice affects cost, maintenance, and quality ceiling.",
+        "Greenfield GenAI feature planning.",
+        "LoRA on 2k examples fixes JSON extraction; RAG still supplies facts."
+      ],
+      "what_it_is": "Architecture choice affects cost, maintenance, and quality ceiling.",
+      "when_to_use": "Greenfield GenAI feature planning.",
+      "where_to_use": "Support tone fine-tune + policy RAG is common hybrid.",
+      "real_use_example": "LoRA on 2k examples fixes JSON extraction; RAG still supplies facts."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Advanced)*\n\nFinish Natural Language Processing with Transformers with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Generative AI Engineer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a advanced project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a advanced project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a advanced project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

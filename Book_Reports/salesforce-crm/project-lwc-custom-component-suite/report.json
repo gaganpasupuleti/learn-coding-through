@@ -1,0 +1,137 @@
+{
+  "id": "project-lwc-custom-component-suite",
+  "title": "Project Report: LWC Custom Component Suite — Salesforce CRM Developer / Administrator",
+  "author": "Gagan Pasupuleti",
+  "family_id": "salesforce-crm",
+  "family_name": "Salesforce CRM Developer / Administrator",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "LWC Custom Component Suite",
+  "project_index": 3,
+  "duration": "4–5 weeks",
+  "summary": "Build 3 Lightning Web Components with Apex controllers, Jest tests, and deploy via Salesforce CLI.",
+  "objectives": [
+    "3 LWC components (lookup, datatable, chart)",
+    "Apex controllers with SOQL",
+    "Jest unit tests",
+    "CI deploy with sf CLI"
+  ],
+  "tools": [
+    "Salesforce CLI",
+    "LWC",
+    "Apex",
+    "Jest"
+  ],
+  "deliverables": [
+    "GitHub repo",
+    "Deployed components",
+    "Test reports",
+    "CI pipeline"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**LWC Custom Component Suite** is a advanced-level end-to-end project for Salesforce CRM Developer / Administrator. Duration: 4–5 weeks. Build 3 Lightning Web Components with Apex controllers, Jest tests, and deploy via Salesforce CLI. Tools: Salesforce CLI, LWC, Apex, Jest.\n\nCode Reference:\n```text\nObjective: 3 LWC components (lookup, datatable, chart)\nObjective: Apex controllers with SOQL\nObjective: Jest unit tests\nObjective: CI deploy with sf CLI\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nSalesforce CRM Developer / Administrator portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Salesforce CRM Developer / Administrator resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Salesforce CRM Developer / Administrator resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Salesforce CRM Developer / Administrator portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Salesforce CRM Developer / Administrator resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: LWC",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: LWC** *(Level: Advanced)*\n\nBuild 3 components. Complete these tasks: lookupSearch; dataTable; chartWidget. Deliverable for this phase: Components in org.\n\nCode Reference:\n```text\n- [ ] lookupSearch\n- [ ] dataTable\n- [ ] chartWidget\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase LWC is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Components in org to the teacher.",
+      "key_takeaways": [
+        "Phase LWC is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Components in org to the teacher."
+      ],
+      "what_it_is": "Phase LWC is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Components in org to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Apex",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Apex** *(Level: Advanced)*\n\nControllers + tests. Complete these tasks: @AuraEnabled; Test classes 75%+. Deliverable for this phase: Apex test results.\n\nCode Reference:\n```text\n- [ ] @AuraEnabled\n- [ ] Test classes 75%+\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Apex is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Apex test results to the teacher.",
+      "key_takeaways": [
+        "Phase Apex is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Apex test results to the teacher."
+      ],
+      "what_it_is": "Phase Apex is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Apex test results to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Jest",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Jest** *(Level: Advanced)*\n\nLWC Jest tests. Complete these tasks: Mock data; Event tests. Deliverable for this phase: Jest coverage report.\n\nCode Reference:\n```text\n- [ ] Mock data\n- [ ] Event tests\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Jest is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Jest coverage report to the teacher.",
+      "key_takeaways": [
+        "Phase Jest is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Jest coverage report to the teacher."
+      ],
+      "what_it_is": "Phase Jest is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Jest coverage report to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: CI",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: CI** *(Level: Advanced)*\n\nGitHub Actions deploy. Complete these tasks: sf project deploy; Scratch org test. Deliverable for this phase: CI pipeline green.\n\nCode Reference:\n```text\n- [ ] sf project deploy\n- [ ] Scratch org test\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase CI is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the CI pipeline green to the teacher.",
+      "key_takeaways": [
+        "Phase CI is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the CI pipeline green to the teacher."
+      ],
+      "what_it_is": "Phase CI is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the CI pipeline green to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: GitHub repo; Deployed components; Test reports; CI pipeline. Skills demonstrated: LWC, Apex, CI/CD. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: GitHub repo\nDeliverable: Deployed components\nDeliverable: Test reports\nDeliverable: CI pipeline\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits GitHub repo and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits GitHub repo and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits GitHub repo and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

@@ -1,0 +1,139 @@
+{
+  "id": "book-beginning-power-apps",
+  "title": "Study Report: Beginning Power Apps — Microsoft Power Platform Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "power-platform",
+  "family_name": "Microsoft Power Platform Developer",
+  "level": "Beginner",
+  "report_type": "role_book_study",
+  "book_title": "Beginning Power Apps",
+  "book_author": "Tim Leung",
+  "book_index": 1,
+  "summary": "Study report for *Beginning Power Apps* by Tim Leung (Beginner level) mapped to the Microsoft Power Platform Developer role. Canvas apps, connectors, galleries, and SharePoint integration.",
+  "sources": [
+    "https://www.apress.com/gp/book/9781484298794"
+  ],
+  "source_file": "Reference: Beginning Power Apps — Tim Leung",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Beginning Power Apps",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Beginning Power Apps** *(Level: Beginner)*\n\nThis study report summarizes *Beginning Power Apps* by Tim Leung for the Microsoft Power Platform Developer role. The resource is rated Beginner level. Canvas apps, connectors, galleries, and SharePoint integration. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Beginning Power Apps\n# Author: Tim Leung\n# Role: Microsoft Power Platform Developer\n# Level: Beginner\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Beginning Power Apps.\n\n### When to use it\nWhen learning Microsoft Power Platform Developer skills at Beginner level.\n\n### Where to use it\nMicrosoft Power Platform Developer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Beginning Power Apps.",
+        "When learning Microsoft Power Platform Developer skills at Beginner level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Beginning Power Apps.",
+      "when_to_use": "When learning Microsoft Power Platform Developer skills at Beginner level.",
+      "where_to_use": "Microsoft Power Platform Developer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Beginner)*\n\nMicrosoft Power Platform Developer professionals use ideas from Beginning Power Apps to solve real workplace problems. Canvas apps, connectors, galleries, and SharePoint integration. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Microsoft Power Platform Developer\nBook focus: Canvas apps, connectors, galleries, and SharePoint integration.\nRecommended level: Beginner\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nMicrosoft Power Platform Developer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a beginner skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a beginner skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Microsoft Power Platform Developer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a beginner skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Beginner)*\n\nThe main topics in Beginning Power Apps include practical concepts described as: Canvas apps, connectors, galleries, and SharePoint integration. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Microsoft Power Platform Developer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Power Platform Components Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Power Platform Components Overview** *(Level: Beginner)*\n\nPower Platform bundles Power Apps (canvas + model-driven), Power Automate, Power BI, Power Pages, and Copilot Studio on Dataverse and connectors. Makers build low-code solutions; developers extend with code. Licensing varies by per-user and per-app plans.\n\nCode Reference:\n```powershell\nGet-Command -Module Microsoft.PowerApps.*\n# Explore available admin and maker modules\n```\nWhat it shows: PowerShell module discovery supports tenant administration tasks.\n\n### What it actually is\nPower Platform is Microsoft's low-code suite for business applications.\n\n### When to use it\nReplacing spreadsheets, automating workflows, and rapid app delivery.\n\n### Where to use it\nEnterprises on Microsoft 365 and Azure.\n\n### Real use example\nCodeQuest IT replaces Excel roster with SharePoint + canvas app in two sprints.",
+      "key_takeaways": [
+        "Power Platform is Microsoft's low-code suite for business applications.",
+        "Replacing spreadsheets, automating workflows, and rapid app delivery.",
+        "CodeQuest IT replaces Excel roster with SharePoint + canvas app in two sprints."
+      ],
+      "what_it_is": "Power Platform is Microsoft's low-code suite for business applications.",
+      "when_to_use": "Replacing spreadsheets, automating workflows, and rapid app delivery.",
+      "where_to_use": "Enterprises on Microsoft 365 and Azure.",
+      "real_use_example": "CodeQuest IT replaces Excel roster with SharePoint + canvas app in two sprints."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Canvas App Controls and Formulas",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Canvas App Controls and Formulas** *(Level: Beginner)*\n\nCanvas apps use Excel-like formulas: Filter, LookUp, Patch, Collect, Gallery controls, forms, and navigation. Delegation warnings mean formulas may not run server-side—understand data source limits for SharePoint and Dataverse.\n\nCode Reference:\n```powershell\n// Filter(Devices, Status = \"Needs Repair\")\n// Patch(Inspections, Defaults(Inspections), {DeviceId: galDevices.Selected.ID})\n```\nWhat it shows: Filter and Patch patterns are daily canvas app bread and butter.\n\n### What it actually is\nCanvas apps offer flexible pixel-perfect mobile and web UX.\n\n### When to use it\nField apps, approvals, and lightweight replacements for paper forms.\n\n### Where to use it\nFrontline workers, events, and inventory walks.\n\n### Real use example\nTeacher inspection app captures photo and notes per classroom device.",
+      "key_takeaways": [
+        "Canvas apps offer flexible pixel-perfect mobile and web UX.",
+        "Field apps, approvals, and lightweight replacements for paper forms.",
+        "Teacher inspection app captures photo and notes per classroom device."
+      ],
+      "what_it_is": "Canvas apps offer flexible pixel-perfect mobile and web UX.",
+      "when_to_use": "Field apps, approvals, and lightweight replacements for paper forms.",
+      "where_to_use": "Frontline workers, events, and inventory walks.",
+      "real_use_example": "Teacher inspection app captures photo and notes per classroom device."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Data Sources: SharePoint and Excel",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Data Sources: SharePoint and Excel** *(Level: Beginner)*\n\nMakers often start with SharePoint lists and Excel tables in OneDrive. Know column types, choice columns, and permissions inheritance. Migrate to Dataverse when needing relational model, security roles, or ALM.\n\nCode Reference:\n```powershell\n# SharePoint list: Inspections | Columns: Title, DeviceId, Photo, Score, InspectorEmail\n```\nWhat it shows: List schema comments guide citizen developer setup.\n\n### What it actually is\nSharePoint is the quickest citizen-developer data store.\n\n### When to use it\nTeam-level apps before enterprise ALM investment.\n\n### Where to use it\nDepartments already on Microsoft 365.\n\n### Real use example\nHR attendance list backs canvas app until row count triggers Dataverse migration.",
+      "key_takeaways": [
+        "SharePoint is the quickest citizen-developer data store.",
+        "Team-level apps before enterprise ALM investment.",
+        "HR attendance list backs canvas app until row count triggers Dataverse migration."
+      ],
+      "what_it_is": "SharePoint is the quickest citizen-developer data store.",
+      "when_to_use": "Team-level apps before enterprise ALM investment.",
+      "where_to_use": "Departments already on Microsoft 365.",
+      "real_use_example": "HR attendance list backs canvas app until row count triggers Dataverse migration."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Beginner)*\n\nFinish Beginning Power Apps with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Microsoft Power Platform Developer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a beginner project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a beginner project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a beginner project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

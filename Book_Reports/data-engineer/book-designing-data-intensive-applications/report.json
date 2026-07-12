@@ -1,0 +1,139 @@
+{
+  "id": "book-designing-data-intensive-applications",
+  "title": "Study Report: Designing Data-Intensive Applications — Data Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "data-engineer",
+  "family_name": "Data Engineer",
+  "level": "Advanced",
+  "report_type": "role_book_study",
+  "book_title": "Designing Data-Intensive Applications",
+  "book_author": "Martin Kleppmann",
+  "book_index": 2,
+  "summary": "Study report for *Designing Data-Intensive Applications* by Martin Kleppmann (Advanced level) mapped to the Data Engineer role. Storage, replication, streaming, and distributed systems.",
+  "sources": [
+    "https://dataintensive.net/"
+  ],
+  "source_file": "Reference: Designing Data-Intensive Applications — Martin Kleppmann",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Designing Data-Intensive Applications",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Designing Data-Intensive Applications** *(Level: Advanced)*\n\nThis study report summarizes *Designing Data-Intensive Applications* by Martin Kleppmann for the Data Engineer role. The resource is rated Advanced level. Storage, replication, streaming, and distributed systems. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Designing Data-Intensive Applications\n# Author: Martin Kleppmann\n# Role: Data Engineer\n# Level: Advanced\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Designing Data-Intensive Applications.\n\n### When to use it\nWhen learning Data Engineer skills at Advanced level.\n\n### Where to use it\nData Engineer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Designing Data-Intensive Applications.",
+        "When learning Data Engineer skills at Advanced level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Designing Data-Intensive Applications.",
+      "when_to_use": "When learning Data Engineer skills at Advanced level.",
+      "where_to_use": "Data Engineer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Advanced)*\n\nData Engineer professionals use ideas from Designing Data-Intensive Applications to solve real workplace problems. Storage, replication, streaming, and distributed systems. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Data Engineer\nBook focus: Storage, replication, streaming, and distributed systems.\nRecommended level: Advanced\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nData Engineer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a advanced skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a advanced skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Data Engineer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a advanced skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Advanced",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Advanced)*\n\nThe main topics in Designing Data-Intensive Applications include practical concepts described as: Storage, replication, streaming, and distributed systems. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Data Engineer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Kafka and Spark Structured Streaming",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Kafka and Spark Structured Streaming** *(Level: Advanced)*\n\nStructured Streaming reads Kafka topics with subscribe option; watermarks bound late data; checkpoint locations enable exactly-once-ish sinks. Monitor consumer lag.\n\nCode Reference:\n```python\ndf = (spark.readStream.format('kafka')\n      .option('subscribe', 'clickstream')\n      .load())\nquery = df.writeStream.format('delta').option('checkpointLocation', 's3://chk/').start()\n```\nWhat it shows: checkpointLocation stores offsets — restart without duplicating sinks.\n\n### What it actually is\nStream processing handles continuous event pipelines.\n\n### When to use it\nWhen sub-minute latency is required for ops or fraud use cases.\n\n### Where to use it\nAd-tech, gaming telemetry, and IoT.\n\n### Real use example\nConsumer lag alert fires at 10k messages — autoscaler adds Spark executors.",
+      "key_takeaways": [
+        "Stream processing handles continuous event pipelines.",
+        "When sub-minute latency is required for ops or fraud use cases.",
+        "Consumer lag alert fires at 10k messages — autoscaler adds Spark executors."
+      ],
+      "what_it_is": "Stream processing handles continuous event pipelines.",
+      "when_to_use": "When sub-minute latency is required for ops or fraud use cases.",
+      "where_to_use": "Ad-tech, gaming telemetry, and IoT.",
+      "real_use_example": "Consumer lag alert fires at 10k messages — autoscaler adds Spark executors."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Data Mesh and Data Contracts",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Data Mesh and Data Contracts** *(Level: Advanced)*\n\nData mesh decentralizes ownership to domains with federated governance. Data contracts define schema, SLAs, and quality between producers/consumers — enforced in CI.\n\nCode Reference:\n```yaml\ncontract:\n  name: orders_v2\n  schema: { order_id: uuid, amount: decimal }\n  sla: { freshness_minutes: 60 }\n```\nWhat it shows: YAML contracts versioned in Git gate breaking schema changes.\n\n### What it actually is\nData mesh + contracts scale ownership beyond central platform team.\n\n### When to use it\nWhen central data teams become bottlenecks for domain teams.\n\n### Where to use it\nLarge enterprises adopting product-thinking for data.\n\n### Real use example\nCheckout domain publishes orders_v2 contract — downstream ML features pin version.",
+      "key_takeaways": [
+        "Data mesh + contracts scale ownership beyond central platform team.",
+        "When central data teams become bottlenecks for domain teams.",
+        "Checkout domain publishes orders_v2 contract — downstream ML features pin version."
+      ],
+      "what_it_is": "Data mesh + contracts scale ownership beyond central platform team.",
+      "when_to_use": "When central data teams become bottlenecks for domain teams.",
+      "where_to_use": "Large enterprises adopting product-thinking for data.",
+      "real_use_example": "Checkout domain publishes orders_v2 contract — downstream ML features pin version."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Pipeline Observability with OpenLineage",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Pipeline Observability with OpenLineage** *(Level: Advanced)*\n\nEmit lineage events from Airflow, Spark, and dbt to Marquez/DataHub. Correlate failures to downstream dashboards. SLI: freshness, completeness, error rate.\n\nCode Reference:\n```python\nfrom openlineage.client import OpenLineageClient\n# emit START/COMPLETE events per task with run_id\n```\nWhat it shows: Lineage links Airflow task failures to impacted BI dashboards.\n\n### What it actually is\nObservability makes data platforms debuggable like microservices.\n\n### When to use it\nWhen pipeline failures impact multiple downstream dashboards and teams.\n\n### Where to use it\nData platform SRE and incident response.\n\n### Real use example\nPagerDuty shows which gold table stale — root cause traced to upstream API timeout.",
+      "key_takeaways": [
+        "Observability makes data platforms debuggable like microservices.",
+        "When pipeline failures impact multiple downstream dashboards and teams.",
+        "PagerDuty shows which gold table stale — root cause traced to upstream API timeout."
+      ],
+      "what_it_is": "Observability makes data platforms debuggable like microservices.",
+      "when_to_use": "When pipeline failures impact multiple downstream dashboards and teams.",
+      "where_to_use": "Data platform SRE and incident response.",
+      "real_use_example": "PagerDuty shows which gold table stale — root cause traced to upstream API timeout."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Advanced)*\n\nFinish Designing Data-Intensive Applications with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Data Engineer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a advanced project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a advanced project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a advanced project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

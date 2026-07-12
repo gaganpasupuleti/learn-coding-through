@@ -1,0 +1,600 @@
+{
+  "id": "study-report-dynamics-365-crm-career-path",
+  "title": "Study Report: Dynamics 365 CRM Consultant — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "dynamics-crm",
+  "family_name": "Dynamics 365 CRM Consultant",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "Microsoft Dynamics 365 career path covering Sales and Customer Service apps, Dataverse tables and relationships, model-driven app design, business process flows, Power Automate cloud flows, security roles, ALM with solutions, and official Microsoft Learn modules for MB-910 and PL-200 alignment.",
+  "skill_stack": {
+    "core": [
+      "Dataverse tables, columns, and relationships",
+      "Model-driven app and form customization",
+      "Sales and Customer Service processes",
+      "Business Process Flows and classic workflows",
+      "Power Automate integration and approvals",
+      "Security roles, teams, and hierarchy security"
+    ],
+    "tools": [
+      "Power Apps maker portal",
+      "Dataverse explorer and solution explorer",
+      "Power Automate cloud flows",
+      "Plugin Registration Tool / PAC CLI",
+      "XrmToolBox and Portal Management"
+    ],
+    "platforms": [
+      "Dynamics 365 Sales",
+      "Dynamics 365 Customer Service",
+      "Customer Engagement apps",
+      "Power Pages portals"
+    ],
+    "certifications": [
+      "Microsoft Certified: Dynamics 365 Sales Functional Consultant (MB-210)",
+      "Dynamics 365 Customer Service (MB-230)",
+      "Microsoft Power Platform Functional Consultant (PL-200)"
+    ]
+  },
+  "sources": [
+    "https://learn.microsoft.com/training/dynamics365/",
+    "https://learn.microsoft.com/power-apps/maker/data-platform/",
+    "https://learn.microsoft.com/dynamics365/customerengagement/",
+    "https://learn.microsoft.com/power-automate/",
+    "https://learn.microsoft.com/power-platform/alm/",
+    "https://learn.microsoft.com/dynamics365/release-plan/"
+  ],
+  "recommended_books": [
+    {
+      "title": "Microsoft Dynamics 365 Documentation",
+      "author": "Microsoft Learn",
+      "level": "Beginner",
+      "focus": "Official guides for Sales, Customer Service, and Dataverse.",
+      "url": "https://learn.microsoft.com/dynamics365/",
+      "free_online": true
+    },
+    {
+      "title": "Mastering Microsoft Dynamics 365 Development",
+      "author": "Packt",
+      "level": "Advanced",
+      "focus": "Plugins, custom APIs, and Dataverse extension patterns.",
+      "url": "https://www.packtpub.com/en-us/product/mastering-microsoft-dynamics-365-development-9781803232165",
+      "free_online": false
+    },
+    {
+      "title": "Dynamics 365 For Dummies",
+      "author": "Renato Fajdiga",
+      "level": "Beginner",
+      "focus": "CRM concepts, leads, opportunities, and customer service cases.",
+      "url": "https://www.wiley.com/en-us/Dynamics+365+For+Dummies-p-9781119863747",
+      "free_online": false
+    },
+    {
+      "title": "Microsoft Power Platform Enterprise Architecture",
+      "author": "Microsoft Press",
+      "level": "Advanced",
+      "focus": "ALM, environments, and solution layering for Dynamics + Power Platform.",
+      "url": "https://learn.microsoft.com/power-platform/guidance/adoption/enterprise",
+      "free_online": true
+    },
+    {
+      "title": "MB-910 Study Guide",
+      "author": "Microsoft Learn",
+      "level": "Beginner",
+      "focus": "Free learning path for Dynamics 365 Fundamentals CRM exam.",
+      "url": "https://learn.microsoft.com/certifications/exams/mb-910",
+      "free_online": true
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Contact Management App",
+      "level": "Beginner",
+      "duration": "2 weeks",
+      "overview": "Model-driven app for contacts and accounts with custom views, forms, and business rules on Dataverse.",
+      "objectives": [
+        "Custom views for active contacts",
+        "Form customization with business rules",
+        "Business rule for required phone",
+        "Quick create form for accounts"
+      ],
+      "phases": [
+        {
+          "name": "Tables",
+          "description": "Contact + Account setup.",
+          "tasks": [
+            "Custom fields",
+            "Relationships"
+          ],
+          "deliverable": "Schema screenshot"
+        },
+        {
+          "name": "Forms",
+          "description": "Main + quick create.",
+          "tasks": [
+            "Sections",
+            "Business rules"
+          ],
+          "deliverable": "Form screenshots"
+        },
+        {
+          "name": "Views",
+          "description": "Filtered views.",
+          "tasks": [
+            "Active contacts",
+            "My accounts"
+          ],
+          "deliverable": "View list screenshot"
+        },
+        {
+          "name": "App",
+          "description": "Model-driven app.",
+          "tasks": [
+            "Sitemap",
+            "Dashboard"
+          ],
+          "deliverable": "Published app URL"
+        }
+      ],
+      "skills_applied": [
+        "Dataverse",
+        "Model-driven apps"
+      ],
+      "tools": [
+        "Power Apps",
+        "Dataverse"
+      ],
+      "deliverables": [
+        "App screenshot",
+        "Schema doc",
+        "Published app link"
+      ]
+    },
+    {
+      "title": "Customer Service Case Management",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "Case entity with queues, SLAs, routing rules, knowledge articles, and Power Automate notifications.",
+      "objectives": [
+        "Case queues by priority",
+        "SLA timers on cases",
+        "Routing rules to teams",
+        "Power Automate Teams notification on case creation"
+      ],
+      "phases": [
+        {
+          "name": "Cases",
+          "description": "Case entity config.",
+          "tasks": [
+            "Categories",
+            "Priority",
+            "Stages"
+          ],
+          "deliverable": "Case form screenshot"
+        },
+        {
+          "name": "SLA",
+          "description": "Response/resolution KPIs.",
+          "tasks": [
+            "Timer",
+            "Warning actions"
+          ],
+          "deliverable": "SLA config doc"
+        },
+        {
+          "name": "Routing",
+          "description": "Queue + routing rules.",
+          "tasks": [
+            "Skill-based",
+            "Round robin"
+          ],
+          "deliverable": "Routing test cases"
+        },
+        {
+          "name": "Automate",
+          "description": "Teams notification flow.",
+          "tasks": [
+            "Trigger on create",
+            "Adaptive card"
+          ],
+          "deliverable": "Flow demo video"
+        }
+      ],
+      "skills_applied": [
+        "Customer Service",
+        "SLA",
+        "Power Automate"
+      ],
+      "tools": [
+        "Dynamics 365 CS",
+        "Power Automate"
+      ],
+      "deliverables": [
+        "Case config doc",
+        "SLA setup",
+        "Flow demo video"
+      ]
+    },
+    {
+      "title": "Sales Pipeline with Power Platform ALM",
+      "level": "Advanced",
+      "duration": "4–5 weeks",
+      "overview": "Full sales solution in managed solution: dev → test → prod with plugins, flows, and security roles.",
+      "objectives": [
+        "Managed solution with all customizations",
+        "Plugin for opportunity validation",
+        "ALM pipeline across 3 environments",
+        "Security roles for sales rep and manager"
+      ],
+      "phases": [
+        {
+          "name": "Solution",
+          "description": "Unmanaged dev solution.",
+          "tasks": [
+            "Entities",
+            "Forms",
+            "Views"
+          ],
+          "deliverable": "Solution export"
+        },
+        {
+          "name": "Plugin",
+          "description": "Opportunity validation.",
+          "tasks": [
+            "Pre-create plugin",
+            "Unit tests"
+          ],
+          "deliverable": "Plugin + tests"
+        },
+        {
+          "name": "ALM",
+          "description": "Dev → Test → Prod.",
+          "tasks": [
+            "Export/import",
+            "Connection refs"
+          ],
+          "deliverable": "ALM pipeline doc"
+        },
+        {
+          "name": "Security",
+          "description": "Role-based access.",
+          "tasks": [
+            "Sales Rep",
+            "Manager roles"
+          ],
+          "deliverable": "Security test matrix"
+        }
+      ],
+      "skills_applied": [
+        "ALM",
+        "Plugins",
+        "Security"
+      ],
+      "tools": [
+        "Dataverse",
+        "Plugin Registration Tool",
+        "Azure DevOps"
+      ],
+      "deliverables": [
+        "Managed solution",
+        "Plugin code",
+        "ALM doc",
+        "Security matrix"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Dynamics 365 and Power Platform Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Dynamics 365 and Power Platform Overview** *(Level: Beginner)*\n\nDynamics 365 Customer Engagement apps run on Dataverse—a cloud database with APIs, security, and metadata. Power Apps, Power Automate, and Power BI share the platform. Model-driven apps auto-generate UI from Dataverse schema; canvas apps offer pixel control.\n\nCode Reference:\n```powershell\n# pac auth create --url https://org.crm.dynamics.com\n# pac org list\n```\nWhat it shows: PAC CLI authenticates to environments for ALM automation.\n\n### What it actually is\nDynamics 365 is Microsoft's cloud CRM and ERP suite on Dataverse.\n\n### When to use it\nSales, service, marketing, and field service implementations.\n\n### Where to use it\nMicrosoft-centric enterprises and partners.\n\n### Real use example\nCodeQuest partner provisions Sales trial environment via Microsoft 365 tenant.",
+      "key_takeaways": [
+        "Dynamics 365 is Microsoft's cloud CRM and ERP suite on Dataverse.",
+        "Sales, service, marketing, and field service implementations.",
+        "CodeQuest partner provisions Sales trial environment via Microsoft 365 tenant."
+      ],
+      "what_it_is": "Dynamics 365 is Microsoft's cloud CRM and ERP suite on Dataverse.",
+      "when_to_use": "Sales, service, marketing, and field service implementations.",
+      "where_to_use": "Microsoft-centric enterprises and partners.",
+      "real_use_example": "CodeQuest partner provisions Sales trial environment via Microsoft 365 tenant."
+    },
+    {
+      "number": 2,
+      "title": "Dataverse Tables and Columns",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Dataverse Tables and Columns** *(Level: Beginner)*\n\nTables (entities) store rows (records). Columns have types: text, choice, lookup, currency, datetime. Lookups create relationships; 1:N and N:N need intersect tables. Use solutions to package customizations for promotion.\n\nCode Reference:\n```powershell\n# Display name: Course Enrollment | Schema name: cq_enrollment\n# Lookup to Contact and Course tables\n```\nWhat it shows: Naming comments document custom table design for team alignment.\n\n### What it actually is\nDataverse is the metadata-driven data layer for Power Platform.\n\n### When to use it\nEvery CRM customization and integration project.\n\n### Where to use it\nSales pipelines, case management, and custom LOB apps.\n\n### Real use example\nCustom cq_enrollment table links students (contacts) to CodeQuest courses.",
+      "key_takeaways": [
+        "Dataverse is the metadata-driven data layer for Power Platform.",
+        "Every CRM customization and integration project.",
+        "Custom cq_enrollment table links students (contacts) to CodeQuest courses."
+      ],
+      "what_it_is": "Dataverse is the metadata-driven data layer for Power Platform.",
+      "when_to_use": "Every CRM customization and integration project.",
+      "where_to_use": "Sales pipelines, case management, and custom LOB apps.",
+      "real_use_example": "Custom cq_enrollment table links students (contacts) to CodeQuest courses."
+    },
+    {
+      "number": 3,
+      "title": "Model-Driven App Design",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Model-Driven App Design** *(Level: Beginner)*\n\nModel-driven apps compose sitemap, forms, views, charts, and business process flows. Main form tabs organize fields; quick create forms speed inline entry. Unified interface is mandatory for new apps. Test with multiple security roles.\n\nCode Reference:\n```powershell\n# App module: Sales Hub -> Accounts, Contacts, Opportunities, custom Enrollments\n```\nWhat it shows: Sitemap comments map navigation structure for makers.\n\n### What it actually is\nModel-driven apps deliver consistent CRM UX from metadata.\n\n### When to use it\nInternal sales and service teams needing standardized processes.\n\n### Where to use it\nDynamics 365 Sales and Customer Service out-of-box apps.\n\n### Real use example\nEnrollment table added to Sales Hub sitemap under Accounts area.",
+      "key_takeaways": [
+        "Model-driven apps deliver consistent CRM UX from metadata.",
+        "Internal sales and service teams needing standardized processes.",
+        "Enrollment table added to Sales Hub sitemap under Accounts area."
+      ],
+      "what_it_is": "Model-driven apps deliver consistent CRM UX from metadata.",
+      "when_to_use": "Internal sales and service teams needing standardized processes.",
+      "where_to_use": "Dynamics 365 Sales and Customer Service out-of-box apps.",
+      "real_use_example": "Enrollment table added to Sales Hub sitemap under Accounts area."
+    },
+    {
+      "number": 4,
+      "title": "Forms, Views, and Dashboards",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Forms, Views, and Dashboards** *(Level: Beginner)*\n\nForms use sections, tabs, and controls (subgrids, timelines). Views define filtered columns for grids; system views ship with apps. Dashboards combine charts and lists for role-based landing experiences.\n\nCode Reference:\n```powershell\n# View: Active District Opportunities | Filter: Status = Open | Sort: Est. Close Date\n```\nWhat it shows: View definitions document saved queries for makers.\n\n### What it actually is\nForms and views shape daily user productivity in CRM.\n\n### When to use it\nEvery user-facing CRM customization.\n\n### Where to use it\nSales managers, service agents, and executives.\n\n### Real use example\nService dashboard shows open P1 cases by account for morning standup.",
+      "key_takeaways": [
+        "Forms and views shape daily user productivity in CRM.",
+        "Every user-facing CRM customization.",
+        "Service dashboard shows open P1 cases by account for morning standup."
+      ],
+      "what_it_is": "Forms and views shape daily user productivity in CRM.",
+      "when_to_use": "Every user-facing CRM customization.",
+      "where_to_use": "Sales managers, service agents, and executives.",
+      "real_use_example": "Service dashboard shows open P1 cases by account for morning standup."
+    },
+    {
+      "number": 5,
+      "title": "Security Roles and Teams",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Security Roles and Teams** *(Level: Beginner)*\n\nSecurity roles grant table privileges: Create, Read, Write, Delete, Append, Assign, Share. Teams own records for collaborative access. Field security profiles mask sensitive columns. Hierarchy security restricts manager visibility down org chart.\n\nCode Reference:\n```powershell\n# Role: CodeQuest Sales Rep -> Account: Read/Write Organization, Contact: Read/Write User\n```\nWhat it shows: Privilege comments clarify role design worksheets.\n\n### What it actually is\nDataverse security enforces least privilege at row and column level.\n\n### When to use it\nNew implementations and access reviews.\n\n### Where to use it\nMulti-department Dynamics deployments.\n\n### Real use example\nAgent role cannot delete cases; only managers can reassign queues.",
+      "key_takeaways": [
+        "Dataverse security enforces least privilege at row and column level.",
+        "New implementations and access reviews.",
+        "Agent role cannot delete cases; only managers can reassign queues."
+      ],
+      "what_it_is": "Dataverse security enforces least privilege at row and column level.",
+      "when_to_use": "New implementations and access reviews.",
+      "where_to_use": "Multi-department Dynamics deployments.",
+      "real_use_example": "Agent role cannot delete cases; only managers can reassign queues."
+    },
+    {
+      "number": 6,
+      "title": "Dynamics 365 Sales Essentials",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Dynamics 365 Sales Essentials** *(Level: Beginner)*\n\nSales tracks leads (optional), accounts, contacts, opportunities with stages and forecasts. Activities log calls and emails. Integration with Outlook and Teams embeds CRM in daily flow. Revenue forecasting uses opportunity categories and pipeline views.\n\nCode Reference:\n```powershell\n# Opportunity stages: Qualify -> Develop -> Propose -> Close\n# Close as Won triggers enrollment provisioning flow\n```\nWhat it shows: Stage comments tie BPF design to revenue process.\n\n### What it actually is\nDynamics 365 Sales manages B2B relationship and pipeline lifecycle.\n\n### When to use it\nB2B sales teams and partner co-selling.\n\n### Where to use it\nTechnology, education, and professional services firms.\n\n### Real use example\nDistrict opportunity Won triggers Power Automate to provision sandbox org.",
+      "key_takeaways": [
+        "Dynamics 365 Sales manages B2B relationship and pipeline lifecycle.",
+        "B2B sales teams and partner co-selling.",
+        "District opportunity Won triggers Power Automate to provision sandbox org."
+      ],
+      "what_it_is": "Dynamics 365 Sales manages B2B relationship and pipeline lifecycle.",
+      "when_to_use": "B2B sales teams and partner co-selling.",
+      "where_to_use": "Technology, education, and professional services firms.",
+      "real_use_example": "District opportunity Won triggers Power Automate to provision sandbox org."
+    },
+    {
+      "number": 7,
+      "title": "Business Process Flows",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Business Process Flows** *(Level: Intermediate)*\n\nBPFs guide users stage-by-stage with required steps and field visibility. Use branching BPF for different paths. BPFs stored as Dataverse components—version with solutions. Combine with Power Automate for stage-entry automation.\n\nCode Reference:\n```powershell\n# BPF: Case Resolution | Stages: Identify -> Research -> Resolve -> Review\n```\nWhat it shows: Stage pipeline mirrors service desk standard operating procedure.\n\n### What it actually is\nBPFs enforce process discipline without custom code.\n\n### When to use it\nQualification, case resolution, and onboarding processes.\n\n### Where to use it\nRegulated workflows needing audit trails.\n\n### Real use example\nCase stuck in Research stage highlights bottleneck in weekly ops review.",
+      "key_takeaways": [
+        "BPFs enforce process discipline without custom code.",
+        "Qualification, case resolution, and onboarding processes.",
+        "Case stuck in Research stage highlights bottleneck in weekly ops review."
+      ],
+      "what_it_is": "BPFs enforce process discipline without custom code.",
+      "when_to_use": "Qualification, case resolution, and onboarding processes.",
+      "where_to_use": "Regulated workflows needing audit trails.",
+      "real_use_example": "Case stuck in Research stage highlights bottleneck in weekly ops review."
+    },
+    {
+      "number": 8,
+      "title": "Power Automate Cloud Flows for CRM",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Power Automate Cloud Flows for CRM** *(Level: Intermediate)*\n\nCloud flows trigger on Dataverse row create/update, schedules, or HTTP requests. Use connection references in solutions for ALM. Implement error scopes, retries, and environment variable secrets—not hardcoded credentials.\n\nCode Reference:\n```powershell\n# Trigger: When a row is added or modified (Case)\n# Condition: Priority = Critical -> Post adaptive card to Teams\n```\nWhat it shows: Flow outline documents trigger-condition-action pattern.\n\n### What it actually is\nPower Automate connects CRM events to Microsoft 365 and external APIs.\n\n### When to use it\nNotifications, approvals, sync jobs, and case routing.\n\n### Where to use it\nEvery Dynamics implementation beyond out-of-box.\n\n### Real use example\nCritical case flow pages on-call engineer and creates Planner task automatically.",
+      "key_takeaways": [
+        "Power Automate connects CRM events to Microsoft 365 and external APIs.",
+        "Notifications, approvals, sync jobs, and case routing.",
+        "Critical case flow pages on-call engineer and creates Planner task automatically."
+      ],
+      "what_it_is": "Power Automate connects CRM events to Microsoft 365 and external APIs.",
+      "when_to_use": "Notifications, approvals, sync jobs, and case routing.",
+      "where_to_use": "Every Dynamics implementation beyond out-of-box.",
+      "real_use_example": "Critical case flow pages on-call engineer and creates Planner task automatically."
+    },
+    {
+      "number": 9,
+      "title": "Customer Service and SLAs",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Customer Service and SLAs** *(Level: Intermediate)*\n\nCustomer Service manages cases, queues, entitlements, and SLAs with KPI timers (first response, resolve by). Unified Routing assigns to agents by skills. IoT and Field Service extend for device-triggered cases.\n\nCode Reference:\n```powershell\n# SLA KPI: First Response in 1 hour | Warning at 45 min | Failure escalates\n```\nWhat it shows: SLA timer configuration prevents silent breaches.\n\n### What it actually is\nCustomer Service app handles post-sale support operations.\n\n### When to use it\nHelp desks, product support, and managed services.\n\n### Where to use it\nSaaS vendors supporting education customers.\n\n### Real use example\nSLA failure on district outage case auto-escalates to major incident queue.",
+      "key_takeaways": [
+        "Customer Service app handles post-sale support operations.",
+        "Help desks, product support, and managed services.",
+        "SLA failure on district outage case auto-escalates to major incident queue."
+      ],
+      "what_it_is": "Customer Service app handles post-sale support operations.",
+      "when_to_use": "Help desks, product support, and managed services.",
+      "where_to_use": "SaaS vendors supporting education customers.",
+      "real_use_example": "SLA failure on district outage case auto-escalates to major incident queue."
+    },
+    {
+      "number": 10,
+      "title": "Plugins and Custom APIs (Overview)",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Plugins and Custom APIs (Overview)** *(Level: Intermediate)*\n\nPlugins are .NET assemblies registered on Dataverse messages (Create, Update). Synchronous plugins run in transaction; async in queue. Prefer low-code before code—use plugins for complex validation, integration, or pre/post images.\n\nCode Reference:\n```powershell\n// Plugin: PreOperation on Opportunity Update validates discount threshold\n```\nWhat it shows: Plugin stage comment clarifies when logic executes in pipeline.\n\n### What it actually is\nServer-side extensions implement logic Flow cannot handle.\n\n### When to use it\nComplex validations, integrations, and performance-critical rules.\n\n### Where to use it\nEnterprise Dynamics teams with developers.\n\n### Real use example\nPlugin blocks unauthorized discount >30% before save completes.",
+      "key_takeaways": [
+        "Server-side extensions implement logic Flow cannot handle.",
+        "Complex validations, integrations, and performance-critical rules.",
+        "Plugin blocks unauthorized discount >30% before save completes."
+      ],
+      "what_it_is": "Server-side extensions implement logic Flow cannot handle.",
+      "when_to_use": "Complex validations, integrations, and performance-critical rules.",
+      "where_to_use": "Enterprise Dynamics teams with developers.",
+      "real_use_example": "Plugin blocks unauthorized discount >30% before save completes."
+    },
+    {
+      "number": 11,
+      "title": "Integrations and Dual-Write",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Integrations and Dual-Write** *(Level: Intermediate)*\n\nDataverse Web API and SDK enable CRUD from external systems. Dual-write syncs Finance and Operations tables with CE in real time. Azure Service Bus and Logic Apps provide enterprise messaging patterns.\n\nCode Reference:\n```powershell\nInvoke-RestMethod -Uri '$org/api/data/v9.2/accounts' -Headers $headers -Method Get\n```\nWhat it shows: PowerShell calls Dataverse Web API for admin automation scripts.\n\n### What it actually is\nIntegrations connect CRM to ERP, marketing, and analytics platforms.\n\n### When to use it\nOrder-to-cash, customer 360, and billing alignment.\n\n### Where to use it\nManufacturing and retail with D365 Finance + CE.\n\n### Real use example\nDual-write keeps account credit limit from Finance visible to sales reps.",
+      "key_takeaways": [
+        "Integrations connect CRM to ERP, marketing, and analytics platforms.",
+        "Order-to-cash, customer 360, and billing alignment.",
+        "Dual-write keeps account credit limit from Finance visible to sales reps."
+      ],
+      "what_it_is": "Integrations connect CRM to ERP, marketing, and analytics platforms.",
+      "when_to_use": "Order-to-cash, customer 360, and billing alignment.",
+      "where_to_use": "Manufacturing and retail with D365 Finance + CE.",
+      "real_use_example": "Dual-write keeps account credit limit from Finance visible to sales reps."
+    },
+    {
+      "number": 12,
+      "title": "Reports and Power BI for CRM",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Reports and Power BI for CRM** *(Level: Intermediate)*\n\nFetchXML queries feed SSRS and Power BI datasets. Use Dataverse connector in Power BI with row-level security mirroring CRM roles. Embedded analytics surface KPIs inside model-driven apps.\n\nCode Reference:\n```powershell\n# FetchXML aggregate opportunity revenue by owner\n# Power BI dataset refresh via data gateway\n```\nWhat it shows: FetchXML and Power BI comments link reporting layers.\n\n### What it actually is\nCRM analytics turn pipeline and case data into executive insight.\n\n### When to use it\nQBRs, service reviews, and sales commission reporting.\n\n### Where to use it\nOrganizations standardizing on Microsoft data stack.\n\n### Real use example\nEmbedded pipeline chart in Sales app shows rep attainment vs quota.",
+      "key_takeaways": [
+        "CRM analytics turn pipeline and case data into executive insight.",
+        "QBRs, service reviews, and sales commission reporting.",
+        "Embedded pipeline chart in Sales app shows rep attainment vs quota."
+      ],
+      "what_it_is": "CRM analytics turn pipeline and case data into executive insight.",
+      "when_to_use": "QBRs, service reviews, and sales commission reporting.",
+      "where_to_use": "Organizations standardizing on Microsoft data stack.",
+      "real_use_example": "Embedded pipeline chart in Sales app shows rep attainment vs quota."
+    },
+    {
+      "number": 13,
+      "title": "Solutions and Environment Strategy",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Solutions and Environment Strategy** *(Level: Intermediate)*\n\nDefault solution is scratchpad; use publisher-named solutions for ALM. Managed solutions lock metadata in target environments. Environment groups and pipelines automate promotion.\n\nCode Reference:\n```powershell\npac solution export --path ./out --managed true --name CodeQuestCore\n```\nWhat it shows: PAC exports managed solution artifact for pipeline deploy.\n\n### What it actually is\nSolution strategy prevents unmanaged customization sprawl.\n\n### When to use it\nMulti-environment Dynamics programs.\n\n### Where to use it\nPartners and IT departments with formal release cadence.\n\n### Real use example\nUnmanaged hotfixes merged back into dev solution before next managed release.",
+      "key_takeaways": [
+        "Solution strategy prevents unmanaged customization sprawl.",
+        "Multi-environment Dynamics programs.",
+        "Unmanaged hotfixes merged back into dev solution before next managed release."
+      ],
+      "what_it_is": "Solution strategy prevents unmanaged customization sprawl.",
+      "when_to_use": "Multi-environment Dynamics programs.",
+      "where_to_use": "Partners and IT departments with formal release cadence.",
+      "real_use_example": "Unmanaged hotfixes merged back into dev solution before next managed release."
+    },
+    {
+      "number": 14,
+      "title": "Performance Tuning and Throttling",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Performance Tuning and Throttling** *(Level: Advanced)*\n\nAvoid plugin recursion and nested sync workflows. Batch plugins should use ExecuteMultiple. Monitor API service protection limits. Index alternate keys for integration idempotency. Archive old cases to maintain performance.\n\nCode Reference:\n```powershell\n# Service protection API limit: 429 Too Many Requests -> exponential backoff\n```\nWhat it shows: Throttling guidance informs integration retry policies.\n\n### What it actually is\nPerformance tuning keeps CRM responsive at enterprise scale.\n\n### When to use it\nHigh-volume portals and integration-heavy orgs.\n\n### Where to use it\nGlobal service teams with millions of cases yearly.\n\n### Real use example\nArchive job moves closed cases >2 years to long-term storage—grid load improves 40%.",
+      "key_takeaways": [
+        "Performance tuning keeps CRM responsive at enterprise scale.",
+        "High-volume portals and integration-heavy orgs.",
+        "Archive job moves closed cases >2 years to long-term storage—grid load improves 40%."
+      ],
+      "what_it_is": "Performance tuning keeps CRM responsive at enterprise scale.",
+      "when_to_use": "High-volume portals and integration-heavy orgs.",
+      "where_to_use": "Global service teams with millions of cases yearly.",
+      "real_use_example": "Archive job moves closed cases >2 years to long-term storage—grid load improves 40%."
+    },
+    {
+      "number": 15,
+      "title": "Power Pages and External Portals",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Power Pages and External Portals** *(Level: Advanced)*\n\nPower Pages (formerly portals) expose Dataverse data externally with authentication, entity lists, forms, and Web API. Configure table permissions and web roles carefully—portal security misconfigurations are common breach vectors.\n\nCode Reference:\n```powershell\n# Web role: District Admin | Table permission: Account Read scope Parent\n```\nWhat it shows: Portal permission comments document external access model.\n\n### What it actually is\nPower Pages deliver secure customer and partner self-service.\n\n### When to use it\nCase submission, knowledge bases, and partner registration.\n\n### Where to use it\nEducation districts accessing support without full CRM license.\n\n### Real use example\nDistrict admin submits case via portal—creates CRM case with correct entitlement.",
+      "key_takeaways": [
+        "Power Pages deliver secure customer and partner self-service.",
+        "Case submission, knowledge bases, and partner registration.",
+        "District admin submits case via portal—creates CRM case with correct entitlement."
+      ],
+      "what_it_is": "Power Pages deliver secure customer and partner self-service.",
+      "when_to_use": "Case submission, knowledge bases, and partner registration.",
+      "where_to_use": "Education districts accessing support without full CRM license.",
+      "real_use_example": "District admin submits case via portal—creates CRM case with correct entitlement."
+    },
+    {
+      "number": 16,
+      "title": "Event Framework and Async Processing",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Event Framework and Async Processing** *(Level: Advanced)*\n\nUse async plugins and Azure Functions triggered by Dataverse events for heavy processing. Service Bus topics decouple publishers. Custom APIs provide typed operations for LWC/canvas clients needing transactional bundles.\n\nCode Reference:\n```powershell\n// Custom API: cq_ProvisionTenant bundles 5 internal operations atomically\n```\nWhat it shows: Custom API comment shows operation bundling pattern.\n\n### What it actually is\nEvent-driven extensions scale beyond synchronous limits.\n\n### When to use it\nProvisioning, ERP sync, and ML inference side effects.\n\n### Where to use it\nLarge SaaS operators on Dynamics platform.\n\n### Real use example\nTenant provision API rolls back all steps if sandbox creation fails.",
+      "key_takeaways": [
+        "Event-driven extensions scale beyond synchronous limits.",
+        "Provisioning, ERP sync, and ML inference side effects.",
+        "Tenant provision API rolls back all steps if sandbox creation fails."
+      ],
+      "what_it_is": "Event-driven extensions scale beyond synchronous limits.",
+      "when_to_use": "Provisioning, ERP sync, and ML inference side effects.",
+      "where_to_use": "Large SaaS operators on Dynamics platform.",
+      "real_use_example": "Tenant provision API rolls back all steps if sandbox creation fails."
+    },
+    {
+      "number": 17,
+      "title": "Center of Excellence and Governance",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Center of Excellence and Governance** *(Level: Advanced)*\n\nEstablish COE with DLP policies, environment routing, maker onboarding, and solution review boards. Monitor tenant analytics for orphan flows and overprivileged connectors.\n\nCode Reference:\n```powershell\nGet-AdminPowerApp | Where-Object {$_.OwnerName -eq 'Departed User'}\n```\nWhat it shows: PowerShell identifies orphaned apps for governance cleanup.\n\n### What it actually is\nGovernance keeps Power Platform tenant secure and manageable.\n\n### When to use it\nEnterprises with citizen developers and pro developers.\n\n### Where to use it\nMulti-business-unit Microsoft tenants.\n\n### Real use example\nCOE blocks consumer OneDrive connector in production DLP policy.",
+      "key_takeaways": [
+        "Governance keeps Power Platform tenant secure and manageable.",
+        "Enterprises with citizen developers and pro developers.",
+        "COE blocks consumer OneDrive connector in production DLP policy."
+      ],
+      "what_it_is": "Governance keeps Power Platform tenant secure and manageable.",
+      "when_to_use": "Enterprises with citizen developers and pro developers.",
+      "where_to_use": "Multi-business-unit Microsoft tenants.",
+      "real_use_example": "COE blocks consumer OneDrive connector in production DLP policy."
+    },
+    {
+      "number": 18,
+      "title": "Copilot and AI in Dynamics 365",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Copilot and AI in Dynamics 365** *(Level: Advanced)*\n\nCopilot in Sales and Service summarizes records, drafts emails, and suggests knowledge articles. Understand data residency, prompt logging, and human review for regulated industries. Extend with plugins to ground responses in Dataverse data.\n\nCode Reference:\n```powershell\n# Copilot Studio agent grounded on Knowledge articles + Dataverse FAQ table\n```\nWhat it shows: Grounding comment stresses verified data sources for AI answers.\n\n### What it actually is\nDynamics AI features accelerate reps while requiring governance.\n\n### When to use it\nHigh-touch sales and service teams adopting Microsoft Copilot.\n\n### Where to use it\nOrganizations already on M365 Copilot roadmap.\n\n### Real use example\nAgent drafts case summary from email thread—human verifies before sending to district.",
+      "key_takeaways": [
+        "Dynamics AI features accelerate reps while requiring governance.",
+        "High-touch sales and service teams adopting Microsoft Copilot.",
+        "Agent drafts case summary from email thread—human verifies before sending to district."
+      ],
+      "what_it_is": "Dynamics AI features accelerate reps while requiring governance.",
+      "when_to_use": "High-touch sales and service teams adopting Microsoft Copilot.",
+      "where_to_use": "Organizations already on M365 Copilot roadmap.",
+      "real_use_example": "Agent drafts case summary from email thread—human verifies before sending to district."
+    }
+  ],
+  "chapter_count": 18
+}

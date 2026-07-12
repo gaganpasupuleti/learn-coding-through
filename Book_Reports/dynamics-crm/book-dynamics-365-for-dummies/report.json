@@ -1,0 +1,139 @@
+{
+  "id": "book-dynamics-365-for-dummies",
+  "title": "Study Report: Dynamics 365 For Dummies — Dynamics 365 CRM Consultant",
+  "author": "Gagan Pasupuleti",
+  "family_id": "dynamics-crm",
+  "family_name": "Dynamics 365 CRM Consultant",
+  "level": "Beginner",
+  "report_type": "role_book_study",
+  "book_title": "Dynamics 365 For Dummies",
+  "book_author": "Renato Fajdiga",
+  "book_index": 3,
+  "summary": "Study report for *Dynamics 365 For Dummies* by Renato Fajdiga (Beginner level) mapped to the Dynamics 365 CRM Consultant role. CRM concepts, leads, opportunities, and customer service cases.",
+  "sources": [
+    "https://www.wiley.com/en-us/Dynamics+365+For+Dummies-p-9781119863747"
+  ],
+  "source_file": "Reference: Dynamics 365 For Dummies — Renato Fajdiga",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Dynamics 365 For Dummies",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Dynamics 365 For Dummies** *(Level: Beginner)*\n\nThis study report summarizes *Dynamics 365 For Dummies* by Renato Fajdiga for the Dynamics 365 CRM Consultant role. The resource is rated Beginner level. CRM concepts, leads, opportunities, and customer service cases. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Dynamics 365 For Dummies\n# Author: Renato Fajdiga\n# Role: Dynamics 365 CRM Consultant\n# Level: Beginner\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Dynamics 365 For Dummies.\n\n### When to use it\nWhen learning Dynamics 365 CRM Consultant skills at Beginner level.\n\n### Where to use it\nDynamics 365 CRM Consultant training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Dynamics 365 For Dummies.",
+        "When learning Dynamics 365 CRM Consultant skills at Beginner level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Dynamics 365 For Dummies.",
+      "when_to_use": "When learning Dynamics 365 CRM Consultant skills at Beginner level.",
+      "where_to_use": "Dynamics 365 CRM Consultant training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Beginner)*\n\nDynamics 365 CRM Consultant professionals use ideas from Dynamics 365 For Dummies to solve real workplace problems. CRM concepts, leads, opportunities, and customer service cases. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Dynamics 365 CRM Consultant\nBook focus: CRM concepts, leads, opportunities, and customer service cases.\nRecommended level: Beginner\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nDynamics 365 CRM Consultant bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a beginner skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a beginner skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Dynamics 365 CRM Consultant bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a beginner skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Beginner)*\n\nThe main topics in Dynamics 365 For Dummies include practical concepts described as: CRM concepts, leads, opportunities, and customer service cases. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Dynamics 365 CRM Consultant jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Dynamics 365 and Power Platform Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Dynamics 365 and Power Platform Overview** *(Level: Beginner)*\n\nDynamics 365 Customer Engagement apps run on Dataverse—a cloud database with APIs, security, and metadata. Power Apps, Power Automate, and Power BI share the platform. Model-driven apps auto-generate UI from Dataverse schema; canvas apps offer pixel control.\n\nCode Reference:\n```powershell\n# pac auth create --url https://org.crm.dynamics.com\n# pac org list\n```\nWhat it shows: PAC CLI authenticates to environments for ALM automation.\n\n### What it actually is\nDynamics 365 is Microsoft's cloud CRM and ERP suite on Dataverse.\n\n### When to use it\nSales, service, marketing, and field service implementations.\n\n### Where to use it\nMicrosoft-centric enterprises and partners.\n\n### Real use example\nCodeQuest partner provisions Sales trial environment via Microsoft 365 tenant.",
+      "key_takeaways": [
+        "Dynamics 365 is Microsoft's cloud CRM and ERP suite on Dataverse.",
+        "Sales, service, marketing, and field service implementations.",
+        "CodeQuest partner provisions Sales trial environment via Microsoft 365 tenant."
+      ],
+      "what_it_is": "Dynamics 365 is Microsoft's cloud CRM and ERP suite on Dataverse.",
+      "when_to_use": "Sales, service, marketing, and field service implementations.",
+      "where_to_use": "Microsoft-centric enterprises and partners.",
+      "real_use_example": "CodeQuest partner provisions Sales trial environment via Microsoft 365 tenant."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Dataverse Tables and Columns",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Dataverse Tables and Columns** *(Level: Beginner)*\n\nTables (entities) store rows (records). Columns have types: text, choice, lookup, currency, datetime. Lookups create relationships; 1:N and N:N need intersect tables. Use solutions to package customizations for promotion.\n\nCode Reference:\n```powershell\n# Display name: Course Enrollment | Schema name: cq_enrollment\n# Lookup to Contact and Course tables\n```\nWhat it shows: Naming comments document custom table design for team alignment.\n\n### What it actually is\nDataverse is the metadata-driven data layer for Power Platform.\n\n### When to use it\nEvery CRM customization and integration project.\n\n### Where to use it\nSales pipelines, case management, and custom LOB apps.\n\n### Real use example\nCustom cq_enrollment table links students (contacts) to CodeQuest courses.",
+      "key_takeaways": [
+        "Dataverse is the metadata-driven data layer for Power Platform.",
+        "Every CRM customization and integration project.",
+        "Custom cq_enrollment table links students (contacts) to CodeQuest courses."
+      ],
+      "what_it_is": "Dataverse is the metadata-driven data layer for Power Platform.",
+      "when_to_use": "Every CRM customization and integration project.",
+      "where_to_use": "Sales pipelines, case management, and custom LOB apps.",
+      "real_use_example": "Custom cq_enrollment table links students (contacts) to CodeQuest courses."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Model-Driven App Design",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Model-Driven App Design** *(Level: Beginner)*\n\nModel-driven apps compose sitemap, forms, views, charts, and business process flows. Main form tabs organize fields; quick create forms speed inline entry. Unified interface is mandatory for new apps. Test with multiple security roles.\n\nCode Reference:\n```powershell\n# App module: Sales Hub -> Accounts, Contacts, Opportunities, custom Enrollments\n```\nWhat it shows: Sitemap comments map navigation structure for makers.\n\n### What it actually is\nModel-driven apps deliver consistent CRM UX from metadata.\n\n### When to use it\nInternal sales and service teams needing standardized processes.\n\n### Where to use it\nDynamics 365 Sales and Customer Service out-of-box apps.\n\n### Real use example\nEnrollment table added to Sales Hub sitemap under Accounts area.",
+      "key_takeaways": [
+        "Model-driven apps deliver consistent CRM UX from metadata.",
+        "Internal sales and service teams needing standardized processes.",
+        "Enrollment table added to Sales Hub sitemap under Accounts area."
+      ],
+      "what_it_is": "Model-driven apps deliver consistent CRM UX from metadata.",
+      "when_to_use": "Internal sales and service teams needing standardized processes.",
+      "where_to_use": "Dynamics 365 Sales and Customer Service out-of-box apps.",
+      "real_use_example": "Enrollment table added to Sales Hub sitemap under Accounts area."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Beginner)*\n\nFinish Dynamics 365 For Dummies with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Dynamics 365 CRM Consultant. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a beginner project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a beginner project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a beginner project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

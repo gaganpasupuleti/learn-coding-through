@@ -1,0 +1,139 @@
+{
+  "id": "book-openai-api-documentation",
+  "title": "Study Report: OpenAI API Documentation — Generative AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "gen-ai",
+  "family_name": "Generative AI Engineer",
+  "level": "Beginner",
+  "report_type": "role_book_study",
+  "book_title": "OpenAI API Documentation",
+  "book_author": "OpenAI",
+  "book_index": 5,
+  "summary": "Study report for *OpenAI API Documentation* by OpenAI (Beginner level) mapped to the Generative AI Engineer role. Chat completions, embeddings, function calling, and best practices.",
+  "sources": [
+    "https://platform.openai.com/docs/"
+  ],
+  "source_file": "Reference: OpenAI API Documentation — OpenAI",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About OpenAI API Documentation",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-intro",
+      "content": "**Chapter focus: About OpenAI API Documentation** *(Level: Beginner)*\n\nThis study report summarizes *OpenAI API Documentation* by OpenAI for the Generative AI Engineer role. The resource is rated Beginner level. Chat completions, embeddings, function calling, and best practices. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# OpenAI API Documentation\n# Author: OpenAI\n# Role: Generative AI Engineer\n# Level: Beginner\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on OpenAI API Documentation.\n\n### When to use it\nWhen learning Generative AI Engineer skills at Beginner level.\n\n### Where to use it\nGenerative AI Engineer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on OpenAI API Documentation.",
+        "When learning Generative AI Engineer skills at Beginner level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on OpenAI API Documentation.",
+      "when_to_use": "When learning Generative AI Engineer skills at Beginner level.",
+      "where_to_use": "Generative AI Engineer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Beginner)*\n\nGenerative AI Engineer professionals use ideas from OpenAI API Documentation to solve real workplace problems. Chat completions, embeddings, function calling, and best practices. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Generative AI Engineer\nBook focus: Chat completions, embeddings, function calling, and best practices.\nRecommended level: Beginner\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nGenerative AI Engineer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a beginner skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a beginner skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Generative AI Engineer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a beginner skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Beginner)*\n\nThe main topics in OpenAI API Documentation include practical concepts described as: Chat completions, embeddings, function calling, and best practices. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Generative AI Engineer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Generative AI Engineer Role Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Generative AI Engineer Role Overview** *(Level: Beginner)*\n\nGenAI engineers build LLM-powered products: copilots, search, summarization, and codegen assistants. Skills span prompting, retrieval, evaluation, and safety — not just calling an API. 2025-2026 teams ship RAG before fine-tuning unless domain gap is proven.\n\nCode Reference:\n```python\nresponse = client.chat.completions.create(\n  model='gpt-4o-mini',\n  messages=[{'role':'system','content':'You are a helpful tutor.'},\n            {'role':'user','content':'Explain SQL JOINs briefly.'}]\n)\n```\nWhat it shows: System + user messages frame behavior — cheapest path to useful apps.\n\n### What it actually is\nA GenAI engineer integrates LLMs into reliable user-facing applications.\n\n### When to use it\nWhen unstructured knowledge or language tasks dominate the product.\n\n### Where to use it\nSupport bots, doc search, content generation, and code assistants.\n\n### Real use example\nCodeQuest study copilot answers from official docs only — you own retrieval quality.",
+      "key_takeaways": [
+        "A GenAI engineer integrates LLMs into reliable user-facing applications.",
+        "When unstructured knowledge or language tasks dominate the product.",
+        "CodeQuest study copilot answers from official docs only — you own retrieval quality."
+      ],
+      "what_it_is": "A GenAI engineer integrates LLMs into reliable user-facing applications.",
+      "when_to_use": "When unstructured knowledge or language tasks dominate the product.",
+      "where_to_use": "Support bots, doc search, content generation, and code assistants.",
+      "real_use_example": "CodeQuest study copilot answers from official docs only — you own retrieval quality."
+    },
+    {
+      "number": 5,
+      "title": "Applied: LLM Fundamentals: Tokens and Context",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: LLM Fundamentals: Tokens and Context** *(Level: Beginner)*\n\nModels read text as tokens (~4 chars English). Context window limits total input+output (128k+ on flagship 2025 models). Long prompts cost money and latency — summarize or retrieve instead of stuffing context.\n\nCode Reference:\n```python\nimport tiktoken\nenc = tiktoken.encoding_for_model('gpt-4o')\nprint(len(enc.encode('Hello, how many tokens am I?')))\n```\nWhat it shows: tiktoken estimates billable tokens before sending requests.\n\n### What it actually is\nTokenization and context limits shape every LLM application design.\n\n### When to use it\nSizing prompts, choosing models, and estimating cost.\n\n### Where to use it\nAll Chat Completions and embedding workloads.\n\n### Real use example\nA 200-page PDF won't fit — chunking + RAG is mandatory not optional.",
+      "key_takeaways": [
+        "Tokenization and context limits shape every LLM application design.",
+        "Sizing prompts, choosing models, and estimating cost.",
+        "A 200-page PDF won't fit — chunking + RAG is mandatory not optional."
+      ],
+      "what_it_is": "Tokenization and context limits shape every LLM application design.",
+      "when_to_use": "Sizing prompts, choosing models, and estimating cost.",
+      "where_to_use": "All Chat Completions and embedding workloads.",
+      "real_use_example": "A 200-page PDF won't fit — chunking + RAG is mandatory not optional."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Prompt Engineering Patterns",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Prompt Engineering Patterns** *(Level: Beginner)*\n\nPatterns: zero-shot, few-shot, chain-of-thought, JSON mode, structured outputs (2024+). Be explicit about format, length, and refusal conditions. Version prompts in Git.\n\nCode Reference:\n```python\nSYSTEM = \"\"\"Answer using only provided context. If unsure, say I don't know.\nRespond as JSON: {\"answer\": str, \"citations\": [int]}\"\"\"\n```\nWhat it shows: JSON schema reduces parsing bugs vs free-form answers.\n\n### What it actually is\nPrompt engineering steers model behavior without weight updates.\n\n### When to use it\nEvery LLM feature before investing in fine-tuning.\n\n### Where to use it\nExtraction, classification, tutoring, and support macros.\n\n### Real use example\nFew-shot examples fix date format inconsistencies in invoice parsing.",
+      "key_takeaways": [
+        "Prompt engineering steers model behavior without weight updates.",
+        "Every LLM feature before investing in fine-tuning.",
+        "Few-shot examples fix date format inconsistencies in invoice parsing."
+      ],
+      "what_it_is": "Prompt engineering steers model behavior without weight updates.",
+      "when_to_use": "Every LLM feature before investing in fine-tuning.",
+      "where_to_use": "Extraction, classification, tutoring, and support macros.",
+      "real_use_example": "Few-shot examples fix date format inconsistencies in invoice parsing."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Beginner)*\n\nFinish OpenAI API Documentation with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Generative AI Engineer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a beginner project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a beginner project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a beginner project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

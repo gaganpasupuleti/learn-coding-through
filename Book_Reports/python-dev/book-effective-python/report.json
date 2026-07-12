@@ -1,0 +1,139 @@
+{
+  "id": "book-effective-python",
+  "title": "Study Report: Effective Python — Python Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "python-dev",
+  "family_name": "Python Developer",
+  "level": "Intermediate",
+  "report_type": "role_book_study",
+  "book_title": "Effective Python",
+  "book_author": "Brett Slatkin",
+  "book_index": 3,
+  "summary": "Study report for *Effective Python* by Brett Slatkin (Intermediate level) mapped to the Python Developer role. 90 patterns for readable, efficient Python 3 code.",
+  "sources": [
+    "https://effectivepython.com/"
+  ],
+  "source_file": "Reference: Effective Python — Brett Slatkin",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Effective Python",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Effective Python** *(Level: Intermediate)*\n\nThis study report summarizes *Effective Python* by Brett Slatkin for the Python Developer role. The resource is rated Intermediate level. 90 patterns for readable, efficient Python 3 code. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Effective Python\n# Author: Brett Slatkin\n# Role: Python Developer\n# Level: Intermediate\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Effective Python.\n\n### When to use it\nWhen learning Python Developer skills at Intermediate level.\n\n### Where to use it\nPython Developer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Effective Python.",
+        "When learning Python Developer skills at Intermediate level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Effective Python.",
+      "when_to_use": "When learning Python Developer skills at Intermediate level.",
+      "where_to_use": "Python Developer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Intermediate)*\n\nPython Developer professionals use ideas from Effective Python to solve real workplace problems. 90 patterns for readable, efficient Python 3 code. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Python Developer\nBook focus: 90 patterns for readable, efficient Python 3 code.\nRecommended level: Intermediate\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nPython Developer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a intermediate skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a intermediate skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Python Developer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a intermediate skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Intermediate",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Intermediate)*\n\nThe main topics in Effective Python include practical concepts described as: 90 patterns for readable, efficient Python 3 code. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Python Developer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: FastAPI and Pydantic v2 Models",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: FastAPI and Pydantic v2 Models** *(Level: Intermediate)*\n\nFastAPI builds on Starlette and Pydantic for high-performance typed APIs. Pydantic v2 uses model_validate and computed fields with Rust-core speed. Dependency injection via Depends() shares DB sessions, auth, and settings cleanly. Automatic OpenAPI generation documents endpoints for frontend and QA teams.\n\nCode Reference:\n```python\nfrom pydantic import BaseModel, Field\n\nclass CreateItem(BaseModel):\n    name: str = Field(min_length=1, max_length=120)\n    price: float = Field(gt=0)\n\n@app.post(\"/items\", response_model=ItemOut)\nasync def create_item(payload: CreateItem, db: DbSession):\n    return await service.create(db, payload)\n```\nWhat it shows: Pydantic validates payload before handler runs; response_model strips internal fields.\n\n### What it actually is\nFastAPI is a modern async web framework for building APIs with automatic validation and docs.\n\n### When to use it\nChoose FastAPI for new microservices, ML model servers, and high-throughput JSON APIs.\n\n### Where to use it\nStartups, internal tools, mobile backends, and ML inference gateways.\n\n### Real use example\nFrontend codegen from /openapi.json produces TypeScript clients matching backend types exactly.",
+      "key_takeaways": [
+        "FastAPI is a modern async web framework for building APIs with automatic validation and docs.",
+        "Choose FastAPI for new microservices, ML model servers, and high-throughput JSON APIs.",
+        "Frontend codegen from /openapi."
+      ],
+      "what_it_is": "FastAPI is a modern async web framework for building APIs with automatic validation and docs.",
+      "when_to_use": "Choose FastAPI for new microservices, ML model servers, and high-throughput JSON APIs.",
+      "where_to_use": "Startups, internal tools, mobile backends, and ML inference gateways.",
+      "real_use_example": "Frontend codegen from /openapi.json produces TypeScript clients matching backend types exactly."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Django ORM and Admin Productivity",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: Django ORM and Admin Productivity** *(Level: Intermediate)*\n\nDjango's ORM maps models to tables with migrations tracking schema evolution. The admin site gives non-developers CRUD UI for free with customizable ModelAdmin classes. QuerySet API chains filter, exclude, select_related, and prefetch_related for efficient queries. Use Django for content-heavy apps, internal dashboards, and rapid MVP delivery.\n\nCode Reference:\n```python\nclass Article(models.Model):\n    title = models.CharField(max_length=200)\n    published = models.DateTimeField(auto_now_add=True)\n\nrecent = Article.objects.filter(title__icontains=\"python\").order_by(\"-published\")[:10]\n```\nWhat it shows: CharField maps to VARCHAR; slice limits queryset evaluation to ten rows.\n\n### What it actually is\nDjango is a batteries-included web framework with ORM, auth, admin, and templating.\n\n### When to use it\nUse when you need admin UI, user auth, and relational models without assembling pieces manually.\n\n### Where to use it\nCMS platforms, internal ops tools, e-commerce backends, and multi-app SaaS cores.\n\n### Real use example\nSupport staff update product descriptions via /admin without developer involvement.",
+      "key_takeaways": [
+        "Django is a batteries-included web framework with ORM, auth, admin, and templating.",
+        "Use when you need admin UI, user auth, and relational models without assembling pieces manually.",
+        "Support staff update product descriptions via /admin without developer involvement."
+      ],
+      "what_it_is": "Django is a batteries-included web framework with ORM, auth, admin, and templating.",
+      "when_to_use": "Use when you need admin UI, user auth, and relational models without assembling pieces manually.",
+      "where_to_use": "CMS platforms, internal ops tools, e-commerce backends, and multi-app SaaS cores.",
+      "real_use_example": "Support staff update product descriptions via /admin without developer involvement."
+    },
+    {
+      "number": 6,
+      "title": "Applied: asyncio and Concurrent I/O",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: asyncio and Concurrent I/O** *(Level: Intermediate)*\n\nasyncio event loop schedules coroutines cooperatively on a single thread. await yields control during I/O waits, allowing thousands of concurrent connections. Use httpx.AsyncClient and async database drivers—never block the loop with time.sleep. asyncio.gather runs independent coroutines concurrently and collects results.\n\nCode Reference:\n```python\nasync def fetch_all(urls: list[str]) -> list[str]:\n    async with httpx.AsyncClient(timeout=10) as client:\n        tasks = [client.get(url) for url in urls]\n        responses = await asyncio.gather(*tasks)\n        return [r.text for r in responses]\n```\nWhat it shows: AsyncClient reuses connections; gather fetches all URLs concurrently.\n\n### What it actually is\nasyncio enables high-concurrency I/O-bound Python without multithreading complexity.\n\n### When to use it\nUse async endpoints when calling external APIs, websockets, or async DB drivers.\n\n### Where to use it\nFastAPI services, chat servers, scrapers, and fan-out aggregation APIs.\n\n### Real use example\nA pricing API fetches ten vendor quotes in parallel, cutting latency from 5s to 600ms.",
+      "key_takeaways": [
+        "asyncio enables high-concurrency I/O-bound Python without multithreading complexity.",
+        "Use async endpoints when calling external APIs, websockets, or async DB drivers.",
+        "A pricing API fetches ten vendor quotes in parallel, cutting latency from 5s to 600ms."
+      ],
+      "what_it_is": "asyncio enables high-concurrency I/O-bound Python without multithreading complexity.",
+      "when_to_use": "Use async endpoints when calling external APIs, websockets, or async DB drivers.",
+      "where_to_use": "FastAPI services, chat servers, scrapers, and fan-out aggregation APIs.",
+      "real_use_example": "A pricing API fetches ten vendor quotes in parallel, cutting latency from 5s to 600ms."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Intermediate)*\n\nFinish Effective Python with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Python Developer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a intermediate project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a intermediate project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a intermediate project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

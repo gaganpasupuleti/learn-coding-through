@@ -1,0 +1,139 @@
+{
+  "id": "book-pro-power-bi-architecture",
+  "title": "Study Report: Pro Power BI Architecture — Microsoft Power Platform Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "power-platform",
+  "family_name": "Microsoft Power Platform Developer",
+  "level": "Advanced",
+  "report_type": "role_book_study",
+  "book_title": "Pro Power BI Architecture",
+  "book_author": "Reza Rad & Miloš Radivojević",
+  "book_index": 3,
+  "summary": "Study report for *Pro Power BI Architecture* by Reza Rad & Miloš Radivojević (Advanced level) mapped to the Microsoft Power Platform Developer role. Enterprise BI design, deployment, and governance.",
+  "sources": [
+    "https://www.sqlbi.com/books/pro-power-bi-architecture/"
+  ],
+  "source_file": "Reference: Pro Power BI Architecture — Reza Rad & Miloš Radivojević",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Pro Power BI Architecture",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Pro Power BI Architecture** *(Level: Advanced)*\n\nThis study report summarizes *Pro Power BI Architecture* by Reza Rad & Miloš Radivojević for the Microsoft Power Platform Developer role. The resource is rated Advanced level. Enterprise BI design, deployment, and governance. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Pro Power BI Architecture\n# Author: Reza Rad & Miloš Radivojević\n# Role: Microsoft Power Platform Developer\n# Level: Advanced\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Pro Power BI Architecture.\n\n### When to use it\nWhen learning Microsoft Power Platform Developer skills at Advanced level.\n\n### Where to use it\nMicrosoft Power Platform Developer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Pro Power BI Architecture.",
+        "When learning Microsoft Power Platform Developer skills at Advanced level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Pro Power BI Architecture.",
+      "when_to_use": "When learning Microsoft Power Platform Developer skills at Advanced level.",
+      "where_to_use": "Microsoft Power Platform Developer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Advanced)*\n\nMicrosoft Power Platform Developer professionals use ideas from Pro Power BI Architecture to solve real workplace problems. Enterprise BI design, deployment, and governance. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Microsoft Power Platform Developer\nBook focus: Enterprise BI design, deployment, and governance.\nRecommended level: Advanced\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nMicrosoft Power Platform Developer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a advanced skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a advanced skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Microsoft Power Platform Developer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a advanced skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Advanced",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Advanced)*\n\nThe main topics in Pro Power BI Architecture include practical concepts described as: Enterprise BI design, deployment, and governance. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Microsoft Power Platform Developer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Power Apps Component Framework (PCF)",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Power Apps Component Framework (PCF)** *(Level: Advanced)*\n\nPCF builds custom controls with TypeScript for model-driven and canvas apps. Use for specialized visuals, masked inputs, or integrating third-party JS libraries not available natively. Bundle with solution and document manifest features.\n\nCode Reference:\n```powershell\n// PCF manifest: bound property Dataset | React virtualized grid for 10k rows\n```\nWhat it shows: PCF manifest comment describes control binding strategy.\n\n### What it actually is\nPCF extends UI when native controls insufficient.\n\n### When to use it\nComplex grids, maps, and bespoke visualizations.\n\n### Where to use it\nPro-dev teams supporting citizen makers.\n\n### Real use example\nVirtualized enrollment grid PCF replaces slow default subgrid on large districts.",
+      "key_takeaways": [
+        "PCF extends UI when native controls insufficient.",
+        "Complex grids, maps, and bespoke visualizations.",
+        "Virtualized enrollment grid PCF replaces slow default subgrid on large districts."
+      ],
+      "what_it_is": "PCF extends UI when native controls insufficient.",
+      "when_to_use": "Complex grids, maps, and bespoke visualizations.",
+      "where_to_use": "Pro-dev teams supporting citizen makers.",
+      "real_use_example": "Virtualized enrollment grid PCF replaces slow default subgrid on large districts."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Power BI Embed and Row-Level Security",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Power BI Embed and Row-Level Security** *(Level: Advanced)*\n\nEmbed reports in apps using user-owns-data or app-owns-data models. Map Dataverse teams to Power BI RLS roles with USERNAME() or custom DAX. Manage embed token refresh and capacity SKUs for production SLAs.\n\nCode Reference:\n```powershell\n// RLS: [Email] = USERNAME() for manager-only district view\n```\nWhat it shows: RLS DAX ties Power BI rows to logged-in maker identity.\n\n### What it actually is\nEmbedded analytics deliver contextual insights inside apps.\n\n### When to use it\nExecutive and manager dashboards in CRM apps.\n\n### Where to use it\nSaaS products white-labeling analytics for customers.\n\n### Real use example\nDistrict manager sees only their schools in embedded completion dashboard.",
+      "key_takeaways": [
+        "Embedded analytics deliver contextual insights inside apps.",
+        "Executive and manager dashboards in CRM apps.",
+        "District manager sees only their schools in embedded completion dashboard."
+      ],
+      "what_it_is": "Embedded analytics deliver contextual insights inside apps.",
+      "when_to_use": "Executive and manager dashboards in CRM apps.",
+      "where_to_use": "SaaS products white-labeling analytics for customers.",
+      "real_use_example": "District manager sees only their schools in embedded completion dashboard."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Environment Variables and Secret Management",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Environment Variables and Secret Management** *(Level: Advanced)*\n\nEnvironment variables store text, JSON, and secret values per environment. Reference in flows and plugins instead of hardcoding. Rotate secrets with pipeline automation and document in runbooks—never commit secrets to Git.\n\nCode Reference:\n```powershell\n# Variable: cq_ApiBaseUrl (text) | cq_ApiKey (secret) | current: https://api.test.codequest.app\n```\nWhat it shows: Variable inventory documents ALM-safe configuration.\n\n### What it actually is\nEnvironment variables enable portable solutions across stages.\n\n### When to use it\nMulti-stage ALM and ISV packaged solutions.\n\n### Where to use it\nPartners shipping managed solutions to customers.\n\n### Real use example\nProd secret rotated quarterly via pipeline without editing flows manually.",
+      "key_takeaways": [
+        "Environment variables enable portable solutions across stages.",
+        "Multi-stage ALM and ISV packaged solutions.",
+        "Prod secret rotated quarterly via pipeline without editing flows manually."
+      ],
+      "what_it_is": "Environment variables enable portable solutions across stages.",
+      "when_to_use": "Multi-stage ALM and ISV packaged solutions.",
+      "where_to_use": "Partners shipping managed solutions to customers.",
+      "real_use_example": "Prod secret rotated quarterly via pipeline without editing flows manually."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Advanced)*\n\nFinish Pro Power BI Architecture with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Microsoft Power Platform Developer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a advanced project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a advanced project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a advanced project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

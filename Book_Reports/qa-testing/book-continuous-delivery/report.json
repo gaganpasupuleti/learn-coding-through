@@ -1,0 +1,139 @@
+{
+  "id": "book-continuous-delivery",
+  "title": "Study Report: Continuous Delivery — QA & Test Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "qa-testing",
+  "family_name": "QA & Test Engineer",
+  "level": "Advanced",
+  "report_type": "role_book_study",
+  "book_title": "Continuous Delivery",
+  "book_author": "Jez Humble & David Farley",
+  "book_index": 4,
+  "summary": "Study report for *Continuous Delivery* by Jez Humble & David Farley (Advanced level) mapped to the QA & Test Engineer role. CI/CD pipelines, test automation gates, and deployment safety.",
+  "sources": [
+    "https://continuousdelivery.com/"
+  ],
+  "source_file": "Reference: Continuous Delivery — Jez Humble & David Farley",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Continuous Delivery",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Continuous Delivery** *(Level: Advanced)*\n\nThis study report summarizes *Continuous Delivery* by Jez Humble & David Farley for the QA & Test Engineer role. The resource is rated Advanced level. CI/CD pipelines, test automation gates, and deployment safety. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Continuous Delivery\n# Author: Jez Humble & David Farley\n# Role: QA & Test Engineer\n# Level: Advanced\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Continuous Delivery.\n\n### When to use it\nWhen learning QA & Test Engineer skills at Advanced level.\n\n### Where to use it\nQA & Test Engineer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Continuous Delivery.",
+        "When learning QA & Test Engineer skills at Advanced level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Continuous Delivery.",
+      "when_to_use": "When learning QA & Test Engineer skills at Advanced level.",
+      "where_to_use": "QA & Test Engineer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Advanced)*\n\nQA & Test Engineer professionals use ideas from Continuous Delivery to solve real workplace problems. CI/CD pipelines, test automation gates, and deployment safety. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: QA & Test Engineer\nBook focus: CI/CD pipelines, test automation gates, and deployment safety.\nRecommended level: Advanced\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nQA & Test Engineer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a advanced skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a advanced skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "QA & Test Engineer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a advanced skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Advanced",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Advanced)*\n\nThe main topics in Continuous Delivery include practical concepts described as: CI/CD pipelines, test automation gates, and deployment safety. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in QA & Test Engineer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Performance Testing with k6",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Performance Testing with k6** *(Level: Advanced)*\n\nPerformance testing validates latency and throughput under expected and peak load. k6 scripts define VUs (virtual users) ramping scenarios in JavaScript. Thresholds fail CI when P95 exceeds SLA (e.g., http_req_duration p(95)<500ms). Test staging only with approval—never DDoS production inadvertently.\n\nCode Reference:\n```javascript\nimport http from 'k6/http';\nimport { check } from 'k6';\nexport default function () {\n  const res = http.get('https://staging.example/api/products');\n  check(res, { 'status 200': (r) => r.status === 200 });\n}\n```\nWhat it shows: Virtual user iteration hits products endpoint; check validates status.\n\n### What it actually is\nLoad testing reveals scalability bottlenecks before users do during peaks.\n\n### When to use it\nRun before major sales events and after infrastructure changes.\n\n### Where to use it\nE-commerce flash sales, election result pages, and API gateway sizing.\n\n### Real use example\nk6 finds DB connection pool exhausted at 200 VUs; pool size increased pre-launch.",
+      "key_takeaways": [
+        "Load testing reveals scalability bottlenecks before users do during peaks.",
+        "Run before major sales events and after infrastructure changes.",
+        "k6 finds DB connection pool exhausted at 200 VUs; pool size increased pre-launch."
+      ],
+      "what_it_is": "Load testing reveals scalability bottlenecks before users do during peaks.",
+      "when_to_use": "Run before major sales events and after infrastructure changes.",
+      "where_to_use": "E-commerce flash sales, election result pages, and API gateway sizing.",
+      "real_use_example": "k6 finds DB connection pool exhausted at 200 VUs; pool size increased pre-launch."
+    },
+    {
+      "number": 5,
+      "title": "Applied: ISTQB Test Planning and Metrics",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: ISTQB Test Planning and Metrics** *(Level: Advanced)*\n\nTest plan documents scope, approach, resources, schedule, and exit criteria. Entry criteria define when testing starts; exit criteria define release readiness. Defect density (bugs/KLOC) and escape rate (prod bugs/release) track quality trends. Risk-based testing prioritizes effort on high-impact, high-likelihood areas.\n\nCode Reference:\n```markdown\nExit Criteria Example:\n- 100% critical/high test cases executed\n- Zero open P1 defects\n- <=2 open P2 with business sign-off\n- Automation smoke pass on release candidate build\n```\nWhat it shows: Exit criteria make go/no-go objective rather than subjective gut feel.\n\n### What it actually is\nFormal test planning aligns QA activity with business risk tolerance.\n\n### When to use it\nRequired in regulated domains; valuable everywhere releases are frequent.\n\n### Where to use it\nMedical devices, fintech, and enterprise RFP-driven projects.\n\n### Real use example\nRelease board approves ship when exit criteria met; one waived P2 documented.",
+      "key_takeaways": [
+        "Formal test planning aligns QA activity with business risk tolerance.",
+        "Required in regulated domains; valuable everywhere releases are frequent.",
+        "Release board approves ship when exit criteria met; one waived P2 documented."
+      ],
+      "what_it_is": "Formal test planning aligns QA activity with business risk tolerance.",
+      "when_to_use": "Required in regulated domains; valuable everywhere releases are frequent.",
+      "where_to_use": "Medical devices, fintech, and enterprise RFP-driven projects.",
+      "real_use_example": "Release board approves ship when exit criteria met; one waived P2 documented."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Flaky Test Triage and Quarantine",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Flaky Test Triage and Quarantine** *(Level: Advanced)*\n\nFlaky tests pass and fail without code changes—eroding trust in CI. Quarantine flaky tests (@pytest.mark.quarantine) off critical path while fixing root cause. Common causes: timing, shared state, external dependency instability, clock sensitivity. Track flake rate metric; zero tolerance on main branch smoke suite.\n\nCode Reference:\n```python\n# Retry only in CI with pytest-rerunfailures\n# @pytest.mark.flaky(reruns=2)  — temporary, must ticket root cause\n```\nWhat it shows: Reruns mitigate temporarily but root cause fix required for permanent trust.\n\n### What it actually is\nFlake management keeps CI signal trustworthy for release decisions.\n\n### When to use it\nImplement quarantine policy when E2E suite exceeds 50 tests.\n\n### Where to use it\nLarge Playwright/Selenium suites in high-velocity teams.\n\n### Real use example\nRace on toast notification fixed with expect().to_be_visible() replacing sleep.",
+      "key_takeaways": [
+        "Flake management keeps CI signal trustworthy for release decisions.",
+        "Implement quarantine policy when E2E suite exceeds 50 tests.",
+        "Race on toast notification fixed with expect()."
+      ],
+      "what_it_is": "Flake management keeps CI signal trustworthy for release decisions.",
+      "when_to_use": "Implement quarantine policy when E2E suite exceeds 50 tests.",
+      "where_to_use": "Large Playwright/Selenium suites in high-velocity teams.",
+      "real_use_example": "Race on toast notification fixed with expect().to_be_visible() replacing sleep."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Advanced)*\n\nFinish Continuous Delivery with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to QA & Test Engineer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a advanced project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a advanced project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a advanced project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

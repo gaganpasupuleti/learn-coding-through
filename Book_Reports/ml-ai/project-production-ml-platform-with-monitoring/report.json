@@ -1,0 +1,137 @@
+{
+  "id": "project-production-ml-platform-with-monitoring",
+  "title": "Project Report: Production ML Platform with Monitoring — ML / AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "ml-ai",
+  "family_name": "ML / AI Engineer",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "Production ML Platform with Monitoring",
+  "project_index": 3,
+  "duration": "5–6 weeks",
+  "summary": "Batch scoring pipeline with drift detection, model registry, and automated retraining trigger.",
+  "objectives": [
+    "Scheduled batch scoring job",
+    "Evidently drift detection report",
+    "Model registry with versioning",
+    "Retrain trigger when drift exceeds threshold"
+  ],
+  "tools": [
+    "MLflow",
+    "Evidently",
+    "Airflow",
+    "scikit-learn"
+  ],
+  "deliverables": [
+    "Batch pipeline",
+    "Drift reports",
+    "Registry setup",
+    "Ops runbook"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**Production ML Platform with Monitoring** is a advanced-level end-to-end project for ML / AI Engineer. Duration: 5–6 weeks. Batch scoring pipeline with drift detection, model registry, and automated retraining trigger. Tools: MLflow, Evidently, Airflow, scikit-learn.\n\nCode Reference:\n```text\nObjective: Scheduled batch scoring job\nObjective: Evidently drift detection report\nObjective: Model registry with versioning\nObjective: Retrain trigger when drift exceeds threshold\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nML / AI Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a ML / AI Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a ML / AI Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "ML / AI Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a ML / AI Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Batch",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Batch** *(Level: Advanced)*\n\nScoring pipeline. Complete these tasks: Feature store read; Batch predict. Deliverable for this phase: Daily scores table.\n\nCode Reference:\n```text\n- [ ] Feature store read\n- [ ] Batch predict\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Batch is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nML / AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Daily scores table to the teacher.",
+      "key_takeaways": [
+        "Phase Batch is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Daily scores table to the teacher."
+      ],
+      "what_it_is": "Phase Batch is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "ML / AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Daily scores table to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Drift",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Drift** *(Level: Advanced)*\n\nEvidently reports. Complete these tasks: Data drift; Target drift. Deliverable for this phase: Weekly drift report.\n\nCode Reference:\n```text\n- [ ] Data drift\n- [ ] Target drift\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Drift is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nML / AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Weekly drift report to the teacher.",
+      "key_takeaways": [
+        "Phase Drift is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Weekly drift report to the teacher."
+      ],
+      "what_it_is": "Phase Drift is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "ML / AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Weekly drift report to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Registry",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Registry** *(Level: Advanced)*\n\nMLflow model registry. Complete these tasks: Staging → Production; Rollback. Deliverable for this phase: Registry screenshot.\n\nCode Reference:\n```text\n- [ ] Staging → Production\n- [ ] Rollback\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Registry is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nML / AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Registry screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase Registry is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Registry screenshot to the teacher."
+      ],
+      "what_it_is": "Phase Registry is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "ML / AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Registry screenshot to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Retrain",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Retrain** *(Level: Advanced)*\n\nAutomated trigger. Complete these tasks: Airflow DAG; Champion/challenger. Deliverable for this phase: Retrain run log.\n\nCode Reference:\n```text\n- [ ] Airflow DAG\n- [ ] Champion/challenger\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Retrain is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nML / AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Retrain run log to the teacher.",
+      "key_takeaways": [
+        "Phase Retrain is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Retrain run log to the teacher."
+      ],
+      "what_it_is": "Phase Retrain is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "ML / AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Retrain run log to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Batch pipeline; Drift reports; Registry setup; Ops runbook. Skills demonstrated: MLOps, Drift detection, Automation. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Batch pipeline\nDeliverable: Drift reports\nDeliverable: Registry setup\nDeliverable: Ops runbook\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Batch pipeline and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Batch pipeline and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Batch pipeline and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

@@ -14,26 +14,41 @@ NAVY = "#0A1020"
 CREAM = "#FAF3E0"
 
 FAMILY_STYLE: dict[str, tuple[str, str, str]] = {
-    "01-python-beginners-core": ("#2563EB", "#EFF6FF", "Python Core"),
-    "02-python-crash-courses": ("#EA580C", "#FFF7ED", "Crash Course"),
-    "03-combo-crash-paths": ("#0D9488", "#F0FDFA", "Combo Path"),
-    "04-data-analysis": ("#16A34A", "#F0FDF4", "Data Analysis"),
-    "05-data-science": ("#4F46E5", "#EEF2FF", "Data Science"),
-    "06-machine-learning": ("#9333EA", "#FAF5FF", "Machine Learning"),
-    "07-deep-learning-and-ai": ("#DB2777", "#FDF2F8", "Deep Learning"),
-    "08-multi-language-programming": ("#D97706", "#FFFBEB", "Multi-Language"),
-    "09-kids-and-makers": ("#65A30D", "#F7FEE7", "Kids & Makers"),
-    "10-comprehensive-and-projects": ("#475569", "#F8FAFC", "Projects"),
+    "java-backend": ("#EA580C", "#FFF7ED", "Java Backend"),
+    "python-dev": ("#2563EB", "#EFF6FF", "Python Dev"),
+    "frontend-react": ("#06B6D4", "#ECFEFF", "Frontend React"),
+    "fullstack-web": ("#4F46E5", "#EEF2FF", "Full Stack"),
+    "qa-testing": ("#16A34A", "#F0FDF4", "QA & Testing"),
+    "data-analyst": ("#0D9488", "#F0FDFA", "Data Analyst"),
+    "powerbi-analyst": ("#F59E0B", "#FFFBEB", "Power BI"),
+    "data-engineer": ("#0891B2", "#ECFEFF", "Data Engineer"),
+    "ml-ai": ("#9333EA", "#FAF5FF", "ML / AI"),
+    "gen-ai": ("#DB2777", "#FDF2F8", "Gen AI"),
+    "agentic-ai": ("#7C3AED", "#F5F3FF", "Agentic AI"),
+    "it-support": ("#64748B", "#F8FAFC", "IT Support"),
+    "servicenow": ("#059669", "#ECFDF5", "ServiceNow"),
+    "business-analyst": ("#CA8A04", "#FEFCE8", "Business Analyst"),
+    "cyber-security": ("#DC2626", "#FEF2F2", "Cyber Security"),
+    "salesforce-crm": ("#0284C7", "#F0F9FF", "Salesforce CRM"),
+    "dynamics-crm": ("#1D4ED8", "#EFF6FF", "Dynamics CRM"),
+    "power-platform": ("#7E22CE", "#FAF5FF", "Power Platform"),
+}
+
+REPORT_TYPE_LABEL = {
+    "role_career_path": "Career path",
+    "role_book_study": "Book study",
+    "role_project": "Project",
 }
 
 
 def clean_title(title: str) -> str:
-    t = re.sub(r"^Study Report:\s*", "", title, flags=re.I).strip()
+    t = re.sub(r"^(Study|Project) Report:\s*", "", title, flags=re.I).strip()
     return t[:100]
 
 
-def svg_cover(title: str, family_id: str, level: str, author: str) -> str:
+def svg_cover(title: str, family_id: str, level: str, author: str, report_type: str = "") -> str:
     accent, bg, family_label = FAMILY_STYLE.get(family_id, ("#2563EB", CREAM, "Study Report"))
+    type_label = REPORT_TYPE_LABEL.get(report_type, "Study report")
     lines = textwrap.wrap(clean_title(title), width=22)[:6]
     if not lines:
         lines = ["Study Report"]
@@ -55,7 +70,7 @@ def svg_cover(title: str, family_id: str, level: str, author: str) -> str:
   <text x="20" y="{y + 20}" font-family="Arial, sans-serif" font-size="11" font-weight="600" fill="{accent}">{xml.escape(level)}</text>
   <line x1="20" y1="380" x2="300" y2="380" stroke="{NAVY}" stroke-opacity="0.12" stroke-width="1"/>
   <text x="20" y="404" font-family="Arial, sans-serif" font-size="10" fill="#64748B">{xml.escape(author)}</text>
-  <text x="20" y="422" font-family="Arial, sans-serif" font-size="9" fill="#94A3B8">Study report</text>
+  <text x="20" y="422" font-family="Arial, sans-serif" font-size="9" fill="#94A3B8">{xml.escape(type_label)}</text>
 </svg>"""
 
 
@@ -70,6 +85,7 @@ def main() -> None:
             report.get("family_id", ""),
             report.get("level", "Mixed"),
             report.get("author", "Gagan Pasupuleti"),
+            report.get("report_type", ""),
         )
         out.write_text(svg, encoding="utf-8")
         count += 1

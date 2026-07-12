@@ -1,0 +1,611 @@
+{
+  "id": "study-report-ml-ai-engineer-career-path",
+  "title": "Study Report: ML / AI Engineer — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "ml-ai",
+  "family_name": "ML / AI Engineer",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "This report covers the ML/AI Engineer path with scikit-learn, feature engineering, model evaluation, MLflow, and deployment patterns (2024-2026). Includes MLOps basics, fairness checks, monitoring, and bridges to deep learning — aligned with CodeQuest machine learning book reports.",
+  "skill_stack": {
+    "beginner": [
+      "scikit-learn Pipeline API",
+      "Train/validation/test splits",
+      "Classification and regression metrics",
+      "pandas feature prep",
+      "Cross-validation basics",
+      "Jupyter reproducible notebooks",
+      "Model persistence (joblib)"
+    ],
+    "intermediate": [
+      "Feature engineering patterns",
+      "Hyperparameter tuning (Optuna)",
+      "MLflow tracking and registry",
+      "FastAPI model serving",
+      "Class imbalance handling",
+      "SHAP explainability basics",
+      "CI for training pipelines",
+      "ONNX export for inference"
+    ],
+    "advanced": [
+      "Production model monitoring",
+      "Fairness and bias mitigation",
+      "Ensemble and stacking",
+      "Feature stores (Feast)",
+      "GPU training basics (PyTorch)",
+      "A/B testing deployed models",
+      "Model cards and governance",
+      "End-to-end ML platform design"
+    ]
+  },
+  "sources": [
+    "https://scikit-learn.org/stable/",
+    "https://mlflow.org/docs/latest/",
+    "https://docs.pytorch.org/",
+    "https://www.tensorflow.org/guide",
+    "https://docs.evidentlyai.com/",
+    "https://fairlearn.org/main/user_guide.html"
+  ],
+  "recommended_books": [
+    {
+      "title": "Introduction to Machine Learning with Python",
+      "author": "Andreas Müller & Sarah Guido",
+      "level": "Beginner",
+      "focus": "scikit-learn workflow: preprocessing, models, and evaluation.",
+      "url": "https://www.oreilly.com/library/view/introduction-to-machine/9781449369880/",
+      "free_online": false,
+      "codequest_book_report": "Book_Reports/06-machine-learning/study-report-introduction-to-machine-learning-with-python-a-guide-for/report.json"
+    },
+    {
+      "title": "Hands-On Machine Learning",
+      "author": "Aurélien Géron",
+      "level": "Intermediate",
+      "focus": "End-to-end ML with scikit-learn, TensorFlow, and deployment.",
+      "url": "https://www.oreilly.com/library/view/hands-on-machine-learning/9781098125974/",
+      "free_online": false
+    },
+    {
+      "title": "Python Machine Learning",
+      "author": "Sebastian Raschka",
+      "level": "Intermediate",
+      "focus": "Algorithms, feature engineering, and neural network basics.",
+      "url": "https://sebastianraschka.com/books/",
+      "free_online": false,
+      "codequest_book_report": "Book_Reports/06-machine-learning/study-report-python-machine-learning-how-to-learn-machine-learning-wit/report.json"
+    },
+    {
+      "title": "Mastering Deep Learning Fundamentals with Python",
+      "author": "CodeQuest Collection",
+      "level": "Advanced",
+      "focus": "Neural networks, training loops, and deep learning projects.",
+      "url": "",
+      "free_online": false,
+      "codequest_book_report": "Book_Reports/07-deep-learning-and-ai/study-report-mastering-deep-learning-fundamentals-with-python-the-abso/report.json"
+    },
+    {
+      "title": "Designing Machine Learning Systems",
+      "author": "Chip Huyen",
+      "level": "Advanced",
+      "focus": "MLOps, data pipelines, monitoring, and production ML design.",
+      "url": "https://www.oreilly.com/library/view/designing-machine-learning/9781098107963/",
+      "free_online": false
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "House Price Predictor",
+      "level": "Beginner",
+      "duration": "2 weeks",
+      "overview": "End-to-end regression with scikit-learn: EDA notebook, feature engineering, model training, evaluation.",
+      "objectives": [
+        "Exploratory data analysis notebook",
+        "Train/test split with preprocessing pipeline",
+        "Evaluate RMSE and R²",
+        "Save model with joblib"
+      ],
+      "phases": [
+        {
+          "name": "EDA",
+          "description": "Jupyter exploration.",
+          "tasks": [
+            "Missing values",
+            "Correlations"
+          ],
+          "deliverable": "EDA notebook"
+        },
+        {
+          "name": "Features",
+          "description": "Pipeline with ColumnTransformer.",
+          "tasks": [
+            "Scale numerics",
+            "Encode categoricals"
+          ],
+          "deliverable": "Feature pipeline"
+        },
+        {
+          "name": "Train",
+          "description": "RandomForest/LinearRegression.",
+          "tasks": [
+            "Cross-validation",
+            "Hyperparams"
+          ],
+          "deliverable": "Trained model.pkl"
+        },
+        {
+          "name": "Evaluate",
+          "description": "Metrics and residual plot.",
+          "tasks": [
+            "RMSE",
+            "Feature importance"
+          ],
+          "deliverable": "Evaluation report"
+        }
+      ],
+      "skills_applied": [
+        "scikit-learn",
+        "pandas",
+        "EDA"
+      ],
+      "tools": [
+        "Python",
+        "scikit-learn",
+        "Jupyter",
+        "matplotlib"
+      ],
+      "deliverables": [
+        "Jupyter notebook",
+        "model.pkl",
+        "Evaluation report"
+      ]
+    },
+    {
+      "title": "Customer Churn Classifier with MLflow",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "Classification pipeline logged in MLflow, compared experiments, deployed as FastAPI endpoint.",
+      "objectives": [
+        "Feature engineering for churn",
+        "Train 3 models and compare in MLflow",
+        "Select best by F1/recall",
+        "Deploy as REST API"
+      ],
+      "phases": [
+        {
+          "name": "Data",
+          "description": "Feature engineering.",
+          "tasks": [
+            "RFM features",
+            "Train/test split"
+          ],
+          "deliverable": "Feature matrix"
+        },
+        {
+          "name": "Experiments",
+          "description": "MLflow tracking.",
+          "tasks": [
+            "3 algorithms",
+            "Parameter logging"
+          ],
+          "deliverable": "MLflow UI screenshot"
+        },
+        {
+          "name": "Select",
+          "description": "Best model by recall.",
+          "tasks": [
+            "Confusion matrix",
+            "SHAP summary"
+          ],
+          "deliverable": "Model comparison report"
+        },
+        {
+          "name": "Serve",
+          "description": "FastAPI endpoint.",
+          "tasks": [
+            "/predict",
+            "Input schema"
+          ],
+          "deliverable": "Live prediction API"
+        }
+      ],
+      "skills_applied": [
+        "Classification",
+        "MLflow",
+        "Deployment"
+      ],
+      "tools": [
+        "scikit-learn",
+        "MLflow",
+        "FastAPI",
+        "SHAP"
+      ],
+      "deliverables": [
+        "MLflow experiments",
+        "Best model",
+        "API endpoint",
+        "Model card"
+      ]
+    },
+    {
+      "title": "Production ML Platform with Monitoring",
+      "level": "Advanced",
+      "duration": "5–6 weeks",
+      "overview": "Batch scoring pipeline with drift detection, model registry, and automated retraining trigger.",
+      "objectives": [
+        "Scheduled batch scoring job",
+        "Evidently drift detection report",
+        "Model registry with versioning",
+        "Retrain trigger when drift exceeds threshold"
+      ],
+      "phases": [
+        {
+          "name": "Batch",
+          "description": "Scoring pipeline.",
+          "tasks": [
+            "Feature store read",
+            "Batch predict"
+          ],
+          "deliverable": "Daily scores table"
+        },
+        {
+          "name": "Drift",
+          "description": "Evidently reports.",
+          "tasks": [
+            "Data drift",
+            "Target drift"
+          ],
+          "deliverable": "Weekly drift report"
+        },
+        {
+          "name": "Registry",
+          "description": "MLflow model registry.",
+          "tasks": [
+            "Staging → Production",
+            "Rollback"
+          ],
+          "deliverable": "Registry screenshot"
+        },
+        {
+          "name": "Retrain",
+          "description": "Automated trigger.",
+          "tasks": [
+            "Airflow DAG",
+            "Champion/challenger"
+          ],
+          "deliverable": "Retrain run log"
+        }
+      ],
+      "skills_applied": [
+        "MLOps",
+        "Drift detection",
+        "Automation"
+      ],
+      "tools": [
+        "MLflow",
+        "Evidently",
+        "Airflow",
+        "scikit-learn"
+      ],
+      "deliverables": [
+        "Batch pipeline",
+        "Drift reports",
+        "Registry setup",
+        "Ops runbook"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "ML/AI Engineer Role in 2024-2026",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: ML/AI Engineer Role in 2024-2026** *(Level: Beginner)*\n\nML engineers ship models to production — not just notebook accuracy. You own features, training, evaluation, deployment, and monitoring. LLM tooling augments feature work but classical ML remains core for tabular prediction, ranking, and fraud.\n\nCode Reference:\n```python\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\n\npipe = Pipeline([('scale', StandardScaler()), ('clf', LogisticRegression())])\n```\nWhat it shows: Pipeline chains preprocessing and model — prevents train-serve skew.\n\n### What it actually is\nAn ML engineer builds and operates predictive systems in production.\n\n### When to use it\nWhen rules-based systems fail at scale or personalization is needed.\n\n### Where to use it\nRecommendations, churn, fraud, demand forecast, and ed-tech risk scoring.\n\n### Real use example\nCodeQuest predicts which students need nudges — you own the weekly retrain job.",
+      "key_takeaways": [
+        "An ML engineer builds and operates predictive systems in production.",
+        "When rules-based systems fail at scale or personalization is needed.",
+        "CodeQuest predicts which students need nudges — you own the weekly retrain job."
+      ],
+      "what_it_is": "An ML engineer builds and operates predictive systems in production.",
+      "when_to_use": "When rules-based systems fail at scale or personalization is needed.",
+      "where_to_use": "Recommendations, churn, fraud, demand forecast, and ed-tech risk scoring.",
+      "real_use_example": "CodeQuest predicts which students need nudges — you own the weekly retrain job."
+    },
+    {
+      "number": 2,
+      "title": "scikit-learn Pipelines",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: scikit-learn Pipelines** *(Level: Beginner)*\n\nPipelines bundle preprocessing and estimators. Fit on train only; transform val/test to prevent leakage. ColumnTransformer applies different steps per column type.\n\nCode Reference:\n```python\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.preprocessing import OneHotEncoder\nfrom sklearn.impute import SimpleImputer\n\nnum_pipe = Pipeline([('impute', SimpleImputer()), ('scale', StandardScaler())])\npreprocess = ColumnTransformer([('num', num_pipe, num_cols), ('cat', OneHotEncoder(), cat_cols)])\n```\nWhat it shows: ColumnTransformer keeps numeric and categorical handling explicit.\n\n### What it actually is\nsklearn Pipelines standardize reproducible ML workflows.\n\n### When to use it\nEvery tabular ML project before custom deep learning.\n\n### Where to use it\nMarketing uplift, credit scoring, and maintenance prediction.\n\n### Real use example\nOne Pipeline.pkl deployed to API — training and serving use identical transforms.",
+      "key_takeaways": [
+        "sklearn Pipelines standardize reproducible ML workflows.",
+        "Every tabular ML project before custom deep learning.",
+        "One Pipeline."
+      ],
+      "what_it_is": "sklearn Pipelines standardize reproducible ML workflows.",
+      "when_to_use": "Every tabular ML project before custom deep learning.",
+      "where_to_use": "Marketing uplift, credit scoring, and maintenance prediction.",
+      "real_use_example": "One Pipeline.pkl deployed to API — training and serving use identical transforms."
+    },
+    {
+      "number": 3,
+      "title": "Train/Validation/Test Splits",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Train/Validation/Test Splits** *(Level: Beginner)*\n\nHoldout test set is touched once. Validation tunes hyperparameters. Use stratified splits for imbalanced classes; TimeSeriesSplit for temporal data.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)\n```\nWhat it shows: stratify preserves class ratio in both splits.\n\n### What it actually is\nProper splits estimate real-world generalization.\n\n### When to use it\nBefore any metric comparison or model selection.\n\n### Where to use it\nAll supervised learning projects.\n\n### Real use example\nTuning on test by mistake inflated AUC — validation split catches overfitting.",
+      "key_takeaways": [
+        "Proper splits estimate real-world generalization.",
+        "Before any metric comparison or model selection.",
+        "Tuning on test by mistake inflated AUC — validation split catches overfitting."
+      ],
+      "what_it_is": "Proper splits estimate real-world generalization.",
+      "when_to_use": "Before any metric comparison or model selection.",
+      "where_to_use": "All supervised learning projects.",
+      "real_use_example": "Tuning on test by mistake inflated AUC — validation split catches overfitting."
+    },
+    {
+      "number": 4,
+      "title": "Classification and Regression Metrics",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Classification and Regression Metrics** *(Level: Beginner)*\n\nClassification: accuracy, precision, recall, F1, ROC-AUC. Regression: MAE, RMSE, R². Pick metrics aligned to business cost — fraud favors recall; spam favors precision.\n\nCode Reference:\n```python\nfrom sklearn.metrics import classification_report, roc_auc_score\nprint(classification_report(y_test, y_pred))\nprint('AUC:', roc_auc_score(y_test, y_proba))\n```\nWhat it shows: classification_report shows per-class precision/recall.\n\n### What it actually is\nMetrics translate model output into business-understandable performance.\n\n### When to use it\nModel selection, stakeholder reports, and production thresholds.\n\n### Where to use it\nHealthcare, finance, and growth experiments.\n\n### Real use example\nLowering threshold increases recall on churn — support cost rises; PM picks operating point.",
+      "key_takeaways": [
+        "Metrics translate model output into business-understandable performance.",
+        "Model selection, stakeholder reports, and production thresholds.",
+        "Lowering threshold increases recall on churn — support cost rises; PM picks operating point."
+      ],
+      "what_it_is": "Metrics translate model output into business-understandable performance.",
+      "when_to_use": "Model selection, stakeholder reports, and production thresholds.",
+      "where_to_use": "Healthcare, finance, and growth experiments.",
+      "real_use_example": "Lowering threshold increases recall on churn — support cost rises; PM picks operating point."
+    },
+    {
+      "number": 5,
+      "title": "Feature Engineering with pandas",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Feature Engineering with pandas** *(Level: Beginner)*\n\nCreate domain features: ratios, rolling windows, encodings. Watch leakage — future information must never enter training features. Document feature definitions for reproducibility.\n\nCode Reference:\n```python\ndf['days_since_login'] = (pd.Timestamp.today() - df['last_login']).dt.days\ndf['orders_per_month'] = df['order_count'] / df['tenure_months'].clip(lower=1)\n```\nWhat it shows: clip avoids divide-by-zero; date math creates behavior signals.\n\n### What it actually is\nFeature engineering turns raw logs into model-ready signals.\n\n### When to use it\nWhen raw columns lack predictive signal.\n\n### Where to use it\nChurn, LTV, and recommendation systems.\n\n### Real use example\nRolling 7-day study minutes feature lifts AUC 0.03 on CodeQuest completion model.",
+      "key_takeaways": [
+        "Feature engineering turns raw logs into model-ready signals.",
+        "When raw columns lack predictive signal.",
+        "Rolling 7-day study minutes feature lifts AUC 0."
+      ],
+      "what_it_is": "Feature engineering turns raw logs into model-ready signals.",
+      "when_to_use": "When raw columns lack predictive signal.",
+      "where_to_use": "Churn, LTV, and recommendation systems.",
+      "real_use_example": "Rolling 7-day study minutes feature lifts AUC 0.03 on CodeQuest completion model."
+    },
+    {
+      "number": 6,
+      "title": "Cross-Validation Basics",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Cross-Validation Basics** *(Level: Beginner)*\n\nk-fold CV averages performance across splits — more stable than single holdout. Use cross_val_score or GridSearchCV. For time series, never shuffle — respect order.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import cross_val_score\nscores = cross_val_score(pipe, X, y, cv=5, scoring='f1')\nprint(scores.mean(), scores.std())\n```\nWhat it shows: Mean ± std shows stability — high std means unreliable model.\n\n### What it actually is\nCross-validation estimates performance with limited data.\n\n### When to use it\nSmall datasets and hyperparameter search.\n\n### Where to use it\nMedical studies, niche B2B datasets.\n\n### Real use example\nCV std 0.15 flags unstable model — collect more data before deploy.",
+      "key_takeaways": [
+        "Cross-validation estimates performance with limited data.",
+        "Small datasets and hyperparameter search.",
+        "CV std 0."
+      ],
+      "what_it_is": "Cross-validation estimates performance with limited data.",
+      "when_to_use": "Small datasets and hyperparameter search.",
+      "where_to_use": "Medical studies, niche B2B datasets.",
+      "real_use_example": "CV std 0.15 flags unstable model — collect more data before deploy."
+    },
+    {
+      "number": 7,
+      "title": "Hyperparameter Tuning with Optuna",
+      "topic": "ml_intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Hyperparameter Tuning with Optuna** *(Level: Intermediate)*\n\nGrid search explodes combinatorially; Optuna uses TPE sampler for efficient search. Log trials to MLflow; prune unpromising runs early.\n\nCode Reference:\n```python\nimport optuna\n\ndef objective(trial):\n    c = trial.suggest_float('C', 1e-3, 10, log=True)\n    clf = LogisticRegression(C=c)\n    return cross_val_score(clf, X, y, cv=3, scoring='roc_auc').mean()\n\nstudy = optuna.create_study(direction='maximize')\nstudy.optimize(objective, n_trials=50)\n```\nWhat it shows: suggest_float with log scale explores regularization efficiently.\n\n### What it actually is\nAutomated tuning finds better models with less manual guessing.\n\n### When to use it\nAfter baseline model plateaus.\n\n### Where to use it\nCompetitions, production retrains, and research spikes.\n\n### Real use example\nOptuna finds C=0.3 beats default — AUC +0.02 in 50 trials.",
+      "key_takeaways": [
+        "Automated tuning finds better models with less manual guessing.",
+        "After baseline model plateaus.",
+        "Optuna finds C=0."
+      ],
+      "what_it_is": "Automated tuning finds better models with less manual guessing.",
+      "when_to_use": "After baseline model plateaus.",
+      "where_to_use": "Competitions, production retrains, and research spikes.",
+      "real_use_example": "Optuna finds C=0.3 beats default — AUC +0.02 in 50 trials."
+    },
+    {
+      "number": 8,
+      "title": "MLflow Tracking and Model Registry",
+      "topic": "ml_intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: MLflow Tracking and Model Registry** *(Level: Intermediate)*\n\nmlflow.start_run logs parameters, metrics, artifacts. Registry versions models with Staging/Production stages and approval gates.\n\nCode Reference:\n```python\nimport mlflow\nwith mlflow.start_run():\n    mlflow.log_param('n_estimators', 200)\n    mlflow.log_metric('auc', 0.91)\n    mlflow.sklearn.log_model(pipe, 'model')\n```\nWhat it shows: log_model packages conda env and sklearn flavor for reproducible deploy.\n\n### What it actually is\nMLflow is the experiment ledger and model lifecycle hub.\n\n### When to use it\nAny team running more than ad-hoc notebook training.\n\n### Where to use it\nMLOps platforms on AWS SageMaker, Databricks, or self-hosted.\n\n### Real use example\nChampion model promoted to Production after CI integration tests pass.",
+      "key_takeaways": [
+        "MLflow is the experiment ledger and model lifecycle hub.",
+        "Any team running more than ad-hoc notebook training.",
+        "Champion model promoted to Production after CI integration tests pass."
+      ],
+      "what_it_is": "MLflow is the experiment ledger and model lifecycle hub.",
+      "when_to_use": "Any team running more than ad-hoc notebook training.",
+      "where_to_use": "MLOps platforms on AWS SageMaker, Databricks, or self-hosted.",
+      "real_use_example": "Champion model promoted to Production after CI integration tests pass."
+    },
+    {
+      "number": 9,
+      "title": "Imbalanced Classes and Threshold Tuning",
+      "topic": "ml_intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Imbalanced Classes and Threshold Tuning** *(Level: Intermediate)*\n\nUse class_weight, SMOTE cautiously, or adjust decision threshold. Optimize F-beta or cost-sensitive metric — not default 0.5 threshold.\n\nCode Reference:\n```python\nfrom sklearn.metrics import precision_recall_curve\nprec, rec, thresholds = precision_recall_curve(y_test, y_scores)\n# pick threshold where recall >= 0.85\n```\nWhat it shows: PR curve reveals threshold tradeoffs ROC hides on imbalance.\n\n### What it actually is\nImbalance techniques align models with rare-event business goals.\n\n### When to use it\nWhen positive class is rare and default 0.5 threshold misses business targets.\n\n### Where to use it\nFraud, disease screening, and critical churn saves.\n\n### Real use example\nPayment fraud team sets threshold for 90% recall accepting 40% precision.",
+      "key_takeaways": [
+        "Imbalance techniques align models with rare-event business goals.",
+        "When positive class is rare and default 0.",
+        "Payment fraud team sets threshold for 90% recall accepting 40% precision."
+      ],
+      "what_it_is": "Imbalance techniques align models with rare-event business goals.",
+      "when_to_use": "When positive class is rare and default 0.5 threshold misses business targets.",
+      "where_to_use": "Fraud, disease screening, and critical churn saves.",
+      "real_use_example": "Payment fraud team sets threshold for 90% recall accepting 40% precision."
+    },
+    {
+      "number": 10,
+      "title": "Explainability with SHAP",
+      "topic": "ml_intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Explainability with SHAP** *(Level: Intermediate)*\n\nSHAP values attribute predictions to features. Use TreeExplainer for tree models; summary plots for global importance; force plots for single predictions.\n\nCode Reference:\n```python\nimport shap\nexplainer = shap.TreeExplainer(rf_model)\nshap_values = explainer.shap_values(X_test)\nshap.summary_plot(shap_values, X_test)\n```\nWhat it shows: Summary plot ranks features driving predictions globally.\n\n### What it actually is\nExplainability builds trust and debugs unexpected model behavior.\n\n### When to use it\nRegulated domains and customer-facing decisions.\n\n### Where to use it\nCredit denial adverse action notices; teacher-facing risk explanations.\n\n### Real use example\nSHAP shows 'days inactive' drove churn flag — validates domain sense.",
+      "key_takeaways": [
+        "Explainability builds trust and debugs unexpected model behavior.",
+        "Regulated domains and customer-facing decisions.",
+        "SHAP shows 'days inactive' drove churn flag — validates domain sense."
+      ],
+      "what_it_is": "Explainability builds trust and debugs unexpected model behavior.",
+      "when_to_use": "Regulated domains and customer-facing decisions.",
+      "where_to_use": "Credit denial adverse action notices; teacher-facing risk explanations.",
+      "real_use_example": "SHAP shows 'days inactive' drove churn flag — validates domain sense."
+    },
+    {
+      "number": 11,
+      "title": "Deploy Models with FastAPI",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Deploy Models with FastAPI** *(Level: Intermediate)*\n\nLoad model at startup; validate inputs with Pydantic; return probabilities and version metadata. Containerize with Docker; health endpoint for k8s probes.\n\nCode Reference:\n```python\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\n\napp = FastAPI()\nclass Features(BaseModel):\n    tenure_months: float\n    sessions_7d: int\n\n@app.post('/predict')\ndef predict(f: Features):\n    return {'churn_prob': float(model.predict_proba([[f.tenure_months, f.sessions_7d]])[0][1])}\n```\nWhat it shows: Pydantic rejects bad inputs before they hit numpy/sklearn.\n\n### What it actually is\nFastAPI serves ML models as typed HTTP microservices.\n\n### When to use it\nReal-time inference under 100ms for tabular models.\n\n### Where to use it\nSaaS APIs, internal microservices, and edge containers.\n\n### Real use example\nMobile app calls /predict for personalized study plan in 45ms p95.",
+      "key_takeaways": [
+        "FastAPI serves ML models as typed HTTP microservices.",
+        "Real-time inference under 100ms for tabular models.",
+        "Mobile app calls /predict for personalized study plan in 45ms p95."
+      ],
+      "what_it_is": "FastAPI serves ML models as typed HTTP microservices.",
+      "when_to_use": "Real-time inference under 100ms for tabular models.",
+      "where_to_use": "SaaS APIs, internal microservices, and edge containers.",
+      "real_use_example": "Mobile app calls /predict for personalized study plan in 45ms p95."
+    },
+    {
+      "number": 12,
+      "title": "Deep Learning Intro with PyTorch",
+      "topic": "ml_intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Deep Learning Intro with PyTorch** *(Level: Intermediate)*\n\nNeural nets learn representations from raw data — images, text, audio. PyTorch 2.x uses torch.compile for speed. Start with transfer learning before training from scratch.\n\nCode Reference:\n```python\nimport torch\nimport torch.nn as nn\n\nclass TinyMLP(nn.Module):\n    def __init__(self, n_in):\n        super().__init__()\n        self.net = nn.Sequential(nn.Linear(n_in, 64), nn.ReLU(), nn.Linear(64, 1))\n    def forward(self, x):\n        return self.net(x)\n```\nWhat it shows: TinyMLP shows Module pattern — foundation for larger architectures.\n\n### What it actually is\nDeep learning handles unstructured data classical ML struggles with.\n\n### When to use it\nImage classification, NLP, speech — when features are hard to hand-craft.\n\n### Where to use it\nComputer vision QA, document OCR, and embedding models.\n\n### Real use example\nFine-tune ResNet on defect photos — beats handcrafted features by 12% F1.",
+      "key_takeaways": [
+        "Deep learning handles unstructured data classical ML struggles with.",
+        "Image classification, NLP, speech — when features are hard to hand-craft.",
+        "Fine-tune ResNet on defect photos — beats handcrafted features by 12% F1."
+      ],
+      "what_it_is": "Deep learning handles unstructured data classical ML struggles with.",
+      "when_to_use": "Image classification, NLP, speech — when features are hard to hand-craft.",
+      "where_to_use": "Computer vision QA, document OCR, and embedding models.",
+      "real_use_example": "Fine-tune ResNet on defect photos — beats handcrafted features by 12% F1."
+    },
+    {
+      "number": 13,
+      "title": "MLOps CI/CD for Training",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: MLOps CI/CD for Training** *(Level: Intermediate)*\n\nGitHub Actions runs pytest, dvc pull data, train on schedule, push MLflow model. Pin seeds and data hashes for reproducibility.\n\nCode Reference:\n```yaml\n# .github/workflows/train.yml\n# on: schedule + workflow_dispatch\n# steps: checkout, pip install, pytest, python train.py\n```\nWhat it shows: Scheduled retrain keeps models fresh on drifting data.\n\n### What it actually is\nMLOps CI/CD automates the path from commit to deployable model.\n\n### When to use it\nProduction models needing weekly/monthly retrains.\n\n### Where to use it\nGrowth scoring, fraud, and demand forecast.\n\n### Real use example\nFailed data validation step blocks train — bad features never reach Production registry.",
+      "key_takeaways": [
+        "MLOps CI/CD automates the path from commit to deployable model.",
+        "Production models needing weekly/monthly retrains.",
+        "Failed data validation step blocks train — bad features never reach Production registry."
+      ],
+      "what_it_is": "MLOps CI/CD automates the path from commit to deployable model.",
+      "when_to_use": "Production models needing weekly/monthly retrains.",
+      "where_to_use": "Growth scoring, fraud, and demand forecast.",
+      "real_use_example": "Failed data validation step blocks train — bad features never reach Production registry."
+    },
+    {
+      "number": 14,
+      "title": "Production Model Monitoring",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Production Model Monitoring** *(Level: Advanced)*\n\nTrack data drift, prediction drift, and performance decay. Evidently generates HTML reports; alert when PSI > threshold. Shadow deployments compare champion/challenger.\n\nCode Reference:\n```markdown\n# Weekly job: compare production features vs training reference\n# Alert if drift_share > 0.3 on top features\n```\nWhat it shows: Automated drift share triggers human review before silent degradation.\n\n### What it actually is\nMonitoring catches world changes models weren't trained on.\n\n### When to use it\nEvery production model with business impact.\n\n### Where to use it\nCredit, recommendations, and dynamic pricing.\n\n### Real use example\nSession length distribution shifted post-redesign — retrain triggered before AUC collapsed.",
+      "key_takeaways": [
+        "Monitoring catches world changes models weren't trained on.",
+        "Every production model with business impact.",
+        "Session length distribution shifted post-redesign — retrain triggered before AUC collapsed."
+      ],
+      "what_it_is": "Monitoring catches world changes models weren't trained on.",
+      "when_to_use": "Every production model with business impact.",
+      "where_to_use": "Credit, recommendations, and dynamic pricing.",
+      "real_use_example": "Session length distribution shifted post-redesign — retrain triggered before AUC collapsed."
+    },
+    {
+      "number": 15,
+      "title": "Fairness and Bias Mitigation",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Fairness and Bias Mitigation** *(Level: Advanced)*\n\nMeasure metrics across groups (demographic parity, equalized odds). Mitigate with reweighing, threshold optimization, or constrained training. Document limitations.\n\nCode Reference:\n```python\nfrom fairlearn.metrics import MetricFrame\nfrom sklearn.metrics import precision_score\nmf = MetricFrame(precision_score, y_test, y_pred, sensitive_features=groups)\n```\nWhat it shows: MetricFrame breaks precision by group — surfaces disparate impact.\n\n### What it actually is\nFairness practices reduce harm from biased training data.\n\n### When to use it\nWhen models allocate opportunities, credit, or healthcare resources.\n\n### Where to use it\nHiring tools, lending, healthcare triage.\n\n### Real use example\nReweighting training data reduces approval rate gap without huge AUC loss.",
+      "key_takeaways": [
+        "Fairness practices reduce harm from biased training data.",
+        "When models allocate opportunities, credit, or healthcare resources.",
+        "Reweighting training data reduces approval rate gap without huge AUC loss."
+      ],
+      "what_it_is": "Fairness practices reduce harm from biased training data.",
+      "when_to_use": "When models allocate opportunities, credit, or healthcare resources.",
+      "where_to_use": "Hiring tools, lending, healthcare triage.",
+      "real_use_example": "Reweighting training data reduces approval rate gap without huge AUC loss."
+    },
+    {
+      "number": 16,
+      "title": "Ensemble Methods and Stacking",
+      "topic": "ml_intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Ensemble Methods and Stacking** *(Level: Advanced)*\n\nBagging (RandomForest), boosting (XGBoost, LightGBM), stacking combine weak learners. Stacking uses out-of-fold preds as meta-features — powerful but watch overfitting.\n\nCode Reference:\n```python\nfrom sklearn.ensemble import StackingClassifier\nfrom sklearn.linear_model import LogisticRegression\nfrom xgboost import XGBClassifier\n\nstack = StackingClassifier(estimators=[('xgb', XGBClassifier()), ('rf', RandomForestClassifier())], final_estimator=LogisticRegression())\n```\nWhat it shows: Stacking learns how to weight base model votes.\n\n### What it actually is\nEnsembles squeeze extra performance from diverse models.\n\n### When to use it\nWhen single models plateau and competition or revenue depends on marginal gains.\n\n### Where to use it\nInsurance loss, click-through rate, and fraud stacks.\n\n### Real use example\nStacked model beats single XGBoost by 0.015 AUC on private leaderboard.",
+      "key_takeaways": [
+        "Ensembles squeeze extra performance from diverse models.",
+        "When single models plateau and competition or revenue depends on marginal gains.",
+        "Stacked model beats single XGBoost by 0."
+      ],
+      "what_it_is": "Ensembles squeeze extra performance from diverse models.",
+      "when_to_use": "When single models plateau and competition or revenue depends on marginal gains.",
+      "where_to_use": "Insurance loss, click-through rate, and fraud stacks.",
+      "real_use_example": "Stacked model beats single XGBoost by 0.015 AUC on private leaderboard."
+    },
+    {
+      "number": 17,
+      "title": "Model Cards and Governance",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Model Cards and Governance** *(Level: Advanced)*\n\nModel cards document intent, data, metrics, limitations, and ethical considerations. Required for regulated AI Act compliance trajectories in EU (2025-2026).\n\nCode Reference:\n```markdown\n## Model Card: Churn v3\n- Intended use: retention campaigns only\n- Training data: 2023-2024 subscribers (EU+US)\n- Limitation: cold-start users <7 days\n```\nWhat it shows: Explicit limitations prevent misuse by downstream teams.\n\n### What it actually is\nGovernance artifacts make ML auditable to legal and compliance.\n\n### When to use it\nWhen models affect regulated decisions or external audits are required.\n\n### Where to use it\nEnterprise ML platforms and external audits.\n\n### Real use example\nBank model card signed by risk officer before production promotion.",
+      "key_takeaways": [
+        "Governance artifacts make ML auditable to legal and compliance.",
+        "When models affect regulated decisions or external audits are required.",
+        "Bank model card signed by risk officer before production promotion."
+      ],
+      "what_it_is": "Governance artifacts make ML auditable to legal and compliance.",
+      "when_to_use": "When models affect regulated decisions or external audits are required.",
+      "where_to_use": "Enterprise ML platforms and external audits.",
+      "real_use_example": "Bank model card signed by risk officer before production promotion."
+    },
+    {
+      "number": 18,
+      "title": "End-to-End ML Platform Design",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: End-to-End ML Platform Design** *(Level: Advanced)*\n\nPlatform provides feature store, training jobs, registry, serving, and monitoring APIs. Self-serve templates let product teams ship models safely with guardrails.\n\nCode Reference:\n```markdown\n# Platform components\n# Feature store | Training | Registry | Serving | Monitoring | Cost dashboard\n```\nWhat it shows: Template projects encode security, logging, and approval by default.\n\n### What it actually is\nML platforms scale ML engineering beyond hero notebooks.\n\n### When to use it\nOrganizations with 10+ production models.\n\n### Where to use it\nUber Michelangelo-style internal platforms; mid-size Feast + MLflow stacks.\n\n### Real use example\nProduct team deploys ranking model via CLI template — on-call rotation shared with platform SRE.",
+      "key_takeaways": [
+        "ML platforms scale ML engineering beyond hero notebooks.",
+        "Organizations with 10+ production models.",
+        "Product team deploys ranking model via CLI template — on-call rotation shared with platform SRE."
+      ],
+      "what_it_is": "ML platforms scale ML engineering beyond hero notebooks.",
+      "when_to_use": "Organizations with 10+ production models.",
+      "where_to_use": "Uber Michelangelo-style internal platforms; mid-size Feast + MLflow stacks.",
+      "real_use_example": "Product team deploys ranking model via CLI template — on-call rotation shared with platform SRE."
+    }
+  ],
+  "chapter_count": 18
+}

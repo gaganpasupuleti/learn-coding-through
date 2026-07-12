@@ -1,0 +1,135 @@
+{
+  "id": "project-personal-portfolio-spa",
+  "title": "Project Report: Personal Portfolio SPA — Frontend React Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "frontend-react",
+  "family_name": "Frontend React Developer",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Personal Portfolio SPA",
+  "project_index": 1,
+  "duration": "2 weeks",
+  "summary": "React + Vite portfolio with responsive layout, React Router pages, and contact form.",
+  "objectives": [
+    "3 routed pages (Home, Projects, Contact)",
+    "Responsive CSS/Tailwind layout",
+    "Deploy to Vercel/Netlify"
+  ],
+  "tools": [
+    "React 19",
+    "Vite",
+    "React Router",
+    "Tailwind"
+  ],
+  "deliverables": [
+    "GitHub repo",
+    "Live site URL",
+    "Lighthouse report"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Personal Portfolio SPA** is a beginner-level end-to-end project for Frontend React Developer. Duration: 2 weeks. React + Vite portfolio with responsive layout, React Router pages, and contact form. Tools: React 19, Vite, React Router, Tailwind.\n\nCode Reference:\n```text\nObjective: 3 routed pages (Home, Projects, Contact)\nObjective: Responsive CSS/Tailwind layout\nObjective: Deploy to Vercel/Netlify\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nFrontend React Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Frontend React Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Frontend React Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Frontend React Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Frontend React Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Setup",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Setup** *(Level: Beginner)*\n\nVite + React + Router. Complete these tasks: Project structure; Navbar. Deliverable for this phase: Running dev server.\n\nCode Reference:\n```text\n- [ ] Project structure\n- [ ] Navbar\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Setup is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Running dev server to the teacher.",
+      "key_takeaways": [
+        "Phase Setup is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Running dev server to the teacher."
+      ],
+      "what_it_is": "Phase Setup is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Running dev server to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Pages",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Pages** *(Level: Beginner)*\n\nBuild 3 page components. Complete these tasks: Project cards; About section. Deliverable for this phase: All routes working.\n\nCode Reference:\n```text\n- [ ] Project cards\n- [ ] About section\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Pages is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the All routes working to the teacher.",
+      "key_takeaways": [
+        "Phase Pages is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the All routes working to the teacher."
+      ],
+      "what_it_is": "Phase Pages is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the All routes working to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Style",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Style** *(Level: Beginner)*\n\nMobile-first responsive. Complete these tasks: Flexbox/Grid; Dark mode toggle. Deliverable for this phase: Lighthouse 90+ score.\n\nCode Reference:\n```text\n- [ ] Flexbox/Grid\n- [ ] Dark mode toggle\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Style is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Lighthouse 90+ score to the teacher.",
+      "key_takeaways": [
+        "Phase Style is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Lighthouse 90+ score to the teacher."
+      ],
+      "what_it_is": "Phase Style is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Lighthouse 90+ score to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Deploy",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Deploy** *(Level: Beginner)*\n\nCI deploy to Vercel. Complete these tasks: GitHub Actions; Custom domain. Deliverable for this phase: Live URL.\n\nCode Reference:\n```text\n- [ ] GitHub Actions\n- [ ] Custom domain\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Deploy is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Live URL to the teacher.",
+      "key_takeaways": [
+        "Phase Deploy is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Live URL to the teacher."
+      ],
+      "what_it_is": "Phase Deploy is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Live URL to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: GitHub repo; Live site URL; Lighthouse report. Skills demonstrated: React, Routing, CSS. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: GitHub repo\nDeliverable: Live site URL\nDeliverable: Lighthouse report\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits GitHub repo and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits GitHub repo and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits GitHub repo and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

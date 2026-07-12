@@ -1,0 +1,139 @@
+{
+  "id": "book-istqb-foundation-level-syllabus",
+  "title": "Study Report: ISTQB Foundation Level Syllabus — QA & Test Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "qa-testing",
+  "family_name": "QA & Test Engineer",
+  "level": "Beginner",
+  "report_type": "role_book_study",
+  "book_title": "ISTQB Foundation Level Syllabus",
+  "book_author": "ISTQB",
+  "book_index": 5,
+  "summary": "Study report for *ISTQB Foundation Level Syllabus* by ISTQB (Beginner level) mapped to the QA & Test Engineer role. Industry-standard testing terminology and fundamentals (free PDF).",
+  "sources": [
+    "https://www.istqb.org/certifications/certified-tester-foundation-level"
+  ],
+  "source_file": "Reference: ISTQB Foundation Level Syllabus — ISTQB",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About ISTQB Foundation Level Syllabus",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-intro",
+      "content": "**Chapter focus: About ISTQB Foundation Level Syllabus** *(Level: Beginner)*\n\nThis study report summarizes *ISTQB Foundation Level Syllabus* by ISTQB for the QA & Test Engineer role. The resource is rated Beginner level. Industry-standard testing terminology and fundamentals (free PDF). Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# ISTQB Foundation Level Syllabus\n# Author: ISTQB\n# Role: QA & Test Engineer\n# Level: Beginner\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on ISTQB Foundation Level Syllabus.\n\n### When to use it\nWhen learning QA & Test Engineer skills at Beginner level.\n\n### Where to use it\nQA & Test Engineer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on ISTQB Foundation Level Syllabus.",
+        "When learning QA & Test Engineer skills at Beginner level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on ISTQB Foundation Level Syllabus.",
+      "when_to_use": "When learning QA & Test Engineer skills at Beginner level.",
+      "where_to_use": "QA & Test Engineer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Beginner)*\n\nQA & Test Engineer professionals use ideas from ISTQB Foundation Level Syllabus to solve real workplace problems. Industry-standard testing terminology and fundamentals (free PDF). This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: QA & Test Engineer\nBook focus: Industry-standard testing terminology and fundamentals (free PDF).\nRecommended level: Beginner\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nQA & Test Engineer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a beginner skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a beginner skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "QA & Test Engineer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a beginner skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Beginner)*\n\nThe main topics in ISTQB Foundation Level Syllabus include practical concepts described as: Industry-standard testing terminology and fundamentals (free PDF). Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in QA & Test Engineer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: QA Role in Modern Software Delivery",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: QA Role in Modern Software Delivery** *(Level: Beginner)*\n\nQA engineers protect users by finding defects before production and verifying fixes after. Quality is whole-team responsibility; QA leads test strategy and automation advocacy. Shift-left means involving QA during requirements to catch ambiguities early. Your goal is risk reduction informed by business impact, not bug counting alone.\n\nCode Reference:\n```markdown\nBug Report Template:\n- Title: Checkout fails when coupon expired\n- Steps: 1) Add item 2) Apply EXPIRED10 3) Pay\n- Expected: Error message\n- Actual: 500 error\n- Severity: High | Priority: P1\n```\nWhat it shows: Structured bug report gives developers reproduction path without back-and-forth.\n\n### What it actually is\nQA validates software meets requirements and is fit for release.\n\n### When to use it\nEngage from story refinement through release verification.\n\n### Where to use it\nAgile squads, release trains, and regulated industries with audit trails.\n\n### Real use example\nQA blocks release when payment regression found two hours before go-live.",
+      "key_takeaways": [
+        "QA validates software meets requirements and is fit for release.",
+        "Engage from story refinement through release verification.",
+        "QA blocks release when payment regression found two hours before go-live."
+      ],
+      "what_it_is": "QA validates software meets requirements and is fit for release.",
+      "when_to_use": "Engage from story refinement through release verification.",
+      "where_to_use": "Agile squads, release trains, and regulated industries with audit trails.",
+      "real_use_example": "QA blocks release when payment regression found two hours before go-live."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Test Case Design Techniques",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Test Case Design Techniques** *(Level: Beginner)*\n\nEquivalence partitioning groups inputs expected to behave same—test one per group. Boundary value analysis targets edges: min, max, min-1, max+1. Decision tables map combinations of conditions to expected outcomes systematically. Each test case needs preconditions, steps, expected result, and traceability to requirement ID.\n\nCode Reference:\n```python\n# BVA example: age field accepts 18-65\n# Test: 17 (invalid), 18 (valid), 65 (valid), 66 (invalid)\n```\nWhat it shows: Boundary tests catch off-by-one defects common in validation logic.\n\n### What it actually is\nSystematic test design maximizes defect detection per execution hour.\n\n### When to use it\nApply when specifying tests for forms, pricing rules, and date ranges.\n\n### Where to use it\nBanking limits, e-commerce promotions, and insurance quote calculators.\n\n### Real use example\nCoupon field rejects 17-character code because max length 16 caught at boundary test.",
+      "key_takeaways": [
+        "Systematic test design maximizes defect detection per execution hour.",
+        "Apply when specifying tests for forms, pricing rules, and date ranges.",
+        "Coupon field rejects 17-character code because max length 16 caught at boundary test."
+      ],
+      "what_it_is": "Systematic test design maximizes defect detection per execution hour.",
+      "when_to_use": "Apply when specifying tests for forms, pricing rules, and date ranges.",
+      "where_to_use": "Banking limits, e-commerce promotions, and insurance quote calculators.",
+      "real_use_example": "Coupon field rejects 17-character code because max length 16 caught at boundary test."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Manual Exploratory Testing",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Manual Exploratory Testing** *(Level: Beginner)*\n\nExploratory testing combines learning, test design, and execution simultaneously. Charter defines mission: Explore checkout with invalid payment methods for 90 minutes. Note anomalies, questions, and risks—not just pass/fail binary results. Session-based test management tracks time boxes and findings for reporting.\n\nCode Reference:\n```markdown\nCharter: Explore user profile avatar upload with oversized and wrong-type files.\nFindings: .exe renamed to .png accepted; no size limit; EXIF not stripped.\n```\nWhat it shows: Charter focuses session; findings list concrete issues discovered.\n\n### What it actually is\nExploratory testing uncovers unexpected defects scripted cases miss.\n\n### When to use it\nRun on new features, after major refactors, and before release candidates.\n\n### Where to use it\nEvery sprint demo, beta program, and post-automation gap analysis.\n\n### Real use example\nExplorer finds race condition when double-clicking Pay only during slow 3G throttle.",
+      "key_takeaways": [
+        "Exploratory testing uncovers unexpected defects scripted cases miss.",
+        "Run on new features, after major refactors, and before release candidates.",
+        "Explorer finds race condition when double-clicking Pay only during slow 3G throttle."
+      ],
+      "what_it_is": "Exploratory testing uncovers unexpected defects scripted cases miss.",
+      "when_to_use": "Run on new features, after major refactors, and before release candidates.",
+      "where_to_use": "Every sprint demo, beta program, and post-automation gap analysis.",
+      "real_use_example": "Explorer finds race condition when double-clicking Pay only during slow 3G throttle."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Beginner)*\n\nFinish ISTQB Foundation Level Syllabus with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to QA & Test Engineer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a beginner project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a beginner project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a beginner project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

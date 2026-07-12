@@ -1,0 +1,137 @@
+{
+  "id": "project-cloud-native-banking-api-platform",
+  "title": "Project Report: Cloud-Native Banking API Platform — Java Backend Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "java-backend",
+  "family_name": "Java Backend Developer",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "Cloud-Native Banking API Platform",
+  "project_index": 3,
+  "duration": "6–8 weeks",
+  "summary": "Multi-service platform on Kubernetes with virtual threads, circuit breakers, and distributed tracing.",
+  "objectives": [
+    "Deploy 3 services on Kubernetes with Helm",
+    "Enable Java 21 virtual threads",
+    "Implement Resilience4j circuit breakers",
+    "End-to-end tracing with OpenTelemetry"
+  ],
+  "tools": [
+    "Java 21",
+    "K8s",
+    "Helm",
+    "OpenTelemetry"
+  ],
+  "deliverables": [
+    "Helm charts",
+    "Load test report",
+    "Jaeger traces",
+    "Architecture doc"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**Cloud-Native Banking API Platform** is a advanced-level end-to-end project for Java Backend Developer. Duration: 6–8 weeks. Multi-service platform on Kubernetes with virtual threads, circuit breakers, and distributed tracing. Tools: Java 21, K8s, Helm, OpenTelemetry.\n\nCode Reference:\n```text\nObjective: Deploy 3 services on Kubernetes with Helm\nObjective: Enable Java 21 virtual threads\nObjective: Implement Resilience4j circuit breakers\nObjective: End-to-end tracing with OpenTelemetry\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nJava Backend Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Java Backend Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Java Backend Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Java Backend Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Java Backend Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: K8s Setup",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: K8s Setup** *(Level: Advanced)*\n\nHelm charts and namespaces. Complete these tasks: Dev/staging/prod; Ingress + TLS. Deliverable for this phase: Cluster running.\n\nCode Reference:\n```text\n- [ ] Dev/staging/prod\n- [ ] Ingress + TLS\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase K8s Setup is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Cluster running to the teacher.",
+      "key_takeaways": [
+        "Phase K8s Setup is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Cluster running to the teacher."
+      ],
+      "what_it_is": "Phase K8s Setup is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Cluster running to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Virtual Threads",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Virtual Threads** *(Level: Advanced)*\n\nHigh-concurrency payment endpoints. Complete these tasks: Structured concurrency; Load test. Deliverable for this phase: JMeter report.\n\nCode Reference:\n```text\n- [ ] Structured concurrency\n- [ ] Load test\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Virtual Threads is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the JMeter report to the teacher.",
+      "key_takeaways": [
+        "Phase Virtual Threads is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the JMeter report to the teacher."
+      ],
+      "what_it_is": "Phase Virtual Threads is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the JMeter report to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Resilience",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Resilience** *(Level: Advanced)*\n\nCircuit breakers and retries. Complete these tasks: Resilience4j config; Fallback handlers. Deliverable for this phase: Chaos test video.\n\nCode Reference:\n```text\n- [ ] Resilience4j config\n- [ ] Fallback handlers\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Resilience is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Chaos test video to the teacher.",
+      "key_takeaways": [
+        "Phase Resilience is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Chaos test video to the teacher."
+      ],
+      "what_it_is": "Phase Resilience is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Chaos test video to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Tracing",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Tracing** *(Level: Advanced)*\n\nOpenTelemetry across services. Complete these tasks: Trace IDs in logs; Jaeger UI. Deliverable for this phase: Trace screenshot walkthrough.\n\nCode Reference:\n```text\n- [ ] Trace IDs in logs\n- [ ] Jaeger UI\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Tracing is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Trace screenshot walkthrough to the teacher.",
+      "key_takeaways": [
+        "Phase Tracing is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Trace screenshot walkthrough to the teacher."
+      ],
+      "what_it_is": "Phase Tracing is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Trace screenshot walkthrough to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Helm charts; Load test report; Jaeger traces; Architecture doc. Skills demonstrated: Kubernetes, Observability, Performance, Resilience. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Helm charts\nDeliverable: Load test report\nDeliverable: Jaeger traces\nDeliverable: Architecture doc\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Helm charts and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Helm charts and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Helm charts and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

@@ -22,7 +22,8 @@ import {
   totalChapterCount,
 } from '@/lib/bookReports'
 import { cn } from '@/lib/utils'
-import type { BookReportChapter, CatalogReport, StudyReport } from '@/types/bookReports'
+import type { BookReportChapter, CatalogReport, ReportType, StudyReport } from '@/types/bookReports'
+import { REPORT_TYPE_LABELS } from '@/types/bookReports'
 
 const PROGRESS_KEY = 'cq-study-report-progress'
 
@@ -48,7 +49,7 @@ function renderMarkdown(body: string): string {
 }
 
 function displayTitle(title: string): string {
-  return title.replace(/^Study Report:\s*/i, '').trim()
+  return title.replace(/^(Study|Project) Report:\s*/i, '').trim()
 }
 
 function setUrlParams(reportId: string | null, chapter: number | null) {
@@ -66,6 +67,7 @@ export function StudyMaterialsPage() {
   const [search, setSearch] = useState('')
   const [familyFilter, setFamilyFilter] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
+  const [typeFilter, setTypeFilter] = useState('')
   const [levelFilter, setLevelFilter] = useState('')
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null)
   const [selectedChapter, setSelectedChapter] = useState(1)
@@ -89,6 +91,7 @@ export function StudyMaterialsPage() {
     return allReports.filter((report) => {
       if (familyFilter && report.family_id !== familyFilter) return false
       if (roleFilter && !getReportRoleIds(report).includes(roleFilter)) return false
+      if (typeFilter && report.report_type !== typeFilter) return false
       if (levelFilter && report.level !== levelFilter) return false
       if (!q) return true
       const haystack = [
@@ -102,7 +105,7 @@ export function StudyMaterialsPage() {
         .toLowerCase()
       return haystack.includes(q)
     })
-  }, [allReports, search, familyFilter, roleFilter, levelFilter])
+  }, [allReports, search, familyFilter, roleFilter, typeFilter, levelFilter])
 
   const levels = useMemo(
     () => [...new Set(allReports.map((r) => r.level))].sort(),
@@ -152,26 +155,26 @@ export function StudyMaterialsPage() {
       <header>
         <CQSectionTitle
           icon={<BookOpen className="h-5 w-5" aria-hidden />}
-          sub="Original study reports — read in-app, mapped to your target role."
+          sub="Role-based career paths, book studies, and project guides — mapped to your target job."
         >
           Study Materials
         </CQSectionTitle>
       </header>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <CQStatCard label="Study reports" value={allReports.length} detail="Reading-ready" tone="blue" />
+        <CQStatCard label="Reports" value={allReports.length} detail="Career, books, projects" tone="blue" />
         <CQStatCard label="Chapters" value={totalChapterCount()} detail="Full library" tone="green" />
         <CQStatCard
-          label="Topic families"
+          label="Role families"
           value={BOOK_REPORTS_CATALOG.families.length}
-          detail="Learning paths"
+          detail="Job-aligned paths"
           tone="yellow"
         />
         <CQStatCard label="Job roles" value={JOB_ROLE_CATALOG.length} detail="Filter below" tone="purple" />
       </div>
 
       <CQCard tone="cream" className="space-y-3">
-        <div className="grid gap-3 md:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
           <label className="block space-y-1 md:col-span-4">
             <span className="text-[11px] font-semibold uppercase tracking-wide text-[#111827]/60">Search</span>
             <input
@@ -196,7 +199,19 @@ export function StudyMaterialsPage() {
             ]}
           />
           <FilterSelect
-            label="Topic family"
+            label="Report type"
+            value={typeFilter}
+            onChange={setTypeFilter}
+            options={[
+              { value: '', label: 'All types' },
+              ...(Object.entries(REPORT_TYPE_LABELS) as [ReportType, string][]).map(([value, label]) => ({
+                value,
+                label,
+              })),
+            ]}
+          />
+          <FilterSelect
+            label="Role family"
             value={familyFilter}
             onChange={setFamilyFilter}
             options={[
@@ -311,13 +326,17 @@ function ReportCard({
           </div>
           <div className="flex flex-1 flex-col gap-2 p-4">
             <div className="flex flex-wrap gap-1.5">
-              <Badge>{getFamilyName(report.family_id)}</Badge>
+              {report.report_type ? (
+                <Badge type={report.report_type}>{REPORT_TYPE_LABELS[report.report_type]}</Badge>
+              ) : null}
               <Badge muted>{report.level}</Badge>
             </div>
             <h2 className="font-serif text-base font-semibold leading-snug text-[#0A1020] line-clamp-3">
               {displayTitle(report.title)}
             </h2>
-            <p className="text-xs text-[#708090]">{report.chapter_count} chapters</p>
+            <p className="text-xs text-[#708090]">
+              {getFamilyName(report.family_id)} · {report.chapter_count} chapters
+            </p>
             {roleIds.length > 0 ? (
               <div className="flex flex-wrap gap-1">
                 {roleIds.slice(0, 2).map((roleId) => (
@@ -345,20 +364,28 @@ function Badge({
   children,
   muted,
   role,
+  type,
 }: {
   children: React.ReactNode
   muted?: boolean
   role?: boolean
+  type?: ReportType
 }) {
   return (
     <span
       className={cn(
         'rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
-        role
-          ? 'bg-[#2563EB]/10 text-[#1D4ED8]'
-          : muted
-            ? 'bg-[#0A1020]/6 text-[#4B5563]'
-            : 'bg-[#0A1020] text-[#FAF3E0]',
+        type === 'role_career_path'
+          ? 'bg-[#0A1020] text-[#FAF3E0]'
+          : type === 'role_book_study'
+            ? 'bg-[#2563EB]/12 text-[#1D4ED8]'
+            : type === 'role_project'
+              ? 'bg-[#0D9488]/12 text-[#0F766E]'
+              : role
+                ? 'bg-[#2563EB]/10 text-[#1D4ED8]'
+                : muted
+                  ? 'bg-[#0A1020]/6 text-[#4B5563]'
+                  : 'bg-[#0A1020] text-[#FAF3E0]',
       )}
     >
       {children}
@@ -426,6 +453,9 @@ function StudyReportReader({
           ) : null}
           <div className="space-y-3 p-5 lg:p-6">
             <div className="flex flex-wrap gap-1.5">
+              {report.report_type ? (
+                <Badge type={report.report_type}>{REPORT_TYPE_LABELS[report.report_type]}</Badge>
+              ) : null}
               <Badge>{report.family_name ?? familyLabel(report.family_id)}</Badge>
               <Badge muted>{report.level}</Badge>
             </div>

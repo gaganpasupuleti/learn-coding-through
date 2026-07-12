@@ -1,0 +1,134 @@
+{
+  "id": "project-employee-expense-canvas-app",
+  "title": "Project Report: Employee Expense Canvas App — Microsoft Power Platform Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "power-platform",
+  "family_name": "Microsoft Power Platform Developer",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Employee Expense Canvas App",
+  "project_index": 1,
+  "duration": "2 weeks",
+  "summary": "Canvas app for expense submission with SharePoint list backend, approval gallery, and mobile layout.",
+  "objectives": [
+    "Canvas app with form and gallery",
+    "SharePoint list as data source",
+    "Submit and view expenses",
+    "Mobile-optimized layout"
+  ],
+  "tools": [
+    "Power Apps",
+    "SharePoint"
+  ],
+  "deliverables": [
+    "Published app link",
+    "SharePoint list",
+    "Mobile screenshot"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Employee Expense Canvas App** is a beginner-level end-to-end project for Microsoft Power Platform Developer. Duration: 2 weeks. Canvas app for expense submission with SharePoint list backend, approval gallery, and mobile layout. Tools: Power Apps, SharePoint.\n\nCode Reference:\n```text\nObjective: Canvas app with form and gallery\nObjective: SharePoint list as data source\nObjective: Submit and view expenses\nObjective: Mobile-optimized layout\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nMicrosoft Power Platform Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Microsoft Power Platform Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Microsoft Power Platform Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Microsoft Power Platform Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Microsoft Power Platform Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Data",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Data** *(Level: Beginner)*\n\nSharePoint list. Complete these tasks: Columns; Choices. Deliverable for this phase: SharePoint list created.\n\nCode Reference:\n```text\n- [ ] Columns\n- [ ] Choices\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Data is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the SharePoint list created to the teacher.",
+      "key_takeaways": [
+        "Phase Data is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the SharePoint list created to the teacher."
+      ],
+      "what_it_is": "Phase Data is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the SharePoint list created to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: App",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: App** *(Level: Beginner)*\n\nCanvas screens. Complete these tasks: Submit form; My expenses gallery. Deliverable for this phase: App screenshot.\n\nCode Reference:\n```text\n- [ ] Submit form\n- [ ] My expenses gallery\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase App is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the App screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase App is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the App screenshot to the teacher."
+      ],
+      "what_it_is": "Phase App is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the App screenshot to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Logic",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Logic** *(Level: Beginner)*\n\nSubmit + validation. Complete these tasks: Required fields; Success message. Deliverable for this phase: Working submit flow.\n\nCode Reference:\n```text\n- [ ] Required fields\n- [ ] Success message\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Logic is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Working submit flow to the teacher.",
+      "key_takeaways": [
+        "Phase Logic is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Working submit flow to the teacher."
+      ],
+      "what_it_is": "Phase Logic is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Working submit flow to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Mobile",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Mobile** *(Level: Beginner)*\n\nPhone layout. Complete these tasks: Responsive; Icons. Deliverable for this phase: Mobile screenshot.\n\nCode Reference:\n```text\n- [ ] Responsive\n- [ ] Icons\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Mobile is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Mobile screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase Mobile is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Mobile screenshot to the teacher."
+      ],
+      "what_it_is": "Phase Mobile is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Mobile screenshot to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: Published app link; SharePoint list; Mobile screenshot. Skills demonstrated: Canvas apps, SharePoint. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Published app link\nDeliverable: SharePoint list\nDeliverable: Mobile screenshot\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Published app link and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Published app link and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Published app link and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

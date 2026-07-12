@@ -1,0 +1,137 @@
+{
+  "id": "project-codequest-teacher-review-platform",
+  "title": "Project Report: CodeQuest Teacher Review Platform — Full Stack Web Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "fullstack-web",
+  "family_name": "Full Stack Web Developer",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "CodeQuest Teacher Review Platform",
+  "project_index": 2,
+  "duration": "4–5 weeks",
+  "summary": "Teachers log in, browse reports by family, mark rubric scores, download PDF — full auth stack.",
+  "objectives": [
+    "JWT auth with bcrypt passwords",
+    "Role-based access (teacher/student)",
+    "Report listing from catalog.json",
+    "Marking form with rubric fields"
+  ],
+  "tools": [
+    "React",
+    "Express",
+    "PostgreSQL",
+    "JWT"
+  ],
+  "deliverables": [
+    "Production app",
+    "API docs",
+    "User guide",
+    "Demo video"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**CodeQuest Teacher Review Platform** is a intermediate-level end-to-end project for Full Stack Web Developer. Duration: 4–5 weeks. Teachers log in, browse reports by family, mark rubric scores, download PDF — full auth stack. Tools: React, Express, PostgreSQL, JWT.\n\nCode Reference:\n```text\nObjective: JWT auth with bcrypt passwords\nObjective: Role-based access (teacher/student)\nObjective: Report listing from catalog.json\nObjective: Marking form with rubric fields\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nFull Stack Web Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Full Stack Web Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Full Stack Web Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Full Stack Web Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Full Stack Web Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Auth",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Auth** *(Level: Intermediate)*\n\nRegister/login API. Complete these tasks: bcrypt hash; JWT middleware. Deliverable for this phase: Auth Postman tests.\n\nCode Reference:\n```text\n- [ ] bcrypt hash\n- [ ] JWT middleware\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Auth is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Auth Postman tests to the teacher.",
+      "key_takeaways": [
+        "Phase Auth is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Auth Postman tests to the teacher."
+      ],
+      "what_it_is": "Phase Auth is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Auth Postman tests to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Reports",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Reports** *(Level: Intermediate)*\n\nCatalog API + UI. Complete these tasks: Filter by family; PDF download link. Deliverable for this phase: Reports browse page.\n\nCode Reference:\n```text\n- [ ] Filter by family\n- [ ] PDF download link\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Reports is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Reports browse page to the teacher.",
+      "key_takeaways": [
+        "Phase Reports is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Reports browse page to the teacher."
+      ],
+      "what_it_is": "Phase Reports is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Reports browse page to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Marking",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Marking** *(Level: Intermediate)*\n\nRubric submission. Complete these tasks: Score fields; Comments. Deliverable for this phase: Marking workflow demo.\n\nCode Reference:\n```text\n- [ ] Score fields\n- [ ] Comments\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Marking is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Marking workflow demo to the teacher.",
+      "key_takeaways": [
+        "Phase Marking is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Marking workflow demo to the teacher."
+      ],
+      "what_it_is": "Phase Marking is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Marking workflow demo to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Deploy",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Deploy** *(Level: Intermediate)*\n\nFull stack deploy. Complete these tasks: PostgreSQL on Supabase; CI pipeline. Deliverable for this phase: Production URL.\n\nCode Reference:\n```text\n- [ ] PostgreSQL on Supabase\n- [ ] CI pipeline\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Deploy is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Production URL to the teacher.",
+      "key_takeaways": [
+        "Phase Deploy is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Production URL to the teacher."
+      ],
+      "what_it_is": "Phase Deploy is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Production URL to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: Production app; API docs; User guide; Demo video. Skills demonstrated: Full stack, Auth, CRUD. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Production app\nDeliverable: API docs\nDeliverable: User guide\nDeliverable: Demo video\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Production app and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Production app and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Production app and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

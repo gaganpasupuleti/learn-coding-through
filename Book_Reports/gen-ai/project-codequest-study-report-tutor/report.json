@@ -1,0 +1,137 @@
+{
+  "id": "project-codequest-study-report-tutor",
+  "title": "Project Report: CodeQuest Study Report Tutor — Generative AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "gen-ai",
+  "family_name": "Generative AI Engineer",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "CodeQuest Study Report Tutor",
+  "project_index": 2,
+  "duration": "3–4 weeks",
+  "summary": "RAG over study report JSON/Markdown; structured prompts return chapter summaries and quiz questions.",
+  "objectives": [
+    "Index Role_Reports catalog and chapters",
+    "Structured JSON output for quizzes",
+    "Rate limiting and cost tracking",
+    "Evaluation set with 20 benchmark questions"
+  ],
+  "tools": [
+    "LangChain",
+    "FastAPI",
+    "OpenAI",
+    "Chroma"
+  ],
+  "deliverables": [
+    "Tutor API",
+    "Eval report",
+    "Prompt library doc",
+    "Demo video"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**CodeQuest Study Report Tutor** is a intermediate-level end-to-end project for Generative AI Engineer. Duration: 3–4 weeks. RAG over study report JSON/Markdown; structured prompts return chapter summaries and quiz questions. Tools: LangChain, FastAPI, OpenAI, Chroma.\n\nCode Reference:\n```text\nObjective: Index Role_Reports catalog and chapters\nObjective: Structured JSON output for quizzes\nObjective: Rate limiting and cost tracking\nObjective: Evaluation set with 20 benchmark questions\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nGenerative AI Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Generative AI Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Generative AI Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Generative AI Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Generative AI Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Index",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Index** *(Level: Intermediate)*\n\nLoad report corpus. Complete these tasks: JSON + MD parsers; Metadata filters. Deliverable for this phase: Vector index.\n\nCode Reference:\n```text\n- [ ] JSON + MD parsers\n- [ ] Metadata filters\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Index is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nGenerative AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Vector index to the teacher.",
+      "key_takeaways": [
+        "Phase Index is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Vector index to the teacher."
+      ],
+      "what_it_is": "Phase Index is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Generative AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Vector index to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Prompts",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Prompts** *(Level: Intermediate)*\n\nTutor persona prompts. Complete these tasks: Summary template; Quiz template. Deliverable for this phase: Prompt library.\n\nCode Reference:\n```text\n- [ ] Summary template\n- [ ] Quiz template\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Prompts is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nGenerative AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Prompt library to the teacher.",
+      "key_takeaways": [
+        "Phase Prompts is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Prompt library to the teacher."
+      ],
+      "what_it_is": "Phase Prompts is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Generative AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Prompt library to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Eval",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Eval** *(Level: Intermediate)*\n\n20 benchmark Q&A. Complete these tasks: Accuracy scoring; Hallucination check. Deliverable for this phase: Eval spreadsheet.\n\nCode Reference:\n```text\n- [ ] Accuracy scoring\n- [ ] Hallucination check\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Eval is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nGenerative AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Eval spreadsheet to the teacher.",
+      "key_takeaways": [
+        "Phase Eval is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Eval spreadsheet to the teacher."
+      ],
+      "what_it_is": "Phase Eval is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Generative AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Eval spreadsheet to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: API",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: API** *(Level: Intermediate)*\n\nFastAPI wrapper. Complete these tasks: /summarize; /quiz. Deliverable for this phase: Live tutor API.\n\nCode Reference:\n```text\n- [ ] /summarize\n- [ ] /quiz\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase API is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nGenerative AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Live tutor API to the teacher.",
+      "key_takeaways": [
+        "Phase API is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Live tutor API to the teacher."
+      ],
+      "what_it_is": "Phase API is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Generative AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Live tutor API to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: Tutor API; Eval report; Prompt library doc; Demo video. Skills demonstrated: RAG, Prompt engineering, Evaluation. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Tutor API\nDeliverable: Eval report\nDeliverable: Prompt library doc\nDeliverable: Demo video\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Tutor API and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Tutor API and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Tutor API and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

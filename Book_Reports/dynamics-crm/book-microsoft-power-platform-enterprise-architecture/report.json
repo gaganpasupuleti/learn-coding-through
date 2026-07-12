@@ -1,0 +1,139 @@
+{
+  "id": "book-microsoft-power-platform-enterprise-architecture",
+  "title": "Study Report: Microsoft Power Platform Enterprise Architecture — Dynamics 365 CRM Consultant",
+  "author": "Gagan Pasupuleti",
+  "family_id": "dynamics-crm",
+  "family_name": "Dynamics 365 CRM Consultant",
+  "level": "Advanced",
+  "report_type": "role_book_study",
+  "book_title": "Microsoft Power Platform Enterprise Architecture",
+  "book_author": "Microsoft Press",
+  "book_index": 4,
+  "summary": "Study report for *Microsoft Power Platform Enterprise Architecture* by Microsoft Press (Advanced level) mapped to the Dynamics 365 CRM Consultant role. ALM, environments, and solution layering for Dynamics + Power Platform.",
+  "sources": [
+    "https://learn.microsoft.com/power-platform/guidance/adoption/enterprise"
+  ],
+  "source_file": "Reference: Microsoft Power Platform Enterprise Architecture — Microsoft Press",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Microsoft Power Platform Enterprise Architecture",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Microsoft Power Platform Enterprise Architecture** *(Level: Advanced)*\n\nThis study report summarizes *Microsoft Power Platform Enterprise Architecture* by Microsoft Press for the Dynamics 365 CRM Consultant role. The resource is rated Advanced level. ALM, environments, and solution layering for Dynamics + Power Platform. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Microsoft Power Platform Enterprise Architecture\n# Author: Microsoft Press\n# Role: Dynamics 365 CRM Consultant\n# Level: Advanced\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Microsoft Power Platform Enterprise Architecture.\n\n### When to use it\nWhen learning Dynamics 365 CRM Consultant skills at Advanced level.\n\n### Where to use it\nDynamics 365 CRM Consultant training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Microsoft Power Platform Enterprise Architecture.",
+        "When learning Dynamics 365 CRM Consultant skills at Advanced level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Microsoft Power Platform Enterprise Architecture.",
+      "when_to_use": "When learning Dynamics 365 CRM Consultant skills at Advanced level.",
+      "where_to_use": "Dynamics 365 CRM Consultant training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Advanced)*\n\nDynamics 365 CRM Consultant professionals use ideas from Microsoft Power Platform Enterprise Architecture to solve real workplace problems. ALM, environments, and solution layering for Dynamics + Power Platform. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Dynamics 365 CRM Consultant\nBook focus: ALM, environments, and solution layering for Dynamics + Power Platform.\nRecommended level: Advanced\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nDynamics 365 CRM Consultant bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a advanced skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a advanced skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Dynamics 365 CRM Consultant bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a advanced skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Advanced",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Advanced)*\n\nThe main topics in Microsoft Power Platform Enterprise Architecture include practical concepts described as: ALM, environments, and solution layering for Dynamics + Power Platform. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Dynamics 365 CRM Consultant jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Performance Tuning and Throttling",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Performance Tuning and Throttling** *(Level: Advanced)*\n\nAvoid plugin recursion and nested sync workflows. Batch plugins should use ExecuteMultiple. Monitor API service protection limits. Index alternate keys for integration idempotency. Archive old cases to maintain performance.\n\nCode Reference:\n```powershell\n# Service protection API limit: 429 Too Many Requests -> exponential backoff\n```\nWhat it shows: Throttling guidance informs integration retry policies.\n\n### What it actually is\nPerformance tuning keeps CRM responsive at enterprise scale.\n\n### When to use it\nHigh-volume portals and integration-heavy orgs.\n\n### Where to use it\nGlobal service teams with millions of cases yearly.\n\n### Real use example\nArchive job moves closed cases >2 years to long-term storage—grid load improves 40%.",
+      "key_takeaways": [
+        "Performance tuning keeps CRM responsive at enterprise scale.",
+        "High-volume portals and integration-heavy orgs.",
+        "Archive job moves closed cases >2 years to long-term storage—grid load improves 40%."
+      ],
+      "what_it_is": "Performance tuning keeps CRM responsive at enterprise scale.",
+      "when_to_use": "High-volume portals and integration-heavy orgs.",
+      "where_to_use": "Global service teams with millions of cases yearly.",
+      "real_use_example": "Archive job moves closed cases >2 years to long-term storage—grid load improves 40%."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Power Pages and External Portals",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Power Pages and External Portals** *(Level: Advanced)*\n\nPower Pages (formerly portals) expose Dataverse data externally with authentication, entity lists, forms, and Web API. Configure table permissions and web roles carefully—portal security misconfigurations are common breach vectors.\n\nCode Reference:\n```powershell\n# Web role: District Admin | Table permission: Account Read scope Parent\n```\nWhat it shows: Portal permission comments document external access model.\n\n### What it actually is\nPower Pages deliver secure customer and partner self-service.\n\n### When to use it\nCase submission, knowledge bases, and partner registration.\n\n### Where to use it\nEducation districts accessing support without full CRM license.\n\n### Real use example\nDistrict admin submits case via portal—creates CRM case with correct entitlement.",
+      "key_takeaways": [
+        "Power Pages deliver secure customer and partner self-service.",
+        "Case submission, knowledge bases, and partner registration.",
+        "District admin submits case via portal—creates CRM case with correct entitlement."
+      ],
+      "what_it_is": "Power Pages deliver secure customer and partner self-service.",
+      "when_to_use": "Case submission, knowledge bases, and partner registration.",
+      "where_to_use": "Education districts accessing support without full CRM license.",
+      "real_use_example": "District admin submits case via portal—creates CRM case with correct entitlement."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Event Framework and Async Processing",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Event Framework and Async Processing** *(Level: Advanced)*\n\nUse async plugins and Azure Functions triggered by Dataverse events for heavy processing. Service Bus topics decouple publishers. Custom APIs provide typed operations for LWC/canvas clients needing transactional bundles.\n\nCode Reference:\n```powershell\n// Custom API: cq_ProvisionTenant bundles 5 internal operations atomically\n```\nWhat it shows: Custom API comment shows operation bundling pattern.\n\n### What it actually is\nEvent-driven extensions scale beyond synchronous limits.\n\n### When to use it\nProvisioning, ERP sync, and ML inference side effects.\n\n### Where to use it\nLarge SaaS operators on Dynamics platform.\n\n### Real use example\nTenant provision API rolls back all steps if sandbox creation fails.",
+      "key_takeaways": [
+        "Event-driven extensions scale beyond synchronous limits.",
+        "Provisioning, ERP sync, and ML inference side effects.",
+        "Tenant provision API rolls back all steps if sandbox creation fails."
+      ],
+      "what_it_is": "Event-driven extensions scale beyond synchronous limits.",
+      "when_to_use": "Provisioning, ERP sync, and ML inference side effects.",
+      "where_to_use": "Large SaaS operators on Dynamics platform.",
+      "real_use_example": "Tenant provision API rolls back all steps if sandbox creation fails."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Advanced)*\n\nFinish Microsoft Power Platform Enterprise Architecture with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Dynamics 365 CRM Consultant. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a advanced project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a advanced project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a advanced project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

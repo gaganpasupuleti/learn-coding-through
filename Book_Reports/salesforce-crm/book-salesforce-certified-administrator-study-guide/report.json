@@ -1,0 +1,139 @@
+{
+  "id": "book-salesforce-certified-administrator-study-guide",
+  "title": "Study Report: Salesforce Certified Administrator Study Guide — Salesforce CRM Developer / Administrator",
+  "author": "Gagan Pasupuleti",
+  "family_id": "salesforce-crm",
+  "family_name": "Salesforce CRM Developer / Administrator",
+  "level": "Intermediate",
+  "report_type": "role_book_study",
+  "book_title": "Salesforce Certified Administrator Study Guide",
+  "book_author": "Salesforce Ben",
+  "book_index": 5,
+  "summary": "Study report for *Salesforce Certified Administrator Study Guide* by Salesforce Ben (Intermediate level) mapped to the Salesforce CRM Developer / Administrator role. Exam-focused admin prep: security, automation, and reports.",
+  "sources": [
+    "https://www.salesforceben.com/salesforce-admin-certification-guide/"
+  ],
+  "source_file": "Reference: Salesforce Certified Administrator Study Guide — Salesforce Ben",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Salesforce Certified Administrator Study Guide",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Salesforce Certified Administrator Study Guide** *(Level: Intermediate)*\n\nThis study report summarizes *Salesforce Certified Administrator Study Guide* by Salesforce Ben for the Salesforce CRM Developer / Administrator role. The resource is rated Intermediate level. Exam-focused admin prep: security, automation, and reports. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Salesforce Certified Administrator Study Guide\n# Author: Salesforce Ben\n# Role: Salesforce CRM Developer / Administrator\n# Level: Intermediate\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Salesforce Certified Administrator Study Guide.\n\n### When to use it\nWhen learning Salesforce CRM Developer / Administrator skills at Intermediate level.\n\n### Where to use it\nSalesforce CRM Developer / Administrator training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Salesforce Certified Administrator Study Guide.",
+        "When learning Salesforce CRM Developer / Administrator skills at Intermediate level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Salesforce Certified Administrator Study Guide.",
+      "when_to_use": "When learning Salesforce CRM Developer / Administrator skills at Intermediate level.",
+      "where_to_use": "Salesforce CRM Developer / Administrator training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Intermediate)*\n\nSalesforce CRM Developer / Administrator professionals use ideas from Salesforce Certified Administrator Study Guide to solve real workplace problems. Exam-focused admin prep: security, automation, and reports. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Salesforce CRM Developer / Administrator\nBook focus: Exam-focused admin prep: security, automation, and reports.\nRecommended level: Intermediate\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nSalesforce CRM Developer / Administrator bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a intermediate skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a intermediate skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Salesforce CRM Developer / Administrator bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a intermediate skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Intermediate",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Intermediate)*\n\nThe main topics in Salesforce Certified Administrator Study Guide include practical concepts described as: Exam-focused admin prep: security, automation, and reports. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Salesforce CRM Developer / Administrator jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Flow Builder and Automation Strategy",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: Flow Builder and Automation Strategy** *(Level: Intermediate)*\n\nRecord-triggered Flows replace Workflow Rules and Process Builder. Use before-save flows for field updates without extra DML. Screen flows guide users through multi-step wizards. Document automation inventory—overlapping flows cause recursion errors.\n\nCode Reference:\n```javascript\n// Flow: Record-Triggered After Save on Opportunity\n// Decision: Stage = Closed Won -> Create Task\n```\nWhat it shows: Flow decision elements branch automation without Apex.\n\n### What it actually is\nFlow is the primary declarative automation tool on Salesforce.\n\n### When to use it\nAssignment, notifications, approvals, and integrations.\n\n### Where to use it\nMost admin and consultant day-to-day configuration.\n\n### Real use example\nClosed Won flow creates onboarding task and emails customer success.",
+      "key_takeaways": [
+        "Flow is the primary declarative automation tool on Salesforce.",
+        "Assignment, notifications, approvals, and integrations.",
+        "Closed Won flow creates onboarding task and emails customer success."
+      ],
+      "what_it_is": "Flow is the primary declarative automation tool on Salesforce.",
+      "when_to_use": "Assignment, notifications, approvals, and integrations.",
+      "where_to_use": "Most admin and consultant day-to-day configuration.",
+      "real_use_example": "Closed Won flow creates onboarding task and emails customer success."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Apex Triggers and Bulkification",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: Apex Triggers and Bulkification** *(Level: Intermediate)*\n\nTriggers fire before/after insert/update/delete. Bulkify: never SOQL or DML inside loops over Trigger.new. Use handler pattern separating logic from trigger stub. Governor limits: 100 SOQL, 150 DML rows per transaction—design accordingly.\n\nCode Reference:\n```javascript\ntrigger OpportunityTrigger on Opportunity (after update) {\n  OpportunityHandler.onAfterUpdate(Trigger.new, Trigger.oldMap);\n}\n```\nWhat it shows: One-line trigger delegates to testable handler class.\n\n### What it actually is\nApex triggers implement complex logic Flow cannot express.\n\n### When to use it\nCross-object updates, callouts, and fine-grained control.\n\n### Where to use it\nEnterprise orgs with custom business rules.\n\n### Real use example\nHandler aggregates opportunity line changes—one DML update for 200 rows.",
+      "key_takeaways": [
+        "Apex triggers implement complex logic Flow cannot express.",
+        "Cross-object updates, callouts, and fine-grained control.",
+        "Handler aggregates opportunity line changes—one DML update for 200 rows."
+      ],
+      "what_it_is": "Apex triggers implement complex logic Flow cannot express.",
+      "when_to_use": "Cross-object updates, callouts, and fine-grained control.",
+      "where_to_use": "Enterprise orgs with custom business rules.",
+      "real_use_example": "Handler aggregates opportunity line changes—one DML update for 200 rows."
+    },
+    {
+      "number": 6,
+      "title": "Applied: SOQL, SOSL, and Governor Limits",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: SOQL, SOSL, and Governor Limits** *(Level: Intermediate)*\n\nSOQL queries structured data; SOSL searches text across objects. Selective queries use indexed fields (Id, Name, foreign keys). Avoid selective filter failures on custom fields without indexes. Query plan tool explains performance.\n\nCode Reference:\n```javascript\nList<Account> accts = [SELECT Id, Name FROM Account WHERE Industry = 'Education' LIMIT 200];\n```\nWhat it shows: LIMIT clause prevents accidental full-table scans in loops.\n\n### What it actually is\nEfficient queries keep Apex within governor limits.\n\n### When to use it\nEvery Apex class touching database records.\n\n### Where to use it\nTriggers, batch jobs, and LWC @wire adapters.\n\n### Real use example\nUnindexed filter on custom status field times out—admin requests custom index.",
+      "key_takeaways": [
+        "Efficient queries keep Apex within governor limits.",
+        "Every Apex class touching database records.",
+        "Unindexed filter on custom status field times out—admin requests custom index."
+      ],
+      "what_it_is": "Efficient queries keep Apex within governor limits.",
+      "when_to_use": "Every Apex class touching database records.",
+      "where_to_use": "Triggers, batch jobs, and LWC @wire adapters.",
+      "real_use_example": "Unindexed filter on custom status field times out—admin requests custom index."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Intermediate)*\n\nFinish Salesforce Certified Administrator Study Guide with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Salesforce CRM Developer / Administrator. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a intermediate project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a intermediate project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a intermediate project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

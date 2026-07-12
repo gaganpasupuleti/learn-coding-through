@@ -1,0 +1,136 @@
+{
+  "id": "project-cmdb-event-management-integration",
+  "title": "Project Report: CMDB + Event Management Integration — ServiceNow Developer / Administrator",
+  "author": "Gagan Pasupuleti",
+  "family_id": "servicenow",
+  "family_name": "ServiceNow Developer / Administrator",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "CMDB + Event Management Integration",
+  "project_index": 3,
+  "duration": "4–5 weeks",
+  "summary": "Populate CMDB with server CIs, integrate monitoring alerts to auto-create incidents with enrichment.",
+  "objectives": [
+    "CMDB CI classes and relationships",
+    "Discovery or manual CI import",
+    "Event rules for alert → incident",
+    "CI impact analysis on changes"
+  ],
+  "tools": [
+    "ServiceNow PDI",
+    "CMDB",
+    "Integration Hub"
+  ],
+  "deliverables": [
+    "CMDB export",
+    "Event rule config",
+    "Impact analysis demo",
+    "Architecture doc"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**CMDB + Event Management Integration** is a advanced-level end-to-end project for ServiceNow Developer / Administrator. Duration: 4–5 weeks. Populate CMDB with server CIs, integrate monitoring alerts to auto-create incidents with enrichment. Tools: ServiceNow PDI, CMDB, Integration Hub.\n\nCode Reference:\n```text\nObjective: CMDB CI classes and relationships\nObjective: Discovery or manual CI import\nObjective: Event rules for alert → incident\nObjective: CI impact analysis on changes\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nServiceNow Developer / Administrator portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a ServiceNow Developer / Administrator resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a ServiceNow Developer / Administrator resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "ServiceNow Developer / Administrator portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a ServiceNow Developer / Administrator resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: CMDB",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: CMDB** *(Level: Advanced)*\n\nCI model setup. Complete these tasks: Server class; Relationships. Deliverable for this phase: CMDB populated.\n\nCode Reference:\n```text\n- [ ] Server class\n- [ ] Relationships\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase CMDB is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nServiceNow Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the CMDB populated to the teacher.",
+      "key_takeaways": [
+        "Phase CMDB is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the CMDB populated to the teacher."
+      ],
+      "what_it_is": "Phase CMDB is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "ServiceNow Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the CMDB populated to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Discovery",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Discovery** *(Level: Advanced)*\n\nImport/discover CIs. Complete these tasks: CSV import; Relationship map. Deliverable for this phase: CMDB diagram.\n\nCode Reference:\n```text\n- [ ] CSV import\n- [ ] Relationship map\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Discovery is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nServiceNow Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the CMDB diagram to the teacher.",
+      "key_takeaways": [
+        "Phase Discovery is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the CMDB diagram to the teacher."
+      ],
+      "what_it_is": "Phase Discovery is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "ServiceNow Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the CMDB diagram to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Events",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Events** *(Level: Advanced)*\n\nAlert integration. Complete these tasks: Event rules; Severity mapping. Deliverable for this phase: Auto-incident demo.\n\nCode Reference:\n```text\n- [ ] Event rules\n- [ ] Severity mapping\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Events is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nServiceNow Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Auto-incident demo to the teacher.",
+      "key_takeaways": [
+        "Phase Events is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Auto-incident demo to the teacher."
+      ],
+      "what_it_is": "Phase Events is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "ServiceNow Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Auto-incident demo to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Impact",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Impact** *(Level: Advanced)*\n\nChange impact check. Complete these tasks: Affected CIs; Business services. Deliverable for this phase: Impact analysis report.\n\nCode Reference:\n```text\n- [ ] Affected CIs\n- [ ] Business services\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Impact is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nServiceNow Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Impact analysis report to the teacher.",
+      "key_takeaways": [
+        "Phase Impact is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Impact analysis report to the teacher."
+      ],
+      "what_it_is": "Phase Impact is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "ServiceNow Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Impact analysis report to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: CMDB export; Event rule config; Impact analysis demo; Architecture doc. Skills demonstrated: CMDB, Event Management, Integration. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: CMDB export\nDeliverable: Event rule config\nDeliverable: Impact analysis demo\nDeliverable: Architecture doc\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits CMDB export and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits CMDB export and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits CMDB export and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

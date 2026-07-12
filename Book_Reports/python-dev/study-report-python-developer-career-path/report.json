@@ -1,0 +1,608 @@
+{
+  "id": "study-report-python-developer-career-path",
+  "title": "Study Report: Python Developer — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "python-dev",
+  "family_name": "Python Developer",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "Full-stack Python engineering with Python 3.12+, FastAPI, Django, pytest, async I/O, SQLAlchemy, Docker, and modern packaging. Covers scripting fluency through async APIs, test automation, and production deployment patterns used in startups and data-driven teams.",
+  "skill_stack": {
+    "beginner": [
+      "Python 3.12 syntax, types, and control flow",
+      "Virtual environments (venv, uv, pip)",
+      "Functions, modules, and package structure",
+      "File I/O, JSON, and pathlib",
+      "List/dict comprehensions and generators",
+      "Basic debugging with pdb and IDE breakpoints",
+      "Git and collaborative workflow"
+    ],
+    "intermediate": [
+      "FastAPI and Pydantic v2 request/response models",
+      "Django ORM, admin, and REST with DRF",
+      "SQLAlchemy 2.0 async sessions",
+      "pytest fixtures, parametrize, and coverage",
+      "asyncio and httpx for concurrent I/O",
+      "Docker and docker-compose for local stacks",
+      "Environment configuration with pydantic-settings",
+      "CI with GitHub Actions and ruff/mypy linting"
+    ],
+    "advanced": [
+      "Background tasks (Celery, ARQ, Dramatiq)",
+      "OAuth2 and JWT auth patterns",
+      "Observability (structlog, OpenTelemetry)",
+      "Performance profiling (py-spy, scalene)",
+      "Multi-stage Docker and cloud deployment",
+      "Database migrations (Alembic)",
+      "API versioning and rate limiting"
+    ]
+  },
+  "sources": [
+    "https://docs.python.org/3/",
+    "https://fastapi.tiangolo.com/",
+    "https://docs.djangoproject.com/en/stable/",
+    "https://docs.pytest.org/",
+    "https://docs.pydantic.dev/latest/",
+    "https://packaging.python.org/"
+  ],
+  "recommended_books": [
+    {
+      "title": "Automate the Boring Stuff with Python",
+      "author": "Al Sweigart",
+      "level": "Beginner",
+      "focus": "Practical scripts for files, Excel, web scraping, and automation.",
+      "url": "https://automatetheboringstuff.com/",
+      "free_online": true,
+      "codequest_book_report": "Book_Reports/10-comprehensive-and-projects/study-report-automate-the-boring-stuff-with-python-practical-programmi/report.json"
+    },
+    {
+      "title": "Python Crash Course",
+      "author": "Eric Matthes",
+      "level": "Beginner",
+      "focus": "Hands-on basics, data viz, and a Django web app project.",
+      "url": "https://nostarch.com/python-crash-course-3rd-edition",
+      "free_online": false,
+      "codequest_book_report": "Book_Reports/01-python-beginners-core/study-report-coding-for-beginners-using-python-a-hands-on-project-base/report.json"
+    },
+    {
+      "title": "Effective Python",
+      "author": "Brett Slatkin",
+      "level": "Intermediate",
+      "focus": "90 patterns for readable, efficient Python 3 code.",
+      "url": "https://effectivepython.com/",
+      "free_online": false
+    },
+    {
+      "title": "Architecture Patterns with Python",
+      "author": "Harry Percival & Bob Gregory",
+      "level": "Intermediate",
+      "focus": "Repository pattern, domain-driven design, and TDD in Python.",
+      "url": "https://www.cosmicpython.com/",
+      "free_online": true
+    },
+    {
+      "title": "Fluent Python",
+      "author": "Luciano Ramalho",
+      "level": "Advanced",
+      "focus": "Deep dive into data model, descriptors, async, and metaprogramming.",
+      "url": "https://www.oreilly.com/library/view/fluent-python-2nd/9781492056359/",
+      "free_online": false
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "CLI Task Manager with SQLite",
+      "level": "Beginner",
+      "duration": "1–2 weeks",
+      "overview": "Command-line todo app with SQLite persistence, argparse, and pytest coverage.",
+      "objectives": [
+        "CRUD tasks from terminal",
+        "SQLite schema with migrations",
+        "pytest unit tests",
+        "Package with pyproject.toml"
+      ],
+      "phases": [
+        {
+          "name": "Schema",
+          "description": "Design tasks table.",
+          "tasks": [
+            "CREATE TABLE",
+            "Seed data"
+          ],
+          "deliverable": "schema.sql"
+        },
+        {
+          "name": "CLI",
+          "description": "argparse subcommands.",
+          "tasks": [
+            "add/list/done/delete"
+          ],
+          "deliverable": "Working CLI"
+        },
+        {
+          "name": "Tests",
+          "description": "pytest for all commands.",
+          "tasks": [
+            "Fixtures",
+            "Temp DB"
+          ],
+          "deliverable": "90% coverage"
+        },
+        {
+          "name": "Polish",
+          "description": "README and packaging.",
+          "tasks": [
+            "pyproject.toml",
+            "Entry point"
+          ],
+          "deliverable": "pip installable package"
+        }
+      ],
+      "skills_applied": [
+        "CLI",
+        "SQLite",
+        "pytest"
+      ],
+      "tools": [
+        "Python 3.12",
+        "sqlite3",
+        "pytest"
+      ],
+      "deliverables": [
+        "GitHub repo",
+        "Coverage report",
+        "README with usage examples"
+      ]
+    },
+    {
+      "title": "FastAPI REST + PostgreSQL Blog API",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "Async FastAPI blog with SQLAlchemy 2.0, JWT auth, Alembic migrations, and Docker deployment.",
+      "objectives": [
+        "Async SQLAlchemy sessions",
+        "JWT login/register",
+        "CRUD posts with author ownership",
+        "Deploy on Railway/Docker"
+      ],
+      "phases": [
+        {
+          "name": "Models",
+          "description": "User and Post SQLAlchemy models.",
+          "tasks": [
+            "Alembic migration",
+            "Relationships"
+          ],
+          "deliverable": "Migrated schema"
+        },
+        {
+          "name": "Auth",
+          "description": "OAuth2 password flow.",
+          "tasks": [
+            "JWT tokens",
+            "Protected routes"
+          ],
+          "deliverable": "Auth Postman tests"
+        },
+        {
+          "name": "API",
+          "description": "Post CRUD with pagination.",
+          "tasks": [
+            "Pydantic v2 schemas",
+            "OpenAPI docs"
+          ],
+          "deliverable": "/docs working"
+        },
+        {
+          "name": "Deploy",
+          "description": "Docker + CI.",
+          "tasks": [
+            "GitHub Actions",
+            "Railway deploy"
+          ],
+          "deliverable": "Live URL"
+        }
+      ],
+      "skills_applied": [
+        "FastAPI",
+        "Async",
+        "Auth",
+        "ORM"
+      ],
+      "tools": [
+        "FastAPI",
+        "SQLAlchemy",
+        "Alembic",
+        "Docker"
+      ],
+      "deliverables": [
+        "Live API URL",
+        "OpenAPI spec",
+        "CI badge",
+        "Architecture README"
+      ]
+    },
+    {
+      "title": "Production ML Inference Service",
+      "level": "Advanced",
+      "duration": "4–6 weeks",
+      "overview": "FastAPI service serving a scikit-learn model with batch prediction, caching, OpenTelemetry, and k6 load tests.",
+      "objectives": [
+        "Load and version ML model with joblib",
+        "Batch and single prediction endpoints",
+        "Redis result cache",
+        "OpenTelemetry traces and k6 load test"
+      ],
+      "phases": [
+        {
+          "name": "Model",
+          "description": "Train and serialize model.",
+          "tasks": [
+            "sklearn pipeline",
+            "MLflow log"
+          ],
+          "deliverable": "model.pkl v1"
+        },
+        {
+          "name": "API",
+          "description": "Prediction endpoints.",
+          "tasks": [
+            "/predict",
+            "/predict/batch"
+          ],
+          "deliverable": "Latency benchmarks"
+        },
+        {
+          "name": "Cache",
+          "description": "Redis for repeated inputs.",
+          "tasks": [
+            "Cache key hash",
+            "TTL config"
+          ],
+          "deliverable": "Cache hit metrics"
+        },
+        {
+          "name": "Load Test",
+          "description": "k6 script 1000 RPS.",
+          "tasks": [
+            "p95 latency",
+            "Error rate"
+          ],
+          "deliverable": "k6 HTML report"
+        }
+      ],
+      "skills_applied": [
+        "ML serving",
+        "Caching",
+        "Observability"
+      ],
+      "tools": [
+        "FastAPI",
+        "sklearn",
+        "Redis",
+        "k6"
+      ],
+      "deliverables": [
+        "Model artifact",
+        "k6 report",
+        "Grafana/traces screenshot",
+        "API docs"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Python 3.12 Developer Environment",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Python 3.12 Developer Environment** *(Level: Beginner)*\n\nPython 3.12 improves error messages, adds per-interpreter GIL options, and refines typing. Use venv or uv to isolate project dependencies from system Python. pyproject.toml is the modern standard for metadata, dependencies, and tool configuration. Configure your editor with Ruff for lint/format and mypy for static type checking early.\n\nCode Reference:\n```bash\npython -m venv .venv\nsource .venv/bin/activate  # Windows: .venv\\Scripts\\activate\npip install -r requirements.txt\npython --version\n```\nWhat it shows: Creates isolated environment and verifies Python version before installing packages.\n\n### What it actually is\nA Python developer environment includes interpreter, virtual env, package manager, and linter.\n\n### When to use it\nSet up on day one of any new project; never install packages globally for application work.\n\n### Where to use it\nLocal development, tutorials, CodeQuest exercises, and open-source contributions.\n\n### Real use example\nA new hire runs one setup script and executes pytest successfully within ten minutes.",
+      "key_takeaways": [
+        "A Python developer environment includes interpreter, virtual env, package manager, and linter.",
+        "Set up on day one of any new project; never install packages globally for application work.",
+        "A new hire runs one setup script and executes pytest successfully within ten minutes."
+      ],
+      "what_it_is": "A Python developer environment includes interpreter, virtual env, package manager, and linter.",
+      "when_to_use": "Set up on day one of any new project; never install packages globally for application work.",
+      "where_to_use": "Local development, tutorials, CodeQuest exercises, and open-source contributions.",
+      "real_use_example": "A new hire runs one setup script and executes pytest successfully within ten minutes."
+    },
+    {
+      "number": 2,
+      "title": "Variables, Types, and Control Flow",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Variables, Types, and Control Flow** *(Level: Beginner)*\n\nPython uses dynamic typing with optional static hints via type annotations. Indentation defines blocks—consistency matters for readability and team reviews. if/elif/else, for, and while loops cover most control flow; match (3.10+) handles structural patterns. f-strings are the preferred way to format strings with embedded expressions.\n\nCode Reference:\n```python\nname: str = \"Ada\"\nage: int = 28\nif age >= 18:\n    print(f\"{name} is an adult\")\n```\nWhat it shows: Type hints document intent; f-string embeds variable values in output.\n\n### What it actually is\nCore syntax expresses logic, data, and branching in readable Python code.\n\n### When to use it\nMaster before building web apps—every framework builds on these primitives.\n\n### Where to use it\nScripts, notebooks, API handlers, and test functions.\n\n### Real use example\nAn onboarding script reads config.json and prints personalized welcome messages.",
+      "key_takeaways": [
+        "Core syntax expresses logic, data, and branching in readable Python code.",
+        "Master before building web apps—every framework builds on these primitives.",
+        "An onboarding script reads config."
+      ],
+      "what_it_is": "Core syntax expresses logic, data, and branching in readable Python code.",
+      "when_to_use": "Master before building web apps—every framework builds on these primitives.",
+      "where_to_use": "Scripts, notebooks, API handlers, and test functions.",
+      "real_use_example": "An onboarding script reads config.json and prints personalized welcome messages."
+    },
+    {
+      "number": 3,
+      "title": "Functions, Modules, and Packages",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Functions, Modules, and Packages** *(Level: Beginner)*\n\nFunctions group reusable logic; *args and **kwargs accept variable arguments. Modules are .py files; packages are directories with __init__.py (or namespace packages). Import only what you need to keep namespaces clean and startup fast. if __name__ == '__main__' guard allows dual use as script and importable module.\n\nCode Reference:\n```python\ndef normalize_email(address: str) -> str:\n    return address.strip().lower()\n\nif __name__ == \"__main__\":\n    print(normalize_email(\"  User@Example.COM  \"))\n```\nWhat it shows: Function returns cleaned email; main guard runs demo only when executed directly.\n\n### What it actually is\nModules organize code into reusable units with clear public APIs.\n\n### When to use it\nSplit growing scripts into modules when files exceed ~200 lines or responsibilities multiply.\n\n### Where to use it\nsrc/ layouts, FastAPI routers, Django apps, and shared utility libraries.\n\n### Real use example\nutils/validators.py exports email checks imported by both CLI and API layers.",
+      "key_takeaways": [
+        "Modules organize code into reusable units with clear public APIs.",
+        "Split growing scripts into modules when files exceed ~200 lines or responsibilities multiply.",
+        "utils/validators."
+      ],
+      "what_it_is": "Modules organize code into reusable units with clear public APIs.",
+      "when_to_use": "Split growing scripts into modules when files exceed ~200 lines or responsibilities multiply.",
+      "where_to_use": "src/ layouts, FastAPI routers, Django apps, and shared utility libraries.",
+      "real_use_example": "utils/validators.py exports email checks imported by both CLI and API layers."
+    },
+    {
+      "number": 4,
+      "title": "Data Structures and Comprehensions",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Data Structures and Comprehensions** *(Level: Beginner)*\n\nLists, dicts, sets, and tuples are the primary built-in collections. Comprehensions build collections concisely: [x*2 for x in range(5)]. dict.get avoids KeyError; defaultdict and Counter from collections solve common patterns. Choose the right structure: list for order, set for uniqueness, dict for lookups.\n\nCode Reference:\n```python\nusers = [{\"id\": 1, \"role\": \"admin\"}, {\"id\": 2, \"role\": \"viewer\"}]\nadmins = [u[\"id\"] for u in users if u[\"role\"] == \"admin\"]\n```\nWhat it shows: List comprehension filters admins in one readable expression.\n\n### What it actually is\nCollections store and organize data; comprehensions transform them declaratively.\n\n### When to use it\nUse comprehensions for small transforms; use loops when logic branches heavily.\n\n### Where to use it\nETL prep, API response shaping, config parsing, and test data builders.\n\n### Real use example\nA report generator aggregates sales by region using dict.setdefault in ten lines.",
+      "key_takeaways": [
+        "Collections store and organize data; comprehensions transform them declaratively.",
+        "Use comprehensions for small transforms; use loops when logic branches heavily.",
+        "A report generator aggregates sales by region using dict."
+      ],
+      "what_it_is": "Collections store and organize data; comprehensions transform them declaratively.",
+      "when_to_use": "Use comprehensions for small transforms; use loops when logic branches heavily.",
+      "where_to_use": "ETL prep, API response shaping, config parsing, and test data builders.",
+      "real_use_example": "A report generator aggregates sales by region using dict.setdefault in ten lines."
+    },
+    {
+      "number": 5,
+      "title": "File I/O, JSON, and pathlib",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: File I/O, JSON, and pathlib** *(Level: Beginner)*\n\npathlib.Path provides object-oriented file system paths cross-platform. open() with context managers ensures files close even on exceptions. json module serializes Python dicts to JSON for APIs and config files. Never hardcode paths—use Path(__file__).parent to anchor relative locations.\n\nCode Reference:\n```python\nfrom pathlib import Path\nimport json\n\nconfig_path = Path(__file__).parent / \"config.json\"\nconfig = json.loads(config_path.read_text(encoding=\"utf-8\"))\n```\nWhat it shows: Path joins directories portably; read_text loads JSON config safely with encoding.\n\n### What it actually is\nFile I/O reads and writes persistent data; JSON is the lingua franca for config and APIs.\n\n### When to use it\nUse pathlib and json for configs, exports, logs, and batch imports.\n\n### Where to use it\nCLI tools, data pipelines, Django settings loaders, and test fixtures.\n\n### Real use example\nA deployment script reads config.json for database URL instead of hardcoding secrets.",
+      "key_takeaways": [
+        "File I/O reads and writes persistent data; JSON is the lingua franca for config and APIs.",
+        "Use pathlib and json for configs, exports, logs, and batch imports.",
+        "A deployment script reads config."
+      ],
+      "what_it_is": "File I/O reads and writes persistent data; JSON is the lingua franca for config and APIs.",
+      "when_to_use": "Use pathlib and json for configs, exports, logs, and batch imports.",
+      "where_to_use": "CLI tools, data pipelines, Django settings loaders, and test fixtures.",
+      "real_use_example": "A deployment script reads config.json for database URL instead of hardcoding secrets."
+    },
+    {
+      "number": 6,
+      "title": "Intro to pytest and Testable Code",
+      "topic": "errors",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Intro to pytest and Testable Code** *(Level: Beginner)*\n\npytest discovers test_ functions and uses assert directly—no boilerplate classes. Fixtures inject setup/teardown dependencies like database sessions or temp directories. Arrange-Act-Assert structure keeps tests readable and focused on one behavior. Write tests alongside features; untested code is legacy the moment it merges.\n\nCode Reference:\n```python\ndef test_discount_applies_percent():\n    price = apply_discount(100.0, percent=10)\n    assert price == 90.0\n```\nWhat it shows: Single assertion verifies discount math; pytest reports clear failures on regression.\n\n### What it actually is\npytest is Python's dominant testing framework for unit and integration tests.\n\n### When to use it\nAdd tests for every bug fix and new function before marking tickets done.\n\n### Where to use it\nAll professional Python repos, CI pipelines, and CodeQuest project submissions.\n\n### Real use example\nTeacher review passes because pytest coverage proves edge cases were handled.",
+      "key_takeaways": [
+        "pytest is Python's dominant testing framework for unit and integration tests.",
+        "Add tests for every bug fix and new function before marking tickets done.",
+        "Teacher review passes because pytest coverage proves edge cases were handled."
+      ],
+      "what_it_is": "pytest is Python's dominant testing framework for unit and integration tests.",
+      "when_to_use": "Add tests for every bug fix and new function before marking tickets done.",
+      "where_to_use": "All professional Python repos, CI pipelines, and CodeQuest project submissions.",
+      "real_use_example": "Teacher review passes because pytest coverage proves edge cases were handled."
+    },
+    {
+      "number": 7,
+      "title": "FastAPI and Pydantic v2 Models",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: FastAPI and Pydantic v2 Models** *(Level: Intermediate)*\n\nFastAPI builds on Starlette and Pydantic for high-performance typed APIs. Pydantic v2 uses model_validate and computed fields with Rust-core speed. Dependency injection via Depends() shares DB sessions, auth, and settings cleanly. Automatic OpenAPI generation documents endpoints for frontend and QA teams.\n\nCode Reference:\n```python\nfrom pydantic import BaseModel, Field\n\nclass CreateItem(BaseModel):\n    name: str = Field(min_length=1, max_length=120)\n    price: float = Field(gt=0)\n\n@app.post(\"/items\", response_model=ItemOut)\nasync def create_item(payload: CreateItem, db: DbSession):\n    return await service.create(db, payload)\n```\nWhat it shows: Pydantic validates payload before handler runs; response_model strips internal fields.\n\n### What it actually is\nFastAPI is a modern async web framework for building APIs with automatic validation and docs.\n\n### When to use it\nChoose FastAPI for new microservices, ML model servers, and high-throughput JSON APIs.\n\n### Where to use it\nStartups, internal tools, mobile backends, and ML inference gateways.\n\n### Real use example\nFrontend codegen from /openapi.json produces TypeScript clients matching backend types exactly.",
+      "key_takeaways": [
+        "FastAPI is a modern async web framework for building APIs with automatic validation and docs.",
+        "Choose FastAPI for new microservices, ML model servers, and high-throughput JSON APIs.",
+        "Frontend codegen from /openapi."
+      ],
+      "what_it_is": "FastAPI is a modern async web framework for building APIs with automatic validation and docs.",
+      "when_to_use": "Choose FastAPI for new microservices, ML model servers, and high-throughput JSON APIs.",
+      "where_to_use": "Startups, internal tools, mobile backends, and ML inference gateways.",
+      "real_use_example": "Frontend codegen from /openapi.json produces TypeScript clients matching backend types exactly."
+    },
+    {
+      "number": 8,
+      "title": "Django ORM and Admin Productivity",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Django ORM and Admin Productivity** *(Level: Intermediate)*\n\nDjango's ORM maps models to tables with migrations tracking schema evolution. The admin site gives non-developers CRUD UI for free with customizable ModelAdmin classes. QuerySet API chains filter, exclude, select_related, and prefetch_related for efficient queries. Use Django for content-heavy apps, internal dashboards, and rapid MVP delivery.\n\nCode Reference:\n```python\nclass Article(models.Model):\n    title = models.CharField(max_length=200)\n    published = models.DateTimeField(auto_now_add=True)\n\nrecent = Article.objects.filter(title__icontains=\"python\").order_by(\"-published\")[:10]\n```\nWhat it shows: CharField maps to VARCHAR; slice limits queryset evaluation to ten rows.\n\n### What it actually is\nDjango is a batteries-included web framework with ORM, auth, admin, and templating.\n\n### When to use it\nUse when you need admin UI, user auth, and relational models without assembling pieces manually.\n\n### Where to use it\nCMS platforms, internal ops tools, e-commerce backends, and multi-app SaaS cores.\n\n### Real use example\nSupport staff update product descriptions via /admin without developer involvement.",
+      "key_takeaways": [
+        "Django is a batteries-included web framework with ORM, auth, admin, and templating.",
+        "Use when you need admin UI, user auth, and relational models without assembling pieces manually.",
+        "Support staff update product descriptions via /admin without developer involvement."
+      ],
+      "what_it_is": "Django is a batteries-included web framework with ORM, auth, admin, and templating.",
+      "when_to_use": "Use when you need admin UI, user auth, and relational models without assembling pieces manually.",
+      "where_to_use": "CMS platforms, internal ops tools, e-commerce backends, and multi-app SaaS cores.",
+      "real_use_example": "Support staff update product descriptions via /admin without developer involvement."
+    },
+    {
+      "number": 9,
+      "title": "asyncio and Concurrent I/O",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: asyncio and Concurrent I/O** *(Level: Intermediate)*\n\nasyncio event loop schedules coroutines cooperatively on a single thread. await yields control during I/O waits, allowing thousands of concurrent connections. Use httpx.AsyncClient and async database drivers—never block the loop with time.sleep. asyncio.gather runs independent coroutines concurrently and collects results.\n\nCode Reference:\n```python\nasync def fetch_all(urls: list[str]) -> list[str]:\n    async with httpx.AsyncClient(timeout=10) as client:\n        tasks = [client.get(url) for url in urls]\n        responses = await asyncio.gather(*tasks)\n        return [r.text for r in responses]\n```\nWhat it shows: AsyncClient reuses connections; gather fetches all URLs concurrently.\n\n### What it actually is\nasyncio enables high-concurrency I/O-bound Python without multithreading complexity.\n\n### When to use it\nUse async endpoints when calling external APIs, websockets, or async DB drivers.\n\n### Where to use it\nFastAPI services, chat servers, scrapers, and fan-out aggregation APIs.\n\n### Real use example\nA pricing API fetches ten vendor quotes in parallel, cutting latency from 5s to 600ms.",
+      "key_takeaways": [
+        "asyncio enables high-concurrency I/O-bound Python without multithreading complexity.",
+        "Use async endpoints when calling external APIs, websockets, or async DB drivers.",
+        "A pricing API fetches ten vendor quotes in parallel, cutting latency from 5s to 600ms."
+      ],
+      "what_it_is": "asyncio enables high-concurrency I/O-bound Python without multithreading complexity.",
+      "when_to_use": "Use async endpoints when calling external APIs, websockets, or async DB drivers.",
+      "where_to_use": "FastAPI services, chat servers, scrapers, and fan-out aggregation APIs.",
+      "real_use_example": "A pricing API fetches ten vendor quotes in parallel, cutting latency from 5s to 600ms."
+    },
+    {
+      "number": 10,
+      "title": "SQLAlchemy 2.0 Async Sessions",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: SQLAlchemy 2.0 Async Sessions** *(Level: Intermediate)*\n\nSQLAlchemy 2.0 unified Core and ORM with select() style queries. AsyncSession pairs with asyncpg for non-blocking PostgreSQL access in FastAPI. Explicit session scope per request prevents connection leaks in long-running apps. Alembic autogenerates migrations from model metadata changes.\n\nCode Reference:\n```python\nasync with async_session() as session:\n    result = await session.execute(select(User).where(User.active.is_(True)))\n    users = result.scalars().all()\n```\nWhat it shows: Async context manager commits/rolls back; select() replaces legacy query API.\n\n### What it actually is\nSQLAlchemy is Python's powerful SQL toolkit and ORM with sync and async modes.\n\n### When to use it\nUse with FastAPI or standalone services needing fine-grained SQL control.\n\n### Where to use it\nPostgreSQL-backed APIs, analytics ETL, and multi-database integrations.\n\n### Real use example\nAlembic migration adds index on users.email; deploy applies it before new code rolls out.",
+      "key_takeaways": [
+        "SQLAlchemy is Python's powerful SQL toolkit and ORM with sync and async modes.",
+        "Use with FastAPI or standalone services needing fine-grained SQL control.",
+        "Alembic migration adds index on users."
+      ],
+      "what_it_is": "SQLAlchemy is Python's powerful SQL toolkit and ORM with sync and async modes.",
+      "when_to_use": "Use with FastAPI or standalone services needing fine-grained SQL control.",
+      "where_to_use": "PostgreSQL-backed APIs, analytics ETL, and multi-database integrations.",
+      "real_use_example": "Alembic migration adds index on users.email; deploy applies it before new code rolls out."
+    },
+    {
+      "number": 11,
+      "title": "pytest Fixtures, Mocking, and Coverage",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: pytest Fixtures, Mocking, and Coverage** *(Level: Intermediate)*\n\nFixtures with scope='module' share expensive setup across tests in a file. monkeypatch and unittest.mock patch external HTTP calls and environment variables. pytest-asyncio marks async test functions for automatic loop management. Coverage.py highlights untested branches—aim for meaningful coverage, not 100% busywork.\n\nCode Reference:\n```python\n@pytest.fixture\ndef client(db_session):\n    app.dependency_overrides[get_db] = lambda: db_session\n    yield TestClient(app)\n    app.dependency_overrides.clear()\n```\nWhat it shows: Override DB dependency so tests hit in-memory SQLite without network.\n\n### What it actually is\npytest fixtures and mocks isolate units under test from external systems.\n\n### When to use it\nMock third-party APIs; use real DB containers for integration tests.\n\n### Where to use it\nEvery Python CI pipeline and CodeQuest project grading rubric.\n\n### Real use example\nCI fails when coverage drops below 85% on new pull requests.",
+      "key_takeaways": [
+        "pytest fixtures and mocks isolate units under test from external systems.",
+        "Mock third-party APIs; use real DB containers for integration tests.",
+        "CI fails when coverage drops below 85% on new pull requests."
+      ],
+      "what_it_is": "pytest fixtures and mocks isolate units under test from external systems.",
+      "when_to_use": "Mock third-party APIs; use real DB containers for integration tests.",
+      "where_to_use": "Every Python CI pipeline and CodeQuest project grading rubric.",
+      "real_use_example": "CI fails when coverage drops below 85% on new pull requests."
+    },
+    {
+      "number": 12,
+      "title": "Docker for Python Services",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Docker for Python Services** *(Level: Intermediate)*\n\nDocker images bundle Python, dependencies, and app code for reproducible runs. Multi-stage builds use a builder stage with compile deps and slim runtime stage. docker-compose orchestrates API + Postgres + Redis for local parity with production. Use .dockerignore to exclude .venv, __pycache__, and secrets from build context.\n\nCode Reference:\n```dockerfile\nFROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]\n```\nWhat it shows: Slim base reduces image size; uvicorn serves FastAPI on container port 8000.\n\n### What it actually is\nContainers package Python apps with exact dependency versions for any environment.\n\n### When to use it\nContainerize before deploying to cloud platforms or sharing with teammates.\n\n### Where to use it\nLocal dev stacks, CI test environments, and Kubernetes production workloads.\n\n### Real use example\nQA runs the exact same image SHA that production deployed yesterday.",
+      "key_takeaways": [
+        "Containers package Python apps with exact dependency versions for any environment.",
+        "Containerize before deploying to cloud platforms or sharing with teammates.",
+        "QA runs the exact same image SHA that production deployed yesterday."
+      ],
+      "what_it_is": "Containers package Python apps with exact dependency versions for any environment.",
+      "when_to_use": "Containerize before deploying to cloud platforms or sharing with teammates.",
+      "where_to_use": "Local dev stacks, CI test environments, and Kubernetes production workloads.",
+      "real_use_example": "QA runs the exact same image SHA that production deployed yesterday."
+    },
+    {
+      "number": 13,
+      "title": "Configuration and Twelve-Factor App Patterns",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Configuration and Twelve-Factor App Patterns** *(Level: Intermediate)*\n\nStore config in environment variables, not committed files. pydantic-settings loads and validates .env values at startup with clear errors. Separate dev, staging, and prod settings modules or use env-specific .env files locally only. Secrets belong in vaults—never log database URLs or API keys.\n\nCode Reference:\n```python\nclass Settings(BaseSettings):\n    model_config = SettingsConfigDict(env_file=\".env\")\n    database_url: PostgresDsn\n    jwt_secret: SecretStr\n\nsettings = Settings()\n```\nWhat it shows: SecretStr hides values in repr; invalid env fails fast at import time.\n\n### What it actually is\nExternalized config lets the same artifact run in any environment by changing env vars.\n\n### When to use it\nApply from first deploy; refactor hardcoded constants into settings immediately.\n\n### Where to use it\nCloud deployments, Docker Compose, and GitHub Actions secret injection.\n\n### Real use example\nRotating JWT secret requires only env update—no code change or rebuild.",
+      "key_takeaways": [
+        "Externalized config lets the same artifact run in any environment by changing env vars.",
+        "Apply from first deploy; refactor hardcoded constants into settings immediately.",
+        "Rotating JWT secret requires only env update—no code change or rebuild."
+      ],
+      "what_it_is": "Externalized config lets the same artifact run in any environment by changing env vars.",
+      "when_to_use": "Apply from first deploy; refactor hardcoded constants into settings immediately.",
+      "where_to_use": "Cloud deployments, Docker Compose, and GitHub Actions secret injection.",
+      "real_use_example": "Rotating JWT secret requires only env update—no code change or rebuild."
+    },
+    {
+      "number": 14,
+      "title": "Background Jobs with Celery",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Background Jobs with Celery** *(Level: Advanced)*\n\nLong-running tasks (email, reports, ML inference) belong outside HTTP request cycle. Celery workers consume tasks from Redis or RabbitMQ brokers asynchronously. Task retries with exponential backoff handle transient failures gracefully. Monitor queues with Flower; alert when backlog exceeds SLO thresholds.\n\nCode Reference:\n```python\n@celery_app.task(bind=True, max_retries=3)\ndef send_invoice(self, invoice_id: int):\n    try:\n        billing.send(invoice_id)\n    except SMTPException as exc:\n        raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))\n```\nWhat it shows: bind=True gives task instance for retry; countdown doubles each attempt.\n\n### What it actually is\nTask queues decouple web requests from slow or unreliable background work.\n\n### When to use it\nUse when operations exceed HTTP timeout or need scheduled/recurring execution.\n\n### Where to use it\nBilling, email campaigns, data exports, and image processing pipelines.\n\n### Real use example\nUser gets 202 Accepted instantly while invoice PDF generates in a worker.",
+      "key_takeaways": [
+        "Task queues decouple web requests from slow or unreliable background work.",
+        "Use when operations exceed HTTP timeout or need scheduled/recurring execution.",
+        "User gets 202 Accepted instantly while invoice PDF generates in a worker."
+      ],
+      "what_it_is": "Task queues decouple web requests from slow or unreliable background work.",
+      "when_to_use": "Use when operations exceed HTTP timeout or need scheduled/recurring execution.",
+      "where_to_use": "Billing, email campaigns, data exports, and image processing pipelines.",
+      "real_use_example": "User gets 202 Accepted instantly while invoice PDF generates in a worker."
+    },
+    {
+      "number": 15,
+      "title": "OAuth2, JWT, and API Security",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: OAuth2, JWT, and API Security** *(Level: Advanced)*\n\nOAuth2 authorization code flow delegates login to identity providers. JWT access tokens carry claims (sub, roles, exp) signed with HS256 or RS256. Validate exp and aud on every request; refresh tokens rotate with reuse detection. Rate limiting and CORS policies protect public endpoints from abuse.\n\nCode Reference:\n```python\ndef get_current_user(token: str = Depends(oauth2_scheme)) -> User:\n    payload = jwt.decode(token, settings.jwt_secret.get_secret_value(), algorithms=[\"HS256\"])\n    return user_service.get(payload[\"sub\"])\n```\nWhat it shows: Dependency extracts bearer token and validates signature before handler executes.\n\n### What it actually is\nToken-based auth secures stateless APIs consumed by SPAs and mobile apps.\n\n### When to use it\nImplement on any API exposing user-specific or mutating operations.\n\n### Where to use it\nSaaS dashboards, partner APIs, and microservice authorization.\n\n### Real use example\nCompromised token expires in 15 minutes; refresh rotation blocks replay attacks.",
+      "key_takeaways": [
+        "Token-based auth secures stateless APIs consumed by SPAs and mobile apps.",
+        "Implement on any API exposing user-specific or mutating operations.",
+        "Compromised token expires in 15 minutes; refresh rotation blocks replay attacks."
+      ],
+      "what_it_is": "Token-based auth secures stateless APIs consumed by SPAs and mobile apps.",
+      "when_to_use": "Implement on any API exposing user-specific or mutating operations.",
+      "where_to_use": "SaaS dashboards, partner APIs, and microservice authorization.",
+      "real_use_example": "Compromised token expires in 15 minutes; refresh rotation blocks replay attacks."
+    },
+    {
+      "number": 16,
+      "title": "Observability with structlog and OpenTelemetry",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Observability with structlog and OpenTelemetry** *(Level: Advanced)*\n\nStructured logs (JSON) parse reliably in ELK, Loki, or CloudWatch. structlog binds context (request_id, user_id) per request via contextvars. OpenTelemetry auto-instruments FastAPI/Django and exports traces to OTLP collectors. Correlate logs and traces with shared trace_id for faster incident response.\n\nCode Reference:\n```python\nlog.info(\"order_created\", order_id=order.id, amount=str(order.total), trace_id=trace.get_current_span().get_span_context().trace_id)\n```\nWhat it shows: Keyword arguments become JSON fields searchable in log aggregators.\n\n### What it actually is\nObservability instrumentation makes production Python services debuggable at scale.\n\n### When to use it\nAdd before launch; retrofitting under outage pressure is painful and incomplete.\n\n### Where to use it\nProduction APIs, SLO dashboards, and on-call rotations.\n\n### Real use example\nOn-call filters Loki for trace_id from user report and sees exact DB slow query span.",
+      "key_takeaways": [
+        "Observability instrumentation makes production Python services debuggable at scale.",
+        "Add before launch; retrofitting under outage pressure is painful and incomplete.",
+        "On-call filters Loki for trace_id from user report and sees exact DB slow query span."
+      ],
+      "what_it_is": "Observability instrumentation makes production Python services debuggable at scale.",
+      "when_to_use": "Add before launch; retrofitting under outage pressure is painful and incomplete.",
+      "where_to_use": "Production APIs, SLO dashboards, and on-call rotations.",
+      "real_use_example": "On-call filters Loki for trace_id from user report and sees exact DB slow query span."
+    },
+    {
+      "number": 17,
+      "title": "Performance Profiling and Optimization",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Performance Profiling and Optimization** *(Level: Advanced)*\n\nMeasure before optimizing—py-spy samples production processes with low overhead. Profile ORM queries; N+1 patterns dominate Python web latency more than interpreter speed. Cache expensive reads with Redis TTL; invalidate on writes explicitly. Use orjson and async drivers for hot paths after profiling confirms bottlenecks.\n\nCode Reference:\n```bash\npython -m scalene app/main.py  # CPU + memory line profiler\n# or: py-spy record -o profile.svg -- python -m uvicorn main:app\n```\nWhat it shows: Scalene highlights line-level CPU and memory; py-spy works on running prod processes.\n\n### What it actually is\nProfiling identifies actual bottlenecks instead of guessing where time is spent.\n\n### When to use it\nProfile when P95 latency exceeds SLO or CPU cost spikes after a release.\n\n### Where to use it\nHigh-traffic APIs, batch jobs, and cost-sensitive cloud workloads.\n\n### Real use example\nAdding selectinload cut query count from 201 to 3, dropping P95 from 2s to 180ms.",
+      "key_takeaways": [
+        "Profiling identifies actual bottlenecks instead of guessing where time is spent.",
+        "Profile when P95 latency exceeds SLO or CPU cost spikes after a release.",
+        "Adding selectinload cut query count from 201 to 3, dropping P95 from 2s to 180ms."
+      ],
+      "what_it_is": "Profiling identifies actual bottlenecks instead of guessing where time is spent.",
+      "when_to_use": "Profile when P95 latency exceeds SLO or CPU cost spikes after a release.",
+      "where_to_use": "High-traffic APIs, batch jobs, and cost-sensitive cloud workloads.",
+      "real_use_example": "Adding selectinload cut query count from 201 to 3, dropping P95 from 2s to 180ms."
+    },
+    {
+      "number": 18,
+      "title": "Production Deployment and API Versioning",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Production Deployment and API Versioning** *(Level: Advanced)*\n\nVersion APIs via URL (/v1/), header (Accept-Version), or subdomain—pick one strategy. Blue-green deploys swap traffic between identical environments with zero downtime. Health checks and graceful shutdown (SIGTERM handling) drain in-flight requests. Document deprecation timelines; sunset old versions with metrics proving low traffic.\n\nCode Reference:\n```python\napp = FastAPI()\nv1 = APIRouter(prefix=\"/v1\")\nv2 = APIRouter(prefix=\"/v2\")\napp.include_router(v1)\napp.include_router(v2)\n```\nWhat it shows: Separate routers isolate breaking changes; clients migrate to /v2 at their pace.\n\n### What it actually is\nDeployment discipline and API versioning prevent breaking clients during rapid iteration.\n\n### When to use it\nApply versioning before external clients integrate; deploy with health checks from day one.\n\n### Where to use it\nPublic APIs, mobile app backends, and partner integrations.\n\n### Real use example\nMobile app v3 calls /v2 while legacy v1 serves 2% traffic until sunset date.",
+      "key_takeaways": [
+        "Deployment discipline and API versioning prevent breaking clients during rapid iteration.",
+        "Apply versioning before external clients integrate; deploy with health checks from day one.",
+        "Mobile app v3 calls /v2 while legacy v1 serves 2% traffic until sunset date."
+      ],
+      "what_it_is": "Deployment discipline and API versioning prevent breaking clients during rapid iteration.",
+      "when_to_use": "Apply versioning before external clients integrate; deploy with health checks from day one.",
+      "where_to_use": "Public APIs, mobile app backends, and partner integrations.",
+      "real_use_example": "Mobile app v3 calls /v2 while legacy v1 serves 2% traffic until sunset date."
+    }
+  ],
+  "chapter_count": 18
+}

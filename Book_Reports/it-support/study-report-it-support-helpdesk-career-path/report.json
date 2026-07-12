@@ -1,0 +1,603 @@
+{
+  "id": "study-report-it-support-helpdesk-career-path",
+  "title": "Study Report: IT Support / Helpdesk — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "it-support",
+  "family_name": "IT Support / Helpdesk",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "Enterprise IT support career path covering CompTIA A+ hardware and software concepts, structured troubleshooting, Windows and Linux administration, TCP/IP networking, ticketing systems, remote support, Active Directory basics, and ITIL service management. Built from Microsoft Learn, CompTIA objectives, and Ubuntu/Linux documentation for hands-on helpdesk work.",
+  "skill_stack": {
+    "core": [
+      "CompTIA A+ troubleshooting methodology",
+      "Windows 10/11 and Linux CLI administration",
+      "TCP/IP, DNS, DHCP, VPN diagnostics",
+      "Ticketing, SLA tracking, and escalation",
+      "ITIL incident, problem, and change basics",
+      "Customer communication and documentation"
+    ],
+    "tools": [
+      "ServiceNow / Jira Service Management",
+      "Active Directory Users & Computers",
+      "PowerShell and Bash",
+      "TeamViewer / Quick Assist / RDP",
+      "Wireshark / ping / tracert / nslookup"
+    ],
+    "platforms": [
+      "Windows Server",
+      "Ubuntu Linux",
+      "Microsoft 365",
+      "Azure AD"
+    ],
+    "certifications": [
+      "CompTIA A+",
+      "CompTIA Network+",
+      "ITIL 4 Foundation"
+    ]
+  },
+  "sources": [
+    "https://learn.microsoft.com/windows/",
+    "https://learn.microsoft.com/microsoft-365/",
+    "https://learn.microsoft.com/training/paths/az-900-describe-cloud-concepts/",
+    "https://www.comptia.org/certifications/a",
+    "https://ubuntu.com/tutorials/command-line-for-beginners",
+    "https://www.axelos.com/certifications/itil-service-management/itil-4-foundation"
+  ],
+  "recommended_books": [
+    {
+      "title": "CompTIA A+ Complete Study Guide",
+      "author": "Quentin Docter et al.",
+      "level": "Beginner",
+      "focus": "Hardware, OS, networking, and troubleshooting for helpdesk roles.",
+      "url": "https://www.wiley.com/en-us/CompTIA+A%2B+Complete+Study+Guide%2C+5th+Edition-p-9781119863747",
+      "free_online": false
+    },
+    {
+      "title": "The Practice of System and Network Administration",
+      "author": "Thomas Limoncelli et al.",
+      "level": "Intermediate",
+      "focus": "Enterprise IT operations, monitoring, and incident handling.",
+      "url": "https://the-sysadmin-book.com/",
+      "free_online": false
+    },
+    {
+      "title": "Windows Client Documentation",
+      "author": "Microsoft Learn",
+      "level": "Beginner",
+      "focus": "Windows 11 administration, troubleshooting, and Intune basics.",
+      "url": "https://learn.microsoft.com/windows/",
+      "free_online": true
+    },
+    {
+      "title": "ITIL 4 Foundation",
+      "author": "AXELOS",
+      "level": "Beginner",
+      "focus": "IT service management framework used by global helpdesks.",
+      "url": "https://www.axelos.com/certifications/itil-service-management/itil-4-foundation",
+      "free_online": false
+    },
+    {
+      "title": "The Linux Command Line",
+      "author": "William Shotts",
+      "level": "Beginner",
+      "focus": "Free book for Linux shell, files, permissions, and scripting.",
+      "url": "https://linuxcommand.org/tlcl.php",
+      "free_online": true
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Helpdesk Ticket Simulation Lab",
+      "level": "Beginner",
+      "duration": "1–2 weeks",
+      "overview": "Process 20 simulated tickets: triage, troubleshoot, document resolution, calculate SLA metrics.",
+      "objectives": [
+        "Triage 20 tickets by priority",
+        "Document resolution steps",
+        "Calculate average resolution time",
+        "Create KB article"
+      ],
+      "phases": [
+        {
+          "name": "Triage",
+          "description": "Priority matrix.",
+          "tasks": [
+            "P1-P4 classification",
+            "Assignment"
+          ],
+          "deliverable": "Triage spreadsheet"
+        },
+        {
+          "name": "Resolve",
+          "description": "Fix 20 scenarios.",
+          "tasks": [
+            "Password reset",
+            "Network",
+            "Software"
+          ],
+          "deliverable": "Resolution log"
+        },
+        {
+          "name": "KB",
+          "description": "Write 3 KB articles.",
+          "tasks": [
+            "Step-by-step",
+            "Screenshots"
+          ],
+          "deliverable": "KB articles PDF"
+        },
+        {
+          "name": "Metrics",
+          "description": "SLA report.",
+          "tasks": [
+            "Avg resolution",
+            "First contact rate"
+          ],
+          "deliverable": "SLA dashboard"
+        }
+      ],
+      "skills_applied": [
+        "Troubleshooting",
+        "Documentation",
+        "SLA"
+      ],
+      "tools": [
+        "Ticketing template",
+        "KB template"
+      ],
+      "deliverables": [
+        "20 ticket resolutions",
+        "3 KB articles",
+        "SLA report"
+      ]
+    },
+    {
+      "title": "Small Office IT Setup",
+      "level": "Intermediate",
+      "duration": "2–3 weeks",
+      "overview": "Design and document network for 15 users: IP plan, Active Directory, backup, security baseline.",
+      "objectives": [
+        "Network diagram with IP addressing",
+        "AD user/group structure",
+        "Backup policy document",
+        "Security baseline checklist"
+      ],
+      "phases": [
+        {
+          "name": "Network",
+          "description": "IP plan and diagram.",
+          "tasks": [
+            "Subnet",
+            "VLAN",
+            "Firewall rules"
+          ],
+          "deliverable": "Network diagram Visio/draw.io"
+        },
+        {
+          "name": "AD",
+          "description": "User and group design.",
+          "tasks": [
+            "OUs",
+            "GPO basics"
+          ],
+          "deliverable": "AD structure doc"
+        },
+        {
+          "name": "Backup",
+          "description": "3-2-1 backup policy.",
+          "tasks": [
+            "Schedule",
+            "Restore test"
+          ],
+          "deliverable": "Backup policy PDF"
+        },
+        {
+          "name": "Security",
+          "description": "Baseline hardening.",
+          "tasks": [
+            "MFA",
+            "Patch policy",
+            "AV"
+          ],
+          "deliverable": "Security checklist signed off"
+        }
+      ],
+      "skills_applied": [
+        "Networking",
+        "AD",
+        "Security"
+      ],
+      "tools": [
+        "Windows Server docs",
+        "Network tools"
+      ],
+      "deliverables": [
+        "Network diagram",
+        "AD design",
+        "Backup policy",
+        "Security baseline"
+      ]
+    },
+    {
+      "title": "Incident Response Tabletop Exercise",
+      "level": "Advanced",
+      "duration": "3–4 weeks",
+      "overview": "Simulate ransomware incident: detect, contain, eradicate, recover, and write post-incident report.",
+      "objectives": [
+        "Incident response plan document",
+        "Tabletop exercise with timeline",
+        "Containment playbook",
+        "Post-incident report with lessons learned"
+      ],
+      "phases": [
+        {
+          "name": "Plan",
+          "description": "IR plan document.",
+          "tasks": [
+            "Roles",
+            "Escalation",
+            "Contacts"
+          ],
+          "deliverable": "IR plan PDF"
+        },
+        {
+          "name": "Simulate",
+          "description": "Ransomware scenario.",
+          "tasks": [
+            "Detection",
+            "Isolation steps"
+          ],
+          "deliverable": "Exercise timeline"
+        },
+        {
+          "name": "Contain",
+          "description": "Execute containment.",
+          "tasks": [
+            "Network isolate",
+            "Backup restore"
+          ],
+          "deliverable": "Containment log"
+        },
+        {
+          "name": "Report",
+          "description": "Post-incident review.",
+          "tasks": [
+            "Root cause",
+            "Improvements"
+          ],
+          "deliverable": "PIR document"
+        }
+      ],
+      "skills_applied": [
+        "Incident response",
+        "Security",
+        "Documentation"
+      ],
+      "tools": [
+        "NIST IR framework",
+        "ITIL"
+      ],
+      "deliverables": [
+        "IR plan",
+        "Exercise timeline",
+        "PIR document",
+        "Updated playbook"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "IT Support Role and Service Desk Tiers",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: IT Support Role and Service Desk Tiers** *(Level: Beginner)*\n\nIT support keeps employees productive by resolving hardware, software, and access issues. Tier 1 handles password resets, software installs, and common errors. Tier 2 tackles network, server, and application issues. Tier 3 and engineering own root cause fixes. Every interaction requires empathy, clear language, and accurate ticket notes.\n\nCode Reference:\n```powershell\n# Tier 1: intake -> triage -> resolve -> document\n# Tier 2: escalate with full context and logs attached\n```\nWhat it shows: Support tiers define scope and escalation paths.\n\n### What it actually is\nIT support is frontline technical assistance for organizational users.\n\n### When to use it\nWhen users cannot work due to technology failures.\n\n### Where to use it\nCorporate helpdesks, schools, hospitals, MSPs, and SaaS internal IT.\n\n### Real use example\nA teacher cannot open PDF reports; Tier 1 confirms browser cache issue, clears it, and closes the ticket in 12 minutes.",
+      "key_takeaways": [
+        "IT support is frontline technical assistance for organizational users.",
+        "When users cannot work due to technology failures.",
+        "A teacher cannot open PDF reports; Tier 1 confirms browser cache issue, clears it, and closes the ticket in 12 minutes."
+      ],
+      "what_it_is": "IT support is frontline technical assistance for organizational users.",
+      "when_to_use": "When users cannot work due to technology failures.",
+      "where_to_use": "Corporate helpdesks, schools, hospitals, MSPs, and SaaS internal IT.",
+      "real_use_example": "A teacher cannot open PDF reports; Tier 1 confirms browser cache issue, clears it, and closes the ticket in 12 minutes."
+    },
+    {
+      "number": 2,
+      "title": "CompTIA A+ Hardware Fundamentals",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: CompTIA A+ Hardware Fundamentals** *(Level: Beginner)*\n\nA+ Core 1 covers motherboards, CPU, RAM, storage (SSD/HDD/NVMe), power supplies, and peripherals. Support techs identify failed components, reseat cables, run diagnostics, and order replacements. Understand form factors, POST beep codes, and safe ESD handling.\n\nCode Reference:\n```powershell\nGet-CimInstance Win32_PhysicalMemory | Select Capacity, Speed\nGet-PhysicalDisk | Select FriendlyName, MediaType, HealthStatus\n```\nWhat it shows: PowerShell queries RAM and disk health on Windows endpoints.\n\n### What it actually is\nHardware fundamentals are the physical layer of troubleshooting.\n\n### When to use it\nWhen devices fail POST, overheat, or show storage errors.\n\n### Where to use it\nDesktop support, laptop repair, and datacenter walk-throughs.\n\n### Real use example\nLaptop won't boot; tech reseats RAM stick after beep code chart points to memory failure.",
+      "key_takeaways": [
+        "Hardware fundamentals are the physical layer of troubleshooting.",
+        "When devices fail POST, overheat, or show storage errors.",
+        "Laptop won't boot; tech reseats RAM stick after beep code chart points to memory failure."
+      ],
+      "what_it_is": "Hardware fundamentals are the physical layer of troubleshooting.",
+      "when_to_use": "When devices fail POST, overheat, or show storage errors.",
+      "where_to_use": "Desktop support, laptop repair, and datacenter walk-throughs.",
+      "real_use_example": "Laptop won't boot; tech reseats RAM stick after beep code chart points to memory failure."
+    },
+    {
+      "number": 3,
+      "title": "CompTIA A+ Software and OS Concepts",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: CompTIA A+ Software and OS Concepts** *(Level: Beginner)*\n\nCore 2 covers Windows editions, macOS basics, Linux distributions, mobile OS, and application installation. Know 32 vs 64-bit, driver management, Windows Update, Task Manager, and safe mode. Image deployment and user profile migration are common enterprise tasks.\n\nCode Reference:\n```powershell\nGet-Process | Sort-Object CPU -Descending | Select -First 10\nGet-WmiObject Win32_OperatingSystem | Select Caption, Version\n```\nWhat it shows: Identify runaway processes and confirm OS version before patching.\n\n### What it actually is\nOS concepts explain how software runs on hardware.\n\n### When to use it\nDuring malware cleanup, performance issues, and upgrade planning.\n\n### Where to use it\nAll endpoint support roles.\n\n### Real use example\nPC runs slow; support finds Chrome using 4 GB RAM and advises tab limits plus extension audit.",
+      "key_takeaways": [
+        "OS concepts explain how software runs on hardware.",
+        "During malware cleanup, performance issues, and upgrade planning.",
+        "PC runs slow; support finds Chrome using 4 GB RAM and advises tab limits plus extension audit."
+      ],
+      "what_it_is": "OS concepts explain how software runs on hardware.",
+      "when_to_use": "During malware cleanup, performance issues, and upgrade planning.",
+      "where_to_use": "All endpoint support roles.",
+      "real_use_example": "PC runs slow; support finds Chrome using 4 GB RAM and advises tab limits plus extension audit."
+    },
+    {
+      "number": 4,
+      "title": "Windows Administration for Support Techs",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Windows Administration for Support Techs** *(Level: Beginner)*\n\nSupport techs reset passwords in Active Directory, manage local admins, check Event Viewer, restart services, and use Settings vs Control Panel. PowerShell cmdlets like Get-Service, Restart-Service, and Get-EventLog speed repetitive tasks.\n\nCode Reference:\n```powershell\nGet-ADUser -Identity jsmith -Properties PasswordLastSet, LockedOut\nUnlock-ADAccount -Identity jsmith\n```\nWhat it shows: Check lockout state and unlock without unnecessary password reset.\n\n### What it actually is\nWindows admin skills let support fix account and service issues locally and in AD.\n\n### When to use it\nDaily password, printer, and software ticket work.\n\n### Where to use it\nDomain-joined corporate laptops and VDI pools.\n\n### Real use example\nUser locked out after vacation; support unlocks account and confirms MFA device is registered.",
+      "key_takeaways": [
+        "Windows admin skills let support fix account and service issues locally and in AD.",
+        "Daily password, printer, and software ticket work.",
+        "User locked out after vacation; support unlocks account and confirms MFA device is registered."
+      ],
+      "what_it_is": "Windows admin skills let support fix account and service issues locally and in AD.",
+      "when_to_use": "Daily password, printer, and software ticket work.",
+      "where_to_use": "Domain-joined corporate laptops and VDI pools.",
+      "real_use_example": "User locked out after vacation; support unlocks account and confirms MFA device is registered."
+    },
+    {
+      "number": 5,
+      "title": "Linux Command Line for Support",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Linux Command Line for Support** *(Level: Beginner)*\n\nMany servers and cloud VMs run Linux. Support uses ssh, ls, cd, cat, grep, systemctl, journalctl, and tail -f for log review. File permissions (chmod/chown) and package managers (apt, yum) fix common service failures.\n\nCode Reference:\n```bash\nssh admin@server01\nsudo systemctl status nginx\nsudo journalctl -u nginx --since '1 hour ago'\n```\nWhat it shows: Remote session checks web server status and recent error logs.\n\n### What it actually is\nLinux CLI is essential for server-side support and DevOps handoffs.\n\n### When to use it\nWhen applications run on Ubuntu/RHEL in AWS or Azure.\n\n### Where to use it\nWeb app support, database servers, and container hosts.\n\n### Real use example\nWebsite down; support ssh in, finds nginx stopped, runs systemctl start nginx, verifies with curl.",
+      "key_takeaways": [
+        "Linux CLI is essential for server-side support and DevOps handoffs.",
+        "When applications run on Ubuntu/RHEL in AWS or Azure.",
+        "Website down; support ssh in, finds nginx stopped, runs systemctl start nginx, verifies with curl."
+      ],
+      "what_it_is": "Linux CLI is essential for server-side support and DevOps handoffs.",
+      "when_to_use": "When applications run on Ubuntu/RHEL in AWS or Azure.",
+      "where_to_use": "Web app support, database servers, and container hosts.",
+      "real_use_example": "Website down; support ssh in, finds nginx stopped, runs systemctl start nginx, verifies with curl."
+    },
+    {
+      "number": 6,
+      "title": "Customer Communication and Soft Skills",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Customer Communication and Soft Skills** *(Level: Beginner)*\n\nTechnical skill alone is insufficient. Use active listening, avoid jargon with non-technical users, set time expectations, and confirm resolution. Document every step in the ticket so the next shift can continue. De-escalate frustrated callers with empathy and status updates.\n\nCode Reference:\n```text\n# Ticket note template:\n# Issue: ... | Steps tried: ... | Resolution: ... | User confirmed: Y/N\n```\nWhat it shows: Structured notes improve handoffs and SLA reporting.\n\n### What it actually is\nSoft skills turn technical fixes into positive user experiences.\n\n### When to use it\nEvery user-facing support interaction.\n\n### Where to use it\nPhone, chat, walk-up bar, and remote support.\n\n### Real use example\nExecutive upset about email delay; tech explains maintenance window, offers mobile workaround, schedules follow-up.",
+      "key_takeaways": [
+        "Soft skills turn technical fixes into positive user experiences.",
+        "Every user-facing support interaction.",
+        "Executive upset about email delay; tech explains maintenance window, offers mobile workaround, schedules follow-up."
+      ],
+      "what_it_is": "Soft skills turn technical fixes into positive user experiences.",
+      "when_to_use": "Every user-facing support interaction.",
+      "where_to_use": "Phone, chat, walk-up bar, and remote support.",
+      "real_use_example": "Executive upset about email delay; tech explains maintenance window, offers mobile workaround, schedules follow-up."
+    },
+    {
+      "number": 7,
+      "title": "Structured Troubleshooting Methodology",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Structured Troubleshooting Methodology** *(Level: Intermediate)*\n\nFollow identify, establish theory, test, plan, implement, verify, document. CompTIA emphasizes dividing problems (hardware vs software vs network) and checking simplest causes first (cables, reboot, recent changes). Never skip verification with the user.\n\nCode Reference:\n```text\n1. Reproduce  2. Isolate variable  3. Test hypothesis  4. Verify fix  5. Root cause note\n```\nWhat it shows: Repeatable methodology prevents random guessing.\n\n### What it actually is\nStructured troubleshooting is a systematic diagnostic process.\n\n### When to use it\nEvery non-trivial incident.\n\n### Where to use it\nTier 1 and Tier 2 daily work.\n\n### Real use example\nOutlook sync fails only on Wi-Fi; tech disables VPN split tunnel conflict and confirms calendar sync.",
+      "key_takeaways": [
+        "Structured troubleshooting is a systematic diagnostic process.",
+        "Every non-trivial incident.",
+        "Outlook sync fails only on Wi-Fi; tech disables VPN split tunnel conflict and confirms calendar sync."
+      ],
+      "what_it_is": "Structured troubleshooting is a systematic diagnostic process.",
+      "when_to_use": "Every non-trivial incident.",
+      "where_to_use": "Tier 1 and Tier 2 daily work.",
+      "real_use_example": "Outlook sync fails only on Wi-Fi; tech disables VPN split tunnel conflict and confirms calendar sync."
+    },
+    {
+      "number": 8,
+      "title": "TCP/IP, DNS, and DHCP Essentials",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: TCP/IP, DNS, and DHCP Essentials** *(Level: Intermediate)*\n\nUnderstand IPv4 addressing, subnet masks, default gateway, and DHCP lease renewal. DNS translates names to IPs; stale DNS causes 'site not found' after migrations. Tools: ipconfig /all, ping, tracert, nslookup, and Test-NetConnection.\n\nCode Reference:\n```powershell\nipconfig /all\nnslookup codequest.app\nTest-NetConnection codequest.app -Port 443\n```\nWhat it shows: Full stack check from IP config through DNS to HTTPS port.\n\n### What it actually is\nNetworking fundamentals explain most connectivity tickets.\n\n### When to use it\nCannot reach internal apps, websites, or VPN resources.\n\n### Where to use it\nRemote work, office LAN, and hybrid cloud access.\n\n### Real use example\nAfter datacenter move, users hit old IP; flushing DNS and verifying A record fixes access.",
+      "key_takeaways": [
+        "Networking fundamentals explain most connectivity tickets.",
+        "Cannot reach internal apps, websites, or VPN resources.",
+        "After datacenter move, users hit old IP; flushing DNS and verifying A record fixes access."
+      ],
+      "what_it_is": "Networking fundamentals explain most connectivity tickets.",
+      "when_to_use": "Cannot reach internal apps, websites, or VPN resources.",
+      "where_to_use": "Remote work, office LAN, and hybrid cloud access.",
+      "real_use_example": "After datacenter move, users hit old IP; flushing DNS and verifying A record fixes access."
+    },
+    {
+      "number": 9,
+      "title": "Remote Support Tools and VPN",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Remote Support Tools and VPN** *(Level: Intermediate)*\n\nRemote tools include Quick Assist, TeamViewer, RDP, and SSH. VPN connects users to corporate networks; split tunnel vs full tunnel affects performance and security. Always obtain user consent before remote control.\n\nCode Reference:\n```powershell\nmstsc /v:workstation-42\n# Or: ssh -L 8080:localhost:80 jump-host\n```\nWhat it shows: RDP for Windows; SSH tunnel for secure port forwarding.\n\n### What it actually is\nRemote support enables fix-without-truck-roll.\n\n### When to use it\nWork-from-home and branch office scenarios.\n\n### Where to use it\nGlobal enterprises and MSP remote desks.\n\n### Real use example\nField sales rep cannot reach CRM; support confirms VPN client outdated, pushes new profile.",
+      "key_takeaways": [
+        "Remote support enables fix-without-truck-roll.",
+        "Work-from-home and branch office scenarios.",
+        "Field sales rep cannot reach CRM; support confirms VPN client outdated, pushes new profile."
+      ],
+      "what_it_is": "Remote support enables fix-without-truck-roll.",
+      "when_to_use": "Work-from-home and branch office scenarios.",
+      "where_to_use": "Global enterprises and MSP remote desks.",
+      "real_use_example": "Field sales rep cannot reach CRM; support confirms VPN client outdated, pushes new profile."
+    },
+    {
+      "number": 10,
+      "title": "Ticketing Systems and SLA Management",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Ticketing Systems and SLA Management** *(Level: Intermediate)*\n\nTickets track priority (P1-P4), category, assignment group, and SLA clocks (response vs resolution). Breached SLAs escalate automatically. Good categorization enables trend reporting and problem management.\n\nCode Reference:\n```text\nPriority = f(impact, urgency)\nP1: many users / critical app down\nP4: single user / low impact\n```\nWhat it shows: Impact × urgency matrix drives priority.\n\n### What it actually is\nTicketing is the system of record for IT support work.\n\n### When to use it\nAll professional IT organizations.\n\n### Where to use it\nServiceNow, Jira SM, Zendesk, Freshservice.\n\n### Real use example\nEmail outage for 200 users logged P1; SLA page fires on-call engineer within 15 minutes.",
+      "key_takeaways": [
+        "Ticketing is the system of record for IT support work.",
+        "All professional IT organizations.",
+        "Email outage for 200 users logged P1; SLA page fires on-call engineer within 15 minutes."
+      ],
+      "what_it_is": "Ticketing is the system of record for IT support work.",
+      "when_to_use": "All professional IT organizations.",
+      "where_to_use": "ServiceNow, Jira SM, Zendesk, Freshservice.",
+      "real_use_example": "Email outage for 200 users logged P1; SLA page fires on-call engineer within 15 minutes."
+    },
+    {
+      "number": 11,
+      "title": "Active Directory and Account Management",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Active Directory and Account Management** *(Level: Intermediate)*\n\nAD stores users, groups, computers, and Group Policy. Support creates/disables accounts, resets passwords, adds group membership, and troubleshoots GPO application with gpresult. Azure AD Connect syncs hybrid identities.\n\nCode Reference:\n```powershell\nGet-ADGroupMember 'VPN-Users'\ngpresult /R /SCOPE USER\n```\nWhat it shows: Verify group membership and applied GPO on user login.\n\n### What it actually is\nActive Directory is the identity backbone of Windows enterprises.\n\n### When to use it\nOnboarding, offboarding, and access issues.\n\n### Where to use it\nHybrid Microsoft 365 environments.\n\n### Real use example\nNew hire missing SharePoint access; support adds to SG-Finance-Users, user logs off/on, access works.",
+      "key_takeaways": [
+        "Active Directory is the identity backbone of Windows enterprises.",
+        "Onboarding, offboarding, and access issues.",
+        "New hire missing SharePoint access; support adds to SG-Finance-Users, user logs off/on, access works."
+      ],
+      "what_it_is": "Active Directory is the identity backbone of Windows enterprises.",
+      "when_to_use": "Onboarding, offboarding, and access issues.",
+      "where_to_use": "Hybrid Microsoft 365 environments.",
+      "real_use_example": "New hire missing SharePoint access; support adds to SG-Finance-Users, user logs off/on, access works."
+    },
+    {
+      "number": 12,
+      "title": "ITIL Service Management Basics",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: ITIL Service Management Basics** *(Level: Intermediate)*\n\nITIL 4 defines value co-creation through services. Key practices: incident (restore service), problem (root cause), change (controlled modification), and request fulfillment. Service catalog lists standard offerings; CMDB supports impact analysis.\n\nCode Reference:\n```text\nIncident -> (workaround) -> Problem -> Known Error -> Change -> Release\n```\nWhat it shows: Practice chain from firefight to permanent fix.\n\n### What it actually is\nITIL provides common language for IT service delivery.\n\n### When to use it\nMature IT departments aligning support with business outcomes.\n\n### Where to use it\nEnterprises, government, and regulated industries.\n\n### Real use example\nRecurring printer driver crash becomes problem record; known error published until patch change.",
+      "key_takeaways": [
+        "ITIL provides common language for IT service delivery.",
+        "Mature IT departments aligning support with business outcomes.",
+        "Recurring printer driver crash becomes problem record; known error published until patch change."
+      ],
+      "what_it_is": "ITIL provides common language for IT service delivery.",
+      "when_to_use": "Mature IT departments aligning support with business outcomes.",
+      "where_to_use": "Enterprises, government, and regulated industries.",
+      "real_use_example": "Recurring printer driver crash becomes problem record; known error published until patch change."
+    },
+    {
+      "number": 13,
+      "title": "Security Basics for Support Staff",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Security Basics for Support Staff** *(Level: Intermediate)*\n\nSupport is a phishing target with elevated credentials. Verify caller identity before password resets. Recognize social engineering. Enforce MFA enrollment. Never share admin passwords. Report suspicious emails to SOC.\n\nCode Reference:\n```text\n# Before reset: verify employee ID + manager approval for VIP accounts\n```\nWhat it shows: Identity verification prevents account takeover via fake support calls.\n\n### What it actually is\nSecurity-aware support reduces insider-threat and social-engineering risk.\n\n### When to use it\nEvery password reset and remote session.\n\n### Where to use it\nHelpdesks with AD and privileged tool access.\n\n### Real use example\nAttacker impersonates CFO; tech follows callback procedure and blocks attempt.",
+      "key_takeaways": [
+        "Security-aware support reduces insider-threat and social-engineering risk.",
+        "Every password reset and remote session.",
+        "Attacker impersonates CFO; tech follows callback procedure and blocks attempt."
+      ],
+      "what_it_is": "Security-aware support reduces insider-threat and social-engineering risk.",
+      "when_to_use": "Every password reset and remote session.",
+      "where_to_use": "Helpdesks with AD and privileged tool access.",
+      "real_use_example": "Attacker impersonates CFO; tech follows callback procedure and blocks attempt."
+    },
+    {
+      "number": 14,
+      "title": "PowerShell Automation for Helpdesk",
+      "topic": "automation",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: PowerShell Automation for Helpdesk** *(Level: Advanced)*\n\nAutomate onboarding: create AD user, assign groups, create mailbox, add license. Scheduled scripts check disk space, stale accounts, and expired passwords. Use approved script repository and logging.\n\nCode Reference:\n```powershell\n$users = Import-Csv new_hires.csv\nforeach ($u in $users) {\n  New-ADUser -Name $u.Name -SamAccountName $u.Sam -Enabled $true\n}\n```\nWhat it shows: Bulk user creation from HR feed reduces manual errors.\n\n### What it actually is\nPowerShell automation scales Tier 1 repetitive tasks.\n\n### When to use it\nOnboarding batches, health checks, and reporting.\n\n### Where to use it\nMicrosoft-centric enterprises.\n\n### Real use example\nMonday onboarding script creates 15 users in 3 minutes vs 2 hours manual work.",
+      "key_takeaways": [
+        "PowerShell automation scales Tier 1 repetitive tasks.",
+        "Onboarding batches, health checks, and reporting.",
+        "Monday onboarding script creates 15 users in 3 minutes vs 2 hours manual work."
+      ],
+      "what_it_is": "PowerShell automation scales Tier 1 repetitive tasks.",
+      "when_to_use": "Onboarding batches, health checks, and reporting.",
+      "where_to_use": "Microsoft-centric enterprises.",
+      "real_use_example": "Monday onboarding script creates 15 users in 3 minutes vs 2 hours manual work."
+    },
+    {
+      "number": 15,
+      "title": "Enterprise Monitoring and Asset Management",
+      "topic": "automation",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Enterprise Monitoring and Asset Management** *(Level: Advanced)*\n\nTools like SCCM/Intune, Lansweeper, or Snipe-IT track hardware lifecycle, warranty, and patch compliance. Integrate alerts with ticketing for proactive fixes before users call.\n\nCode Reference:\n```powershell\n# Intune compliance policy: BitLocker ON, OS patch < 30 days, AV active\n```\nWhat it shows: Compliance policies define healthy endpoint baseline.\n\n### What it actually is\nMonitoring shifts support from reactive to proactive.\n\n### When to use it\nLarge fleets (1000+ endpoints).\n\n### Where to use it\nEnterprise desktop and mobile management.\n\n### Real use example\nDisk space alert opens ticket before user crashes during exam submission.",
+      "key_takeaways": [
+        "Monitoring shifts support from reactive to proactive.",
+        "Large fleets (1000+ endpoints).",
+        "Disk space alert opens ticket before user crashes during exam submission."
+      ],
+      "what_it_is": "Monitoring shifts support from reactive to proactive.",
+      "when_to_use": "Large fleets (1000+ endpoints).",
+      "where_to_use": "Enterprise desktop and mobile management.",
+      "real_use_example": "Disk space alert opens ticket before user crashes during exam submission."
+    },
+    {
+      "number": 16,
+      "title": "Disaster Recovery and Backup Verification",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Disaster Recovery and Backup Verification** *(Level: Advanced)*\n\nSupport participates in DR tests: verify backup restore, document RTO/RPO, and run tabletop exercises. Know offsite backup location and escalation during ransomware events.\n\nCode Reference:\n```powershell\nRestore-ADObject -Identity $guid -Server DC1\n# Test file restore from Veeam backup job\n```\nWhat it shows: Periodic restore tests prove backups are not vanity metrics.\n\n### What it actually is\nDR verification ensures recoverability after catastrophic failure.\n\n### When to use it\nQuarterly DR drills and post-incident recovery.\n\n### Where to use it\nDatacenters, schools, and healthcare IT.\n\n### Real use example\nRansomware hits file server; team restores from immutable backup within 4-hour RTO.",
+      "key_takeaways": [
+        "DR verification ensures recoverability after catastrophic failure.",
+        "Quarterly DR drills and post-incident recovery.",
+        "Ransomware hits file server; team restores from immutable backup within 4-hour RTO."
+      ],
+      "what_it_is": "DR verification ensures recoverability after catastrophic failure.",
+      "when_to_use": "Quarterly DR drills and post-incident recovery.",
+      "where_to_use": "Datacenters, schools, and healthcare IT.",
+      "real_use_example": "Ransomware hits file server; team restores from immutable backup within 4-hour RTO."
+    },
+    {
+      "number": 17,
+      "title": "Tier 3 Escalation and Root Cause Analysis",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Tier 3 Escalation and Root Cause Analysis** *(Level: Advanced)*\n\nTier 3 uses deep logs, perfmon, Process Monitor, and vendor support cases. Apply 5 Whys and fishbone diagrams. Produce RCA documents with corrective and preventive actions.\n\nCode Reference:\n```text\nWhy 1: App slow -> DB timeout\nWhy 2: Pool exhausted -> ...\nWhy 5: Missing index on query\n```\nWhat it shows: 5 Whys trace symptoms to systemic cause.\n\n### What it actually is\nRCA prevents repeat incidents and informs problem management.\n\n### When to use it\nMajor incidents and recurring escalations.\n\n### Where to use it\nEngineering and operations bridge roles.\n\n### Real use example\nMonthly login spike traced to cron job hammering auth service; schedule adjusted.",
+      "key_takeaways": [
+        "RCA prevents repeat incidents and informs problem management.",
+        "Major incidents and recurring escalations.",
+        "Monthly login spike traced to cron job hammering auth service; schedule adjusted."
+      ],
+      "what_it_is": "RCA prevents repeat incidents and informs problem management.",
+      "when_to_use": "Major incidents and recurring escalations.",
+      "where_to_use": "Engineering and operations bridge roles.",
+      "real_use_example": "Monthly login spike traced to cron job hammering auth service; schedule adjusted."
+    },
+    {
+      "number": 18,
+      "title": "Knowledge Base Engineering",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Knowledge Base Engineering** *(Level: Advanced)*\n\nTransform ticket resolutions into searchable KB articles with symptoms, environment, steps, and verification. Measure deflection rate and article usefulness scores. Maintain ownership and review cadence.\n\nCode Reference:\n```text\nKB Template: Title | Symptoms | Environment | Resolution Steps | Related Articles\n```\nWhat it shows: Standard template ensures findability and consistency.\n\n### What it actually is\nKB engineering reduces ticket volume through self-service.\n\n### When to use it\nMature service desks with self-service portals.\n\n### Where to use it\nServiceNow Knowledge, Confluence, SharePoint.\n\n### Real use example\nPassword reset KB deflects 40% of Tier 1 tickets after portal promotion.",
+      "key_takeaways": [
+        "KB engineering reduces ticket volume through self-service.",
+        "Mature service desks with self-service portals.",
+        "Password reset KB deflects 40% of Tier 1 tickets after portal promotion."
+      ],
+      "what_it_is": "KB engineering reduces ticket volume through self-service.",
+      "when_to_use": "Mature service desks with self-service portals.",
+      "where_to_use": "ServiceNow Knowledge, Confluence, SharePoint.",
+      "real_use_example": "Password reset KB deflects 40% of Tier 1 tickets after portal promotion."
+    }
+  ],
+  "chapter_count": 18
+}

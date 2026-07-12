@@ -1,0 +1,139 @@
+{
+  "id": "book-advanced-apex-programming",
+  "title": "Study Report: Advanced Apex Programming — Salesforce CRM Developer / Administrator",
+  "author": "Gagan Pasupuleti",
+  "family_id": "salesforce-crm",
+  "family_name": "Salesforce CRM Developer / Administrator",
+  "level": "Advanced",
+  "report_type": "role_book_study",
+  "book_title": "Advanced Apex Programming",
+  "book_author": "Dan Appleman",
+  "book_index": 3,
+  "summary": "Study report for *Advanced Apex Programming* by Dan Appleman (Advanced level) mapped to the Salesforce CRM Developer / Administrator role. Bulk-safe Apex, triggers, and governor limit patterns.",
+  "sources": [
+    "https://www.salesforce.com/blog/advanced-apex-programming/"
+  ],
+  "source_file": "Reference: Advanced Apex Programming — Dan Appleman",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Advanced Apex Programming",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Advanced Apex Programming** *(Level: Advanced)*\n\nThis study report summarizes *Advanced Apex Programming* by Dan Appleman for the Salesforce CRM Developer / Administrator role. The resource is rated Advanced level. Bulk-safe Apex, triggers, and governor limit patterns. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Advanced Apex Programming\n# Author: Dan Appleman\n# Role: Salesforce CRM Developer / Administrator\n# Level: Advanced\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Advanced Apex Programming.\n\n### When to use it\nWhen learning Salesforce CRM Developer / Administrator skills at Advanced level.\n\n### Where to use it\nSalesforce CRM Developer / Administrator training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Advanced Apex Programming.",
+        "When learning Salesforce CRM Developer / Administrator skills at Advanced level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Advanced Apex Programming.",
+      "when_to_use": "When learning Salesforce CRM Developer / Administrator skills at Advanced level.",
+      "where_to_use": "Salesforce CRM Developer / Administrator training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Advanced)*\n\nSalesforce CRM Developer / Administrator professionals use ideas from Advanced Apex Programming to solve real workplace problems. Bulk-safe Apex, triggers, and governor limit patterns. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Salesforce CRM Developer / Administrator\nBook focus: Bulk-safe Apex, triggers, and governor limit patterns.\nRecommended level: Advanced\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nSalesforce CRM Developer / Administrator bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a advanced skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a advanced skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Salesforce CRM Developer / Administrator bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a advanced skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Advanced",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Advanced)*\n\nThe main topics in Advanced Apex Programming include practical concepts described as: Bulk-safe Apex, triggers, and governor limit patterns. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Salesforce CRM Developer / Administrator jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Asynchronous Apex Patterns",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Asynchronous Apex Patterns** *(Level: Advanced)*\n\nQueueable, Batch Apex, and Schedulable process large volumes beyond synchronous limits. Batch implements Database.Batchable with scope chunks. Platform Events decouple publishers and subscribers for event-driven scale.\n\nCode Reference:\n```javascript\npublic class EnrollmentBatch implements Database.Batchable<SObject> {\n  public Database.QueryLocator start(Database.BatchableContext bc) {\n    return Database.getQueryLocator('SELECT Id FROM Enrollment__c');\n  }\n}\n```\nWhat it shows: Batch skeleton processes custom enrollment objects nightly.\n\n### What it actually is\nAsync Apex handles enterprise data volume outside user transactions.\n\n### When to use it\nNightly syncs, rollups, and data archival.\n\n### Where to use it\nOrgs exceeding synchronous governor thresholds.\n\n### Real use example\nBatch recalculates district utilization scores for 2M child records.",
+      "key_takeaways": [
+        "Async Apex handles enterprise data volume outside user transactions.",
+        "Nightly syncs, rollups, and data archival.",
+        "Batch recalculates district utilization scores for 2M child records."
+      ],
+      "what_it_is": "Async Apex handles enterprise data volume outside user transactions.",
+      "when_to_use": "Nightly syncs, rollups, and data archival.",
+      "where_to_use": "Orgs exceeding synchronous governor thresholds.",
+      "real_use_example": "Batch recalculates district utilization scores for 2M child records."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Enterprise Integration Architecture",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Enterprise Integration Architecture** *(Level: Advanced)*\n\nApply Salesforce Well-Architected: reliable, secure, adaptable. Use anti-corruption layers, outbox patterns, and idempotent consumers. MuleSoft or Event Relay for hybrid buses.\n\nCode Reference:\n```javascript\n// Change Data Capture subscriber processes Account updates to ERP\n```\nWhat it shows: CDC comment illustrates event-driven integration style.\n\n### What it actually is\nIntegration architecture prevents brittle point-to-point spaghetti.\n\n### When to use it\nMulti-system landscapes with ERP, LMS, and billing.\n\n### Where to use it\nLarge enterprises and acquisition-heavy portfolios.\n\n### Real use example\nCDC streams opportunity wins to provisioning microservice within seconds.",
+      "key_takeaways": [
+        "Integration architecture prevents brittle point-to-point spaghetti.",
+        "Multi-system landscapes with ERP, LMS, and billing.",
+        "CDC streams opportunity wins to provisioning microservice within seconds."
+      ],
+      "what_it_is": "Integration architecture prevents brittle point-to-point spaghetti.",
+      "when_to_use": "Multi-system landscapes with ERP, LMS, and billing.",
+      "where_to_use": "Large enterprises and acquisition-heavy portfolios.",
+      "real_use_example": "CDC streams opportunity wins to provisioning microservice within seconds."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Advanced Security and Shield",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Advanced Security and Shield** *(Level: Advanced)*\n\nShield Platform Encryption, Event Monitoring, and Field Audit Trail address compliance. Transaction Security policies block CSV exports by profile. Monitor Login Forensics for credential stuffing. Tenant secret rotation requires planning.\n\nCode Reference:\n```javascript\n// Event Monitoring: ReportEvent for bulk data export detection\n```\nWhat it shows: ReportEvent tracks who exported large contact lists.\n\n### What it actually is\nAdvanced security features protect regulated CRM data.\n\n### When to use it\nHealthcare, financial services, and public sector CRM.\n\n### Where to use it\nOrgs under HIPAA, PCI, or FedRAMP requirements.\n\n### Real use example\nTransaction Security blocks guest user SOQL injection attempt.",
+      "key_takeaways": [
+        "Advanced security features protect regulated CRM data.",
+        "Healthcare, financial services, and public sector CRM.",
+        "Transaction Security blocks guest user SOQL injection attempt."
+      ],
+      "what_it_is": "Advanced security features protect regulated CRM data.",
+      "when_to_use": "Healthcare, financial services, and public sector CRM.",
+      "where_to_use": "Orgs under HIPAA, PCI, or FedRAMP requirements.",
+      "real_use_example": "Transaction Security blocks guest user SOQL injection attempt."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Advanced)*\n\nFinish Advanced Apex Programming with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Salesforce CRM Developer / Administrator. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a advanced project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a advanced project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a advanced project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

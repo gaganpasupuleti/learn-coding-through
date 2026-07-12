@@ -1,0 +1,136 @@
+{
+  "id": "project-multi-source-finance-model",
+  "title": "Project Report: Multi-Source Finance Model — Power BI Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "powerbi-analyst",
+  "family_name": "Power BI Analyst",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "Multi-Source Finance Model",
+  "project_index": 2,
+  "duration": "3–4 weeks",
+  "summary": "Merge SQL Server + Excel + API data; complex DAX time intelligence; row-level security by department.",
+  "objectives": [
+    "Merge 3 data sources in Power Query",
+    "Implement RLS by department",
+    "YTD/QoQ DAX measures",
+    "Performance tune with DAX Studio"
+  ],
+  "tools": [
+    "Power BI",
+    "DAX Studio",
+    "SQL Server"
+  ],
+  "deliverables": [
+    "PBIX",
+    "RLS documentation",
+    "Performance comparison",
+    "User guide"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**Multi-Source Finance Model** is a intermediate-level end-to-end project for Power BI Analyst. Duration: 3–4 weeks. Merge SQL Server + Excel + API data; complex DAX time intelligence; row-level security by department. Tools: Power BI, DAX Studio, SQL Server.\n\nCode Reference:\n```text\nObjective: Merge 3 data sources in Power Query\nObjective: Implement RLS by department\nObjective: YTD/QoQ DAX measures\nObjective: Performance tune with DAX Studio\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nPower BI Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Power BI Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Power BI Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Power BI Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Power BI Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: ETL",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: ETL** *(Level: Intermediate)*\n\nPower Query merge queries. Complete these tasks: API connector; SQL direct query. Deliverable for this phase: Combined dataset.\n\nCode Reference:\n```text\n- [ ] API connector\n- [ ] SQL direct query\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase ETL is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Combined dataset to the teacher.",
+      "key_takeaways": [
+        "Phase ETL is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Combined dataset to the teacher."
+      ],
+      "what_it_is": "Phase ETL is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Combined dataset to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: RLS",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: RLS** *(Level: Intermediate)*\n\nDepartment filter roles. Complete these tasks: DAX USERPRINCIPALNAME; Test roles. Deliverable for this phase: RLS test matrix.\n\nCode Reference:\n```text\n- [ ] DAX USERPRINCIPALNAME\n- [ ] Test roles\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase RLS is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the RLS test matrix to the teacher.",
+      "key_takeaways": [
+        "Phase RLS is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the RLS test matrix to the teacher."
+      ],
+      "what_it_is": "Phase RLS is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the RLS test matrix to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Time Intel",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Time Intel** *(Level: Intermediate)*\n\nYTD, YoY, rolling averages. Complete these tasks: DATEADD; SAMEPERIODLASTYEAR. Deliverable for this phase: Finance KPI page.\n\nCode Reference:\n```text\n- [ ] DATEADD\n- [ ] SAMEPERIODLASTYEAR\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Time Intel is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Finance KPI page to the teacher.",
+      "key_takeaways": [
+        "Phase Time Intel is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Finance KPI page to the teacher."
+      ],
+      "what_it_is": "Phase Time Intel is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Finance KPI page to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Tune",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Tune** *(Level: Intermediate)*\n\nDAX Studio query plans. Complete these tasks: Remove iterators; Variables. Deliverable for this phase: Before/after perf screenshot.\n\nCode Reference:\n```text\n- [ ] Remove iterators\n- [ ] Variables\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Tune is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Before/after perf screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase Tune is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Before/after perf screenshot to the teacher."
+      ],
+      "what_it_is": "Phase Tune is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Before/after perf screenshot to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: PBIX; RLS documentation; Performance comparison; User guide. Skills demonstrated: Power Query, DAX, RLS, Performance. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: PBIX\nDeliverable: RLS documentation\nDeliverable: Performance comparison\nDeliverable: User guide\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits PBIX and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits PBIX and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits PBIX and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

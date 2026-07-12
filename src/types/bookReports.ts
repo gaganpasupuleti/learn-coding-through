@@ -10,6 +10,8 @@ export interface BookReportChapter {
   real_use_example?: string
 }
 
+export type ReportType = 'role_career_path' | 'role_book_study' | 'role_project'
+
 export interface StudyReport {
   id: string
   title: string
@@ -20,6 +22,7 @@ export interface StudyReport {
   summary: string
   chapters: BookReportChapter[]
   chapter_count: number
+  report_type?: ReportType
   source_file?: string
 }
 
@@ -32,6 +35,12 @@ export interface CatalogReport {
   path: string
   markdown: string
   author?: string
+  report_type?: ReportType
+  pdf?: string
+  book_title?: string
+  book_author?: string
+  project_title?: string
+  duration?: string
 }
 
 export interface BookReportFamily {
@@ -40,6 +49,10 @@ export interface BookReportFamily {
   description: string
   source_count: number
   report_count: number
+  book_report_count?: number
+  project_report_count?: number
+  career_path_count?: number
+  levels_covered?: string[]
   reports: CatalogReport[]
 }
 
@@ -49,4 +62,10 @@ export interface BookReportsCatalog {
   families: BookReportFamily[]
   reports: CatalogReport[]
   author?: string
+}
+
+export const REPORT_TYPE_LABELS: Record<ReportType, string> = {
+  role_career_path: 'Career path',
+  role_book_study: 'Book study',
+  role_project: 'Project',
 }

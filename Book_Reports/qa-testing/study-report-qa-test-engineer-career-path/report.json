@@ -1,0 +1,604 @@
+{
+  "id": "study-report-qa-test-engineer-career-path",
+  "title": "Study Report: QA & Test Engineer — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "qa-testing",
+  "family_name": "QA & Test Engineer",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "Quality assurance engineering covering manual test design, pytest automation, Selenium and Playwright browser testing, Postman API validation, CI/CD gates, and ISTQB-aligned test management practices for web and API products shipping in 2024–2026.",
+  "skill_stack": {
+    "beginner": [
+      "Software testing fundamentals and SDLC",
+      "Test case design (equivalence partitioning, boundary values)",
+      "Bug reporting with reproduction steps",
+      "Manual exploratory testing",
+      "Browser DevTools for network and console inspection",
+      "Basic SQL for test data validation",
+      "Git for test artifact versioning"
+    ],
+    "intermediate": [
+      "pytest fixtures and parametrization",
+      "Page Object Model with Selenium WebDriver",
+      "Playwright auto-waiting and trace viewer",
+      "Postman collections and Newman CLI",
+      "API contract testing and JSON Schema validation",
+      "CI integration (GitHub Actions, Jenkins)",
+      "Test data factories and environment management",
+      "Accessibility smoke checks with axe"
+    ],
+    "advanced": [
+      "Performance testing basics (k6, Locust)",
+      "Visual regression testing",
+      "Test strategy and risk-based prioritization",
+      "ISTQB test planning and metrics (defect density, escape rate)",
+      "Parallel test execution and flaky test triage",
+      "Security testing fundamentals (OWASP Top 10 awareness)",
+      "Shift-left QA in agile squads"
+    ]
+  },
+  "sources": [
+    "https://docs.pytest.org/",
+    "https://playwright.dev/python/docs/intro",
+    "https://www.selenium.dev/documentation/",
+    "https://learning.postman.com/docs/",
+    "https://www.istqb.org/",
+    "https://docs.github.com/en/actions"
+  ],
+  "recommended_books": [
+    {
+      "title": "Explore It!",
+      "author": "Elisabeth Hendrickson",
+      "level": "Beginner",
+      "focus": "Session-based exploratory testing and charter design.",
+      "url": "https://pragprog.com/titles/ehxta/explore-it/",
+      "free_online": false
+    },
+    {
+      "title": "The Art of Software Testing",
+      "author": "Glenford Myers et al.",
+      "level": "Intermediate",
+      "focus": "Test design, equivalence partitioning, and defect prevention.",
+      "url": "https://www.wiley.com/en-us/The+Art+of+Software+Testing%2C+3rd+Edition-p-9781118031964",
+      "free_online": false
+    },
+    {
+      "title": "Agile Testing",
+      "author": "Lisa Crispin & Janet Gregory",
+      "level": "Intermediate",
+      "focus": "Testing in Scrum: whole-team quality and automation strategy.",
+      "url": "https://agiletester.ca/agile-testing-book/",
+      "free_online": false
+    },
+    {
+      "title": "Continuous Delivery",
+      "author": "Jez Humble & David Farley",
+      "level": "Advanced",
+      "focus": "CI/CD pipelines, test automation gates, and deployment safety.",
+      "url": "https://continuousdelivery.com/",
+      "free_online": false
+    },
+    {
+      "title": "ISTQB Foundation Level Syllabus",
+      "author": "ISTQB",
+      "level": "Beginner",
+      "focus": "Industry-standard testing terminology and fundamentals (free PDF).",
+      "url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+      "free_online": true
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Manual Test Suite for Web App",
+      "level": "Beginner",
+      "duration": "1–2 weeks",
+      "overview": "Write 30 test cases, execute exploratory sessions, log bugs in a tracking template.",
+      "objectives": [
+        "30 structured test cases",
+        "5 exploratory charters",
+        "10 bug reports with severity",
+        "Test summary report"
+      ],
+      "phases": [
+        {
+          "name": "Plan",
+          "description": "Test strategy document.",
+          "tasks": [
+            "Scope",
+            "Risks"
+          ],
+          "deliverable": "Test plan PDF"
+        },
+        {
+          "name": "Cases",
+          "description": "Write test cases.",
+          "tasks": [
+            "Happy path",
+            "Edge cases"
+          ],
+          "deliverable": "Test case spreadsheet"
+        },
+        {
+          "name": "Execute",
+          "description": "Run manual tests.",
+          "tasks": [
+            "Exploratory sessions",
+            "Screenshots"
+          ],
+          "deliverable": "Execution log"
+        },
+        {
+          "name": "Report",
+          "description": "Summary for stakeholders.",
+          "tasks": [
+            "Pass/fail stats",
+            "Open defects"
+          ],
+          "deliverable": "Test summary report"
+        }
+      ],
+      "skills_applied": [
+        "Manual testing",
+        "Documentation"
+      ],
+      "tools": [
+        "Excel/Sheets",
+        "Bug tracker template"
+      ],
+      "deliverables": [
+        "Test plan",
+        "30 test cases",
+        "10 bug reports",
+        "Summary report"
+      ]
+    },
+    {
+      "title": "Automated API + UI Test Suite",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "pytest API tests + Playwright E2E for login flow; run in GitHub Actions on every PR.",
+      "objectives": [
+        "pytest API test collection",
+        "Playwright E2E login + navigation",
+        "GitHub Actions CI pipeline",
+        "Test coverage report for API"
+      ],
+      "phases": [
+        {
+          "name": "API",
+          "description": "pytest + httpx tests.",
+          "tasks": [
+            "Auth endpoints",
+            "CRUD tests"
+          ],
+          "deliverable": "API test suite"
+        },
+        {
+          "name": "E2E",
+          "description": "Playwright browser tests.",
+          "tasks": [
+            "Login flow",
+            "Page assertions"
+          ],
+          "deliverable": "E2E video recordings"
+        },
+        {
+          "name": "CI",
+          "description": "GitHub Actions workflow.",
+          "tasks": [
+            "Run on PR",
+            "Fail on red"
+          ],
+          "deliverable": "CI badge green"
+        },
+        {
+          "name": "Report",
+          "description": "Allure or HTML report.",
+          "tasks": [
+            "Trends",
+            "Flaky test tracking"
+          ],
+          "deliverable": "Test dashboard HTML"
+        }
+      ],
+      "skills_applied": [
+        "pytest",
+        "Playwright",
+        "CI/CD"
+      ],
+      "tools": [
+        "pytest",
+        "Playwright",
+        "GitHub Actions",
+        "httpx"
+      ],
+      "deliverables": [
+        "Test repo",
+        "CI pipeline",
+        "HTML report",
+        "E2E videos"
+      ]
+    },
+    {
+      "title": "Performance + Security Test Program",
+      "level": "Advanced",
+      "duration": "4–5 weeks",
+      "overview": "k6 load test plan, OWASP ZAP scan, and combined quality gate report for a web application.",
+      "objectives": [
+        "k6 load test to 500 virtual users",
+        "OWASP ZAP automated scan",
+        "Performance baseline document",
+        "Combined quality gate checklist"
+      ],
+      "phases": [
+        {
+          "name": "Load",
+          "description": "k6 scripts.",
+          "tasks": [
+            "Ramp up/down",
+            "Thresholds"
+          ],
+          "deliverable": "k6 HTML report"
+        },
+        {
+          "name": "Security",
+          "description": "ZAP baseline scan.",
+          "tasks": [
+            "Top 10 checks",
+            "Remediation list"
+          ],
+          "deliverable": "ZAP report"
+        },
+        {
+          "name": "Gate",
+          "description": "Quality criteria.",
+          "tasks": [
+            "p95 < 500ms",
+            "Zero critical vulns"
+          ],
+          "deliverable": "Gate checklist"
+        },
+        {
+          "name": "Present",
+          "description": "QA sign-off deck.",
+          "tasks": [
+            "Findings",
+            "Go/no-go"
+          ],
+          "deliverable": "Sign-off presentation"
+        }
+      ],
+      "skills_applied": [
+        "Performance",
+        "Security",
+        "Quality gates"
+      ],
+      "tools": [
+        "k6",
+        "OWASP ZAP",
+        "GitHub Actions"
+      ],
+      "deliverables": [
+        "k6 report",
+        "ZAP report",
+        "Quality gate doc",
+        "Sign-off deck"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "QA Role in Modern Software Delivery",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: QA Role in Modern Software Delivery** *(Level: Beginner)*\n\nQA engineers protect users by finding defects before production and verifying fixes after. Quality is whole-team responsibility; QA leads test strategy and automation advocacy. Shift-left means involving QA during requirements to catch ambiguities early. Your goal is risk reduction informed by business impact, not bug counting alone.\n\nCode Reference:\n```markdown\nBug Report Template:\n- Title: Checkout fails when coupon expired\n- Steps: 1) Add item 2) Apply EXPIRED10 3) Pay\n- Expected: Error message\n- Actual: 500 error\n- Severity: High | Priority: P1\n```\nWhat it shows: Structured bug report gives developers reproduction path without back-and-forth.\n\n### What it actually is\nQA validates software meets requirements and is fit for release.\n\n### When to use it\nEngage from story refinement through release verification.\n\n### Where to use it\nAgile squads, release trains, and regulated industries with audit trails.\n\n### Real use example\nQA blocks release when payment regression found two hours before go-live.",
+      "key_takeaways": [
+        "QA validates software meets requirements and is fit for release.",
+        "Engage from story refinement through release verification.",
+        "QA blocks release when payment regression found two hours before go-live."
+      ],
+      "what_it_is": "QA validates software meets requirements and is fit for release.",
+      "when_to_use": "Engage from story refinement through release verification.",
+      "where_to_use": "Agile squads, release trains, and regulated industries with audit trails.",
+      "real_use_example": "QA blocks release when payment regression found two hours before go-live."
+    },
+    {
+      "number": 2,
+      "title": "Test Case Design Techniques",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Test Case Design Techniques** *(Level: Beginner)*\n\nEquivalence partitioning groups inputs expected to behave same—test one per group. Boundary value analysis targets edges: min, max, min-1, max+1. Decision tables map combinations of conditions to expected outcomes systematically. Each test case needs preconditions, steps, expected result, and traceability to requirement ID.\n\nCode Reference:\n```python\n# BVA example: age field accepts 18-65\n# Test: 17 (invalid), 18 (valid), 65 (valid), 66 (invalid)\n```\nWhat it shows: Boundary tests catch off-by-one defects common in validation logic.\n\n### What it actually is\nSystematic test design maximizes defect detection per execution hour.\n\n### When to use it\nApply when specifying tests for forms, pricing rules, and date ranges.\n\n### Where to use it\nBanking limits, e-commerce promotions, and insurance quote calculators.\n\n### Real use example\nCoupon field rejects 17-character code because max length 16 caught at boundary test.",
+      "key_takeaways": [
+        "Systematic test design maximizes defect detection per execution hour.",
+        "Apply when specifying tests for forms, pricing rules, and date ranges.",
+        "Coupon field rejects 17-character code because max length 16 caught at boundary test."
+      ],
+      "what_it_is": "Systematic test design maximizes defect detection per execution hour.",
+      "when_to_use": "Apply when specifying tests for forms, pricing rules, and date ranges.",
+      "where_to_use": "Banking limits, e-commerce promotions, and insurance quote calculators.",
+      "real_use_example": "Coupon field rejects 17-character code because max length 16 caught at boundary test."
+    },
+    {
+      "number": 3,
+      "title": "Manual Exploratory Testing",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Manual Exploratory Testing** *(Level: Beginner)*\n\nExploratory testing combines learning, test design, and execution simultaneously. Charter defines mission: Explore checkout with invalid payment methods for 90 minutes. Note anomalies, questions, and risks—not just pass/fail binary results. Session-based test management tracks time boxes and findings for reporting.\n\nCode Reference:\n```markdown\nCharter: Explore user profile avatar upload with oversized and wrong-type files.\nFindings: .exe renamed to .png accepted; no size limit; EXIF not stripped.\n```\nWhat it shows: Charter focuses session; findings list concrete issues discovered.\n\n### What it actually is\nExploratory testing uncovers unexpected defects scripted cases miss.\n\n### When to use it\nRun on new features, after major refactors, and before release candidates.\n\n### Where to use it\nEvery sprint demo, beta program, and post-automation gap analysis.\n\n### Real use example\nExplorer finds race condition when double-clicking Pay only during slow 3G throttle.",
+      "key_takeaways": [
+        "Exploratory testing uncovers unexpected defects scripted cases miss.",
+        "Run on new features, after major refactors, and before release candidates.",
+        "Explorer finds race condition when double-clicking Pay only during slow 3G throttle."
+      ],
+      "what_it_is": "Exploratory testing uncovers unexpected defects scripted cases miss.",
+      "when_to_use": "Run on new features, after major refactors, and before release candidates.",
+      "where_to_use": "Every sprint demo, beta program, and post-automation gap analysis.",
+      "real_use_example": "Explorer finds race condition when double-clicking Pay only during slow 3G throttle."
+    },
+    {
+      "number": 4,
+      "title": "Browser DevTools for Testers",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Browser DevTools for Testers** *(Level: Beginner)*\n\nNetwork tab reveals failed API calls, status codes, and payload shapes. Console shows JavaScript errors invisible to users but breaking functionality. Application tab inspects cookies, localStorage, and service workers. Throttle network to simulate mobile conditions during manual passes.\n\nCode Reference:\n```javascript\n// Console quick check after checkout\nperformance.getEntriesByType('navigation')[0].duration\n// Network: filter Fetch/XHR, inspect POST /api/orders response\n```\nWhat it shows: Navigation timing measures page load; XHR filter isolates API failures.\n\n### What it actually is\nDevTools let testers diagnose frontend issues without developer intervention.\n\n### When to use it\nUse on every bug investigation and API-integrated UI test session.\n\n### Where to use it\nWeb apps, SPAs, and hybrid mobile wrappers.\n\n### Real use example\nTester proves 401 caused by missing Authorization header using Network tab HAR export.",
+      "key_takeaways": [
+        "DevTools let testers diagnose frontend issues without developer intervention.",
+        "Use on every bug investigation and API-integrated UI test session.",
+        "Tester proves 401 caused by missing Authorization header using Network tab HAR export."
+      ],
+      "what_it_is": "DevTools let testers diagnose frontend issues without developer intervention.",
+      "when_to_use": "Use on every bug investigation and API-integrated UI test session.",
+      "where_to_use": "Web apps, SPAs, and hybrid mobile wrappers.",
+      "real_use_example": "Tester proves 401 caused by missing Authorization header using Network tab HAR export."
+    },
+    {
+      "number": 5,
+      "title": "SQL Basics for Test Data Validation",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: SQL Basics for Test Data Validation** *(Level: Beginner)*\n\nTesters query databases to verify backend state matches UI claims. SELECT with WHERE confirms row created; COUNT validates batch imports. Never run UPDATE/DELETE on production—use read-only accounts in prod investigations. Sanitized staging copies mirror schema for safe destructive validation.\n\nCode Reference:\n```sql\nSELECT id, status, total FROM orders WHERE user_id = 42 ORDER BY created_at DESC LIMIT 5;\n```\nWhat it shows: Query confirms latest orders for test user match dashboard display.\n\n### What it actually is\nSQL verification cross-checks UI against source of truth in database.\n\n### When to use it\nUse after API or UI actions affecting persistent data.\n\n### Where to use it\nOrder status, subscription billing, and inventory reconciliation tests.\n\n### Real use example\nUI shows 'Shipped' but SQL still 'PAID'—bug filed with query evidence attached.",
+      "key_takeaways": [
+        "SQL verification cross-checks UI against source of truth in database.",
+        "Use after API or UI actions affecting persistent data.",
+        "UI shows 'Shipped' but SQL still 'PAID'—bug filed with query evidence attached."
+      ],
+      "what_it_is": "SQL verification cross-checks UI against source of truth in database.",
+      "when_to_use": "Use after API or UI actions affecting persistent data.",
+      "where_to_use": "Order status, subscription billing, and inventory reconciliation tests.",
+      "real_use_example": "UI shows 'Shipped' but SQL still 'PAID'—bug filed with query evidence attached."
+    },
+    {
+      "number": 6,
+      "title": "Bug Lifecycle and Severity vs Priority",
+      "topic": "errors",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Bug Lifecycle and Severity vs Priority** *(Level: Beginner)*\n\nSeverity measures user/business impact; priority measures fix order for team capacity. Critical severity crash on login may be priority P1; cosmetic typo low severity P3. Bug lifecycle: New → Assigned → Fixed → Retest → Closed or Reopened. Include environment, build version, and attachments in every report.\n\nCode Reference:\n```markdown\nSeverity: Critical — payment double-charged\nPriority: P1 — fix before any other sprint work\nStatus: Reopened after failed retest on build 1.2.4\n```\nWhat it shows: Reopened status tracks regression when fix did not hold.\n\n### What it actually is\nBug taxonomy communicates impact and urgency to engineering and product.\n\n### When to use it\nApply consistent definitions across team documented in QA wiki.\n\n### Where to use it\nJira, Linear, GitHub Issues, and release go/no-go meetings.\n\n### Real use example\nP1 payment bug stops release; P3 tooltip fix deferred to next sprint.",
+      "key_takeaways": [
+        "Bug taxonomy communicates impact and urgency to engineering and product.",
+        "Apply consistent definitions across team documented in QA wiki.",
+        "P1 payment bug stops release; P3 tooltip fix deferred to next sprint."
+      ],
+      "what_it_is": "Bug taxonomy communicates impact and urgency to engineering and product.",
+      "when_to_use": "Apply consistent definitions across team documented in QA wiki.",
+      "where_to_use": "Jira, Linear, GitHub Issues, and release go/no-go meetings.",
+      "real_use_example": "P1 payment bug stops release; P3 tooltip fix deferred to next sprint."
+    },
+    {
+      "number": 7,
+      "title": "pytest Automation Framework Structure",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: pytest Automation Framework Structure** *(Level: Intermediate)*\n\nconftest.py shares fixtures across test packages without import boilerplate. Arrange-Act-Assert keeps tests readable; one logical assertion focus per test when possible. Markers (@pytest.mark.smoke) slice suites for fast PR gates vs full nightly runs. pytest.param combines inputs with test ids for clear failure output.\n\nCode Reference:\n```python\nimport pytest\n\n@pytest.mark.parametrize('email,expected', [\n    ('user@example.com', 201),\n    ('not-an-email', 422),\n    ('', 422),\n], ids=['valid', 'invalid-format', 'empty'])\ndef test_register_status(api_client, email, expected):\n    assert api_client.post('/register', json={'email': email}).status_code == expected\n```\nWhat it shows: parametrize runs three cases; ids label each in failure reports.\n\n### What it actually is\npytest is the standard Python test runner for API and unit automation.\n\n### When to use it\nAdopt for all Python-based test automation in backend-heavy teams.\n\n### Where to use it\nCI smoke suites, microservice contract tests, and data pipeline validation.\n\n### Real use example\nSmoke marker runs in 3 minutes on PR; full regression runs nightly in 45 minutes.",
+      "key_takeaways": [
+        "pytest is the standard Python test runner for API and unit automation.",
+        "Adopt for all Python-based test automation in backend-heavy teams.",
+        "Smoke marker runs in 3 minutes on PR; full regression runs nightly in 45 minutes."
+      ],
+      "what_it_is": "pytest is the standard Python test runner for API and unit automation.",
+      "when_to_use": "Adopt for all Python-based test automation in backend-heavy teams.",
+      "where_to_use": "CI smoke suites, microservice contract tests, and data pipeline validation.",
+      "real_use_example": "Smoke marker runs in 3 minutes on PR; full regression runs nightly in 45 minutes."
+    },
+    {
+      "number": 8,
+      "title": "Selenium WebDriver and Page Object Model",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Selenium WebDriver and Page Object Model** *(Level: Intermediate)*\n\nSelenium drives browsers programmatically; WebDriver W3C standardizes API across languages. Page Object Model encapsulates locators and actions in page classes reducing duplication. Explicit waits (WebDriverWait) handle async UI better than sleep(5) flakes. Run headless in CI; headed locally for debugging selector issues.\n\nCode Reference:\n```python\nclass LoginPage:\n    def __init__(self, driver):\n        self.driver = driver\n    def login(self, email, password):\n        self.driver.find_element(By.ID, 'email').send_keys(email)\n        self.driver.find_element(By.ID, 'password').send_keys(password)\n        self.driver.find_element(By.CSS_SELECTOR, 'button[type=submit]').click()\n```\nWhat it shows: LoginPage hides locator details; tests call login() with credentials only.\n\n### What it actually is\nSelenium automates browser UI regression at scale with mature ecosystem.\n\n### When to use it\nUse when Playwright not available or legacy Java/C# grid infrastructure exists.\n\n### Where to use it\nEnterprise regression grids, cross-browser corporate apps, and SAP web UIs.\n\n### Real use example\nLocator change updates LoginPage once; fifty tests keep passing unchanged.",
+      "key_takeaways": [
+        "Selenium automates browser UI regression at scale with mature ecosystem.",
+        "Use when Playwright not available or legacy Java/C# grid infrastructure exists.",
+        "Locator change updates LoginPage once; fifty tests keep passing unchanged."
+      ],
+      "what_it_is": "Selenium automates browser UI regression at scale with mature ecosystem.",
+      "when_to_use": "Use when Playwright not available or legacy Java/C# grid infrastructure exists.",
+      "where_to_use": "Enterprise regression grids, cross-browser corporate apps, and SAP web UIs.",
+      "real_use_example": "Locator change updates LoginPage once; fifty tests keep passing unchanged."
+    },
+    {
+      "number": 9,
+      "title": "Playwright Modern E2E Testing",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Playwright Modern E2E Testing** *(Level: Intermediate)*\n\nPlaywright auto-waits for element actionability reducing flaky explicit wait code. Trace viewer records DOM, network, and screenshots step-by-step on failure. Built-in test generator records actions producing starter locators—refine to getByRole. Python sync API suits pytest teams; async available for advanced flows.\n\nCode Reference:\n```python\ndef test_search_product(page):\n    page.goto('https://demo.shop')\n    page.get_by_label('Search').fill('keyboard')\n    page.get_by_role('button', name='Search').click()\n    expect(page.get_by_role('heading', name='Results')).to_be_visible()\n```\nWhat it shows: get_by_label and get_by_role prefer accessible selectors over brittle CSS.\n\n### What it actually is\nPlaywright is the preferred 2024–2026 browser automation for new E2E suites.\n\n### When to use it\nStart new E2E projects with Playwright unless constrained by existing Selenium grid.\n\n### Where to use it\nCross-browser CI, visual debug, and mobile viewport emulation.\n\n### Real use example\nFailed CI uploads trace.zip; QA replays exact click sequence seeing network 500.",
+      "key_takeaways": [
+        "Playwright is the preferred 2024–2026 browser automation for new E2E suites.",
+        "Start new E2E projects with Playwright unless constrained by existing Selenium grid.",
+        "Failed CI uploads trace."
+      ],
+      "what_it_is": "Playwright is the preferred 2024–2026 browser automation for new E2E suites.",
+      "when_to_use": "Start new E2E projects with Playwright unless constrained by existing Selenium grid.",
+      "where_to_use": "Cross-browser CI, visual debug, and mobile viewport emulation.",
+      "real_use_example": "Failed CI uploads trace.zip; QA replays exact click sequence seeing network 500."
+    },
+    {
+      "number": 10,
+      "title": "Postman and Newman API Testing",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Postman and Newman API Testing** *(Level: Intermediate)*\n\nPostman collections group requests with tests scripts asserting status and JSON body. Environment variables switch base URL and tokens between dev, staging, prod read-only. Newman runs collections headless in CI with reporters (JUnit, HTML). Contract tests fail when API response schema drifts from documented shape.\n\nCode Reference:\n```javascript\npm.test('Status is 200', () => pm.response.to.have.status(200));\npm.test('Has items array', () => pm.expect(pm.response.json().items).to.be.an('array'));\n```\nWhat it shows: pm.test assertions run after each request in collection runner or Newman.\n\n### What it actually is\nPostman/Newman validates APIs independently of UI for faster feedback.\n\n### When to use it\nRun API regression on every backend deploy before UI E2E.\n\n### Where to use it\nMicroservices, mobile backends, and third-party integration verification.\n\n### Real use example\nNewman fails CI when pagination field renamed breaking mobile app contract.",
+      "key_takeaways": [
+        "Postman/Newman validates APIs independently of UI for faster feedback.",
+        "Run API regression on every backend deploy before UI E2E.",
+        "Newman fails CI when pagination field renamed breaking mobile app contract."
+      ],
+      "what_it_is": "Postman/Newman validates APIs independently of UI for faster feedback.",
+      "when_to_use": "Run API regression on every backend deploy before UI E2E.",
+      "where_to_use": "Microservices, mobile backends, and third-party integration verification.",
+      "real_use_example": "Newman fails CI when pagination field renamed breaking mobile app contract."
+    },
+    {
+      "number": 11,
+      "title": "CI/CD Test Gates in GitHub Actions",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: CI/CD Test Gates in GitHub Actions** *(Level: Intermediate)*\n\nQuality gates block merge when lint, unit, API, or E2E jobs fail. Parallel jobs split API and UI suites for faster feedback. Artifacts store reports, traces, and screenshots for failed run debugging. Required checks enforce policy; optional jobs warn without blocking early adoption.\n\nCode Reference:\n```yaml\njobs:\n  api-tests:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: pip install -r requirements.txt\n      - run: pytest tests/api --junitxml=report.xml\n      - uses: actions/upload-artifact@v4\n        with: { name: junit, path: report.xml }\n```\nWhat it shows: JUnit XML uploads integrate test results into GitHub Checks UI.\n\n### What it actually is\nCI pipelines automate test execution on every code change.\n\n### When to use it\nIntegrate smoke tests on PR; full regression on main nightly.\n\n### Where to use it\nGitHub Actions, GitLab CI, Azure DevOps, and Jenkins pipelines.\n\n### Real use example\nMerge blocked until API smoke passes; developer fixes regression same day.",
+      "key_takeaways": [
+        "CI pipelines automate test execution on every code change.",
+        "Integrate smoke tests on PR; full regression on main nightly.",
+        "Merge blocked until API smoke passes; developer fixes regression same day."
+      ],
+      "what_it_is": "CI pipelines automate test execution on every code change.",
+      "when_to_use": "Integrate smoke tests on PR; full regression on main nightly.",
+      "where_to_use": "GitHub Actions, GitLab CI, Azure DevOps, and Jenkins pipelines.",
+      "real_use_example": "Merge blocked until API smoke passes; developer fixes regression same day."
+    },
+    {
+      "number": 12,
+      "title": "Test Data Management and Factories",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Test Data Management and Factories** *(Level: Intermediate)*\n\nFactories generate unique emails and SKUs preventing collision in parallel runs. Seed scripts reset staging to known baseline before nightly regression. Never use production PII in tests—synthetic data only with GDPR compliance. Teardown deletes created records via API keeping database lean.\n\nCode Reference:\n```python\ndef user_factory():\n    uid = uuid.uuid4().hex[:8]\n    return {'email': f'test_{uid}@example.com', 'password': 'Str0ng!pass'}\n```\nWhat it shows: UUID suffix guarantees unique email across parallel pytest workers.\n\n### What it actually is\nTest data strategy prevents flaky collisions and compliance violations.\n\n### When to use it\nDefine before running parallel CI or shared staging environments.\n\n### Where to use it\nAutomated suites, load tests, and demo environment refresh scripts.\n\n### Real use example\nParallel shard 3 no longer fails from duplicate email unique constraint violation.",
+      "key_takeaways": [
+        "Test data strategy prevents flaky collisions and compliance violations.",
+        "Define before running parallel CI or shared staging environments.",
+        "Parallel shard 3 no longer fails from duplicate email unique constraint violation."
+      ],
+      "what_it_is": "Test data strategy prevents flaky collisions and compliance violations.",
+      "when_to_use": "Define before running parallel CI or shared staging environments.",
+      "where_to_use": "Automated suites, load tests, and demo environment refresh scripts.",
+      "real_use_example": "Parallel shard 3 no longer fails from duplicate email unique constraint violation."
+    },
+    {
+      "number": 13,
+      "title": "Accessibility Smoke Testing",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Accessibility Smoke Testing** *(Level: Intermediate)*\n\nWCAG 2.2 guidelines define perceivable, operable, understandable, robust UI. axe-core integrates with Playwright flagging missing labels and contrast failures. Manual keyboard-only pass catches focus trap bugs automation misses. Accessibility defects are release blockers for public sector and many enterprise contracts.\n\nCode Reference:\n```python\naccessibility_scan = await page.accessibility.snapshot()\n# Playwright + axe: expect(await axe.run(page)).to_have_no_violations()\n```\nWhat it shows: Automated axe scan lists violations with selector and WCAG rule id.\n\n### What it actually is\nAccessibility testing ensures products usable by people with disabilities.\n\n### When to use it\nRun automated axe on critical pages each sprint; full audit quarterly.\n\n### Where to use it\nGovernment portals, education platforms, and EU Accessibility Act scope apps.\n\n### Real use example\nCheckout page fails axe on low contrast button; fixed before legal review.",
+      "key_takeaways": [
+        "Accessibility testing ensures products usable by people with disabilities.",
+        "Run automated axe on critical pages each sprint; full audit quarterly.",
+        "Checkout page fails axe on low contrast button; fixed before legal review."
+      ],
+      "what_it_is": "Accessibility testing ensures products usable by people with disabilities.",
+      "when_to_use": "Run automated axe on critical pages each sprint; full audit quarterly.",
+      "where_to_use": "Government portals, education platforms, and EU Accessibility Act scope apps.",
+      "real_use_example": "Checkout page fails axe on low contrast button; fixed before legal review."
+    },
+    {
+      "number": 14,
+      "title": "Performance Testing with k6",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Performance Testing with k6** *(Level: Advanced)*\n\nPerformance testing validates latency and throughput under expected and peak load. k6 scripts define VUs (virtual users) ramping scenarios in JavaScript. Thresholds fail CI when P95 exceeds SLA (e.g., http_req_duration p(95)<500ms). Test staging only with approval—never DDoS production inadvertently.\n\nCode Reference:\n```javascript\nimport http from 'k6/http';\nimport { check } from 'k6';\nexport default function () {\n  const res = http.get('https://staging.example/api/products');\n  check(res, { 'status 200': (r) => r.status === 200 });\n}\n```\nWhat it shows: Virtual user iteration hits products endpoint; check validates status.\n\n### What it actually is\nLoad testing reveals scalability bottlenecks before users do during peaks.\n\n### When to use it\nRun before major sales events and after infrastructure changes.\n\n### Where to use it\nE-commerce flash sales, election result pages, and API gateway sizing.\n\n### Real use example\nk6 finds DB connection pool exhausted at 200 VUs; pool size increased pre-launch.",
+      "key_takeaways": [
+        "Load testing reveals scalability bottlenecks before users do during peaks.",
+        "Run before major sales events and after infrastructure changes.",
+        "k6 finds DB connection pool exhausted at 200 VUs; pool size increased pre-launch."
+      ],
+      "what_it_is": "Load testing reveals scalability bottlenecks before users do during peaks.",
+      "when_to_use": "Run before major sales events and after infrastructure changes.",
+      "where_to_use": "E-commerce flash sales, election result pages, and API gateway sizing.",
+      "real_use_example": "k6 finds DB connection pool exhausted at 200 VUs; pool size increased pre-launch."
+    },
+    {
+      "number": 15,
+      "title": "ISTQB Test Planning and Metrics",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: ISTQB Test Planning and Metrics** *(Level: Advanced)*\n\nTest plan documents scope, approach, resources, schedule, and exit criteria. Entry criteria define when testing starts; exit criteria define release readiness. Defect density (bugs/KLOC) and escape rate (prod bugs/release) track quality trends. Risk-based testing prioritizes effort on high-impact, high-likelihood areas.\n\nCode Reference:\n```markdown\nExit Criteria Example:\n- 100% critical/high test cases executed\n- Zero open P1 defects\n- <=2 open P2 with business sign-off\n- Automation smoke pass on release candidate build\n```\nWhat it shows: Exit criteria make go/no-go objective rather than subjective gut feel.\n\n### What it actually is\nFormal test planning aligns QA activity with business risk tolerance.\n\n### When to use it\nRequired in regulated domains; valuable everywhere releases are frequent.\n\n### Where to use it\nMedical devices, fintech, and enterprise RFP-driven projects.\n\n### Real use example\nRelease board approves ship when exit criteria met; one waived P2 documented.",
+      "key_takeaways": [
+        "Formal test planning aligns QA activity with business risk tolerance.",
+        "Required in regulated domains; valuable everywhere releases are frequent.",
+        "Release board approves ship when exit criteria met; one waived P2 documented."
+      ],
+      "what_it_is": "Formal test planning aligns QA activity with business risk tolerance.",
+      "when_to_use": "Required in regulated domains; valuable everywhere releases are frequent.",
+      "where_to_use": "Medical devices, fintech, and enterprise RFP-driven projects.",
+      "real_use_example": "Release board approves ship when exit criteria met; one waived P2 documented."
+    },
+    {
+      "number": 16,
+      "title": "Flaky Test Triage and Quarantine",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Flaky Test Triage and Quarantine** *(Level: Advanced)*\n\nFlaky tests pass and fail without code changes—eroding trust in CI. Quarantine flaky tests (@pytest.mark.quarantine) off critical path while fixing root cause. Common causes: timing, shared state, external dependency instability, clock sensitivity. Track flake rate metric; zero tolerance on main branch smoke suite.\n\nCode Reference:\n```python\n# Retry only in CI with pytest-rerunfailures\n# @pytest.mark.flaky(reruns=2)  — temporary, must ticket root cause\n```\nWhat it shows: Reruns mitigate temporarily but root cause fix required for permanent trust.\n\n### What it actually is\nFlake management keeps CI signal trustworthy for release decisions.\n\n### When to use it\nImplement quarantine policy when E2E suite exceeds 50 tests.\n\n### Where to use it\nLarge Playwright/Selenium suites in high-velocity teams.\n\n### Real use example\nRace on toast notification fixed with expect().to_be_visible() replacing sleep.",
+      "key_takeaways": [
+        "Flake management keeps CI signal trustworthy for release decisions.",
+        "Implement quarantine policy when E2E suite exceeds 50 tests.",
+        "Race on toast notification fixed with expect()."
+      ],
+      "what_it_is": "Flake management keeps CI signal trustworthy for release decisions.",
+      "when_to_use": "Implement quarantine policy when E2E suite exceeds 50 tests.",
+      "where_to_use": "Large Playwright/Selenium suites in high-velocity teams.",
+      "real_use_example": "Race on toast notification fixed with expect().to_be_visible() replacing sleep."
+    },
+    {
+      "number": 17,
+      "title": "Security Testing Awareness (OWASP)",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Security Testing Awareness (OWASP)** *(Level: Advanced)*\n\nOWASP Top 10 lists injection, broken auth, XSS, SSRF as common web risks. QA performs lightweight security tests: SQL injection strings in forms, XSS in rich text. Report security findings privately; do not exploit beyond proof-of-concept. Coordinate with security team for DAST/SAST tool interpretation.\n\nCode Reference:\n```python\n# Negative test payload examples (use only in authorized staging)\npayloads = [\"' OR '1'='1\", '<script>alert(1)</script>', '../../etc/passwd']\n```\nWhat it shows: Payload list used systematically in authorized staging negative tests.\n\n### What it actually is\nSecurity-aware QA catches obvious vulnerabilities before penetration test.\n\n### When to use it\nInclude security negative cases in regression for auth and input-heavy features.\n\n### Where to use it\nLogin, search, file upload, and admin panels.\n\n### Real use example\nReflected XSS in search query blocked after QA files P1 before external pen test.",
+      "key_takeaways": [
+        "Security-aware QA catches obvious vulnerabilities before penetration test.",
+        "Include security negative cases in regression for auth and input-heavy features.",
+        "Reflected XSS in search query blocked after QA files P1 before external pen test."
+      ],
+      "what_it_is": "Security-aware QA catches obvious vulnerabilities before penetration test.",
+      "when_to_use": "Include security negative cases in regression for auth and input-heavy features.",
+      "where_to_use": "Login, search, file upload, and admin panels.",
+      "real_use_example": "Reflected XSS in search query blocked after QA files P1 before external pen test."
+    },
+    {
+      "number": 18,
+      "title": "Shift-Left QA in Agile Squads",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Shift-Left QA in Agile Squads** *(Level: Advanced)*\n\nShift-left embeds QA in refinement, Three Amigos, and definition of done. Testability requirements (data-testid, feature flags) negotiated before development starts. Automation candidates identified during story splitting—not after feature ships. QA coaches developers on unit test coverage for complex business rules.\n\nCode Reference:\n```markdown\nDefinition of Done:\n- AC verified by QA\n- Automation added or ticket filed\n- No open P1/P2\n- Release notes updated\n```\nWhat it shows: DoD checklist prevents 'done' stories missing test and documentation work.\n\n### What it actually is\nShift-left reduces cost of defect fix by catching issues before code merge.\n\n### When to use it\nAdopt when sprint velocity suffers from end-sprint test bottlenecks.\n\n### Where to use it\nScrum teams, kanban flow, and continuous delivery organizations.\n\n### Real use example\nBug found in refinement saves eight hours vs same bug found in production.",
+      "key_takeaways": [
+        "Shift-left reduces cost of defect fix by catching issues before code merge.",
+        "Adopt when sprint velocity suffers from end-sprint test bottlenecks.",
+        "Bug found in refinement saves eight hours vs same bug found in production."
+      ],
+      "what_it_is": "Shift-left reduces cost of defect fix by catching issues before code merge.",
+      "when_to_use": "Adopt when sprint velocity suffers from end-sprint test bottlenecks.",
+      "where_to_use": "Scrum teams, kanban flow, and continuous delivery organizations.",
+      "real_use_example": "Bug found in refinement saves eight hours vs same bug found in production."
+    }
+  ],
+  "chapter_count": 18
+}
