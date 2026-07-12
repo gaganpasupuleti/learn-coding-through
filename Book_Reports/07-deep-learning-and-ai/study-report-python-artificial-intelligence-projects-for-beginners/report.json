@@ -1,0 +1,103 @@
+{
+  "id": "study-report-python-artificial-intelligence-projects-for-beginners",
+  "title": "Study Report: Python Artificial Intelligence Projects for Beginners",
+  "author": "Gagan Pasupuleti",
+  "family_id": "07-deep-learning-and-ai",
+  "family_name": "Deep Learning & AI",
+  "level": "Intermediate to Advanced",
+  "summary": "This report covers a hands-on projects book that teaches AI by building real models in Python. It covers building prediction models, classification overview and evaluation, decision trees, the common scikit-learn API, and moves toward more advanced projects. It is designed for Python developers who want to learn AI by doing, using practical, working examples.",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Building Your Own Prediction Models",
+      "topic": "ml_models",
+      "content": "**Chapter focus: Building Your Own Prediction Models**\n\nAn ML model is the learned representation of patterns in data. You split data into training and test sets, call fit() to train, and predict() on new rows. Common models: linear regression (numbers), logistic regression and decision trees (categories), k-nearest neighbors (compare to nearby examples). Evaluate with accuracy, precision, or mean error so you know if the model actually works.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n# X features, y target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(model.score(X_test, y_test))\n```\nWhat it shows: train_test_split holds out 20% for testing; score measures how well predictions match.\n\n### What it actually is\nA model is the output of training — a mathematical function that maps inputs to predicted outputs.\n\n### When to use it\nAfter you have cleaned data and a clear prediction goal (price, category, yes/no).\n\n### Where to use it\nHouse price estimation, customer churn, medical risk scores (with validation), and demand forecasting.\n\n### Real use example\nA delivery company trains on past trips (distance, traffic, time) and predicts ETA for new orders to show customers a realistic arrival window.",
+      "key_takeaways": [
+        "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+        "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+        "A delivery company trains on past trips (distance, traffic, time) and predicts ETA for new orders to show customers a realistic arrival window."
+      ],
+      "what_it_is": "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+      "when_to_use": "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+      "where_to_use": "House price estimation, customer churn, medical risk scores (with validation), and demand forecasting.",
+      "real_use_example": "A delivery company trains on past trips (distance, traffic, time) and predicts ETA for new orders to show customers a realistic arrival window."
+    },
+    {
+      "number": 2,
+      "title": "Classification Overview and Evaluation",
+      "topic": "ml_models",
+      "content": "**Chapter focus: Classification Overview and Evaluation**\n\nEach class defines attributes (data) and methods (behavior). Inheritance shares code; overriding replaces parent behavior in the child.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n# X features, y target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(model.score(X_test, y_test))\n```\nWhat it shows: train_test_split holds out 20% for testing; score measures how well predictions match.\n\n### What it actually is\nA model is the output of training — a mathematical function that maps inputs to predicted outputs.\n\n### When to use it\nAfter you have cleaned data and a clear prediction goal (price, category, yes/no).\n\n### Where to use it\nHouse price estimation, customer churn, medical risk scores (with validation), and demand forecasting.\n\n### Real use example\nclass EmailNotification and class SMSNotification both inherit from class Notifier but implement send() differently.",
+      "key_takeaways": [
+        "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+        "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+        "class EmailNotification and class SMSNotification both inherit from class Notifier but implement send() differently."
+      ],
+      "what_it_is": "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+      "when_to_use": "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+      "where_to_use": "House price estimation, customer churn, medical risk scores (with validation), and demand forecasting.",
+      "real_use_example": "class EmailNotification and class SMSNotification both inherit from class Notifier but implement send() differently."
+    },
+    {
+      "number": 3,
+      "title": "Evaluating Model Performance",
+      "topic": "performance",
+      "content": "**Chapter focus: Evaluating Model Performance**\n\nPerformance tuning makes code faster or use less memory. Strategies: use built-in functions, avoid unnecessary loops, choose the right data structure, call C libraries via ctypes for hot paths, or use NumPy vectorization. Measure before optimizing — profile to find real bottlenecks, not guessed ones.\n\nCode Reference:\n```python\n# Slow: loop\n# Fast: sum()\nnums = list(range(100000))\nprint(sum(nums))\n```\nWhat it shows: Built-in sum() is implemented in C and much faster than adding in a Python for-loop.\n\n### What it actually is\nPerformance optimization is improving speed or memory use while keeping correct behavior.\n\n### When to use it\nWhen programs are too slow, datasets grow, or production SLAs require faster response.\n\n### Where to use it\nGames, data pipelines, web APIs under load, mobile backends.\n\n### Real use example\nA script processing 2 million rows switches from row-by-row Python loops to Pandas vectorized ops and runs in 30 seconds instead of 20 minutes.",
+      "key_takeaways": [
+        "Performance optimization is improving speed or memory use while keeping correct behavior.",
+        "When programs are too slow, datasets grow, or production SLAs require faster response.",
+        "A script processing 2 million rows switches from row-by-row Python loops to Pandas vectorized ops and runs in 30 seconds instead of 20 minutes."
+      ],
+      "what_it_is": "Performance optimization is improving speed or memory use while keeping correct behavior.",
+      "when_to_use": "When programs are too slow, datasets grow, or production SLAs require faster response.",
+      "where_to_use": "Games, data pipelines, web APIs under load, mobile backends.",
+      "real_use_example": "A script processing 2 million rows switches from row-by-row Python loops to Pandas vectorized ops and runs in 30 seconds instead of 20 minutes."
+    },
+    {
+      "number": 4,
+      "title": "Decision Trees",
+      "topic": "ml_models",
+      "content": "**Chapter focus: Decision Trees**\n\nAn ML model is the learned representation of patterns in data. You split data into training and test sets, call fit() to train, and predict() on new rows. Common models: linear regression (numbers), logistic regression and decision trees (categories), k-nearest neighbors (compare to nearby examples). Evaluate with accuracy, precision, or mean error so you know if the model actually works.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n# X features, y target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(model.score(X_test, y_test))\n```\nWhat it shows: train_test_split holds out 20% for testing; score measures how well predictions match.\n\n### What it actually is\nA model is the output of training — a mathematical function that maps inputs to predicted outputs.\n\n### When to use it\nAfter you have cleaned data and a clear prediction goal (price, category, yes/no).\n\n### Where to use it\nHouse price estimation, customer churn, medical risk scores (with validation), and demand forecasting.\n\n### Real use example\nA delivery company trains on past trips (distance, traffic, time) and predicts ETA for new orders to show customers a realistic arrival window.",
+      "key_takeaways": [
+        "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+        "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+        "A delivery company trains on past trips (distance, traffic, time) and predicts ETA for new orders to show customers a realistic arrival window."
+      ],
+      "what_it_is": "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+      "when_to_use": "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+      "where_to_use": "House price estimation, customer churn, medical risk scores (with validation), and demand forecasting.",
+      "real_use_example": "A delivery company trains on past trips (distance, traffic, time) and predicts ETA for new orders to show customers a realistic arrival window."
+    },
+    {
+      "number": 5,
+      "title": "Common APIs for scikit-learn Classifiers",
+      "topic": "ml_models",
+      "content": "**Chapter focus: Common APIs for scikit-learn Classifiers**\n\nEach class defines attributes (data) and methods (behavior). Inheritance shares code; overriding replaces parent behavior in the child.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n# X features, y target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(model.score(X_test, y_test))\n```\nWhat it shows: train_test_split holds out 20% for testing; score measures how well predictions match.\n\n### What it actually is\nA model is the output of training — a mathematical function that maps inputs to predicted outputs.\n\n### When to use it\nAfter you have cleaned data and a clear prediction goal (price, category, yes/no).\n\n### Where to use it\nHouse price estimation, customer churn, medical risk scores (with validation), and demand forecasting.\n\n### Real use example\nclass EmailNotification and class SMSNotification both inherit from class Notifier but implement send() differently.",
+      "key_takeaways": [
+        "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+        "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+        "class EmailNotification and class SMSNotification both inherit from class Notifier but implement send() differently."
+      ],
+      "what_it_is": "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+      "when_to_use": "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+      "where_to_use": "House price estimation, customer churn, medical risk scores (with validation), and demand forecasting.",
+      "real_use_example": "class EmailNotification and class SMSNotification both inherit from class Notifier but implement send() differently."
+    },
+    {
+      "number": 6,
+      "title": "Toward Advanced AI Projects",
+      "topic": "projects",
+      "content": "**Chapter focus: Toward Advanced AI Projects**\n\nA project combines many skills into one working program: input, logic, data structures, maybe files or libraries. Plan small — one clear goal, a few features, then test. Break the project into functions or steps. Debugging is normal. Finishing a project teaches more than reading ten chapters because you see how pieces connect.\n\nCode Reference:\n```python\n# Mini project: guess the number\nimport random\nsecret = random.randint(1, 10)\nfor _ in range(3):\n    g = int(input(\"Guess 1-10: \"))\n    if g == secret:\n        print(\"Correct!\"); break\nelse:\n    print(\"Out of tries. Answer:\", secret)\n```\nWhat it shows: Combines random, input, loop, conditionals, and break in one playable game.\n\n### What it actually is\nA project is a complete program that solves a small real problem, not just a single concept demo.\n\n### When to use it\nAfter learning basics — consolidate skills, portfolio pieces, homework capstones.\n\n### Where to use it\nCourses, hackathons, personal GitHub, job interviews (show working code).\n\n### Real use example\nA student builds a contact book CLI that saves names and phones to a JSON file — uses dicts, files, functions, and loops in one app.",
+      "key_takeaways": [
+        "A project is a complete program that solves a small real problem, not just a single concept demo.",
+        "After learning basics — consolidate skills, portfolio pieces, homework capstones.",
+        "A student builds a contact book CLI that saves names and phones to a JSON file — uses dicts, files, functions, and loops in one app."
+      ],
+      "what_it_is": "A project is a complete program that solves a small real problem, not just a single concept demo.",
+      "when_to_use": "After learning basics — consolidate skills, portfolio pieces, homework capstones.",
+      "where_to_use": "Courses, hackathons, personal GitHub, job interviews (show working code).",
+      "real_use_example": "A student builds a contact book CLI that saves names and phones to a JSON file — uses dicts, files, functions, and loops in one app."
+    }
+  ],
+  "chapter_count": 6,
+  "source_file": "Python Artificial Intelligence Projects for Beginners.epub"
+}

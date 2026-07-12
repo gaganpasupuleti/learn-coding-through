@@ -1,0 +1,45 @@
+{
+  "id": "05-data-science",
+  "name": "Data Science",
+  "description": "NumPy, pandas, exploration, and beginner data science habits.",
+  "source_count": 7,
+  "report_count": 4,
+  "reports": [
+    {
+      "id": "study-report-python-programming-3-manuscripts-crash-course-coding-with",
+      "title": "Study Report: PYTHON PROGRAMMING - 3 MANUSCRIPTS CRASH COURSE CODING WITH PYTHON DATA SCIENCE",
+      "family_id": "05-data-science",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/05-data-science/study-report-python-programming-3-manuscripts-crash-course-coding-with/report.json",
+      "markdown": "Book_Reports/05-data-science/study-report-python-programming-3-manuscripts-crash-course-coding-with/report.md"
+    },
+    {
+      "id": "study-report-python-and-hadoop-basics-programming-for-beginners-2-book",
+      "title": "Study Report: PYTHON AND HADOOP BASICS - PROGRAMMING FOR BEGINNERS - 2 BOOKS IN 1",
+      "family_id": "05-data-science",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/05-data-science/study-report-python-and-hadoop-basics-programming-for-beginners-2-book/report.json",
+      "markdown": "Book_Reports/05-data-science/study-report-python-and-hadoop-basics-programming-for-beginners-2-book/report.md"
+    },
+    {
+      "id": "study-report-python-data-science-an-ultimate-guide-for-beginners-to-le",
+      "title": "Study Report: Python Data Science - An Ultimate Guide for Beginners to Learn Fundamentals of Data Sci...",
+      "family_id": "05-data-science",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/05-data-science/study-report-python-data-science-an-ultimate-guide-for-beginners-to-le/report.json",
+      "markdown": "Book_Reports/05-data-science/study-report-python-data-science-an-ultimate-guide-for-beginners-to-le/report.md"
+    },
+    {
+      "id": "study-report-python-data-science-the-ultimate-handbook-for-beginners-o",
+      "title": "Study Report: Python Data Science - The Ultimate Handbook for Beginners on How to Explore NumPy",
+      "family_id": "05-data-science",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/05-data-science/study-report-python-data-science-the-ultimate-handbook-for-beginners-o/report.json",
+      "markdown": "Book_Reports/05-data-science/study-report-python-data-science-the-ultimate-handbook-for-beginners-o/report.md"
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "id": "study-report-machine-learning-the-ultimate-guide-for-beginners-to-prog",
+  "title": "Study Report: Machine Learning — The Ultimate Guide for Beginners to Programming and Deep Learning",
+  "author": "Gagan Pasupuleti",
+  "family_id": "07-deep-learning-and-ai",
+  "family_name": "Deep Learning & AI",
+  "level": "Intermediate",
+  "summary": "This report covers a beginner guide to machine learning and deep learning. It explains the basics of machine learning, how machine learning systems work, the relationship between machine learning and AI, using probability and statistics, the key Python libraries, and classification with different model combinations. It offers a clear conceptual introduction for readers new to the field.",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "The Basics of Machine Learning",
+      "topic": "ml_intro",
+      "content": "**Chapter focus: The Basics of Machine Learning**\n\nAlways split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nfrom sklearn.tree import DecisionTreeClassifier\nX = [[1, 0], [1, 1], [0, 0], [0, 1]]\ny = [1, 1, 0, 0]\nmodel = DecisionTreeClassifier()\nmodel.fit(X, y)\nprint(model.predict([[1, 0]]))  # [1]\n```\nWhat it shows: fit() learns from X and y; predict() guesses the label for a new row.\n\n### What it actually is\nMachine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.\n\n### When to use it\nWhen rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.\n\n### Where to use it\nTech companies, banks, hospitals (with care), e-commerce recommenders, and research labs.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "Machine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.",
+        "When rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "Machine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.",
+      "when_to_use": "When rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.",
+      "where_to_use": "Tech companies, banks, hospitals (with care), e-commerce recommenders, and research labs.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    },
+    {
+      "number": 2,
+      "title": "Machine Learning Systems",
+      "topic": "ml_intro",
+      "content": "**Chapter focus: Machine Learning Systems**\n\nAlways split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nfrom sklearn.tree import DecisionTreeClassifier\nX = [[1, 0], [1, 1], [0, 0], [0, 1]]\ny = [1, 1, 0, 0]\nmodel = DecisionTreeClassifier()\nmodel.fit(X, y)\nprint(model.predict([[1, 0]]))  # [1]\n```\nWhat it shows: fit() learns from X and y; predict() guesses the label for a new row.\n\n### What it actually is\nMachine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.\n\n### When to use it\nWhen rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.\n\n### Where to use it\nTech companies, banks, hospitals (with care), e-commerce recommenders, and research labs.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "Machine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.",
+        "When rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "Machine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.",
+      "when_to_use": "When rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.",
+      "where_to_use": "Tech companies, banks, hospitals (with care), e-commerce recommenders, and research labs.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    },
+    {
+      "number": 3,
+      "title": "Are Machine Learning and AI the Same?",
+      "topic": "ml_intro",
+      "content": "**Chapter focus: Are Machine Learning and AI the Same?**\n\nAlways split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nfrom sklearn.tree import DecisionTreeClassifier\nX = [[1, 0], [1, 1], [0, 0], [0, 1]]\ny = [1, 1, 0, 0]\nmodel = DecisionTreeClassifier()\nmodel.fit(X, y)\nprint(model.predict([[1, 0]]))  # [1]\n```\nWhat it shows: fit() learns from X and y; predict() guesses the label for a new row.\n\n### What it actually is\nMachine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.\n\n### When to use it\nWhen rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.\n\n### Where to use it\nTech companies, banks, hospitals (with care), e-commerce recommenders, and research labs.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "Machine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.",
+        "When rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "Machine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.",
+      "when_to_use": "When rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.",
+      "where_to_use": "Tech companies, banks, hospitals (with care), e-commerce recommenders, and research labs.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    },
+    {
+      "number": 4,
+      "title": "Probability and Statistics for Machine Learning",
+      "topic": "data_science",
+      "content": "**Chapter focus: Probability and Statistics for Machine Learning**\n\nAlways split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nimport pandas as pd\ndf = pd.DataFrame({\"sales\": [120, 150, 90]})\nprint(df[\"sales\"].mean())\nprint(df.describe())\n```\nWhat it shows: Pandas loads a table; mean() averages sales; describe() shows count, min, max, and more.\n\n### What it actually is\nData science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.\n\n### When to use it\nWhen you have data and need trends, comparisons, forecasts, or evidence for decisions.\n\n### Where to use it\nMarketing analytics, healthcare research, sports stats, finance, and school science projects.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "Data science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.",
+        "When you have data and need trends, comparisons, forecasts, or evidence for decisions.",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "Data science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.",
+      "when_to_use": "When you have data and need trends, comparisons, forecasts, or evidence for decisions.",
+      "where_to_use": "Marketing analytics, healthcare research, sports stats, finance, and school science projects.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    },
+    {
+      "number": 5,
+      "title": "Python Libraries for Machine Learning",
+      "topic": "ml_models",
+      "content": "**Chapter focus: Python Libraries for Machine Learning**\n\nAlways split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n# X features, y target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(model.score(X_test, y_test))\n```\nWhat it shows: train_test_split holds out 20% for testing; score measures how well predictions match.\n\n### What it actually is\nA model is the output of training — a mathematical function that maps inputs to predicted outputs.\n\n### When to use it\nAfter you have cleaned data and a clear prediction goal (price, category, yes/no).\n\n### Where to use it\nHouse price estimation, customer churn, medical risk scores (with validation), and demand forecasting.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+        "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+      "when_to_use": "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+      "where_to_use": "House price estimation, customer churn, medical risk scores (with validation), and demand forecasting.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    },
+    {
+      "number": 6,
+      "title": "Classification and Model Combinations",
+      "topic": "ml_models",
+      "content": "**Chapter focus: Classification and Model Combinations**\n\nEach class defines attributes (data) and methods (behavior). Inheritance shares code; overriding replaces parent behavior in the child.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n# X features, y target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(model.score(X_test, y_test))\n```\nWhat it shows: train_test_split holds out 20% for testing; score measures how well predictions match.\n\n### What it actually is\nA model is the output of training — a mathematical function that maps inputs to predicted outputs.\n\n### When to use it\nAfter you have cleaned data and a clear prediction goal (price, category, yes/no).\n\n### Where to use it\nHouse price estimation, customer churn, medical risk scores (with validation), and demand forecasting.\n\n### Real use example\nclass EmailNotification and class SMSNotification both inherit from class Notifier but implement send() differently.",
+      "key_takeaways": [
+        "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+        "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+        "class EmailNotification and class SMSNotification both inherit from class Notifier but implement send() differently."
+      ],
+      "what_it_is": "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+      "when_to_use": "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+      "where_to_use": "House price estimation, customer churn, medical risk scores (with validation), and demand forecasting.",
+      "real_use_example": "class EmailNotification and class SMSNotification both inherit from class Notifier but implement send() differently."
+    }
+  ],
+  "chapter_count": 6,
+  "source_file": "Machine Learning - The Ultimate Guide for Beginners to Programming and Deep Learning.epub"
+}

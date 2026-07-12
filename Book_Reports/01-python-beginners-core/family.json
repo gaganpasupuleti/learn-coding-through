@@ -1,0 +1,63 @@
+{
+  "id": "01-python-beginners-core",
+  "name": "Python Beginners Core",
+  "description": "First steps: syntax, variables, control flow, and beginner practice.",
+  "source_count": 13,
+  "report_count": 6,
+  "reports": [
+    {
+      "id": "study-report-python-for-beginners-learn-the-best-tips-and-tricks-to-ge",
+      "title": "Study Report: Python for beginners - Learn the Best Tips and Tricks to Get the Most Out of Python Now",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-learn-the-best-tips-and-tricks-to-ge/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-learn-the-best-tips-and-tricks-to-ge/report.md"
+    },
+    {
+      "id": "study-report-python-for-beginners-an-essential-guide-to-easy-learning",
+      "title": "Study Report: Python for Beginners - An Essential Guide to Easy Learning with Basic Exercises",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-an-essential-guide-to-easy-learning/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-an-essential-guide-to-easy-learning/report.md"
+    },
+    {
+      "id": "study-report-coding-with-python-a-simple-and-straightforward-guide-for",
+      "title": "Study Report: Coding with Python - A Simple And Straightforward Guide For Beginners To Learn Fast Pro...",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-coding-with-python-a-simple-and-straightforward-guide-for/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-coding-with-python-a-simple-and-straightforward-guide-for/report.md"
+    },
+    {
+      "id": "study-report-python-programming-for-beginners-basic-language-from-abso",
+      "title": "Study Report: Python Programming for Beginners - Basic Language from Absolute Beginners to Intermediate",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-basic-language-from-abso/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-basic-language-from-abso/report.md"
+    },
+    {
+      "id": "study-report-python-programming-for-beginners-learn-python-in-a-step-b",
+      "title": "Study Report: Python Programming for beginners - Learn Python in a step by step approach, Complete pr...",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-learn-python-in-a-step-b/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-learn-python-in-a-step-b/report.md"
+    },
+    {
+      "id": "study-report-coding-for-beginners-using-python-a-hands-on-project-base",
+      "title": "Study Report: CODING FOR BEGINNERS USING PYTHON - A HANDS-ON, PROJECT-BASED INTRODUCTION",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-coding-for-beginners-using-python-a-hands-on-project-base/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-coding-for-beginners-using-python-a-hands-on-project-base/report.md"
+    }
+  ]
+}

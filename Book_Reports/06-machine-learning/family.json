@@ -1,0 +1,63 @@
+{
+  "id": "06-machine-learning",
+  "name": "Machine Learning",
+  "description": "Core ML ideas, simple models, and evaluation basics.",
+  "source_count": 10,
+  "report_count": 6,
+  "reports": [
+    {
+      "id": "study-report-data-science-for-beginners-4-books-in-1-python-programmin",
+      "title": "Study Report: Data Science for Beginners - 4 Books in 1 - Python Programming, Data Analysis, Machine ...",
+      "family_id": "06-machine-learning",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-data-science-for-beginners-4-books-in-1-python-programmin/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-data-science-for-beginners-4-books-in-1-python-programmin/report.md"
+    },
+    {
+      "id": "study-report-python-programming-the-crash-course-for-python-projects-l",
+      "title": "Study Report: Python Programming - The Crash Course for Python Projects – Learn the Secrets of Machin...",
+      "family_id": "06-machine-learning",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-python-programming-the-crash-course-for-python-projects-l/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-python-programming-the-crash-course-for-python-projects-l/report.md"
+    },
+    {
+      "id": "study-report-introduction-to-machine-learning-with-python-a-guide-for",
+      "title": "Study Report: Introduction to Machine Learning with Python - A Guide for Beginners in Data Science",
+      "family_id": "06-machine-learning",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-introduction-to-machine-learning-with-python-a-guide-for/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-introduction-to-machine-learning-with-python-a-guide-for/report.md"
+    },
+    {
+      "id": "study-report-python-programming-3-books-in-1-learn-machine-learning-da",
+      "title": "Study Report: Python Programming - 3 BOOKS IN 1 Learn machine learning, data science and analysis",
+      "family_id": "06-machine-learning",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-python-programming-3-books-in-1-learn-machine-learning-da/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-python-programming-3-books-in-1-learn-machine-learning-da/report.md"
+    },
+    {
+      "id": "study-report-python-machine-learning-how-to-learn-machine-learning-wit",
+      "title": "Study Report: Python Machine Learning - How to learn Machine Learning with Python",
+      "family_id": "06-machine-learning",
+      "chapter_count": 11,
+      "level": "Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-python-machine-learning-how-to-learn-machine-learning-wit/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-python-machine-learning-how-to-learn-machine-learning-wit/report.md"
+    },
+    {
+      "id": "study-report-python-for-beginners-a-crash-course-guide-for-machine-lea",
+      "title": "Study Report: PYTHON FOR BEGINNERS - A Crash Course Guide for Machine Learning and Web Programming",
+      "family_id": "06-machine-learning",
+      "chapter_count": 10,
+      "level": "Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-python-for-beginners-a-crash-course-guide-for-machine-lea/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-python-for-beginners-a-crash-course-guide-for-machine-lea/report.md"
+    }
+  ]
+}

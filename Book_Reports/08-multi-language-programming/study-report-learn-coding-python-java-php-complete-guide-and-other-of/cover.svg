@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="440" viewBox="0 0 320 440" role="img">
+  <rect width="320" height="440" rx="12" fill="#fef3c7"/>
+  <rect width="320" height="72" fill="#d97706"/>
+  <text x="24" y="44" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">Code Quest</text>
+  <text x="296" y="44" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" fill="#ffffff">Multi-Language</text>
+  <text x="24" y="88" font-family="Georgia, serif" font-size="17" font-weight="700" fill="#0f172a">Learn Coding — Python, Java,</text><text x="24" y="112" font-family="Georgia, serif" font-size="17" font-weight="700" fill="#0f172a">PHP Complete Guide and Other</text><text x="24" y="136" font-family="Georgia, serif" font-size="17" font-weight="700" fill="#0f172a">Recommended Languages</text>
+  <text x="24" y="178" font-family="Inter, Arial, sans-serif" font-size="12" fill="#475569">Beginner</text>
+  <text x="24" y="408" font-family="Inter, Arial, sans-serif" font-size="11" fill="#64748b">Gagan Pasupuleti</text>
+  <rect x="24" y="420" width="72" height="4" rx="2" fill="#d97706"/>
+</svg>

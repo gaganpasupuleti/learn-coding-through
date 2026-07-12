@@ -1,0 +1,118 @@
+{
+  "id": "study-report-programming-for-beginners-2-book-in-1-arduino-for-beginne",
+  "title": "Study Report: Programming for Beginners — 2 Books in 1 (Arduino for Beginners + JavaScript for Beginners)",
+  "author": "Gagan Pasupuleti",
+  "family_id": "08-multi-language-programming",
+  "family_name": "Multi-Language Programming",
+  "level": "Beginner",
+  "summary": "This report covers a two-in-one bundle pairing Arduino electronics programming with JavaScript. The Arduino half explains what Arduino is, its board anatomy, families and memory, components, setup, basic digital and analog programs, control statements, inputs/outputs and sensors, and function libraries. The JavaScript half introduces web scripting. Together they show programming across hardware and the web.",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "What Is Arduino?",
+      "topic": "hardware",
+      "content": "**Chapter focus: What Is Arduino?**\n\nPins are labeled on the board; always connect ground (GND) and use a resistor with LEDs to limit current.\n\nCode Reference:\n```c\n// Arduino: blink LED on pin 13\nvoid setup() { pinMode(13, OUTPUT); }\nvoid loop() {\n  digitalWrite(13, HIGH); delay(1000);\n  digitalWrite(13, LOW);  delay(1000);\n}\n```\nWhat it shows: setup runs once; loop repeats forever, toggling the LED every second.\n\n### What it actually is\nHardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.\n\n### When to use it\nRobotics, IoT sensors, home automation, school science fairs, physical computing courses.\n\n### Where to use it\nArduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.\n\n### Real use example\nA traffic-light project cycles red, yellow, green LEDs using digitalWrite and delay in the Arduino loop().",
+      "key_takeaways": [
+        "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+        "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+        "A traffic-light project cycles red, yellow, green LEDs using digitalWrite and delay in the Arduino loop()."
+      ],
+      "what_it_is": "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+      "when_to_use": "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+      "where_to_use": "Arduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.",
+      "real_use_example": "A traffic-light project cycles red, yellow, green LEDs using digitalWrite and delay in the Arduino loop()."
+    },
+    {
+      "number": 2,
+      "title": "Understanding Arduino and Board Anatomy",
+      "topic": "hardware",
+      "content": "**Chapter focus: Understanding Arduino and Board Anatomy**\n\nPins are labeled on the board; always connect ground (GND) and use a resistor with LEDs to limit current.\n\nCode Reference:\n```c\n// Arduino: blink LED on pin 13\nvoid setup() { pinMode(13, OUTPUT); }\nvoid loop() {\n  digitalWrite(13, HIGH); delay(1000);\n  digitalWrite(13, LOW);  delay(1000);\n}\n```\nWhat it shows: setup runs once; loop repeats forever, toggling the LED every second.\n\n### What it actually is\nHardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.\n\n### When to use it\nRobotics, IoT sensors, home automation, school science fairs, physical computing courses.\n\n### Where to use it\nArduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.\n\n### Real use example\nA traffic-light project cycles red, yellow, green LEDs using digitalWrite and delay in the Arduino loop().",
+      "key_takeaways": [
+        "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+        "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+        "A traffic-light project cycles red, yellow, green LEDs using digitalWrite and delay in the Arduino loop()."
+      ],
+      "what_it_is": "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+      "when_to_use": "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+      "where_to_use": "Arduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.",
+      "real_use_example": "A traffic-light project cycles red, yellow, green LEDs using digitalWrite and delay in the Arduino loop()."
+    },
+    {
+      "number": 3,
+      "title": "Arduino Family and Memory",
+      "topic": "hardware",
+      "content": "**Chapter focus: Arduino Family and Memory**\n\nPins are labeled on the board; always connect ground (GND) and use a resistor with LEDs to limit current.\n\nCode Reference:\n```c\n// Arduino: blink LED on pin 13\nvoid setup() { pinMode(13, OUTPUT); }\nvoid loop() {\n  digitalWrite(13, HIGH); delay(1000);\n  digitalWrite(13, LOW);  delay(1000);\n}\n```\nWhat it shows: setup runs once; loop repeats forever, toggling the LED every second.\n\n### What it actually is\nHardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.\n\n### When to use it\nRobotics, IoT sensors, home automation, school science fairs, physical computing courses.\n\n### Where to use it\nArduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.\n\n### Real use example\nA traffic-light project cycles red, yellow, green LEDs using digitalWrite and delay in the Arduino loop().",
+      "key_takeaways": [
+        "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+        "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+        "A traffic-light project cycles red, yellow, green LEDs using digitalWrite and delay in the Arduino loop()."
+      ],
+      "what_it_is": "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+      "when_to_use": "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+      "where_to_use": "Arduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.",
+      "real_use_example": "A traffic-light project cycles red, yellow, green LEDs using digitalWrite and delay in the Arduino loop()."
+    },
+    {
+      "number": 4,
+      "title": "Getting Started and Basic Digital Programs",
+      "topic": "hardware",
+      "content": "**Chapter focus: Getting Started and Basic Digital Programs**\n\nHardware programming controls physical devices — LEDs, sensors, motors — through boards like Arduino or Raspberry Pi. Arduino uses C-like sketches with setup() and loop(); Raspberry Pi can run full Python. digitalWrite turns pins on/off; analogRead reads sensor values. Always check wiring and pin numbers before uploading code.\n\nCode Reference:\n```c\n// Arduino: blink LED on pin 13\nvoid setup() { pinMode(13, OUTPUT); }\nvoid loop() {\n  digitalWrite(13, HIGH); delay(1000);\n  digitalWrite(13, LOW);  delay(1000);\n}\n```\nWhat it shows: setup runs once; loop repeats forever, toggling the LED every second.\n\n### What it actually is\nHardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.\n\n### When to use it\nRobotics, IoT sensors, home automation, school science fairs, physical computing courses.\n\n### Where to use it\nArduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.\n\n### Real use example\nA moisture sensor on Arduino reads soil dryness; when value is low, the code turns on a water pump for 5 seconds — automatic plant watering.",
+      "key_takeaways": [
+        "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+        "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+        "A moisture sensor on Arduino reads soil dryness; when value is low, the code turns on a water pump for 5 seconds — automatic plant watering."
+      ],
+      "what_it_is": "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+      "when_to_use": "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+      "where_to_use": "Arduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.",
+      "real_use_example": "A moisture sensor on Arduino reads soil dryness; when value is low, the code turns on a water pump for 5 seconds — automatic plant watering."
+    },
+    {
+      "number": 5,
+      "title": "Analog Programs, Inputs, Outputs, and Sensors",
+      "topic": "hardware",
+      "content": "**Chapter focus: Analog Programs, Inputs, Outputs, and Sensors**\n\nHardware programming controls physical devices — LEDs, sensors, motors — through boards like Arduino or Raspberry Pi. Arduino uses C-like sketches with setup() and loop(); Raspberry Pi can run full Python. digitalWrite turns pins on/off; analogRead reads sensor values. Always check wiring and pin numbers before uploading code.\n\nCode Reference:\n```c\n// Arduino: blink LED on pin 13\nvoid setup() { pinMode(13, OUTPUT); }\nvoid loop() {\n  digitalWrite(13, HIGH); delay(1000);\n  digitalWrite(13, LOW);  delay(1000);\n}\n```\nWhat it shows: setup runs once; loop repeats forever, toggling the LED every second.\n\n### What it actually is\nHardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.\n\n### When to use it\nRobotics, IoT sensors, home automation, school science fairs, physical computing courses.\n\n### Where to use it\nArduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.\n\n### Real use example\nA moisture sensor on Arduino reads soil dryness; when value is low, the code turns on a water pump for 5 seconds — automatic plant watering.",
+      "key_takeaways": [
+        "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+        "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+        "A moisture sensor on Arduino reads soil dryness; when value is low, the code turns on a water pump for 5 seconds — automatic plant watering."
+      ],
+      "what_it_is": "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+      "when_to_use": "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+      "where_to_use": "Arduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.",
+      "real_use_example": "A moisture sensor on Arduino reads soil dryness; when value is low, the code turns on a water pump for 5 seconds — automatic plant watering."
+    },
+    {
+      "number": 6,
+      "title": "Control Statements and Function Libraries",
+      "topic": "hardware",
+      "content": "**Chapter focus: Control Statements and Function Libraries**\n\nKeep functions small and named after what they do. Document tricky ones with a one-line docstring. Return early when possible to avoid deep nesting.\n\nCode Reference:\n```c\n// Arduino: blink LED on pin 13\nvoid setup() { pinMode(13, OUTPUT); }\nvoid loop() {\n  digitalWrite(13, HIGH); delay(1000);\n  digitalWrite(13, LOW);  delay(1000);\n}\n```\nWhat it shows: setup runs once; loop repeats forever, toggling the LED every second.\n\n### What it actually is\nHardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.\n\n### When to use it\nRobotics, IoT sensors, home automation, school science fairs, physical computing courses.\n\n### Where to use it\nArduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.\n\n### Real use example\nA password checker function validate(pw) returns True/False and is reused on signup, login, and reset forms.",
+      "key_takeaways": [
+        "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+        "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+        "A password checker function validate(pw) returns True/False and is reused on signup, login, and reset forms."
+      ],
+      "what_it_is": "Hardware programming is writing code that runs on microcontrollers or small computers to interact with electronics.",
+      "when_to_use": "Robotics, IoT sensors, home automation, school science fairs, physical computing courses.",
+      "where_to_use": "Arduino kits, Raspberry Pi GPIO pins, smart garden moisture sensors, basic robots.",
+      "real_use_example": "A password checker function validate(pw) returns True/False and is reused on signup, login, and reset forms."
+    },
+    {
+      "number": 7,
+      "title": "JavaScript for Beginners",
+      "topic": "web",
+      "content": "**Chapter focus: JavaScript for Beginners**\n\nJavaScript runs in browsers for buttons and forms; Node.js runs it on servers. let and const replace var in modern code.\n\nCode Reference:\n```javascript\nfunction greet(name) {\n  return \"Hello, \" + name;\n}\nconsole.log(greet(\"World\"));\n```\nWhat it shows: A JavaScript function returns a greeting; console.log prints in the browser or Node.\n\n### What it actually is\nWeb programming is creating applications accessed through browsers or HTTP APIs.\n\n### When to use it\nWebsites, online forms, dashboards, REST APIs, interactive tutorials.\n\n### Where to use it\nStartups, e-commerce, school club sites, internal company tools.\n\n### Real use example\nA button click handler validates an email field before the form submits to the server.",
+      "key_takeaways": [
+        "Web programming is creating applications accessed through browsers or HTTP APIs.",
+        "Websites, online forms, dashboards, REST APIs, interactive tutorials.",
+        "A button click handler validates an email field before the form submits to the server."
+      ],
+      "what_it_is": "Web programming is creating applications accessed through browsers or HTTP APIs.",
+      "when_to_use": "Websites, online forms, dashboards, REST APIs, interactive tutorials.",
+      "where_to_use": "Startups, e-commerce, school club sites, internal company tools.",
+      "real_use_example": "A button click handler validates an email field before the form submits to the server."
+    }
+  ],
+  "chapter_count": 7,
+  "source_file": "Programming for Beginners - 2 book in 1 - Arduino for Beginners & JavaScript for Beginners.epub"
+}

@@ -1,0 +1,839 @@
+{
+  "title": "Python Book Study Reports",
+  "description": "Clean chapter-style study reports for frontend review and teacher marking. Grouped by topic family. Author pages and licenses removed.",
+  "families": [
+    {
+      "id": "01-python-beginners-core",
+      "name": "Python Beginners Core",
+      "description": "First steps: syntax, variables, control flow, and beginner practice.",
+      "source_count": 13,
+      "report_count": 6,
+      "reports": [
+        {
+          "id": "study-report-python-for-beginners-learn-the-best-tips-and-tricks-to-ge",
+          "title": "Study Report: Python for Beginners — Learn the Best Tips and Tricks to Get the Most Out of Python",
+          "family_id": "01-python-beginners-core",
+          "chapter_count": 13,
+          "level": "Beginner",
+          "path": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-learn-the-best-tips-and-tricks-to-ge/report.json",
+          "markdown": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-learn-the-best-tips-and-tricks-to-ge/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-for-beginners-an-essential-guide-to-easy-learning",
+          "title": "Study Report: Python for Beginners — An Essential Guide to Easy Learning with Basic Exercises",
+          "family_id": "01-python-beginners-core",
+          "chapter_count": 13,
+          "level": "Beginner",
+          "path": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-an-essential-guide-to-easy-learning/report.json",
+          "markdown": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-an-essential-guide-to-easy-learning/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-coding-with-python-a-simple-and-straightforward-guide-for",
+          "title": "Study Report: Coding with Python — A Simple and Straightforward Guide for Beginners",
+          "family_id": "01-python-beginners-core",
+          "chapter_count": 14,
+          "level": "Beginner",
+          "path": "Book_Reports/01-python-beginners-core/study-report-coding-with-python-a-simple-and-straightforward-guide-for/report.json",
+          "markdown": "Book_Reports/01-python-beginners-core/study-report-coding-with-python-a-simple-and-straightforward-guide-for/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-programming-for-beginners-basic-language-from-abso",
+          "title": "Study Report: Python Programming for Beginners — Basic Language from Absolute Beginners to Intermediate",
+          "family_id": "01-python-beginners-core",
+          "chapter_count": 14,
+          "level": "Beginner",
+          "path": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-basic-language-from-abso/report.json",
+          "markdown": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-basic-language-from-abso/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-programming-for-beginners-learn-python-in-a-step-b",
+          "title": "Study Report: Python Programming for Beginners — Learn Python in a Step-by-Step Approach",
+          "family_id": "01-python-beginners-core",
+          "chapter_count": 13,
+          "level": "Beginner",
+          "path": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-learn-python-in-a-step-b/report.json",
+          "markdown": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-learn-python-in-a-step-b/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-coding-for-beginners-using-python-a-hands-on-project-base",
+          "title": "Study Report: Coding for Beginners Using Python — A Hands-On, Project-Based Introduction",
+          "family_id": "01-python-beginners-core",
+          "chapter_count": 13,
+          "level": "Beginner",
+          "path": "Book_Reports/01-python-beginners-core/study-report-coding-for-beginners-using-python-a-hands-on-project-base/report.json",
+          "markdown": "Book_Reports/01-python-beginners-core/study-report-coding-for-beginners-using-python-a-hands-on-project-base/report.md",
+          "author": "Gagan Pasupuleti"
+        }
+      ]
+    },
+    {
+      "id": "02-python-crash-courses",
+      "name": "Python Crash Courses",
+      "description": "Fast-track learning paths for short study windows.",
+      "source_count": 7,
+      "report_count": 4,
+      "reports": [
+        {
+          "id": "study-report-learn-python-in-one-day-and-learn-it-well-python-for-begi",
+          "title": "Study Report: Learn Python in One Day and Learn It Well — Python for Beginners with a Hands-On Project",
+          "family_id": "02-python-crash-courses",
+          "chapter_count": 12,
+          "level": "Beginner",
+          "path": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-one-day-and-learn-it-well-python-for-begi/report.json",
+          "markdown": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-one-day-and-learn-it-well-python-for-begi/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-learn-python-in-a-weekend-python-for-beginners",
+          "title": "Study Report: Learn Python in a Weekend — Python for Beginners",
+          "family_id": "02-python-crash-courses",
+          "chapter_count": 12,
+          "level": "Beginner",
+          "path": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-a-weekend-python-for-beginners/report.json",
+          "markdown": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-a-weekend-python-for-beginners/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-learn-python-the-crash-course-for-beginners-to-learn-pyth",
+          "title": "Study Report: Learn Python — The Crash Course for Beginners to Learn Python Coding in One Week",
+          "family_id": "02-python-crash-courses",
+          "chapter_count": 12,
+          "level": "Beginner",
+          "path": "Book_Reports/02-python-crash-courses/study-report-learn-python-the-crash-course-for-beginners-to-learn-pyth/report.json",
+          "markdown": "Book_Reports/02-python-crash-courses/study-report-learn-python-the-crash-course-for-beginners-to-learn-pyth/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-for-beginners-start-right-now-to-learn-computer-pr",
+          "title": "Study Report: Python for Beginners — Start Right Now to Learn Computer Programming",
+          "family_id": "02-python-crash-courses",
+          "chapter_count": 8,
+          "level": "Beginner",
+          "path": "Book_Reports/02-python-crash-courses/study-report-python-for-beginners-start-right-now-to-learn-computer-pr/report.json",
+          "markdown": "Book_Reports/02-python-crash-courses/study-report-python-for-beginners-start-right-now-to-learn-computer-pr/report.md",
+          "author": "Gagan Pasupuleti"
+        }
+      ]
+    },
+    {
+      "id": "03-combo-crash-paths",
+      "name": "Combo Learning Paths",
+      "description": "Multi-book style paths covering Python plus related skills.",
+      "source_count": 3,
+      "report_count": 3,
+      "reports": [
+        {
+          "id": "study-report-python-2-books-in-1-python-for-beginners-python-programmi",
+          "title": "Study Report: Python — 2 Books in 1 (Python for Beginners + Python Programming)",
+          "family_id": "03-combo-crash-paths",
+          "chapter_count": 7,
+          "level": "Mixed",
+          "path": "Book_Reports/03-combo-crash-paths/study-report-python-2-books-in-1-python-for-beginners-python-programmi/report.json",
+          "markdown": "Book_Reports/03-combo-crash-paths/study-report-python-2-books-in-1-python-for-beginners-python-programmi/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-for-beginners-2-books-in-1-coding-for-beginners-us",
+          "title": "Study Report: Python for Beginners — 2 Books in 1 (Coding for Beginners + Python Crash Course)",
+          "family_id": "03-combo-crash-paths",
+          "chapter_count": 11,
+          "level": "Mixed",
+          "path": "Book_Reports/03-combo-crash-paths/study-report-python-for-beginners-2-books-in-1-coding-for-beginners-us/report.json",
+          "markdown": "Book_Reports/03-combo-crash-paths/study-report-python-for-beginners-2-books-in-1-coding-for-beginners-us/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-highway-2-books-in-1-the-fastest-way-for-beginners",
+          "title": "Study Report: Python Highway — 2 Books in 1 (The Fastest Way for Beginners to Learn Python)",
+          "family_id": "03-combo-crash-paths",
+          "chapter_count": 12,
+          "level": "Mixed",
+          "path": "Book_Reports/03-combo-crash-paths/study-report-python-highway-2-books-in-1-the-fastest-way-for-beginners/report.json",
+          "markdown": "Book_Reports/03-combo-crash-paths/study-report-python-highway-2-books-in-1-the-fastest-way-for-beginners/report.md",
+          "author": "Gagan Pasupuleti"
+        }
+      ]
+    },
+    {
+      "id": "04-data-analysis",
+      "name": "Data Analysis",
+      "description": "Working with tables, summaries, and analysis workflows in Python.",
+      "source_count": 2,
+      "report_count": 2,
+      "reports": [
+        {
+          "id": "study-report-python-learn-coding-programs-with-python-programming-and",
+          "title": "Study Report: Python — Learn Coding Programs with Python Programming and Master Data Analysis",
+          "family_id": "04-data-analysis",
+          "chapter_count": 10,
+          "level": "Beginner to Intermediate",
+          "path": "Book_Reports/04-data-analysis/study-report-python-learn-coding-programs-with-python-programming-and/report.json",
+          "markdown": "Book_Reports/04-data-analysis/study-report-python-learn-coding-programs-with-python-programming-and/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-for-beginners-learn-coding-programming-data-analys",
+          "title": "Study Report: Python for Beginners — Learn Coding, Programming, Data Analysis and Algorithmic Thinking",
+          "family_id": "04-data-analysis",
+          "chapter_count": 10,
+          "level": "Beginner to Intermediate",
+          "path": "Book_Reports/04-data-analysis/study-report-python-for-beginners-learn-coding-programming-data-analys/report.json",
+          "markdown": "Book_Reports/04-data-analysis/study-report-python-for-beginners-learn-coding-programming-data-analys/report.md",
+          "author": "Gagan Pasupuleti"
+        }
+      ]
+    },
+    {
+      "id": "05-data-science",
+      "name": "Data Science",
+      "description": "NumPy, pandas, exploration, and beginner data science habits.",
+      "source_count": 7,
+      "report_count": 4,
+      "reports": [
+        {
+          "id": "study-report-python-programming-3-manuscripts-crash-course-coding-with",
+          "title": "Study Report: Python Programming — 3 Manuscripts (Crash Course, Coding with Python, Data Science)",
+          "family_id": "05-data-science",
+          "chapter_count": 9,
+          "level": "Beginner to Intermediate",
+          "path": "Book_Reports/05-data-science/study-report-python-programming-3-manuscripts-crash-course-coding-with/report.json",
+          "markdown": "Book_Reports/05-data-science/study-report-python-programming-3-manuscripts-crash-course-coding-with/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-and-hadoop-basics-programming-for-beginners-2-book",
+          "title": "Study Report: Python and Hadoop Basics — Programming for Beginners (2 Books in 1)",
+          "family_id": "05-data-science",
+          "chapter_count": 9,
+          "level": "Beginner to Intermediate",
+          "path": "Book_Reports/05-data-science/study-report-python-and-hadoop-basics-programming-for-beginners-2-book/report.json",
+          "markdown": "Book_Reports/05-data-science/study-report-python-and-hadoop-basics-programming-for-beginners-2-book/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-data-science-an-ultimate-guide-for-beginners-to-le",
+          "title": "Study Report: Python Data Science — An Ultimate Guide for Beginners to Learn the Fundamentals of Data Science",
+          "family_id": "05-data-science",
+          "chapter_count": 9,
+          "level": "Beginner to Intermediate",
+          "path": "Book_Reports/05-data-science/study-report-python-data-science-an-ultimate-guide-for-beginners-to-le/report.json",
+          "markdown": "Book_Reports/05-data-science/study-report-python-data-science-an-ultimate-guide-for-beginners-to-le/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-data-science-the-ultimate-handbook-for-beginners-o",
+          "title": "Study Report: Python Data Science — The Ultimate Handbook for Beginners on How to Explore NumPy, Pandas, and More",
+          "family_id": "05-data-science",
+          "chapter_count": 8,
+          "level": "Intermediate",
+          "path": "Book_Reports/05-data-science/study-report-python-data-science-the-ultimate-handbook-for-beginners-o/report.json",
+          "markdown": "Book_Reports/05-data-science/study-report-python-data-science-the-ultimate-handbook-for-beginners-o/report.md",
+          "author": "Gagan Pasupuleti"
+        }
+      ]
+    },
+    {
+      "id": "06-machine-learning",
+      "name": "Machine Learning",
+      "description": "Core ML ideas, simple models, and evaluation basics.",
+      "source_count": 10,
+      "report_count": 6,
+      "reports": [
+        {
+          "id": "study-report-data-science-for-beginners-4-books-in-1-python-programmin",
+          "title": "Study Report: Data Science for Beginners — 4 Books in 1 (Python Programming, Data Analysis, Machine Learning, Data Science)",
+          "family_id": "06-machine-learning",
+          "chapter_count": 7,
+          "level": "Beginner to Intermediate",
+          "path": "Book_Reports/06-machine-learning/study-report-data-science-for-beginners-4-books-in-1-python-programmin/report.json",
+          "markdown": "Book_Reports/06-machine-learning/study-report-data-science-for-beginners-4-books-in-1-python-programmin/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-programming-the-crash-course-for-python-projects-l",
+          "title": "Study Report: Python Programming — The Crash Course for Python Projects (Learn the Secrets of Machine Learning)",
+          "family_id": "06-machine-learning",
+          "chapter_count": 8,
+          "level": "Beginner to Intermediate",
+          "path": "Book_Reports/06-machine-learning/study-report-python-programming-the-crash-course-for-python-projects-l/report.json",
+          "markdown": "Book_Reports/06-machine-learning/study-report-python-programming-the-crash-course-for-python-projects-l/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-introduction-to-machine-learning-with-python-a-guide-for",
+          "title": "Study Report: Introduction to Machine Learning with Python — A Guide for Beginners in Data Science",
+          "family_id": "06-machine-learning",
+          "chapter_count": 7,
+          "level": "Intermediate",
+          "path": "Book_Reports/06-machine-learning/study-report-introduction-to-machine-learning-with-python-a-guide-for/report.json",
+          "markdown": "Book_Reports/06-machine-learning/study-report-introduction-to-machine-learning-with-python-a-guide-for/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-programming-3-books-in-1-learn-machine-learning-da",
+          "title": "Study Report: Python Programming — 3 Books in 1 (Learn Machine Learning, Data Science and Analysis)",
+          "family_id": "06-machine-learning",
+          "chapter_count": 7,
+          "level": "Intermediate",
+          "path": "Book_Reports/06-machine-learning/study-report-python-programming-3-books-in-1-learn-machine-learning-da/report.json",
+          "markdown": "Book_Reports/06-machine-learning/study-report-python-programming-3-books-in-1-learn-machine-learning-da/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-machine-learning-how-to-learn-machine-learning-wit",
+          "title": "Study Report: Python Machine Learning — How to Learn Machine Learning with Python",
+          "family_id": "06-machine-learning",
+          "chapter_count": 8,
+          "level": "Intermediate",
+          "path": "Book_Reports/06-machine-learning/study-report-python-machine-learning-how-to-learn-machine-learning-wit/report.json",
+          "markdown": "Book_Reports/06-machine-learning/study-report-python-machine-learning-how-to-learn-machine-learning-wit/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-for-beginners-a-crash-course-guide-for-machine-lea",
+          "title": "Study Report: Python for Beginners — A Crash Course Guide for Machine Learning and Web Programming",
+          "family_id": "06-machine-learning",
+          "chapter_count": 8,
+          "level": "Intermediate",
+          "path": "Book_Reports/06-machine-learning/study-report-python-for-beginners-a-crash-course-guide-for-machine-lea/report.json",
+          "markdown": "Book_Reports/06-machine-learning/study-report-python-for-beginners-a-crash-course-guide-for-machine-lea/report.md",
+          "author": "Gagan Pasupuleti"
+        }
+      ]
+    },
+    {
+      "id": "07-deep-learning-and-ai",
+      "name": "Deep Learning and AI",
+      "description": "Neural nets and beginner AI project thinking.",
+      "source_count": 4,
+      "report_count": 3,
+      "reports": [
+        {
+          "id": "study-report-machine-learning-the-ultimate-guide-for-beginners-to-prog",
+          "title": "Study Report: Machine Learning — The Ultimate Guide for Beginners to Programming and Deep Learning",
+          "family_id": "07-deep-learning-and-ai",
+          "chapter_count": 6,
+          "level": "Intermediate",
+          "path": "Book_Reports/07-deep-learning-and-ai/study-report-machine-learning-the-ultimate-guide-for-beginners-to-prog/report.json",
+          "markdown": "Book_Reports/07-deep-learning-and-ai/study-report-machine-learning-the-ultimate-guide-for-beginners-to-prog/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-mastering-deep-learning-fundamentals-with-python-the-abso",
+          "title": "Study Report: Mastering Deep Learning Fundamentals with Python — The Absolute Ultimate Guide",
+          "family_id": "07-deep-learning-and-ai",
+          "chapter_count": 9,
+          "level": "Advanced",
+          "path": "Book_Reports/07-deep-learning-and-ai/study-report-mastering-deep-learning-fundamentals-with-python-the-abso/report.json",
+          "markdown": "Book_Reports/07-deep-learning-and-ai/study-report-mastering-deep-learning-fundamentals-with-python-the-abso/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-artificial-intelligence-projects-for-beginners",
+          "title": "Study Report: Python Artificial Intelligence Projects for Beginners",
+          "family_id": "07-deep-learning-and-ai",
+          "chapter_count": 6,
+          "level": "Intermediate to Advanced",
+          "path": "Book_Reports/07-deep-learning-and-ai/study-report-python-artificial-intelligence-projects-for-beginners/report.json",
+          "markdown": "Book_Reports/07-deep-learning-and-ai/study-report-python-artificial-intelligence-projects-for-beginners/report.md",
+          "author": "Gagan Pasupuleti"
+        }
+      ]
+    },
+    {
+      "id": "08-multi-language-programming",
+      "name": "Multi-Language Programming",
+      "description": "Python beside JavaScript, Java, PHP, SQL, Linux, or Arduino.",
+      "source_count": 7,
+      "report_count": 4,
+      "reports": [
+        {
+          "id": "study-report-programming-for-beginners-2-book-in-1-arduino-for-beginne",
+          "title": "Study Report: Programming for Beginners — 2 Books in 1 (Arduino for Beginners + JavaScript for Beginners)",
+          "family_id": "08-multi-language-programming",
+          "chapter_count": 7,
+          "level": "Beginner",
+          "path": "Book_Reports/08-multi-language-programming/study-report-programming-for-beginners-2-book-in-1-arduino-for-beginne/report.json",
+          "markdown": "Book_Reports/08-multi-language-programming/study-report-programming-for-beginners-2-book-in-1-arduino-for-beginne/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-programming-for-beginners-learn-coding-in-7-days",
+          "title": "Study Report: Python Programming for Beginners — Learn Coding in 7 Days",
+          "family_id": "08-multi-language-programming",
+          "chapter_count": 8,
+          "level": "Beginner",
+          "path": "Book_Reports/08-multi-language-programming/study-report-python-programming-for-beginners-learn-coding-in-7-days/report.json",
+          "markdown": "Book_Reports/08-multi-language-programming/study-report-python-programming-for-beginners-learn-coding-in-7-days/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-learn-coding-python-java-php-complete-guide-and-other-of",
+          "title": "Study Report: Learn Coding — Python, Java, PHP Complete Guide and Other Recommended Languages",
+          "family_id": "08-multi-language-programming",
+          "chapter_count": 6,
+          "level": "Beginner",
+          "path": "Book_Reports/08-multi-language-programming/study-report-learn-coding-python-java-php-complete-guide-and-other-of/report.json",
+          "markdown": "Book_Reports/08-multi-language-programming/study-report-learn-coding-python-java-php-complete-guide-and-other-of/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-computer-programming-for-beginners-4-books-in-1-linux-com",
+          "title": "Study Report: Computer Programming for Beginners — 4 Books in 1 (Linux Command-Line + Python)",
+          "family_id": "08-multi-language-programming",
+          "chapter_count": 6,
+          "level": "Beginner",
+          "path": "Book_Reports/08-multi-language-programming/study-report-computer-programming-for-beginners-4-books-in-1-linux-com/report.json",
+          "markdown": "Book_Reports/08-multi-language-programming/study-report-computer-programming-for-beginners-4-books-in-1-linux-com/report.md",
+          "author": "Gagan Pasupuleti"
+        }
+      ]
+    },
+    {
+      "id": "09-kids-and-makers",
+      "name": "Kids and Makers",
+      "description": "Friendly Python for younger learners and hardware starters.",
+      "source_count": 2,
+      "report_count": 2,
+      "reports": [
+        {
+          "id": "study-report-hello-raspberry-pi-python-programming-for-kids-and-other",
+          "title": "Study Report: Hello Raspberry Pi! — Python Programming for Kids and Other Beginners",
+          "family_id": "09-kids-and-makers",
+          "chapter_count": 5,
+          "level": "Beginner (Kids)",
+          "path": "Book_Reports/09-kids-and-makers/study-report-hello-raspberry-pi-python-programming-for-kids-and-other/report.json",
+          "markdown": "Book_Reports/09-kids-and-makers/study-report-hello-raspberry-pi-python-programming-for-kids-and-other/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-for-kids-an-easy-and-practice-guide-for-beginners",
+          "title": "Study Report: Python for Kids — An Easy and Practical Guide for Beginners",
+          "family_id": "09-kids-and-makers",
+          "chapter_count": 8,
+          "level": "Beginner (Kids)",
+          "path": "Book_Reports/09-kids-and-makers/study-report-python-for-kids-an-easy-and-practice-guide-for-beginners/report.json",
+          "markdown": "Book_Reports/09-kids-and-makers/study-report-python-for-kids-an-easy-and-practice-guide-for-beginners/report.md",
+          "author": "Gagan Pasupuleti"
+        }
+      ]
+    },
+    {
+      "id": "10-comprehensive-and-projects",
+      "name": "Comprehensive and Projects",
+      "description": "Broader references, automation, cookbooks, and project practice.",
+      "source_count": 5,
+      "report_count": 3,
+      "reports": [
+        {
+          "id": "study-report-python-all-in-one-for-dummies",
+          "title": "Study Report: Python All-in-One For Dummies",
+          "family_id": "10-comprehensive-and-projects",
+          "chapter_count": 8,
+          "level": "Beginner to Advanced",
+          "path": "Book_Reports/10-comprehensive-and-projects/study-report-python-all-in-one-for-dummies/report.json",
+          "markdown": "Book_Reports/10-comprehensive-and-projects/study-report-python-all-in-one-for-dummies/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-python-programming-cookbook-for-absolute-beginners-a-comp",
+          "title": "Study Report: Python Programming Cookbook for Absolute Beginners — A Complete Crash Course and Tutorial",
+          "family_id": "10-comprehensive-and-projects",
+          "chapter_count": 8,
+          "level": "Beginner",
+          "path": "Book_Reports/10-comprehensive-and-projects/study-report-python-programming-cookbook-for-absolute-beginners-a-comp/report.json",
+          "markdown": "Book_Reports/10-comprehensive-and-projects/study-report-python-programming-cookbook-for-absolute-beginners-a-comp/report.md",
+          "author": "Gagan Pasupuleti"
+        },
+        {
+          "id": "study-report-automate-the-boring-stuff-with-python-practical-programmi",
+          "title": "Study Report: Automate the Boring Stuff with Python — Practical Programming for Total Beginners",
+          "family_id": "10-comprehensive-and-projects",
+          "chapter_count": 7,
+          "level": "Beginner to Intermediate",
+          "path": "Book_Reports/10-comprehensive-and-projects/study-report-automate-the-boring-stuff-with-python-practical-programmi/report.json",
+          "markdown": "Book_Reports/10-comprehensive-and-projects/study-report-automate-the-boring-stuff-with-python-practical-programmi/report.md",
+          "author": "Gagan Pasupuleti"
+        }
+      ]
+    }
+  ],
+  "reports": [
+    {
+      "id": "study-report-python-for-beginners-learn-the-best-tips-and-tricks-to-ge",
+      "title": "Study Report: Python for Beginners — Learn the Best Tips and Tricks to Get the Most Out of Python",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 13,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-learn-the-best-tips-and-tricks-to-ge/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-learn-the-best-tips-and-tricks-to-ge/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-for-beginners-an-essential-guide-to-easy-learning",
+      "title": "Study Report: Python for Beginners — An Essential Guide to Easy Learning with Basic Exercises",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 13,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-an-essential-guide-to-easy-learning/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-python-for-beginners-an-essential-guide-to-easy-learning/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-coding-with-python-a-simple-and-straightforward-guide-for",
+      "title": "Study Report: Coding with Python — A Simple and Straightforward Guide for Beginners",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 14,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-coding-with-python-a-simple-and-straightforward-guide-for/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-coding-with-python-a-simple-and-straightforward-guide-for/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-programming-for-beginners-basic-language-from-abso",
+      "title": "Study Report: Python Programming for Beginners — Basic Language from Absolute Beginners to Intermediate",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 14,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-basic-language-from-abso/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-basic-language-from-abso/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-programming-for-beginners-learn-python-in-a-step-b",
+      "title": "Study Report: Python Programming for Beginners — Learn Python in a Step-by-Step Approach",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 13,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-learn-python-in-a-step-b/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-python-programming-for-beginners-learn-python-in-a-step-b/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-coding-for-beginners-using-python-a-hands-on-project-base",
+      "title": "Study Report: Coding for Beginners Using Python — A Hands-On, Project-Based Introduction",
+      "family_id": "01-python-beginners-core",
+      "chapter_count": 13,
+      "level": "Beginner",
+      "path": "Book_Reports/01-python-beginners-core/study-report-coding-for-beginners-using-python-a-hands-on-project-base/report.json",
+      "markdown": "Book_Reports/01-python-beginners-core/study-report-coding-for-beginners-using-python-a-hands-on-project-base/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-learn-python-in-one-day-and-learn-it-well-python-for-begi",
+      "title": "Study Report: Learn Python in One Day and Learn It Well — Python for Beginners with a Hands-On Project",
+      "family_id": "02-python-crash-courses",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-one-day-and-learn-it-well-python-for-begi/report.json",
+      "markdown": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-one-day-and-learn-it-well-python-for-begi/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-learn-python-in-a-weekend-python-for-beginners",
+      "title": "Study Report: Learn Python in a Weekend — Python for Beginners",
+      "family_id": "02-python-crash-courses",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-a-weekend-python-for-beginners/report.json",
+      "markdown": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-a-weekend-python-for-beginners/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-learn-python-the-crash-course-for-beginners-to-learn-pyth",
+      "title": "Study Report: Learn Python — The Crash Course for Beginners to Learn Python Coding in One Week",
+      "family_id": "02-python-crash-courses",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/02-python-crash-courses/study-report-learn-python-the-crash-course-for-beginners-to-learn-pyth/report.json",
+      "markdown": "Book_Reports/02-python-crash-courses/study-report-learn-python-the-crash-course-for-beginners-to-learn-pyth/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-for-beginners-start-right-now-to-learn-computer-pr",
+      "title": "Study Report: Python for Beginners — Start Right Now to Learn Computer Programming",
+      "family_id": "02-python-crash-courses",
+      "chapter_count": 8,
+      "level": "Beginner",
+      "path": "Book_Reports/02-python-crash-courses/study-report-python-for-beginners-start-right-now-to-learn-computer-pr/report.json",
+      "markdown": "Book_Reports/02-python-crash-courses/study-report-python-for-beginners-start-right-now-to-learn-computer-pr/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-2-books-in-1-python-for-beginners-python-programmi",
+      "title": "Study Report: Python — 2 Books in 1 (Python for Beginners + Python Programming)",
+      "family_id": "03-combo-crash-paths",
+      "chapter_count": 7,
+      "level": "Mixed",
+      "path": "Book_Reports/03-combo-crash-paths/study-report-python-2-books-in-1-python-for-beginners-python-programmi/report.json",
+      "markdown": "Book_Reports/03-combo-crash-paths/study-report-python-2-books-in-1-python-for-beginners-python-programmi/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-for-beginners-2-books-in-1-coding-for-beginners-us",
+      "title": "Study Report: Python for Beginners — 2 Books in 1 (Coding for Beginners + Python Crash Course)",
+      "family_id": "03-combo-crash-paths",
+      "chapter_count": 11,
+      "level": "Mixed",
+      "path": "Book_Reports/03-combo-crash-paths/study-report-python-for-beginners-2-books-in-1-coding-for-beginners-us/report.json",
+      "markdown": "Book_Reports/03-combo-crash-paths/study-report-python-for-beginners-2-books-in-1-coding-for-beginners-us/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-highway-2-books-in-1-the-fastest-way-for-beginners",
+      "title": "Study Report: Python Highway — 2 Books in 1 (The Fastest Way for Beginners to Learn Python)",
+      "family_id": "03-combo-crash-paths",
+      "chapter_count": 12,
+      "level": "Mixed",
+      "path": "Book_Reports/03-combo-crash-paths/study-report-python-highway-2-books-in-1-the-fastest-way-for-beginners/report.json",
+      "markdown": "Book_Reports/03-combo-crash-paths/study-report-python-highway-2-books-in-1-the-fastest-way-for-beginners/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-learn-coding-programs-with-python-programming-and",
+      "title": "Study Report: Python — Learn Coding Programs with Python Programming and Master Data Analysis",
+      "family_id": "04-data-analysis",
+      "chapter_count": 10,
+      "level": "Beginner to Intermediate",
+      "path": "Book_Reports/04-data-analysis/study-report-python-learn-coding-programs-with-python-programming-and/report.json",
+      "markdown": "Book_Reports/04-data-analysis/study-report-python-learn-coding-programs-with-python-programming-and/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-for-beginners-learn-coding-programming-data-analys",
+      "title": "Study Report: Python for Beginners — Learn Coding, Programming, Data Analysis and Algorithmic Thinking",
+      "family_id": "04-data-analysis",
+      "chapter_count": 10,
+      "level": "Beginner to Intermediate",
+      "path": "Book_Reports/04-data-analysis/study-report-python-for-beginners-learn-coding-programming-data-analys/report.json",
+      "markdown": "Book_Reports/04-data-analysis/study-report-python-for-beginners-learn-coding-programming-data-analys/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-programming-3-manuscripts-crash-course-coding-with",
+      "title": "Study Report: Python Programming — 3 Manuscripts (Crash Course, Coding with Python, Data Science)",
+      "family_id": "05-data-science",
+      "chapter_count": 9,
+      "level": "Beginner to Intermediate",
+      "path": "Book_Reports/05-data-science/study-report-python-programming-3-manuscripts-crash-course-coding-with/report.json",
+      "markdown": "Book_Reports/05-data-science/study-report-python-programming-3-manuscripts-crash-course-coding-with/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-and-hadoop-basics-programming-for-beginners-2-book",
+      "title": "Study Report: Python and Hadoop Basics — Programming for Beginners (2 Books in 1)",
+      "family_id": "05-data-science",
+      "chapter_count": 9,
+      "level": "Beginner to Intermediate",
+      "path": "Book_Reports/05-data-science/study-report-python-and-hadoop-basics-programming-for-beginners-2-book/report.json",
+      "markdown": "Book_Reports/05-data-science/study-report-python-and-hadoop-basics-programming-for-beginners-2-book/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-data-science-an-ultimate-guide-for-beginners-to-le",
+      "title": "Study Report: Python Data Science — An Ultimate Guide for Beginners to Learn the Fundamentals of Data Science",
+      "family_id": "05-data-science",
+      "chapter_count": 9,
+      "level": "Beginner to Intermediate",
+      "path": "Book_Reports/05-data-science/study-report-python-data-science-an-ultimate-guide-for-beginners-to-le/report.json",
+      "markdown": "Book_Reports/05-data-science/study-report-python-data-science-an-ultimate-guide-for-beginners-to-le/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-data-science-the-ultimate-handbook-for-beginners-o",
+      "title": "Study Report: Python Data Science — The Ultimate Handbook for Beginners on How to Explore NumPy, Pandas, and More",
+      "family_id": "05-data-science",
+      "chapter_count": 8,
+      "level": "Intermediate",
+      "path": "Book_Reports/05-data-science/study-report-python-data-science-the-ultimate-handbook-for-beginners-o/report.json",
+      "markdown": "Book_Reports/05-data-science/study-report-python-data-science-the-ultimate-handbook-for-beginners-o/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-data-science-for-beginners-4-books-in-1-python-programmin",
+      "title": "Study Report: Data Science for Beginners — 4 Books in 1 (Python Programming, Data Analysis, Machine Learning, Data Science)",
+      "family_id": "06-machine-learning",
+      "chapter_count": 7,
+      "level": "Beginner to Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-data-science-for-beginners-4-books-in-1-python-programmin/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-data-science-for-beginners-4-books-in-1-python-programmin/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-programming-the-crash-course-for-python-projects-l",
+      "title": "Study Report: Python Programming — The Crash Course for Python Projects (Learn the Secrets of Machine Learning)",
+      "family_id": "06-machine-learning",
+      "chapter_count": 8,
+      "level": "Beginner to Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-python-programming-the-crash-course-for-python-projects-l/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-python-programming-the-crash-course-for-python-projects-l/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-introduction-to-machine-learning-with-python-a-guide-for",
+      "title": "Study Report: Introduction to Machine Learning with Python — A Guide for Beginners in Data Science",
+      "family_id": "06-machine-learning",
+      "chapter_count": 7,
+      "level": "Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-introduction-to-machine-learning-with-python-a-guide-for/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-introduction-to-machine-learning-with-python-a-guide-for/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-programming-3-books-in-1-learn-machine-learning-da",
+      "title": "Study Report: Python Programming — 3 Books in 1 (Learn Machine Learning, Data Science and Analysis)",
+      "family_id": "06-machine-learning",
+      "chapter_count": 7,
+      "level": "Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-python-programming-3-books-in-1-learn-machine-learning-da/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-python-programming-3-books-in-1-learn-machine-learning-da/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-machine-learning-how-to-learn-machine-learning-wit",
+      "title": "Study Report: Python Machine Learning — How to Learn Machine Learning with Python",
+      "family_id": "06-machine-learning",
+      "chapter_count": 8,
+      "level": "Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-python-machine-learning-how-to-learn-machine-learning-wit/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-python-machine-learning-how-to-learn-machine-learning-wit/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-for-beginners-a-crash-course-guide-for-machine-lea",
+      "title": "Study Report: Python for Beginners — A Crash Course Guide for Machine Learning and Web Programming",
+      "family_id": "06-machine-learning",
+      "chapter_count": 8,
+      "level": "Intermediate",
+      "path": "Book_Reports/06-machine-learning/study-report-python-for-beginners-a-crash-course-guide-for-machine-lea/report.json",
+      "markdown": "Book_Reports/06-machine-learning/study-report-python-for-beginners-a-crash-course-guide-for-machine-lea/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-machine-learning-the-ultimate-guide-for-beginners-to-prog",
+      "title": "Study Report: Machine Learning — The Ultimate Guide for Beginners to Programming and Deep Learning",
+      "family_id": "07-deep-learning-and-ai",
+      "chapter_count": 6,
+      "level": "Intermediate",
+      "path": "Book_Reports/07-deep-learning-and-ai/study-report-machine-learning-the-ultimate-guide-for-beginners-to-prog/report.json",
+      "markdown": "Book_Reports/07-deep-learning-and-ai/study-report-machine-learning-the-ultimate-guide-for-beginners-to-prog/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-mastering-deep-learning-fundamentals-with-python-the-abso",
+      "title": "Study Report: Mastering Deep Learning Fundamentals with Python — The Absolute Ultimate Guide",
+      "family_id": "07-deep-learning-and-ai",
+      "chapter_count": 9,
+      "level": "Advanced",
+      "path": "Book_Reports/07-deep-learning-and-ai/study-report-mastering-deep-learning-fundamentals-with-python-the-abso/report.json",
+      "markdown": "Book_Reports/07-deep-learning-and-ai/study-report-mastering-deep-learning-fundamentals-with-python-the-abso/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-artificial-intelligence-projects-for-beginners",
+      "title": "Study Report: Python Artificial Intelligence Projects for Beginners",
+      "family_id": "07-deep-learning-and-ai",
+      "chapter_count": 6,
+      "level": "Intermediate to Advanced",
+      "path": "Book_Reports/07-deep-learning-and-ai/study-report-python-artificial-intelligence-projects-for-beginners/report.json",
+      "markdown": "Book_Reports/07-deep-learning-and-ai/study-report-python-artificial-intelligence-projects-for-beginners/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-programming-for-beginners-2-book-in-1-arduino-for-beginne",
+      "title": "Study Report: Programming for Beginners — 2 Books in 1 (Arduino for Beginners + JavaScript for Beginners)",
+      "family_id": "08-multi-language-programming",
+      "chapter_count": 7,
+      "level": "Beginner",
+      "path": "Book_Reports/08-multi-language-programming/study-report-programming-for-beginners-2-book-in-1-arduino-for-beginne/report.json",
+      "markdown": "Book_Reports/08-multi-language-programming/study-report-programming-for-beginners-2-book-in-1-arduino-for-beginne/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-programming-for-beginners-learn-coding-in-7-days",
+      "title": "Study Report: Python Programming for Beginners — Learn Coding in 7 Days",
+      "family_id": "08-multi-language-programming",
+      "chapter_count": 8,
+      "level": "Beginner",
+      "path": "Book_Reports/08-multi-language-programming/study-report-python-programming-for-beginners-learn-coding-in-7-days/report.json",
+      "markdown": "Book_Reports/08-multi-language-programming/study-report-python-programming-for-beginners-learn-coding-in-7-days/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-learn-coding-python-java-php-complete-guide-and-other-of",
+      "title": "Study Report: Learn Coding — Python, Java, PHP Complete Guide and Other Recommended Languages",
+      "family_id": "08-multi-language-programming",
+      "chapter_count": 6,
+      "level": "Beginner",
+      "path": "Book_Reports/08-multi-language-programming/study-report-learn-coding-python-java-php-complete-guide-and-other-of/report.json",
+      "markdown": "Book_Reports/08-multi-language-programming/study-report-learn-coding-python-java-php-complete-guide-and-other-of/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-computer-programming-for-beginners-4-books-in-1-linux-com",
+      "title": "Study Report: Computer Programming for Beginners — 4 Books in 1 (Linux Command-Line + Python)",
+      "family_id": "08-multi-language-programming",
+      "chapter_count": 6,
+      "level": "Beginner",
+      "path": "Book_Reports/08-multi-language-programming/study-report-computer-programming-for-beginners-4-books-in-1-linux-com/report.json",
+      "markdown": "Book_Reports/08-multi-language-programming/study-report-computer-programming-for-beginners-4-books-in-1-linux-com/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-hello-raspberry-pi-python-programming-for-kids-and-other",
+      "title": "Study Report: Hello Raspberry Pi! — Python Programming for Kids and Other Beginners",
+      "family_id": "09-kids-and-makers",
+      "chapter_count": 5,
+      "level": "Beginner (Kids)",
+      "path": "Book_Reports/09-kids-and-makers/study-report-hello-raspberry-pi-python-programming-for-kids-and-other/report.json",
+      "markdown": "Book_Reports/09-kids-and-makers/study-report-hello-raspberry-pi-python-programming-for-kids-and-other/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-for-kids-an-easy-and-practice-guide-for-beginners",
+      "title": "Study Report: Python for Kids — An Easy and Practical Guide for Beginners",
+      "family_id": "09-kids-and-makers",
+      "chapter_count": 8,
+      "level": "Beginner (Kids)",
+      "path": "Book_Reports/09-kids-and-makers/study-report-python-for-kids-an-easy-and-practice-guide-for-beginners/report.json",
+      "markdown": "Book_Reports/09-kids-and-makers/study-report-python-for-kids-an-easy-and-practice-guide-for-beginners/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-all-in-one-for-dummies",
+      "title": "Study Report: Python All-in-One For Dummies",
+      "family_id": "10-comprehensive-and-projects",
+      "chapter_count": 8,
+      "level": "Beginner to Advanced",
+      "path": "Book_Reports/10-comprehensive-and-projects/study-report-python-all-in-one-for-dummies/report.json",
+      "markdown": "Book_Reports/10-comprehensive-and-projects/study-report-python-all-in-one-for-dummies/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-python-programming-cookbook-for-absolute-beginners-a-comp",
+      "title": "Study Report: Python Programming Cookbook for Absolute Beginners — A Complete Crash Course and Tutorial",
+      "family_id": "10-comprehensive-and-projects",
+      "chapter_count": 8,
+      "level": "Beginner",
+      "path": "Book_Reports/10-comprehensive-and-projects/study-report-python-programming-cookbook-for-absolute-beginners-a-comp/report.json",
+      "markdown": "Book_Reports/10-comprehensive-and-projects/study-report-python-programming-cookbook-for-absolute-beginners-a-comp/report.md",
+      "author": "Gagan Pasupuleti"
+    },
+    {
+      "id": "study-report-automate-the-boring-stuff-with-python-practical-programmi",
+      "title": "Study Report: Automate the Boring Stuff with Python — Practical Programming for Total Beginners",
+      "family_id": "10-comprehensive-and-projects",
+      "chapter_count": 7,
+      "level": "Beginner to Intermediate",
+      "path": "Book_Reports/10-comprehensive-and-projects/study-report-automate-the-boring-stuff-with-python-practical-programmi/report.json",
+      "markdown": "Book_Reports/10-comprehensive-and-projects/study-report-automate-the-boring-stuff-with-python-practical-programmi/report.md",
+      "author": "Gagan Pasupuleti"
+    }
+  ],
+  "author": "Gagan Pasupuleti"
+}
