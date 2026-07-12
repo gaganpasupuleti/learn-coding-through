@@ -1,6 +1,14 @@
+import { BookOpen, ChevronLeft, ChevronRight } from 'lucide-react'
 import { marked } from 'marked'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import {
+  CQActionButton,
+  CQCard,
+  CQProgressBar,
+  CQSectionTitle,
+  CQStatCard,
+} from '@/components/student-dashboard/cq/CQKit'
 import { familyLabel, rolesForBookFamily } from '@/data/bookReportFamilyRoles'
 import { JOB_ROLE_CATALOG, roleName } from '@/data/jobRoleCatalog'
 import {
@@ -13,6 +21,7 @@ import {
   loadStudyReportById,
   totalChapterCount,
 } from '@/lib/bookReports'
+import { cn } from '@/lib/utils'
 import type { BookReportChapter, CatalogReport, StudyReport } from '@/types/bookReports'
 
 const PROGRESS_KEY = 'cq-study-report-progress'
@@ -36,6 +45,10 @@ function saveProgress(reportId: string, percent: number) {
 
 function renderMarkdown(body: string): string {
   return marked.parse(body, { async: false }) as string
+}
+
+function displayTitle(title: string): string {
+  return title.replace(/^Study Report:\s*/i, '').trim()
 }
 
 function setUrlParams(reportId: string | null, chapter: number | null) {
@@ -127,109 +140,102 @@ export function StudyMaterialsPage() {
         onChapterChange={(n) => {
           setSelectedChapter(n)
           setUrlParams(selectedReport.id, n)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
         }}
         onProgress={markProgress}
       />
     )
   }
 
-  const totalChapters = totalChapterCount()
-
   return (
-    <div className="mx-auto max-w-6xl space-y-4 p-4 md:p-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold text-slate-900">Study Materials</h1>
-        <p className="text-sm text-slate-600">
-          Original Code Quest study reports by Gagan Pasupuleti — read in-app, mapped to job roles.
-        </p>
+    <div className="mx-auto max-w-6xl space-y-6 p-4 md:p-6">
+      <header>
+        <CQSectionTitle
+          icon={<BookOpen className="h-5 w-5" aria-hidden />}
+          sub="Original study reports — read in-app, mapped to your target role."
+        >
+          Study Materials
+        </CQSectionTitle>
       </header>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Study reports" value={allReports.length} hint="Reading-ready in-app" />
-        <StatCard label="Chapters" value={totalChapters} hint="Across all reports" />
-        <StatCard label="Topic families" value={BOOK_REPORTS_CATALOG.families.length} hint="Python learning paths" />
-        <StatCard label="Job roles mapped" value={JOB_ROLE_CATALOG.length} hint="Filter by target role" />
+        <CQStatCard label="Study reports" value={allReports.length} detail="Reading-ready" tone="blue" />
+        <CQStatCard label="Chapters" value={totalChapterCount()} detail="Full library" tone="green" />
+        <CQStatCard
+          label="Topic families"
+          value={BOOK_REPORTS_CATALOG.families.length}
+          detail="Learning paths"
+          tone="yellow"
+        />
+        <CQStatCard label="Job roles" value={JOB_ROLE_CATALOG.length} detail="Filter below" tone="purple" />
       </div>
 
-      {roleFilter ? (
-        <p className="rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm text-indigo-900">
-          <strong>{roleName(roleFilter)}:</strong> {countReportsForRole(roleFilter)} study reports (
-          {totalChapters} chapters shared across roles)
-        </p>
-      ) : null}
+      <CQCard tone="cream" className="space-y-3">
+        <div className="grid gap-3 md:grid-cols-4">
+          <label className="block space-y-1 md:col-span-4">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-[#111827]/60">Search</span>
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Title, family, level, or role…"
+              className="w-full rounded-lg border border-[#0A1020]/15 bg-white px-3 py-2.5 text-sm text-[#111827] placeholder:text-[#708090] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
+            />
+          </label>
 
-      <div className="grid gap-3 rounded-lg border border-slate-200 bg-white p-4 md:grid-cols-4">
-        <label className="block space-y-1 md:col-span-4">
-          <span className="text-xs font-medium uppercase text-slate-500">Search</span>
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Report title, family, level, or role"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          />
-        </label>
-
-        <label className="block space-y-1">
-          <span className="text-xs font-medium uppercase text-slate-500">Target role</span>
-          <select
+          <FilterSelect
+            label="Target role"
             value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          >
-            <option value="">All roles</option>
-            {JOB_ROLE_CATALOG.map((role) => (
-              <option key={role.role_id} value={role.role_id}>
-                {role.role_name} ({countReportsForRole(role.role_id)})
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="block space-y-1">
-          <span className="text-xs font-medium uppercase text-slate-500">Topic family</span>
-          <select
+            onChange={setRoleFilter}
+            options={[
+              { value: '', label: 'All roles' },
+              ...JOB_ROLE_CATALOG.map((role) => ({
+                value: role.role_id,
+                label: `${role.role_name} (${countReportsForRole(role.role_id)})`,
+              })),
+            ]}
+          />
+          <FilterSelect
+            label="Topic family"
             value={familyFilter}
-            onChange={(e) => setFamilyFilter(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          >
-            <option value="">All families</option>
-            {BOOK_REPORTS_CATALOG.families.map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.name} ({f.report_count})
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="block space-y-1">
-          <span className="text-xs font-medium uppercase text-slate-500">Level</span>
-          <select
+            onChange={setFamilyFilter}
+            options={[
+              { value: '', label: 'All families' },
+              ...BOOK_REPORTS_CATALOG.families.map((f) => ({
+                value: f.id,
+                label: `${f.name} (${f.report_count})`,
+              })),
+            ]}
+          />
+          <FilterSelect
+            label="Level"
             value={levelFilter}
-            onChange={(e) => setLevelFilter(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          >
-            <option value="">All levels</option>
-            {levels.map((level) => (
-              <option key={level} value={level}>
-                {level}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <p className="flex items-end text-sm text-slate-600 md:col-span-4">
-          Showing {filtered.length} of {allReports.length} reports
+            onChange={setLevelFilter}
+            options={[
+              { value: '', label: 'All levels' },
+              ...levels.map((level) => ({ value: level, label: level })),
+            ]}
+          />
+        </div>
+        <p className="text-sm text-[#4B5563]">
+          Showing <strong className="text-[#111827]">{filtered.length}</strong> of {allReports.length}{' '}
+          reports
+          {roleFilter ? (
+            <>
+              {' '}
+              for <strong className="text-[#111827]">{roleName(roleFilter)}</strong>
+            </>
+          ) : null}
         </p>
-      </div>
+      </CQCard>
 
       {filtered.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-slate-300 p-8 text-center">
-          <p className="font-medium text-slate-800">No reports match</p>
-          <p className="mt-1 text-sm text-slate-600">Try a different search or filter.</p>
-        </div>
+        <CQCard tone="cream" className="py-12 text-center">
+          <p className="font-semibold text-[#111827]">No reports match</p>
+          <p className="mt-1 text-sm text-[#4B5563]">Try clearing a filter or changing your search.</p>
+        </CQCard>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {filtered.map((report) => (
             <ReportCard
               key={report.id}
@@ -240,38 +246,36 @@ export function StudyMaterialsPage() {
           ))}
         </ul>
       )}
-
-      <section className="rounded-lg border border-slate-200 bg-white p-4">
-        <h2 className="text-sm font-semibold text-slate-900">Role → family guide</h2>
-        <p className="mt-1 text-xs text-slate-500">
-          Which topic families suit each job role (primary mapping for filters above).
-        </p>
-        <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-3">
-          {JOB_ROLE_CATALOG.map((role) => {
-            const families = BOOK_REPORTS_CATALOG.families.filter((f) =>
-              rolesForBookFamily(f.id).includes(role.role_id),
-            )
-            if (families.length === 0) return null
-            return (
-              <li key={role.role_id} className="rounded-md bg-slate-50 px-3 py-2">
-                <span className="font-medium text-slate-800">{role.role_name}</span>
-                <span className="text-slate-600"> — {families.map((f) => f.name).join(', ')}</span>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
     </div>
   )
 }
 
-function StatCard({ label, value, hint }: { label: string; value: number; hint?: string }) {
+function FilterSelect({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  options: { value: string; label: string }[]
+}) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-3">
-      <p className="text-xs font-medium uppercase text-slate-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-slate-900">{value}</p>
-      {hint ? <p className="mt-0.5 text-xs text-slate-500">{hint}</p> : null}
-    </div>
+    <label className="block space-y-1">
+      <span className="text-[11px] font-semibold uppercase tracking-wide text-[#111827]/60">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full rounded-lg border border-[#0A1020]/15 bg-white px-3 py-2.5 text-sm text-[#111827] focus:border-[#2563EB] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20"
+      >
+        {options.map((opt) => (
+          <option key={opt.value || '__all'} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    </label>
   )
 }
 
@@ -288,53 +292,77 @@ function ReportCard({
   const coverUrl = getCoverUrl(report.path)
 
   return (
-    <li className="flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white">
-      {coverUrl ? (
-        <img
-          src={coverUrl}
-          alt=""
-          className="h-44 w-full border-b border-slate-200 object-cover object-top"
-          loading="lazy"
-        />
-      ) : null}
-      <div className="flex flex-1 flex-col p-4">
-      <div className="mb-2 flex flex-wrap gap-2 text-xs text-slate-600">
-        <span className="rounded bg-violet-100 px-2 py-0.5 text-violet-800">Study report</span>
-        <span className="rounded bg-slate-100 px-2 py-0.5">{getFamilyName(report.family_id)}</span>
-        <span className="rounded bg-slate-100 px-2 py-0.5">{report.level}</span>
-      </div>
-      <h2 className="text-base font-semibold leading-snug text-slate-900">{report.title}</h2>
-      <p className="mt-1 text-sm text-slate-600">{report.author ?? 'Gagan Pasupuleti'}</p>
-      <p className="mt-2 flex-1 text-sm text-slate-700">{report.chapter_count} chapters · reading-ready</p>
-      {roleIds.length > 0 ? (
-        <div className="mt-2 flex flex-wrap gap-1">
-          {roleIds.slice(0, 3).map((roleId) => (
-            <span key={roleId} className="rounded bg-indigo-50 px-1.5 py-0.5 text-xs text-indigo-800">
-              {roleName(roleId)}
-            </span>
-          ))}
-          {roleIds.length > 3 ? (
-            <span className="text-xs text-slate-500">+{roleIds.length - 3}</span>
-          ) : null}
-        </div>
-      ) : null}
-      {progressPercent > 0 ? (
-        <div className="mt-2">
-          <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
-            <div className="h-full bg-violet-500" style={{ width: `${progressPercent}%` }} />
+    <li>
+      <CQCard interactive tone="cream" className="flex h-full flex-col overflow-hidden p-0">
+        <button type="button" onClick={onOpen} className="flex h-full flex-col text-left">
+          <div className="relative aspect-[320/440] w-full overflow-hidden bg-[#0A1020]/5">
+            {coverUrl ? (
+              <img
+                src={coverUrl}
+                alt=""
+                className="h-full w-full object-contain p-2"
+                loading="lazy"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-[#708090]">
+                <BookOpen className="h-10 w-10 opacity-40" aria-hidden />
+              </div>
+            )}
           </div>
-          <p className="mt-0.5 text-xs text-slate-500">{progressPercent}% read</p>
-        </div>
-      ) : null}
-      <button
-        type="button"
-        onClick={onOpen}
-        className="mt-3 rounded-md bg-violet-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-700"
-      >
-        Read now
-      </button>
-      </div>
+          <div className="flex flex-1 flex-col gap-2 p-4">
+            <div className="flex flex-wrap gap-1.5">
+              <Badge>{getFamilyName(report.family_id)}</Badge>
+              <Badge muted>{report.level}</Badge>
+            </div>
+            <h2 className="font-serif text-base font-semibold leading-snug text-[#0A1020] line-clamp-3">
+              {displayTitle(report.title)}
+            </h2>
+            <p className="text-xs text-[#708090]">{report.chapter_count} chapters</p>
+            {roleIds.length > 0 ? (
+              <div className="flex flex-wrap gap-1">
+                {roleIds.slice(0, 2).map((roleId) => (
+                  <Badge key={roleId} role>
+                    {roleName(roleId)}
+                  </Badge>
+                ))}
+                {roleIds.length > 2 ? (
+                  <span className="text-xs text-[#708090]">+{roleIds.length - 2}</span>
+                ) : null}
+              </div>
+            ) : null}
+            {progressPercent > 0 ? <CQProgressBar value={progressPercent} className="mt-auto" /> : null}
+            <span className="mt-1 inline-flex items-center text-sm font-semibold text-[#2563EB]">
+              Read now →
+            </span>
+          </div>
+        </button>
+      </CQCard>
     </li>
+  )
+}
+
+function Badge({
+  children,
+  muted,
+  role,
+}: {
+  children: React.ReactNode
+  muted?: boolean
+  role?: boolean
+}) {
+  return (
+    <span
+      className={cn(
+        'rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
+        role
+          ? 'bg-[#2563EB]/10 text-[#1D4ED8]'
+          : muted
+            ? 'bg-[#0A1020]/6 text-[#4B5563]'
+            : 'bg-[#0A1020] text-[#FAF3E0]',
+      )}
+    >
+      {children}
+    </span>
   )
 }
 
@@ -359,118 +387,146 @@ function StudyReportReader({
   const html = chapter ? renderMarkdown(chapter.content) : ''
   const catalogEntry = getCatalogReports().find((r) => r.id === report.id)
   const coverUrl = catalogEntry ? getCoverUrl(catalogEntry.path) : undefined
+  const total = report.chapters.length
 
   useEffect(() => {
     const onScroll = () => {
       const el = document.documentElement
       const scrollHeight = el.scrollHeight - el.clientHeight
-      const pct = scrollHeight > 0 ? (el.scrollTop / scrollHeight) * 100 : 100
-      const chapterShare = report.chapters.length > 0 ? 100 / report.chapters.length : 100
-      const base = ((chapterNumber - 1) / report.chapters.length) * 100
-      onProgress(report.id, Math.min(100, Math.max(progressPercent, base + (pct / 100) * chapterShare)))
+      const pct = scrollHeight > 0 ? el.scrollTop / scrollHeight : 1
+      const chapterShare = total > 0 ? 100 / total : 100
+      const base = ((chapterNumber - 1) / total) * 100
+      onProgress(report.id, Math.min(100, Math.max(progressPercent, base + pct * chapterShare)))
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [chapterNumber, onProgress, progressPercent, report.chapters.length, report.id])
+  }, [chapterNumber, onProgress, progressPercent, report.id, total])
 
   return (
-    <div className="mx-auto max-w-4xl space-y-4 p-4 md:p-6">
+    <div className="mx-auto max-w-6xl space-y-4 p-4 pb-12 md:p-6">
       <button
         type="button"
         onClick={onBack}
-        className="text-sm font-medium text-violet-700 hover:text-violet-900"
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#2563EB] hover:text-[#1D4ED8]"
       >
-        ← Back to library
+        <ChevronLeft className="h-4 w-4" aria-hidden />
+        Back to library
       </button>
 
-      <header className="space-y-2 border-b border-slate-200 pb-4">
-        {coverUrl ? (
-          <img
-            src={coverUrl}
-            alt=""
-            className="mx-auto h-56 w-full max-w-xs rounded-lg border border-slate-200 object-cover shadow-sm"
-          />
-        ) : null}
-        <div className="flex flex-wrap gap-2 text-xs text-slate-600">
-          <span className="rounded bg-violet-100 px-2 py-0.5 text-violet-800">Study report</span>
-          <span className="rounded bg-slate-100 px-2 py-0.5">
-            {report.family_name ?? familyLabel(report.family_id)}
-          </span>
-          <span className="rounded bg-slate-100 px-2 py-0.5">{report.level}</span>
-        </div>
-        <h1 className="text-2xl font-semibold text-slate-900">{report.title}</h1>
-        <p className="text-sm text-slate-600">{report.author ?? 'Gagan Pasupuleti'}</p>
-        <p className="text-sm text-slate-700">{report.summary}</p>
-        {roleIds.length > 0 ? (
-          <div className="flex flex-wrap gap-1 pt-1">
-            <span className="text-xs font-medium text-slate-500">Mapped roles:</span>
-            {roleIds.map((roleId) => (
-              <span key={roleId} className="rounded bg-indigo-50 px-2 py-0.5 text-xs text-indigo-800">
-                {roleName(roleId)}
-              </span>
-            ))}
-          </div>
-        ) : null}
-        {progressPercent > 0 ? (
-          <div className="pt-2">
-            <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-              <div className="h-full bg-violet-500 transition-all" style={{ width: `${progressPercent}%` }} />
+      <CQCard tone="cream" className="overflow-hidden p-0">
+        <div className="grid gap-0 lg:grid-cols-[200px_1fr] xl:grid-cols-[220px_1fr]">
+          {coverUrl ? (
+            <div className="flex items-center justify-center bg-[#0A1020]/4 p-4 lg:border-r lg:border-[#0A1020]/8">
+              <img
+                src={coverUrl}
+                alt=""
+                className="aspect-[320/440] w-full max-w-[180px] rounded-lg shadow-md ring-1 ring-[#0A1020]/10"
+              />
             </div>
-            <p className="mt-1 text-xs text-slate-500">{Math.round(progressPercent)}% complete</p>
+          ) : null}
+          <div className="space-y-3 p-5 lg:p-6">
+            <div className="flex flex-wrap gap-1.5">
+              <Badge>{report.family_name ?? familyLabel(report.family_id)}</Badge>
+              <Badge muted>{report.level}</Badge>
+            </div>
+            <h1 className="font-serif text-xl font-bold leading-tight text-[#0A1020] md:text-2xl">
+              {displayTitle(report.title)}
+            </h1>
+            <p className="text-sm text-[#708090]">{report.author ?? 'Gagan Pasupuleti'}</p>
+            <p className="text-sm leading-relaxed text-[#374151] line-clamp-4 lg:line-clamp-none">
+              {report.summary}
+            </p>
+            {roleIds.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5">
+                {roleIds.map((roleId) => (
+                  <Badge key={roleId} role>
+                    {roleName(roleId)}
+                  </Badge>
+                ))}
+              </div>
+            ) : null}
+            <CQProgressBar label="Progress" value={progressPercent} />
           </div>
-        ) : null}
-      </header>
+        </div>
+      </CQCard>
 
-      <nav className="flex flex-wrap gap-2" aria-label="Chapters">
-        {report.chapters.map((ch) => (
-          <button
-            key={ch.number}
-            type="button"
-            onClick={() => onChapterChange(ch.number)}
-            className={
-              ch.number === (chapter?.number ?? 0)
-                ? 'rounded-md bg-violet-600 px-2.5 py-1 text-xs font-medium text-white'
-                : 'rounded-md border border-slate-300 px-2.5 py-1 text-xs text-slate-700 hover:bg-slate-50'
-            }
-          >
-            {ch.number}. {ch.title.length > 28 ? `${ch.title.slice(0, 28)}…` : ch.title}
-          </button>
-        ))}
-      </nav>
+      <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
+        <aside className="lg:sticky lg:top-4 lg:self-start">
+          <CQCard tone="cream" className="p-3">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#111827]/60">
+              Chapters ({total})
+            </p>
+            <nav className="max-h-[60vh] space-y-0.5 overflow-y-auto pr-1" aria-label="Chapters">
+              {report.chapters.map((ch) => {
+                const active = ch.number === (chapter?.number ?? 0)
+                return (
+                  <button
+                    key={ch.number}
+                    type="button"
+                    onClick={() => onChapterChange(ch.number)}
+                    className={cn(
+                      'w-full rounded-lg px-2.5 py-2 text-left text-xs leading-snug transition-colors',
+                      active
+                        ? 'bg-[#0A1020] font-semibold text-[#FAF3E0]'
+                        : 'text-[#374151] hover:bg-[#0A1020]/6',
+                    )}
+                  >
+                    <span className="mr-1 tabular-nums opacity-70">{ch.number}.</span>
+                    {ch.title}
+                  </button>
+                )
+              })}
+            </nav>
+          </CQCard>
 
-      {chapter ? (
-        <ChapterBody chapter={chapter} html={html} />
-      ) : (
-        <p className="text-sm text-slate-600">No chapters in this report.</p>
-      )}
+          <label className="mt-3 block lg:hidden">
+            <span className="sr-only">Jump to chapter</span>
+            <select
+              value={chapterNumber}
+              onChange={(e) => onChapterChange(Number(e.target.value))}
+              className="w-full rounded-lg border border-[#0A1020]/15 bg-white px-3 py-2 text-sm"
+            >
+              {report.chapters.map((ch) => (
+                <option key={ch.number} value={ch.number}>
+                  {ch.number}. {ch.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        </aside>
 
-      <div className="flex flex-wrap gap-2 pb-8">
-        {chapterNumber > 1 ? (
-          <button
-            type="button"
-            onClick={() => onChapterChange(chapterNumber - 1)}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
-          >
-            Previous chapter
-          </button>
-        ) : null}
-        {chapterNumber < report.chapters.length ? (
-          <button
-            type="button"
-            onClick={() => onChapterChange(chapterNumber + 1)}
-            className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
-          >
-            Next chapter
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => onProgress(report.id, 100)}
-            className="rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
-          >
-            Mark complete
-          </button>
-        )}
+        <main className="min-w-0">
+          {chapter ? (
+            <ChapterBody chapter={chapter} html={html} />
+          ) : (
+            <p className="text-sm text-[#4B5563]">No chapters in this report.</p>
+          )}
+
+          <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-[#0A1020]/10 pt-6">
+            <CQActionButton
+              variant="ghost"
+              disabled={chapterNumber <= 1}
+              onClick={() => onChapterChange(chapterNumber - 1)}
+              className="gap-1"
+            >
+              <ChevronLeft className="h-4 w-4" aria-hidden />
+              Previous
+            </CQActionButton>
+            <span className="text-sm tabular-nums text-[#708090]">
+              Chapter {chapterNumber} of {total}
+            </span>
+            {chapterNumber < total ? (
+              <CQActionButton variant="primary" onClick={() => onChapterChange(chapterNumber + 1)} className="gap-1">
+                Next
+                <ChevronRight className="h-4 w-4" aria-hidden />
+              </CQActionButton>
+            ) : (
+              <CQActionButton variant="navy" onClick={() => onProgress(report.id, 100)}>
+                Mark complete
+              </CQActionButton>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   )
@@ -478,24 +534,32 @@ function StudyReportReader({
 
 function ChapterBody({ chapter, html }: { chapter: BookReportChapter; html: string }) {
   return (
-    <article className="space-y-4">
-      <h2 className="text-xl font-semibold text-slate-900">
-        Chapter {chapter.number}: {chapter.title}
-      </h2>
+    <CQCard tone="cream" className="space-y-5 p-5 md:p-6">
+      <div>
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-[#708090]">
+          Chapter {chapter.number}
+        </p>
+        <h2 className="mt-1 font-serif text-xl font-bold text-[#0A1020] md:text-2xl">{chapter.title}</h2>
+      </div>
+
       <div
-        className="prose prose-sm max-w-none text-slate-800 prose-headings:text-slate-900 prose-pre:bg-slate-900 prose-pre:text-slate-100"
+        className="prose prose-sm max-w-none text-[#374151] prose-headings:font-serif prose-headings:text-[#0A1020] prose-strong:text-[#111827] prose-code:rounded prose-code:bg-[#0A1020]/6 prose-code:px-1 prose-code:py-0.5 prose-code:text-[#0A1020] prose-pre:rounded-xl prose-pre:border prose-pre:border-[#0A1020]/10 prose-pre:bg-[#0A1020] prose-pre:text-[#FAF3E0]"
         dangerouslySetInnerHTML={{ __html: html }}
       />
+
       {chapter.key_takeaways.length > 0 ? (
-        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h3 className="text-sm font-semibold text-slate-900">Key takeaways</h3>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
+        <section className="rounded-xl border border-[#2563EB]/20 bg-[#2563EB]/5 p-4">
+          <h3 className="text-sm font-semibold text-[#0A1020]">Key takeaways</h3>
+          <ul className="mt-2 space-y-2 text-sm text-[#374151]">
             {chapter.key_takeaways.map((t) => (
-              <li key={t}>{t}</li>
+              <li key={t} className="flex gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#2563EB]" aria-hidden />
+                <span>{t}</span>
+              </li>
             ))}
           </ul>
         </section>
       ) : null}
-    </article>
+    </CQCard>
   )
 }

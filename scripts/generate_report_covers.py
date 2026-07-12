@@ -10,46 +10,52 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "Book_Reports" / "catalog.json"
 
+NAVY = "#0A1020"
+CREAM = "#FAF3E0"
+
 FAMILY_STYLE: dict[str, tuple[str, str, str]] = {
-    "01-python-beginners-core": ("#2563eb", "#dbeafe", "Python Core"),
-    "02-python-crash-courses": ("#ea580c", "#ffedd5", "Crash Course"),
-    "03-combo-crash-paths": ("#0d9488", "#ccfbf1", "Combo Path"),
-    "04-data-analysis": ("#16a34a", "#dcfce7", "Data Analysis"),
-    "05-data-science": ("#4f46e5", "#e0e7ff", "Data Science"),
-    "06-machine-learning": ("#9333ea", "#f3e8ff", "Machine Learning"),
-    "07-deep-learning-and-ai": ("#db2777", "#fce7f3", "Deep Learning"),
-    "08-multi-language-programming": ("#d97706", "#fef3c7", "Multi-Language"),
-    "09-kids-and-makers": ("#65a30d", "#ecfccb", "Kids & Makers"),
-    "10-comprehensive-and-projects": ("#0f172a", "#e2e8f0", "Projects"),
+    "01-python-beginners-core": ("#2563EB", "#EFF6FF", "Python Core"),
+    "02-python-crash-courses": ("#EA580C", "#FFF7ED", "Crash Course"),
+    "03-combo-crash-paths": ("#0D9488", "#F0FDFA", "Combo Path"),
+    "04-data-analysis": ("#16A34A", "#F0FDF4", "Data Analysis"),
+    "05-data-science": ("#4F46E5", "#EEF2FF", "Data Science"),
+    "06-machine-learning": ("#9333EA", "#FAF5FF", "Machine Learning"),
+    "07-deep-learning-and-ai": ("#DB2777", "#FDF2F8", "Deep Learning"),
+    "08-multi-language-programming": ("#D97706", "#FFFBEB", "Multi-Language"),
+    "09-kids-and-makers": ("#65A30D", "#F7FEE7", "Kids & Makers"),
+    "10-comprehensive-and-projects": ("#475569", "#F8FAFC", "Projects"),
 }
 
 
 def clean_title(title: str) -> str:
     t = re.sub(r"^Study Report:\s*", "", title, flags=re.I).strip()
-    return t[:120]
+    return t[:100]
 
 
 def svg_cover(title: str, family_id: str, level: str, author: str) -> str:
-    accent, bg, family_label = FAMILY_STYLE.get(family_id, ("#0f172a", "#f1f5f9", "Study Report"))
-    lines = textwrap.wrap(clean_title(title), width=28)[:5]
+    accent, bg, family_label = FAMILY_STYLE.get(family_id, ("#2563EB", CREAM, "Study Report"))
+    lines = textwrap.wrap(clean_title(title), width=22)[:6]
     if not lines:
         lines = ["Study Report"]
-    y = 88
+    y = 108
     title_nodes = []
     for line in lines:
         title_nodes.append(
-            f'<text x="24" y="{y}" font-family="Georgia, serif" font-size="17" font-weight="700" fill="#0f172a">{xml.escape(line)}</text>'
+            f'<text x="20" y="{y}" font-family="Georgia, serif" font-size="16" font-weight="700" fill="{NAVY}">{xml.escape(line)}</text>'
         )
-        y += 24
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="320" height="440" viewBox="0 0 320 440" role="img">
-  <rect width="320" height="440" rx="12" fill="{bg}"/>
-  <rect width="320" height="72" fill="{accent}"/>
-  <text x="24" y="44" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">Code Quest</text>
-  <text x="296" y="44" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" fill="#ffffff">{xml.escape(family_label)}</text>
+        y += 22
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="320" height="440" viewBox="0 0 320 440" role="img" aria-label="Cover">
+  <rect width="320" height="440" rx="10" fill="{bg}"/>
+  <rect width="320" height="80" rx="10" fill="{NAVY}"/>
+  <rect y="70" width="320" height="10" fill="{NAVY}"/>
+  <text x="20" y="34" font-family="Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="0.08em" fill="{CREAM}">CODE QUEST</text>
+  <text x="20" y="58" font-family="Arial, sans-serif" font-size="10" fill="{accent}">{xml.escape(family_label)}</text>
+  <rect x="20" y="92" width="40" height="3" rx="1.5" fill="{accent}"/>
   {''.join(title_nodes)}
-  <text x="24" y="{y + 18}" font-family="Inter, Arial, sans-serif" font-size="12" fill="#475569">{xml.escape(level)}</text>
-  <text x="24" y="408" font-family="Inter, Arial, sans-serif" font-size="11" fill="#64748b">{xml.escape(author)}</text>
-  <rect x="24" y="420" width="72" height="4" rx="2" fill="{accent}"/>
+  <text x="20" y="{y + 20}" font-family="Arial, sans-serif" font-size="11" font-weight="600" fill="{accent}">{xml.escape(level)}</text>
+  <line x1="20" y1="380" x2="300" y2="380" stroke="{NAVY}" stroke-opacity="0.12" stroke-width="1"/>
+  <text x="20" y="404" font-family="Arial, sans-serif" font-size="10" fill="#64748B">{xml.escape(author)}</text>
+  <text x="20" y="422" font-family="Arial, sans-serif" font-size="9" fill="#94A3B8">Study report</text>
 </svg>"""
 
 
