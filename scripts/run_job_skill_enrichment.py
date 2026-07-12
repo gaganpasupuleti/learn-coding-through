@@ -352,6 +352,18 @@ def fetch_jobs(db, days: int = 5) -> list[ScrapedJob]:
     )
 
 
+def fetch_all_active_jobs(db) -> list[ScrapedJob]:
+    return (
+        db.query(ScrapedJob)
+        .filter(
+            ScrapedJob.link_status == "active",
+            ScrapedJob.job_id.isnot(None),
+        )
+        .order_by(ScrapedJob.created_at.desc())
+        .all()
+    )
+
+
 def rows_to_csv_bytes(rows: list[dict[str, str]]) -> bytes:
     buf = io.StringIO()
     writer = csv.DictWriter(buf, fieldnames=CSV_COLS)
@@ -410,10 +422,21 @@ def export_enriched_excel(db, out: Path) -> None:
 
 
 def main() -> int:
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Rules-v1 job enrichment (classify → commit)")
+    parser.add_argument("--all-active", action="store_true", help="Classify every active scraped job")
+    parser.add_argument("--days", type=int, default=5, help="Window for default profile-scoped run")
+    args = parser.parse_args()
+
     db = SessionLocal()
     try:
-        jobs = fetch_jobs(db, days=5)
-        print(f"Classifying {len(jobs)} active jobs (last 5 days, target profiles)")
+        if args.all_active:
+            jobs = fetch_all_active_jobs(db)
+            print(f"Classifying {len(jobs)} active jobs (all profiles, no date cutoff)")
+        else:
+            jobs = fetch_jobs(db, days=args.days)
+            print(f"Classifying {len(jobs)} active jobs (last {args.days} days, target profiles)")
         rows = [classify_job(j) for j in jobs if j.job_id]
         rows = [r for r in rows if r["job_id"]]
 
