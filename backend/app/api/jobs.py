@@ -38,6 +38,7 @@ from app.schemas.scraped_jobs import (
     EnrichmentRoleCountItem,
     FIXED_JOB_LOCATION,
     JobStatsResponse,
+    JobBoardOverviewResponse,
     JobsListResponse,
     LatestJobSummary,
     LocationBreakdownItem,
@@ -151,6 +152,35 @@ def _triggered_by_label(admin: User | None) -> str:
     return "admin_key"
 
 
+def _job_board_count_snapshot(db: Session) -> dict:
+    now = datetime.utcnow()
+    start_of_today = datetime(now.year, now.month, now.day)
+    since_24h = now - timedelta(hours=24)
+    since_7d = now - timedelta(days=7)
+    last_auto = get_last_successful_auto_run(db)
+    return {
+        "totalJobs": count_total_jobs(db),
+        "activeJobs": count_active_jobs(db),
+        "loadedToday": count_jobs_since(db, start_of_today),
+        "loadedLast24Hours": count_jobs_since(db, since_24h),
+        "loadedLast7Days": count_jobs_since(db, since_7d),
+        "latestLoadedAt": get_latest_loaded_at(db),
+        "lastAutoRefreshAt": last_auto.finished_at if last_auto else None,
+    }
+
+
+def _build_job_board_overview(db: Session) -> JobBoardOverviewResponse:
+    counts = _job_board_count_snapshot(db)
+    return JobBoardOverviewResponse(
+        **counts,
+        profileBreakdown=[ProfileBreakdownItem(**item) for item in get_profile_breakdown(db)],
+        sourceBreakdown=[SourceBreakdownItem(**item) for item in get_source_breakdown(db)],
+        enrichmentRoleSummary=[
+            EnrichmentRoleCountItem(**item) for item in get_enrichment_role_breakdown(db)
+        ],
+    )
+
+
 @router.get("/jobs", response_model=JobsListResponse)
 def list_jobs(
     search: str | None = Query(None),
@@ -158,6 +188,7 @@ def list_jobs(
     source: str | None = Query(None),
     company: str | None = Query(None),
     experience: str | None = Query(None),
+    profile: str | None = Query(None, description="Filter by ingest profile key"),
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
     include_inactive: bool = Query(False),
@@ -181,6 +212,8 @@ def list_jobs(
         query = query.filter(ScrapedJob.location.ilike(f"%{location.strip()}%"))
     if source:
         query = query.filter(ScrapedJob.source == source.strip().lower())
+    if profile:
+        query = query.filter(ScrapedJob.ingest_profile == profile.strip())
     if experience:
         keywords = EXPERIENCE_KEYWORDS.get(experience.strip().lower())
         if keywords:
@@ -206,6 +239,11 @@ def list_jobs(
     )
 
 
+@router.get("/jobs/overview", response_model=JobBoardOverviewResponse)
+def job_board_overview(db: Session = Depends(get_db)):
+    return _build_job_board_overview(db)
+
+
 @router.get("/jobs/{job_id}", response_model=NormalizedJob)
 def get_job(job_id: str, db: Session = Depends(get_db)):
     row = db.query(ScrapedJob).filter(ScrapedJob.id == job_id).first()
@@ -223,10 +261,8 @@ def admin_job_stats(
     db: Session = Depends(get_db),
     _admin: User | None = Depends(require_jobs_admin),
 ):
-    now = datetime.utcnow()
-    start_of_today = datetime(now.year, now.month, now.day)
-    since_24h = now - timedelta(hours=24)
-    since_7d = now - timedelta(days=7)
+    counts = _job_board_count_snapshot(db)
+    last_cleanup = get_last_run_by_type(db, "cleanup")
 
     runs = get_recent_scrape_runs(db, days=days, limit=limit)
     latest_rows = get_latest_jobs(
@@ -243,20 +279,12 @@ def admin_job_stats(
     enrichment_by_job_id = {row.job_id: row for row in enrichments}
 
     expired_samples = get_expired_jobs(db, limit=limit)
-    last_auto = get_last_successful_auto_run(db)
-    last_cleanup = get_last_run_by_type(db, "cleanup")
 
     return JobStatsResponse(
-        totalJobs=count_total_jobs(db),
-        activeJobs=count_active_jobs(db),
-        loadedToday=count_jobs_since(db, start_of_today),
-        loadedLast24Hours=count_jobs_since(db, since_24h),
-        loadedLast7Days=count_jobs_since(db, since_7d),
-        latestLoadedAt=get_latest_loaded_at(db),
+        **counts,
         expiredJobs=count_jobs_by_link_status(db, "expired"),
         linkFailedJobs=count_jobs_by_link_status(db, "link_failed"),
         unknownLinkJobs=count_jobs_by_link_status(db, "unknown"),
-        lastAutoRefreshAt=last_auto.finished_at if last_auto else None,
         lastCleanupAt=last_cleanup.finished_at if last_cleanup else None,
         sourceBreakdown=[SourceBreakdownItem(**item) for item in get_source_breakdown(db)],
         sourceFailureCounts=get_source_failure_counts(db, days=days),
@@ -446,23 +474,24 @@ def admin_send_digest(
         )
 
     if mode == "dry_run":
-        recipients = _student_recipient_emails(db)
+        recipients = _resolve_digest_recipients(db, payload)
         cap = settings.job_mail_max_recipients_per_run
         capped = recipients[:cap]
+        scope = "selected active student(s)" if payload.recipientEmails else "active student(s)"
         return SendDigestResponse(
             sentCount=0,
             failedCount=0,
             failedEmails=[],
             mode="dry_run",
             message=(
-                f"Dry run: {len(capped)} registered student(s) would receive digest "
+                f"Dry run: {len(capped)} {scope} would receive digest "
                 f"({len(recipients)} unique emails in roster; cap {cap}). No emails sent."
             ),
             recipientCount=len(capped),
             jobCount=job_count,
         )
 
-    recipients = _student_recipient_emails(db)
+    recipients = _resolve_digest_recipients(db, payload)
     if not recipients:
         raise HTTPException(
             status_code=400,
@@ -573,10 +602,10 @@ def _load_jobs_for_digest(db: Session, job_ids: list[str], *, max_jobs: int = 20
     return [scraped_job_to_dict(r) for r in rows]
 
 
-def _student_recipient_emails(db: Session) -> list[str]:
+def _active_student_emails(db: Session) -> list[str]:
     rows = (
         db.query(User.email)
-        .filter(User.role == UserRole.STUDENT)
+        .filter(User.role == UserRole.STUDENT, User.is_active.is_(True))
         .order_by(User.id.asc())
         .all()
     )
@@ -592,6 +621,25 @@ def _student_recipient_emails(db: Session) -> list[str]:
         seen.add(key)
         unique.append(raw)
     return unique
+
+
+def _resolve_digest_recipients(db: Session, payload: SendDigestRequest) -> list[str]:
+    if not payload.recipientEmails:
+        return _active_student_emails(db)
+
+    allowed = {email.lower() for email in _active_student_emails(db)}
+    seen: set[str] = set()
+    resolved: list[str] = []
+    for raw in payload.recipientEmails:
+        email = (raw or "").strip()
+        if not email:
+            continue
+        key = email.lower()
+        if key not in allowed or key in seen:
+            continue
+        seen.add(key)
+        resolved.append(email)
+    return resolved
 
 
 # ---------------------------------------------------------------------------

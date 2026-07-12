@@ -218,6 +218,21 @@ class JobStatsResponse(BaseModel):
     enrichmentRoleSummary: list[EnrichmentRoleCountItem] = Field(default_factory=list)
 
 
+class JobBoardOverviewResponse(BaseModel):
+    """Student-safe job board KPIs (no admin scrape audit fields)."""
+
+    totalJobs: int
+    activeJobs: int
+    loadedToday: int
+    loadedLast24Hours: int
+    loadedLast7Days: int
+    latestLoadedAt: datetime | None
+    lastAutoRefreshAt: datetime | None
+    profileBreakdown: list[ProfileBreakdownItem] = Field(default_factory=list)
+    sourceBreakdown: list[SourceBreakdownItem] = Field(default_factory=list)
+    enrichmentRoleSummary: list[EnrichmentRoleCountItem] = Field(default_factory=list)
+
+
 class DigestSummary(BaseModel):
     totalActiveJobs: int
     selectedJobsCount: int
@@ -261,6 +276,7 @@ class EmailPreviewResponse(BaseModel):
 class SendDigestRequest(EmailDigestFields):
     mode: str = "test"
     testEmail: str | None = None
+    recipientEmails: list[str] | None = None
 
 
 class SendDigestResponse(BaseModel):

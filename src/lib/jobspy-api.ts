@@ -153,6 +153,7 @@ export interface JobSpyJobFilters {
   experience?: string
   site?: string
   bucket?: string
+  profile?: string
   page?: number
   page_size?: number
 }
@@ -295,6 +296,19 @@ export interface JobStatsEnrichmentRoleItem {
   roleId: string
   roleName: string
   count: number
+}
+
+export interface JobBoardOverview {
+  totalJobs: number
+  activeJobs: number
+  loadedToday: number
+  loadedLast24Hours: number
+  loadedLast7Days: number
+  latestLoadedAt: string | null
+  lastAutoRefreshAt: string | null
+  profileBreakdown: JobStatsProfileItem[]
+  sourceBreakdown: JobStatsSourceItem[]
+  enrichmentRoleSummary: JobStatsEnrichmentRoleItem[]
 }
 
 export interface JobStatsResponse {
@@ -499,6 +513,16 @@ async function jobspyAdminRequest<T>(path: string, adminKey: string, options: Re
 export const jobspyApi = {
   health: () => jobspyRequest<{ status: string }>('/health'),
 
+  getJobBoardOverview: async (): Promise<JobBoardOverview> => {
+    const data = await jobspyRequest<JobBoardOverview>('/api/jobs/overview')
+    return {
+      ...data,
+      profileBreakdown: data.profileBreakdown ?? [],
+      sourceBreakdown: data.sourceBreakdown ?? [],
+      enrichmentRoleSummary: data.enrichmentRoleSummary ?? [],
+    }
+  },
+
   getRoles: async (): Promise<JobSpyRole[]> => [],
   getLocations: async (): Promise<JobSpyLocation[]> => [],
   getExperienceBands: async (): Promise<JobSpyExperienceBand[]> => [],
@@ -521,6 +545,7 @@ export const jobspyApi = {
     if (params.location) qs.set('location', params.location)
     if (params.site) qs.set('source', params.site)
     if (params.experience) qs.set('experience', params.experience)
+    if (params.profile) qs.set('profile', params.profile)
     qs.set('page', String(params.page ?? 1))
     qs.set('limit', String(params.page_size ?? 20))
     const data = await jobspyRequest<{ jobs: NormalizedJobApi[]; total: number; page: number; limit: number }>(
@@ -651,7 +676,11 @@ export const jobspyApi = {
     }),
 
   sendDigest: (
-    body: EmailDigestBody & { mode: 'test' | 'dry_run' | 'live'; testEmail?: string },
+    body: EmailDigestBody & {
+      mode: 'test' | 'dry_run' | 'live'
+      testEmail?: string
+      recipientEmails?: string[]
+    },
     adminKey: string,
   ) =>
     jobspyRequest<SendDigestResponse>('/api/admin/jobs/send-digest', {

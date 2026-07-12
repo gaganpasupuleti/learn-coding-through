@@ -17,6 +17,7 @@ import { AccessView } from '@/components/admin/views/AccessView'
 import { BoardView } from '@/components/admin/views/BoardView'
 import { ClassesView } from '@/components/admin/views/ClassesView'
 import { DashboardView } from '@/components/admin/views/DashboardView'
+import { EmailStationView } from '@/components/admin/views/EmailStationView'
 import { JobSpyOpsView } from '@/components/admin/views/JobSpyOpsView'
 import { JobEnrichmentView } from '@/components/admin/views/JobEnrichmentView'
 import { QuizzesView } from '@/components/admin/views/QuizzesView'
@@ -110,6 +111,7 @@ export function AdminPage({ user, onLogout }: AdminPageProps) {
                 {ws.section === 'students' && <StudentsView />}
                 {ws.section === 'classes' && <ClassesView />}
                 {ws.section === 'jobspy-ops' && <JobSpyOpsView />}
+                {ws.section === 'email-station' && <EmailStationView />}
                 {ws.section === 'job-enrichment' && <JobEnrichmentView />}
                 {ws.section === 'quizzes' && <QuizzesView />}
                 {ws.section === 'activity' && <ActivityView />}

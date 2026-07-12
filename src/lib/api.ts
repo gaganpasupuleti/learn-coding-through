@@ -648,7 +648,11 @@ async function parseOrThrow(response: Response) {
 
 const ADMIN_STUDENTS_PAGE_SIZE = 200
 
-export async function fetchAdminStudents(token: string, search?: string): Promise<AdminStudent[]> {
+export async function fetchAdminStudents(
+  token: string,
+  search?: string,
+  options?: { isActive?: boolean },
+): Promise<AdminStudent[]> {
   const all: AdminStudent[] = []
   let skip = 0
 
@@ -657,6 +661,7 @@ export async function fetchAdminStudents(token: string, search?: string): Promis
     params.set('limit', String(ADMIN_STUDENTS_PAGE_SIZE))
     params.set('skip', String(skip))
     if (search?.trim()) params.set('search', search.trim())
+    if (options?.isActive !== undefined) params.set('is_active', String(options.isActive))
 
     const response = await fetchWithAuthApiFallback(`/api/v1/admin/students?${params}`, token)
     const page = (await parseOrThrow(response)) as AdminStudent[]
