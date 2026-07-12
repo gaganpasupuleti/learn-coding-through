@@ -1,4 +1,4 @@
-import { BookOpen, ChevronLeft, ChevronRight, List, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { BookOpen, ChevronLeft, ChevronRight, List } from 'lucide-react'
 import { marked } from 'marked'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
@@ -10,6 +10,7 @@ import {
   CQStatCard,
 } from '@/components/student-dashboard/cq/CQKit'
 import { useStudentNavCollapsed } from '@/hooks/useStudentNavCollapsed'
+import { NavToggleButton } from '@/components/shells/StudentShell'
 import { JOB_ROLE_CATALOG, roleName } from '@/data/jobRoleCatalog'
 import {
   BOOK_REPORTS_CATALOG,
@@ -410,7 +411,7 @@ function Badge({
 }
 
 const READER_PROSE =
-  'prose prose-lg max-w-none text-[#2D3748] prose-p:my-4 prose-p:text-[17px] prose-p:leading-[1.85] prose-headings:font-serif prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-[#0A1020] prose-h3:mt-8 prose-h3:mb-3 prose-h3:border-b prose-h3:border-[#0A1020]/10 prose-h3:pb-2 prose-h3:text-xl prose-strong:font-semibold prose-strong:text-[#0A1020] prose-a:text-[#2563EB] prose-a:no-underline hover:prose-a:underline prose-code:rounded-md prose-code:bg-[#0A1020]/8 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-mono prose-code:text-[0.88em] prose-code:text-[#0A1020] prose-code:before:content-none prose-code:after:content-none prose-pre:my-5 prose-pre:overflow-x-auto prose-pre:rounded-xl prose-pre:border prose-pre:border-[#0A1020]/15 prose-pre:bg-[#0A1020] prose-pre:px-5 prose-pre:py-4 prose-pre:font-mono prose-pre:text-[14px] prose-pre:leading-relaxed prose-pre:text-[#E8E0D4] prose-pre:shadow-[0_12px_40px_-20px_rgba(10,16,32,0.65)] prose-blockquote:my-5 prose-blockquote:border-l-4 prose-blockquote:border-[#2563EB]/70 prose-blockquote:bg-transparent prose-blockquote:py-0 prose-blockquote:pl-4 prose-blockquote:not-italic prose-blockquote:text-[#374151] prose-li:my-1 prose-li:marker:text-[#2563EB]'
+  'prose prose-lg max-w-none text-[#2D3748] prose-p:my-3 prose-p:text-[17px] prose-p:leading-[1.8] prose-headings:font-serif prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-[#0A1020] prose-h3:mt-6 prose-h3:mb-2 prose-h3:border-b prose-h3:border-[#0A1020]/10 prose-h3:pb-2 prose-h3:text-lg prose-strong:font-semibold prose-strong:text-[#0A1020] prose-a:text-[#2563EB] prose-a:no-underline hover:prose-a:underline prose-code:rounded-md prose-code:bg-[#0A1020]/8 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-mono prose-code:text-[0.88em] prose-code:text-[#0A1020] prose-code:before:content-none prose-code:after:content-none prose-pre:my-4 prose-pre:overflow-x-auto prose-pre:rounded-lg prose-pre:border prose-pre:border-[#0A1020]/15 prose-pre:bg-[#0A1020] prose-pre:px-4 prose-pre:py-3 prose-pre:font-mono prose-pre:text-[14px] prose-pre:leading-relaxed prose-pre:text-[#E8E0D4] prose-blockquote:my-4 prose-blockquote:border-l-4 prose-blockquote:border-[#2563EB]/70 prose-blockquote:bg-transparent prose-blockquote:py-0 prose-blockquote:pl-4 prose-blockquote:not-italic prose-blockquote:text-[#374151] prose-li:my-1 prose-li:marker:text-[#2563EB]'
 
 function StudyReportReader({
   report,
@@ -431,7 +432,7 @@ function StudyReportReader({
   const [tocCollapsed, setTocCollapsed] = useState(false)
   const [pageIndex, setPageIndex] = useState(0)
   const pendingPageRef = useRef<number | null>(null)
-  const { collapsed: navCollapsed, toggleCollapsed: toggleNav } = useStudentNavCollapsed()
+  const { hidden: navHidden, toggleHidden: toggleNav } = useStudentNavCollapsed()
 
   const chapter =
     report.chapters.find((c) => c.number === chapterNumber) ?? report.chapters[0] ?? null
@@ -506,9 +507,9 @@ function StudyReportReader({
   const showToc = !tocCollapsed || tocOpen
 
   return (
-    <div className="flex min-h-[calc(100dvh-3rem)] flex-col bg-[#E8DFC8] lg:min-h-dvh">
-      <header className="sticky top-0 z-30 shrink-0 border-b border-[#0A1020]/10 bg-[#FFFDF6]/95 backdrop-blur-md">
-        <div className="flex items-center gap-2 px-3 py-2.5 md:px-4">
+    <div className="flex h-[calc(100dvh-3rem)] flex-col overflow-hidden bg-[#FFFDF6] lg:h-[calc(100dvh-2.75rem)]">
+      <header className="z-30 shrink-0 border-b border-[#0A1020]/10 bg-[#FFFDF6]">
+        <div className="flex items-center gap-2 px-3 py-2 md:px-4">
           <button
             type="button"
             onClick={onBack}
@@ -525,15 +526,7 @@ function StudyReportReader({
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={toggleNav}
-            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#0A1020]/12 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-[#0A1020] hover:bg-[#FAF3E0]"
-            title={navCollapsed ? 'Show app menu' : 'Hide app menu'}
-          >
-            {navCollapsed ? <PanelLeftOpen className="h-3.5 w-3.5" /> : <PanelLeftClose className="h-3.5 w-3.5" />}
-            <span className="hidden md:inline">{navCollapsed ? 'Menu' : 'Focus'}</span>
-          </button>
+          <NavToggleButton hidden={navHidden} onToggle={toggleNav} className="hidden shrink-0 md:inline-flex" />
 
           <button
             type="button"
@@ -559,24 +552,23 @@ function StudyReportReader({
           <aside
             id="study-reader-toc"
             className={cn(
-              'shrink-0 border-[#0A1020]/10 bg-[#FFFDF6]',
+              'shrink-0 overflow-y-auto border-[#0A1020]/10 bg-[#FAF3E0]/40 lg:static lg:max-h-none lg:w-56 lg:border-r lg:shadow-none xl:w-60',
               tocOpen
-                ? 'absolute inset-x-0 top-14 z-20 max-h-96 overflow-y-auto border-b shadow-lg lg:static lg:max-h-none lg:w-64 lg:border-r lg:shadow-none xl:w-72'
-                : '',
+                ? 'absolute inset-x-0 top-12 z-20 max-h-80 border-b shadow-lg'
+                : 'hidden lg:block',
             )}
           >
-            <div className="p-4 md:p-5">
-              <div className="mb-4 flex gap-3 border-b border-[#0A1020]/8 pb-4">
+            <div className="p-3">
+              <div className="mb-3 flex gap-2 border-b border-[#0A1020]/8 pb-3">
                 {coverUrl ? (
                   <img
                     src={coverUrl}
                     alt=""
-                    className="h-20 w-14 shrink-0 rounded-md object-cover shadow-md ring-1 ring-[#0A1020]/10"
+                    className="h-16 w-11 shrink-0 rounded object-cover ring-1 ring-[#0A1020]/10"
                   />
                 ) : null}
                 <div className="min-w-0">
-                  <p className="font-serif text-sm font-semibold leading-snug text-[#0A1020]">{title}</p>
-                  <p className="mt-1 text-xs text-[#708090]">{report.author ?? 'Gagan Pasupuleti'}</p>
+                  <p className="font-serif text-xs font-semibold leading-snug text-[#0A1020] line-clamp-3">{title}</p>
                 </div>
               </div>
               <nav className="space-y-0.5" aria-label="Chapters">
@@ -615,9 +607,9 @@ function StudyReportReader({
           </aside>
         ) : null}
 
-        <main className="flex min-w-0 flex-1 flex-col p-3 md:p-5 lg:p-6">
-          <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
-            <article className="flex flex-1 flex-col rounded-2xl bg-[#FFFDF6] px-6 py-8 shadow-[0_20px_60px_-30px_rgba(10,16,32,0.45)] ring-1 ring-[#0A1020]/10 md:px-10 md:py-10">
+        <main className="flex min-w-0 flex-1 flex-col min-h-0">
+          <div className="flex-1 overflow-y-auto px-4 py-3 md:px-8 lg:px-10">
+            <div className={cn('mx-auto w-full', showToc ? 'max-w-3xl' : 'max-w-4xl')}>
               {chapter ? (
                 <ChapterPage
                   chapter={chapter}
@@ -629,41 +621,42 @@ function StudyReportReader({
               ) : (
                 <p className="text-sm text-[#4B5563]">No chapters in this report.</p>
               )}
-            </article>
-
-            <nav
-              className="mt-4 flex shrink-0 flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#0A1020]/10 bg-[#FFFDF6]/90 px-4 py-3 backdrop-blur-sm"
-              aria-label="Page navigation"
-            >
-              <CQActionButton
-                variant="ghost"
-                disabled={pageIndex <= 0 && chapterNumber <= 1}
-                onClick={goPrevPage}
-                className="gap-1"
-              >
-                <ChevronLeft className="h-4 w-4" aria-hidden />
-                Previous
-              </CQActionButton>
-
-              <div className="text-center text-sm text-[#708090]">
-                <p className="font-medium text-[#0A1020]">
-                  Page {pageIndex + 1} of {totalPages || 1}
-                </p>
-                <p className="text-xs">Chapter {chapterNumber} of {total}</p>
-              </div>
-
-              {pageIndex < totalPages - 1 || chapterNumber < total ? (
-                <CQActionButton variant="primary" onClick={goNextPage} className="gap-1">
-                  Next
-                  <ChevronRight className="h-4 w-4" aria-hidden />
-                </CQActionButton>
-              ) : (
-                <CQActionButton variant="navy" onClick={() => onProgress(report.id, 100)}>
-                  Finish
-                </CQActionButton>
-              )}
-            </nav>
+            </div>
           </div>
+
+          <nav
+            className="flex shrink-0 items-center justify-between gap-3 border-t border-[#0A1020]/10 bg-[#FFFDF6] px-4 py-2 md:px-6"
+            aria-label="Page navigation"
+          >
+            <CQActionButton
+              variant="ghost"
+              disabled={pageIndex <= 0 && chapterNumber <= 1}
+              onClick={goPrevPage}
+              className="gap-1 px-3 py-1.5 text-xs"
+            >
+              <ChevronLeft className="h-4 w-4" aria-hidden />
+              Previous
+            </CQActionButton>
+
+            <p className="text-center text-xs text-[#708090]">
+              <span className="font-semibold text-[#0A1020]">
+                Page {pageIndex + 1}/{totalPages || 1}
+              </span>
+              <span className="mx-1.5">·</span>
+              <span>Ch. {chapterNumber}/{total}</span>
+            </p>
+
+            {pageIndex < totalPages - 1 || chapterNumber < total ? (
+              <CQActionButton variant="primary" onClick={goNextPage} className="gap-1 px-3 py-1.5 text-xs">
+                Next
+                <ChevronRight className="h-4 w-4" aria-hidden />
+              </CQActionButton>
+            ) : (
+              <CQActionButton variant="navy" onClick={() => onProgress(report.id, 100)} className="px-3 py-1.5 text-xs">
+                Finish
+              </CQActionButton>
+            )}
+          </nav>
         </main>
       </div>
     </div>
@@ -685,20 +678,20 @@ function ChapterPage({
 }) {
   if (isTakeawaysPage) {
     return (
-      <div className="flex flex-1 flex-col">
-        <header className="mb-6 border-b border-[#0A1020]/10 pb-6 text-center">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#708090]">
+      <div>
+        <header className="mb-4 border-b border-[#0A1020]/10 pb-4 text-center">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#708090]">
             Chapter {chapter.number} · Summary
           </p>
-          <h1 className="mt-2 font-serif text-2xl font-bold text-[#0A1020] md:text-3xl">Before you move on</h1>
+          <h1 className="mt-1 font-serif text-2xl font-bold text-[#0A1020]">Before you move on</h1>
         </header>
-        <ul className="space-y-5">
+        <ul className="space-y-3">
           {chapter.key_takeaways.map((t, i) => (
-            <li key={t} className="flex gap-3 text-[17px] leading-relaxed text-[#374151]">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0A1020] font-serif text-sm font-semibold text-[#FAF3E0]">
+            <li key={t} className="flex gap-3 text-[16px] leading-relaxed text-[#374151]">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#0A1020] font-serif text-sm font-semibold text-[#FAF3E0]">
                 {i + 1}
               </span>
-              <span className="pt-1">{t}</span>
+              <span className="pt-0.5">{t}</span>
             </li>
           ))}
         </ul>
@@ -707,20 +700,20 @@ function ChapterPage({
   }
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div>
       {pageIndex === 0 ? (
-        <header className="mb-8 border-b border-[#0A1020]/10 pb-6 text-center">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#708090]">
+        <header className="mb-5 border-b border-[#0A1020]/10 pb-4 text-center">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#708090]">
             Chapter {chapter.number}
             {chapter.level ? ` · ${chapter.level}` : ''}
           </p>
-          <h1 className="mt-3 font-serif text-3xl font-bold leading-tight tracking-tight text-[#0A1020] md:text-4xl">
+          <h1 className="mt-2 font-serif text-2xl font-bold leading-tight tracking-tight text-[#0A1020] md:text-3xl">
             {chapter.title}
           </h1>
         </header>
       ) : (
-        <p className="mb-6 text-center text-xs font-medium uppercase tracking-wider text-[#708090]">
-          {chapter.title} · page {pageIndex + 1} of {totalPages}
+        <p className="mb-4 text-center text-[10px] font-semibold uppercase tracking-[0.16em] text-[#708090]">
+          {chapter.title} · page {pageIndex + 1}/{totalPages}
         </p>
       )}
 

@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useState } from 'react'
 
-const NAV_COLLAPSED_KEY = 'cq-student-nav-collapsed'
-const NAV_EVENT = 'cq-student-nav-collapsed'
+const NAV_HIDDEN_KEY = 'cq-student-nav-hidden'
+const NAV_EVENT = 'cq-student-nav-hidden'
 
-function readCollapsed(): boolean {
+function readHidden(): boolean {
   try {
-    return localStorage.getItem(NAV_COLLAPSED_KEY) === '1'
+    return localStorage.getItem(NAV_HIDDEN_KEY) === '1'
   } catch {
     return false
   }
 }
 
-function writeCollapsed(collapsed: boolean) {
+function writeHidden(hidden: boolean) {
   try {
-    localStorage.setItem(NAV_COLLAPSED_KEY, collapsed ? '1' : '0')
+    localStorage.setItem(NAV_HIDDEN_KEY, hidden ? '1' : '0')
   } catch {
     /* ponytail: localStorage optional */
   }
@@ -21,26 +21,34 @@ function writeCollapsed(collapsed: boolean) {
 }
 
 export function useStudentNavCollapsed() {
-  const [collapsed, setCollapsedState] = useState(readCollapsed)
+  const [hidden, setHiddenState] = useState(readHidden)
 
   useEffect(() => {
-    const sync = () => setCollapsedState(readCollapsed())
+    const sync = () => setHiddenState(readHidden())
     window.addEventListener(NAV_EVENT, sync)
     return () => window.removeEventListener(NAV_EVENT, sync)
   }, [])
 
-  const setCollapsed = useCallback((value: boolean) => {
-    writeCollapsed(value)
-    setCollapsedState(value)
+  const setHidden = useCallback((value: boolean) => {
+    writeHidden(value)
+    setHiddenState(value)
   }, [])
 
-  const toggleCollapsed = useCallback(() => {
-    setCollapsedState((prev) => {
+  const toggleHidden = useCallback(() => {
+    setHiddenState((prev) => {
       const next = !prev
-      writeCollapsed(next)
+      writeHidden(next)
       return next
     })
   }, [])
 
-  return { collapsed, setCollapsed, toggleCollapsed }
+  return {
+    hidden,
+    /** @deprecated alias — sidebar hidden means fully collapsed off-canvas */
+    collapsed: hidden,
+    setHidden,
+    setCollapsed: setHidden,
+    toggleHidden,
+    toggleCollapsed: toggleHidden,
+  }
 }
