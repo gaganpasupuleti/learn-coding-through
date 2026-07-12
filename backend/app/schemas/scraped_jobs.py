@@ -9,6 +9,8 @@ VALID_PROFILES = (
     "fresher_india",
     "entry_level_india",
     "experienced_manual_india",
+    "platform_crm_india",
+    "ai_india",
 )
 
 
@@ -44,7 +46,7 @@ class ScrapeRequest(BaseModel):
     location: str = FIXED_JOB_LOCATION
     resultsWanted: int = Field(default=50, ge=1, le=50)
     hoursOld: int = Field(default=48, ge=1, le=168)
-    sources: list[str] = Field(default_factory=lambda: ["indeed", "google", "naukri"])
+    sources: list[str] = Field(default_factory=lambda: ["indeed", "google", "linkedin"])
 
     @field_validator("location", mode="before")
     @classmethod
@@ -54,7 +56,7 @@ class ScrapeRequest(BaseModel):
 
 class RefreshRequest(BaseModel):
     profile: str
-    sources: list[str] = Field(default_factory=lambda: ["indeed", "google", "naukri"])
+    sources: list[str] = Field(default_factory=lambda: ["indeed", "google", "linkedin"])
     runMode: str = "manual"
     hoursOld: int | None = Field(default=None, ge=1, le=336)
     dateRangeDays: int | None = None
@@ -167,6 +169,9 @@ class ScrapeRunSummary(BaseModel):
 class LatestJobSummary(BaseModel):
     id: str
     jobId: str | None = None
+    ingestProfile: str | None = None
+    actualRoleId: str | None = None
+    actualRoleName: str | None = None
     source: str
     title: str
     company: str | None
@@ -176,6 +181,19 @@ class LatestJobSummary(BaseModel):
     createdAtIST: str | None = None
     jobUrl: str
     linkStatus: str | None = "active"
+
+
+class ProfileBreakdownItem(BaseModel):
+    profile: str
+    label: str
+    count: int
+    autoEnabled: bool = False
+
+
+class EnrichmentRoleCountItem(BaseModel):
+    roleId: str
+    roleName: str
+    count: int
 
 
 class JobStatsResponse(BaseModel):
@@ -196,6 +214,8 @@ class JobStatsResponse(BaseModel):
     recentScrapeRuns: list[ScrapeRunSummary]
     latestJobs: list[LatestJobSummary]
     expiredJobSamples: list[LatestJobSummary]
+    profileBreakdown: list[ProfileBreakdownItem] = Field(default_factory=list)
+    enrichmentRoleSummary: list[EnrichmentRoleCountItem] = Field(default_factory=list)
 
 
 class DigestSummary(BaseModel):

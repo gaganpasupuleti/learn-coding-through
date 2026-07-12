@@ -171,7 +171,6 @@ export const JOBSPY_SOURCE_OPTIONS: { value: string; label: string }[] = [
   { value: '', label: 'All sources' },
   { value: 'indeed', label: 'Indeed' },
   { value: 'google', label: 'Google' },
-  { value: 'naukri', label: 'Naukri' },
   { value: 'linkedin', label: 'LinkedIn' },
 ]
 
@@ -271,6 +270,10 @@ export interface JobStatsScrapeRun {
 
 export interface JobStatsLatestJob {
   id: string
+  jobId?: string | null
+  ingestProfile?: string | null
+  actualRoleId?: string | null
+  actualRoleName?: string | null
   source: string
   title: string
   company: string | null
@@ -279,6 +282,19 @@ export interface JobStatsLatestJob {
   createdAt: string
   jobUrl: string
   linkStatus?: string
+}
+
+export interface JobStatsProfileItem {
+  profile: string
+  label: string
+  count: number
+  autoEnabled: boolean
+}
+
+export interface JobStatsEnrichmentRoleItem {
+  roleId: string
+  roleName: string
+  count: number
 }
 
 export interface JobStatsResponse {
@@ -299,6 +315,8 @@ export interface JobStatsResponse {
   recentScrapeRuns: JobStatsScrapeRun[]
   latestJobs: JobStatsLatestJob[]
   expiredJobSamples: JobStatsLatestJob[]
+  profileBreakdown: JobStatsProfileItem[]
+  enrichmentRoleSummary: JobStatsEnrichmentRoleItem[]
 }
 
 export interface RefreshRequestBody {
@@ -558,7 +576,7 @@ export const jobspyApi = {
         location: 'India',
         resultsWanted: Math.min(limit * 5, 25),
         hoursOld: 48,
-        sources: ['indeed', 'google'],
+        sources: ['indeed', 'google', 'linkedin'],
       },
       adminKey,
     )
@@ -572,7 +590,7 @@ export const jobspyApi = {
         location: 'India',
         resultsWanted: Math.min(limit * 5, 25),
         hoursOld: 48,
-        sources: ['indeed', 'google'],
+        sources: ['indeed', 'google', 'linkedin'],
       },
       adminKey,
     )
@@ -588,10 +606,12 @@ export const jobspyApi = {
       body: JSON.stringify(body),
     }),
 
-  getJobStats: (adminKey: string, params?: { days?: number; limit?: number }) => {
+  getJobStats: (adminKey: string, params?: { days?: number; limit?: number; profile?: string; roleId?: string }) => {
     const qs = new URLSearchParams()
     if (params?.days) qs.set('days', String(params.days))
     if (params?.limit) qs.set('limit', String(params.limit))
+    if (params?.profile) qs.set('profile', params.profile)
+    if (params?.roleId) qs.set('roleId', params.roleId)
     const query = qs.toString()
     return jobspyRequest<JobStatsResponse>(
       `/api/admin/jobs/stats${query ? `?${query}` : ''}`,
@@ -678,6 +698,12 @@ export function jobSpySiteLabel(site?: string | null): string {
     naukri: 'Naukri',
   }
   return map[site] ?? site
+}
+
+export function profileKeyLabel(profile: string | null | undefined, breakdown?: JobStatsProfileItem[]): string {
+  if (!profile) return '—'
+  const hit = breakdown?.find((p) => p.profile === profile)
+  return hit?.label ?? profile.replace(/_india$/, '').replace(/_/g, ' ')
 }
 
 export function formatJobSpySalary(job: JobSpyJob): string | null {

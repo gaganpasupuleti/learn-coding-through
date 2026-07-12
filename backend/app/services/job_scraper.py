@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 FIXED_SCRAPE_LOCATION = "India"
 FIXED_COUNTRY_INDEED = "India"
-DEFAULT_SOURCES = ["indeed", "google"]
+DEFAULT_SOURCES = ["indeed", "google", "linkedin"]
 
 
 def _job_id(source: str, job_url: str) -> str:

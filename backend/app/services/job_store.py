@@ -6,7 +6,7 @@ import json
 from datetime import datetime, timedelta
 from typing import Any
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from app.core.datetime_utils import format_ist, ist_date_yyyymmdd
@@ -200,10 +200,59 @@ def get_last_successful_auto_run(db: Session) -> JobScrapeRun | None:
     )
 
 
-def get_latest_jobs(db: Session, limit: int = 10, *, active_only: bool = True) -> list[ScrapedJob]:
+def get_profile_breakdown(db: Session, *, active_only: bool = True) -> list[dict[str, Any]]:
+    from app.services.job_profiles import SCRAPE_PROFILES
+
+    query = db.query(ScrapedJob.ingest_profile, func.count()).group_by(ScrapedJob.ingest_profile)
+    if active_only:
+        query = query.filter(ScrapedJob.link_status == "active")
+    raw = {row[0] or "unassigned": int(row[1]) for row in query.all()}
+
+    items: list[dict[str, Any]] = []
+    for key, profile in SCRAPE_PROFILES.items():
+        items.append(
+            {
+                "profile": key,
+                "label": profile.label,
+                "count": raw.get(key, 0),
+                "autoEnabled": profile.auto_enabled,
+            }
+        )
+    unassigned = raw.get("unassigned", 0)
+    if unassigned:
+        items.append(
+            {
+                "profile": "unassigned",
+                "label": "Unassigned",
+                "count": unassigned,
+                "autoEnabled": False,
+            }
+        )
+    return sorted(items, key=lambda row: -row["count"])
+
+
+def get_latest_jobs(
+    db: Session,
+    limit: int = 10,
+    *,
+    active_only: bool = True,
+    profile: str | None = None,
+    role_id: str | None = None,
+) -> list[ScrapedJob]:
     query = db.query(ScrapedJob)
     if active_only:
         query = query.filter(ScrapedJob.link_status == "active")
+    if role_id:
+        from app.models.models import JobEnrichment
+
+        query = query.join(JobEnrichment, ScrapedJob.job_id == JobEnrichment.job_id).filter(
+            JobEnrichment.actual_role_id == role_id
+        )
+    elif profile:
+        if profile == "unassigned":
+            query = query.filter(or_(ScrapedJob.ingest_profile.is_(None), ScrapedJob.ingest_profile == ""))
+        else:
+            query = query.filter(ScrapedJob.ingest_profile == profile)
     return query.order_by(ScrapedJob.created_at.desc()).limit(limit).all()
 
 

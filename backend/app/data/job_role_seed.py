@@ -56,9 +56,21 @@ JOB_ROLES: list[dict[str, str | None]] = [
     },
     {
         "role_id": "ROLE_ML_AI",
-        "role_name": "ML / AI Engineer",
+        "role_name": "ML / Data Science Engineer",
         "role_family": "ml-ai",
-        "description": "Machine learning model development and deployment.",
+        "description": "Classic machine learning, model training, and data science engineering.",
+    },
+    {
+        "role_id": "ROLE_GEN_AI",
+        "role_name": "Generative AI / LLM Engineer",
+        "role_family": "gen-ai",
+        "description": "LLMs, RAG, prompt engineering, and generative AI application development.",
+    },
+    {
+        "role_id": "ROLE_AGENTIC_AI",
+        "role_name": "Agentic AI Engineer",
+        "role_family": "agentic-ai",
+        "description": "AI agents, multi-agent systems, and autonomous agent workflows.",
     },
     {
         "role_id": "ROLE_IT_SUPPORT",
@@ -79,6 +91,30 @@ JOB_ROLES: list[dict[str, str | None]] = [
         "description": "Requirements, process analysis, and stakeholder coordination.",
     },
     {
+        "role_id": "ROLE_CYBER_SECURITY",
+        "role_name": "Cyber Security Analyst",
+        "role_family": "cyber-security",
+        "description": "SOC, infosec, vulnerability assessment, and security operations.",
+    },
+    {
+        "role_id": "ROLE_SALESFORCE",
+        "role_name": "Salesforce Developer / Admin",
+        "role_family": "salesforce-crm",
+        "description": "Salesforce CRM development, Apex, Lightning, and administration.",
+    },
+    {
+        "role_id": "ROLE_DYNAMICS_CRM",
+        "role_name": "Microsoft Dynamics 365 CRM",
+        "role_family": "dynamics-crm",
+        "description": "Dynamics 365 CRM configuration, plugins, and customization.",
+    },
+    {
+        "role_id": "ROLE_POWER_PLATFORM",
+        "role_name": "Power Platform Developer",
+        "role_family": "power-platform",
+        "description": "Power Apps, Power Automate, and Microsoft low-code solutions.",
+    },
+    {
         "role_id": "ROLE_OTHER_REVIEW",
         "role_name": "Other (needs review)",
         "role_family": "other-review",
@@ -94,7 +130,7 @@ LEVEL_BANDS: list[dict[str, int | str | None]] = [
 
 
 def job_role_levels_seed() -> list[dict[str, int | str | None]]:
-    """Build 39 role level rows (13 roles x 3 bands)."""
+    """Build role level rows (N roles x 3 experience bands)."""
     rows: list[dict[str, int | str | None]] = []
     for role in JOB_ROLES:
         role_id = str(role["role_id"])

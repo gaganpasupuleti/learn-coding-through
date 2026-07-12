@@ -22,10 +22,16 @@ Phase 27A design — stable identifiers for manual job enrichment and quiz pack 
 | `ROLE_FULLSTACK_WEB` | Full Stack Web Developer | MERN, full stack, frontend + backend |
 | `ROLE_QA_TESTING` | QA / Testing Engineer | manual testing, automation, Selenium |
 | `ROLE_DATA_ENGINEER` | Data Engineer | ETL, pipelines, Spark, Airflow |
-| `ROLE_ML_AI` | ML / AI Engineer | machine learning, NLP, TensorFlow, PyTorch |
+| `ROLE_ML_AI` | ML / Data Science Engineer | machine learning, data scientist, TensorFlow, PyTorch, NLP |
+| `ROLE_GEN_AI` | Generative AI / LLM Engineer | Gen AI, LLM, RAG, prompt engineer |
+| `ROLE_AGENTIC_AI` | Agentic AI Engineer | AI agents, agentic AI, LangGraph, multi-agent |
 | `ROLE_IT_SUPPORT` | IT Support / Helpdesk | L1, L2, desktop support, ticketing |
 | `ROLE_SERVICENOW` | ServiceNow Developer / Admin | ServiceNow, ITSM, CMDB |
 | `ROLE_BUSINESS_ANALYST` | Business Analyst | requirements, BRD, stakeholder, UAT |
+| `ROLE_CYBER_SECURITY` | Cyber Security Analyst | SOC, infosec, security analyst, cyber defense |
+| `ROLE_SALESFORCE` | Salesforce Developer / Admin | Salesforce, SFDC, Apex, Lightning |
+| `ROLE_DYNAMICS_CRM` | Microsoft Dynamics 365 CRM | Dynamics 365, D365, CRM developer |
+| `ROLE_POWER_PLATFORM` | Power Platform Developer | Power Apps, Power Automate, Power Platform |
 | `ROLE_OTHER_REVIEW` | Other (needs review) | Ambiguous or cross-role postings |
 
 ## Experience level bands
@@ -106,13 +112,13 @@ Pattern: `ROLE_<FAMILY>_<LEVEL>`
 | `ROLE_DATA_ENGINEER_ENTRY` | Data Engineer — Entry |
 | `ROLE_DATA_ENGINEER_EXPERIENCED` | Data Engineer — Experienced |
 
-### ML / AI
+### ML / Data Science (classic)
 
 | Role level ID | Display |
 |---------------|---------|
-| `ROLE_ML_AI_FRESHER` | ML / AI — Fresher |
-| `ROLE_ML_AI_ENTRY` | ML / AI — Entry |
-| `ROLE_ML_AI_EXPERIENCED` | ML / AI — Experienced |
+| `ROLE_ML_AI_FRESHER` | ML / Data Science — Fresher |
+| `ROLE_ML_AI_ENTRY` | ML / Data Science — Entry |
+| `ROLE_ML_AI_EXPERIENCED` | ML / Data Science — Experienced |
 
 ### IT Support
 
@@ -145,6 +151,54 @@ Pattern: `ROLE_<FAMILY>_<LEVEL>`
 | `ROLE_OTHER_REVIEW_FRESHER` | Other — Fresher (review) |
 | `ROLE_OTHER_REVIEW_ENTRY` | Other — Entry (review) |
 | `ROLE_OTHER_REVIEW_EXPERIENCED` | Other — Experienced (review) |
+
+### Cyber Security
+
+| Role level ID | Display |
+|---------------|---------|
+| `ROLE_CYBER_SECURITY_FRESHER` | Cyber Security — Fresher |
+| `ROLE_CYBER_SECURITY_ENTRY` | Cyber Security — Entry |
+| `ROLE_CYBER_SECURITY_EXPERIENCED` | Cyber Security — Experienced |
+
+### Salesforce CRM
+
+| Role level ID | Display |
+|---------------|---------|
+| `ROLE_SALESFORCE_FRESHER` | Salesforce — Fresher |
+| `ROLE_SALESFORCE_ENTRY` | Salesforce — Entry |
+| `ROLE_SALESFORCE_EXPERIENCED` | Salesforce — Experienced |
+
+### Dynamics 365 CRM
+
+| Role level ID | Display |
+|---------------|---------|
+| `ROLE_DYNAMICS_CRM_FRESHER` | Dynamics CRM — Fresher |
+| `ROLE_DYNAMICS_CRM_ENTRY` | Dynamics CRM — Entry |
+| `ROLE_DYNAMICS_CRM_EXPERIENCED` | Dynamics CRM — Experienced |
+
+### Power Platform
+
+| Role level ID | Display |
+|---------------|---------|
+| `ROLE_POWER_PLATFORM_FRESHER` | Power Platform — Fresher |
+| `ROLE_POWER_PLATFORM_ENTRY` | Power Platform — Entry |
+| `ROLE_POWER_PLATFORM_EXPERIENCED` | Power Platform — Experienced |
+
+### Generative AI / LLM
+
+| Role level ID | Display |
+|---------------|---------|
+| `ROLE_GEN_AI_FRESHER` | Gen AI / LLM — Fresher |
+| `ROLE_GEN_AI_ENTRY` | Gen AI / LLM — Entry |
+| `ROLE_GEN_AI_EXPERIENCED` | Gen AI / LLM — Experienced |
+
+### Agentic AI
+
+| Role level ID | Display |
+|---------------|---------|
+| `ROLE_AGENTIC_AI_FRESHER` | Agentic AI — Fresher |
+| `ROLE_AGENTIC_AI_ENTRY` | Agentic AI — Entry |
+| `ROLE_AGENTIC_AI_EXPERIENCED` | Agentic AI — Experienced |
 
 ## Validation rules (import)
 

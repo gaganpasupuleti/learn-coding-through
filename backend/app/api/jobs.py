@@ -18,7 +18,7 @@ from app.api.deps import get_optional_user, oauth2_scheme
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.datetime_utils import format_ist, now_utc, to_ist
-from app.models.models import ScrapedJob, User, UserRole
+from app.models.models import JobEnrichment, ScrapedJob, User, UserRole
 from app.schemas.job_enrichment import (
     JobEnrichmentListResponse,
     JobEnrichmentReviewResponse,
@@ -35,12 +35,14 @@ from app.schemas.scraped_jobs import (
     EmailDigestFields,
     EmailPreviewRequest,
     EmailPreviewResponse,
+    EnrichmentRoleCountItem,
     FIXED_JOB_LOCATION,
     JobStatsResponse,
     JobsListResponse,
     LatestJobSummary,
     LocationBreakdownItem,
     NormalizedJob,
+    ProfileBreakdownItem,
     RefreshRequest,
     RefreshResponse,
     ScrapeRequest,
@@ -81,6 +83,7 @@ from app.services.job_store import (
     get_latest_jobs,
     get_latest_loaded_at,
     get_location_breakdown,
+    get_profile_breakdown,
     get_recent_scrape_runs,
     get_source_breakdown,
     get_source_failure_counts,
@@ -119,9 +122,17 @@ def _to_normalized(row: ScrapedJob) -> NormalizedJob:
     return NormalizedJob(**scraped_job_to_dict(row))
 
 
-def _to_latest_summary(row: ScrapedJob) -> LatestJobSummary:
+def _to_latest_summary(
+    row: ScrapedJob,
+    enrichment_by_job_id: dict[str, JobEnrichment] | None = None,
+) -> LatestJobSummary:
+    enrich = enrichment_by_job_id.get(row.job_id) if enrichment_by_job_id and row.job_id else None
     return LatestJobSummary(
         id=row.id,
+        jobId=row.job_id,
+        ingestProfile=row.ingest_profile,
+        actualRoleId=enrich.actual_role_id if enrich else None,
+        actualRoleName=enrich.actual_role_name if enrich else None,
         source=row.source,
         title=row.title,
         company=row.company,
@@ -206,6 +217,8 @@ def get_job(job_id: str, db: Session = Depends(get_db)):
 def admin_job_stats(
     days: int = Query(7, ge=1, le=90),
     limit: int = Query(10, ge=1, le=50),
+    profile: str | None = Query(None, description="Filter latest jobs by ingest profile key"),
+    role_id: str | None = Query(None, alias="roleId", description="Filter latest jobs by enriched role ID"),
     db: Session = Depends(get_db),
     _admin: User | None = Depends(require_jobs_admin),
 ):
@@ -215,7 +228,20 @@ def admin_job_stats(
     since_7d = now - timedelta(days=7)
 
     runs = get_recent_scrape_runs(db, days=days, limit=limit)
-    latest = get_latest_jobs(db, limit=limit, active_only=True)
+    latest_rows = get_latest_jobs(
+        db,
+        limit=limit,
+        active_only=True,
+        profile=profile if profile and profile != "all" else None,
+        role_id=role_id if role_id and role_id != "all" else None,
+    )
+    job_ids = [row.job_id for row in latest_rows if row.job_id]
+    enrichments = (
+        db.query(JobEnrichment).filter(JobEnrichment.job_id.in_(job_ids)).all() if job_ids else []
+    )
+    enrichment_by_job_id = {row.job_id: row for row in enrichments}
+    enrichment_summary = get_job_enrichment_summary(db)
+
     expired_samples = get_expired_jobs(db, limit=limit)
     last_auto = get_last_successful_auto_run(db)
     last_cleanup = get_last_run_by_type(db, "cleanup")
@@ -236,8 +262,15 @@ def admin_job_stats(
         sourceFailureCounts=get_source_failure_counts(db, days=days),
         locationBreakdown=[LocationBreakdownItem(**item) for item in get_location_breakdown(db, limit=limit)],
         recentScrapeRuns=[ScrapeRunSummary(**scrape_run_to_dict(r)) for r in runs],
-        latestJobs=[_to_latest_summary(row) for row in latest],
+        latestJobs=[
+            _to_latest_summary(row, enrichment_by_job_id) for row in latest_rows
+        ],
         expiredJobSamples=[_to_latest_summary(row) for row in expired_samples],
+        profileBreakdown=[ProfileBreakdownItem(**item) for item in get_profile_breakdown(db)],
+        enrichmentRoleSummary=[
+            EnrichmentRoleCountItem(roleId=item.role_id, roleName=item.role_name, count=item.count)
+            for item in enrichment_summary.role_summary
+        ],
     )
 
 

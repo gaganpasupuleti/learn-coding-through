@@ -11,6 +11,7 @@ import {
   jobspyApi,
   setJobSpyAdminKey,
   exportJobsCsv,
+  profileKeyLabel,
   type EmailDigestBody,
   type JobStatsResponse,
   type RefreshResponse,
@@ -24,9 +25,20 @@ const EMAIL_MAX_JOBS_OPTIONS = [5, 10, 20, 30, 50] as const
 const SOURCE_OPTIONS: { id: string; label: string; optional?: boolean }[] = [
   { id: 'indeed', label: 'Indeed' },
   { id: 'google', label: 'Google' },
-  { id: 'naukri', label: 'Naukri' },
-  { id: 'linkedin', label: 'LinkedIn', optional: true },
+  { id: 'linkedin', label: 'LinkedIn' },
 ]
+
+const FALLBACK_PROFILE_OPTIONS = [
+  { profile: 'internship_india', label: 'Internships', count: 0, autoEnabled: true },
+  { profile: 'fresher_india', label: 'Fresher Jobs', count: 0, autoEnabled: true },
+  { profile: 'entry_level_india', label: 'Entry Level', count: 0, autoEnabled: true },
+  { profile: 'platform_crm_india', label: 'CRM & Low-Code Platform', count: 0, autoEnabled: true },
+  { profile: 'ai_india', label: 'AI / Gen AI / Agentic', count: 0, autoEnabled: true },
+  { profile: 'experienced_manual_india', label: '1+ Experience (manual)', count: 0, autoEnabled: false },
+]
+
+const DEFAULT_REFRESH_PROFILE = 'fresher_india'
+const JOB_LIST_LIMIT = 20
 
 const MANUAL_RANGE_OPTIONS = [
   { value: 1, label: 'Last 24 hours' },
@@ -50,7 +62,7 @@ function formatTs(v: string | null | undefined) {
 }
 
 function sourceLabel(s: string) {
-  const m: Record<string, string> = { indeed: 'Indeed', google: 'Google', naukri: 'Naukri', linkedin: 'LinkedIn' }
+  const m: Record<string, string> = { indeed: 'Indeed', google: 'Google', linkedin: 'LinkedIn' }
   return m[s] ?? s
 }
 
@@ -66,8 +78,11 @@ export function JobSpyOpsView() {
   const [statsError, setStatsError] = useState<string | null>(null)
   const [refreshing, setRefreshing] = useState<string | null>(null)
   const [lastRefresh, setLastRefresh] = useState<RefreshResponse | null>(null)
-  const [sources, setSources] = useState<string[]>(['indeed', 'google', 'naukri'])
+  const [sources, setSources] = useState<string[]>(['indeed', 'google', 'linkedin'])
   const [dateRangeDays, setDateRangeDays] = useState(3)
+  const [refreshProfile, setRefreshProfile] = useState(DEFAULT_REFRESH_PROFILE)
+  const [jobFilterProfile, setJobFilterProfile] = useState('all')
+  const [jobFilterRole, setJobFilterRole] = useState('all')
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [adminKeyInput, setAdminKeyInput] = useState(() => getJobSpyAdminKey())
   const [showKeyForm, setShowKeyForm] = useState(!getJobSpyAdminKey())
@@ -81,6 +96,8 @@ export function JobSpyOpsView() {
   const [emailResult, setEmailResult] = useState<SendDigestResponse | null>(null)
   const [emailLoading, setEmailLoading] = useState<string | null>(null)
 
+  const profileOptions = stats?.profileBreakdown?.length ? stats.profileBreakdown : FALLBACK_PROFILE_OPTIONS
+
   const loadStats = useCallback(async () => {
     const key = getJobSpyAdminKey()
     if (!key) {
@@ -91,13 +108,20 @@ export function JobSpyOpsView() {
     setStatsLoading(true)
     setStatsError(null)
     try {
-      setStats(await jobspyApi.getJobStats(key, { days: 7, limit: 10 }))
+      setStats(
+        await jobspyApi.getJobStats(key, {
+          days: 7,
+          limit: JOB_LIST_LIMIT,
+          profile: jobFilterProfile !== 'all' ? jobFilterProfile : undefined,
+          roleId: jobFilterRole !== 'all' ? jobFilterRole : undefined,
+        }),
+      )
     } catch (e) {
       setStatsError(e instanceof Error ? e.message : 'Failed to load dashboard')
     } finally {
       setStatsLoading(false)
     }
-  }, [])
+  }, [jobFilterProfile, jobFilterRole])
 
   useEffect(() => {
     void (async () => {
@@ -123,7 +147,7 @@ export function JobSpyOpsView() {
     setSources((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]))
   }
 
-  const runRefresh = async (profile: string, label: string) => {
+  const runRefresh = async () => {
     const key = getJobSpyAdminKey()
     if (!key) {
       setShowKeyForm(true)
@@ -134,10 +158,12 @@ export function JobSpyOpsView() {
       toast.error('Select at least one source')
       return
     }
-    setRefreshing(profile)
+    const label =
+      stats?.profileBreakdown.find((p) => p.profile === refreshProfile)?.label ?? refreshProfile
+    setRefreshing(refreshProfile)
     try {
       const res = await jobspyApi.refreshJobs(
-        { profile, sources, runMode: 'manual', dateRangeDays },
+        { profile: refreshProfile, sources, runMode: 'manual', dateRangeDays },
         key,
       )
       setLastRefresh(res)
@@ -150,25 +176,14 @@ export function JobSpyOpsView() {
     }
   }
 
-  const runInternFresher = async () => {
-    const key = getJobSpyAdminKey()
-    if (!key) return
-    setRefreshing('intern_fresher')
-    try {
-      for (const p of ['internship_india', 'fresher_india'] as const) {
-        const res = await jobspyApi.refreshJobs(
-          { profile: p, sources, runMode: 'manual', dateRangeDays },
-          key,
-        )
-        setLastRefresh(res)
-      }
-      toast.success('Intern & Fresher refresh complete')
-      await loadStats()
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Refresh failed')
-    } finally {
-      setRefreshing(null)
-    }
+  const selectProfileFilter = (profile: string) => {
+    setJobFilterProfile(profile)
+    setJobFilterRole('all')
+  }
+
+  const selectRoleFilter = (roleId: string) => {
+    setJobFilterRole(roleId)
+    setJobFilterProfile('all')
   }
 
   const runCleanup = async () => {
@@ -299,20 +314,88 @@ export function JobSpyOpsView() {
           )}
         </section>
 
+        {/* Scrape family KPIs */}
+        {stats && stats.profileBreakdown.length > 0 && (
+          <section className="rounded-2xl border border-blue-200 bg-blue-50/40 p-5 shadow-sm space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="font-semibold text-blue-950">Scrape families (active jobs)</h3>
+              <p className="text-xs text-blue-800">Click a card to filter the job list below</p>
+            </div>
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+              {stats.profileBreakdown.map((item) => (
+                <button
+                  key={item.profile}
+                  type="button"
+                  onClick={() => selectProfileFilter(item.profile === jobFilterProfile ? 'all' : item.profile)}
+                  className={`rounded-xl border p-3 text-left transition shadow-sm ${
+                    jobFilterProfile === item.profile
+                      ? 'border-blue-600 bg-white ring-2 ring-blue-500/30'
+                      : 'border-blue-100 bg-white hover:border-blue-300'
+                  }`}
+                >
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 truncate">
+                    {item.label}
+                  </p>
+                  <p className="text-xl font-bold text-slate-900 tabular-nums mt-0.5">{item.count}</p>
+                  <p className="text-[10px] text-slate-500 mt-1">
+                    {item.autoEnabled ? 'auto cron' : 'manual profile'}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Enriched role family KPIs */}
+        {stats && stats.enrichmentRoleSummary.length > 0 && (
+          <section className="rounded-2xl border border-violet-200 bg-violet-50/40 p-5 shadow-sm space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="font-semibold text-violet-950">Enriched role families</h3>
+              <p className="text-xs text-violet-800">Click to filter jobs by classified role</p>
+            </div>
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+              {stats.enrichmentRoleSummary
+                .slice()
+                .sort((a, b) => b.count - a.count)
+                .map((item) => (
+                  <button
+                    key={item.roleId}
+                    type="button"
+                    onClick={() => selectRoleFilter(item.roleId === jobFilterRole ? 'all' : item.roleId)}
+                    className={`rounded-xl border p-3 text-left transition shadow-sm ${
+                      jobFilterRole === item.roleId
+                        ? 'border-violet-600 bg-white ring-2 ring-violet-500/30'
+                        : 'border-violet-100 bg-white hover:border-violet-300'
+                    }`}
+                  >
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 truncate" title={item.roleName}>
+                      {item.roleName}
+                    </p>
+                    <p className="text-xl font-bold text-slate-900 tabular-nums mt-0.5">{item.count}</p>
+                  </button>
+                ))}
+            </div>
+          </section>
+        )}
+
         {/* Auto Refresh Status */}
         <section className="rounded-2xl border border-emerald-200 bg-emerald-50/40 p-5 shadow-sm space-y-3">
           <h3 className="font-semibold text-emerald-900">Auto Refresh Status</h3>
           <p className="text-sm text-emerald-800">
-            Railway cron every 8h runs <strong>internship_india</strong>, <strong>fresher_india</strong>, and{' '}
-            <strong>entry_level_india</strong> only. Location locked to India. 1+ experience is manual-only.
+            Railway cron every 8h runs auto-enabled scrape profiles for India. Location locked to India.
+            1+ experience remains manual-only.
           </p>
           <p className="text-xs text-emerald-700">
             Auto refresh derives range from the last successful auto run plus a 12h overlap buffer.
           </p>
           <div className="flex flex-wrap gap-2 text-sm">
-            <Badge className="bg-emerald-100 text-emerald-800">internship_india · auto</Badge>
-            <Badge className="bg-emerald-100 text-emerald-800">fresher_india · auto</Badge>
-            <Badge className="bg-emerald-100 text-emerald-800">entry_level_india · auto</Badge>
+            {(stats?.profileBreakdown ?? [])
+              .filter((p) => p.autoEnabled)
+              .map((p) => (
+                <Badge key={p.profile} className="bg-emerald-100 text-emerald-800">
+                  {p.label} · auto
+                </Badge>
+              ))}
             <Badge variant="outline" className="border-slate-300">experienced_manual_india · manual only</Badge>
           </div>
           <p className="text-xs text-slate-600">
@@ -382,19 +465,37 @@ export function JobSpyOpsView() {
             </p>
           </div>
 
-          <div className="space-y-1.5 max-w-xs">
-            <Label htmlFor="manual-date-range">Date range</Label>
-            <select
-              id="manual-date-range"
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus-visible:border-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25"
-              value={dateRangeDays}
-              onChange={(e) => setDateRangeDays(Number(e.target.value))}
-              disabled={!!refreshing}
-            >
-              {MANUAL_RANGE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+          <div className="grid gap-4 sm:grid-cols-2 max-w-3xl">
+            <div className="space-y-1.5">
+              <Label htmlFor="refresh-profile">Target scrape family</Label>
+              <select
+                id="refresh-profile"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus-visible:border-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25"
+                value={refreshProfile}
+                onChange={(e) => setRefreshProfile(e.target.value)}
+                disabled={!!refreshing}
+              >
+                {(profileOptions).map((p) => (
+                  <option key={p.profile} value={p.profile}>
+                    {p.label} ({p.count} active)
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="manual-date-range">Date range</Label>
+              <select
+                id="manual-date-range"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus-visible:border-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25"
+                value={dateRangeDays}
+                onChange={(e) => setDateRangeDays(Number(e.target.value))}
+                disabled={!!refreshing}
+              >
+                {MANUAL_RANGE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -417,17 +518,9 @@ export function JobSpyOpsView() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button className="bg-blue-600 hover:bg-blue-700" disabled={!!refreshing} onClick={() => void runInternFresher()}>
-              {refreshing === 'intern_fresher' && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-              Refresh Intern &amp; Fresher
-            </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700" disabled={!!refreshing} onClick={() => void runRefresh('entry_level_india', 'Entry level')}>
-              {refreshing === 'entry_level_india' && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-              Refresh Entry-Level
-            </Button>
-            <Button variant="outline" disabled={!!refreshing} onClick={() => void runRefresh('experienced_manual_india', '1+ experience')}>
-              {refreshing === 'experienced_manual_india' && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-              Refresh 1+ Experience (manual)
+            <Button className="bg-blue-600 hover:bg-blue-700" disabled={!!refreshing} onClick={() => void runRefresh()}>
+              {refreshing && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Run refresh
             </Button>
             <Button variant="outline" disabled={cleanupLoading} onClick={() => void runCleanup()}>
               {cleanupLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
@@ -462,14 +555,55 @@ export function JobSpyOpsView() {
         )}
 
         {/* Latest Jobs */}
-        {stats && stats.latestJobs.length > 0 && (
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm overflow-x-auto">
-            <h3 className="font-semibold text-slate-900 mb-3">Latest Jobs</h3>
+        {stats && (
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm overflow-x-auto space-y-4">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <h3 className="font-semibold text-slate-900">Latest Jobs</h3>
+              <div className="flex flex-wrap gap-3">
+                <div className="space-y-1">
+                  <Label htmlFor="filter-profile" className="text-xs">Scrape family</Label>
+                  <select
+                    id="filter-profile"
+                    className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm min-w-[180px]"
+                    value={jobFilterProfile}
+                    onChange={(e) => {
+                      setJobFilterProfile(e.target.value)
+                      setJobFilterRole('all')
+                    }}
+                  >
+                    <option value="all">All scrape families</option>
+                    {stats.profileBreakdown.map((p) => (
+                      <option key={p.profile} value={p.profile}>{p.label} ({p.count})</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="filter-role" className="text-xs">Enriched role</Label>
+                  <select
+                    id="filter-role"
+                    className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm min-w-[180px]"
+                    value={jobFilterRole}
+                    onChange={(e) => {
+                      setJobFilterRole(e.target.value)
+                      setJobFilterProfile('all')
+                    }}
+                  >
+                    <option value="all">All enriched roles</option>
+                    {stats.enrichmentRoleSummary.map((r) => (
+                      <option key={r.roleId} value={r.roleId}>{r.roleName} ({r.count})</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+            {stats.latestJobs.length > 0 ? (
             <table className="w-full text-sm text-left">
               <thead>
                 <tr className="border-b text-slate-500">
                   <th className="py-2 pr-3">Title</th>
                   <th className="py-2 pr-3">Company</th>
+                  <th className="py-2 pr-3">Scrape family</th>
+                  <th className="py-2 pr-3">Enriched role</th>
                   <th className="py-2 pr-3">Source</th>
                   <th className="py-2 pr-3">Loaded</th>
                   <th className="py-2">Apply</th>
@@ -480,6 +614,12 @@ export function JobSpyOpsView() {
                   <tr key={j.id} className="border-b border-slate-100">
                     <td className="py-2 pr-3 font-medium max-w-[200px] truncate">{j.title}</td>
                     <td className="py-2 pr-3 text-slate-600">{j.company ?? '—'}</td>
+                    <td className="py-2 pr-3 text-slate-600 whitespace-nowrap">
+                      {profileKeyLabel(j.ingestProfile, stats.profileBreakdown)}
+                    </td>
+                    <td className="py-2 pr-3 text-slate-600 max-w-[140px] truncate" title={j.actualRoleName ?? undefined}>
+                      {j.actualRoleName ?? '—'}
+                    </td>
                     <td className="py-2 pr-3"><Badge variant="outline">{sourceLabel(j.source)}</Badge></td>
                     <td className="py-2 pr-3 text-slate-500 whitespace-nowrap">{formatTs(j.createdAt)}</td>
                     <td className="py-2">
@@ -491,6 +631,9 @@ export function JobSpyOpsView() {
                 ))}
               </tbody>
             </table>
+            ) : (
+              <p className="text-sm text-slate-500">No jobs match this filter.</p>
+            )}
           </section>
         )}
 
