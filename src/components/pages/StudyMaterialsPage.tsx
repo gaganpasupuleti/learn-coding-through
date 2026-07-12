@@ -1,6 +1,6 @@
-import { BookOpen, ChevronLeft, ChevronRight, List } from 'lucide-react'
+import { BookOpen, ChevronLeft, ChevronRight, List, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { marked } from 'marked'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   CQActionButton,
@@ -9,6 +9,7 @@ import {
   CQSectionTitle,
   CQStatCard,
 } from '@/components/student-dashboard/cq/CQKit'
+import { useStudentNavCollapsed } from '@/hooks/useStudentNavCollapsed'
 import { JOB_ROLE_CATALOG, roleName } from '@/data/jobRoleCatalog'
 import {
   BOOK_REPORTS_CATALOG,
@@ -52,6 +53,15 @@ function prepareReadingMarkdown(body: string): string {
     .replace(/^\*\*Chapter focus:.*?\*\*[^\n]*\n\n?/i, '')
     .replace(/^Code Reference:\n/m, '### Code reference\n\n')
     .replace(/^What it shows: /m, '> **What it shows:** ')
+}
+
+function splitChapterIntoPages(body: string): string[] {
+  const prepared = prepareReadingMarkdown(body)
+  const parts = prepared
+    .split(/\n(?=### )/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+  return parts.length > 0 ? parts : [prepared || '']
 }
 
 function displayTitle(title: string): string {
@@ -400,7 +410,7 @@ function Badge({
 }
 
 const READER_PROSE =
-  'prose prose-lg max-w-none text-[#2D3748] prose-p:my-5 prose-p:text-[17px] prose-p:leading-[1.85] prose-headings:font-serif prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-[#0A1020] prose-h3:mt-10 prose-h3:mb-3 prose-h3:border-b prose-h3:border-[#0A1020]/10 prose-h3:pb-2 prose-h3:text-xl prose-strong:font-semibold prose-strong:text-[#0A1020] prose-a:text-[#2563EB] prose-a:no-underline hover:prose-a:underline prose-code:rounded-md prose-code:bg-[#0A1020]/8 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-mono prose-code:text-[0.88em] prose-code:text-[#0A1020] prose-code:before:content-none prose-code:after:content-none prose-pre:my-6 prose-pre:overflow-x-auto prose-pre:rounded-xl prose-pre:border prose-pre:border-[#0A1020]/15 prose-pre:bg-[#0A1020] prose-pre:px-5 prose-pre:py-4 prose-pre:font-mono prose-pre:text-[14px] prose-pre:leading-relaxed prose-pre:text-[#E8E0D4] prose-pre:shadow-[0_12px_40px_-20px_rgba(10,16,32,0.65)] prose-blockquote:my-6 prose-blockquote:border-l-4 prose-blockquote:border-[#2563EB] prose-blockquote:bg-[#FFF9EA] prose-blockquote:py-2 prose-blockquote:not-italic prose-blockquote:text-[#374151] prose-li:my-1 prose-li:marker:text-[#2563EB]'
+  'prose prose-lg max-w-none text-[#2D3748] prose-p:my-4 prose-p:text-[17px] prose-p:leading-[1.85] prose-headings:font-serif prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-[#0A1020] prose-h3:mt-8 prose-h3:mb-3 prose-h3:border-b prose-h3:border-[#0A1020]/10 prose-h3:pb-2 prose-h3:text-xl prose-strong:font-semibold prose-strong:text-[#0A1020] prose-a:text-[#2563EB] prose-a:no-underline hover:prose-a:underline prose-code:rounded-md prose-code:bg-[#0A1020]/8 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-mono prose-code:text-[0.88em] prose-code:text-[#0A1020] prose-code:before:content-none prose-code:after:content-none prose-pre:my-5 prose-pre:overflow-x-auto prose-pre:rounded-xl prose-pre:border prose-pre:border-[#0A1020]/15 prose-pre:bg-[#0A1020] prose-pre:px-5 prose-pre:py-4 prose-pre:font-mono prose-pre:text-[14px] prose-pre:leading-relaxed prose-pre:text-[#E8E0D4] prose-pre:shadow-[0_12px_40px_-20px_rgba(10,16,32,0.65)] prose-blockquote:my-5 prose-blockquote:border-l-4 prose-blockquote:border-[#2563EB]/70 prose-blockquote:bg-transparent prose-blockquote:py-0 prose-blockquote:pl-4 prose-blockquote:not-italic prose-blockquote:text-[#374151] prose-li:my-1 prose-li:marker:text-[#2563EB]'
 
 function StudyReportReader({
   report,
@@ -418,9 +428,25 @@ function StudyReportReader({
   onProgress: (reportId: string, percent: number) => void
 }) {
   const [tocOpen, setTocOpen] = useState(false)
+  const [tocCollapsed, setTocCollapsed] = useState(false)
+  const [pageIndex, setPageIndex] = useState(0)
+  const pendingPageRef = useRef<number | null>(null)
+  const { collapsed: navCollapsed, toggleCollapsed: toggleNav } = useStudentNavCollapsed()
+
   const chapter =
     report.chapters.find((c) => c.number === chapterNumber) ?? report.chapters[0] ?? null
-  const html = chapter ? renderMarkdown(chapter.content) : ''
+  const contentPages = useMemo(
+    () => (chapter ? splitChapterIntoPages(chapter.content) : []),
+    [chapter],
+  )
+  const hasTakeaways = Boolean(chapter?.key_takeaways.length)
+  const totalPages = contentPages.length + (hasTakeaways ? 1 : 0)
+  const isTakeawaysPage = hasTakeaways && pageIndex === contentPages.length
+  const pageHtml =
+    !isTakeawaysPage && contentPages[pageIndex]
+      ? renderMarkdown(contentPages[pageIndex])
+      : ''
+
   const catalogEntry = getCatalogReports().find((r) => r.id === report.id)
   const coverUrl = catalogEntry ? getCoverUrl(catalogEntry.path) : undefined
   const total = report.chapters.length
@@ -428,54 +454,97 @@ function StudyReportReader({
 
   useEffect(() => {
     setTocOpen(false)
+    if (pendingPageRef.current != null) {
+      setPageIndex(pendingPageRef.current)
+      pendingPageRef.current = null
+    } else {
+      setPageIndex(0)
+    }
   }, [chapterNumber])
 
   useEffect(() => {
-    const onScroll = () => {
-      const el = document.documentElement
-      const scrollHeight = el.scrollHeight - el.clientHeight
-      const pct = scrollHeight > 0 ? el.scrollTop / scrollHeight : 1
-      const chapterShare = total > 0 ? 100 / total : 100
-      const base = ((chapterNumber - 1) / total) * 100
-      onProgress(report.id, Math.min(100, Math.max(progressPercent, base + pct * chapterShare)))
+    const chapterShare = total > 0 ? 100 / total : 100
+    const pageShare = totalPages > 0 ? chapterShare / totalPages : chapterShare
+    const base = ((chapterNumber - 1) / total) * 100
+    onProgress(report.id, Math.min(100, base + (pageIndex + 1) * pageShare))
+  }, [chapterNumber, onProgress, pageIndex, report.id, total, totalPages])
+
+  const goNextPage = useCallback(() => {
+    if (pageIndex < totalPages - 1) {
+      setPageIndex((p) => p + 1)
+      return
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [chapterNumber, onProgress, progressPercent, report.id, total])
+    if (chapterNumber < total) onChapterChange(chapterNumber + 1)
+    else onProgress(report.id, 100)
+  }, [chapterNumber, onChapterChange, onProgress, pageIndex, report.id, total, totalPages])
+
+  const goPrevPage = useCallback(() => {
+    if (pageIndex > 0) {
+      setPageIndex((p) => p - 1)
+      return
+    }
+    if (chapterNumber > 1) {
+      const prevChapter = report.chapters.find((ch) => ch.number === chapterNumber - 1)
+      if (prevChapter) {
+        const prevContentPages = splitChapterIntoPages(prevChapter.content)
+        const prevTotal = prevContentPages.length + (prevChapter.key_takeaways.length ? 1 : 0)
+        pendingPageRef.current = Math.max(0, prevTotal - 1)
+        onChapterChange(chapterNumber - 1)
+      }
+    }
+  }, [chapterNumber, onChapterChange, pageIndex, report.chapters])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowRight') goNextPage()
+      if (event.key === 'ArrowLeft') goPrevPage()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [goNextPage, goPrevPage])
+
+  const showToc = !tocCollapsed || tocOpen
 
   return (
-    <div className="min-h-full bg-[#F2EBD6] text-[#111827]">
-      <header className="sticky top-0 z-30 border-b border-[#0A1020]/10 bg-[#FFFDF6]/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:px-6">
+    <div className="flex min-h-[calc(100dvh-3rem)] flex-col bg-[#E8DFC8] lg:min-h-dvh">
+      <header className="sticky top-0 z-30 shrink-0 border-b border-[#0A1020]/10 bg-[#FFFDF6]/95 backdrop-blur-md">
+        <div className="flex items-center gap-2 px-3 py-2.5 md:px-4">
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-[#2563EB] hover:text-[#1D4ED8]"
+            className="inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium text-[#2563EB] hover:bg-[#0A1020]/5 hover:text-[#1D4ED8]"
           >
             <ChevronLeft className="h-4 w-4" aria-hidden />
             <span className="hidden sm:inline">Library</span>
           </button>
 
           <div className="min-w-0 flex-1 text-center">
-            <p className="truncate font-serif text-sm font-semibold text-[#0A1020] md:text-base">{title}</p>
-            <p className="text-xs text-[#708090]">
-              Chapter {chapterNumber} of {total}
-              {chapter?.title ? ` · ${chapter.title}` : ''}
+            <p className="truncate font-serif text-sm font-semibold text-[#0A1020]">{title}</p>
+            <p className="text-[11px] text-[#708090]">
+              Ch. {chapterNumber}/{total} · Page {pageIndex + 1}/{totalPages || 1}
             </p>
           </div>
 
           <button
             type="button"
-            onClick={() => setTocOpen((open) => !open)}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#0A1020]/12 bg-white px-3 py-1.5 text-xs font-semibold text-[#0A1020] lg:hidden"
-            aria-expanded={tocOpen}
+            onClick={toggleNav}
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#0A1020]/12 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-[#0A1020] hover:bg-[#FAF3E0]"
+            title={navCollapsed ? 'Show app menu' : 'Hide app menu'}
+          >
+            {navCollapsed ? <PanelLeftOpen className="h-3.5 w-3.5" /> : <PanelLeftClose className="h-3.5 w-3.5" />}
+            <span className="hidden md:inline">{navCollapsed ? 'Menu' : 'Focus'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => (window.innerWidth >= 1024 ? setTocCollapsed((v) => !v) : setTocOpen((v) => !v))}
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#0A1020]/12 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-[#0A1020] hover:bg-[#FAF3E0]"
+            aria-expanded={showToc}
             aria-controls="study-reader-toc"
           >
             <List className="h-3.5 w-3.5" aria-hidden />
-            Contents
+            <span className="hidden md:inline">Contents</span>
           </button>
-
-          <div className="hidden w-[72px] shrink-0 lg:block" aria-hidden />
         </div>
         <div className="h-0.5 bg-[#0A1020]/8">
           <div
@@ -485,169 +554,177 @@ function StudyReportReader({
         </div>
       </header>
 
-      <div className="mx-auto flex max-w-7xl">
-        <aside
-          id="study-reader-toc"
-          className={cn(
-            'w-full shrink-0 border-[#0A1020]/10 bg-[#FFFDF6] lg:block lg:w-72 lg:border-r',
-            tocOpen ? 'block border-b' : 'hidden',
-          )}
-        >
-          <div className="sticky top-[73px] max-h-[calc(100vh-73px)] overflow-y-auto p-4 md:p-5">
-            <div className="mb-5 flex gap-3 border-b border-[#0A1020]/8 pb-4">
-              {coverUrl ? (
-                <img
-                  src={coverUrl}
-                  alt=""
-                  className="h-24 w-[4.5rem] shrink-0 rounded-md object-cover shadow-md ring-1 ring-[#0A1020]/10"
-                />
-              ) : null}
-              <div className="min-w-0">
-                {report.report_type ? (
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[#2563EB]">
-                    {REPORT_TYPE_LABELS[report.report_type]}
-                  </p>
+      <div className="flex min-h-0 flex-1">
+        {showToc ? (
+          <aside
+            id="study-reader-toc"
+            className={cn(
+              'shrink-0 border-[#0A1020]/10 bg-[#FFFDF6]',
+              tocOpen
+                ? 'absolute inset-x-0 top-14 z-20 max-h-96 overflow-y-auto border-b shadow-lg lg:static lg:max-h-none lg:w-64 lg:border-r lg:shadow-none xl:w-72'
+                : '',
+            )}
+          >
+            <div className="p-4 md:p-5">
+              <div className="mb-4 flex gap-3 border-b border-[#0A1020]/8 pb-4">
+                {coverUrl ? (
+                  <img
+                    src={coverUrl}
+                    alt=""
+                    className="h-20 w-14 shrink-0 rounded-md object-cover shadow-md ring-1 ring-[#0A1020]/10"
+                  />
                 ) : null}
-                <p className="font-serif text-sm font-semibold leading-snug text-[#0A1020]">{title}</p>
-                <p className="mt-1 text-xs text-[#708090]">{report.author ?? 'Gagan Pasupuleti'}</p>
+                <div className="min-w-0">
+                  <p className="font-serif text-sm font-semibold leading-snug text-[#0A1020]">{title}</p>
+                  <p className="mt-1 text-xs text-[#708090]">{report.author ?? 'Gagan Pasupuleti'}</p>
+                </div>
               </div>
-            </div>
-
-            <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-[#708090]">
-              Table of contents
-            </p>
-            <nav className="space-y-0.5" aria-label="Chapters">
-              {report.chapters.map((ch) => {
-                const active = ch.number === (chapter?.number ?? 0)
-                return (
-                  <button
-                    key={ch.number}
-                    type="button"
-                    onClick={() => onChapterChange(ch.number)}
-                    className={cn(
-                      'group flex w-full gap-2 rounded-lg px-2 py-2.5 text-left transition-colors',
-                      active
-                        ? 'bg-[#0A1020]/6'
-                        : 'hover:bg-[#0A1020]/4',
-                    )}
-                  >
-                    <span
+              <nav className="space-y-0.5" aria-label="Chapters">
+                {report.chapters.map((ch) => {
+                  const active = ch.number === (chapter?.number ?? 0)
+                  return (
+                    <button
+                      key={ch.number}
+                      type="button"
+                      onClick={() => onChapterChange(ch.number)}
                       className={cn(
-                        'mt-0.5 w-1 shrink-0 rounded-full transition-colors',
-                        active ? 'bg-[#2563EB]' : 'bg-transparent group-hover:bg-[#0A1020]/15',
+                        'group flex w-full gap-2 rounded-lg px-2 py-2 text-left transition-colors',
+                        active ? 'bg-[#0A1020]/6' : 'hover:bg-[#0A1020]/4',
                       )}
-                      aria-hidden
-                    />
-                    <span className="min-w-0">
+                    >
                       <span
                         className={cn(
-                          'block text-[10px] font-semibold uppercase tracking-wider',
-                          active ? 'text-[#2563EB]' : 'text-[#708090]',
+                          'mt-1 w-1 shrink-0 rounded-full',
+                          active ? 'bg-[#2563EB]' : 'bg-transparent group-hover:bg-[#0A1020]/15',
                         )}
-                      >
-                        Chapter {ch.number}
+                        aria-hidden
+                      />
+                      <span className="min-w-0">
+                        <span className={cn('block text-[10px] font-semibold uppercase tracking-wider', active ? 'text-[#2563EB]' : 'text-[#708090]')}>
+                          Chapter {ch.number}
+                        </span>
+                        <span className={cn('block text-sm leading-snug', active ? 'font-semibold text-[#0A1020]' : 'text-[#374151]')}>
+                          {ch.title}
+                        </span>
                       </span>
-                      <span
-                        className={cn(
-                          'block text-sm leading-snug',
-                          active ? 'font-semibold text-[#0A1020]' : 'text-[#374151]',
-                        )}
-                      >
-                        {ch.title}
-                      </span>
-                    </span>
-                  </button>
-                )
-              })}
-            </nav>
-          </div>
-        </aside>
+                    </button>
+                  )
+                })}
+              </nav>
+            </div>
+          </aside>
+        ) : null}
 
-        <main className="min-w-0 flex-1">
-          <article className="px-4 py-8 md:px-10 md:py-12 lg:px-14">
-            <div className="mx-auto max-w-[42rem]">
+        <main className="flex min-w-0 flex-1 flex-col p-3 md:p-5 lg:p-6">
+          <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
+            <article className="flex flex-1 flex-col rounded-2xl bg-[#FFFDF6] px-6 py-8 shadow-[0_20px_60px_-30px_rgba(10,16,32,0.45)] ring-1 ring-[#0A1020]/10 md:px-10 md:py-10">
               {chapter ? (
-                <ChapterBody chapter={chapter} html={html} />
+                <ChapterPage
+                  chapter={chapter}
+                  html={pageHtml}
+                  pageIndex={pageIndex}
+                  totalPages={totalPages}
+                  isTakeawaysPage={isTakeawaysPage}
+                />
               ) : (
                 <p className="text-sm text-[#4B5563]">No chapters in this report.</p>
               )}
+            </article>
 
-              <nav
-                className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#0A1020]/10 pt-8"
-                aria-label="Chapter navigation"
+            <nav
+              className="mt-4 flex shrink-0 flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#0A1020]/10 bg-[#FFFDF6]/90 px-4 py-3 backdrop-blur-sm"
+              aria-label="Page navigation"
+            >
+              <CQActionButton
+                variant="ghost"
+                disabled={pageIndex <= 0 && chapterNumber <= 1}
+                onClick={goPrevPage}
+                className="gap-1"
               >
-                <CQActionButton
-                  variant="ghost"
-                  disabled={chapterNumber <= 1}
-                  onClick={() => onChapterChange(chapterNumber - 1)}
-                  className="gap-1"
-                >
-                  <ChevronLeft className="h-4 w-4" aria-hidden />
-                  Previous chapter
+                <ChevronLeft className="h-4 w-4" aria-hidden />
+                Previous
+              </CQActionButton>
+
+              <div className="text-center text-sm text-[#708090]">
+                <p className="font-medium text-[#0A1020]">
+                  Page {pageIndex + 1} of {totalPages || 1}
+                </p>
+                <p className="text-xs">Chapter {chapterNumber} of {total}</p>
+              </div>
+
+              {pageIndex < totalPages - 1 || chapterNumber < total ? (
+                <CQActionButton variant="primary" onClick={goNextPage} className="gap-1">
+                  Next
+                  <ChevronRight className="h-4 w-4" aria-hidden />
                 </CQActionButton>
-                <span className="text-sm tabular-nums text-[#708090]">
-                  {chapterNumber} / {total}
-                </span>
-                {chapterNumber < total ? (
-                  <CQActionButton
-                    variant="primary"
-                    onClick={() => onChapterChange(chapterNumber + 1)}
-                    className="gap-1"
-                  >
-                    Next chapter
-                    <ChevronRight className="h-4 w-4" aria-hidden />
-                  </CQActionButton>
-                ) : (
-                  <CQActionButton variant="navy" onClick={() => onProgress(report.id, 100)}>
-                    Finish reading
-                  </CQActionButton>
-                )}
-              </nav>
-            </div>
-          </article>
+              ) : (
+                <CQActionButton variant="navy" onClick={() => onProgress(report.id, 100)}>
+                  Finish
+                </CQActionButton>
+              )}
+            </nav>
+          </div>
         </main>
       </div>
     </div>
   )
 }
 
-function ChapterBody({ chapter, html }: { chapter: BookReportChapter; html: string }) {
+function ChapterPage({
+  chapter,
+  html,
+  pageIndex,
+  totalPages,
+  isTakeawaysPage,
+}: {
+  chapter: BookReportChapter
+  html: string
+  pageIndex: number
+  totalPages: number
+  isTakeawaysPage: boolean
+}) {
+  if (isTakeawaysPage) {
+    return (
+      <div className="flex flex-1 flex-col">
+        <header className="mb-6 border-b border-[#0A1020]/10 pb-6 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#708090]">
+            Chapter {chapter.number} · Summary
+          </p>
+          <h1 className="mt-2 font-serif text-2xl font-bold text-[#0A1020] md:text-3xl">Before you move on</h1>
+        </header>
+        <ul className="space-y-5">
+          {chapter.key_takeaways.map((t, i) => (
+            <li key={t} className="flex gap-3 text-[17px] leading-relaxed text-[#374151]">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0A1020] font-serif text-sm font-semibold text-[#FAF3E0]">
+                {i + 1}
+              </span>
+              <span className="pt-1">{t}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-8">
-      <header className="border-b border-[#0A1020]/10 pb-8 text-center">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#708090]">
-          Chapter {chapter.number}
-          {chapter.level ? ` · ${chapter.level}` : ''}
+    <div className="flex flex-1 flex-col">
+      {pageIndex === 0 ? (
+        <header className="mb-8 border-b border-[#0A1020]/10 pb-6 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#708090]">
+            Chapter {chapter.number}
+            {chapter.level ? ` · ${chapter.level}` : ''}
+          </p>
+          <h1 className="mt-3 font-serif text-3xl font-bold leading-tight tracking-tight text-[#0A1020] md:text-4xl">
+            {chapter.title}
+          </h1>
+        </header>
+      ) : (
+        <p className="mb-6 text-center text-xs font-medium uppercase tracking-wider text-[#708090]">
+          {chapter.title} · page {pageIndex + 1} of {totalPages}
         </p>
-        <h1 className="mt-3 font-serif text-3xl font-bold leading-tight tracking-tight text-[#0A1020] md:text-4xl">
-          {chapter.title}
-        </h1>
-        {chapter.topic && chapter.topic !== 'intro' ? (
-          <p className="mt-3 text-sm italic text-[#708090]">{chapter.topic.replace(/-/g, ' ')}</p>
-        ) : null}
-      </header>
+      )}
 
-      <div
-        className={READER_PROSE}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-
-      {chapter.key_takeaways.length > 0 ? (
-        <section className="rounded-2xl border border-[#0A1020]/10 bg-[#FFFDF6] p-6 shadow-[0_8px_30px_-20px_rgba(10,16,32,0.35)]">
-          <h2 className="font-serif text-xl font-semibold text-[#0A1020]">Before you move on</h2>
-          <p className="mt-1 text-sm text-[#708090]">Three ideas worth keeping from this chapter.</p>
-          <ul className="mt-5 space-y-4">
-            {chapter.key_takeaways.map((t, i) => (
-              <li key={t} className="flex gap-3 text-[16px] leading-relaxed text-[#374151]">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#0A1020] font-serif text-sm font-semibold text-[#FAF3E0]">
-                  {i + 1}
-                </span>
-                <span className="pt-0.5">{t}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+      <div className={READER_PROSE} dangerouslySetInnerHTML={{ __html: html }} />
     </div>
   )
 }
