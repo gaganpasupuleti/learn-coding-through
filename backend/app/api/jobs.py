@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, File, Header, HTTPException, Query, UploadFile
 from fastapi.responses import StreamingResponse
-from sqlalchemy import func, or_
+from sqlalchemy import ColumnElement, and_, func, not_, or_
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_jobs_admin
@@ -98,26 +98,74 @@ from app.services.job_store import (
 router = APIRouter(tags=["Jobs"])
 admin_router = APIRouter(prefix="/admin/jobs", tags=["Admin Jobs"])
 
-# Student-friendly experience filters mapped to title/description keywords.
-# Inferred from job text since scraped listings have no structured experience field.
-EXPERIENCE_KEYWORDS: dict[str, list[str]] = {
-    "internship": ["intern"],
-    "fresher": [
-        "fresher",
-        "entry level",
-        "entry-level",
-        "graduate",
-        "trainee",
-        "junior",
-        "0-1 year",
-        "0 - 1 year",
-        "0 to 1",
-    ],
-    "1plus": ["1 year", "1+ year", "1 - 2 year", "1-2 year", "1 to 2", "minimum 1 year", "1 yr"],
-    "2plus": ["2 year", "2+ year", "2 - 3 year", "2-3 year", "2 to 3", "2 yr"],
-    "3plus": ["3 year", "3+ year", "3 - 5 year", "3-5 year", "3 to 5", "3 yr"],
-    "5plus": ["5 year", "5+ year", "senior", "lead", "principal", "architect", "5 yr"],
+# Experience filter → ingest profiles (preferred signal when present).
+EXPERIENCE_PROFILES: dict[str, tuple[str, ...]] = {
+    "internship": ("internship_india",),
+    "fresher": ("fresher_india", "entry_level_india"),
+    "1plus": ("experienced_manual_india",),
+    "2plus": ("experienced_manual_india",),
+    "3plus": ("experienced_manual_india",),
+    "5plus": ("experienced_manual_india",),
 }
+
+# Title/job_type whole-word patterns. Do NOT search description for short tokens —
+# ilike('%intern%') falsely matches "internal" / "international" in senior JD text.
+EXPERIENCE_TITLE_PATTERNS: dict[str, tuple[str, ...]] = {
+    "internship": (r"(^|[^a-z0-9])intern(ship|s)?([^a-z0-9]|$)",),
+    "fresher": (
+        r"(^|[^a-z0-9])fresher(s)?([^a-z0-9]|$)",
+        r"(^|[^a-z0-9])graduate(s)?([^a-z0-9]|$)",
+        r"(^|[^a-z0-9])trainee(s)?([^a-z0-9]|$)",
+        r"(^|[^a-z0-9])junior([^a-z0-9]|$)",
+        r"entry[\s\-]?level",
+        r"0\s*[-–to]+\s*1\s*(year|yr)",
+    ),
+    "1plus": (r"(^|[^a-z0-9])1\s*(\+|plus|\-\s*2)\s*(year|yr)", r"minimum\s*1\s*(year|yr)"),
+    "2plus": (r"(^|[^a-z0-9])2\s*(\+|plus|\-\s*3)\s*(year|yr)",),
+    "3plus": (r"(^|[^a-z0-9])3\s*(\+|plus|\-\s*[45])\s*(year|yr)",),
+    "5plus": (
+        r"(^|[^a-z0-9])5\s*(\+|plus|\-\s*\d+)\s*(year|yr)",
+        r"(^|[^a-z0-9])(senior|lead|principal|architect)([^a-z0-9]|$)",
+    ),
+}
+
+# job_type values like "5-6 Yrs" mean mid/senior — exclude from intern/fresher filters.
+_EXPERIENCED_JOB_TYPE_RE = r"(^|[^a-z0-9])([2-9]|[1-9]\d+)\s*(\+|[-–]\s*\d+)?\s*(year|yr|yrs)\b"
+
+
+def _column_regex_any(column: ColumnElement, patterns: tuple[str, ...]) -> ColumnElement:
+    return or_(*[column.op("~*")(pattern) for pattern in patterns])
+
+
+def _experience_filter_clause(experience: str) -> ColumnElement | None:
+    """Build a SQLAlchemy filter for the student experience dropdown.
+
+    Prefers ingest_profile, then whole-word matches on title/job_type only.
+    """
+    key = experience.strip().lower()
+    profiles = EXPERIENCE_PROFILES.get(key)
+    patterns = EXPERIENCE_TITLE_PATTERNS.get(key)
+    if not profiles and not patterns:
+        return None
+
+    title_lower = func.lower(func.coalesce(ScrapedJob.title, ""))
+    type_lower = func.lower(func.coalesce(ScrapedJob.job_type, ""))
+
+    clauses: list[ColumnElement] = []
+    if profiles:
+        clauses.append(ScrapedJob.ingest_profile.in_(profiles))
+    if patterns:
+        clauses.append(_column_regex_any(title_lower, patterns))
+        clauses.append(_column_regex_any(type_lower, patterns))
+
+    matched = or_(*clauses)
+    # Intern/fresher must not include postings whose job_type is clearly mid/senior years,
+    # unless the title itself is an intern/fresher role.
+    if key in {"internship", "fresher"} and patterns:
+        title_is_tier = _column_regex_any(title_lower, patterns)
+        experienced_type = type_lower.op("~*")(_EXPERIENCED_JOB_TYPE_RE)
+        return and_(matched, or_(title_is_tier, not_(experienced_type)))
+    return matched
 
 
 def _to_normalized(row: ScrapedJob) -> NormalizedJob:
@@ -215,14 +263,9 @@ def list_jobs(
     if profile:
         query = query.filter(ScrapedJob.ingest_profile == profile.strip())
     if experience:
-        keywords = EXPERIENCE_KEYWORDS.get(experience.strip().lower())
-        if keywords:
-            clauses = []
-            for kw in keywords:
-                like = f"%{kw}%"
-                clauses.append(ScrapedJob.title.ilike(like))
-                clauses.append(ScrapedJob.description.ilike(like))
-            query = query.filter(or_(*clauses))
+        clause = _experience_filter_clause(experience)
+        if clause is not None:
+            query = query.filter(clause)
 
     total = query.count()
     rows = (
@@ -530,7 +573,7 @@ def _count_active_jobs(db: Session) -> int:
 def _count_recent_by_category(db: Session, *, hours: int = 24) -> tuple[int, int]:
     """Count active internship and fresher jobs opened within the last `hours`.
 
-    Classification uses the ingest profile first, then title/job_type keyword fallbacks.
+    Uses the same experience filter as the student Jobs browse page.
     Returns (internships_count, freshers_count).
     """
     cutoff = datetime.utcnow() - timedelta(hours=hours)
@@ -539,28 +582,8 @@ def _count_recent_by_category(db: Session, *, hours: int = 24) -> tuple[int, int
         ScrapedJob.created_at >= cutoff,
     )
 
-    title_lower = func.lower(func.coalesce(ScrapedJob.title, ""))
-    type_lower = func.lower(func.coalesce(ScrapedJob.job_type, ""))
-
-    internships = base.filter(
-        or_(
-            ScrapedJob.ingest_profile == "internship_india",
-            title_lower.like("%intern%"),
-            type_lower.like("%intern%"),
-        )
-    ).count()
-
-    freshers = base.filter(
-        or_(
-            ScrapedJob.ingest_profile == "fresher_india",
-            title_lower.like("%fresher%"),
-            title_lower.like("%graduate%"),
-            title_lower.like("%entry level%"),
-            title_lower.like("%entry-level%"),
-            title_lower.like("%trainee%"),
-        )
-    ).count()
-
+    internships = base.filter(_experience_filter_clause("internship")).count()
+    freshers = base.filter(_experience_filter_clause("fresher")).count()
     return internships, freshers
 
 
