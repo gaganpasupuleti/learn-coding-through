@@ -83,6 +83,7 @@ from app.services.job_store import (
     get_latest_jobs,
     get_latest_loaded_at,
     get_location_breakdown,
+    get_enrichment_role_breakdown,
     get_profile_breakdown,
     get_recent_scrape_runs,
     get_source_breakdown,
@@ -240,7 +241,6 @@ def admin_job_stats(
         db.query(JobEnrichment).filter(JobEnrichment.job_id.in_(job_ids)).all() if job_ids else []
     )
     enrichment_by_job_id = {row.job_id: row for row in enrichments}
-    enrichment_summary = get_job_enrichment_summary(db)
 
     expired_samples = get_expired_jobs(db, limit=limit)
     last_auto = get_last_successful_auto_run(db)
@@ -268,8 +268,7 @@ def admin_job_stats(
         expiredJobSamples=[_to_latest_summary(row) for row in expired_samples],
         profileBreakdown=[ProfileBreakdownItem(**item) for item in get_profile_breakdown(db)],
         enrichmentRoleSummary=[
-            EnrichmentRoleCountItem(roleId=item.role_id, roleName=item.role_name, count=item.count)
-            for item in enrichment_summary.role_summary
+            EnrichmentRoleCountItem(**item) for item in get_enrichment_role_breakdown(db)
         ],
     )
 

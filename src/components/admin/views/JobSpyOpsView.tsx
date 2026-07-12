@@ -38,6 +38,8 @@ const FALLBACK_PROFILE_OPTIONS = [
 ]
 
 const DEFAULT_REFRESH_PROFILE = 'fresher_india'
+const RUN_ALL_REFRESH_KEY = '__all__'
+const ALL_SCRAPE_PROFILE_KEYS = FALLBACK_PROFILE_OPTIONS.map((p) => p.profile)
 const JOB_LIST_LIMIT = 20
 
 const MANUAL_RANGE_OPTIONS = [
@@ -171,6 +173,54 @@ export function JobSpyOpsView() {
       await loadStats()
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Refresh failed')
+    } finally {
+      setRefreshing(null)
+    }
+  }
+
+  const runAllRefresh = async () => {
+    const key = getJobSpyAdminKey()
+    if (!key) {
+      setShowKeyForm(true)
+      toast.error('Save admin key first')
+      return
+    }
+    if (sources.length === 0) {
+      toast.error('Select at least one source')
+      return
+    }
+    const profiles = ALL_SCRAPE_PROFILE_KEYS
+    setRefreshing(RUN_ALL_REFRESH_KEY)
+    let totalFound = 0
+    let totalSaved = 0
+    let failures = 0
+    try {
+      for (let i = 0; i < profiles.length; i += 1) {
+        const profileKey = profiles[i]
+        const label =
+          profileOptions.find((p) => p.profile === profileKey)?.label ??
+          stats?.profileBreakdown?.find((p) => p.profile === profileKey)?.label ??
+          profileKey
+        toast.info(`Scraping ${i + 1}/${profiles.length}: ${label}…`, { duration: 4000 })
+        try {
+          const res = await jobspyApi.refreshJobs(
+            { profile: profileKey, sources, runMode: 'manual', dateRangeDays },
+            key,
+          )
+          totalFound += res.totalFound
+          totalSaved += res.savedCount
+          setLastRefresh(res)
+        } catch (e) {
+          failures += 1
+          toast.error(`${label}: ${e instanceof Error ? e.message : 'Refresh failed'}`)
+        }
+      }
+      if (failures === 0) {
+        toast.success(`All families: ${totalSaved} saved (${totalFound} found across ${profiles.length} profiles)`)
+      } else {
+        toast.warning(`Finished with ${failures} failed profile(s). Saved ${totalSaved} (${totalFound} found).`)
+      }
+      await loadStats()
     } finally {
       setRefreshing(null)
     }
@@ -315,19 +365,21 @@ export function JobSpyOpsView() {
         </section>
 
         {/* Scrape family KPIs */}
-        {stats && (stats.profileBreakdown?.length ?? 0) > 0 && (
+        {stats && (
           <section className="rounded-2xl border border-blue-200 bg-blue-50/40 p-5 shadow-sm space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="font-semibold text-blue-950">Scrape families (active jobs)</h3>
-              <p className="text-xs text-blue-800">Click a card to filter the job list below</p>
+              <p className="text-xs text-blue-800">All ingest profiles — dimmed cards have 0 jobs until you scrape them</p>
             </div>
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-              {stats.profileBreakdown.map((item) => (
+              {(stats.profileBreakdown ?? []).map((item) => (
                 <button
                   key={item.profile}
                   type="button"
                   onClick={() => selectProfileFilter(item.profile === jobFilterProfile ? 'all' : item.profile)}
                   className={`rounded-xl border p-3 text-left transition shadow-sm ${
+                    item.count === 0 ? 'opacity-55' : ''
+                  } ${
                     jobFilterProfile === item.profile
                       ? 'border-blue-600 bg-white ring-2 ring-blue-500/30'
                       : 'border-blue-100 bg-white hover:border-blue-300'
@@ -347,22 +399,27 @@ export function JobSpyOpsView() {
         )}
 
         {/* Enriched role family KPIs */}
-        {stats && (stats.enrichmentRoleSummary?.length ?? 0) > 0 && (
+        {stats && (
           <section className="rounded-2xl border border-violet-200 bg-violet-50/40 p-5 shadow-sm space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="font-semibold text-violet-950">Enriched role families</h3>
-              <p className="text-xs text-violet-800">Click to filter jobs by classified role</p>
+              <p className="text-xs text-violet-800">
+                Full taxonomy — dimmed = no classified jobs yet (.NET / Node / Angular are Wave 2, not added yet)
+              </p>
             </div>
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-              {stats.enrichmentRoleSummary
+              {(stats.enrichmentRoleSummary ?? [])
                 .slice()
                 .sort((a, b) => b.count - a.count)
                 .map((item) => (
                   <button
                     key={item.roleId}
                     type="button"
+                    disabled={item.count === 0}
                     onClick={() => selectRoleFilter(item.roleId === jobFilterRole ? 'all' : item.roleId)}
                     className={`rounded-xl border p-3 text-left transition shadow-sm ${
+                      item.count === 0 ? 'opacity-50 cursor-default' : ''
+                    } ${
                       jobFilterRole === item.roleId
                         ? 'border-violet-600 bg-white ring-2 ring-violet-500/30'
                         : 'border-violet-100 bg-white hover:border-violet-300'
@@ -462,6 +519,7 @@ export function JobSpyOpsView() {
             </p>
             <p className="text-xs text-slate-500 mt-2">
               Manual refresh can go further back. Auto refresh uses the last successful run with overlap.
+              Use <strong>Run all families</strong> to scrape every ingest profile in one go (internship, fresher, entry, CRM/AI, 1+ exp).
             </p>
           </div>
 
@@ -519,10 +577,14 @@ export function JobSpyOpsView() {
 
           <div className="flex flex-wrap gap-2">
             <Button className="bg-blue-600 hover:bg-blue-700" disabled={!!refreshing} onClick={() => void runRefresh()}>
-              {refreshing && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {refreshing && refreshing !== RUN_ALL_REFRESH_KEY && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
               Run refresh
             </Button>
-            <Button variant="outline" disabled={cleanupLoading} onClick={() => void runCleanup()}>
+            <Button variant="secondary" disabled={!!refreshing} onClick={() => void runAllRefresh()}>
+              {refreshing === RUN_ALL_REFRESH_KEY && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Run all families
+            </Button>
+            <Button variant="outline" disabled={cleanupLoading || !!refreshing} onClick={() => void runCleanup()}>
               {cleanupLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
               Run link cleanup
             </Button>
@@ -589,7 +651,10 @@ export function JobSpyOpsView() {
                     }}
                   >
                     <option value="all">All enriched roles</option>
-                    {(stats.enrichmentRoleSummary ?? []).map((r) => (
+                    {(stats.enrichmentRoleSummary ?? [])
+                      .slice()
+                      .sort((a, b) => b.count - a.count || a.roleName.localeCompare(b.roleName))
+                      .map((r) => (
                       <option key={r.roleId} value={r.roleId}>{r.roleName} ({r.count})</option>
                     ))}
                   </select>

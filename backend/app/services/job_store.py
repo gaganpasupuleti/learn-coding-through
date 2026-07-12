@@ -231,6 +231,38 @@ def get_profile_breakdown(db: Session, *, active_only: bool = True) -> list[dict
     return sorted(items, key=lambda row: -row["count"])
 
 
+def get_enrichment_role_breakdown(db: Session) -> list[dict[str, Any]]:
+    """All active taxonomy roles with enrichment counts (includes zeros)."""
+    from app.models.models import JobEnrichment, JobRole
+
+    count_rows = (
+        db.query(JobEnrichment.actual_role_id, func.count())
+        .group_by(JobEnrichment.actual_role_id)
+        .all()
+    )
+    counts = {role_id: int(count) for role_id, count in count_rows if role_id}
+
+    roles = (
+        db.query(JobRole)
+        .filter(JobRole.active.is_(True))
+        .order_by(JobRole.role_name)
+        .all()
+    )
+    known_ids = {role.role_id for role in roles}
+    items: list[dict[str, Any]] = [
+        {
+            "roleId": role.role_id,
+            "roleName": role.role_name,
+            "count": counts.get(role.role_id, 0),
+        }
+        for role in roles
+    ]
+    for role_id, count in counts.items():
+        if role_id not in known_ids:
+            items.append({"roleId": role_id, "roleName": role_id, "count": count})
+    return sorted(items, key=lambda row: (-row["count"], row["roleName"]))
+
+
 def get_latest_jobs(
     db: Session,
     limit: int = 10,
