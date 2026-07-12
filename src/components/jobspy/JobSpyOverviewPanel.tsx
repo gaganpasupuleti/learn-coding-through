@@ -1,38 +1,53 @@
 import { Loader2 } from 'lucide-react'
 
 import { formatDateTimeISTShort } from '@/lib/formatDateTimeIST'
-import type { JobBoardOverview } from '@/lib/jobspy-api'
+import { jobSpySiteLabel, type JobBoardOverview } from '@/lib/jobspy-api'
 import { cn } from '@/lib/utils'
 
 function StatCard({
   label,
   value,
   accent,
+  onClick,
+  selected,
 }: {
   label: string
   value: string
   accent?: string
+  onClick?: () => void
+  selected?: boolean
 }) {
+  const Tag = onClick ? 'button' : 'div'
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{label}</p>
+    <Tag
+      type={onClick ? 'button' : undefined}
+      onClick={onClick}
+      className={cn(
+        'rounded-xl border border-slate-200 bg-white p-3 shadow-sm text-left w-full transition',
+        onClick && 'hover:border-blue-300 hover:shadow-md cursor-pointer',
+        selected && 'border-blue-600 ring-2 ring-blue-500/30',
+      )}
+    >
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 truncate" title={label}>
+        {label}
+      </p>
       <p className={cn('text-xl font-bold mt-0.5 tabular-nums', accent ?? 'text-slate-900')}>{value}</p>
-    </div>
+    </Tag>
   )
 }
 
 interface JobSpyOverviewPanelProps {
   overview: JobBoardOverview | null
   loading: boolean
-  selectedProfile: string
-  onSelectProfile: (profile: string) => void
+  selectedSource: string
+  onSelectSource: (source: string) => void
 }
 
 export function JobSpyOverviewPanel({
   overview,
   loading,
-  selectedProfile,
-  onSelectProfile,
+  selectedSource,
+  onSelectSource,
 }: JobSpyOverviewPanelProps) {
   if (loading && !overview) {
     return (
@@ -47,9 +62,8 @@ export function JobSpyOverviewPanel({
 
   if (!overview) return null
 
-  const topRoles = [...(overview.enrichmentRoleSummary ?? [])]
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 8)
+  const roleFamilies = [...(overview.enrichmentRoleSummary ?? [])].sort((a, b) => b.count - a.count)
+  const sources = [...(overview.sourceBreakdown ?? [])].sort((a, b) => b.count - a.count)
 
   return (
     <div className="space-y-4">
@@ -75,62 +89,41 @@ export function JobSpyOverviewPanel({
         </p>
       </section>
 
-      {(overview.profileBreakdown?.length ?? 0) > 0 && (
-        <section className="rounded-2xl border border-blue-200 bg-blue-50/40 p-5 shadow-sm space-y-3">
-          <div>
-            <h3 className="text-sm font-semibold text-blue-950">Jobs by category</h3>
-            <p className="text-xs text-blue-800 mt-0.5">Tap a category to filter browse results</p>
-          </div>
-          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-            {overview.profileBreakdown.map((item) => (
-              <button
-                key={item.profile}
-                type="button"
-                onClick={() => onSelectProfile(selectedProfile === item.profile ? '' : item.profile)}
-                className={cn(
-                  'rounded-xl border p-3 text-left transition shadow-sm',
-                  item.count === 0 && 'opacity-55',
-                  selectedProfile === item.profile
-                    ? 'border-blue-600 bg-white ring-2 ring-blue-500/30'
-                    : 'border-blue-100 bg-white hover:border-blue-300',
-                )}
-              >
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 truncate" title={item.label}>
-                  {item.label}
-                </p>
-                <p className="text-xl font-bold text-slate-900 tabular-nums mt-0.5">{item.count.toLocaleString('en-IN')}</p>
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {topRoles.length > 0 && (
+      {roleFamilies.length > 0 && (
         <section className="rounded-2xl border border-violet-200 bg-violet-50/40 p-5 shadow-sm space-y-3">
-          <h3 className="text-sm font-semibold text-violet-950">Top role families</h3>
-          <div className="flex flex-wrap gap-2">
-            {topRoles.map((item) => (
-              <span
+          <div>
+            <h3 className="text-sm font-semibold text-violet-950">Role families</h3>
+            <p className="text-xs text-violet-800 mt-0.5">Active jobs by enriched role type</p>
+          </div>
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {roleFamilies.map((item) => (
+              <StatCard
                 key={item.roleId}
-                className="inline-flex items-center gap-1.5 rounded-full border border-violet-200 bg-white px-3 py-1 text-xs text-violet-950"
-              >
-                <span className="font-medium truncate max-w-[140px]" title={item.roleName}>{item.roleName}</span>
-                <span className="tabular-nums font-bold text-violet-700">{item.count}</span>
-              </span>
+                label={item.roleName}
+                value={item.count.toLocaleString('en-IN')}
+                accent="text-violet-800"
+              />
             ))}
           </div>
         </section>
       )}
 
-      {(overview.sourceBreakdown?.length ?? 0) > 0 && (
-        <section className="rounded-2xl border border-slate-200 bg-white px-5 py-3 shadow-sm">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-600">
-            <span className="font-semibold text-slate-800">By source:</span>
-            {overview.sourceBreakdown.map((item) => (
-              <span key={item.source} className="tabular-nums">
-                <span className="capitalize font-medium text-slate-700">{item.source}</span>{' '}
-                {item.count.toLocaleString('en-IN')}
-              </span>
+      {sources.length > 0 && (
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">By source</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Tap a source to filter browse results</p>
+          </div>
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+            {sources.map((item) => (
+              <StatCard
+                key={item.source}
+                label={jobSpySiteLabel(item.source)}
+                value={item.count.toLocaleString('en-IN')}
+                accent="text-blue-700"
+                selected={selectedSource === item.source}
+                onClick={() => onSelectSource(selectedSource === item.source ? '' : item.source)}
+              />
             ))}
           </div>
         </section>

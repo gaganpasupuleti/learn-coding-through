@@ -18,8 +18,10 @@ import { formatDateTimeISTShort } from '@/lib/formatDateTimeIST'
 
 const SOURCE_OPTIONS: { id: string; label: string; optional?: boolean }[] = [
   { id: 'indeed', label: 'Indeed' },
-  { id: 'google', label: 'Google' },
   { id: 'linkedin', label: 'LinkedIn' },
+  { id: 'naukri', label: 'Naukri' },
+  { id: 'foundit', label: 'Foundit' },
+  { id: 'google', label: 'Google', optional: true },
 ]
 
 const FALLBACK_PROFILE_OPTIONS = [
@@ -228,7 +230,9 @@ export function JobSpyOpsView() {
     setCleanupLoading(true)
     try {
       const res = await jobspyApi.cleanupLinks(key, 25)
-      toast.success(`Checked ${res.checkedCount} links — ${res.markedExpired} expired, ${res.markedLinkFailed} failed`)
+      toast.success(
+        `Checked ${res.checkedCount} links — removed ${res.deletedJobs ?? 0} dead/expired rows (${res.totalExpired ?? 0} expired, ${res.totalLinkFailed ?? 0} failed remaining)`,
+      )
       await loadStats()
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Cleanup failed')
@@ -686,7 +690,7 @@ export function JobSpyOpsView() {
           {showAdvanced && (
             <div className="mt-3 text-xs text-slate-600 space-y-1">
               <p>Auto cron (every 8h): <code>python scripts/run_job_auto_refresh.py</code> — internship, fresher, entry-level only.</p>
-              <p>Daily cleanup: <code>python scripts/run_job_link_cleanup.py</code> — marks expired links, never deletes.</p>
+              <p>Daily cleanup: <code>python scripts/run_job_link_cleanup.py</code> — checks links, then deletes expired/dead rows.</p>
               <p>1+ experience profile is manual-only and excluded from auto cron.</p>
             </div>
           )}

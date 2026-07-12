@@ -231,15 +231,16 @@ def get_profile_breakdown(db: Session, *, active_only: bool = True) -> list[dict
     return sorted(items, key=lambda row: -row["count"])
 
 
-def get_enrichment_role_breakdown(db: Session) -> list[dict[str, Any]]:
+def get_enrichment_role_breakdown(db: Session, *, active_only: bool = True) -> list[dict[str, Any]]:
     """All active taxonomy roles with enrichment counts (includes zeros)."""
     from app.models.models import JobEnrichment, JobRole
 
-    count_rows = (
-        db.query(JobEnrichment.actual_role_id, func.count())
-        .group_by(JobEnrichment.actual_role_id)
-        .all()
+    count_query = db.query(JobEnrichment.actual_role_id, func.count()).join(
+        ScrapedJob, ScrapedJob.job_id == JobEnrichment.job_id
     )
+    if active_only:
+        count_query = count_query.filter(ScrapedJob.link_status == "active")
+    count_rows = count_query.group_by(JobEnrichment.actual_role_id).all()
     counts = {role_id: int(count) for role_id, count in count_rows if role_id}
 
     roles = (
@@ -296,6 +297,39 @@ def get_expired_jobs(db: Session, limit: int = 20) -> list[ScrapedJob]:
         .limit(limit)
         .all()
     )
+
+
+NON_ACTIVE_LINK_STATUSES = ("expired", "link_failed", "unknown")
+
+
+def delete_non_active_scraped_jobs(db: Session) -> dict[str, int]:
+    """Remove expired, dead, and unknown link rows (+ matching enrichment overlays)."""
+    from app.models.models import JobEnrichment
+
+    doomed_job_ids = [
+        job_id
+        for (job_id,) in db.query(ScrapedJob.job_id)
+        .filter(ScrapedJob.link_status.in_(NON_ACTIVE_LINK_STATUSES))
+        .all()
+        if job_id
+    ]
+
+    deleted_enrichments = 0
+    if doomed_job_ids:
+        deleted_enrichments = (
+            db.query(JobEnrichment)
+            .filter(JobEnrichment.job_id.in_(doomed_job_ids))
+            .delete(synchronize_session=False)
+        )
+
+    deleted_jobs = (
+        db.query(ScrapedJob)
+        .filter(ScrapedJob.link_status.in_(NON_ACTIVE_LINK_STATUSES))
+        .delete(synchronize_session=False)
+    )
+    if deleted_jobs or deleted_enrichments:
+        db.commit()
+    return {"deletedJobs": deleted_jobs, "deletedEnrichments": deleted_enrichments}
 
 
 def get_source_failure_counts(db: Session, days: int = 7) -> dict[str, int]:

@@ -171,8 +171,10 @@ export const JOBSPY_EXPERIENCE_OPTIONS: { value: string; label: string }[] = [
 export const JOBSPY_SOURCE_OPTIONS: { value: string; label: string }[] = [
   { value: '', label: 'All sources' },
   { value: 'indeed', label: 'Indeed' },
-  { value: 'google', label: 'Google' },
   { value: 'linkedin', label: 'LinkedIn' },
+  { value: 'naukri', label: 'Naukri' },
+  { value: 'foundit', label: 'Foundit' },
+  { value: 'google', label: 'Google' },
 ]
 
 export interface JobSpyDashboardStats {
@@ -371,6 +373,8 @@ export interface CleanupLinksResponse {
   totalExpired: number
   totalLinkFailed: number
   totalUnknown: number
+  deletedJobs?: number
+  deletedEnrichments?: number
   scrapeRunId?: number
 }
 
@@ -736,6 +740,7 @@ export function jobSpySiteLabel(site?: string | null): string {
     glassdoor: 'Glassdoor',
     google: 'Google',
     naukri: 'Naukri',
+    foundit: 'Foundit',
   }
   return map[site] ?? site
 }

@@ -129,7 +129,7 @@ export function useJobSpyJobs() {
       return
     }
     void fetchJobs(filters)
-  }, [apiStatus, tab, filters.page, filters.page_size, filters.profile, fetchJobs, loadSavedJobs])
+  }, [apiStatus, tab, filters.page, filters.page_size, filters.profile, filters.site, fetchJobs, loadSavedJobs])
 
   const handleFilterChange = (key: keyof JobSpyJobFilters | 'reset', value: string) => {
     if (key === 'reset') {
@@ -137,11 +137,15 @@ export function useJobSpyJobs() {
       void fetchJobs(DEFAULT_JOBSPY_FILTERS)
       return
     }
-    setFilters((prev) => ({ ...prev, [key]: value, page: 1 }))
+    const next = { ...filters, [key]: value, page: 1 }
+    setFilters(next)
+    if (key === 'site' || key === 'experience') {
+      void fetchJobs(next)
+    }
   }
 
-  const handleProfileSelect = (profile: string) => {
-    const next = { ...filters, profile: profile || undefined, page: 1 }
+  const handleSourceSelect = (source: string) => {
+    const next = { ...filters, site: source || undefined, page: 1 }
     setFilters(next)
     void fetchJobs(next)
   }
@@ -236,7 +240,7 @@ export function useJobSpyJobs() {
     selectedJob,
     setSelectedJob,
     handleFilterChange,
-    handleProfileSelect,
+    handleSourceSelect,
     handleSearch,
     openJob,
     handleSave,

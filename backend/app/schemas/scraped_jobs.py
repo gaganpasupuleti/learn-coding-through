@@ -116,6 +116,8 @@ class CleanupLinksResponse(BaseModel):
     totalExpired: int
     totalLinkFailed: int
     totalUnknown: int
+    deletedJobs: int = 0
+    deletedEnrichments: int = 0
     scrapeRunId: int | None = None
 
 

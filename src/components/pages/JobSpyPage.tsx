@@ -7,7 +7,7 @@ import { JobSpyJobCard } from '@/components/jobspy/JobSpyJobCard'
 import { JobSpyJobDetail } from '@/components/jobspy/JobSpyJobDetail'
 import { useJobSpyJobs, type JobSpyTab } from '@/components/jobspy/useJobSpyJobs'
 import { cn } from '@/lib/utils'
-import { profileKeyLabel } from '@/lib/jobspy-api'
+import { jobSpySiteLabel } from '@/lib/jobspy-api'
 
 const TABS: { id: JobSpyTab; label: string }[] = [
   { id: 'browse', label: 'Browse' },
@@ -35,7 +35,7 @@ export function JobSpyPage() {
     selectedJob,
     setSelectedJob,
     handleFilterChange,
-    handleProfileSelect,
+    handleSourceSelect,
     handleSearch,
     openJob,
     handleSave,
@@ -128,8 +128,8 @@ export function JobSpyPage() {
             <JobSpyOverviewPanel
               overview={overview}
               loading={overviewLoading}
-              selectedProfile={filters.profile ?? ''}
-              onSelectProfile={handleProfileSelect}
+              selectedSource={filters.site ?? ''}
+              onSelectSource={handleSourceSelect}
             />
 
             <JobSpyFilters
@@ -147,15 +147,15 @@ export function JobSpyPage() {
                   <>
                     <span>
                       <span className="font-semibold text-slate-900">{total.toLocaleString('en-IN')}</span> jobs
-                      {filters.profile ? ' in category' : ' matching filters'}
+                      {filters.site ? ` from ${jobSpySiteLabel(filters.site)}` : ' matching filters'}
                     </span>
-                    {filters.profile && (
+                    {filters.site && (
                       <button
                         type="button"
                         className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-800 hover:bg-blue-100"
-                        onClick={() => handleProfileSelect('')}
+                        onClick={() => handleSourceSelect('')}
                       >
-                        {profileKeyLabel(filters.profile)} ×
+                        {jobSpySiteLabel(filters.site)} ×
                       </button>
                     )}
                   </>

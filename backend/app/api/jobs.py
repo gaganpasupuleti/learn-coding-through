@@ -78,6 +78,7 @@ from app.services.job_store import (
     count_jobs_since,
     count_total_jobs,
     create_scrape_run,
+    delete_non_active_scraped_jobs,
     get_expired_jobs,
     get_last_successful_auto_run,
     get_last_run_by_type,
@@ -222,7 +223,7 @@ def _build_job_board_overview(db: Session) -> JobBoardOverviewResponse:
     return JobBoardOverviewResponse(
         **counts,
         profileBreakdown=[ProfileBreakdownItem(**item) for item in get_profile_breakdown(db)],
-        sourceBreakdown=[SourceBreakdownItem(**item) for item in get_source_breakdown(db)],
+        sourceBreakdown=[SourceBreakdownItem(**item) for item in get_source_breakdown(db, active_only=True)],
         enrichmentRoleSummary=[
             EnrichmentRoleCountItem(**item) for item in get_enrichment_role_breakdown(db)
         ],
@@ -329,7 +330,7 @@ def admin_job_stats(
         linkFailedJobs=count_jobs_by_link_status(db, "link_failed"),
         unknownLinkJobs=count_jobs_by_link_status(db, "unknown"),
         lastCleanupAt=last_cleanup.finished_at if last_cleanup else None,
-        sourceBreakdown=[SourceBreakdownItem(**item) for item in get_source_breakdown(db)],
+        sourceBreakdown=[SourceBreakdownItem(**item) for item in get_source_breakdown(db, active_only=True)],
         sourceFailureCounts=get_source_failure_counts(db, days=days),
         locationBreakdown=[LocationBreakdownItem(**item) for item in get_location_breakdown(db, limit=limit)],
         recentScrapeRuns=[ScrapeRunSummary(**scrape_run_to_dict(r)) for r in runs],
@@ -406,6 +407,16 @@ def admin_cleanup_links(
     )
 
     summary = cleanup_job_links(db, limit=limit)
+    purge = delete_non_active_scraped_jobs(db)
+    summary.update(purge)
+    summary.update(
+        {
+            "totalActive": count_active_jobs(db),
+            "totalExpired": count_jobs_by_link_status(db, "expired"),
+            "totalLinkFailed": count_jobs_by_link_status(db, "link_failed"),
+            "totalUnknown": count_jobs_by_link_status(db, "unknown"),
+        }
+    )
     duration_ms = max(0, int((time.perf_counter() - started) * 1000))
     finished_at = datetime.utcnow()
 
