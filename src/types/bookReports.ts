@@ -4,6 +4,7 @@ export interface BookReportChapter {
   topic: string
   content: string
   key_takeaways: string[]
+  level?: string
   what_it_is?: string
   when_to_use?: string
   where_to_use?: string

@@ -1,4 +1,4 @@
-import { BookOpen, ChevronLeft, ChevronRight } from 'lucide-react'
+import { BookOpen, ChevronLeft, ChevronRight, List } from 'lucide-react'
 import { marked } from 'marked'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -9,7 +9,6 @@ import {
   CQSectionTitle,
   CQStatCard,
 } from '@/components/student-dashboard/cq/CQKit'
-import { familyLabel, rolesForBookFamily } from '@/data/bookReportFamilyRoles'
 import { JOB_ROLE_CATALOG, roleName } from '@/data/jobRoleCatalog'
 import {
   BOOK_REPORTS_CATALOG,
@@ -45,7 +44,14 @@ function saveProgress(reportId: string, percent: number) {
 }
 
 function renderMarkdown(body: string): string {
-  return marked.parse(body, { async: false }) as string
+  return marked.parse(prepareReadingMarkdown(body), { async: false }) as string
+}
+
+function prepareReadingMarkdown(body: string): string {
+  return body
+    .replace(/^\*\*Chapter focus:.*?\*\*[^\n]*\n\n?/i, '')
+    .replace(/^Code Reference:\n/m, '### Code reference\n\n')
+    .replace(/^What it shows: /m, '> **What it shows:** ')
 }
 
 function displayTitle(title: string): string {
@@ -393,6 +399,9 @@ function Badge({
   )
 }
 
+const READER_PROSE =
+  'prose prose-lg max-w-none text-[#2D3748] prose-p:my-5 prose-p:text-[17px] prose-p:leading-[1.85] prose-headings:font-serif prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-[#0A1020] prose-h3:mt-10 prose-h3:mb-3 prose-h3:border-b prose-h3:border-[#0A1020]/10 prose-h3:pb-2 prose-h3:text-xl prose-strong:font-semibold prose-strong:text-[#0A1020] prose-a:text-[#2563EB] prose-a:no-underline hover:prose-a:underline prose-code:rounded-md prose-code:bg-[#0A1020]/8 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-mono prose-code:text-[0.88em] prose-code:text-[#0A1020] prose-code:before:content-none prose-code:after:content-none prose-pre:my-6 prose-pre:overflow-x-auto prose-pre:rounded-xl prose-pre:border prose-pre:border-[#0A1020]/15 prose-pre:bg-[#0A1020] prose-pre:px-5 prose-pre:py-4 prose-pre:font-mono prose-pre:text-[14px] prose-pre:leading-relaxed prose-pre:text-[#E8E0D4] prose-pre:shadow-[0_12px_40px_-20px_rgba(10,16,32,0.65)] prose-blockquote:my-6 prose-blockquote:border-l-4 prose-blockquote:border-[#2563EB] prose-blockquote:bg-[#FFF9EA] prose-blockquote:py-2 prose-blockquote:not-italic prose-blockquote:text-[#374151] prose-li:my-1 prose-li:marker:text-[#2563EB]'
+
 function StudyReportReader({
   report,
   chapterNumber,
@@ -408,13 +417,18 @@ function StudyReportReader({
   onChapterChange: (n: number) => void
   onProgress: (reportId: string, percent: number) => void
 }) {
+  const [tocOpen, setTocOpen] = useState(false)
   const chapter =
     report.chapters.find((c) => c.number === chapterNumber) ?? report.chapters[0] ?? null
-  const roleIds = rolesForBookFamily(report.family_id)
   const html = chapter ? renderMarkdown(chapter.content) : ''
   const catalogEntry = getCatalogReports().find((r) => r.id === report.id)
   const coverUrl = catalogEntry ? getCoverUrl(catalogEntry.path) : undefined
   const total = report.chapters.length
+  const title = displayTitle(report.title)
+
+  useEffect(() => {
+    setTocOpen(false)
+  }, [chapterNumber])
 
   useEffect(() => {
     const onScroll = () => {
@@ -430,63 +444,79 @@ function StudyReportReader({
   }, [chapterNumber, onProgress, progressPercent, report.id, total])
 
   return (
-    <div className="mx-auto max-w-6xl space-y-4 p-4 pb-12 md:p-6">
-      <button
-        type="button"
-        onClick={onBack}
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#2563EB] hover:text-[#1D4ED8]"
-      >
-        <ChevronLeft className="h-4 w-4" aria-hidden />
-        Back to library
-      </button>
+    <div className="min-h-full bg-[#F2EBD6] text-[#111827]">
+      <header className="sticky top-0 z-30 border-b border-[#0A1020]/10 bg-[#FFFDF6]/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:px-6">
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-[#2563EB] hover:text-[#1D4ED8]"
+          >
+            <ChevronLeft className="h-4 w-4" aria-hidden />
+            <span className="hidden sm:inline">Library</span>
+          </button>
 
-      <CQCard tone="cream" className="overflow-hidden p-0">
-        <div className="grid gap-0 lg:grid-cols-[200px_1fr] xl:grid-cols-[220px_1fr]">
-          {coverUrl ? (
-            <div className="flex items-center justify-center bg-[#0A1020]/4 p-4 lg:border-r lg:border-[#0A1020]/8">
-              <img
-                src={coverUrl}
-                alt=""
-                className="aspect-[320/440] w-full max-w-[180px] rounded-lg shadow-md ring-1 ring-[#0A1020]/10"
-              />
-            </div>
-          ) : null}
-          <div className="space-y-3 p-5 lg:p-6">
-            <div className="flex flex-wrap gap-1.5">
-              {report.report_type ? (
-                <Badge type={report.report_type}>{REPORT_TYPE_LABELS[report.report_type]}</Badge>
-              ) : null}
-              <Badge>{report.family_name ?? familyLabel(report.family_id)}</Badge>
-              <Badge muted>{report.level}</Badge>
-            </div>
-            <h1 className="font-serif text-xl font-bold leading-tight text-[#0A1020] md:text-2xl">
-              {displayTitle(report.title)}
-            </h1>
-            <p className="text-sm text-[#708090]">{report.author ?? 'Gagan Pasupuleti'}</p>
-            <p className="text-sm leading-relaxed text-[#374151] line-clamp-4 lg:line-clamp-none">
-              {report.summary}
+          <div className="min-w-0 flex-1 text-center">
+            <p className="truncate font-serif text-sm font-semibold text-[#0A1020] md:text-base">{title}</p>
+            <p className="text-xs text-[#708090]">
+              Chapter {chapterNumber} of {total}
+              {chapter?.title ? ` · ${chapter.title}` : ''}
             </p>
-            {roleIds.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5">
-                {roleIds.map((roleId) => (
-                  <Badge key={roleId} role>
-                    {roleName(roleId)}
-                  </Badge>
-                ))}
-              </div>
-            ) : null}
-            <CQProgressBar label="Progress" value={progressPercent} />
           </div>
-        </div>
-      </CQCard>
 
-      <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-        <aside className="lg:sticky lg:top-4 lg:self-start">
-          <CQCard tone="cream" className="p-3">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[#111827]/60">
-              Chapters ({total})
+          <button
+            type="button"
+            onClick={() => setTocOpen((open) => !open)}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#0A1020]/12 bg-white px-3 py-1.5 text-xs font-semibold text-[#0A1020] lg:hidden"
+            aria-expanded={tocOpen}
+            aria-controls="study-reader-toc"
+          >
+            <List className="h-3.5 w-3.5" aria-hidden />
+            Contents
+          </button>
+
+          <div className="hidden w-[72px] shrink-0 lg:block" aria-hidden />
+        </div>
+        <div className="h-0.5 bg-[#0A1020]/8">
+          <div
+            className="h-full bg-[#2563EB] transition-[width] duration-300"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+      </header>
+
+      <div className="mx-auto flex max-w-7xl">
+        <aside
+          id="study-reader-toc"
+          className={cn(
+            'w-full shrink-0 border-[#0A1020]/10 bg-[#FFFDF6] lg:block lg:w-72 lg:border-r',
+            tocOpen ? 'block border-b' : 'hidden',
+          )}
+        >
+          <div className="sticky top-[73px] max-h-[calc(100vh-73px)] overflow-y-auto p-4 md:p-5">
+            <div className="mb-5 flex gap-3 border-b border-[#0A1020]/8 pb-4">
+              {coverUrl ? (
+                <img
+                  src={coverUrl}
+                  alt=""
+                  className="h-24 w-[4.5rem] shrink-0 rounded-md object-cover shadow-md ring-1 ring-[#0A1020]/10"
+                />
+              ) : null}
+              <div className="min-w-0">
+                {report.report_type ? (
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[#2563EB]">
+                    {REPORT_TYPE_LABELS[report.report_type]}
+                  </p>
+                ) : null}
+                <p className="font-serif text-sm font-semibold leading-snug text-[#0A1020]">{title}</p>
+                <p className="mt-1 text-xs text-[#708090]">{report.author ?? 'Gagan Pasupuleti'}</p>
+              </div>
+            </div>
+
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-[#708090]">
+              Table of contents
             </p>
-            <nav className="max-h-[60vh] space-y-0.5 overflow-y-auto pr-1" aria-label="Chapters">
+            <nav className="space-y-0.5" aria-label="Chapters">
               {report.chapters.map((ch) => {
                 const active = ch.number === (chapter?.number ?? 0)
                 return (
@@ -495,67 +525,86 @@ function StudyReportReader({
                     type="button"
                     onClick={() => onChapterChange(ch.number)}
                     className={cn(
-                      'w-full rounded-lg px-2.5 py-2 text-left text-xs leading-snug transition-colors',
+                      'group flex w-full gap-2 rounded-lg px-2 py-2.5 text-left transition-colors',
                       active
-                        ? 'bg-[#0A1020] font-semibold text-[#FAF3E0]'
-                        : 'text-[#374151] hover:bg-[#0A1020]/6',
+                        ? 'bg-[#0A1020]/6'
+                        : 'hover:bg-[#0A1020]/4',
                     )}
                   >
-                    <span className="mr-1 tabular-nums opacity-70">{ch.number}.</span>
-                    {ch.title}
+                    <span
+                      className={cn(
+                        'mt-0.5 w-1 shrink-0 rounded-full transition-colors',
+                        active ? 'bg-[#2563EB]' : 'bg-transparent group-hover:bg-[#0A1020]/15',
+                      )}
+                      aria-hidden
+                    />
+                    <span className="min-w-0">
+                      <span
+                        className={cn(
+                          'block text-[10px] font-semibold uppercase tracking-wider',
+                          active ? 'text-[#2563EB]' : 'text-[#708090]',
+                        )}
+                      >
+                        Chapter {ch.number}
+                      </span>
+                      <span
+                        className={cn(
+                          'block text-sm leading-snug',
+                          active ? 'font-semibold text-[#0A1020]' : 'text-[#374151]',
+                        )}
+                      >
+                        {ch.title}
+                      </span>
+                    </span>
                   </button>
                 )
               })}
             </nav>
-          </CQCard>
-
-          <label className="mt-3 block lg:hidden">
-            <span className="sr-only">Jump to chapter</span>
-            <select
-              value={chapterNumber}
-              onChange={(e) => onChapterChange(Number(e.target.value))}
-              className="w-full rounded-lg border border-[#0A1020]/15 bg-white px-3 py-2 text-sm"
-            >
-              {report.chapters.map((ch) => (
-                <option key={ch.number} value={ch.number}>
-                  {ch.number}. {ch.title}
-                </option>
-              ))}
-            </select>
-          </label>
+          </div>
         </aside>
 
-        <main className="min-w-0">
-          {chapter ? (
-            <ChapterBody chapter={chapter} html={html} />
-          ) : (
-            <p className="text-sm text-[#4B5563]">No chapters in this report.</p>
-          )}
+        <main className="min-w-0 flex-1">
+          <article className="px-4 py-8 md:px-10 md:py-12 lg:px-14">
+            <div className="mx-auto max-w-[42rem]">
+              {chapter ? (
+                <ChapterBody chapter={chapter} html={html} />
+              ) : (
+                <p className="text-sm text-[#4B5563]">No chapters in this report.</p>
+              )}
 
-          <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-[#0A1020]/10 pt-6">
-            <CQActionButton
-              variant="ghost"
-              disabled={chapterNumber <= 1}
-              onClick={() => onChapterChange(chapterNumber - 1)}
-              className="gap-1"
-            >
-              <ChevronLeft className="h-4 w-4" aria-hidden />
-              Previous
-            </CQActionButton>
-            <span className="text-sm tabular-nums text-[#708090]">
-              Chapter {chapterNumber} of {total}
-            </span>
-            {chapterNumber < total ? (
-              <CQActionButton variant="primary" onClick={() => onChapterChange(chapterNumber + 1)} className="gap-1">
-                Next
-                <ChevronRight className="h-4 w-4" aria-hidden />
-              </CQActionButton>
-            ) : (
-              <CQActionButton variant="navy" onClick={() => onProgress(report.id, 100)}>
-                Mark complete
-              </CQActionButton>
-            )}
-          </div>
+              <nav
+                className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#0A1020]/10 pt-8"
+                aria-label="Chapter navigation"
+              >
+                <CQActionButton
+                  variant="ghost"
+                  disabled={chapterNumber <= 1}
+                  onClick={() => onChapterChange(chapterNumber - 1)}
+                  className="gap-1"
+                >
+                  <ChevronLeft className="h-4 w-4" aria-hidden />
+                  Previous chapter
+                </CQActionButton>
+                <span className="text-sm tabular-nums text-[#708090]">
+                  {chapterNumber} / {total}
+                </span>
+                {chapterNumber < total ? (
+                  <CQActionButton
+                    variant="primary"
+                    onClick={() => onChapterChange(chapterNumber + 1)}
+                    className="gap-1"
+                  >
+                    Next chapter
+                    <ChevronRight className="h-4 w-4" aria-hidden />
+                  </CQActionButton>
+                ) : (
+                  <CQActionButton variant="navy" onClick={() => onProgress(report.id, 100)}>
+                    Finish reading
+                  </CQActionButton>
+                )}
+              </nav>
+            </div>
+          </article>
         </main>
       </div>
     </div>
@@ -564,32 +613,41 @@ function StudyReportReader({
 
 function ChapterBody({ chapter, html }: { chapter: BookReportChapter; html: string }) {
   return (
-    <CQCard tone="cream" className="space-y-5 p-5 md:p-6">
-      <div>
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-[#708090]">
+    <div className="space-y-8">
+      <header className="border-b border-[#0A1020]/10 pb-8 text-center">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#708090]">
           Chapter {chapter.number}
+          {chapter.level ? ` · ${chapter.level}` : ''}
         </p>
-        <h2 className="mt-1 font-serif text-xl font-bold text-[#0A1020] md:text-2xl">{chapter.title}</h2>
-      </div>
+        <h1 className="mt-3 font-serif text-3xl font-bold leading-tight tracking-tight text-[#0A1020] md:text-4xl">
+          {chapter.title}
+        </h1>
+        {chapter.topic && chapter.topic !== 'intro' ? (
+          <p className="mt-3 text-sm italic text-[#708090]">{chapter.topic.replace(/-/g, ' ')}</p>
+        ) : null}
+      </header>
 
       <div
-        className="prose prose-sm max-w-none text-[#374151] prose-headings:font-serif prose-headings:text-[#0A1020] prose-strong:text-[#111827] prose-code:rounded prose-code:bg-[#0A1020]/6 prose-code:px-1 prose-code:py-0.5 prose-code:text-[#0A1020] prose-pre:rounded-xl prose-pre:border prose-pre:border-[#0A1020]/10 prose-pre:bg-[#0A1020] prose-pre:text-[#FAF3E0]"
+        className={READER_PROSE}
         dangerouslySetInnerHTML={{ __html: html }}
       />
 
       {chapter.key_takeaways.length > 0 ? (
-        <section className="rounded-xl border border-[#2563EB]/20 bg-[#2563EB]/5 p-4">
-          <h3 className="text-sm font-semibold text-[#0A1020]">Key takeaways</h3>
-          <ul className="mt-2 space-y-2 text-sm text-[#374151]">
-            {chapter.key_takeaways.map((t) => (
-              <li key={t} className="flex gap-2">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#2563EB]" aria-hidden />
-                <span>{t}</span>
+        <section className="rounded-2xl border border-[#0A1020]/10 bg-[#FFFDF6] p-6 shadow-[0_8px_30px_-20px_rgba(10,16,32,0.35)]">
+          <h2 className="font-serif text-xl font-semibold text-[#0A1020]">Before you move on</h2>
+          <p className="mt-1 text-sm text-[#708090]">Three ideas worth keeping from this chapter.</p>
+          <ul className="mt-5 space-y-4">
+            {chapter.key_takeaways.map((t, i) => (
+              <li key={t} className="flex gap-3 text-[16px] leading-relaxed text-[#374151]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#0A1020] font-serif text-sm font-semibold text-[#FAF3E0]">
+                  {i + 1}
+                </span>
+                <span className="pt-0.5">{t}</span>
               </li>
             ))}
           </ul>
         </section>
       ) : null}
-    </CQCard>
+    </div>
   )
 }
