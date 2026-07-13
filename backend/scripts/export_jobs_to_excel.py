@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
-"""Export active scraped jobs from the Code Quest DB to a detailed Excel file."""
+"""Export active scraped jobs from the Code Quest DB or API to a detailed Excel file."""
 
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
-from datetime import datetime
+import time
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
 # Allow running from repo root or backend/
 BACKEND_DIR = Path(__file__).resolve().parents[1]
@@ -17,14 +21,19 @@ if str(BACKEND_DIR) not in sys.path:
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
-from sqlalchemy.orm import Session
 
-from app.core.database import SessionLocal
-from app.models.models import ScrapedJob
-from app.services.job_profiles import SCRAPE_PROFILES
-
-PROFILE_LABELS = {key: profile.label for key, profile in SCRAPE_PROFILES.items()}
-PROFILE_TIERS = {key: profile.experience_tier for key, profile in SCRAPE_PROFILES.items()}
+PROFILE_LABELS = {
+    "internship_india": "Internships",
+    "fresher_india": "Fresher Jobs",
+    "entry_level_india": "Entry Level",
+    "experienced_manual_india": "1+ Experience (manual)",
+}
+PROFILE_TIERS = {
+    "internship_india": "intern_fresher",
+    "fresher_india": "intern_fresher",
+    "entry_level_india": "entry",
+    "experienced_manual_india": "experienced",
+}
 
 ROLE_FAMILIES: list[tuple[str, tuple[str, ...]]] = [
     ("Data Science & ML", ("data scientist", "machine learning", "ml engineer", "ai engineer", "deep learning", "nlp", "computer vision")),
@@ -37,6 +46,7 @@ ROLE_FAMILIES: list[tuple[str, tuple[str, ...]]] = [
     ("Design", ("ux designer", "ui designer", "product designer", "graphic designer")),
     ("Database & DBA", ("database administrator", "dba", "sql developer", "oracle developer")),
     ("Cybersecurity", ("security analyst", "cyber security", "information security", "soc analyst")),
+    ("Sales & Customer", ("sales executive", "inside sales", "customer care", "business development executive", "account manager")),
 ]
 
 SKILL_KEYWORDS: tuple[str, ...] = (
@@ -47,6 +57,7 @@ SKILL_KEYWORDS: tuple[str, ...] = (
     "Power BI", "Tableau", "Excel", "Spark", "Hadoop", "Kafka", "Airflow", "dbt",
     "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch", "Scikit-learn", "NLP",
     "REST API", "GraphQL", "Microservices", "Linux", "Agile", "Scrum",
+    "Salesforce", "CRM", "SAP", "Figma",
 )
 
 EXPERIENCE_RULES: list[tuple[str, tuple[str, ...]]] = [
@@ -64,6 +75,8 @@ INGEST_EXPERIENCE = {
     "entry_level_india": "Entry Level",
     "experienced_manual_india": "1+ years",
 }
+
+PROD_DEFAULT_URL = "https://learn-coding-through-production.up.railway.app"
 
 
 def _normalize_text(*parts: str | None) -> str:
@@ -93,7 +106,22 @@ def infer_experience(title: str, description: str | None, ingest_profile: str | 
     return "Not specified"
 
 
+def parse_description_skills(description: str | None) -> list[str]:
+    if not description:
+        return []
+    match = re.search(r"skills?\s*:\s*([^\n]+)", description, flags=re.IGNORECASE)
+    if not match:
+        return []
+    raw = match.group(1).strip()
+    parts = re.split(r"[,;|]", raw)
+    return [p.strip() for p in parts if p.strip()][:20]
+
+
 def extract_skills(title: str, description: str | None, limit: int = 20) -> list[str]:
+    explicit = parse_description_skills(description)
+    if explicit:
+        return explicit[:limit]
+
     haystack = _normalize_text(title, description)
     found: list[str] = []
     for skill in SKILL_KEYWORDS:
@@ -113,51 +141,109 @@ def format_salary(min_val: float | None, max_val: float | None, currency: str | 
     return f"{cur}{value:g}"
 
 
-def fetch_active_jobs(db: Session) -> list[ScrapedJob]:
-    return (
-        db.query(ScrapedJob)
-        .filter(ScrapedJob.link_status == "active")
-        .order_by(ScrapedJob.created_at.desc())
-        .all()
-    )
+def clean_description(description: str | None) -> str:
+    if not description:
+        return ""
+    text = re.sub(r"<br\s*/?>", " ", description, flags=re.IGNORECASE)
+    return " ".join(text.split())
 
 
-def job_to_row(job: ScrapedJob, index: int) -> dict[str, object]:
-    skills = extract_skills(job.title, job.description)
-    profile_key = job.ingest_profile or ""
+def fetch_jobs_from_api(base_url: str, page_size: int = 100) -> list[dict]:
+    base_url = base_url.rstrip("/")
+    all_jobs: list[dict] = []
+    page = 1
+    total = None
+
+    while True:
+        params = urlencode({"limit": page_size, "page": page})
+        url = f"{base_url}/api/jobs?{params}"
+        req = Request(url, headers={"Accept": "application/json"})
+        try:
+            with urlopen(req, timeout=120) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+        except (HTTPError, URLError) as exc:
+            raise SystemExit(f"Failed to fetch jobs from {url}: {exc}") from exc
+
+        jobs = payload.get("jobs") or []
+        if total is None:
+            total = int(payload.get("total") or 0)
+            print(f"API reports {total} active jobs", file=sys.stderr)
+
+        if not jobs:
+            break
+
+        all_jobs.extend(jobs)
+        print(f"Fetched page {page}: {len(jobs)} jobs ({len(all_jobs)}/{total})", file=sys.stderr)
+
+        if len(all_jobs) >= total or len(jobs) < page_size:
+            break
+
+        page += 1
+        time.sleep(0.15)
+
+    return all_jobs
+
+
+def fetch_active_jobs_from_db() -> list[dict]:
+    from sqlalchemy.orm import Session
+
+    from app.core.database import SessionLocal
+    from app.models.models import ScrapedJob
+    from app.services.job_store import scraped_job_to_dict
+
+    db: Session = SessionLocal()
+    try:
+        rows = (
+            db.query(ScrapedJob)
+            .filter(ScrapedJob.link_status == "active")
+            .order_by(ScrapedJob.created_at.desc())
+            .all()
+        )
+        return [scraped_job_to_dict(row) for row in rows]
+    finally:
+        db.close()
+
+
+def api_job_to_row(job: dict, index: int) -> dict[str, object]:
+    title = str(job.get("title") or "")
+    description = job.get("description")
+    ingest_profile = job.get("ingestProfile")
+    skills = extract_skills(title, description)
+    profile_key = str(ingest_profile or "")
+    salary_min = job.get("salaryMin")
+    salary_max = job.get("salaryMax")
+
     return {
         "S.No": index,
-        "Job ID": job.id,
-        "Role": infer_role(job.title),
-        "Role Family": infer_role_family(job.title, job.description),
+        "Code Quest Job ID": job.get("jobId") or "",
+        "Internal ID": job.get("id") or "",
+        "Role": infer_role(title),
+        "Role Family": infer_role_family(title, description),
         "Skills": ", ".join(skills),
-        "Experience Level": infer_experience(job.title, job.description, job.ingest_profile),
+        "Experience Level": infer_experience(title, description, ingest_profile),
         "Scrape Profile": PROFILE_LABELS.get(profile_key, profile_key or "Unknown"),
         "Experience Tier": PROFILE_TIERS.get(profile_key, ""),
-        "Company": job.company or "",
-        "Location": job.location or "",
-        "Source": job.source or "",
-        "Job Type": job.job_type or "",
-        "Date Posted": job.date_posted.isoformat(sep=" ", timespec="seconds") if job.date_posted else "",
-        "Salary Range": format_salary(
-            float(job.salary_min) if job.salary_min is not None else None,
-            float(job.salary_max) if job.salary_max is not None else None,
-            job.currency,
-        ),
-        "Salary Min": float(job.salary_min) if job.salary_min is not None else "",
-        "Salary Max": float(job.salary_max) if job.salary_max is not None else "",
-        "Currency": job.currency or "",
-        "Job Link": job.job_url,
-        "Apply Link": job.apply_url or job.job_url,
-        "Link Status": job.link_status or "active",
-        "Ingested At": job.created_at.isoformat(sep=" ", timespec="seconds") if job.created_at else "",
-        "Description": " ".join((job.description or "").split()),
+        "Company": job.get("company") or "",
+        "Location": job.get("location") or "",
+        "Source": job.get("source") or "",
+        "Job Type": job.get("jobType") or "",
+        "Date Posted": job.get("datePosted") or "",
+        "Salary Range": format_salary(salary_min, salary_max, job.get("currency")),
+        "Salary Min": salary_min if salary_min is not None else "",
+        "Salary Max": salary_max if salary_max is not None else "",
+        "Currency": job.get("currency") or "",
+        "Job Link": job.get("jobUrl") or "",
+        "Apply Link": job.get("applyUrl") or job.get("jobUrl") or "",
+        "Link Status": job.get("linkStatus") or "active",
+        "Ingested At (UTC)": job.get("createdAt") or "",
+        "Ingested At (IST)": job.get("createdAtIST") or "",
+        "Description": clean_description(description),
     }
 
 
 def export_to_excel(rows: list[dict[str, object]], output_path: Path) -> None:
     if not rows:
-        raise SystemExit("No active jobs found in database.")
+        raise SystemExit("No active jobs found.")
 
     headers = list(rows[0].keys())
     wb = Workbook()
@@ -201,18 +287,31 @@ def export_to_excel(rows: list[dict[str, object]], output_path: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Export all active scraped jobs to Excel")
     parser.add_argument(
+        "--source",
+        choices=("api", "db"),
+        default="api",
+        help="Fetch from production/local API (api) or local SQLite DB (db)",
+    )
+    parser.add_argument(
+        "--base-url",
+        default=PROD_DEFAULT_URL,
+        help=f"Jobs API base URL when --source=api (default: {PROD_DEFAULT_URL})",
+    )
+    parser.add_argument("--page-size", type=int, default=100, help="API page size (max 100)")
+    parser.add_argument(
         "--output",
         default="exports/codequest_active_jobs_detailed.xlsx",
         help="Output .xlsx path",
     )
     args = parser.parse_args()
 
-    db = SessionLocal()
-    try:
-        jobs = fetch_active_jobs(db)
-        rows = [job_to_row(job, idx) for idx, job in enumerate(jobs, start=1)]
-    finally:
-        db.close()
+    if args.source == "api":
+        jobs = fetch_jobs_from_api(args.base_url, page_size=min(args.page_size, 100))
+    else:
+        jobs = fetch_active_jobs_from_db()
+
+    jobs = [j for j in jobs if j.get("jobUrl")]
+    rows = [api_job_to_row(job, idx) for idx, job in enumerate(jobs, start=1)]
 
     output_path = Path(args.output)
     if not output_path.is_absolute():
