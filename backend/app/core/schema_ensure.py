@@ -5,7 +5,7 @@ from __future__ import annotations
 from sqlalchemy import inspect, text
 
 from app.core.database import engine
-from app.models.models import ClassSession, QuizCatalogAttempt, StudentFeedback, TypingAttempt
+from app.models.models import ClassSession, LoginAttempt, QuizCatalogAttempt, StudentFeedback, TypingAttempt
 
 
 def ensure_job_posts_fixture_columns() -> None:
@@ -71,6 +71,7 @@ def ensure_schedule_schema() -> None:
 def ensure_admin_api_schema() -> None:
     """Called before admin routes so job board queries never hit missing columns."""
     ensure_job_posts_fixture_columns()
+    ensure_login_attempts_table()
 
 
 def ensure_typing_attempts_table() -> None:
@@ -92,3 +93,10 @@ def ensure_quiz_catalog_attempts_table() -> None:
         QuizCatalogAttempt.__table__.create(bind=engine, checkfirst=True)
     except Exception as exc:
         print(f"Warning: unable to ensure quiz_catalog_attempts table exists: {exc}")
+
+
+def ensure_login_attempts_table() -> None:
+    try:
+        LoginAttempt.__table__.create(bind=engine, checkfirst=True)
+    except Exception as exc:
+        print(f"Warning: unable to ensure login_attempts table exists: {exc}")
