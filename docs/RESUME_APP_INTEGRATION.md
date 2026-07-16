@@ -2,53 +2,75 @@
 
 Code Quest embeds the complete [Reactive Resume](https://github.com/gaganpasupuleti/reactive-resume) application as a separate service. Resume editing, templates, preview, export, and authentication remain owned by Reactive Resume.
 
+Local AI runs through the **Code Quest Local Connector** in this repository:
+
+`backend/codequest-local-ai-lab/connector/`
+
 ## Architecture
 
 ```text
 Student browser
   └─ Code Quest (:5000)
-       └─ Career → Resume Lab (iframe)
-            └─ Reactive Resume (:3000/dashboard/resumes)
+       ├─ Career → Resume Lab
+       │    ├─ Local Connector status panel
+       │    └─ iframe → Reactive Resume (:3000/dashboard/resumes)
+       │         └─ postMessage → Code Quest parent
+       │              └─ Local Connector (:17891) → Ollama (:11434)
+       └─ Code Quest backend (future Hugging Face only, disabled by default)
 ```
 
-Future local AI (Stage 2, blocked on connector):
+## Connector API (source of truth)
 
-```text
-Reactive Resume iframe
-  → postMessage → Code Quest parent
-  → Code Quest Local Connector → Ollama
-  → Code Quest parent → postMessage → Reactive Resume iframe
-```
+| Endpoint | Auth | Purpose |
+|----------|------|---------|
+| `GET /api/v1/status` | No | Connector + Ollama health |
+| `GET /api/v1/models` | `X-CodeQuest-Connector-Token` | Installed Ollama models |
+| `POST /api/v1/resume/tailor` | Token + JSON body | Structured resume suggestions |
+
+Defaults (verified from connector source):
+
+- Connector: `http://127.0.0.1:17891`
+- Ollama: `http://127.0.0.1:11434`
+- Dev token: `codequest-local-lab` (development only)
 
 ## Local configuration
 
-### Code Quest (`learn-coding-through`)
-
-`.env`:
+### Code Quest (`.env`)
 
 ```env
 VITE_RESUME_APP_URL=http://localhost:3000/dashboard/resumes
+VITE_CODEQUEST_CONNECTOR_URL=http://127.0.0.1:17891
+VITE_CONNECTOR_TOKEN=codequest-local-lab
 ```
 
-Runtime config is also supported via `public/runtime-config.js` and the production `frontend-entrypoint.sh` generator.
+Runtime config: `public/runtime-config.js` and `frontend-entrypoint.sh`.
 
-### Reactive Resume (`reactive-resume`)
+### Connector (`backend/codequest-local-ai-lab`)
 
-`.env` or `.env.local`:
+```env
+CQ_CONNECTOR_PORT=17891
+CQ_ALLOWED_ORIGINS=http://localhost:5000,http://127.0.0.1:5000,http://127.0.0.1:5173
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+CQ_CONNECTOR_LAB_TOKEN=codequest-local-lab
+```
+
+### Reactive Resume (`.env.local`)
 
 ```env
 CODEQUEST_EMBED_ORIGIN=http://localhost:5000
+VITE_CODEQUEST_EMBED_ORIGIN=http://localhost:5000
 APP_URL=http://localhost:3000
 ```
 
-When `CODEQUEST_EMBED_ORIGIN` is missing or invalid, Reactive Resume denies iframe embedding with:
+### Code Quest backend (future Hugging Face)
 
-- `X-Frame-Options: DENY`
-- `Content-Security-Policy: frame-ancestors 'none'`
+```env
+ENABLE_HUGGINGFACE_AI=false
+HF_TOKEN=
+HF_MODEL=
+```
 
-When valid, HTML app shells send:
-
-- `Content-Security-Policy: frame-ancestors 'self' <exact-origin>`
+`HF_TOKEN` must never be exposed to frontend code.
 
 ## Required ports
 
@@ -57,32 +79,42 @@ When valid, HTML app shells send:
 | Code Quest | 5000 | http://localhost:5000 |
 | Reactive Resume web | 3000 | http://localhost:3000/dashboard/resumes |
 | Reactive Resume API (dev) | 3001 | proxied by Vite |
-
-## Navigation
-
-- Code Quest: **Career → Resume Lab**
-- Resume Lab is enabled and opens the embedded builder
-- **Open full screen** opens the same configured Resume URL in a new tab
-
-## Security notes
-
-- Only the validated `CODEQUEST_EMBED_ORIGIN` may embed Reactive Resume.
-- Do not pass Code Quest login tokens or student secrets in iframe query parameters.
-- Reactive Resume keeps its own authentication session inside the iframe.
-- For production, prefer HTTPS on both services under related parent domains when possible.
+| Local Connector | 17891 | http://127.0.0.1:17891 |
+| Ollama | 11434 | http://127.0.0.1:11434 |
 
 ## Start commands
 
-### Reactive Resume
+### 1. Ollama
+
+```bash
+ollama serve
+ollama pull <model-name>
+```
+
+### 2. Local Connector
+
+```bash
+cd backend/codequest-local-ai-lab
+npm run verify          # mock Ollama tests
+npm run dev:real        # real Ollama + standalone lab UI on :5173
+```
+
+Connector only (from `connector/`):
+
+```bash
+cd backend/codequest-local-ai-lab/connector
+node src/start.mjs
+```
+
+### 3. Reactive Resume
 
 ```bash
 cd reactive-resume
 pnpm install
-# start postgres per AGENTS.md, then:
 dotenvx run -f .env.local -- pnpm dev
 ```
 
-### Code Quest
+### 4. Code Quest
 
 ```bash
 cd learn-coding-through
@@ -90,64 +122,59 @@ npm install
 npm run dev
 ```
 
-Backend (if not already running):
+Backend API (optional, for Hugging Face future endpoint):
 
 ```bash
 cd backend
 python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-## Local verification
+## Security
 
-1. Start Reactive Resume on port 3000.
-2. Start Code Quest on port 5000.
-3. Sign into Code Quest.
-4. Open **Career → Resume Lab**.
-5. Confirm Reactive Resume loads in the iframe.
-6. Sign into Reactive Resume inside the iframe if prompted.
-7. Create or open a resume, edit, preview, and export PDF/DOCX.
-8. Use **Open full screen** and confirm the same app opens.
+- Connector binds to `127.0.0.1` only.
+- CORS uses exact-origin allowlist via `CQ_ALLOWED_ORIGINS` (no wildcards).
+- Reactive Resume iframe embedding uses validated `CODEQUEST_EMBED_ORIGIN` CSP `frame-ancestors`.
+- postMessage bridge validates child origin, `event.source`, and runtime schemas.
+- Lab token is development-only; production device pairing is future work.
+
+## Deterministic ATS
+
+Reactive Resume ATS scoring is **deterministic** (`packages/api/src/features/ai/ats-score.ts`).
+
+- Numerical score depends on resume structure and content rules only.
+- Local AI may suggest improvements through the connector bridge.
+- AI does not change the ATS numerical score.
+
+## Active AI providers
+
+| Provider | Status |
+|----------|--------|
+| Code Quest Local Connector → Ollama | Active in Resume Lab |
+| Hugging Face via Code Quest backend | Disabled (`ENABLE_HUGGINGFACE_AI=false`) |
+
+Removed from active UI: OpenAI, Anthropic, Gemini, Groq, OpenRouter, Vercel AI Gateway, Azure OpenAI, direct Ollama from Reactive Resume.
+
+## Local verification checklist
+
+1. Start Ollama, connector, Reactive Resume, and Code Quest.
+2. Sign into Code Quest → **Career → Resume Lab**.
+3. Confirm Reactive Resume loads in the iframe.
+4. Check connector panel shows connector/Ollama/model status.
+5. Run deterministic **Run ATS Check** in the builder analysis sidebar.
+6. Generate local suggestions (embedded mode) and accept/reject previews manually.
+7. Stop connector and confirm resume editing still works.
+8. Restart connector and refresh status.
 
 ## Troubleshooting
 
 | Symptom | Check |
 |---------|-------|
-| Blank iframe / refused to connect | Reactive Resume running? `VITE_RESUME_APP_URL` correct? |
-| Frame blocked | Set `CODEQUEST_EMBED_ORIGIN=http://localhost:5000` in Reactive Resume |
-| Wrong page in iframe | Use full path `/dashboard/resumes` or origin-only URL (helper appends path) |
-| Config error screen in Code Quest | `VITE_RESUME_APP_URL` must be valid `http://` or `https://` |
+| Connector unavailable | `node backend/codequest-local-ai-lab/connector/src/start.mjs` running on `17891` |
+| Origin blocked | `CQ_ALLOWED_ORIGINS` includes Code Quest origin |
+| No models listed | `curl http://127.0.0.1:11434/api/tags` and run `ollama pull <model>` |
+| Local AI unavailable in iframe | `VITE_CODEQUEST_EMBED_ORIGIN` set in Reactive Resume |
+| Frame blocked | `CODEQUEST_EMBED_ORIGIN=http://localhost:5000` |
 
-## Stage 2 — Local AI (planned)
+## Git note
 
-Stage 2 is **not implemented yet** because the **Code Quest Local Connector** source is not present in this workspace.
-
-Before connector work begins:
-
-1. Add or locate the connector repository.
-2. Document its real URL, port, and API contract from source — do not invent endpoints.
-3. Implement provider-neutral AI (`codequest-local`, future disabled `huggingface`).
-4. Add the secure `postMessage` bridge between Code Quest and Reactive Resume.
-5. Remove unsupported cloud AI providers from the active Resume application.
-6. Keep ATS numerical scoring deterministic; AI may only explain or suggest.
-
-### Future environment variables (Stage 2)
-
-Code Quest backend:
-
-```env
-ENABLE_HUGGINGFACE_AI=false
-HF_TOKEN=
-HF_MODEL=
-```
-
-Hugging Face must run through the Code Quest backend only. Never expose `HF_TOKEN` to frontend code.
-
-### Removed providers target (Stage 2)
-
-OpenAI, Gemini, Google Generative AI, Anthropic, Groq, OpenRouter, Azure OpenAI, and direct browser-to-Ollama communication will be removed from the active Resume app once the connector path is implemented.
-
-## Future phases
-
-- SSO / account linking between Code Quest and Reactive Resume
-- Hugging Face provider through Code Quest backend (disabled by default)
-- Deterministic ATS scoring separated from optional AI explanations
+Commit `5c66d625` mixes Resume integration with previously staged job-enrichment files. Splitting that commit was left unchanged to avoid risking either change set.

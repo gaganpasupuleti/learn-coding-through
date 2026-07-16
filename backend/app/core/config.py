@@ -74,6 +74,10 @@ class Settings(BaseSettings):
     email_from_address: str | None = None
     email_from_name: str = "Code Quest"
 
+    enable_huggingface_ai: bool = False
+    hf_token: str | None = None
+    hf_model: str | None = None
+
     @field_validator("database_url", mode="before")
     @classmethod
     def normalize_database_url(cls, value: str) -> str:

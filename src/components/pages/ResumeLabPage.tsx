@@ -1,15 +1,27 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ExternalLink, Loader2, RefreshCw } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
+import { LocalConnectorPanel } from '@/components/resume-lab/LocalConnectorPanel'
 import { STUDENT_PAGE_BG } from '@/components/student-dashboard/dashboard-styles'
+import { attachResumeBridge } from '@/lib/ai/resume-bridge'
 import { resolveResumeAppUrl } from '@/lib/resume-app-url'
 import { cn } from '@/lib/utils'
 
 export function ResumeLabPage() {
   const resolved = useMemo(() => resolveResumeAppUrl(), [])
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const bridgeCleanupRef = useRef<(() => void) | null>(null)
   const [iframeKey, setIframeKey] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+
+  const handleIframeLoad = useCallback(() => {
+    setIsLoading(false)
+    bridgeCleanupRef.current?.()
+    bridgeCleanupRef.current = attachResumeBridge(iframeRef.current)
+  }, [])
+
+  useEffect(() => () => bridgeCleanupRef.current?.(), [])
 
   const handleReload = useCallback(() => {
     setIsLoading(true)
@@ -74,6 +86,10 @@ export function ResumeLabPage() {
         </div>
       </header>
 
+      <div className="mb-4">
+        <LocalConnectorPanel />
+      </div>
+
       <div className="relative min-h-[min(72vh,900px)] flex-1 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         {isLoading && (
           <div
@@ -87,13 +103,14 @@ export function ResumeLabPage() {
         )}
 
         <iframe
+          ref={iframeRef}
           key={iframeKey}
           title="Code Quest Resume Lab — full resume builder"
           src={resolved.url}
           className="h-full min-h-[min(72vh,900px)] w-full border-0"
           loading="lazy"
           allow="clipboard-read; clipboard-write"
-          onLoad={() => setIsLoading(false)}
+          onLoad={handleIframeLoad}
         />
       </div>
     </div>

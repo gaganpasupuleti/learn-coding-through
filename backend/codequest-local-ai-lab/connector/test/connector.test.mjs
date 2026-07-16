@@ -1,0 +1,121 @@
+import assert from 'node:assert/strict';
+import { after, before, test } from 'node:test';
+import { getConfig } from '../src/config.mjs';
+import { createConnectorServer } from '../src/server.mjs';
+import { createMockOllamaServer } from '../../mock-ollama/src/server.mjs';
+
+const allowedOrigin = 'http://127.0.0.1:5173';
+const token = 'test-token';
+let mockServer;
+let connectorServer;
+let connectorUrl;
+
+function listen(server) {
+  return new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', () => resolve(server.address()));
+  });
+}
+
+function close(server) {
+  return new Promise((resolve) => server.close(resolve));
+}
+
+function connectorFetch(path, options = {}) {
+  return fetch(`${connectorUrl}${path}`, {
+    ...options,
+    headers: {
+      Origin: allowedOrigin,
+      'X-CodeQuest-Connector-Token': token,
+      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+      ...options.headers,
+    },
+  });
+}
+
+before(async () => {
+  mockServer = createMockOllamaServer();
+  const mockAddress = await listen(mockServer);
+  connectorServer = createConnectorServer({
+    config: getConfig({
+      port: 0,
+      allowedOrigins: [allowedOrigin],
+      labToken: token,
+      ollamaBaseUrl: `http://127.0.0.1:${mockAddress.port}`,
+      probeTimeoutMs: 1000,
+      generationTimeoutMs: 2000,
+    }),
+  });
+  const connectorAddress = await listen(connectorServer);
+  connectorUrl = `http://127.0.0.1:${connectorAddress.port}`;
+});
+
+after(async () => {
+  await close(connectorServer);
+  await close(mockServer);
+});
+
+test('reports connector and Ollama status without authentication', async () => {
+  const response = await fetch(`${connectorUrl}/api/v1/status`, {
+    headers: { Origin: allowedOrigin },
+  });
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.connector.status, 'running');
+  assert.equal(body.connector.bind, 'loopback-only');
+  assert.equal(body.ollama.connected, true);
+  assert.equal(body.ollama.model_count, 1);
+});
+
+test('rejects browser origins outside the allowlist', async () => {
+  const response = await fetch(`${connectorUrl}/api/v1/status`, {
+    headers: { Origin: 'https://malicious.example' },
+  });
+  assert.equal(response.status, 403);
+  assert.equal((await response.json()).error, 'origin_not_allowed');
+});
+
+test('requires the connector token for model data', async () => {
+  const response = await fetch(`${connectorUrl}/api/v1/models`, {
+    headers: { Origin: allowedOrigin },
+  });
+  assert.equal(response.status, 401);
+});
+
+test('lists the model exposed by Ollama', async () => {
+  const response = await connectorFetch('/api/v1/models');
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.models[0].name, 'codequest-mock:latest');
+});
+
+test('returns a validated local resume suggestion', async () => {
+  const response = await connectorFetch('/api/v1/resume/tailor', {
+    method: 'POST',
+    body: JSON.stringify({
+      model: 'codequest-mock:latest',
+      resume_text: 'Data Analyst\nBuilt SQL dashboards for weekly banking operations reporting.',
+      job_description: 'Seeking a Data Analyst with SQL, Python, and Power BI experience.',
+    }),
+  });
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.meta.provider, 'ollama');
+  assert.equal(body.meta.local_only, true);
+  assert.equal(body.result.suggestions.length, 1);
+  assert.equal(body.result.suggestions[0].evidence_verified, true);
+  assert.deepEqual(body.result.missing_keywords.sort(), ['Power BI', 'Python'].sort());
+});
+
+test('blocks malformed model output from reaching the UI', async () => {
+  const response = await connectorFetch('/api/v1/resume/tailor', {
+    method: 'POST',
+    body: JSON.stringify({
+      model: 'codequest-mock:latest',
+      resume_text: '[MALFORMED] Data Analyst with SQL reporting experience.',
+      job_description: 'Seeking a Data Analyst with SQL and Python experience.',
+    }),
+  });
+  assert.equal(response.status, 502);
+  assert.equal((await response.json()).error, 'model_output_invalid');
+});
+
