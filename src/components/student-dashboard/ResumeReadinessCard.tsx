@@ -1,8 +1,6 @@
-import { FileText } from 'lucide-react'
+import { FileText, Sparkles } from 'lucide-react'
 
 import { Card } from '@/components/ui/card'
-import { CircularProgress } from '@/components/ui/circular-progress'
-import { computeResumeReadinessScore } from '@/lib/resume-score'
 import { cn } from '@/lib/utils'
 
 import { DASHBOARD_CARD, DASHBOARD_CARD_BODY, DASHBOARD_CARD_BODY_COMPACT } from './dashboard-styles'
@@ -12,9 +10,13 @@ interface ResumeReadinessCardProps {
   compact?: boolean
 }
 
-export function ResumeReadinessCard({ onOpenResume, compact = false }: ResumeReadinessCardProps) {
-  const score = computeResumeReadinessScore()
+const LAUNCH_FEATURES = [
+  'Professional templates',
+  'Live editing and preview',
+  'PDF/DOCX export',
+] as const
 
+export function ResumeReadinessCard({ onOpenResume, compact = false }: ResumeReadinessCardProps) {
   return (
     <Card className={cn(DASHBOARD_CARD, 'h-full')}>
       <div className={compact ? DASHBOARD_CARD_BODY_COMPACT : DASHBOARD_CARD_BODY}>
@@ -24,35 +26,22 @@ export function ResumeReadinessCard({ onOpenResume, compact = false }: ResumeRea
           </div>
           <div>
             <h2 className={cn('font-semibold text-slate-900', compact ? 'text-sm' : 'text-lg')}>
-              Resume Readiness
+              Resume Lab
             </h2>
-            {!compact && <p className="text-xs text-slate-500">Local draft · ATS-friendly template</p>}
+            {!compact && (
+              <p className="text-xs text-slate-500">Full resume builder inside Code Quest</p>
+            )}
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <CircularProgress
-            value={score.overall}
-            size={compact ? 72 : 112}
-            strokeWidth={compact ? 6 : 8}
-            label="Ready"
-          />
-          <div className="min-w-0 flex-1">
-            <p className="text-2xl font-bold tabular-nums text-slate-900">{score.overall}%</p>
-            <p className="text-xs text-slate-500">complete</p>
-          </div>
-        </div>
-
-        {!compact && (
-          <ul className="mt-4 space-y-1.5 text-xs text-slate-600">
-            {score.checklist.slice(0, 4).map((item) => (
-              <li key={item.id} className="flex items-center justify-between gap-2">
-                <span className={item.done ? 'text-emerald-700' : ''}>{item.label}</span>
-                <span className="font-medium text-slate-900">{item.done ? '✓' : '—'}</span>
-              </li>
+        <div className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-slate-600" aria-hidden />
+          <ul className="space-y-1 text-xs text-slate-600">
+            {LAUNCH_FEATURES.map((feature) => (
+              <li key={feature}>{feature}</li>
             ))}
           </ul>
-        )}
+        </div>
 
         {onOpenResume && (
           <button
@@ -63,7 +52,7 @@ export function ResumeReadinessCard({ onOpenResume, compact = false }: ResumeRea
               compact ? 'mt-3 py-2 text-xs' : 'mt-4',
             )}
           >
-            Open Resume Builder
+            Open Resume Lab
           </button>
         )}
       </div>

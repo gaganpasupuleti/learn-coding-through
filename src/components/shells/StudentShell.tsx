@@ -81,7 +81,6 @@ const NAV_GROUPS: SidebarGroup[] = [
       { label: 'Practice Studio', icon: <FlaskConical size={ICON} aria-hidden />, soon: true },
       { label: 'Study Materials', icon: <BookOpen size={ICON} aria-hidden />, soon: true },
       { label: 'Assignments', icon: <ClipboardList size={ICON} aria-hidden />, soon: true },
-      { page: 'resume', label: 'Resume Lab', icon: <FileText size={ICON} aria-hidden />, locked: true },
       { page: 'progress', label: 'Progress', icon: <TrendingUp size={ICON} aria-hidden /> },
       { label: 'Settings', icon: <Settings size={ICON} aria-hidden />, soon: true },
     ],
@@ -110,6 +109,7 @@ const NAV_GROUPS: SidebarGroup[] = [
     label: 'Career',
     items: [
       { page: 'roadmapper', label: 'Career Map', icon: <Map size={ICON} aria-hidden /> },
+      { page: 'resume', label: 'Resume Lab', icon: <FileText size={ICON} aria-hidden /> },
     ],
   },
 ]

@@ -32,7 +32,7 @@ import { StudentCalendarPage } from '@/components/pages/StudentCalendarPage'
 
 import { StudentProgressPage } from '@/components/pages/StudentProgressPage'
 
-import { ResumeBuilderPage } from '@/components/pages/ResumeBuilderPage'
+import { ResumeLabPage } from '@/components/pages/ResumeLabPage'
 
 import { StudentHubPage } from '@/components/pages/StudentHubPage'
 
@@ -566,7 +566,7 @@ function App() {
 
 
 
-        {studentPage === 'resume' && <ResumeBuilderPage user={user} />}
+        {studentPage === 'resume' && <ResumeLabPage />}
 
 
 
