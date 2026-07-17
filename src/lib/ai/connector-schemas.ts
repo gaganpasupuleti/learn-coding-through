@@ -6,6 +6,13 @@ export const connectorStatusSchema = z.object({
     version: z.string(),
     bind: z.string(),
   }),
+  pairing: z
+    .object({
+      state: z.enum(['paired', 'unpaired']),
+      pairing_required: z.boolean().optional(),
+      code_expires_at: z.string().optional(),
+    })
+    .optional(),
   ollama: z.object({
     connected: z.boolean(),
     model_count: z.number(),

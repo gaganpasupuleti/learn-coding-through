@@ -41,7 +41,8 @@ Defaults (verified from connector source):
 VITE_RESUME_APP_URL=http://localhost:3000/dashboard/resumes
 VITE_CODEQUEST_CONNECTOR_URL=http://127.0.0.1:17891
 # Local-development lab token only. Not authentication. Do not use in production.
-VITE_CONNECTOR_TOKEN=codequest-local-lab
+# Pairing: enter the one-time code printed by the Local Connector console.
+# Do not set VITE_CONNECTOR_TOKEN (removed).
 ```
 
 Runtime config: `public/runtime-config.js` and `frontend-entrypoint.sh`.
@@ -135,6 +136,8 @@ Code Quest backend (backend-only env — never `VITE_*`):
 RESUME_MATCHER_ENABLED=true
 RESUME_MATCHER_BASE_URL=http://127.0.0.1:8001
 RESUME_MATCHER_TIMEOUT_SECONDS=30
+RESUME_MATCHER_SERVICE_TOKEN=<GENERATE_A_SECRET>
+# Must match Resume Matcher CODEQUEST_SERVICE_TOKEN. Never put this in Vite or the browser.
 ```
 
 See `docs/RESUME_MATCHER_ATTRIBUTION.md` for reused modules and licenses.

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { resolveConnectorUrl } from '@/lib/connector-url'
-import { isBridgeRequest } from '@/lib/ai/resume-bridge-messages'
+import { isBridgeHello, isBridgeRequest } from '@/lib/ai/resume-bridge-messages'
 
 describe('resolveConnectorUrl', () => {
   it('accepts the default loopback connector origin', () => {
@@ -16,7 +16,19 @@ describe('resolveConnectorUrl', () => {
 })
 
 describe('resume bridge messages', () => {
-  it('accepts valid bridge requests', () => {
+  it('accepts valid bridge requests with session nonce', () => {
+    expect(
+      isBridgeRequest({
+        protocol: 'codequest-ai/v1',
+        type: 'request',
+        requestId: 'req-1',
+        sessionNonce: 'a'.repeat(32),
+        action: 'status',
+      }),
+    ).toBe(true)
+  })
+
+  it('rejects requests missing session nonce', () => {
     expect(
       isBridgeRequest({
         protocol: 'codequest-ai/v1',
@@ -24,7 +36,7 @@ describe('resume bridge messages', () => {
         requestId: 'req-1',
         action: 'status',
       }),
-    ).toBe(true)
+    ).toBe(false)
   })
 
   it('rejects unknown message types', () => {
@@ -33,9 +45,20 @@ describe('resume bridge messages', () => {
         protocol: 'codequest-ai/v1',
         type: 'event',
         requestId: 'req-1',
+        sessionNonce: 'a'.repeat(32),
         action: 'status',
       }),
     ).toBe(false)
+  })
+
+  it('accepts hello handshake', () => {
+    expect(
+      isBridgeHello({
+        protocol: 'codequest-ai/v1',
+        type: 'hello',
+        sessionNonce: 'b'.repeat(32),
+      }),
+    ).toBe(true)
   })
 
   it('accepts Resume Matcher bridge actions', () => {
@@ -44,6 +67,7 @@ describe('resume bridge messages', () => {
         protocol: 'codequest-ai/v1',
         type: 'request',
         requestId: 'req-2',
+        sessionNonce: 'c'.repeat(32),
         action: 'analyze-job',
         payload: { jobDescription: 'x'.repeat(20) },
       }),

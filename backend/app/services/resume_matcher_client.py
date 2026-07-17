@@ -2,13 +2,24 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Final
 from urllib.parse import urlparse
 
 import requests
 from pydantic import BaseModel, Field, ValidationError
 
 from app.core.config import settings
+
+_ALLOWED_PATHS: Final[frozenset[str]] = frozenset(
+    {
+        "/api/v1/integration/health",
+        "/api/v1/integration/resumes/parse",
+        "/api/v1/integration/jobs/analyze",
+        "/api/v1/integration/resumes/match",
+        "/api/v1/integration/prompts/cover-letter",
+        "/api/v1/integration/prompts/application-email",
+    }
+)
 
 
 class ResumeMatcherClientError(Exception):
@@ -66,7 +77,13 @@ def _validate_base_url(url: str) -> str:
             "RESUME_MATCHER_BASE_URL is missing a host",
             500,
         )
-    return url.rstrip("/")
+    if parsed.username or parsed.password:
+        raise ResumeMatcherClientError(
+            "invalid_resume_matcher_url",
+            "RESUME_MATCHER_BASE_URL must not embed credentials",
+            500,
+        )
+    return f"{parsed.scheme}://{parsed.netloc}".rstrip("/")
 
 
 def _ensure_enabled() -> str:
@@ -76,7 +93,59 @@ def _ensure_enabled() -> str:
             "Resume Matcher integration is disabled",
             503,
         )
+    token = (settings.resume_matcher_service_token or "").strip()
+    if not token:
+        raise ResumeMatcherClientError(
+            "resume_matcher_service_token_missing",
+            "Resume Matcher service credential is not configured",
+            503,
+        )
     return _validate_base_url(settings.resume_matcher_base_url)
+
+
+def _assert_allowed_path(path: str) -> str:
+    if not path.startswith("/") or ".." in path or path != path.split("?")[0].split("#")[0]:
+        raise ResumeMatcherClientError(
+            "resume_matcher_path_rejected",
+            "Upstream path is not allowlisted",
+            400,
+        )
+    if path not in _ALLOWED_PATHS:
+        raise ResumeMatcherClientError(
+            "resume_matcher_path_rejected",
+            "Upstream path is not allowlisted",
+            400,
+        )
+    return path
+
+
+def _service_headers() -> dict[str, str]:
+    token = (settings.resume_matcher_service_token or "").strip()
+    return {
+        "Accept": "application/json",
+        "X-CodeQuest-Service-Token": token,
+    }
+
+
+def _sanitize_upstream_error(response: requests.Response) -> ResumeMatcherClientError:
+    code = "resume_matcher_error"
+    message = "Resume Matcher request failed"
+    try:
+        detail = response.json().get("detail")
+        if isinstance(detail, dict):
+            raw_code = str(detail.get("code") or code)
+            # Never forward internal URLs/traces; keep machine codes only when short.
+            if raw_code.isidentifier() or "_" in raw_code:
+                code = raw_code[:80]
+            raw_message = str(detail.get("message") or message)
+            if "http://" not in raw_message.lower() and "https://" not in raw_message.lower():
+                message = raw_message[:200]
+        elif isinstance(detail, str) and "http://" not in detail.lower():
+            message = detail[:200]
+    except Exception:  # noqa: BLE001
+        pass
+    status = response.status_code if 400 <= response.status_code < 600 else 502
+    return ResumeMatcherClientError(code, message, status)
 
 
 def _request(
@@ -85,9 +154,11 @@ def _request(
     *,
     json_body: dict[str, Any] | None = None,
     files: dict[str, Any] | None = None,
-    max_bytes: int = 2_000_000,
+    max_bytes: int | None = None,
 ) -> Any:
     base = _ensure_enabled()
+    safe_path = _assert_allowed_path(path)
+    limit = max_bytes if max_bytes is not None else settings.resume_matcher_max_response_bytes
     timeout = (
         settings.resume_matcher_connect_timeout_seconds,
         settings.resume_matcher_timeout_seconds,
@@ -95,11 +166,13 @@ def _request(
     try:
         response = requests.request(
             method,
-            f"{base}{path}",
+            f"{base}{safe_path}",
             json=json_body,
             files=files,
+            headers=_service_headers(),
             timeout=timeout,
             stream=True,
+            allow_redirects=False,
         )
     except requests.Timeout as exc:
         raise ResumeMatcherClientError(
@@ -114,8 +187,15 @@ def _request(
             503,
         ) from exc
 
+    if 300 <= response.status_code < 400:
+        raise ResumeMatcherClientError(
+            "resume_matcher_redirect_rejected",
+            "Upstream redirects are not allowed",
+            502,
+        )
+
     raw = response.content
-    if len(raw) > max_bytes:
+    if len(raw) > limit:
         raise ResumeMatcherClientError(
             "resume_matcher_response_too_large",
             "Resume Matcher response exceeded size limit",
@@ -123,18 +203,7 @@ def _request(
         )
 
     if response.status_code >= 400:
-        code = "resume_matcher_error"
-        message = "Resume Matcher request failed"
-        try:
-            detail = response.json().get("detail")
-            if isinstance(detail, dict):
-                code = str(detail.get("code") or code)
-                message = str(detail.get("message") or message)
-            elif isinstance(detail, str):
-                message = detail
-        except Exception:  # noqa: BLE001
-            pass
-        raise ResumeMatcherClientError(code, message, response.status_code)
+        raise _sanitize_upstream_error(response)
 
     try:
         return response.json()

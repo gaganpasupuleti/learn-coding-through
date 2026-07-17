@@ -1,14 +1,19 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { after, before, test } from 'node:test';
 import { getConfig } from '../src/config.mjs';
+import { createPairingStore } from '../src/pairing.mjs';
 import { createConnectorServer } from '../src/server.mjs';
 import { createMockOllamaServer } from '../../mock-ollama/src/server.mjs';
 
 const allowedOrigin = 'http://127.0.0.1:5173';
-const token = 'test-token';
+const testBearer = 'test-bearer-token-for-connector-suite';
 let mockServer;
 let connectorServer;
 let connectorUrl;
+let storePath;
 
 function listen(server) {
   return new Promise((resolve) => {
@@ -25,7 +30,7 @@ function connectorFetch(path, options = {}) {
     ...options,
     headers: {
       Origin: allowedOrigin,
-      'X-CodeQuest-Connector-Token': token,
+      'X-CodeQuest-Connector-Token': testBearer,
       ...(options.body ? { 'Content-Type': 'application/json' } : {}),
       ...options.headers,
     },
@@ -33,17 +38,28 @@ function connectorFetch(path, options = {}) {
 }
 
 before(async () => {
+  storePath = path.join(os.tmpdir(), `cq-connector-${process.pid}.json`);
+  try {
+    fs.unlinkSync(storePath);
+  } catch {
+    /* ignore */
+  }
+  process.env.CQ_TEST_BEARER_TOKEN = testBearer;
+
   mockServer = createMockOllamaServer();
   const mockAddress = await listen(mockServer);
+  const pairing = createPairingStore({ storePath });
   connectorServer = createConnectorServer({
     config: getConfig({
       port: 0,
       allowedOrigins: [allowedOrigin],
-      labToken: token,
+      labToken: '',
+      pairingStorePath: storePath,
       ollamaBaseUrl: `http://127.0.0.1:${mockAddress.port}`,
       probeTimeoutMs: 1000,
       generationTimeoutMs: 2000,
     }),
+    pairingStore: pairing,
   });
   const connectorAddress = await listen(connectorServer);
   connectorUrl = `http://127.0.0.1:${connectorAddress.port}`;
@@ -52,6 +68,12 @@ before(async () => {
 after(async () => {
   await close(connectorServer);
   await close(mockServer);
+  delete process.env.CQ_TEST_BEARER_TOKEN;
+  try {
+    fs.unlinkSync(storePath);
+  } catch {
+    /* ignore */
+  }
 });
 
 test('reports connector and Ollama status without authentication', async () => {
@@ -64,6 +86,7 @@ test('reports connector and Ollama status without authentication', async () => {
   assert.equal(body.connector.bind, 'loopback-only');
   assert.equal(body.ollama.connected, true);
   assert.equal(body.ollama.model_count, 1);
+  assert.equal(body.pairing.state, 'paired');
 });
 
 test('rejects browser origins outside the allowlist', async () => {
@@ -152,4 +175,3 @@ test('generates an application email with subject and body', async () => {
   assert.equal(typeof body.result.body, 'string');
   assert.ok(body.result.body.length >= 40);
 });
-

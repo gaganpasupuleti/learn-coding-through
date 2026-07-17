@@ -9,8 +9,15 @@ import pytest
 from app.services import resume_matcher_client as rm
 
 
-def test_rejects_non_http_base_url(monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.fixture(autouse=True)
+def _enable_matcher(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(rm.settings, "resume_matcher_enabled", True)
+    monkeypatch.setattr(rm.settings, "resume_matcher_base_url", "http://127.0.0.1:8001")
+    monkeypatch.setattr(rm.settings, "resume_matcher_service_token", "test-service-token")
+    monkeypatch.setattr(rm.settings, "resume_matcher_max_response_bytes", 2_000_000)
+
+
+def test_rejects_non_http_base_url(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(rm.settings, "resume_matcher_base_url", "ftp://evil.example")
     with pytest.raises(rm.ResumeMatcherClientError) as exc:
         rm.health()
@@ -25,10 +32,26 @@ def test_disabled_returns_stable_error(monkeypatch: pytest.MonkeyPatch) -> None:
     assert exc.value.status_code == 503
 
 
-def test_timeout_maps_to_stable_code(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(rm.settings, "resume_matcher_enabled", True)
-    monkeypatch.setattr(rm.settings, "resume_matcher_base_url", "http://127.0.0.1:8001")
+def test_missing_service_token_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(rm.settings, "resume_matcher_service_token", "")
+    with pytest.raises(rm.ResumeMatcherClientError) as exc:
+        rm.health()
+    assert exc.value.code == "resume_matcher_service_token_missing"
 
+
+def test_arbitrary_path_rejected() -> None:
+    with pytest.raises(rm.ResumeMatcherClientError) as exc:
+        rm._request("GET", "/api/v1/config/api-keys")
+    assert exc.value.code == "resume_matcher_path_rejected"
+
+
+def test_path_traversal_rejected() -> None:
+    with pytest.raises(rm.ResumeMatcherClientError) as exc:
+        rm._request("GET", "/api/v1/integration/../config/api-keys")
+    assert exc.value.code == "resume_matcher_path_rejected"
+
+
+def test_timeout_maps_to_stable_code() -> None:
     with patch("app.services.resume_matcher_client.requests.request") as request:
         request.side_effect = rm.requests.Timeout()
         with pytest.raises(rm.ResumeMatcherClientError) as exc:
@@ -36,13 +59,30 @@ def test_timeout_maps_to_stable_code(monkeypatch: pytest.MonkeyPatch) -> None:
         assert exc.value.code == "resume_matcher_timeout"
 
 
-def test_validate_analyze_response(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(rm.settings, "resume_matcher_enabled", True)
-    monkeypatch.setattr(rm.settings, "resume_matcher_base_url", "http://127.0.0.1:8001")
+def test_redirect_rejected() -> None:
+    response = MagicMock()
+    response.status_code = 302
+    response.content = b""
+    with patch("app.services.resume_matcher_client.requests.request", return_value=response):
+        with pytest.raises(rm.ResumeMatcherClientError) as exc:
+            rm.health()
+        assert exc.value.code == "resume_matcher_redirect_rejected"
 
+
+def test_oversized_response_rejected() -> None:
     response = MagicMock()
     response.status_code = 200
-    response.content = b'{"required_skills":["Python"],"preferred_skills":[],"keywords":["Python"],"matched_keywords":["Python"],"missing_keywords":[],"keyword_coverage_percent":100,"findings":["ok"],"extraction_mode":"deterministic"}'
+    response.content = b"x" * 3_000_000
+    with patch("app.services.resume_matcher_client.requests.request", return_value=response):
+        with pytest.raises(rm.ResumeMatcherClientError) as exc:
+            rm.health()
+        assert exc.value.code == "resume_matcher_response_too_large"
+
+
+def test_validate_analyze_response() -> None:
+    response = MagicMock()
+    response.status_code = 200
+    response.content = b"{}"
     response.json.return_value = {
         "required_skills": ["Python"],
         "preferred_skills": [],
@@ -54,7 +94,23 @@ def test_validate_analyze_response(monkeypatch: pytest.MonkeyPatch) -> None:
         "extraction_mode": "deterministic",
     }
 
-    with patch("app.services.resume_matcher_client.requests.request", return_value=response):
+    with patch("app.services.resume_matcher_client.requests.request", return_value=response) as request:
         result = rm.analyze_job({"summary": "Python"}, "Looking for Python engineers with strong skills.")
+        assert request.call_args.kwargs["allow_redirects"] is False
+        assert request.call_args.kwargs["headers"]["X-CodeQuest-Service-Token"] == "test-service-token"
     assert result.keyword_coverage_percent == 100.0
     assert result.matched_keywords == ["Python"]
+
+
+def test_upstream_stack_trace_not_returned() -> None:
+    response = MagicMock()
+    response.status_code = 500
+    response.content = b'{"detail":"Traceback (most recent call last): http://127.0.0.1:8001/secret"}'
+    response.json.return_value = {
+        "detail": "Traceback (most recent call last): http://127.0.0.1:8001/secret"
+    }
+    with patch("app.services.resume_matcher_client.requests.request", return_value=response):
+        with pytest.raises(rm.ResumeMatcherClientError) as exc:
+            rm.health()
+        assert "http://" not in exc.value.message.lower()
+        assert "traceback" not in exc.value.message.lower()

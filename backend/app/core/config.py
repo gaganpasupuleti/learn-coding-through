@@ -84,6 +84,8 @@ class Settings(BaseSettings):
     resume_matcher_timeout_seconds: float = 30.0
     resume_matcher_connect_timeout_seconds: float = 5.0
     resume_matcher_max_upload_bytes: int = 8 * 1024 * 1024
+    resume_matcher_service_token: str | None = None
+    resume_matcher_max_response_bytes: int = 2_000_000
 
     @field_validator("database_url", mode="before")
     @classmethod

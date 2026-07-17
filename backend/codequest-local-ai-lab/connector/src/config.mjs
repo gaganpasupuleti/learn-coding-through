@@ -17,15 +17,16 @@ export function getConfig(overrides = {}) {
     .filter(Boolean);
 
   return {
-    host: '127.0.0.1',
+    host: process.env.CQ_CONNECTOR_HOST?.trim() || '127.0.0.1',
     port: parsePositiveInteger(process.env.CQ_CONNECTOR_PORT, 17891),
     ollamaBaseUrl: (process.env.OLLAMA_BASE_URL ?? 'http://127.0.0.1:11434').replace(/\/$/, ''),
     allowedOrigins: configuredOrigins.length > 0 ? configuredOrigins : DEFAULT_ORIGINS,
-    labToken: process.env.CQ_CONNECTOR_LAB_TOKEN ?? 'codequest-local-lab',
+    // Legacy lab token is disabled unless CQ_ALLOW_LEGACY_LAB_TOKEN=true (tests only).
+    labToken: process.env.CQ_CONNECTOR_LAB_TOKEN ?? '',
+    pairingStorePath: process.env.CQ_CONNECTOR_PAIRING_STORE || undefined,
     probeTimeoutMs: parsePositiveInteger(process.env.CQ_PROBE_TIMEOUT_MS, 2500),
     generationTimeoutMs: parsePositiveInteger(process.env.CQ_GENERATION_TIMEOUT_MS, 180000),
     maxRequestBytes: parsePositiveInteger(process.env.CQ_MAX_REQUEST_BYTES, 100000),
     ...overrides,
   };
 }
-

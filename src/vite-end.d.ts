@@ -9,7 +9,6 @@ interface ImportMetaEnv {
 	readonly VITE_ENABLE_ASSESSMENT_GUARD?: string
 	readonly VITE_RESUME_APP_URL?: string
 	readonly VITE_CODEQUEST_CONNECTOR_URL?: string
-	readonly VITE_CONNECTOR_TOKEN?: string
 }
 
 interface ImportMeta {

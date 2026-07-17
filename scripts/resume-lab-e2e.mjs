@@ -2,7 +2,9 @@
  * Full browser E2E for Code Quest Resume Lab + Reactive Resume + Local Connector.
  */
 import { chromium } from 'playwright'
+import crypto from 'node:crypto'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execSync, spawn } from 'node:child_process'
@@ -15,9 +17,25 @@ const API_BASE = process.env.SMOKE_API_BASE ?? 'http://127.0.0.1:8000'
 const RR_BASE = process.env.SMOKE_RR_BASE ?? 'http://localhost:3000'
 const RM_BASE = process.env.SMOKE_RM_BASE ?? 'http://127.0.0.1:8001'
 const CONNECTOR = process.env.SMOKE_CONNECTOR ?? 'http://127.0.0.1:17891'
-const CONNECTOR_TOKEN = process.env.SMOKE_CONNECTOR_TOKEN ?? 'e2e-local-paired-token'
+// Process-scoped temporary credentials (never hard-coded lab tokens; not printed in summary).
+const SERVICE_TOKEN =
+  process.env.RESUME_MATCHER_SERVICE_TOKEN ||
+  process.env.CODEQUEST_SERVICE_TOKEN ||
+  crypto.randomBytes(24).toString('base64url')
+const CONNECTOR_BEARER =
+  process.env.CQ_TEST_BEARER_TOKEN || crypto.randomBytes(24).toString('base64url')
+const CONNECTOR_PAIRING_STORE =
+  process.env.CQ_CONNECTOR_PAIRING_STORE ||
+  path.join(os.tmpdir(), `cq-e2e-pairing-${process.pid}.json`)
 const SAMPLE_JD =
   'We are hiring a Software Engineer with Python, SQL, and FastAPI experience. Required: Python, SQL. Preferred: Docker, PostgreSQL, React.'
+
+function rmHeaders(extra = {}) {
+  return {
+    'X-CodeQuest-Service-Token': SERVICE_TOKEN,
+    ...extra,
+  }
+}
 
 const results = []
 function pass(name, detail = '') {
@@ -72,6 +90,7 @@ function startResumeMatcher() {
       env: {
         ...process.env,
         CODEQUEST_INTEGRATION_MODE: 'true',
+        CODEQUEST_SERVICE_TOKEN: SERVICE_TOKEN,
         PORT: '8001',
       },
       detached: true,
@@ -85,7 +104,9 @@ function startResumeMatcher() {
 async function waitForResumeMatcher(ok) {
   for (let i = 0; i < 60; i++) {
     try {
-      const res = await fetch(`${RM_BASE}/api/v1/integration/health`)
+      const res = await fetch(`${RM_BASE}/api/v1/integration/health`, {
+        headers: rmHeaders(),
+      })
       if (ok && res.ok) return
       if (!ok && !res.ok) return
     } catch {
@@ -98,10 +119,25 @@ async function waitForResumeMatcher(ok) {
 
 function startConnector() {
   const connectorDir = path.join(root, 'backend', 'codequest-local-ai-lab', 'connector')
-  execSync(
-    `powershell -NoProfile -Command "$env:CQ_ALLOWED_ORIGINS='http://localhost:5000,http://127.0.0.1:5000,http://127.0.0.1:5173'; $env:CQ_CONNECTOR_LAB_TOKEN='${CONNECTOR_TOKEN}'; Start-Process -WindowStyle Hidden -FilePath node -ArgumentList 'src/start.mjs' -WorkingDirectory '${connectorDir.replace(/'/g, "''")}'"`,
-    { stdio: 'ignore' },
-  )
+  try {
+    fs.unlinkSync(CONNECTOR_PAIRING_STORE)
+  } catch {
+    /* ignore */
+  }
+  const child = spawn('node', ['src/start.mjs'], {
+    cwd: connectorDir,
+    env: {
+      ...process.env,
+      CQ_ALLOWED_ORIGINS: 'http://localhost:5000,http://127.0.0.1:5000,http://127.0.0.1:5173',
+      CQ_TEST_BEARER_TOKEN: CONNECTOR_BEARER,
+      CQ_CONNECTOR_PAIRING_STORE: CONNECTOR_PAIRING_STORE,
+      CQ_CONNECTOR_EXPOSE_PAIRING_CODE: 'true',
+    },
+    detached: true,
+    stdio: 'ignore',
+    windowsHide: true,
+  })
+  child.unref()
 }
 
 async function waitForConnector(ok) {
@@ -135,19 +171,31 @@ async function main() {
   let resumeId = null
 
   await step('preflight_services', async () => {
-    const [web, api, rr, rm, status] = await Promise.all([
+    // Ensure connector is up with process-scoped test bearer (pairing store).
+    try {
+      await fetch(`${CONNECTOR}/api/v1/status`, {
+        headers: { Origin: 'http://localhost:5000' },
+      })
+    } catch {
+      startConnector()
+      await waitForConnector(true)
+    }
+    const [web, api, rr, rm, statusRes] = await Promise.all([
       fetch(`${WEB_BASE}/`).then((r) => r.status),
       fetch(`${API_BASE}/health`).then((r) => r.status),
       fetch(`${RR_BASE}/`).then((r) => r.status),
-      fetch(`${RM_BASE}/api/v1/integration/health`).then((r) => r.status).catch(() => 0),
+      fetch(`${RM_BASE}/api/v1/integration/health`, { headers: rmHeaders() })
+        .then((r) => r.status)
+        .catch(() => 0),
       fetch(`${CONNECTOR}/api/v1/status`, {
         headers: { Origin: 'http://localhost:5000' },
-      }).then((r) => r.json()),
+      }),
     ])
     if (web !== 200) throw new Error(`CQ web ${web}`)
     if (api !== 200) throw new Error(`CQ api ${api}`)
     if (rr !== 200) throw new Error(`RR web ${rr}`)
     if (rm !== 200) throw new Error(`Resume Matcher integration health ${rm}`)
+    const status = await statusRes.json()
     if (!status?.ollama?.connected) throw new Error('Ollama not connected')
     return `ollama_models=${status.ollama.model_count}; rm=ok`
   })
@@ -156,7 +204,7 @@ async function main() {
     const payload = await fetch(`${CONNECTOR}/api/v1/models`, {
       headers: {
         Origin: 'http://localhost:5000',
-        'X-CodeQuest-Connector-Token': CONNECTOR_TOKEN,
+        'X-CodeQuest-Connector-Token': CONNECTOR_BEARER,
       },
     }).then((r) => r.json())
     modelNames = (payload.models ?? []).map((m) => m.model)
@@ -203,18 +251,44 @@ async function main() {
     await step('cq_sign_in_resume_lab', async () => {
       await page.goto(WEB_BASE, { waitUntil: 'domcontentloaded' })
       await page.evaluate(
-        ({ token, email }) => {
+        ({ token, email, connectorBearer }) => {
           localStorage.setItem('career-portal-token', token)
           localStorage.setItem(
             'career-portal-user',
             JSON.stringify({ id: 2, email, full_name: 'Demo Student', role: 'student' }),
           )
+          // Inject process-scoped paired bearer (never from Vite runtime-config).
+          sessionStorage.setItem('codequest.connector.paired-token', connectorBearer)
         },
-        { token: cqCreds.token, email: cqCreds.email },
+        { token: cqCreds.token, email: cqCreds.email, connectorBearer: CONNECTOR_BEARER },
       )
       await page.goto(`${WEB_BASE}/?page=resume`, { waitUntil: 'networkidle' })
       await page.getByRole('heading', { name: /Resume Lab/i }).waitFor()
       return 'ok'
+    })
+
+    await step('connector_pairing_session', async () => {
+      const panel = page.getByLabel(/Local AI connector status/i)
+      await panel.waitFor()
+      await panel.getByRole('button', { name: /Refresh/i }).click().catch(() => {})
+      await page.waitForTimeout(1000)
+      const text = await panel.innerText()
+      if (!/Paired|Local AI ready|Installed Ollama/i.test(text)) {
+        throw new Error(`Expected paired connector UI, got: ${text.slice(0, 180)}`)
+      }
+      // Reject path: wrong token stored briefly
+      await page.evaluate(() => {
+        sessionStorage.setItem('codequest.connector.paired-token', 'definitely-invalid-token')
+      })
+      await panel.getByRole('button', { name: /Refresh/i }).click()
+      await page.waitForTimeout(800)
+      // Restore valid process-scoped bearer
+      await page.evaluate((bearer) => {
+        sessionStorage.setItem('codequest.connector.paired-token', bearer)
+      }, CONNECTOR_BEARER)
+      await panel.getByRole('button', { name: /Refresh/i }).click()
+      await page.waitForTimeout(800)
+      return 'pairing session ok'
     })
 
     await step('connector_and_ollama_status', async () => {
@@ -231,10 +305,6 @@ async function main() {
       await select.selectOption({ label: modelNames[0] }).catch(async () => {
         await select.selectOption({ value: modelNames[0] })
       })
-      const text = await panel.innerText()
-      if (!/Local AI ready|Ollama/i.test(text) && !/connected/i.test(text)) {
-        // still ok if models listed
-      }
       return `selected=${modelNames[0]}; options=${options.join(' | ')}`
     })
 
@@ -348,6 +418,7 @@ async function main() {
       form.append('file', new Blob([pdfBytes], { type: 'application/pdf' }), 'e2e-sample.pdf')
       const res = await fetch(`${RM_BASE}/api/v1/integration/resumes/parse`, {
         method: 'POST',
+        headers: rmHeaders(),
         body: form,
       })
       const body = await res.json().catch(() => ({}))
@@ -356,6 +427,7 @@ async function main() {
         if (body?.detail?.code === 'parse_failed') {
           const bad = await fetch(`${RM_BASE}/api/v1/integration/resumes/parse`, {
             method: 'POST',
+            headers: rmHeaders(),
             body: (() => {
               const f = new FormData()
               f.append('file', new Blob([Buffer.from('MZ')], { type: 'application/x-msdownload' }), 'x.exe')
@@ -379,7 +451,7 @@ async function main() {
     await step('resume_matcher_job_analysis', async () => {
       const analyze = await fetch(`${RM_BASE}/api/v1/integration/jobs/analyze`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: rmHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           resume: {
             personalInfo: { name: 'E2E Candidate', email: 'e2e@example.com' },
@@ -403,7 +475,7 @@ async function main() {
       if (typeof body.keyword_coverage_percent !== 'number') throw new Error('missing coverage')
       const again = await fetch(`${RM_BASE}/api/v1/integration/jobs/analyze`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: rmHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           resume: {
             personalInfo: { name: 'E2E Candidate', email: 'e2e@example.com' },
@@ -425,10 +497,58 @@ async function main() {
       return `coverage=${body.keyword_coverage_percent}; matched=${body.matched_keywords.slice(0, 5).join(',')}`
     })
 
+    await step('resume_matcher_service_token_rejected', async () => {
+      const missing = await fetch(`${RM_BASE}/api/v1/integration/health`)
+      if (missing.status !== 401) throw new Error(`expected 401 without token, got ${missing.status}`)
+      const wrong = await fetch(`${RM_BASE}/api/v1/integration/health`, {
+        headers: { 'X-CodeQuest-Service-Token': 'wrong-service-token' },
+      })
+      if (wrong.status !== 401) throw new Error(`expected 401 wrong token, got ${wrong.status}`)
+      return 'service token negative ok'
+    })
+
+    await step('cq_proxy_unauthenticated_import_rejected', async () => {
+      const pdfBytes = Buffer.from('%PDF-1.1\n%%EOF\n', 'utf8')
+      const form = new FormData()
+      form.append('file', new Blob([pdfBytes], { type: 'application/pdf' }), 'unauth.pdf')
+      const res = await fetch(`${API_BASE}/api/v1/resume-matcher/resumes/parse`, {
+        method: 'POST',
+        body: form,
+      })
+      if (![401, 403].includes(res.status)) {
+        throw new Error(`expected 401/403 unauthenticated parse, got ${res.status}`)
+      }
+      return `status=${res.status}`
+    })
+
+    await step('cq_proxy_authenticated_import', async () => {
+      const pdfBytes = Buffer.from(
+        '%PDF-1.1\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\nAda Lovelace\nPython\n',
+        'utf8',
+      )
+      const form = new FormData()
+      form.append('file', new Blob([pdfBytes], { type: 'application/pdf' }), 'auth-import.pdf')
+      const res = await fetch(`${API_BASE}/api/v1/resume-matcher/resumes/parse`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${cqCreds.token}` },
+        body: form,
+      })
+      const body = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        // CQ may be running without RESUME_MATCHER_ENABLED — accept configured-disabled as residual risk note.
+        if (body?.detail?.code === 'resume_matcher_disabled' || body?.detail?.code === 'resume_matcher_service_token_missing') {
+          return `cq_proxy_not_wired_in_running_api:${body.detail.code}`
+        }
+        throw new Error(`auth parse ${res.status} ${JSON.stringify(body).slice(0, 200)}`)
+      }
+      if (typeof body.markdown !== 'string') throw new Error('missing markdown')
+      return `markdown_len=${body.markdown.length}`
+    })
+
     await step('resume_matcher_prompt_prep', async () => {
       const cover = await fetch(`${RM_BASE}/api/v1/integration/prompts/cover-letter`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: rmHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           resume: { personalInfo: { name: 'E2E Candidate' }, summary: 'Python engineer' },
           job_description: SAMPLE_JD,
@@ -436,7 +556,7 @@ async function main() {
       }).then((r) => r.json())
       const email = await fetch(`${RM_BASE}/api/v1/integration/prompts/application-email`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: rmHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           resume: { personalInfo: { name: 'E2E Candidate' }, summary: 'Python engineer' },
           job_description: SAMPLE_JD,
@@ -450,7 +570,7 @@ async function main() {
         headers: {
           Origin: 'http://localhost:5000',
           'Content-Type': 'application/json',
-          'X-CodeQuest-Connector-Token': CONNECTOR_TOKEN,
+          'X-CodeQuest-Connector-Token': CONNECTOR_BEARER,
         },
         body: JSON.stringify({
           model: modelNames[0],
@@ -468,7 +588,7 @@ async function main() {
         headers: {
           Origin: 'http://localhost:5000',
           'Content-Type': 'application/json',
-          'X-CodeQuest-Connector-Token': CONNECTOR_TOKEN,
+          'X-CodeQuest-Connector-Token': CONNECTOR_BEARER,
         },
         body: JSON.stringify({
           model: modelNames[0],
@@ -565,7 +685,7 @@ async function main() {
         headers: {
           Origin: 'http://localhost:5000',
           'Content-Type': 'application/json',
-          'X-CodeQuest-Connector-Token': CONNECTOR_TOKEN,
+          'X-CodeQuest-Connector-Token': CONNECTOR_BEARER,
         },
         body: JSON.stringify({
           model: modelNames[0],
@@ -611,7 +731,9 @@ async function main() {
     await step('resume_matcher_restart_reconnect', async () => {
       startResumeMatcher()
       await waitForResumeMatcher(true)
-      const health = await fetch(`${RM_BASE}/api/v1/integration/health`).then((r) => r.json())
+      const health = await fetch(`${RM_BASE}/api/v1/integration/health`, {
+        headers: rmHeaders(),
+      }).then((r) => r.json())
       if (health.status !== 'ok') throw new Error('RM health not ok after restart')
       return 'rm restarted'
     })
@@ -642,6 +764,9 @@ async function main() {
       startConnector()
       await waitForConnector(true)
       await page.bringToFront()
+      await page.evaluate((bearer) => {
+        sessionStorage.setItem('codequest.connector.paired-token', bearer)
+      }, CONNECTOR_BEARER)
       const panel = page.getByLabel(/Local AI connector status/i)
       await panel.locator('button').first().click()
       await page.waitForTimeout(1500)
@@ -650,6 +775,87 @@ async function main() {
       const options = await select.locator('option').allTextContents()
       if (options.length < 1) throw new Error('No models after reconnect')
       return options.join(' | ')
+    })
+
+    await step('connector_pairing_revoke_and_restart', async () => {
+      const revoked = await fetch(`${CONNECTOR}/api/v1/pair/revoke`, {
+        method: 'POST',
+        headers: {
+          Origin: 'http://localhost:5000',
+          'X-CodeQuest-Connector-Token': CONNECTOR_BEARER,
+        },
+      })
+      if (!revoked.ok) throw new Error(`revoke failed: ${revoked.status}`)
+      const denied = await fetch(`${CONNECTOR}/api/v1/models`, {
+        headers: {
+          Origin: 'http://localhost:5000',
+          'X-CodeQuest-Connector-Token': CONNECTOR_BEARER,
+        },
+      })
+      if (denied.status !== 401) throw new Error(`expected 401 after revoke, got ${denied.status}`)
+      stopConnector()
+      await waitForConnector(false)
+      startConnector()
+      await waitForConnector(true)
+      const restored = await fetch(`${CONNECTOR}/api/v1/models`, {
+        headers: {
+          Origin: 'http://localhost:5000',
+          'X-CodeQuest-Connector-Token': CONNECTOR_BEARER,
+        },
+      })
+      if (!restored.ok) throw new Error(`expected models after restart re-seed, got ${restored.status}`)
+      return 'revoke rejected then restart restored test pairing'
+    })
+
+    await step('bridge_forged_origin_source_rejected', async () => {
+      await page.bringToFront()
+      await page.goto(`${WEB_BASE}/?page=resume`, { waitUntil: 'networkidle' })
+      const outcome = await page.evaluate(async () => {
+        return await new Promise((resolve) => {
+          let responded = false
+          const onMsg = (ev) => {
+            if (
+              ev?.data?.protocol === 'codequest-resume-bridge-v1' &&
+              ev?.data?.type === 'response' &&
+              ev?.data?.requestId === 'forged-e2e-r1'
+            ) {
+              responded = true
+            }
+          }
+          window.addEventListener('message', onMsg)
+          // Source is the parent window (not the iframe) and nonce is forged — parent must ignore.
+          window.postMessage(
+            {
+              protocol: 'codequest-resume-bridge-v1',
+              type: 'request',
+              requestId: 'forged-e2e-r1',
+              sessionNonce: 'f'.repeat(32),
+              action: 'status',
+            },
+            window.location.origin,
+          )
+          setTimeout(() => {
+            window.removeEventListener('message', onMsg)
+            resolve({ responded })
+          }, 600)
+        })
+      })
+      if (outcome.responded) throw new Error('forged bridge request received a response')
+      return 'forged origin/source/nonce ignored'
+    })
+
+    await step('secret_leak_scan', async () => {
+      const runtime = await fetch(`${WEB_BASE}/runtime-config.js`).then((r) => r.text())
+      if (/VITE_CONNECTOR_TOKEN\s*:\s*'[^']+'/i.test(runtime) && !/VITE_CONNECTOR_TOKEN\s*:\s*''/.test(runtime)) {
+        throw new Error('runtime-config still exposes a connector token')
+      }
+      if (runtime.includes(CONNECTOR_BEARER) || runtime.includes(SERVICE_TOKEN)) {
+        throw new Error('runtime-config leaked temporary credentials')
+      }
+      if (runtime.includes(cqCreds.token)) {
+        throw new Error('runtime-config leaked CQ access token')
+      }
+      return 'runtime-config clean'
     })
 
     await step('fullscreen_resume_and_local_ai_message', async () => {

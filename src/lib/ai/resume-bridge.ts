@@ -12,6 +12,7 @@ import {
 import {
   BRIDGE_PROTOCOL,
   bridgeRequestSchema,
+  type BridgeHello,
   type BridgeRequest,
   type BridgeResponse,
 } from '@/lib/ai/resume-bridge-messages'
@@ -29,6 +30,13 @@ const pendingRequests = new Map<
   string,
   { abortController: AbortController; timeoutId: number }
 >()
+const completedRequestIds = new Set<string>()
+
+function createSessionNonce(): string {
+  const bytes = new Uint8Array(24)
+  crypto.getRandomValues(bytes)
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
+}
 
 function getAllowedChildOrigin(): string | null {
   const resolved = resolveResumeAppUrl()
@@ -49,6 +57,15 @@ function postResponse(
   source.postMessage(response, targetOrigin)
 }
 
+function withNonce(request: BridgeRequest, partial: Omit<BridgeResponse, 'protocol' | 'type' | 'sessionNonce'>): BridgeResponse {
+  return {
+    protocol: BRIDGE_PROTOCOL,
+    type: 'response',
+    sessionNonce: request.sessionNonce,
+    ...partial,
+  }
+}
+
 async function handleBridgeRequest(
   request: BridgeRequest,
   signal: AbortSignal,
@@ -57,23 +74,15 @@ async function handleBridgeRequest(
     switch (request.action) {
       case 'status': {
         const data = await fetchConnectorStatus(signal)
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
-          requestId: request.requestId,
-          ok: true,
-          data,
-        }
+        return withNonce(request, { requestId: request.requestId, ok: true, data })
       }
       case 'list-models': {
         const models = await fetchConnectorModels(signal)
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
+        return withNonce(request, {
           requestId: request.requestId,
           ok: true,
           data: { models },
-        }
+        })
       }
       case 'tailor': {
         const payload = z
@@ -91,13 +100,7 @@ async function handleBridgeRequest(
           },
           { signal },
         )
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
-          requestId: request.requestId,
-          ok: true,
-          data,
-        }
+        return withNonce(request, { requestId: request.requestId, ok: true, data })
       }
       case 'generate': {
         const payload = z
@@ -115,13 +118,7 @@ async function handleBridgeRequest(
           })
           .parse(request.payload) satisfies AIGenerationRequest
         const data = await codeQuestLocalProvider.generate(payload, { signal })
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
-          requestId: request.requestId,
-          ok: true,
-          data,
-        }
+        return withNonce(request, { requestId: request.requestId, ok: true, data })
       }
       case 'parse-resume': {
         const payload = z
@@ -132,13 +129,7 @@ async function handleBridgeRequest(
           })
           .parse(request.payload)
         const data = await parseResumeViaMatcher(payload, signal)
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
-          requestId: request.requestId,
-          ok: true,
-          data,
-        }
+        return withNonce(request, { requestId: request.requestId, ok: true, data })
       }
       case 'analyze-job': {
         const payload = z
@@ -149,13 +140,7 @@ async function handleBridgeRequest(
           })
           .parse(request.payload)
         const data = await analyzeJobViaMatcher(payload, signal)
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
-          requestId: request.requestId,
-          ok: true,
-          data,
-        }
+        return withNonce(request, { requestId: request.requestId, ok: true, data })
       }
       case 'match-resume': {
         const payload = z
@@ -166,13 +151,7 @@ async function handleBridgeRequest(
           })
           .parse(request.payload)
         const data = await matchResumeViaMatcher(payload, signal)
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
-          requestId: request.requestId,
-          ok: true,
-          data,
-        }
+        return withNonce(request, { requestId: request.requestId, ok: true, data })
       }
       case 'prepare-cover-letter': {
         const payload = z
@@ -182,13 +161,7 @@ async function handleBridgeRequest(
           })
           .parse(request.payload)
         const data = await prepareCoverLetterPrompt(payload, signal)
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
-          requestId: request.requestId,
-          ok: true,
-          data,
-        }
+        return withNonce(request, { requestId: request.requestId, ok: true, data })
       }
       case 'prepare-application-email': {
         const payload = z
@@ -198,13 +171,7 @@ async function handleBridgeRequest(
           })
           .parse(request.payload)
         const data = await prepareApplicationEmailPrompt(payload, signal)
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
-          requestId: request.requestId,
-          ok: true,
-          data,
-        }
+        return withNonce(request, { requestId: request.requestId, ok: true, data })
       }
       case 'generate-cover-letter': {
         const payload = z
@@ -215,13 +182,7 @@ async function handleBridgeRequest(
           })
           .parse(request.payload)
         const data = await generateCoverLetterViaConnector(payload, { signal })
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
-          requestId: request.requestId,
-          ok: true,
-          data,
-        }
+        return withNonce(request, { requestId: request.requestId, ok: true, data })
       }
       case 'generate-application-email': {
         const payload = z
@@ -232,24 +193,20 @@ async function handleBridgeRequest(
           })
           .parse(request.payload)
         const data = await generateApplicationEmailViaConnector(payload, { signal })
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
-          requestId: request.requestId,
-          ok: true,
-          data,
-        }
+        return withNonce(request, { requestId: request.requestId, ok: true, data })
       }
       case 'cancel': {
-        const entry = pendingRequests.get(request.requestId)
+        const targetId =
+          typeof request.payload?.targetRequestId === 'string'
+            ? request.payload.targetRequestId
+            : request.requestId
+        const entry = pendingRequests.get(targetId)
         entry?.abortController.abort()
-        return {
-          protocol: BRIDGE_PROTOCOL,
-          type: 'response',
+        return withNonce(request, {
           requestId: request.requestId,
           ok: true,
           data: { cancelled: true },
-        }
+        })
       }
       default: {
         const exhaustive: never = request.action
@@ -257,17 +214,18 @@ async function handleBridgeRequest(
       }
     }
   } catch (error) {
-    return {
-      protocol: BRIDGE_PROTOCOL,
-      type: 'response',
+    return withNonce(request, {
       requestId: request.requestId,
       ok: false,
       error: error instanceof Error ? error.message : 'Bridge request failed',
-    }
+    })
   }
 }
 
-export function createResumeBridgeMessageHandler(iframe: HTMLIFrameElement | null) {
+export function createResumeBridgeMessageHandler(
+  iframe: HTMLIFrameElement | null,
+  sessionNonce: string,
+) {
   return async (event: MessageEvent) => {
     const allowedOrigin = getAllowedChildOrigin()
     if (!allowedOrigin || event.origin !== allowedOrigin) return
@@ -277,6 +235,20 @@ export function createResumeBridgeMessageHandler(iframe: HTMLIFrameElement | nul
     if (!parsed.success) return
 
     const request = parsed.data
+    if (request.sessionNonce !== sessionNonce) return
+    if (completedRequestIds.has(request.requestId) && request.action !== 'cancel') {
+      postResponse(
+        event.source,
+        allowedOrigin,
+        withNonce(request, {
+          requestId: request.requestId,
+          ok: false,
+          error: 'duplicate_request',
+        }),
+      )
+      return
+    }
+
     if (request.action === 'cancel') {
       const response = await handleBridgeRequest(request, new AbortController().signal)
       postResponse(event.source, allowedOrigin, response)
@@ -292,6 +264,10 @@ export function createResumeBridgeMessageHandler(iframe: HTMLIFrameElement | nul
       if (response.ok && request.action === 'tailor') {
         tailorResultSchema.parse(response.data)
       }
+      completedRequestIds.add(request.requestId)
+      if (completedRequestIds.size > 500) {
+        completedRequestIds.clear()
+      }
       postResponse(event.source, allowedOrigin, response)
     } finally {
       window.clearTimeout(timeoutId)
@@ -301,7 +277,19 @@ export function createResumeBridgeMessageHandler(iframe: HTMLIFrameElement | nul
 }
 
 export function attachResumeBridge(iframe: HTMLIFrameElement | null): () => void {
-  const handler = createResumeBridgeMessageHandler(iframe)
+  const sessionNonce = createSessionNonce()
+  const handler = createResumeBridgeMessageHandler(iframe, sessionNonce)
   window.addEventListener('message', handler)
+
+  const allowedOrigin = getAllowedChildOrigin()
+  if (iframe?.contentWindow && allowedOrigin) {
+    const hello: BridgeHello = {
+      protocol: BRIDGE_PROTOCOL,
+      type: 'hello',
+      sessionNonce,
+    }
+    iframe.contentWindow.postMessage(hello, allowedOrigin)
+  }
+
   return () => window.removeEventListener('message', handler)
 }

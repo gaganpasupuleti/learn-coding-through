@@ -8,7 +8,12 @@ import {
   type ConnectorStatus,
   type TailorResult,
 } from '@/lib/ai/connector-schemas'
-import { resolveConnectorToken, resolveConnectorUrl } from '@/lib/connector-url'
+import {
+  clearPairedConnectorToken,
+  resolveConnectorToken,
+  resolveConnectorUrl,
+  storePairedConnectorToken,
+} from '@/lib/connector-url'
 
 const DEFAULT_TIMEOUT_MS = 30_000
 const GENERATION_TIMEOUT_MS = 180_000
@@ -180,4 +185,30 @@ export async function generateApplicationEmailViaConnector(
     timeoutMs: GENERATION_TIMEOUT_MS,
     schema: promptGenerateResultSchema,
   })
+}
+
+const pairResultSchema = z.object({
+  paired: z.literal(true),
+  token: z.string().min(32),
+  token_type: z.literal('bearer'),
+})
+
+export async function pairConnector(code: string, signal?: AbortSignal): Promise<void> {
+  const payload = await connectorFetch('/api/v1/pair', {
+    method: 'POST',
+    body: { code: code.trim() },
+    signal,
+    schema: pairResultSchema,
+  })
+  storePairedConnectorToken(payload.token)
+}
+
+export async function revokeConnectorPairing(signal?: AbortSignal): Promise<void> {
+  await connectorFetch('/api/v1/pair/revoke', {
+    method: 'POST',
+    auth: true,
+    signal,
+    schema: z.object({ revoked: z.literal(true) }),
+  })
+  clearPairedConnectorToken()
 }
