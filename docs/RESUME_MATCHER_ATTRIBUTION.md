@@ -9,6 +9,8 @@ This document records third-party code reused or adapted for Resume Lab. Code Qu
 | Field | Value |
 | --- | --- |
 | Repository | https://github.com/AmruthPillai/Reactive-Resume (upstream) / local fork `reactive-resume` |
+| Integration commit | `0f7ca8f` (Resume Matcher workflows in Resume Lab panel) |
+| Hardening commit | `0db5c65` (session-nonce Code Quest bridge) |
 | Role | Resume editor, templates, live preview, section management, PostgreSQL resume storage, PDF/DOCX/JSON export |
 | License | See `reactive-resume/LICENSE` in the sibling repository |
 
@@ -18,7 +20,8 @@ This document records third-party code reused or adapted for Resume Lab. Code Qu
 | --- | --- |
 | Repository | https://github.com/gaganpasupuleti/Resume-Matcher |
 | Upstream | https://github.com/srbhr/Resume-Matcher |
-| Integration commit (fork base) | `126d3e6edd7d5bb331c401d892bd11d2362ee8e6` |
+| Integration commit | `35aa6c7` (integration mode APIs) |
+| Hardening commit | `16e064e` (service-token fail-closed) |
 | Role | PDF/DOCX parsing (MarkItDown), deterministic job keyword analysis, prompt preparation for cover letter / application email |
 | License | Apache-2.0 (`Resume-Matcher/LICENSE`) |
 
@@ -58,5 +61,7 @@ This document records third-party code reused or adapted for Resume Lab. Code Qu
 
 - Hugging Face remains backend-only and disabled by default (`ENABLE_HUGGINGFACE_AI=false`).
 - No frontend Hugging Face token.
-- Production Local Connector device pairing remains a separate future security phase.
+- Local Connector uses device pairing (hashed bearer); `VITE_CONNECTOR_TOKEN` is removed from production usage.
+- CQ → RM calls require matching `RESUME_MATCHER_SERVICE_TOKEN` / `CODEQUEST_SERVICE_TOKEN`.
 - Browser clients call Code Quest backend only; they do not call Resume Matcher directly in production.
+- CQ access tokens stay in the Code Quest parent; RR bridge uses origin + source + session nonce.
