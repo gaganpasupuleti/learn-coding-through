@@ -147,7 +147,7 @@ export function LocalConnectorPanel({ className }: LocalConnectorPanelProps) {
       {error && (
         <p className="mt-2 flex items-start gap-2 text-xs text-rose-700">
           <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
-          {error}
+          {error.includes('pairing') ? 'Local Connector pairing is required.' : error}
         </p>
       )}
 

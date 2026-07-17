@@ -6,7 +6,7 @@ import {
   type ConnectorStatus,
   type TailorResult,
 } from '@/lib/ai/connector-schemas'
-import { readConnectorToken, resolveConnectorUrl } from '@/lib/connector-url'
+import { resolveConnectorToken, resolveConnectorUrl } from '@/lib/connector-url'
 
 const DEFAULT_TIMEOUT_MS = 30_000
 const GENERATION_TIMEOUT_MS = 180_000
@@ -57,7 +57,11 @@ async function connectorFetch<T>(
       headers['Content-Type'] = 'application/json'
     }
     if (options.auth) {
-      headers['X-CodeQuest-Connector-Token'] = readConnectorToken()
+      const token = resolveConnectorToken()
+      if (!token.ok) {
+        throw new ConnectorRequestError(token.error, 401, token.code)
+      }
+      headers['X-CodeQuest-Connector-Token'] = token.token
     }
 
     const response = await fetch(`${getConnectorBaseUrl()}${path}`, {

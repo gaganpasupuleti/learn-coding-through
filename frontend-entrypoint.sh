@@ -14,7 +14,8 @@ CLIENT_VISIBLE_RESUME_APP_URL=""
 RAW_CONNECTOR_URL="${VITE_CODEQUEST_CONNECTOR_URL:-}"
 RAW_CONNECTOR_URL=$(printf '%s' "$RAW_CONNECTOR_URL" | sed 's|[[:space:]]||g')
 CLIENT_VISIBLE_CONNECTOR_URL=""
-CONNECTOR_TOKEN="${VITE_CONNECTOR_TOKEN:-codequest-local-lab}"
+# Development-only lab token must never be injected as a silent production default.
+CONNECTOR_TOKEN="${VITE_CONNECTOR_TOKEN:-}"
 
 if [ -n "$RAW_JOBS_API" ] && printf '%s' "$RAW_JOBS_API" | grep -qE '^https?://' && ! printf '%s' "$RAW_JOBS_API" | grep -q '<'; then
   CLIENT_VISIBLE_JOBS_API_URL=$(printf '%s' "$RAW_JOBS_API" | sed 's|/*$||')

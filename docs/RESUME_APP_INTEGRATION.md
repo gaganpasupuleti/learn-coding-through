@@ -31,7 +31,7 @@ Defaults (verified from connector source):
 
 - Connector: `http://127.0.0.1:17891`
 - Ollama: `http://127.0.0.1:11434`
-- Dev token: `codequest-local-lab` (development only)
+- Lab token: `codequest-local-lab` — **local development only**. This is not secure authentication and must never be treated as a production credential.
 
 ## Local configuration
 
@@ -40,10 +40,13 @@ Defaults (verified from connector source):
 ```env
 VITE_RESUME_APP_URL=http://localhost:3000/dashboard/resumes
 VITE_CODEQUEST_CONNECTOR_URL=http://127.0.0.1:17891
+# Local-development lab token only. Not authentication. Do not use in production.
 VITE_CONNECTOR_TOKEN=codequest-local-lab
 ```
 
 Runtime config: `public/runtime-config.js` and `frontend-entrypoint.sh`.
+
+Production builds refuse `codequest-local-lab`. If no paired-device token is configured, local AI is disabled with: **Local Connector pairing is required.** There is no silent production default.
 
 ### Connector (`backend/codequest-local-ai-lab`)
 
@@ -135,7 +138,8 @@ python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 - CORS uses exact-origin allowlist via `CQ_ALLOWED_ORIGINS` (no wildcards).
 - Reactive Resume iframe embedding uses validated `CODEQUEST_EMBED_ORIGIN` CSP `frame-ancestors`.
 - postMessage bridge validates child origin, `event.source`, and runtime schemas.
-- Lab token is development-only; production device pairing is future work.
+- Lab token is development-only and is not authentication.
+- **Future security phase (not implemented):** production device pairing that issues a non-lab connector token per paired device. Until that ships, production builds must not enable local AI with the lab token.
 
 ## Deterministic ATS
 

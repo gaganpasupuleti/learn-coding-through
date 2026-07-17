@@ -13,9 +13,11 @@ export class HuggingFaceProvider implements AIProvider {
   }
 
   async generate(
-    _request: AIGenerationRequest,
-    _options?: { signal?: AbortSignal },
+    request: AIGenerationRequest,
+    options?: { signal?: AbortSignal },
   ): Promise<AIGenerationResponse> {
+    void request
+    void options
     throw new ProviderNotEnabledError(this.id)
   }
 }
