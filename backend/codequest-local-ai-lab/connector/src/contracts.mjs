@@ -60,22 +60,79 @@ function requireText(value, field, minimum, maximum) {
   return trimmed;
 }
 
+function requireModel(value) {
+  const model = requireText(value, 'model', 1, 200);
+  if (!/^[a-zA-Z0-9_.:/-]+$/.test(model)) {
+    throw new InputError('model contains unsupported characters', 'model');
+  }
+  return model;
+}
+
 export function validateTailorRequest(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new InputError('Request body must be a JSON object', 'body');
   }
 
-  const model = requireText(value.model, 'model', 1, 200);
-  if (!/^[a-zA-Z0-9_.:/-]+$/.test(model)) {
-    throw new InputError('model contains unsupported characters', 'model');
-  }
-
   return {
-    model,
+    model: requireModel(value.model),
     resumeText: requireText(value.resume_text, 'resume_text', 20, 50000),
     jobDescription: requireText(value.job_description, 'job_description', 20, 30000),
   };
 }
+
+export function validatePromptGenerateRequest(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new InputError('Request body must be a JSON object', 'body');
+  }
+
+  return {
+    model: requireModel(value.model),
+    systemPrompt: requireText(value.system_prompt, 'system_prompt', 10, 20000),
+    userPrompt: requireText(value.user_prompt, 'user_prompt', 20, 80000),
+  };
+}
+
+export function validateCoverLetterResult(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error('AI response is not a JSON object');
+  }
+  if (typeof value.text !== 'string' || value.text.trim().length < 40) {
+    throw new Error('AI cover letter text is invalid');
+  }
+  return { text: value.text.trim() };
+}
+
+export function validateApplicationEmailResult(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error('AI response is not a JSON object');
+  }
+  if (typeof value.subject !== 'string' || value.subject.trim().length < 3) {
+    throw new Error('AI email subject is invalid');
+  }
+  if (typeof value.body !== 'string' || value.body.trim().length < 40) {
+    throw new Error('AI email body is invalid');
+  }
+  return { subject: value.subject.trim(), body: value.body.trim() };
+}
+
+export const COVER_LETTER_RESULT_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['text'],
+  properties: {
+    text: { type: 'string' },
+  },
+};
+
+export const APPLICATION_EMAIL_RESULT_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['subject', 'body'],
+  properties: {
+    subject: { type: 'string' },
+    body: { type: 'string' },
+  },
+};
 
 function isStringArray(value) {
   return Array.isArray(value) && value.every((item) => typeof item === 'string');

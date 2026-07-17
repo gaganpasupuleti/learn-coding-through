@@ -2,7 +2,13 @@ import { z } from 'zod'
 
 import { codeQuestLocalProvider } from '@/lib/ai/codequest-local-provider'
 import { tailorResultSchema } from '@/lib/ai/connector-schemas'
-import { fetchConnectorModels, fetchConnectorStatus, tailorResume } from '@/lib/ai/connector-client'
+import {
+  fetchConnectorModels,
+  fetchConnectorStatus,
+  generateApplicationEmailViaConnector,
+  generateCoverLetterViaConnector,
+  tailorResume,
+} from '@/lib/ai/connector-client'
 import {
   BRIDGE_PROTOCOL,
   bridgeRequestSchema,
@@ -11,6 +17,13 @@ import {
 } from '@/lib/ai/resume-bridge-messages'
 import type { AIGenerationRequest } from '@/lib/ai/types'
 import { resolveResumeAppUrl } from '@/lib/resume-app-url'
+import {
+  analyzeJobViaMatcher,
+  matchResumeViaMatcher,
+  parseResumeViaMatcher,
+  prepareApplicationEmailPrompt,
+  prepareCoverLetterPrompt,
+} from '@/lib/resume-matcher-api'
 
 const pendingRequests = new Map<
   string,
@@ -102,6 +115,123 @@ async function handleBridgeRequest(
           })
           .parse(request.payload) satisfies AIGenerationRequest
         const data = await codeQuestLocalProvider.generate(payload, { signal })
+        return {
+          protocol: BRIDGE_PROTOCOL,
+          type: 'response',
+          requestId: request.requestId,
+          ok: true,
+          data,
+        }
+      }
+      case 'parse-resume': {
+        const payload = z
+          .object({
+            filename: z.string().min(1).max(180),
+            contentBase64: z.string().min(1).max(12_000_000),
+            contentType: z.string().min(3).max(120),
+          })
+          .parse(request.payload)
+        const data = await parseResumeViaMatcher(payload, signal)
+        return {
+          protocol: BRIDGE_PROTOCOL,
+          type: 'response',
+          requestId: request.requestId,
+          ok: true,
+          data,
+        }
+      }
+      case 'analyze-job': {
+        const payload = z
+          .object({
+            resume: z.record(z.unknown()),
+            jobDescription: z.string().min(20).max(30000),
+            resumeText: z.string().max(50000).optional(),
+          })
+          .parse(request.payload)
+        const data = await analyzeJobViaMatcher(payload, signal)
+        return {
+          protocol: BRIDGE_PROTOCOL,
+          type: 'response',
+          requestId: request.requestId,
+          ok: true,
+          data,
+        }
+      }
+      case 'match-resume': {
+        const payload = z
+          .object({
+            resume: z.record(z.unknown()),
+            jobDescription: z.string().min(20).max(30000).optional(),
+            jobKeywords: z.record(z.unknown()).optional(),
+          })
+          .parse(request.payload)
+        const data = await matchResumeViaMatcher(payload, signal)
+        return {
+          protocol: BRIDGE_PROTOCOL,
+          type: 'response',
+          requestId: request.requestId,
+          ok: true,
+          data,
+        }
+      }
+      case 'prepare-cover-letter': {
+        const payload = z
+          .object({
+            resume: z.record(z.unknown()),
+            jobDescription: z.string().min(20).max(30000),
+          })
+          .parse(request.payload)
+        const data = await prepareCoverLetterPrompt(payload, signal)
+        return {
+          protocol: BRIDGE_PROTOCOL,
+          type: 'response',
+          requestId: request.requestId,
+          ok: true,
+          data,
+        }
+      }
+      case 'prepare-application-email': {
+        const payload = z
+          .object({
+            resume: z.record(z.unknown()),
+            jobDescription: z.string().min(20).max(30000),
+          })
+          .parse(request.payload)
+        const data = await prepareApplicationEmailPrompt(payload, signal)
+        return {
+          protocol: BRIDGE_PROTOCOL,
+          type: 'response',
+          requestId: request.requestId,
+          ok: true,
+          data,
+        }
+      }
+      case 'generate-cover-letter': {
+        const payload = z
+          .object({
+            model: z.string().min(1),
+            systemPrompt: z.string().min(10),
+            userPrompt: z.string().min(20),
+          })
+          .parse(request.payload)
+        const data = await generateCoverLetterViaConnector(payload, { signal })
+        return {
+          protocol: BRIDGE_PROTOCOL,
+          type: 'response',
+          requestId: request.requestId,
+          ok: true,
+          data,
+        }
+      }
+      case 'generate-application-email': {
+        const payload = z
+          .object({
+            model: z.string().min(1),
+            systemPrompt: z.string().min(10),
+            userPrompt: z.string().min(20),
+          })
+          .parse(request.payload)
+        const data = await generateApplicationEmailViaConnector(payload, { signal })
         return {
           protocol: BRIDGE_PROTOCOL,
           type: 'response',

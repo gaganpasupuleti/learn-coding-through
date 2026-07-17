@@ -78,6 +78,13 @@ class Settings(BaseSettings):
     hf_token: str | None = None
     hf_model: str | None = None
 
+    # Resume Matcher integration (backend-only — never VITE_*)
+    resume_matcher_enabled: bool = False
+    resume_matcher_base_url: str = "http://127.0.0.1:8001"
+    resume_matcher_timeout_seconds: float = 30.0
+    resume_matcher_connect_timeout_seconds: float = 5.0
+    resume_matcher_max_upload_bytes: int = 8 * 1024 * 1024
+
     @field_validator("database_url", mode="before")
     @classmethod
     def normalize_database_url(cls, value: str) -> str:

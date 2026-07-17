@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 import {
   connectorModelsSchema,
   connectorStatusSchema,
@@ -125,5 +127,57 @@ export async function tailorResume(
     signal: options?.signal,
     timeoutMs: GENERATION_TIMEOUT_MS,
     schema: tailorResultSchema,
+  })
+}
+
+const promptGenerateResultSchema = z.object({
+  result: z.object({
+    text: z.string().optional(),
+    subject: z.string().optional(),
+    body: z.string().optional(),
+  }),
+  meta: z.object({
+    provider: z.literal('ollama'),
+    model: z.string(),
+    local_only: z.literal(true),
+    duration_ms: z.number(),
+    prompt_tokens: z.number().nullable().optional(),
+    output_tokens: z.number().nullable().optional(),
+  }),
+})
+
+export async function generateCoverLetterViaConnector(
+  input: { model: string; systemPrompt: string; userPrompt: string },
+  options?: { signal?: AbortSignal },
+) {
+  return connectorFetch('/api/v1/cover-letter/generate', {
+    method: 'POST',
+    auth: true,
+    body: {
+      model: input.model,
+      system_prompt: input.systemPrompt,
+      user_prompt: input.userPrompt,
+    },
+    signal: options?.signal,
+    timeoutMs: GENERATION_TIMEOUT_MS,
+    schema: promptGenerateResultSchema,
+  })
+}
+
+export async function generateApplicationEmailViaConnector(
+  input: { model: string; systemPrompt: string; userPrompt: string },
+  options?: { signal?: AbortSignal },
+) {
+  return connectorFetch('/api/v1/application-email/generate', {
+    method: 'POST',
+    auth: true,
+    body: {
+      model: input.model,
+      system_prompt: input.systemPrompt,
+      user_prompt: input.userPrompt,
+    },
+    signal: options?.signal,
+    timeoutMs: GENERATION_TIMEOUT_MS,
+    schema: promptGenerateResultSchema,
   })
 }

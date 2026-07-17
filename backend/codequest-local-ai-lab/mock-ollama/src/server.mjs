@@ -87,12 +87,25 @@ export function createMockOllamaServer() {
         return;
       }
       const userContent = body.messages?.find((message) => message.role === 'user')?.content || '';
-      const content = userContent.includes('[MALFORMED]')
-        ? 'not-json'
-        : JSON.stringify(createMockTailorResult(userContent));
+      const schemaKeys = body.format?.required || [];
+      let payload;
+      if (userContent.includes('[MALFORMED]')) {
+        payload = 'not-json';
+      } else if (schemaKeys.includes('subject') && schemaKeys.includes('body')) {
+        payload = JSON.stringify({
+          subject: 'Application for Software Engineer',
+          body: 'I am writing to apply for the Software Engineer role. My resume shows relevant Python and API work that matches the job description. Worth a quick chat?',
+        });
+      } else if (schemaKeys.includes('text') && !schemaKeys.includes('summary')) {
+        payload = JSON.stringify({
+          text: 'I am applying for this role because the job description matches my Python and collaboration experience. I would welcome a conversation about how I can contribute.',
+        });
+      } else {
+        payload = JSON.stringify(createMockTailorResult(userContent));
+      }
       sendJson(response, 200, {
         model: body.model,
-        message: { role: 'assistant', content },
+        message: { role: 'assistant', content: payload },
         done: true,
         prompt_eval_count: 240,
         eval_count: 110,

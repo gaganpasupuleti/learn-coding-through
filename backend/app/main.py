@@ -14,7 +14,7 @@ from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
 
 from app.api import jobs as jobs_board
-from app.api.v1 import activity, admin, ai, auth, credits, enrollment, feedback, interview, progress, projects, quiz, roadmap, roles, execute, schedule, typing
+from app.api.v1 import activity, admin, ai, auth, credits, enrollment, feedback, interview, progress, projects, quiz, roadmap, roles, execute, resume_matcher, schedule, typing
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.schema_ensure import (
@@ -254,6 +254,7 @@ def health_db():
 
 
 app.include_router(ai.router, prefix="/api/v1")
+app.include_router(resume_matcher.router, prefix="/api/v1")
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
 app.include_router(roles.router, prefix="/api/v1")

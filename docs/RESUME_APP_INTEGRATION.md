@@ -117,7 +117,29 @@ pnpm install
 dotenvx run -f .env.local -- pnpm dev
 ```
 
-### 4. Code Quest
+### 4. Resume Matcher (integration mode)
+
+Sibling repo required: `../Resume-Matcher` (https://github.com/gaganpasupuleti/Resume-Matcher).
+
+```bash
+cd ../Resume-Matcher/apps/backend
+# Windows PowerShell
+$env:CODEQUEST_INTEGRATION_MODE="true"
+$env:PORT="8001"
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8001
+```
+
+Code Quest backend (backend-only env — never `VITE_*`):
+
+```bash
+RESUME_MATCHER_ENABLED=true
+RESUME_MATCHER_BASE_URL=http://127.0.0.1:8001
+RESUME_MATCHER_TIMEOUT_SECONDS=30
+```
+
+See `docs/RESUME_MATCHER_ATTRIBUTION.md` for reused modules and licenses.
+
+### 5. Code Quest
 
 ```bash
 cd learn-coding-through
@@ -125,7 +147,7 @@ npm install
 npm run dev
 ```
 
-Backend API (optional, for Hugging Face future endpoint):
+Backend API:
 
 ```bash
 cd backend

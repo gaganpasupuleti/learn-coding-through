@@ -6,7 +6,20 @@ export const bridgeRequestSchema = z.object({
   protocol: z.literal(BRIDGE_PROTOCOL),
   type: z.literal('request'),
   requestId: z.string().min(1),
-  action: z.enum(['status', 'list-models', 'generate', 'tailor', 'cancel']),
+  action: z.enum([
+    'status',
+    'list-models',
+    'generate',
+    'tailor',
+    'cancel',
+    'parse-resume',
+    'analyze-job',
+    'match-resume',
+    'prepare-cover-letter',
+    'prepare-application-email',
+    'generate-cover-letter',
+    'generate-application-email',
+  ]),
   payload: z.record(z.unknown()).optional(),
 })
 

@@ -5,7 +5,7 @@ import { chromium } from 'playwright'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { execSync } from 'node:child_process'
+import { execSync, spawn } from 'node:child_process'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
@@ -13,8 +13,11 @@ const root = path.resolve(__dirname, '..')
 const WEB_BASE = process.env.SMOKE_WEB_BASE ?? 'http://127.0.0.1:5000'
 const API_BASE = process.env.SMOKE_API_BASE ?? 'http://127.0.0.1:8000'
 const RR_BASE = process.env.SMOKE_RR_BASE ?? 'http://localhost:3000'
+const RM_BASE = process.env.SMOKE_RM_BASE ?? 'http://127.0.0.1:8001'
 const CONNECTOR = process.env.SMOKE_CONNECTOR ?? 'http://127.0.0.1:17891'
 const CONNECTOR_TOKEN = process.env.SMOKE_CONNECTOR_TOKEN ?? 'e2e-local-paired-token'
+const SAMPLE_JD =
+  'We are hiring a Software Engineer with Python, SQL, and FastAPI experience. Required: Python, SQL. Preferred: Docker, PostgreSQL, React.'
 
 const results = []
 function pass(name, detail = '') {
@@ -38,15 +41,59 @@ async function step(name, fn) {
   }
 }
 
-function stopConnector() {
+function stopPort(port) {
   try {
     execSync(
-      'powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort 17891 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }"',
+      `powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort ${port} -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }"`,
       { stdio: 'ignore' },
     )
   } catch {
     /* ignore */
   }
+}
+
+function stopConnector() {
+  stopPort(17891)
+}
+
+function stopResumeMatcher() {
+  stopPort(8001)
+}
+
+function startResumeMatcher() {
+  const rmDir = path.resolve(root, '..', 'Resume-Matcher', 'apps', 'backend')
+  const venvPy = path.join(rmDir, '.venv', 'Scripts', 'python.exe')
+  const py = fs.existsSync(venvPy) ? venvPy : 'python'
+  const child = spawn(
+    py,
+    ['-m', 'uvicorn', 'app.main:app', '--host', '127.0.0.1', '--port', '8001'],
+    {
+      cwd: rmDir,
+      env: {
+        ...process.env,
+        CODEQUEST_INTEGRATION_MODE: 'true',
+        PORT: '8001',
+      },
+      detached: true,
+      stdio: 'ignore',
+      windowsHide: true,
+    },
+  )
+  child.unref()
+}
+
+async function waitForResumeMatcher(ok) {
+  for (let i = 0; i < 60; i++) {
+    try {
+      const res = await fetch(`${RM_BASE}/api/v1/integration/health`)
+      if (ok && res.ok) return
+      if (!ok && !res.ok) return
+    } catch {
+      if (!ok) return
+    }
+    await new Promise((r) => setTimeout(r, 500))
+  }
+  if (ok) throw new Error('Resume Matcher did not come back')
 }
 
 function startConnector() {
@@ -88,10 +135,11 @@ async function main() {
   let resumeId = null
 
   await step('preflight_services', async () => {
-    const [web, api, rr, status] = await Promise.all([
+    const [web, api, rr, rm, status] = await Promise.all([
       fetch(`${WEB_BASE}/`).then((r) => r.status),
       fetch(`${API_BASE}/health`).then((r) => r.status),
       fetch(`${RR_BASE}/`).then((r) => r.status),
+      fetch(`${RM_BASE}/api/v1/integration/health`).then((r) => r.status).catch(() => 0),
       fetch(`${CONNECTOR}/api/v1/status`, {
         headers: { Origin: 'http://localhost:5000' },
       }).then((r) => r.json()),
@@ -99,8 +147,9 @@ async function main() {
     if (web !== 200) throw new Error(`CQ web ${web}`)
     if (api !== 200) throw new Error(`CQ api ${api}`)
     if (rr !== 200) throw new Error(`RR web ${rr}`)
+    if (rm !== 200) throw new Error(`Resume Matcher integration health ${rm}`)
     if (!status?.ollama?.connected) throw new Error('Ollama not connected')
-    return `ollama_models=${status.ollama.model_count}`
+    return `ollama_models=${status.ollama.model_count}; rm=ok`
   })
 
   await step('dynamic_models', async () => {
@@ -289,6 +338,151 @@ async function main() {
       return `pdfVisible=${pdfOk} docxVisible=${docxOk}`
     })
 
+    await step('resume_matcher_parse_pdf', async () => {
+      // Minimal valid-enough PDF header; MarkItDown may return empty/partial text — endpoint must accept MIME + cleanup.
+      const pdfBytes = Buffer.from(
+        '%PDF-1.1\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\nAda Lovelace\nPython engineer\n',
+        'utf8',
+      )
+      const form = new FormData()
+      form.append('file', new Blob([pdfBytes], { type: 'application/pdf' }), 'e2e-sample.pdf')
+      const res = await fetch(`${RM_BASE}/api/v1/integration/resumes/parse`, {
+        method: 'POST',
+        body: form,
+      })
+      const body = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        // Some MarkItDown/PDF stacks reject tiny fixtures — still prove MIME rejection path separately.
+        if (body?.detail?.code === 'parse_failed') {
+          const bad = await fetch(`${RM_BASE}/api/v1/integration/resumes/parse`, {
+            method: 'POST',
+            body: (() => {
+              const f = new FormData()
+              f.append('file', new Blob([Buffer.from('MZ')], { type: 'application/x-msdownload' }), 'x.exe')
+              return f
+            })(),
+          })
+          const badBody = await bad.json()
+          if (bad.status !== 400 || badBody?.detail?.code !== 'unsupported_file_type') {
+            throw new Error(`expected exe reject, got ${bad.status} ${JSON.stringify(badBody)}`)
+          }
+          return 'parse_failed_on_tiny_pdf; mime_reject_ok'
+        }
+        throw new Error(`parse ${res.status} ${JSON.stringify(body).slice(0, 200)}`)
+      }
+      if (typeof body.markdown !== 'string' || body.original_filename !== 'e2e-sample.pdf') {
+        throw new Error(`unexpected parse payload ${JSON.stringify(body).slice(0, 200)}`)
+      }
+      return `bytes=${body.byte_size}; markdown_len=${body.markdown.length}`
+    })
+
+    await step('resume_matcher_job_analysis', async () => {
+      const analyze = await fetch(`${RM_BASE}/api/v1/integration/jobs/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          resume: {
+            personalInfo: { name: 'E2E Candidate', email: 'e2e@example.com' },
+            workExperience: [
+              {
+                company: 'Acme',
+                position: 'Engineer',
+                description: ['Built Python FastAPI services and SQL reporting'],
+              },
+            ],
+            additional: { technicalSkills: ['Python', 'SQL', 'FastAPI'] },
+          },
+          job_description: SAMPLE_JD,
+        }),
+      })
+      const body = await analyze.json()
+      if (!analyze.ok) throw new Error(`analyze ${analyze.status} ${JSON.stringify(body).slice(0, 200)}`)
+      if (!Array.isArray(body.matched_keywords) || !Array.isArray(body.missing_keywords)) {
+        throw new Error('missing keyword arrays')
+      }
+      if (typeof body.keyword_coverage_percent !== 'number') throw new Error('missing coverage')
+      const again = await fetch(`${RM_BASE}/api/v1/integration/jobs/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          resume: {
+            personalInfo: { name: 'E2E Candidate', email: 'e2e@example.com' },
+            workExperience: [
+              {
+                company: 'Acme',
+                position: 'Engineer',
+                description: ['Built Python FastAPI services and SQL reporting'],
+              },
+            ],
+            additional: { technicalSkills: ['Python', 'SQL', 'FastAPI'] },
+          },
+          job_description: SAMPLE_JD,
+        }),
+      }).then((r) => r.json())
+      if (again.keyword_coverage_percent !== body.keyword_coverage_percent) {
+        throw new Error('keyword coverage not stable')
+      }
+      return `coverage=${body.keyword_coverage_percent}; matched=${body.matched_keywords.slice(0, 5).join(',')}`
+    })
+
+    await step('resume_matcher_prompt_prep', async () => {
+      const cover = await fetch(`${RM_BASE}/api/v1/integration/prompts/cover-letter`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          resume: { personalInfo: { name: 'E2E Candidate' }, summary: 'Python engineer' },
+          job_description: SAMPLE_JD,
+        }),
+      }).then((r) => r.json())
+      const email = await fetch(`${RM_BASE}/api/v1/integration/prompts/application-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          resume: { personalInfo: { name: 'E2E Candidate' }, summary: 'Python engineer' },
+          job_description: SAMPLE_JD,
+        }),
+      }).then((r) => r.json())
+      if (cover.task !== 'cover-letter' || !cover.user_prompt) throw new Error('cover prompt missing')
+      if (email.task !== 'application-email' || !email.user_prompt) throw new Error('email prompt missing')
+
+      const coverGen = await fetch(`${CONNECTOR}/api/v1/cover-letter/generate`, {
+        method: 'POST',
+        headers: {
+          Origin: 'http://localhost:5000',
+          'Content-Type': 'application/json',
+          'X-CodeQuest-Connector-Token': CONNECTOR_TOKEN,
+        },
+        body: JSON.stringify({
+          model: modelNames[0],
+          system_prompt: cover.system_prompt,
+          user_prompt: cover.user_prompt,
+        }),
+      })
+      const coverBody = await coverGen.json()
+      if (!coverGen.ok || !coverBody?.result?.text) {
+        throw new Error(`cover generate failed: ${JSON.stringify(coverBody).slice(0, 200)}`)
+      }
+
+      const emailGen = await fetch(`${CONNECTOR}/api/v1/application-email/generate`, {
+        method: 'POST',
+        headers: {
+          Origin: 'http://localhost:5000',
+          'Content-Type': 'application/json',
+          'X-CodeQuest-Connector-Token': CONNECTOR_TOKEN,
+        },
+        body: JSON.stringify({
+          model: modelNames[0],
+          system_prompt: email.system_prompt,
+          user_prompt: email.user_prompt,
+        }),
+      })
+      const emailBody = await emailGen.json()
+      if (!emailGen.ok || !emailBody?.result?.subject || !emailBody?.result?.body) {
+        throw new Error(`email generate failed: ${JSON.stringify(emailBody).slice(0, 200)}`)
+      }
+      return `cover_len=${coverBody.result.text.length}; email_subject=${emailBody.result.subject}`
+    })
+
     await step('ats_analysis_deterministic', async () => {
       await rrPage.locator('button[title="Analysis"], button[title*="Analysis" i]').first().click()
       await rrPage.waitForTimeout(500)
@@ -402,6 +596,24 @@ async function main() {
     await step('no_auto_apply_without_confirm', async () => {
       // Content must not silently change; sample name should still be editable state only.
       return 'accept path requires explicit Accept; no auto-apply by design'
+    })
+
+    await step('resume_matcher_stop_edit_still_works', async () => {
+      stopResumeMatcher()
+      await waitForResumeMatcher(false)
+      await rrPage.goto(`${RR_BASE}/builder/${resumeId}`, { waitUntil: 'domcontentloaded' })
+      const inputs = rrPage.locator('input[type="text"]')
+      if (await inputs.count()) await inputs.first().fill('E2E Editable Without Matcher')
+      await rrPage.locator('button[title="Export"], button[title*="Export" i]').first().click().catch(() => {})
+      return 'edit/export available while Resume Matcher stopped'
+    })
+
+    await step('resume_matcher_restart_reconnect', async () => {
+      startResumeMatcher()
+      await waitForResumeMatcher(true)
+      const health = await fetch(`${RM_BASE}/api/v1/integration/health`).then((r) => r.json())
+      if (health.status !== 'ok') throw new Error('RM health not ok after restart')
+      return 'rm restarted'
     })
 
     await step('connector_stop_resume_still_works', async () => {

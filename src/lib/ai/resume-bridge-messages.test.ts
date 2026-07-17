@@ -37,4 +37,16 @@ describe('resume bridge messages', () => {
       }),
     ).toBe(false)
   })
+
+  it('accepts Resume Matcher bridge actions', () => {
+    expect(
+      isBridgeRequest({
+        protocol: 'codequest-ai/v1',
+        type: 'request',
+        requestId: 'req-2',
+        action: 'analyze-job',
+        payload: { jobDescription: 'x'.repeat(20) },
+      }),
+    ).toBe(true)
+  })
 })

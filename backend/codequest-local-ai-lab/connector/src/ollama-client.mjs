@@ -1,9 +1,13 @@
 import {
+  APPLICATION_EMAIL_RESULT_SCHEMA,
+  COVER_LETTER_RESULT_SCHEMA,
   TAILOR_RESULT_SCHEMA,
   addEvidenceFlags,
+  validateApplicationEmailResult,
+  validateCoverLetterResult,
   validateTailorResult,
 } from './contracts.mjs';
-import { buildTailorMessages } from './prompt.mjs';
+import { buildPreparedPromptMessages, buildTailorMessages } from './prompt.mjs';
 
 export class OllamaError extends Error {
   constructor(message, code = 'ollama_error', status = 502) {
@@ -148,6 +152,79 @@ export class OllamaClient {
         output_tokens: payload.eval_count ?? null,
       },
     };
+  }
+
+  async #generateStructured({ model, systemPrompt, userPrompt, resultSchema, validate }) {
+    const startedAt = performance.now();
+    const payload = await this.#request(
+      '/api/chat',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          model,
+          messages: buildPreparedPromptMessages({ systemPrompt, userPrompt, resultSchema }),
+          stream: false,
+          format: resultSchema,
+          options: { temperature: 0.2 },
+        }),
+      },
+      this.generationTimeoutMs,
+    );
+
+    const content = payload.message?.content;
+    let parsed;
+    try {
+      parsed = typeof content === 'string' ? JSON.parse(content) : content;
+    } catch {
+      throw new OllamaError(
+        'The local model did not return valid structured output',
+        'model_output_invalid',
+        502,
+      );
+    }
+
+    let validated;
+    try {
+      validated = validate(parsed);
+    } catch {
+      throw new OllamaError(
+        'The local model output did not match the expected schema',
+        'model_schema_invalid',
+        502,
+      );
+    }
+
+    return {
+      result: validated,
+      meta: {
+        provider: 'ollama',
+        model,
+        local_only: true,
+        duration_ms: Math.round(performance.now() - startedAt),
+        prompt_tokens: payload.prompt_eval_count ?? null,
+        output_tokens: payload.eval_count ?? null,
+      },
+    };
+  }
+
+  generateCoverLetter(request) {
+    return this.#generateStructured({
+      model: request.model,
+      systemPrompt: request.systemPrompt,
+      userPrompt: request.userPrompt,
+      resultSchema: COVER_LETTER_RESULT_SCHEMA,
+      validate: validateCoverLetterResult,
+    });
+  }
+
+  generateApplicationEmail(request) {
+    return this.#generateStructured({
+      model: request.model,
+      systemPrompt: request.systemPrompt,
+      userPrompt: request.userPrompt,
+      resultSchema: APPLICATION_EMAIL_RESULT_SCHEMA,
+      validate: validateApplicationEmailResult,
+    });
   }
 }
 

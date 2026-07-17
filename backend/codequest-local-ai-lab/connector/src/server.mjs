@@ -1,5 +1,5 @@
 import http from 'node:http';
-import { InputError, validateTailorRequest } from './contracts.mjs';
+import { InputError, validatePromptGenerateRequest, validateTailorRequest } from './contracts.mjs';
 import { OllamaClient, OllamaError } from './ollama-client.mjs';
 
 export const CONNECTOR_VERSION = '0.1.0-lab';
@@ -117,6 +117,22 @@ export function createConnectorServer({ config, ollamaClient } = {}) {
         const body = await readJson(request, config.maxRequestBytes);
         const validated = validateTailorRequest(body);
         const result = await ollama.tailor(validated);
+        sendJson(response, 200, result, headers);
+        return;
+      }
+
+      if (request.method === 'POST' && requestUrl.pathname === '/api/v1/cover-letter/generate') {
+        const body = await readJson(request, config.maxRequestBytes);
+        const validated = validatePromptGenerateRequest(body);
+        const result = await ollama.generateCoverLetter(validated);
+        sendJson(response, 200, result, headers);
+        return;
+      }
+
+      if (request.method === 'POST' && requestUrl.pathname === '/api/v1/application-email/generate') {
+        const body = await readJson(request, config.maxRequestBytes);
+        const validated = validatePromptGenerateRequest(body);
+        const result = await ollama.generateApplicationEmail(validated);
         sendJson(response, 200, result, headers);
         return;
       }

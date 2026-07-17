@@ -119,3 +119,37 @@ test('blocks malformed model output from reaching the UI', async () => {
   assert.equal((await response.json()).error, 'model_output_invalid');
 });
 
+test('generates a cover letter from a prepared prompt package', async () => {
+  const response = await connectorFetch('/api/v1/cover-letter/generate', {
+    method: 'POST',
+    body: JSON.stringify({
+      model: 'codequest-mock:latest',
+      system_prompt: 'You write cover letters.',
+      user_prompt:
+        'Write a cover letter for a Python engineer role using this resume evidence: built FastAPI services.',
+    }),
+  });
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(typeof body.result.text, 'string');
+  assert.ok(body.result.text.length >= 40);
+  assert.equal(body.meta.local_only, true);
+});
+
+test('generates an application email with subject and body', async () => {
+  const response = await connectorFetch('/api/v1/application-email/generate', {
+    method: 'POST',
+    body: JSON.stringify({
+      model: 'codequest-mock:latest',
+      system_prompt: 'You write application emails.',
+      user_prompt:
+        'Write an application email for a backend role. Resume shows Python and PostgreSQL experience.',
+    }),
+  });
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(typeof body.result.subject, 'string');
+  assert.equal(typeof body.result.body, 'string');
+  assert.ok(body.result.body.length >= 40);
+});
+
