@@ -7,6 +7,8 @@ import {
   type AdminBatch,
   type AdminBatchCreatePayload,
   type AdminClassInsights,
+  type AdminLoginAttempt,
+  type AdminLoginAttemptSummaryItem,
   type AdminMetrics,
   type AdminMonthlyKpis,
   type AdminPlatformOverview,
@@ -23,6 +25,7 @@ import {
   fetchAdminFeedback,
   fetchAdminBatches,
   fetchAdminClassInsights,
+  fetchAdminLoginAttempts,
   fetchAdminMetrics,
   fetchAdminMonthlyKpis,
   fetchAdminPlatformOverview,
@@ -83,6 +86,8 @@ export function useAdminWorkspace() {
   const [editingBatchId, setEditingBatchId] = useState<number | null>(null)
 
   const [waitlistEntries, setWaitlistEntries] = useState<AdminRegistrationWaitlistEntry[]>([])
+  const [loginAttemptEntries, setLoginAttemptEntries] = useState<AdminLoginAttempt[]>([])
+  const [loginAttemptSummary, setLoginAttemptSummary] = useState<AdminLoginAttemptSummaryItem[]>([])
   const [userActivityEntries, setUserActivityEntries] = useState<AdminUserActivity[]>([])
   const [createPayload, setCreatePayload] = useState<AdminStudentCreatePayload>(defaultCreatePayload)
 
@@ -178,6 +183,7 @@ export function useAdminWorkspace() {
         fetchAdminActivity(t, 200),
         fetchAdminBatches(t),
         fetchAdminRegistrationWaitlist(t),
+        fetchAdminLoginAttempts(t, 500),
         fetchAdminUserActivity(t, 500),
         fetchAdminPlatformOverview(t),
         fetchAdminFeedback(t, { status: 'all', limit: 200 }),
@@ -191,6 +197,7 @@ export function useAdminWorkspace() {
         'activity',
         'batches',
         'waitlist',
+        'login attempts',
         'user activity',
         'overview',
         'feedback',
@@ -216,9 +223,10 @@ export function useAdminWorkspace() {
       const activity = pick(4, [] as AdminActivityLog[])
       const batchList = pick(5, [] as AdminBatch[])
       const waitlist = pick(6, [] as AdminRegistrationWaitlistEntry[])
-      const userActivity = pick(7, [] as AdminUserActivity[])
-      const platformOverview = pick(8, null)
-      const feedbackList = pick(9, [] as AdminFeedbackItem[])
+      const loginAttempts = pick(7, { attempts: [], summary: [] })
+      const userActivity = pick(8, [] as AdminUserActivity[])
+      const platformOverview = pick(9, null)
+      const feedbackList = pick(10, [] as AdminFeedbackItem[])
 
       const blended = blendAdminDashboardData({
         overview: platformOverview,
@@ -238,6 +246,8 @@ export function useAdminWorkspace() {
       setFeedbackEntries(feedbackList)
       setBatches(batchList)
       setWaitlistEntries(waitlist)
+      setLoginAttemptEntries(loginAttempts.attempts)
+      setLoginAttemptSummary(loginAttempts.summary)
       setUserActivityEntries(userActivity)
       setOverview(blended.overview)
 
@@ -526,6 +536,8 @@ export function useAdminWorkspace() {
     editingBatchId,
     setEditingBatchId,
     waitlistEntries,
+    loginAttemptEntries,
+    loginAttemptSummary,
     userActivityEntries,
     createPayload,
     setCreatePayload,

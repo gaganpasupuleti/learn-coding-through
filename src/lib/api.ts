@@ -373,6 +373,31 @@ export interface AdminRegistrationWaitlistEntry {
   last_attempted_at_ist?: string | null
 }
 
+export interface AdminLoginAttempt {
+  id: number
+  email: string
+  full_name: string | null
+  provider: string
+  status: 'success' | 'blocked' | 'failed' | string
+  reason: string | null
+  user_id: number | null
+  attempted_at: string
+}
+
+export interface AdminLoginAttemptSummaryItem {
+  email: string
+  total_attempts: number
+  successful_attempts: number
+  blocked_attempts: number
+  failed_attempts: number
+  last_attempted_at: string
+}
+
+export interface AdminLoginAttemptsResponse {
+  attempts: AdminLoginAttempt[]
+  summary: AdminLoginAttemptSummaryItem[]
+}
+
 export interface AdminUserActivity {
   id: number
   user_id: number | null
@@ -743,6 +768,11 @@ export async function updateAdminRegistrationWaitlistStatus(
     body: JSON.stringify({ status }),
   })
   return parseOrThrow(response) as Promise<AdminRegistrationWaitlistEntry>
+}
+
+export async function fetchAdminLoginAttempts(token: string, limit = 200): Promise<AdminLoginAttemptsResponse> {
+  const response = await fetchWithAuthApiFallback(`/api/v1/admin/login-attempts?limit=${limit}`, token)
+  return parseOrThrow(response) as Promise<AdminLoginAttemptsResponse>
 }
 
 export async function fetchAdminUserActivity(token: string, limit = 50): Promise<AdminUserActivity[]> {

@@ -21,6 +21,7 @@ from app.models.models import (
     JobPost,
     JobPostStatus,
     LearningBatch,
+    LoginAttempt,
     ProjectCatalog,
     ProjectWorkStatus,
     QuizCatalog,
@@ -34,6 +35,8 @@ from app.services.quiz_bank_import import import_quiz_bank_rows, parse_quiz_bank
 from app.schemas.schedule import ClassSessionCreate, ClassSessionResponse, ClassSessionUpdate
 from app.schemas.admin import (
     AdminActivityLogResponse,
+    AdminLoginAttemptSummaryItem,
+    AdminLoginAttemptsResponse,
     AdminMetricsResponse,
     AdminMonthlyKpiResponse,
     AdminPlatformOverviewResponse,
@@ -552,6 +555,55 @@ def list_registration_waitlist(
         .limit(limit)
         .all()
     )
+
+
+@router.get("/login-attempts", response_model=AdminLoginAttemptsResponse)
+def list_login_attempts(
+    limit: int = Query(default=200, ge=1, le=1000),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    attempts = (
+        db.query(LoginAttempt)
+        .order_by(LoginAttempt.attempted_at.desc())
+        .limit(limit)
+        .all()
+    )
+
+    summary_by_email: dict[str, dict[str, object]] = {}
+    for attempt in attempts:
+        bucket = summary_by_email.setdefault(
+            attempt.email,
+            {
+                "email": attempt.email,
+                "total_attempts": 0,
+                "successful_attempts": 0,
+                "blocked_attempts": 0,
+                "failed_attempts": 0,
+                "last_attempted_at": attempt.attempted_at,
+            },
+        )
+        bucket["total_attempts"] = int(bucket["total_attempts"]) + 1
+        if attempt.status == "success":
+            bucket["successful_attempts"] = int(bucket["successful_attempts"]) + 1
+        elif attempt.status == "blocked":
+            bucket["blocked_attempts"] = int(bucket["blocked_attempts"]) + 1
+        elif attempt.status == "failed":
+            bucket["failed_attempts"] = int(bucket["failed_attempts"]) + 1
+
+        if attempt.attempted_at > bucket["last_attempted_at"]:
+            bucket["last_attempted_at"] = attempt.attempted_at
+
+    summary = [
+        AdminLoginAttemptSummaryItem(**row)
+        for row in sorted(
+            summary_by_email.values(),
+            key=lambda item: item["last_attempted_at"],
+            reverse=True,
+        )
+    ]
+
+    return AdminLoginAttemptsResponse(attempts=attempts, summary=summary)
 
 
 @router.patch("/registration-waitlist/{entry_id}", response_model=AdminRegistrationWaitlistResponse)

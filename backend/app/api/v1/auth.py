@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.schema_ensure import ensure_login_attempts_table
 from app.core.security import (
     create_access_token,
     create_password_reset_token,
@@ -17,7 +18,7 @@ from app.core.security import (
     verify_password,
     verify_password_reset_token,
 )
-from app.models.models import RegistrationWaitlist, User, UserRole
+from app.models.models import LoginAttempt, RegistrationWaitlist, User, UserRole
 from app.schemas.auth import (
     AuthPublicConfigResponse,
     CompletePasswordSetupRequest,
@@ -34,6 +35,8 @@ from app.schemas.auth import (
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
+
+_LOGIN_ACCESS_EMAILS = {"kundetiriya@gmail.com"}
 
 
 @router.get("/config", response_model=AuthPublicConfigResponse)
@@ -75,6 +78,53 @@ def _upsert_waitlist(db: Session, email: str, full_name: str | None, source: str
         entry.source = source
         db.add(entry)
     db.commit()
+
+
+def _is_login_allowed(user: User) -> bool:
+    email = user.email.strip().lower()
+    return email in _LOGIN_ACCESS_EMAILS or user.role in (UserRole.ADMIN, UserRole.SUPER_ADMIN)
+
+
+def _record_login_attempt(
+    db: Session,
+    *,
+    email: str,
+    provider: str,
+    status: str,
+    reason: str | None = None,
+    user: User | None = None,
+    full_name: str | None = None,
+) -> None:
+    normalized_email = email.strip().lower()
+    if not normalized_email:
+        return
+
+    try:
+        ensure_login_attempts_table()
+        db.add(
+            LoginAttempt(
+                email=normalized_email,
+                full_name=(full_name or user.full_name if user else full_name),
+                provider=provider,
+                status=status,
+                reason=reason,
+                user_id=user.id if user else None,
+            )
+        )
+        db.commit()
+    except Exception as exc:
+        db.rollback()
+        print(f"Warning: unable to record login attempt for {normalized_email}: {exc}")
+
+
+def _raise_access_locked() -> None:
+    raise HTTPException(
+        status_code=403,
+        detail=(
+            "CodeQuest access is currently restricted. Your login attempt has been recorded "
+            "for admin review."
+        ),
+    )
 
 
 def _enforce_registration_limit(db: Session, email: str, full_name: str | None, source: str) -> None:
@@ -123,7 +173,7 @@ def register(payload: UserRegister, db: Session = Depends(get_db)):
         )
         .first()
     )
-    is_pre_approved = approved_entry is not None
+    is_pre_approved = approved_entry is not None or normalized_email in _LOGIN_ACCESS_EMAILS
 
     user = User(
         email=payload.email,
@@ -148,16 +198,51 @@ def register(payload: UserRegister, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=TokenResponse)
 def login(payload: UserLogin, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == payload.email).first()
+    normalized_email = payload.email.strip().lower()
+    user = db.query(User).filter(User.email == normalized_email).first()
     if not user or not verify_password(payload.password, user.password_hash):
+        _record_login_attempt(
+            db,
+            email=normalized_email,
+            provider="password",
+            status="failed",
+            reason="invalid_credentials",
+            user=user,
+        )
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     if not user.is_active:
+        _record_login_attempt(
+            db,
+            email=normalized_email,
+            provider="password",
+            status="blocked",
+            reason="pending_admin_approval",
+            user=user,
+        )
         raise HTTPException(
             status_code=403,
             detail="Your account is pending admin approval. Please wait until an admin approves your registration.",
         )
 
+    if not _is_login_allowed(user):
+        _record_login_attempt(
+            db,
+            email=normalized_email,
+            provider="password",
+            status="blocked",
+            reason="access_restricted",
+            user=user,
+        )
+        _raise_access_locked()
+
+    _record_login_attempt(
+        db,
+        email=normalized_email,
+        provider="password",
+        status="success",
+        user=user,
+    )
     token = create_access_token(str(user.id))
     return TokenResponse(access_token=token)
 
@@ -212,7 +297,7 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
             )
             .first()
         )
-        is_pre_approved = approved_entry is not None
+        is_pre_approved = approved_entry is not None or email in _LOGIN_ACCESS_EMAILS
 
         # Create new user, but don't auto-activate unless pre-approved
         user = User(
@@ -230,6 +315,15 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
 
         if not is_pre_approved:
             _upsert_waitlist(db, email=email, full_name=full_name, source="google-login")
+            _record_login_attempt(
+                db,
+                email=email,
+                full_name=full_name,
+                provider="google",
+                status="blocked",
+                reason="pending_admin_approval",
+                user=user,
+            )
             raise HTTPException(
                 status_code=403,
                 detail="Registration via Google received! Your account is pending admin approval. You will be able to log in once an admin approves your request.",
@@ -251,11 +345,40 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
 
     # Final check: is the user active? (Covers both new and existing users)
     if not user.is_active:
+        _record_login_attempt(
+            db,
+            email=email,
+            full_name=full_name,
+            provider="google",
+            status="blocked",
+            reason="pending_admin_approval",
+            user=user,
+        )
         raise HTTPException(
             status_code=403,
             detail="Your account is pending admin approval. Please wait until an admin approves your registration.",
         )
 
+    if not _is_login_allowed(user):
+        _record_login_attempt(
+            db,
+            email=email,
+            full_name=full_name,
+            provider="google",
+            status="blocked",
+            reason="access_restricted",
+            user=user,
+        )
+        _raise_access_locked()
+
+    _record_login_attempt(
+        db,
+        email=email,
+        full_name=full_name,
+        provider="google",
+        status="success",
+        user=user,
+    )
     token = create_access_token(str(user.id))
     return TokenResponse(access_token=token)
 

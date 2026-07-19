@@ -214,6 +214,34 @@ class AdminRegistrationWaitlistStatusUpdate(BaseModel):
     status: str = Field(..., pattern="^(pending|approved|rejected)$")
 
 
+class AdminLoginAttemptResponse(BaseModel):
+    id: int
+    email: EmailStr
+    full_name: str | None
+    provider: str
+    status: str
+    reason: str | None
+    user_id: int | None
+    attempted_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class AdminLoginAttemptSummaryItem(BaseModel):
+    email: EmailStr
+    total_attempts: int
+    successful_attempts: int
+    blocked_attempts: int
+    failed_attempts: int
+    last_attempted_at: datetime
+
+
+class AdminLoginAttemptsResponse(BaseModel):
+    attempts: list[AdminLoginAttemptResponse]
+    summary: list[AdminLoginAttemptSummaryItem]
+
+
 class AdminUserActivityResponse(BaseModel):
     id: int
     user_id: int | None
