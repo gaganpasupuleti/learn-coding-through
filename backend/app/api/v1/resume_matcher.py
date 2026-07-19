@@ -1,4 +1,4 @@
-"""Code Quest proxy routes for Resume Matcher integration."""
+"""Code Quest proxy routes for Resume Matcher public API (JWT at CQ boundary)."""
 
 from __future__ import annotations
 

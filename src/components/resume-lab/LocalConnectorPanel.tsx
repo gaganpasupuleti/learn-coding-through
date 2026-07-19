@@ -172,7 +172,7 @@ export function LocalConnectorPanel({ className }: LocalConnectorPanelProps) {
         </button>
       </div>
 
-      <div className="mt-4 grid gap-2 text-xs sm:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-2 text-xs lg:grid-cols-4">
         <StatusRow
           label="Connector"
           value={panelState === 'connector-unavailable' ? 'Unavailable' : 'Running'}
@@ -217,7 +217,7 @@ export function LocalConnectorPanel({ className }: LocalConnectorPanelProps) {
               onChange={(event) => setPairingCode(event.target.value.toUpperCase())}
               autoComplete="one-time-code"
               spellCheck={false}
-              className="min-w-[12rem] flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 font-mono text-sm tracking-wider text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+              className="min-h-11 min-w-0 w-full flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 font-mono text-sm tracking-wider text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 sm:min-w-[12rem]"
               placeholder="XXXXXXXX"
             />
             <button

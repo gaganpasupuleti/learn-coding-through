@@ -40,7 +40,7 @@ export function CodeWorkbenchLayout({
   const [bottomTab, setBottomTab] = useState<BottomTab>('tests')
 
   return (
-    <div className={cn('flex min-h-[calc(100vh-4rem)] flex-col', wb.root)}>
+    <div className={cn('flex min-h-[calc(100dvh-4rem)] flex-col', wb.root)}>
       {toolbar}
       {questionPicker}
 

@@ -47,9 +47,26 @@ export function AdminShell({
             </div>
 
             {hasPillNav ? (
-              <div className="flex min-w-0 flex-1 justify-center order-last lg:order-none">
+              <div className="order-last flex min-w-0 flex-1 justify-center lg:order-none">
+                {/* Mobile / tablet: select (touch-friendly) */}
+                <label className="flex w-full max-w-md flex-col gap-1 md:hidden">
+                  <span className="sr-only">Workspace section</span>
+                  <select
+                    className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-800"
+                    value={currentSection ?? sectionNav![0]?.id}
+                    onChange={(event) => onSectionChange!(event.target.value)}
+                    aria-label="Workspace sections"
+                  >
+                    {sectionNav!.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                {/* Laptop+: pill track with horizontal scroll if needed */}
                 <div
-                  className="hidden md:flex items-center p-1 rounded-full bg-slate-100/90 border border-slate-200/80"
+                  className="hidden max-w-full overflow-x-auto md:flex md:items-center md:rounded-full md:border md:border-slate-200/80 md:bg-slate-100/90 md:p-1"
                   role="tablist"
                   aria-label="Workspace sections"
                 >
@@ -62,10 +79,10 @@ export function AdminShell({
                         role="tab"
                         aria-selected={active}
                         className={cn(
-                          'px-4 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ease-in-out',
+                          'shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 ease-in-out lg:px-4',
                           active
                             ? 'bg-primary text-primary-foreground shadow-md shadow-primary/25'
-                            : 'text-slate-600 hover:text-slate-900 bg-transparent hover:bg-slate-200/70',
+                            : 'bg-transparent text-slate-600 hover:bg-slate-200/70 hover:text-slate-900',
                         )}
                         onClick={() => onSectionChange!(item.id)}
                       >

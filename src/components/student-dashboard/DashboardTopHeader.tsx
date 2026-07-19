@@ -126,7 +126,7 @@ export function DashboardTopHeader({
           </div>
 
           <div className="min-w-0">
-            <h1 className="font-serif text-[22px] font-semibold leading-tight tracking-tight text-[#FAF3E0] sm:text-[26px]">
+            <h1 className="font-serif text-[clamp(1.25rem,2.5vw,1.625rem)] font-semibold leading-tight tracking-tight text-[#FAF3E0]">
               Your learning command center
             </h1>
             <p className="mt-0.5 flex items-center gap-2 text-[12px] text-[#FAF3E0]/70 sm:text-[13px]">
@@ -154,21 +154,21 @@ export function DashboardTopHeader({
           </div>
 
           {nextLessonTitle && (
-            <p className="flex items-start gap-2 text-[12px] text-[#FAF3E0]/75">
+            <p className="flex min-w-0 items-start gap-2 text-[12px] text-[#FAF3E0]/75">
               <BookOpen className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
-              <span>
+              <span className="min-w-0">
                 Today&apos;s focus:{' '}
-                <span className="font-semibold text-[#FAF3E0]">{nextLessonTitle}</span>
+                <span className="line-clamp-2 font-semibold text-[#FAF3E0]">{nextLessonTitle}</span>
               </span>
             </p>
           )}
         </div>
 
-        <div className="flex w-full shrink-0 flex-col gap-2 lg:w-[300px]">
+        <div className="flex w-full max-w-full shrink-0 flex-col gap-2 lg:w-[min(100%,300px)]">
           <CQActionButton
             variant="ghost"
             onClick={onContinuePractice}
-            className="w-full justify-between border-transparent bg-[#FAF3E0] px-4 py-2.5 text-[14px] text-[#0A1020] hover:bg-white"
+            className="min-h-11 w-full justify-between border-transparent bg-[#FAF3E0] px-4 py-2.5 text-[14px] text-[#0A1020] hover:bg-white"
           >
             Continue practice
             <ArrowRight className="h-4 w-4" />
@@ -177,14 +177,14 @@ export function DashboardTopHeader({
             type="button"
             onClick={onOpenCareer}
             className={cn(
-              'inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-full border border-[#FAF3E0]/25 bg-[#FAF3E0]/5 px-4 py-2 text-[13px] font-semibold text-[#FAF3E0] transition-colors hover:bg-[#FAF3E0]/12',
+              'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#FAF3E0]/25 bg-[#FAF3E0]/5 px-4 py-2 text-[13px] font-semibold text-[#FAF3E0] transition-colors hover:bg-[#FAF3E0]/12',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FAF3E0]/40',
             )}
           >
             <MapIcon className="h-4 w-4" strokeWidth={1.75} />
             Open Career Map
           </button>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[380px]:grid-cols-3">
             <QuickLink icon={<CalendarDays className="h-4 w-4" />} label="Calendar" onClick={onOpenCalendar} />
             <QuickLink icon={<FileText className="h-4 w-4" />} label="Resume" onClick={onOpenResume} />
             <QuickLink icon={<Briefcase className="h-4 w-4" />} label="Jobs" onClick={onOpenJobs} />

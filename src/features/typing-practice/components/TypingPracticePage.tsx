@@ -259,7 +259,7 @@ export function TypingPracticePage({ embedded = false }: TypingPracticePageProps
     toast.success('Old typing mistakes cleared.')
   }
 
-  const shellClass = embedded ? 'space-y-4' : cn('min-h-[calc(100vh-4rem)]', wb.root)
+  const shellClass = embedded ? 'space-y-4' : cn('min-h-[calc(100dvh-4rem)]', wb.root)
   const innerClass = embedded ? 'space-y-4' : 'mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-6 md:px-6'
 
   return (

@@ -38,7 +38,7 @@ export function StudentHubPage({ onOpenJobBoard }: StudentHubPageProps) {
   }, [load])
 
   return (
-    <div className="min-h-screen bg-slate-50/80">
+    <div className="min-h-full bg-slate-50/80">
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-10 space-y-10">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">Progress hub</h1>

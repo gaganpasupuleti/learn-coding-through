@@ -11,6 +11,8 @@ export type ParseResumeResult = {
   original_filename: string
   byte_size: number
   parser: string
+  resume_id?: string | null
+  processing_status?: string | null
 }
 
 export type PromptPrepResult = {

@@ -14,13 +14,14 @@ from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
 
 from app.api import jobs as jobs_board
-from app.api.v1 import activity, admin, ai, auth, credits, enrollment, feedback, interview, progress, projects, quiz, roadmap, roles, execute, resume_matcher, schedule, typing
+from app.api.v1 import activity, admin, ai, auth, credits, enrollment, feedback, interview, progress, projects, quiz, roadmap, roles, execute, resume_matcher, resumes, schedule, typing
 from app.core.config import settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.schema_ensure import (
     ensure_job_posts_fixture_columns,
     ensure_schedule_schema,
     ensure_student_feedback_table,
+    ensure_student_resumes_table,
     ensure_quiz_catalog_attempts_table,
     ensure_typing_attempts_table,
 )
@@ -196,6 +197,7 @@ def startup_event():
 
     ensure_typing_attempts_table()
     ensure_student_feedback_table()
+    ensure_student_resumes_table()
     ensure_quiz_catalog_attempts_table()
     _ensure_user_password_setup_column()
     _ensure_job_posts_linkedin_columns()
@@ -255,6 +257,7 @@ def health_db():
 
 app.include_router(ai.router, prefix="/api/v1")
 app.include_router(resume_matcher.router, prefix="/api/v1")
+app.include_router(resumes.router, prefix="/api/v1")
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
 app.include_router(roles.router, prefix="/api/v1")

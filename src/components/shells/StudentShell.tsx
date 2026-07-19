@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import {
   CalendarDays,
   LayoutDashboard,
@@ -37,6 +37,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SubmitFeedbackDialog } from '@/components/feedback/SubmitFeedbackDialog'
 import { type AuthUser, clearAuth, isDemoUser } from '@/lib/auth'
+import { canAccessResumeLab } from '@/lib/resume-lab-access'
 import { cn } from '@/lib/utils'
 
 type StudentPage =
@@ -63,6 +64,8 @@ interface StudentShellProps {
   onNavigate: (page: StudentPage) => void
   onLogout: () => void
   children: React.ReactNode
+  /** `fill` locks main scroll so child workspaces (e.g. resume builder) own the viewport. */
+  contentMode?: 'scroll' | 'fill'
 }
 
 /** A real, navigable destination, a placeholder (`soon`), or a locked feature (`locked`). */
@@ -225,14 +228,20 @@ function SidebarBody({
             <p className="px-3 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/35">
               {group.label}
             </p>
-            {group.items.map((item) => (
-              <SidebarLink
-                key={item.label}
-                item={item}
-                active={item.page === currentPage}
-                onNavigate={onNavigate}
-              />
-            ))}
+            {group.items.map((item) => {
+              const gated =
+                item.page === 'resume' && !canAccessResumeLab(user.email)
+                  ? { ...item, locked: true as const }
+                  : item
+              return (
+                <SidebarLink
+                  key={item.label}
+                  item={gated}
+                  active={item.page === currentPage}
+                  onNavigate={onNavigate}
+                />
+              )
+            })}
           </div>
         ))}
       </nav>
@@ -291,10 +300,18 @@ function SidebarBody({
   )
 }
 
-export function StudentShell({ currentPage, user, onNavigate, onLogout, children }: StudentShellProps) {
+export function StudentShell({
+  currentPage,
+  user,
+  onNavigate,
+  onLogout,
+  children,
+  contentMode = 'scroll',
+}: StudentShellProps) {
   const isDemo = isDemoUser()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const fillMode = contentMode === 'fill'
 
   const handleLogout = () => {
     clearAuth()
@@ -350,11 +367,11 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobile-only slim bar with the menu toggle (desktop has no top bar) */}
-        <div className="flex h-12 flex-shrink-0 items-center gap-2 border-b border-slate-200 bg-[#0A1020] px-3 lg:hidden">
+        <div className="flex h-12 flex-shrink-0 items-center gap-2 border-b border-slate-200 bg-[#0A1020] px-3 pt-[env(safe-area-inset-top)] lg:hidden">
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
-            className="rounded-lg p-1.5 text-white outline-none hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-blue-400/50"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-1.5 text-white outline-none hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-blue-400/50"
             aria-label="Open menu"
             aria-expanded={mobileOpen}
           >
@@ -363,7 +380,7 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
           <button
             type="button"
             onClick={() => go('dashboard')}
-            className="flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50"
+            className="flex min-h-11 items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50"
             aria-label="CodeQuest dashboard"
           >
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-600">
@@ -375,10 +392,15 @@ export function StudentShell({ currentPage, user, onNavigate, onLogout, children
 
         <main
           id="main-content"
-          className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden overscroll-y-contain bg-slate-50 pb-[max(1rem,env(safe-area-inset-bottom))]"
+          className={cn(
+            'flex min-h-0 flex-1 flex-col overflow-x-hidden bg-slate-50',
+            fillMode
+              ? 'overflow-hidden'
+              : 'overflow-y-auto overscroll-y-contain pb-[max(1rem,env(safe-area-inset-bottom))]',
+          )}
           tabIndex={-1}
         >
-          {children}
+          {fillMode ? <div className="flex min-h-0 min-w-0 flex-1 flex-col">{children}</div> : children}
         </main>
       </div>
 

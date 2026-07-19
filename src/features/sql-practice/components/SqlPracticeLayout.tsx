@@ -29,7 +29,7 @@ export function SqlPracticeLayout({
 
   if (!desktopLayout) {
     return (
-      <div className={cn('flex min-h-[calc(100vh-4rem)] flex-col', wb.root)}>
+      <div className={cn('flex min-h-[calc(100dvh-4rem)] flex-col', wb.root)}>
         {topBar}
         <div className="grid min-h-0 flex-1 grid-cols-1">
           <div className="min-h-[240px] border-b">{objectExplorer}</div>
@@ -43,7 +43,7 @@ export function SqlPracticeLayout({
   }
 
   return (
-    <div className={cn('flex h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] flex-col overflow-hidden', wb.root)}>
+    <div className={cn('flex h-[calc(100dvh-4rem)] max-h-[calc(100dvh-4rem)] flex-col overflow-hidden', wb.root)}>
       {topBar}
       <div className="flex min-h-0 flex-1 overflow-hidden">
         {state.isLeftCollapsed ? (

@@ -1,7 +1,12 @@
-"""Outbound client for Resume Matcher integration API (backend-only)."""
+"""Outbound client for Resume Matcher public API (backend-only).
+
+Talks to standalone Resume Matcher (`/api/v1/health`, `/api/v1/resumes/*`, …),
+not the Code Quest integration-mode sidecar (`/api/v1/integration/*`).
+"""
 
 from __future__ import annotations
 
+import re
 from typing import Any, Final
 from urllib.parse import urlparse
 
@@ -12,12 +17,11 @@ from app.core.config import settings
 
 _ALLOWED_PATHS: Final[frozenset[str]] = frozenset(
     {
-        "/api/v1/integration/health",
-        "/api/v1/integration/resumes/parse",
-        "/api/v1/integration/jobs/analyze",
-        "/api/v1/integration/resumes/match",
-        "/api/v1/integration/prompts/cover-letter",
-        "/api/v1/integration/prompts/application-email",
+        "/api/v1/health",
+        "/api/v1/status",
+        "/api/v1/resumes/upload",
+        "/api/v1/resumes",
+        "/api/v1/jobs/upload",
     }
 )
 
@@ -36,9 +40,13 @@ class ParseResponse(BaseModel):
     original_filename: str
     byte_size: int
     parser: str = "markitdown"
+    resume_id: str | None = None
+    processing_status: str | None = None
 
 
 class AnalyzeResponse(BaseModel):
+    """Local keyword coverage helper (RM standalone has no /jobs/analyze)."""
+
     required_skills: list[str] = Field(default_factory=list)
     preferred_skills: list[str] = Field(default_factory=list)
     keywords: list[str] = Field(default_factory=list)
@@ -93,13 +101,6 @@ def _ensure_enabled() -> str:
             "Resume Matcher integration is disabled",
             503,
         )
-    token = (settings.resume_matcher_service_token or "").strip()
-    if not token:
-        raise ResumeMatcherClientError(
-            "resume_matcher_service_token_missing",
-            "Resume Matcher service credential is not configured",
-            503,
-        )
     return _validate_base_url(settings.resume_matcher_base_url)
 
 
@@ -119,12 +120,15 @@ def _assert_allowed_path(path: str) -> str:
     return path
 
 
-def _service_headers() -> dict[str, str]:
+def _service_headers(*, json_body: bool = False) -> dict[str, str]:
+    headers = {"Accept": "application/json"}
+    if json_body:
+        headers["Content-Type"] = "application/json"
     token = (settings.resume_matcher_service_token or "").strip()
-    return {
-        "Accept": "application/json",
-        "X-CodeQuest-Service-Token": token,
-    }
+    # Optional: only send when configured (standalone RM ignores it).
+    if token:
+        headers["X-CodeQuest-Service-Token"] = token
+    return headers
 
 
 def _sanitize_upstream_error(response: requests.Response) -> ResumeMatcherClientError:
@@ -134,7 +138,6 @@ def _sanitize_upstream_error(response: requests.Response) -> ResumeMatcherClient
         detail = response.json().get("detail")
         if isinstance(detail, dict):
             raw_code = str(detail.get("code") or code)
-            # Never forward internal URLs/traces; keep machine codes only when short.
             if raw_code.isidentifier() or "_" in raw_code:
                 code = raw_code[:80]
             raw_message = str(detail.get("message") or message)
@@ -154,6 +157,7 @@ def _request(
     *,
     json_body: dict[str, Any] | None = None,
     files: dict[str, Any] | None = None,
+    params: dict[str, Any] | None = None,
     max_bytes: int | None = None,
 ) -> Any:
     base = _ensure_enabled()
@@ -169,7 +173,8 @@ def _request(
             f"{base}{safe_path}",
             json=json_body,
             files=files,
-            headers=_service_headers(),
+            params=params,
+            headers=_service_headers(json_body=json_body is not None and files is None),
             timeout=timeout,
             stream=True,
             allow_redirects=False,
@@ -216,8 +221,16 @@ def _request(
 
 
 def health() -> dict[str, Any]:
-    payload = _request("GET", "/api/v1/integration/health", max_bytes=64_000)
-    if not isinstance(payload, dict) or payload.get("status") != "ok":
+    payload = _request("GET", "/api/v1/health", max_bytes=64_000)
+    if not isinstance(payload, dict):
+        raise ResumeMatcherClientError(
+            "resume_matcher_unhealthy",
+            "Resume Matcher health check failed",
+            502,
+        )
+    status = str(payload.get("status") or "").lower()
+    # Standalone RM: "healthy" | "degraded". Accept both as reachable.
+    if status not in ("healthy", "degraded", "ok", "ready"):
         raise ResumeMatcherClientError(
             "resume_matcher_unhealthy",
             "Resume Matcher health check failed",
@@ -229,13 +242,47 @@ def health() -> dict[str, Any]:
 def parse_resume(filename: str, content: bytes, content_type: str) -> ParseResponse:
     safe_name = filename.rsplit("/", 1)[-1].rsplit("\\", 1)[-1] or "upload.bin"
     try:
-        payload = _request(
+        upload = _request(
             "POST",
-            "/api/v1/integration/resumes/parse",
+            "/api/v1/resumes/upload",
             files={"file": (safe_name, content, content_type)},
             max_bytes=4_000_000,
         )
-        return ParseResponse.model_validate(payload)
+        if not isinstance(upload, dict) or not upload.get("resume_id"):
+            raise ResumeMatcherClientError(
+                "resume_matcher_invalid_response",
+                "Resume Matcher upload response missing resume_id",
+                502,
+            )
+        resume_id = str(upload["resume_id"])
+        fetched = _request(
+            "GET",
+            "/api/v1/resumes",
+            params={"resume_id": resume_id},
+            max_bytes=4_000_000,
+        )
+        data = fetched.get("data") if isinstance(fetched, dict) else None
+        raw = data.get("raw_resume") if isinstance(data, dict) else None
+        markdown = ""
+        content_type_out = "md"
+        if isinstance(raw, dict):
+            markdown = str(raw.get("content") or "")
+            content_type_out = str(raw.get("content_type") or "md")
+        if not markdown.strip():
+            raise ResumeMatcherClientError(
+                "resume_matcher_invalid_response",
+                "Resume Matcher returned empty resume content",
+                502,
+            )
+        return ParseResponse(
+            markdown=markdown,
+            content_type=content_type_out,
+            original_filename=safe_name,
+            byte_size=len(content),
+            parser="markitdown",
+            resume_id=resume_id,
+            processing_status=str(upload.get("processing_status") or ""),
+        )
     except ValidationError as exc:
         raise ResumeMatcherClientError(
             "resume_matcher_invalid_response",
@@ -244,24 +291,81 @@ def parse_resume(filename: str, content: bytes, content_type: str) -> ParseRespo
         ) from exc
 
 
+def _tokenize_keywords(text: str) -> list[str]:
+    tokens = re.findall(r"[A-Za-z][A-Za-z0-9+.#-]{1,}", text.lower())
+    stop = {
+        "and",
+        "the",
+        "for",
+        "with",
+        "you",
+        "your",
+        "our",
+        "are",
+        "will",
+        "this",
+        "that",
+        "from",
+        "have",
+        "has",
+        "been",
+        "experience",
+        "years",
+        "year",
+        "team",
+        "work",
+        "role",
+        "job",
+        "ability",
+        "strong",
+        "plus",
+        "etc",
+    }
+    seen: list[str] = []
+    for tok in tokens:
+        if tok in stop or len(tok) < 2:
+            continue
+        if tok not in seen:
+            seen.append(tok)
+        if len(seen) >= 40:
+            break
+    return seen
+
+
+def _resume_blob(resume: dict[str, Any], resume_text: str | None) -> str:
+    if resume_text and resume_text.strip():
+        return resume_text
+    parts: list[str] = []
+    for key in ("summary", "skills", "experience", "education", "projects"):
+        val = resume.get(key)
+        if isinstance(val, str):
+            parts.append(val)
+        elif isinstance(val, list):
+            parts.extend(str(item) for item in val)
+        elif isinstance(val, dict):
+            parts.append(str(val))
+    return "\n".join(parts)
+
+
 def analyze_job(resume: dict[str, Any], job_description: str, resume_text: str | None = None) -> AnalyzeResponse:
-    try:
-        payload = _request(
-            "POST",
-            "/api/v1/integration/jobs/analyze",
-            json_body={
-                "resume": resume,
-                "job_description": job_description,
-                "resume_text": resume_text,
-            },
-        )
-        return AnalyzeResponse.model_validate(payload)
-    except ValidationError as exc:
-        raise ResumeMatcherClientError(
-            "resume_matcher_invalid_response",
-            "Resume Matcher analyze response failed validation",
-            502,
-        ) from exc
+    # ponytail: local keyword coverage only — full JD tailor lives in Resume Matcher UI/API.
+    keywords = _tokenize_keywords(job_description)
+    blob = _resume_blob(resume, resume_text).lower()
+    matched = [k for k in keywords if k in blob]
+    missing = [k for k in keywords if k not in blob]
+    coverage = round(100.0 * len(matched) / len(keywords), 1) if keywords else 0.0
+    return AnalyzeResponse(
+        required_skills=keywords[:15],
+        preferred_skills=[],
+        keywords=keywords,
+        matched_keywords=matched,
+        missing_keywords=missing,
+        keyword_coverage_percent=coverage,
+        findings=[
+            f"Matched {len(matched)} of {len(keywords)} keywords from the job description.",
+        ],
+        extraction_mode="deterministic",
+    )
 
 
 def match_resume(
@@ -270,52 +374,69 @@ def match_resume(
     job_keywords: dict[str, Any] | None = None,
     job_description: str | None = None,
 ) -> MatchResponse:
-    try:
-        payload = _request(
-            "POST",
-            "/api/v1/integration/resumes/match",
-            json_body={
-                "resume": resume,
-                "job_keywords": job_keywords or {},
-                "job_description": job_description,
-            },
-        )
-        return MatchResponse.model_validate(payload)
-    except ValidationError as exc:
-        raise ResumeMatcherClientError(
-            "resume_matcher_invalid_response",
-            "Resume Matcher match response failed validation",
-            502,
-        ) from exc
+    keywords: list[str] = []
+    if job_keywords:
+        for key in ("required_skills", "preferred_skills", "keywords"):
+            val = job_keywords.get(key)
+            if isinstance(val, list):
+                keywords.extend(str(item).lower() for item in val if str(item).strip())
+    if job_description:
+        keywords.extend(_tokenize_keywords(job_description))
+    # de-dupe preserve order
+    seen: list[str] = []
+    for k in keywords:
+        if k not in seen:
+            seen.append(k)
+    keywords = seen[:40]
+    blob = _resume_blob(resume, None).lower()
+    matched = [k for k in keywords if k in blob]
+    missing = [k for k in keywords if k not in blob]
+    coverage = round(100.0 * len(matched) / len(keywords), 1) if keywords else 0.0
+    return MatchResponse(
+        keyword_coverage_percent=coverage,
+        matched_keywords=matched,
+        missing_keywords=missing,
+        findings=[f"Matched {len(matched)} of {len(keywords)} keywords."],
+    )
 
 
 def prepare_cover_letter_prompt(resume: dict[str, Any], job_description: str) -> PromptPrepResponse:
-    try:
-        payload = _request(
-            "POST",
-            "/api/v1/integration/prompts/cover-letter",
-            json_body={"resume": resume, "job_description": job_description},
-        )
-        return PromptPrepResponse.model_validate(payload)
-    except ValidationError as exc:
-        raise ResumeMatcherClientError(
-            "resume_matcher_invalid_response",
-            "Resume Matcher prompt response failed validation",
-            502,
-        ) from exc
+    blob = _resume_blob(resume, None)
+    return PromptPrepResponse(
+        task="cover-letter",
+        system_prompt="You write concise, honest cover letters for students. Do not invent employers or skills.",
+        user_prompt=(
+            f"Job description:\n{job_description.strip()}\n\n"
+            f"Resume excerpt:\n{blob[:8000]}\n\n"
+            "Write a short cover letter tailored to this role."
+        ),
+        source="codequest-local",
+    )
 
 
 def prepare_application_email_prompt(resume: dict[str, Any], job_description: str) -> PromptPrepResponse:
-    try:
-        payload = _request(
-            "POST",
-            "/api/v1/integration/prompts/application-email",
-            json_body={"resume": resume, "job_description": job_description},
-        )
-        return PromptPrepResponse.model_validate(payload)
-    except ValidationError as exc:
+    blob = _resume_blob(resume, None)
+    return PromptPrepResponse(
+        task="application-email",
+        system_prompt="You write concise application emails. Do not invent employers or skills.",
+        user_prompt=(
+            f"Job description:\n{job_description.strip()}\n\n"
+            f"Resume excerpt:\n{blob[:8000]}\n\n"
+            "Write a short application email with a subject line and body."
+        ),
+        source="codequest-local",
+    )
+
+
+def upload_job_descriptions(job_descriptions: list[str], resume_id: str | None = None) -> dict[str, Any]:
+    body: dict[str, Any] = {"job_descriptions": job_descriptions}
+    if resume_id:
+        body["resume_id"] = resume_id
+    payload = _request("POST", "/api/v1/jobs/upload", json_body=body)
+    if not isinstance(payload, dict):
         raise ResumeMatcherClientError(
             "resume_matcher_invalid_response",
-            "Resume Matcher prompt response failed validation",
+            "Resume Matcher job upload failed validation",
             502,
-        ) from exc
+        )
+    return payload

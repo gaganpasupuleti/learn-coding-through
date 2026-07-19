@@ -1,5 +1,6 @@
 const DEFAULT_RESUME_ORIGIN = 'http://localhost:3000'
-const DEFAULT_RESUME_PATH = '/dashboard/resumes'
+/** Resume Matcher frontend root (iframe child). */
+const DEFAULT_RESUME_PATH = '/'
 
 type RuntimeConfig = {
   VITE_RESUME_APP_URL?: string
@@ -24,8 +25,8 @@ function readConfiguredRaw(): string {
 
 export function resolveResumeAppUrl(rawInput?: string): ResumeAppUrlResult {
   const raw = (rawInput ?? readConfiguredRaw()).trim()
-  const fallback = `${DEFAULT_RESUME_ORIGIN}${DEFAULT_RESUME_PATH}`
-  const candidate = raw || fallback
+  const fallback = `${DEFAULT_RESUME_ORIGIN}${DEFAULT_RESUME_PATH === '/' ? '' : DEFAULT_RESUME_PATH}`
+  const candidate = raw || fallback || DEFAULT_RESUME_ORIGIN
 
   let parsed: URL
   try {
@@ -38,8 +39,9 @@ export function resolveResumeAppUrl(rawInput?: string): ResumeAppUrlResult {
     return { ok: false, error: 'Resume application URL must use HTTP or HTTPS.' }
   }
 
+  // Origin-only config → Resume Matcher app root (http://localhost:3000/).
   if (!parsed.pathname || parsed.pathname === '/') {
-    parsed.pathname = DEFAULT_RESUME_PATH
+    parsed.pathname = '/'
   }
 
   return { ok: true, url: parsed.toString() }

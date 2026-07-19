@@ -1,3 +1,8 @@
+/**
+ * Legacy Code Quest ↔ iframe postMessage bridge (codequest-ai/v1).
+ * Detached from ResumeBuilderWorkspacePage after Reactive Resume retirement —
+ * Resume Matcher owns AI in-app. Kept for unit tests / possible future embed client.
+ */
 import { z } from 'zod'
 
 import { codeQuestLocalProvider } from '@/lib/ai/codequest-local-provider'
@@ -12,6 +17,7 @@ import {
 import {
   BRIDGE_PROTOCOL,
   bridgeRequestSchema,
+  isBridgeHelloRequest,
   type BridgeHello,
   type BridgeRequest,
   type BridgeResponse,
@@ -278,18 +284,66 @@ export function createResumeBridgeMessageHandler(
 
 export function attachResumeBridge(iframe: HTMLIFrameElement | null): () => void {
   const sessionNonce = createSessionNonce()
-  const handler = createResumeBridgeMessageHandler(iframe, sessionNonce)
-  window.addEventListener('message', handler)
-
+  const requestHandler = createResumeBridgeMessageHandler(iframe, sessionNonce)
   const allowedOrigin = getAllowedChildOrigin()
-  if (iframe?.contentWindow && allowedOrigin) {
+  const attachedAt = performance.now()
+  let helloCount = 0
+
+  const postHello = (reason: 'iframe-load' | 'hello-request') => {
+    if (!iframe?.contentWindow || !allowedOrigin) {
+      console.warn('[cq-bridge] parent skip hello', { reason, allowedOrigin, hasWindow: Boolean(iframe?.contentWindow) })
+      return
+    }
+    helloCount += 1
     const hello: BridgeHello = {
       protocol: BRIDGE_PROTOCOL,
       type: 'hello',
       sessionNonce,
     }
+    console.info('[cq-bridge] parent → hello', {
+      reason,
+      n: helloCount,
+      ms: Math.round(performance.now() - attachedAt),
+      childOrigin: allowedOrigin,
+      nonce: `${sessionNonce.slice(0, 8)}…`,
+    })
     iframe.contentWindow.postMessage(hello, allowedOrigin)
   }
 
-  return () => window.removeEventListener('message', handler)
+  const handler = (event: MessageEvent) => {
+    if (!allowedOrigin || event.origin !== allowedOrigin) return
+    if (!iframe?.contentWindow || event.source !== iframe.contentWindow) return
+    // Local AI panel mounts after iframe load and often misses the first hello.
+    if (isBridgeHelloRequest(event.data)) {
+      console.info('[cq-bridge] parent ← hello-request', {
+        ms: Math.round(performance.now() - attachedAt),
+        from: event.origin,
+      })
+      postHello('hello-request')
+      return
+    }
+    const started = performance.now()
+    const action =
+      event.data && typeof event.data === 'object' && 'action' in event.data
+        ? String((event.data as { action?: unknown }).action)
+        : '?'
+    void Promise.resolve(requestHandler(event)).finally(() => {
+      console.info('[cq-bridge] parent handled request', {
+        action,
+        ms: Math.round(performance.now() - started),
+      })
+    })
+  }
+
+  window.addEventListener('message', handler)
+  console.info('[cq-bridge] parent attached', { childOrigin: allowedOrigin, ms: 0 })
+  postHello('iframe-load')
+
+  return () => {
+    console.info('[cq-bridge] parent detached', {
+      hellos: helloCount,
+      liveMs: Math.round(performance.now() - attachedAt),
+    })
+    window.removeEventListener('message', handler)
+  }
 }

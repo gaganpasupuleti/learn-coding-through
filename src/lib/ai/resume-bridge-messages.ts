@@ -42,9 +42,16 @@ export const bridgeHelloSchema = z.object({
   sessionNonce: z.string().min(16).max(128),
 })
 
+/** Child asks parent to (re)send hello — Local AI mounts after iframe load. */
+export const bridgeHelloRequestSchema = z.object({
+  protocol: z.literal(BRIDGE_PROTOCOL),
+  type: z.literal('hello-request'),
+})
+
 export type BridgeRequest = z.infer<typeof bridgeRequestSchema>
 export type BridgeResponse = z.infer<typeof bridgeResponseSchema>
 export type BridgeHello = z.infer<typeof bridgeHelloSchema>
+export type BridgeHelloRequest = z.infer<typeof bridgeHelloRequestSchema>
 
 export function isBridgeRequest(value: unknown): value is BridgeRequest {
   return bridgeRequestSchema.safeParse(value).success
@@ -56,4 +63,8 @@ export function isBridgeResponse(value: unknown): value is BridgeResponse {
 
 export function isBridgeHello(value: unknown): value is BridgeHello {
   return bridgeHelloSchema.safeParse(value).success
+}
+
+export function isBridgeHelloRequest(value: unknown): value is BridgeHelloRequest {
+  return bridgeHelloRequestSchema.safeParse(value).success
 }

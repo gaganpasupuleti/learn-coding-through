@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { resolveConnectorUrl } from '@/lib/connector-url'
-import { isBridgeHello, isBridgeRequest } from '@/lib/ai/resume-bridge-messages'
+import { isBridgeHello, isBridgeHelloRequest, isBridgeRequest } from '@/lib/ai/resume-bridge-messages'
 
 describe('resolveConnectorUrl', () => {
   it('accepts the default loopback connector origin', () => {
@@ -57,6 +57,15 @@ describe('resume bridge messages', () => {
         protocol: 'codequest-ai/v1',
         type: 'hello',
         sessionNonce: 'b'.repeat(32),
+      }),
+    ).toBe(true)
+  })
+
+  it('accepts hello-request from child', () => {
+    expect(
+      isBridgeHelloRequest({
+        protocol: 'codequest-ai/v1',
+        type: 'hello-request',
       }),
     ).toBe(true)
   })

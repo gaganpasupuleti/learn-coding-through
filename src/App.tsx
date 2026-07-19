@@ -32,6 +32,7 @@ import { StudentCalendarPage } from '@/components/pages/StudentCalendarPage'
 
 import { StudentProgressPage } from '@/components/pages/StudentProgressPage'
 
+import { ResumeBuilderWorkspacePage } from '@/components/pages/ResumeBuilderWorkspacePage'
 import { ResumeLabPage } from '@/components/pages/ResumeLabPage'
 
 import { StudentHubPage } from '@/components/pages/StudentHubPage'
@@ -75,6 +76,8 @@ import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
 
 import { isRailwayPublicHost } from '@/lib/host-env'
+
+import { canAccessResumeLab } from '@/lib/resume-lab-access'
 
 import { recordRouteVisit } from '@/lib/activity'
 
@@ -151,6 +154,8 @@ export type StudentPage =
   | 'progress'
 
   | 'resume'
+
+  | 'resume-builder'
 
 
 
@@ -276,11 +281,16 @@ function App() {
 
   const DEEP_LINK_PAGES: StudentPage[] = [
     'dashboard', 'calendar', 'progress', 'learning-planner', 'projects', 'hub',
-    'quiz', 'flow-roadmap', 'jobspy', 'roadmapper', 'resume', 'practice-code',
-    'practice-sql', 'practice-typing', 'practice-powerbi',
+    'quiz', 'flow-roadmap', 'jobspy', 'roadmapper', 'resume', 'resume-builder',
+    'practice-code', 'practice-sql', 'practice-typing', 'practice-powerbi',
   ]
 
     if (pageParam && DEEP_LINK_PAGES.includes(pageParam)) {
+      const resumeDeepLink = pageParam === 'resume' || pageParam === 'resume-builder'
+      if (resumeDeepLink && !canAccessResumeLab(getStoredUser()?.email)) {
+        setStudentPage('dashboard')
+        return
+      }
 
       setStudentPage(pageParam)
 
@@ -328,7 +338,12 @@ function App() {
 
     }
 
-
+    if (
+      (page === 'resume' || page === 'resume-builder') &&
+      !canAccessResumeLab(user?.email)
+    ) {
+      return
+    }
 
     setStudentPage(page)
 
@@ -528,7 +543,15 @@ function App() {
 
       <StudentShell
 
-        currentPage={studentPage === 'learning' ? 'projects' : studentPage}
+        currentPage={
+          studentPage === 'learning'
+            ? 'projects'
+            : studentPage === 'resume-builder'
+              ? 'resume'
+              : studentPage
+        }
+
+        contentMode={studentPage === 'resume-builder' ? 'fill' : 'scroll'}
 
         user={user}
 
@@ -566,7 +589,13 @@ function App() {
 
 
 
-        {studentPage === 'resume' && <ResumeLabPage />}
+        {studentPage === 'resume' && canAccessResumeLab(user.email) && (
+          <ResumeLabPage onOpenBuilder={() => handleStudentNavigate('resume-builder')} />
+        )}
+
+        {studentPage === 'resume-builder' && canAccessResumeLab(user.email) && (
+          <ResumeBuilderWorkspacePage onBack={() => handleStudentNavigate('resume')} />
+        )}
 
 
 

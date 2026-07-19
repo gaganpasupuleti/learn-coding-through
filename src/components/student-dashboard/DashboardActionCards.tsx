@@ -62,7 +62,7 @@ export function DashboardActionCards({
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 xl:grid-cols-4">
       {cards.map((card) => (
         <button
           key={card.key}
