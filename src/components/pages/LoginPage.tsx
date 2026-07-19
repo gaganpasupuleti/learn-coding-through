@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Code2 } from 'lucide-react'
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -11,9 +10,21 @@ import {
 } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 
-import { AuthPromoPanel } from '@/components/auth/AuthPromoPanel'
+import { LoginBootPortal } from '@/components/auth/login-motion/LoginBootPortal'
+import { useLoginAuthPanelMotion } from '@/components/auth/login-motion/useLoginAuthPanelMotion'
 import {
-  API_BASE_URL,
+  LOGIN_FORGOT,
+  LOGIN_GLASS_CARD,
+  LOGIN_GOOGLE_BUTTON_WELL,
+  LOGIN_GOOGLE_FRAME,
+  LOGIN_INPUT,
+  LOGIN_INPUT_SECONDARY,
+  LOGIN_LABEL_SECONDARY,
+  LOGIN_MUTED,
+  LOGIN_PRIMARY_BTN,
+  LOGIN_SECONDARY_BTN,
+} from '@/components/auth/login-motion/loginTheme'
+import {
   fetchAuthPublicConfig,
   type AuthPublicConfig,
   fetchCurrentUser,
@@ -27,8 +38,10 @@ import {
   setDemoFlag,
   type AuthUser,
 } from '@/lib/auth'
+
 interface LoginPageProps {
   onAuthenticated: (user: AuthUser) => void
+  onBackToLanding?: () => void
 }
 
 type AuthMode = 'login' | 'signup' | 'forgotPassword'
@@ -92,7 +105,7 @@ function persistRememberMe(remember: boolean, email: string) {
   }
 }
 
-export function LoginPage({ onAuthenticated }: LoginPageProps) {
+export function LoginPage({ onAuthenticated, onBackToLanding }: LoginPageProps) {
   const remembered = useMemo(() => readRememberedEmail(), [])
   const [mode, setMode] = useState<AuthMode>('login')
   const [email, setEmail] = useState(remembered.email)
@@ -106,7 +119,11 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
   const [helpOpen, setHelpOpen] = useState(false)
   const googleButtonRef = useRef<HTMLDivElement | null>(null)
   const googleButtonHostRef = useRef<HTMLDivElement | null>(null)
+  const authPanelRef = useRef<HTMLDivElement | null>(null)
   const [googleButtonMount, setGoogleButtonMount] = useState<HTMLDivElement | null>(null)
+
+  const authPanelKey = pendingApproval ? 'pending' : mode
+  useLoginAuthPanelMotion(authPanelRef, authPanelKey)
 
   const attachGoogleButtonRef = useCallback((node: HTMLDivElement | null) => {
     googleButtonRef.current = node
@@ -132,16 +149,11 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     [authPublic],
   )
 
-  // Always prefer the backend client id when available — that is what token verification uses.
+  // Prefer backend client id when available — that is what token verification uses.
   const googleClientId = useMemo(
     () => serverGoogleClientId || bootstrapGoogleClientId,
     [serverGoogleClientId, bootstrapGoogleClientId],
   )
-
-  const googleClientIdMismatch =
-    !!serverGoogleClientId &&
-    !!bootstrapGoogleClientId &&
-    serverGoogleClientId !== bootstrapGoogleClientId
 
   const googleBackendEnabled =
     !authPublicReady ? null : authPublicFetchFailed ? false : (authPublic?.google_auth_enabled ?? false)
@@ -368,76 +380,34 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     if (rememberMe) persistRememberMe(true, value)
   }
 
-  const inputClassName =
-    'w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/25'
-
-  const primaryButtonClass =
-    'w-full rounded-lg bg-blue-600 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60'
-
-  const secondaryButtonClass =
-    'w-full rounded-lg border border-slate-300 bg-white py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60'
-
-  const labelClass = 'text-sm font-medium text-slate-700'
-
-  const mutedLinkClass = 'text-sm text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline'
-
-  const forgotLinkClass = 'text-xs font-normal text-slate-400 underline-offset-2 transition-colors hover:text-slate-600 hover:underline'
-
-  const authCardClass =
-    'w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-lg shadow-slate-200/40'
+  const inputClassName = `${LOGIN_INPUT} ${LOGIN_INPUT_SECONDARY}`
+  const primaryButtonClass = LOGIN_PRIMARY_BTN
+  const secondaryButtonClass = LOGIN_SECONDARY_BTN
+  const labelClass = LOGIN_LABEL_SECONDARY
+  const mutedLinkClass = LOGIN_MUTED
+  const forgotLinkClass = LOGIN_FORGOT
+  const authCardClass = LOGIN_GLASS_CARD
 
   const renderGoogleSection = () => {
     if (mode !== 'login' && mode !== 'signup') return null
 
     if (googleBackendEnabled === null) {
-      return <p className="text-center text-sm text-slate-500">Checking sign-in options…</p>
+      return <p className="text-center text-sm text-[#b8c0d4]">Checking sign-in options…</p>
     }
 
+    // Lab / no-API: keep form clean — email auth still works via lab fallback.
     if (authPublicFetchFailed && !googleClientId) {
       return (
-        <p className="text-center text-sm leading-relaxed text-amber-700">
-          Could not load sign-in options (request to{' '}
-          <span className="font-mono text-xs break-all">{API_BASE_URL}/auth/config</span> failed). Start the API on
-          port <span className="font-mono text-xs">8000</span>, or leave{' '}
-          <span className="font-mono text-xs">VITE_API_URL</span> empty so the app uses the Vite dev proxy. To show
-          Google Sign-In when this check fails, set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span>{' '}
-          and restart Vite.
+        <p className="text-center text-[11px] leading-snug text-[#b8c0d4]/80">
+          Google sign-in is offline for this session. Use email instead.
         </p>
       )
     }
 
     if (googleButtonAllowed) {
       return (
-        <div className="space-y-3">
-          {authPublicFetchFailed && bootstrapGoogleClientId ? (
-            <p className="text-center text-xs leading-snug text-amber-700">
-              Server config request failed — using your local Web client ID. Google sign-in still needs the API at{' '}
-              <span className="font-mono">{API_BASE_URL}</span>; start the backend or fix the URL.
-            </p>
-          ) : null}
-          {!authPublicFetchFailed && !googleBackendEnabled && bootstrapGoogleClientId ? (
-            <p className="text-center text-xs leading-snug text-amber-700">
-              The API reports Google login disabled — add{' '}
-              <span className="font-mono">GOOGLE_OAUTH_CLIENT_ID</span> to{' '}
-              <span className="font-mono">backend/.env</span> (same Web client ID as the frontend) and restart the
-              backend, or sign-in will fail.
-            </p>
-          ) : null}
-          {googleClientIdMismatch ? (
-            <p className="text-center text-xs leading-snug text-amber-700">
-              Frontend and backend Google client IDs differ. Restart Vite after updating{' '}
-              <span className="font-mono">VITE_GOOGLE_CLIENT_ID</span>, or set it to match{' '}
-              <span className="font-mono">GOOGLE_OAUTH_CLIENT_ID</span> in{' '}
-              <span className="font-mono">backend/.env</span> — mismatched IDs cause &quot;Invalid Google token&quot;.
-            </p>
-          ) : null}
-          <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-slate-400 before:h-px before:flex-1 before:bg-slate-200 before:content-[''] after:h-px after:flex-1 after:bg-slate-200 after:content-['']">
-            OR
-          </div>
-          <div
-            className="flex w-full justify-center rounded-lg border border-slate-300 bg-white px-3 py-2.5 shadow-sm"
-            ref={googleButtonHostRef}
-          >
+        <div className={LOGIN_GOOGLE_FRAME}>
+          <div className={LOGIN_GOOGLE_BUTTON_WELL} ref={googleButtonHostRef}>
             <div ref={attachGoogleButtonRef} className="w-full [&>div]:!w-full" />
           </div>
         </div>
@@ -446,45 +416,39 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
 
     if (googleBackendEnabled && !googleClientId) {
       return (
-        <p className="text-center text-sm leading-relaxed text-slate-500">
-          Google login is enabled on the server, but no client id was returned. Check{' '}
-          <span className="font-mono text-xs">GOOGLE_OAUTH_CLIENT_ID</span> in{' '}
-          <span className="font-mono text-xs">backend/.env</span> and restart the backend, or set{' '}
-          <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and restart Vite.
+        <p className="text-center text-xs text-[#b8c0d4]/80">
+          Google sign-in is not configured. Use email above.
         </p>
       )
     }
 
-    return (
-      <p className="text-center text-sm leading-relaxed text-slate-500">
-        Google login is disabled. Set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and{' '}
-        <span className="font-mono text-xs">GOOGLE_OAUTH_CLIENT_ID</span> to enable it.
-      </p>
-    )
+    return null
   }
 
   return (
-    <main className="min-h-screen lg:grid lg:grid-cols-2" aria-label="Sign in to CodeQuest">
-      {/* Left: form panel */}
-      <section className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8 sm:px-6">
-        <div className="flex w-full max-w-md flex-col items-center space-y-5">
-          <div className={authCardClass}>
-            <div className="mb-8 flex items-center justify-center gap-2.5">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md">
-                <Code2 size={20} strokeWidth={2.5} />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-slate-900">CodeQuest</span>
-            </div>
+    <>
+      <LoginBootPortal onHome={onBackToLanding}>
+        <div className={`${authCardClass} flex flex-col`}>
+            {onBackToLanding ? (
+              <button
+                type="button"
+                onClick={onBackToLanding}
+                className="login-card-stagger mb-2 self-start text-sm font-medium text-[#dce5ff] underline-offset-4 hover:text-[#f7f8f4] hover:underline"
+              >
+                ← Back to home
+              </button>
+            ) : null}
+            <div ref={authPanelRef} className="login-auth-panel">
             {mode === 'forgotPassword' ? (
               <div className="space-y-6" onKeyDown={handleKeyDown}>
-                <div>
-                  <h1 className="text-2xl font-bold text-slate-900">Reset password</h1>
-                  <p className="mt-2 text-sm text-slate-500">
+                <div className="login-card-stagger">
+                  <h2 className="login-card-title text-2xl font-extrabold tracking-[-0.02em] text-[#f7f8f4]">Reset password</h2>
+                  <p className="mt-2 text-sm text-[#b8c0d4]">
                     Enter your email to request a reset, then set a new password with your token.
                   </p>
                 </div>
 
-                <div className="space-y-5">
+                <div className="login-card-stagger space-y-5">
                   <div className="space-y-2">
                     <label htmlFor="reset-email" className={labelClass}>
                       Email
@@ -528,7 +492,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="login-card-stagger grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <button type="button" className={secondaryButtonClass} onClick={handleRequestPasswordReset} disabled={isLoading}>
                     {isLoading ? 'Please wait…' : 'Send reset link'}
                   </button>
@@ -537,7 +501,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   </button>
                 </div>
 
-                <p className="text-center text-sm text-slate-500">
+                <p className="login-card-stagger text-center text-sm text-[#b8c0d4]">
                   Remembered your password?{' '}
                   <button type="button" className={mutedLinkClass} onClick={() => setMode('login')}>
                     Sign in
@@ -546,22 +510,22 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
               </div>
             ) : pendingApproval ? (
               <div className="space-y-6 text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                <div className="login-card-stagger mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#1944f1]/20 text-[#FFEF4D]">
                   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256">
                     <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
                   </svg>
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-slate-900">Registration submitted</h1>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                <div className="login-card-stagger">
+                  <h2 className="login-card-title text-2xl font-extrabold tracking-[-0.02em] text-[#f7f8f4]">Registration submitted</h2>
+                  <p className="mt-2 text-sm leading-relaxed text-[#b8c0d4]">
                     Your account is{' '}
-                    <span className="font-semibold text-amber-600">pending admin approval</span>. You
+                    <span className="font-semibold text-amber-400">pending admin approval</span>. You
                     can sign in once an admin approves your registration.
                   </p>
                 </div>
                 <button
                   type="button"
-                  className={secondaryButtonClass}
+                  className={`login-card-stagger ${secondaryButtonClass}`}
                   onClick={() => {
                     setPendingApproval(false)
                     setMode('login')
@@ -571,19 +535,19 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 </button>
               </div>
             ) : (
-              <div className="space-y-6" onKeyDown={handleKeyDown}>
-                <div>
-                  <h1 className="text-2xl font-bold text-slate-900">
+              <div className="space-y-4" onKeyDown={handleKeyDown}>
+                <div className="login-card-stagger">
+                  <h2 className="login-card-title text-2xl font-extrabold tracking-[-0.02em] text-[#f7f8f4]">
                     {mode === 'login' ? 'Sign in' : 'Create account'}
-                  </h1>
-                  <p className="mt-2 text-sm text-slate-500">
+                  </h2>
+                  <p className="mt-1.5 text-sm leading-relaxed text-[#b8c0d4]">
                     {mode === 'login'
-                      ? 'Welcome back. Sign in to continue your learning journey.'
+                      ? 'Welcome back. Sign in with email, or continue with Google below.'
                       : 'New accounts require admin approval before you can sign in.'}
                   </p>
                 </div>
 
-                <div className="space-y-5">
+                <div className="login-card-stagger space-y-3.5 rounded-xl border border-white/10 bg-[#0b1020]/45 p-4">
                   {mode === 'signup' && (
                     <div className="space-y-2">
                       <label htmlFor="full-name" className={labelClass}>
@@ -643,7 +607,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 </div>
 
                 {mode === 'login' && (
-                  <label className="flex cursor-pointer items-center gap-2.5 text-sm text-slate-600">
+                  <label className="login-card-stagger flex cursor-pointer items-center gap-2.5 text-sm text-[#b8c0d4]">
                     <Checkbox
                       checked={rememberMe}
                       onCheckedChange={(v) => handleRememberChange(v === true)}
@@ -655,24 +619,30 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
 
                 <button
                   type="button"
-                  className={primaryButtonClass}
+                  className={`login-card-stagger ${primaryButtonClass}`}
                   onClick={mode === 'login' ? handleLogin : handleSignup}
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Please wait…' : mode === 'login' ? 'Sign In' : 'Create Account'}
+                  {isLoading ? 'Please wait…' : mode === 'login' ? 'Sign In with Email' : 'Create Account'}
                 </button>
 
-                {renderGoogleSection()}
+                {(mode === 'login' || mode === 'signup') && googleButtonAllowed ? (
+                  <div className="login-card-stagger flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-[#b8c0d4] before:h-px before:flex-1 before:bg-white/12 before:content-[''] after:h-px after:flex-1 after:bg-white/12 after:content-['']">
+                    Or continue with Google
+                  </div>
+                ) : null}
+
+                <div className="login-card-stagger">{renderGoogleSection()}</div>
 
                 {mode === 'login' ? (
-                  <p className="text-center text-sm text-slate-500">
+                  <p className="login-card-stagger text-center text-sm text-[#b8c0d4]">
                     Don&apos;t have an account yet?{' '}
                     <button type="button" className={mutedLinkClass} onClick={() => setMode('signup')}>
                       Register
                     </button>
                   </p>
                 ) : (
-                  <p className="text-center text-sm text-slate-500">
+                  <p className="login-card-stagger text-center text-sm text-[#b8c0d4]">
                     Already have an account?{' '}
                     <button type="button" className={mutedLinkClass} onClick={() => setMode('login')}>
                       Sign in
@@ -681,24 +651,26 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 )}
               </div>
             )}
-          </div>
+            </div>
+        </div>
 
-          <p className="w-full max-w-md text-center text-sm text-slate-500">
+        <p className="login-card-stagger mt-4 w-full text-center text-sm leading-snug text-[#b8c0d4]">
             <button
               type="button"
-              className="text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline"
+              className="text-[#b8c0d4] underline-offset-2 transition-colors hover:text-[#f7f8f4] hover:underline"
               onClick={() => setHelpOpen(true)}
             >
               Need help signing in?
             </button>
             {authPublicFetchFailed && !googleClientId && (
-              <span className="mt-1 block text-amber-600">
+              <span className="mt-1 block text-amber-400">
                 Sign-in service unavailable. Please try again in a moment.
               </span>
             )}
           </p>
+      </LoginBootPortal>
 
-          <Dialog open={helpOpen} onOpenChange={setHelpOpen}>
+      <Dialog open={helpOpen} onOpenChange={setHelpOpen}>
             <DialogContent className="max-w-md rounded-2xl border-slate-100 sm:max-w-md">
               <DialogHeader>
                 <DialogTitle className="text-slate-900">Sign-in help</DialogTitle>
@@ -752,11 +724,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
               </div>
             </DialogContent>
           </Dialog>
-        </div>
-      </section>
-
-      {/* Right: promo carousel (desktop) */}
-      <AuthPromoPanel />
-    </main>
+    </>
   )
 }
+

@@ -1,0 +1,605 @@
+{
+  "id": "study-report-powerbi-analyst-career-path",
+  "title": "Study Report: Power BI Analyst — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "powerbi-analyst",
+  "family_name": "Power BI Analyst",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "This report covers the Power BI Analyst role with Power BI Desktop, Power Query (M), DAX, dimensional modeling, and Microsoft Fabric fundamentals (2024+). Topics include semantic models, time intelligence, incremental refresh, lakehouse integration, deployment pipelines, and enterprise governance for self-serve analytics.",
+  "skill_stack": {
+    "beginner": [
+      "Power BI Desktop interface",
+      "Import vs DirectQuery modes",
+      "Power Query basic transforms",
+      "Star schema modeling",
+      "Basic DAX measures (SUM, DIVIDE)",
+      "Chart and slicer design",
+      "Publish to Power BI Service"
+    ],
+    "intermediate": [
+      "Advanced Power Query (M) patterns",
+      "DAX CALCULATE and time intelligence",
+      "Row-level security (RLS)",
+      "Incremental refresh policies",
+      "Microsoft Fabric Lakehouse (2024+)",
+      "Deployment pipelines (dev/test/prod)",
+      "Performance Analyzer and DAX Studio",
+      "XMLA endpoint connectivity"
+    ],
+    "advanced": [
+      "Composite models and aggregation tables",
+      "Fabric Data Factory pipelines",
+      "Real-Time Intelligence (KQL, 2024+)",
+      "Power BI Embedded and REST APIs",
+      "Purview lineage and governance",
+      "Premium capacity sizing",
+      "CI/CD with Tabular Editor 3",
+      "Enterprise certification workflows"
+    ]
+  },
+  "sources": [
+    "https://learn.microsoft.com/en-us/power-bi/",
+    "https://learn.microsoft.com/en-us/power-query/",
+    "https://dax.guide/",
+    "https://learn.microsoft.com/en-us/fabric/",
+    "https://www.sqlbi.com/articles/",
+    "https://learn.microsoft.com/en-us/power-bi/guidance/"
+  ],
+  "recommended_books": [
+    {
+      "title": "Beginning Power BI",
+      "author": "Mark Pagani",
+      "level": "Beginner",
+      "focus": "Power BI Desktop basics: import, model, visualize, publish.",
+      "url": "https://www.apress.com/gp/book/9781484298794",
+      "free_online": false
+    },
+    {
+      "title": "The Definitive Guide to DAX",
+      "author": "Marco Russo & Alberto Ferrari",
+      "level": "Intermediate",
+      "focus": "DAX measures, CALCULATE, time intelligence, and filter context.",
+      "url": "https://www.sqlbi.com/books/definitive-guide-to-dax/",
+      "free_online": false
+    },
+    {
+      "title": "M Is for (Data) Monkey",
+      "author": "Ken Puls & Miguel Escobar",
+      "level": "Intermediate",
+      "focus": "Power Query M language for data transformation.",
+      "url": "https://www.misforthedatamonkey.com/",
+      "free_online": false
+    },
+    {
+      "title": "Microsoft Fabric Fundamentals",
+      "author": "Microsoft Learn",
+      "level": "Intermediate",
+      "focus": "Unified analytics: lakehouse, pipelines, and Power BI in Fabric.",
+      "url": "https://learn.microsoft.com/fabric/get-started/",
+      "free_online": true
+    },
+    {
+      "title": "Analyzing Data with Power BI and Power Pivot",
+      "author": "Marco Russo & Alberto Ferrari",
+      "level": "Advanced",
+      "focus": "Data modeling and DAX for complex enterprise models.",
+      "url": "https://www.sqlbi.com/books/analyzing-data-with-power-bi-and-power-pivot/",
+      "free_online": false
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Retail Sales Dashboard",
+      "level": "Beginner",
+      "duration": "2 weeks",
+      "overview": "Power BI report from Excel/CSV: Power Query cleanup, star schema, DAX measures, published to Service.",
+      "objectives": [
+        "Import and transform with Power Query",
+        "Build star schema model",
+        "Create 6 visuals + slicers",
+        "Publish and share"
+      ],
+      "phases": [
+        {
+          "name": "Import",
+          "description": "Connect to sales data.",
+          "tasks": [
+            "Remove errors",
+            "Change types"
+          ],
+          "deliverable": "Clean query"
+        },
+        {
+          "name": "Model",
+          "description": "Fact + dimension tables.",
+          "tasks": [
+            "Relationships",
+            "Hide keys"
+          ],
+          "deliverable": "Validated model"
+        },
+        {
+          "name": "DAX",
+          "description": "Revenue, YoY, margin measures.",
+          "tasks": [
+            "CALCULATE",
+            "TOTALYTD"
+          ],
+          "deliverable": "Measure list doc"
+        },
+        {
+          "name": "Publish",
+          "description": "Share on Power BI Service.",
+          "tasks": [
+            "Refresh schedule",
+            "Mobile layout"
+          ],
+          "deliverable": "Live dashboard URL"
+        }
+      ],
+      "skills_applied": [
+        "Power Query",
+        "DAX",
+        "Modeling"
+      ],
+      "tools": [
+        "Power BI Desktop",
+        "Power BI Service"
+      ],
+      "deliverables": [
+        "PBIX file",
+        "Published report link",
+        "DAX measure documentation"
+      ]
+    },
+    {
+      "title": "Multi-Source Finance Model",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "Merge SQL Server + Excel + API data; complex DAX time intelligence; row-level security by department.",
+      "objectives": [
+        "Merge 3 data sources in Power Query",
+        "Implement RLS by department",
+        "YTD/QoQ DAX measures",
+        "Performance tune with DAX Studio"
+      ],
+      "phases": [
+        {
+          "name": "ETL",
+          "description": "Power Query merge queries.",
+          "tasks": [
+            "API connector",
+            "SQL direct query"
+          ],
+          "deliverable": "Combined dataset"
+        },
+        {
+          "name": "RLS",
+          "description": "Department filter roles.",
+          "tasks": [
+            "DAX USERPRINCIPALNAME",
+            "Test roles"
+          ],
+          "deliverable": "RLS test matrix"
+        },
+        {
+          "name": "Time Intel",
+          "description": "YTD, YoY, rolling averages.",
+          "tasks": [
+            "DATEADD",
+            "SAMEPERIODLASTYEAR"
+          ],
+          "deliverable": "Finance KPI page"
+        },
+        {
+          "name": "Tune",
+          "description": "DAX Studio query plans.",
+          "tasks": [
+            "Remove iterators",
+            "Variables"
+          ],
+          "deliverable": "Before/after perf screenshot"
+        }
+      ],
+      "skills_applied": [
+        "Power Query",
+        "DAX",
+        "RLS",
+        "Performance"
+      ],
+      "tools": [
+        "Power BI",
+        "DAX Studio",
+        "SQL Server"
+      ],
+      "deliverables": [
+        "PBIX",
+        "RLS documentation",
+        "Performance comparison",
+        "User guide"
+      ]
+    },
+    {
+      "title": "Microsoft Fabric Lakehouse Analytics",
+      "level": "Advanced",
+      "duration": "5–6 weeks",
+      "overview": "Build Fabric lakehouse: ingest raw data, transform in notebooks, semantic model, and executive dashboard.",
+      "objectives": [
+        "Create Fabric workspace and lakehouse",
+        "Ingest CSV/Parquet with pipelines",
+        "Build semantic model in Direct Lake mode",
+        "Executive dashboard with drill-through"
+      ],
+      "phases": [
+        {
+          "name": "Lakehouse",
+          "description": "OneLake setup.",
+          "tasks": [
+            "Shortcuts",
+            "Tables"
+          ],
+          "deliverable": "Lakehouse schema"
+        },
+        {
+          "name": "Pipeline",
+          "description": "Data Factory pipeline.",
+          "tasks": [
+            "Schedule refresh",
+            "Error handling"
+          ],
+          "deliverable": "Pipeline run history"
+        },
+        {
+          "name": "Semantic",
+          "description": "Direct Lake model.",
+          "tasks": [
+            "Relationships",
+            "Aggregations"
+          ],
+          "deliverable": "Semantic model"
+        },
+        {
+          "name": "Dashboard",
+          "description": "Executive landing page.",
+          "tasks": [
+            "KPI cards",
+            "Drill-through"
+          ],
+          "deliverable": "Published Fabric report"
+        }
+      ],
+      "skills_applied": [
+        "Fabric",
+        "Lakehouse",
+        "Pipelines"
+      ],
+      "tools": [
+        "Microsoft Fabric",
+        "Power BI",
+        "OneLake"
+      ],
+      "deliverables": [
+        "Fabric workspace",
+        "Pipeline definition",
+        "Published report",
+        "Architecture diagram"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Power BI Analyst Role Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Power BI Analyst Role Overview** *(Level: Beginner)*\n\nPower BI analysts bridge data engineering and business users. You model data, write DAX, design reports, and publish to the Power BI Service. With Microsoft Fabric (2024+), the role extends into lakehouse ingestion — still centered on trusted semantic models.\n\nCode Reference:\n```text\n-- Power BI connects to hundreds of sources\n-- Typical flow: Get Data -> Transform -> Model -> Report -> Publish\n```\nWhat it shows: The analyst workflow is linear but iterative — model changes ripple to all reports.\n\n### What it actually is\nA Power BI analyst builds self-serve analytics on Microsoft's BI stack.\n\n### When to use it\nOrganizations standardized on Microsoft 365, Azure, and Fabric.\n\n### Where to use it\nFinance reporting, sales ops, HR analytics, and operational KPIs.\n\n### Real use example\nA regional manager filters a published report by territory without emailing IT for a CSV.",
+      "key_takeaways": [
+        "A Power BI analyst builds self-serve analytics on Microsoft's BI stack.",
+        "Organizations standardized on Microsoft 365, Azure, and Fabric.",
+        "A regional manager filters a published report by territory without emailing IT for a CSV."
+      ],
+      "what_it_is": "A Power BI analyst builds self-serve analytics on Microsoft's BI stack.",
+      "when_to_use": "Organizations standardized on Microsoft 365, Azure, and Fabric.",
+      "where_to_use": "Finance reporting, sales ops, HR analytics, and operational KPIs.",
+      "real_use_example": "A regional manager filters a published report by territory without emailing IT for a CSV."
+    },
+    {
+      "number": 2,
+      "title": "Connecting to Data Sources",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Connecting to Data Sources** *(Level: Beginner)*\n\nPower BI connects to Excel, SQL Server, Snowflake, SharePoint, and Fabric OneLake. Choose Import for speed, DirectQuery for real-time, or Direct Lake (Fabric) for large Delta tables. Document gateway requirements for on-prem sources.\n\nCode Reference:\n```powerquery\nlet\n    Source = Sql.Database(\"server\", \"dw\"),\n    Sales = Source{[Schema=\"dbo\", Item=\"fact_sales\"]}[Data]\nin\n    Sales\n```\nWhat it shows: Power Query M loads SQL table fact_sales — first step in most enterprise models.\n\n### What it actually is\nGet Data establishes the pipeline from source systems into Power BI.\n\n### When to use it\nEvery new dashboard starts with source connections.\n\n### Where to use it\nSQL warehouses, Excel finance files, and OData APIs.\n\n### Real use example\nAnalyst connects Snowflake marketing spend to internal CRM for unified campaign ROI.",
+      "key_takeaways": [
+        "Get Data establishes the pipeline from source systems into Power BI.",
+        "Every new dashboard starts with source connections.",
+        "Analyst connects Snowflake marketing spend to internal CRM for unified campaign ROI."
+      ],
+      "what_it_is": "Get Data establishes the pipeline from source systems into Power BI.",
+      "when_to_use": "Every new dashboard starts with source connections.",
+      "where_to_use": "SQL warehouses, Excel finance files, and OData APIs.",
+      "real_use_example": "Analyst connects Snowflake marketing spend to internal CRM for unified campaign ROI."
+    },
+    {
+      "number": 3,
+      "title": "Power Query Transformations",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Power Query Transformations** *(Level: Beginner)*\n\nPower Query is click-first ETL: remove columns, filter rows, split columns, unpivot. Applied Steps are reproducible — rename steps clearly. Prefer Table.Buffer for small lookups, not million-row tables.\n\nCode Reference:\n```powerquery\nlet\n    Source = Csv.Document(File.Contents(\"orders.csv\")),\n    Promoted = Table.PromoteHeaders(Source),\n    Typed = Table.TransformColumnTypes(Promoted, {{\"amount\", type number}})\nin\n    Typed\n```\nWhat it shows: PromoteHeaders + type coercion prevents DAX treating amounts as text.\n\n### What it actually is\nPower Query cleans and shapes data before modeling.\n\n### When to use it\nWhen source exports need cleansing every refresh.\n\n### Where to use it\nWeekly CSV drops, API JSON flattening, and Excel consolidation.\n\n### Real use example\nUnpivoting wide month columns turns twelve columns into a tidy date/value pair for charting.",
+      "key_takeaways": [
+        "Power Query cleans and shapes data before modeling.",
+        "When source exports need cleansing every refresh.",
+        "Unpivoting wide month columns turns twelve columns into a tidy date/value pair for charting."
+      ],
+      "what_it_is": "Power Query cleans and shapes data before modeling.",
+      "when_to_use": "When source exports need cleansing every refresh.",
+      "where_to_use": "Weekly CSV drops, API JSON flattening, and Excel consolidation.",
+      "real_use_example": "Unpivoting wide month columns turns twelve columns into a tidy date/value pair for charting."
+    },
+    {
+      "number": 4,
+      "title": "Star Schema Data Modeling",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Star Schema Data Modeling** *(Level: Beginner)*\n\nStar schemas place metrics in fact tables and descriptors in dimensions. Use surrogate keys, conformed date tables, and single-direction relationships. Avoid snowflaking unless saving meaningful memory — simplicity aids DAX.\n\nCode Reference:\n```markdown\n# Model checklist\n# - One date table marked as date table\n# - Facts at transaction grain\n# - No bi-directional unless expert reason\n```\nWhat it shows: A checklist prevents relationship mistakes that inflate totals.\n\n### What it actually is\nDimensional modeling organizes data for fast filtering and correct aggregation.\n\n### When to use it\nImport and Direct Lake semantic models in Power BI.\n\n### Where to use it\nRetail sales, subscription billing, and inventory snapshots.\n\n### Real use example\nA single fact_orders connects to dim_customer and dim_date — slicers filter revenue correctly.",
+      "key_takeaways": [
+        "Dimensional modeling organizes data for fast filtering and correct aggregation.",
+        "Import and Direct Lake semantic models in Power BI.",
+        "A single fact_orders connects to dim_customer and dim_date — slicers filter revenue correctly."
+      ],
+      "what_it_is": "Dimensional modeling organizes data for fast filtering and correct aggregation.",
+      "when_to_use": "Import and Direct Lake semantic models in Power BI.",
+      "where_to_use": "Retail sales, subscription billing, and inventory snapshots.",
+      "real_use_example": "A single fact_orders connects to dim_customer and dim_date — slicers filter revenue correctly."
+    },
+    {
+      "number": 5,
+      "title": "Report Design and UX Basics",
+      "topic": "visualization",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Report Design and UX Basics** *(Level: Beginner)*\n\nUse consistent fonts, 8-12 visuals per page max, and purposeful color. Slicers sync across pages via Sync Slicers pane. Bookmarks capture narrative states for guided storytelling in executive reviews.\n\nCode Reference:\n```markdown\n# Visual hierarchy\n# 1. KPI card (big number)\n# 2. Trend line (context)\n# 3. Breakdown bar (driver)\n```\nWhat it shows: Hierarchy guides the eye — biggest number answers the headline question first.\n\n### What it actually is\nReport design translates the model into decisions.\n\n### When to use it\nEvery published Power BI report and paginated export.\n\n### Where to use it\nSales flash, pipeline reviews, and classroom analytics.\n\n### Real use example\nBookmark toggles 'by region' vs 'by product' without duplicating pages.",
+      "key_takeaways": [
+        "Report design translates the model into decisions.",
+        "Every published Power BI report and paginated export.",
+        "Bookmark toggles 'by region' vs 'by product' without duplicating pages."
+      ],
+      "what_it_is": "Report design translates the model into decisions.",
+      "when_to_use": "Every published Power BI report and paginated export.",
+      "where_to_use": "Sales flash, pipeline reviews, and classroom analytics.",
+      "real_use_example": "Bookmark toggles 'by region' vs 'by product' without duplicating pages."
+    },
+    {
+      "number": 6,
+      "title": "Introduction to DAX Measures",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Introduction to DAX Measures** *(Level: Beginner)*\n\nDAX calculates on the model, not cell-by-cell like Excel. Measures evaluate in filter context. Start with SUM, AVERAGE, DISTINCTCOUNT; always use DIVIDE for ratios to handle divide-by-zero.\n\nCode Reference:\n```dax\nTotal Sales = SUM ( Sales[Amount] )\nMargin % = DIVIDE ( [Total Sales] - [Total Cost], [Total Sales] )\n```\nWhat it shows: DIVIDE returns blank instead of error when sales are zero.\n\n### What it actually is\nDAX is the formula language for Power BI and Analysis Services tabular models.\n\n### When to use it\nWhenever Excel-style calculated columns are too heavy or inflexible.\n\n### Where to use it\nKPI cards, matrix visuals, and time comparisons.\n\n### Real use example\nMargin % measure works on any visual — one definition, consistent boardroom numbers.",
+      "key_takeaways": [
+        "DAX is the formula language for Power BI and Analysis Services tabular models.",
+        "Whenever Excel-style calculated columns are too heavy or inflexible.",
+        "Margin % measure works on any visual — one definition, consistent boardroom numbers."
+      ],
+      "what_it_is": "DAX is the formula language for Power BI and Analysis Services tabular models.",
+      "when_to_use": "Whenever Excel-style calculated columns are too heavy or inflexible.",
+      "where_to_use": "KPI cards, matrix visuals, and time comparisons.",
+      "real_use_example": "Margin % measure works on any visual — one definition, consistent boardroom numbers."
+    },
+    {
+      "number": 7,
+      "title": "Advanced Power Query (M) Patterns",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Advanced Power Query (M) Patterns** *(Level: Intermediate)*\n\nParameterize file paths and server names for portability. Use List.Generate for pagination APIs; Table.NestedJoin for complex merges. Enable query folding — check View Native Query to push work to SQL.\n\nCode Reference:\n```powerquery\nlet\n    Page = (n as number) => Json.Document(Web.Contents(\"https://api.example.com/items?page=\" & Text.From(n))),\n    Pages = List.Generate(() => [i=1, data=Page(1)], each [data] <> null, each [i=[i]+1, data=Page([i]+1)])\nin\n    Table.FromList(Pages, each [data][items])\n```\nWhat it shows: List.Generate loops API pages — common pattern for marketing APIs.\n\n### What it actually is\nAdvanced M handles APIs, parameters, and folding-aware transforms.\n\n### When to use it\nRefreshing models from REST APIs or multi-file folders.\n\n### Where to use it\nMarketing spend APIs, blob folders, and incremental file drops.\n\n### Real use example\nParameterized server name lets dev/test/prod switch without rewriting queries.",
+      "key_takeaways": [
+        "Advanced M handles APIs, parameters, and folding-aware transforms.",
+        "Refreshing models from REST APIs or multi-file folders.",
+        "Parameterized server name lets dev/test/prod switch without rewriting queries."
+      ],
+      "what_it_is": "Advanced M handles APIs, parameters, and folding-aware transforms.",
+      "when_to_use": "Refreshing models from REST APIs or multi-file folders.",
+      "where_to_use": "Marketing spend APIs, blob folders, and incremental file drops.",
+      "real_use_example": "Parameterized server name lets dev/test/prod switch without rewriting queries."
+    },
+    {
+      "number": 8,
+      "title": "DAX CALCULATE and Filter Context",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: DAX CALCULATE and Filter Context** *(Level: Intermediate)*\n\nCALCULATE modifies filter context — the heart of DAX. Sales YTD = TOTALYTD ( [Total Sales], 'Date'[Date] ). Understand row context vs filter context before iterator functions (SUMX).\n\nCode Reference:\n```dax\nSales CY = CALCULATE ( [Total Sales], 'Date'[Year] = 2025 )\nSales PY = CALCULATE ( [Total Sales], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )\nYoY % = DIVIDE ( [Sales CY] - [Sales PY], [Sales PY] )\n```\nWhat it shows: SAMEPERIODLASTYEAR shifts the date filter for year-over-year comparisons.\n\n### What it actually is\nCALCULATE applies filters to measures dynamically.\n\n### When to use it\nTime intelligence, conditional KPIs, and % of total metrics.\n\n### Where to use it\nFinance close packs, retail comps, and subscription growth boards.\n\n### Real use example\nYoY % measure works on any visual slice — region, product, or rep.",
+      "key_takeaways": [
+        "CALCULATE applies filters to measures dynamically.",
+        "Time intelligence, conditional KPIs, and % of total metrics.",
+        "YoY % measure works on any visual slice — region, product, or rep."
+      ],
+      "what_it_is": "CALCULATE applies filters to measures dynamically.",
+      "when_to_use": "Time intelligence, conditional KPIs, and % of total metrics.",
+      "where_to_use": "Finance close packs, retail comps, and subscription growth boards.",
+      "real_use_example": "YoY % measure works on any visual slice — region, product, or rep."
+    },
+    {
+      "number": 9,
+      "title": "Row-Level Security (RLS)",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Row-Level Security (RLS)** *(Level: Intermediate)*\n\nRLS restricts data rows per audience. Define roles with DAX filters on tables: [Email] = USERPRINCIPALNAME(). Test with View as Role before publish. Dynamic RLS via security bridge tables scales to thousands of users.\n\nCode Reference:\n```dax\n[Region] = LOOKUPVALUE ( Users[Region], Users[Email], USERPRINCIPALNAME() )\n```\nWhat it shows: LOOKUPVALUE maps the logged-in user to their allowed region.\n\n### What it actually is\nRLS enforces data access inside the semantic model.\n\n### When to use it\nMulti-tenant SaaS analytics and regional sales reports.\n\n### Where to use it\nFranchise dashboards, partner portals, and HR sensitive metrics.\n\n### Real use example\nA store manager sees only their district — same report, different rows.",
+      "key_takeaways": [
+        "RLS enforces data access inside the semantic model.",
+        "Multi-tenant SaaS analytics and regional sales reports.",
+        "A store manager sees only their district — same report, different rows."
+      ],
+      "what_it_is": "RLS enforces data access inside the semantic model.",
+      "when_to_use": "Multi-tenant SaaS analytics and regional sales reports.",
+      "where_to_use": "Franchise dashboards, partner portals, and HR sensitive metrics.",
+      "real_use_example": "A store manager sees only their district — same report, different rows."
+    },
+    {
+      "number": 10,
+      "title": "Incremental Refresh and Performance",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Incremental Refresh and Performance** *(Level: Intermediate)*\n\nIncremental refresh loads only new/changed partitions — essential for large facts. Requires date column, RangeStart/RangeEnd parameters, and Premium capacity. Use Performance Analyzer and DAX Studio to find slow visuals.\n\nCode Reference:\n```powerquery\nlet\n    Filtered = Table.SelectRows(Source, each [OrderDate] >= RangeStart and [OrderDate] < RangeEnd)\nin\n    Filtered\n```\nWhat it shows: Range parameters align Power Query filter with incremental policy windows.\n\n### What it actually is\nIncremental refresh keeps large models fast and refresh windows small.\n\n### When to use it\nFact tables with millions+ rows and daily append patterns.\n\n### Where to use it\nE-commerce orders, clickstream aggregates, and IoT telemetry.\n\n### Real use example\nDaily refresh drops from 2 hours to 12 minutes after partitioning by order_date.",
+      "key_takeaways": [
+        "Incremental refresh keeps large models fast and refresh windows small.",
+        "Fact tables with millions+ rows and daily append patterns.",
+        "Daily refresh drops from 2 hours to 12 minutes after partitioning by order_date."
+      ],
+      "what_it_is": "Incremental refresh keeps large models fast and refresh windows small.",
+      "when_to_use": "Fact tables with millions+ rows and daily append patterns.",
+      "where_to_use": "E-commerce orders, clickstream aggregates, and IoT telemetry.",
+      "real_use_example": "Daily refresh drops from 2 hours to 12 minutes after partitioning by order_date."
+    },
+    {
+      "number": 11,
+      "title": "Microsoft Fabric Lakehouse Basics (2024+)",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Microsoft Fabric Lakehouse Basics (2024+)** *(Level: Intermediate)*\n\nFabric unifies data engineering and BI on OneLake. A Lakehouse stores Delta/Parquet files with SQL analytics endpoint. Shortcuts attach ADLS/S3 without copying data. Power BI Direct Lake queries Delta files in place — near Import speed.\n\nCode Reference:\n```sql\n-- Fabric SQL endpoint\nSELECT product_id, SUM(quantity) AS units\nFROM silver.fact_orders\nGROUP BY product_id;\n```\nWhat it shows: SQL endpoint lets analysts validate silver tables before modeling.\n\n### What it actually is\nFabric Lakehouse is Microsoft's open-format storage layer for analytics.\n\n### When to use it\nGreenfield analytics platforms on Microsoft cloud (2024+).\n\n### Where to use it\nReplacing fragmented ADF + AS + Power BI setups.\n\n### Real use example\nMarketing uploads CSV to Files area; notebook promotes to silver; Power BI reads via Direct Lake.",
+      "key_takeaways": [
+        "Fabric Lakehouse is Microsoft's open-format storage layer for analytics.",
+        "Greenfield analytics platforms on Microsoft cloud (2024+).",
+        "Marketing uploads CSV to Files area; notebook promotes to silver; Power BI reads via Direct Lake."
+      ],
+      "what_it_is": "Fabric Lakehouse is Microsoft's open-format storage layer for analytics.",
+      "when_to_use": "Greenfield analytics platforms on Microsoft cloud (2024+).",
+      "where_to_use": "Replacing fragmented ADF + AS + Power BI setups.",
+      "real_use_example": "Marketing uploads CSV to Files area; notebook promotes to silver; Power BI reads via Direct Lake."
+    },
+    {
+      "number": 12,
+      "title": "Fabric Real-Time Intelligence Preview",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Fabric Real-Time Intelligence Preview** *(Level: Intermediate)*\n\nFabric Real-Time Intelligence (2024-2025) adds Eventstreams and KQL Database for streaming logs. Power BI can query hot cache for operational dashboards. Pair with Activator for threshold alerts.\n\nCode Reference:\n```kql\n.create table pageviews (timestamp: datetime, user_id: string, path: string)\n```\nWhat it shows: KQL table schema defines streaming events landing from Eventstream.\n\n### What it actually is\nReal-Time Intelligence handles sub-minute latency analytics in Fabric.\n\n### When to use it\nOps monitoring, fraud signals, and live campaign tracking.\n\n### Where to use it\nWeb telemetry, manufacturing sensors, and support queue depth.\n\n### Real use example\nActivator emails on-call when error rate > 2% in rolling 15 minutes.",
+      "key_takeaways": [
+        "Real-Time Intelligence handles sub-minute latency analytics in Fabric.",
+        "Ops monitoring, fraud signals, and live campaign tracking.",
+        "Activator emails on-call when error rate > 2% in rolling 15 minutes."
+      ],
+      "what_it_is": "Real-Time Intelligence handles sub-minute latency analytics in Fabric.",
+      "when_to_use": "Ops monitoring, fraud signals, and live campaign tracking.",
+      "where_to_use": "Web telemetry, manufacturing sensors, and support queue depth.",
+      "real_use_example": "Activator emails on-call when error rate > 2% in rolling 15 minutes."
+    },
+    {
+      "number": 13,
+      "title": "Deployment Pipelines and ALM",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Deployment Pipelines and ALM** *(Level: Intermediate)*\n\nDeployment pipelines promote content dev → test → prod with diff review. Pair with Git integration (2024+) for source control. Tabular Editor scripts automate measure renames across environments.\n\nCode Reference:\n```markdown\n# Promotion checklist\n# 1. Run BPA rules in Tabular Editor\n# 2. Compare schema diff\n# 3. Deploy with notes\n```\nWhat it shows: Best Practice Analyzer catches modeling issues before production.\n\n### What it actually is\nALM governs how reports and datasets move across environments.\n\n### When to use it\nAny team with multiple analysts and production subscribers.\n\n### Where to use it\nEnterprise BI centers of excellence.\n\n### Real use example\nA breaking relationship change is caught in test — prod subscribers never see blank KPIs.",
+      "key_takeaways": [
+        "ALM governs how reports and datasets move across environments.",
+        "Any team with multiple analysts and production subscribers.",
+        "A breaking relationship change is caught in test — prod subscribers never see blank KPIs."
+      ],
+      "what_it_is": "ALM governs how reports and datasets move across environments.",
+      "when_to_use": "Any team with multiple analysts and production subscribers.",
+      "where_to_use": "Enterprise BI centers of excellence.",
+      "real_use_example": "A breaking relationship change is caught in test — prod subscribers never see blank KPIs."
+    },
+    {
+      "number": 14,
+      "title": "Composite Models and Aggregations",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Composite Models and Aggregations** *(Level: Advanced)*\n\nComposite models mix Import and DirectQuery tables. Aggregation tables pre-summarize facts for drill-down performance. User hierarchies hit agg first, then detail — transparent to report users.\n\nCode Reference:\n```dax\nSales Agg = SUMMARIZE ( Sales, Date[Month], Product[Category], \"Amount\", SUM ( Sales[Amount] ) )\n```\nWhat it shows: SUMMARIZE builds an aggregation table DAX engine can substitute automatically.\n\n### What it actually is\nComposite + aggregation optimizes large models without losing detail.\n\n### When to use it\nWhen Import models exceed memory or DirectQuery is too slow for drill-down.\n\n### Where to use it\nGlobal retail chains and multi-year telemetry models.\n\n### Real use example\nRetail BI team uses agg table for monthly scans — detail loads only on drill-through.",
+      "key_takeaways": [
+        "Composite + aggregation optimizes large models without losing detail.",
+        "When Import models exceed memory or DirectQuery is too slow for drill-down.",
+        "Retail BI team uses agg table for monthly scans — detail loads only on drill-through."
+      ],
+      "what_it_is": "Composite + aggregation optimizes large models without losing detail.",
+      "when_to_use": "When Import models exceed memory or DirectQuery is too slow for drill-down.",
+      "where_to_use": "Global retail chains and multi-year telemetry models.",
+      "real_use_example": "Retail BI team uses agg table for monthly scans — detail loads only on drill-through."
+    },
+    {
+      "number": 15,
+      "title": "Advanced DAX: Context Transition",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Advanced DAX: Context Transition** *(Level: Advanced)*\n\nCalculated columns evaluate row-by-row; measures use filter context. Context transition occurs when CALCULATE iterates — a common source of bugs. Use variables (VAR) for readability and single evaluation.\n\nCode Reference:\n```dax\nRank in Category =\nVAR CatSales = CALCULATE ( [Total Sales], ALLEXCEPT ( Product, Product[Category] ) )\nRETURN RANKX ( ALL ( Product[Product] ), CatSales, , DESC, Dense )\n```\nWhat it shows: VAR stores intermediate results — easier to debug than nested CALCULATE.\n\n### What it actually is\nAdvanced DAX handles ranking, moving averages, and dynamic segmentation.\n\n### When to use it\nWhen CALCULATE-heavy measures misbehave or rankings are needed in visuals.\n\n### Where to use it\nSubscription analytics with tiered discount logic.\n\n### Real use example\nVAR-based rank measure finally matches Excel prototype after context transition fix.",
+      "key_takeaways": [
+        "Advanced DAX handles ranking, moving averages, and dynamic segmentation.",
+        "When CALCULATE-heavy measures misbehave or rankings are needed in visuals.",
+        "VAR-based rank measure finally matches Excel prototype after context transition fix."
+      ],
+      "what_it_is": "Advanced DAX handles ranking, moving averages, and dynamic segmentation.",
+      "when_to_use": "When CALCULATE-heavy measures misbehave or rankings are needed in visuals.",
+      "where_to_use": "Subscription analytics with tiered discount logic.",
+      "real_use_example": "VAR-based rank measure finally matches Excel prototype after context transition fix."
+    },
+    {
+      "number": 16,
+      "title": "Fabric Data Factory Pipelines",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Fabric Data Factory Pipelines** *(Level: Advanced)*\n\nFabric Data Factory (successor patterns to ADF in Fabric) orchestrates copy, notebook, and Dataflow Gen2 activities on OneLake. Schedule pipelines for bronze ingestion before semantic refresh.\n\nCode Reference:\n```markdown\n# Pipeline: Copy blob -> Notebook cleanse -> Refresh dataset\n# Trigger: daily 05:00 UTC\n```\nWhat it shows: Orchestration ensures silver tables update before Power BI refresh fires.\n\n### What it actually is\nData Factory pipelines automate lakehouse ingestion in Fabric.\n\n### When to use it\nWhen bronze/silver loads must run before semantic model refresh on OneLake.\n\n### Where to use it\nNightly ERP extracts and multi-source consolidation.\n\n### Real use example\nPipeline failure blocks dataset refresh — ops gets alert before executives see stale KPIs.",
+      "key_takeaways": [
+        "Data Factory pipelines automate lakehouse ingestion in Fabric.",
+        "When bronze/silver loads must run before semantic model refresh on OneLake.",
+        "Pipeline failure blocks dataset refresh — ops gets alert before executives see stale KPIs."
+      ],
+      "what_it_is": "Data Factory pipelines automate lakehouse ingestion in Fabric.",
+      "when_to_use": "When bronze/silver loads must run before semantic model refresh on OneLake.",
+      "where_to_use": "Nightly ERP extracts and multi-source consolidation.",
+      "real_use_example": "Pipeline failure blocks dataset refresh — ops gets alert before executives see stale KPIs."
+    },
+    {
+      "number": 17,
+      "title": "Power BI Embedded and REST API",
+      "topic": "web",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Power BI Embedded and REST API** *(Level: Advanced)*\n\nEmbed reports in customer-facing apps with app-owns-data or user-owns-data models. REST API automates workspace management, refresh triggers, and export to PDF. Service principals require tenant admin approval — document security review.\n\nCode Reference:\n```http\nPOST https://api.powerbi.com/v1.0/myorg/groups/{id}/datasets/{id}/refreshes\nAuthorization: Bearer {token}\n```\nWhat it shows: Refresh API kicks dataset update after upstream pipeline completes.\n\n### What it actually is\nEmbedded analytics puts Power BI inside SaaS products.\n\n### When to use it\nWhen customers need in-app dashboards without separate Power BI licenses per user.\n\n### Where to use it\nB2B SaaS dashboards, partner extranets, and mobile app WebViews.\n\n### Real use example\nSaaS embeds revenue dashboard — tenant isolation enforced via RLS embed token.",
+      "key_takeaways": [
+        "Embedded analytics puts Power BI inside SaaS products.",
+        "When customers need in-app dashboards without separate Power BI licenses per user.",
+        "SaaS embeds revenue dashboard — tenant isolation enforced via RLS embed token."
+      ],
+      "what_it_is": "Embedded analytics puts Power BI inside SaaS products.",
+      "when_to_use": "When customers need in-app dashboards without separate Power BI licenses per user.",
+      "where_to_use": "B2B SaaS dashboards, partner extranets, and mobile app WebViews.",
+      "real_use_example": "SaaS embeds revenue dashboard — tenant isolation enforced via RLS embed token."
+    },
+    {
+      "number": 18,
+      "title": "Enterprise Governance with Microsoft Purview",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Enterprise Governance with Microsoft Purview** *(Level: Advanced)*\n\nPurview scans Fabric items for lineage and sensitivity labels. Endorse datasets as Certified after BPA pass and owner sign-off. Monitor Premium capacity via Fabric Capacity Metrics app (2024+).\n\nCode Reference:\n```markdown\n# Certified dataset requirements\n# - Owner assigned\n# - Description on all tables\n# - RLS tested\n# - Refresh SLA documented\n```\nWhat it shows: Certification signals trust — analysts stop rebuilding the same model.\n\n### What it actually is\nGovernance ensures trustworthy, discoverable BI at scale.\n\n### When to use it\nWhen workspace sprawl creates duplicate datasets and compliance questions.\n\n### Where to use it\nRegulated industries and global rollouts.\n\n### Real use example\nPurview lineage proves revenue metric traces to audited Fabric lakehouse table.",
+      "key_takeaways": [
+        "Governance ensures trustworthy, discoverable BI at scale.",
+        "When workspace sprawl creates duplicate datasets and compliance questions.",
+        "Purview lineage proves revenue metric traces to audited Fabric lakehouse table."
+      ],
+      "what_it_is": "Governance ensures trustworthy, discoverable BI at scale.",
+      "when_to_use": "When workspace sprawl creates duplicate datasets and compliance questions.",
+      "where_to_use": "Regulated industries and global rollouts.",
+      "real_use_example": "Purview lineage proves revenue metric traces to audited Fabric lakehouse table."
+    }
+  ],
+  "chapter_count": 18
+}

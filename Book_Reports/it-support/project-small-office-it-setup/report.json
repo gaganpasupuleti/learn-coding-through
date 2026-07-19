@@ -1,0 +1,135 @@
+{
+  "id": "project-small-office-it-setup",
+  "title": "Project Report: Small Office IT Setup — IT Support / Helpdesk",
+  "author": "Gagan Pasupuleti",
+  "family_id": "it-support",
+  "family_name": "IT Support / Helpdesk",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "Small Office IT Setup",
+  "project_index": 2,
+  "duration": "2–3 weeks",
+  "summary": "Design and document network for 15 users: IP plan, Active Directory, backup, security baseline.",
+  "objectives": [
+    "Network diagram with IP addressing",
+    "AD user/group structure",
+    "Backup policy document",
+    "Security baseline checklist"
+  ],
+  "tools": [
+    "Windows Server docs",
+    "Network tools"
+  ],
+  "deliverables": [
+    "Network diagram",
+    "AD design",
+    "Backup policy",
+    "Security baseline"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**Small Office IT Setup** is a intermediate-level end-to-end project for IT Support / Helpdesk. Duration: 2–3 weeks. Design and document network for 15 users: IP plan, Active Directory, backup, security baseline. Tools: Windows Server docs, Network tools.\n\nCode Reference:\n```text\nObjective: Network diagram with IP addressing\nObjective: AD user/group structure\nObjective: Backup policy document\nObjective: Security baseline checklist\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nIT Support / Helpdesk portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a IT Support / Helpdesk resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a IT Support / Helpdesk resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "IT Support / Helpdesk portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a IT Support / Helpdesk resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Network",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Network** *(Level: Intermediate)*\n\nIP plan and diagram. Complete these tasks: Subnet; VLAN; Firewall rules. Deliverable for this phase: Network diagram Visio/draw.io.\n\nCode Reference:\n```text\n- [ ] Subnet\n- [ ] VLAN\n- [ ] Firewall rules\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Network is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Network diagram Visio/draw.io to the teacher.",
+      "key_takeaways": [
+        "Phase Network is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Network diagram Visio/draw."
+      ],
+      "what_it_is": "Phase Network is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Network diagram Visio/draw.io to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: AD",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: AD** *(Level: Intermediate)*\n\nUser and group design. Complete these tasks: OUs; GPO basics. Deliverable for this phase: AD structure doc.\n\nCode Reference:\n```text\n- [ ] OUs\n- [ ] GPO basics\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase AD is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the AD structure doc to the teacher.",
+      "key_takeaways": [
+        "Phase AD is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the AD structure doc to the teacher."
+      ],
+      "what_it_is": "Phase AD is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the AD structure doc to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Backup",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Backup** *(Level: Intermediate)*\n\n3-2-1 backup policy. Complete these tasks: Schedule; Restore test. Deliverable for this phase: Backup policy PDF.\n\nCode Reference:\n```text\n- [ ] Schedule\n- [ ] Restore test\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Backup is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Backup policy PDF to the teacher.",
+      "key_takeaways": [
+        "Phase Backup is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Backup policy PDF to the teacher."
+      ],
+      "what_it_is": "Phase Backup is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Backup policy PDF to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Security",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Security** *(Level: Intermediate)*\n\nBaseline hardening. Complete these tasks: MFA; Patch policy; AV. Deliverable for this phase: Security checklist signed off.\n\nCode Reference:\n```text\n- [ ] MFA\n- [ ] Patch policy\n- [ ] AV\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Security is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Security checklist signed off to the teacher.",
+      "key_takeaways": [
+        "Phase Security is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Security checklist signed off to the teacher."
+      ],
+      "what_it_is": "Phase Security is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Security checklist signed off to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: Network diagram; AD design; Backup policy; Security baseline. Skills demonstrated: Networking, AD, Security. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Network diagram\nDeliverable: AD design\nDeliverable: Backup policy\nDeliverable: Security baseline\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Network diagram and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Network diagram and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Network diagram and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

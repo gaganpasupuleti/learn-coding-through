@@ -1,0 +1,134 @@
+{
+  "id": "project-codequest-marking-workflow-analysis",
+  "title": "Project Report: CodeQuest Marking Workflow Analysis — Business Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "business-analyst",
+  "family_name": "Business Analyst",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "CodeQuest Marking Workflow Analysis",
+  "project_index": 2,
+  "duration": "3 weeks",
+  "summary": "Map current vs future state with BPMN, define requirements for teacher marking feature, write UAT plan.",
+  "objectives": [
+    "As-is and to-be BPMN diagrams",
+    "15 functional requirements",
+    "UAT test plan with 10 cases",
+    "Stakeholder sign-off template"
+  ],
+  "tools": [
+    "Bizagi/draw.io",
+    "Confluence"
+  ],
+  "deliverables": [
+    "BPMN diagrams",
+    "Requirements spec",
+    "UAT plan"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**CodeQuest Marking Workflow Analysis** is a intermediate-level end-to-end project for Business Analyst. Duration: 3 weeks. Map current vs future state with BPMN, define requirements for teacher marking feature, write UAT plan. Tools: Bizagi/draw.io, Confluence.\n\nCode Reference:\n```text\nObjective: As-is and to-be BPMN diagrams\nObjective: 15 functional requirements\nObjective: UAT test plan with 10 cases\nObjective: Stakeholder sign-off template\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nBusiness Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Business Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Business Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Business Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Business Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: As-Is",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: As-Is** *(Level: Intermediate)*\n\nCurrent process map. Complete these tasks: Pain points; Bottlenecks. Deliverable for this phase: As-is BPMN.\n\nCode Reference:\n```text\n- [ ] Pain points\n- [ ] Bottlenecks\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase As-Is is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the As-is BPMN to the teacher.",
+      "key_takeaways": [
+        "Phase As-Is is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the As-is BPMN to the teacher."
+      ],
+      "what_it_is": "Phase As-Is is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the As-is BPMN to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: To-Be",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: To-Be** *(Level: Intermediate)*\n\nFuture state design. Complete these tasks: Automation points; Roles. Deliverable for this phase: To-be BPMN.\n\nCode Reference:\n```text\n- [ ] Automation points\n- [ ] Roles\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase To-Be is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the To-be BPMN to the teacher.",
+      "key_takeaways": [
+        "Phase To-Be is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the To-be BPMN to the teacher."
+      ],
+      "what_it_is": "Phase To-Be is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the To-be BPMN to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Requirements",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Requirements** *(Level: Intermediate)*\n\nFunctional + non-functional. Complete these tasks: FR-001 to FR-015; NFRs. Deliverable for this phase: Requirements spec.\n\nCode Reference:\n```text\n- [ ] FR-001 to FR-015\n- [ ] NFRs\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Requirements is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Requirements spec to the teacher.",
+      "key_takeaways": [
+        "Phase Requirements is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Requirements spec to the teacher."
+      ],
+      "what_it_is": "Phase Requirements is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Requirements spec to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: UAT",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: UAT** *(Level: Intermediate)*\n\nTest plan. Complete these tasks: 10 test cases; Sign-off form. Deliverable for this phase: UAT plan PDF.\n\nCode Reference:\n```text\n- [ ] 10 test cases\n- [ ] Sign-off form\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase UAT is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the UAT plan PDF to the teacher.",
+      "key_takeaways": [
+        "Phase UAT is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the UAT plan PDF to the teacher."
+      ],
+      "what_it_is": "Phase UAT is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the UAT plan PDF to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: BPMN diagrams; Requirements spec; UAT plan. Skills demonstrated: BPMN, Requirements, UAT. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: BPMN diagrams\nDeliverable: Requirements spec\nDeliverable: UAT plan\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits BPMN diagrams and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits BPMN diagrams and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits BPMN diagrams and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

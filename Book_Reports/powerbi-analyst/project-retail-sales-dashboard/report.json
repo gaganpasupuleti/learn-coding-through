@@ -1,0 +1,134 @@
+{
+  "id": "project-retail-sales-dashboard",
+  "title": "Project Report: Retail Sales Dashboard — Power BI Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "powerbi-analyst",
+  "family_name": "Power BI Analyst",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Retail Sales Dashboard",
+  "project_index": 1,
+  "duration": "2 weeks",
+  "summary": "Power BI report from Excel/CSV: Power Query cleanup, star schema, DAX measures, published to Service.",
+  "objectives": [
+    "Import and transform with Power Query",
+    "Build star schema model",
+    "Create 6 visuals + slicers",
+    "Publish and share"
+  ],
+  "tools": [
+    "Power BI Desktop",
+    "Power BI Service"
+  ],
+  "deliverables": [
+    "PBIX file",
+    "Published report link",
+    "DAX measure documentation"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Retail Sales Dashboard** is a beginner-level end-to-end project for Power BI Analyst. Duration: 2 weeks. Power BI report from Excel/CSV: Power Query cleanup, star schema, DAX measures, published to Service. Tools: Power BI Desktop, Power BI Service.\n\nCode Reference:\n```text\nObjective: Import and transform with Power Query\nObjective: Build star schema model\nObjective: Create 6 visuals + slicers\nObjective: Publish and share\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nPower BI Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Power BI Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Power BI Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Power BI Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Power BI Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Import",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Import** *(Level: Beginner)*\n\nConnect to sales data. Complete these tasks: Remove errors; Change types. Deliverable for this phase: Clean query.\n\nCode Reference:\n```text\n- [ ] Remove errors\n- [ ] Change types\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Import is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Clean query to the teacher.",
+      "key_takeaways": [
+        "Phase Import is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Clean query to the teacher."
+      ],
+      "what_it_is": "Phase Import is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Clean query to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Model",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Model** *(Level: Beginner)*\n\nFact + dimension tables. Complete these tasks: Relationships; Hide keys. Deliverable for this phase: Validated model.\n\nCode Reference:\n```text\n- [ ] Relationships\n- [ ] Hide keys\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Model is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Validated model to the teacher.",
+      "key_takeaways": [
+        "Phase Model is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Validated model to the teacher."
+      ],
+      "what_it_is": "Phase Model is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Validated model to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: DAX",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: DAX** *(Level: Beginner)*\n\nRevenue, YoY, margin measures. Complete these tasks: CALCULATE; TOTALYTD. Deliverable for this phase: Measure list doc.\n\nCode Reference:\n```text\n- [ ] CALCULATE\n- [ ] TOTALYTD\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase DAX is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Measure list doc to the teacher.",
+      "key_takeaways": [
+        "Phase DAX is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Measure list doc to the teacher."
+      ],
+      "what_it_is": "Phase DAX is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Measure list doc to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Publish",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Publish** *(Level: Beginner)*\n\nShare on Power BI Service. Complete these tasks: Refresh schedule; Mobile layout. Deliverable for this phase: Live dashboard URL.\n\nCode Reference:\n```text\n- [ ] Refresh schedule\n- [ ] Mobile layout\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Publish is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Live dashboard URL to the teacher.",
+      "key_takeaways": [
+        "Phase Publish is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Live dashboard URL to the teacher."
+      ],
+      "what_it_is": "Phase Publish is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Live dashboard URL to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: PBIX file; Published report link; DAX measure documentation. Skills demonstrated: Power Query, DAX, Modeling. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: PBIX file\nDeliverable: Published report link\nDeliverable: DAX measure documentation\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits PBIX file and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits PBIX file and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits PBIX file and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

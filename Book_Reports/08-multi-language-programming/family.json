@@ -1,0 +1,45 @@
+{
+  "id": "08-multi-language-programming",
+  "name": "Multi-Language Programming",
+  "description": "Python beside JavaScript, Java, PHP, SQL, Linux, or Arduino.",
+  "source_count": 7,
+  "report_count": 4,
+  "reports": [
+    {
+      "id": "study-report-programming-for-beginners-2-book-in-1-arduino-for-beginne",
+      "title": "Study Report: Programming for Beginners - 2 book in 1 - Arduino for Beginners, JavaScript for Beginners",
+      "family_id": "08-multi-language-programming",
+      "chapter_count": 12,
+      "level": "Mixed",
+      "path": "Book_Reports/08-multi-language-programming/study-report-programming-for-beginners-2-book-in-1-arduino-for-beginne/report.json",
+      "markdown": "Book_Reports/08-multi-language-programming/study-report-programming-for-beginners-2-book-in-1-arduino-for-beginne/report.md"
+    },
+    {
+      "id": "study-report-python-programming-for-beginners-learn-coding-in-7-days",
+      "title": "Study Report: Python Programming for Beginners - Learn Coding in 7 Days",
+      "family_id": "08-multi-language-programming",
+      "chapter_count": 10,
+      "level": "Mixed",
+      "path": "Book_Reports/08-multi-language-programming/study-report-python-programming-for-beginners-learn-coding-in-7-days/report.json",
+      "markdown": "Book_Reports/08-multi-language-programming/study-report-python-programming-for-beginners-learn-coding-in-7-days/report.md"
+    },
+    {
+      "id": "study-report-learn-coding-python-java-php-complete-guide-and-other-of",
+      "title": "Study Report: Learn Coding - Python, Java, PHP Complete Guide, and Other of the Most Recommended",
+      "family_id": "08-multi-language-programming",
+      "chapter_count": 7,
+      "level": "Mixed",
+      "path": "Book_Reports/08-multi-language-programming/study-report-learn-coding-python-java-php-complete-guide-and-other-of/report.json",
+      "markdown": "Book_Reports/08-multi-language-programming/study-report-learn-coding-python-java-php-complete-guide-and-other-of/report.md"
+    },
+    {
+      "id": "study-report-computer-programming-for-beginners-4-books-in-1-linux-com",
+      "title": "Study Report: COMPUTER PROGRAMMING FOR BEGINNERS - 4 Books in 1. LINUX COMMAND-LINE + PYTHON",
+      "family_id": "08-multi-language-programming",
+      "chapter_count": 5,
+      "level": "Mixed",
+      "path": "Book_Reports/08-multi-language-programming/study-report-computer-programming-for-beginners-4-books-in-1-linux-com/report.json",
+      "markdown": "Book_Reports/08-multi-language-programming/study-report-computer-programming-for-beginners-4-books-in-1-linux-com/report.md"
+    }
+  ]
+}

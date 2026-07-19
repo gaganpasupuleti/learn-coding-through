@@ -1,0 +1,137 @@
+{
+  "id": "project-user-management-rest-api",
+  "title": "Project Report: User Management REST API — Java Backend Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "java-backend",
+  "family_name": "Java Backend Developer",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "User Management REST API",
+  "project_index": 1,
+  "duration": "2–3 weeks",
+  "summary": "Spring Boot 3 CRUD API with JPA, validation, OpenAPI, and Docker Compose + PostgreSQL.",
+  "objectives": [
+    "Design REST endpoints with proper HTTP status codes",
+    "Persist User entity with unique email",
+    "Write JUnit + MockMvc tests",
+    "Containerize with Flyway migrations"
+  ],
+  "tools": [
+    "Java 21",
+    "Spring Boot 3",
+    "PostgreSQL",
+    "Docker"
+  ],
+  "deliverables": [
+    "GitHub repo",
+    "OpenAPI spec",
+    "Test report",
+    "Demo video"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**User Management REST API** is a beginner-level end-to-end project for Java Backend Developer. Duration: 2–3 weeks. Spring Boot 3 CRUD API with JPA, validation, OpenAPI, and Docker Compose + PostgreSQL. Tools: Java 21, Spring Boot 3, PostgreSQL, Docker.\n\nCode Reference:\n```text\nObjective: Design REST endpoints with proper HTTP status codes\nObjective: Persist User entity with unique email\nObjective: Write JUnit + MockMvc tests\nObjective: Containerize with Flyway migrations\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nJava Backend Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Java Backend Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Java Backend Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Java Backend Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Java Backend Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Scaffold",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Scaffold** *(Level: Beginner)*\n\nInitialize Spring Boot with web, JPA, validation. Complete these tasks: Create User entity; Configure PostgreSQL. Deliverable for this phase: Health endpoint running.\n\nCode Reference:\n```text\n- [ ] Create User entity\n- [ ] Configure PostgreSQL\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Scaffold is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Health endpoint running to the teacher.",
+      "key_takeaways": [
+        "Phase Scaffold is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Health endpoint running to the teacher."
+      ],
+      "what_it_is": "Phase Scaffold is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Health endpoint running to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: REST Layer",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: REST Layer** *(Level: Beginner)*\n\nBuild controller, service, DTO layers. Complete these tasks: CRUD endpoints; Global exception handler. Deliverable for this phase: Postman collection all green.\n\nCode Reference:\n```text\n- [ ] CRUD endpoints\n- [ ] Global exception handler\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase REST Layer is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Postman collection all green to the teacher.",
+      "key_takeaways": [
+        "Phase REST Layer is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Postman collection all green to the teacher."
+      ],
+      "what_it_is": "Phase REST Layer is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Postman collection all green to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Testing",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Testing** *(Level: Beginner)*\n\nUnit and integration tests. Complete these tasks: @WebMvcTest; @DataJpaTest. Deliverable for this phase: 80%+ coverage report.\n\nCode Reference:\n```text\n- [ ] @WebMvcTest\n- [ ] @DataJpaTest\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Testing is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the 80%+ coverage report to the teacher.",
+      "key_takeaways": [
+        "Phase Testing is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the 80%+ coverage report to the teacher."
+      ],
+      "what_it_is": "Phase Testing is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the 80%+ coverage report to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Deploy",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Deploy** *(Level: Beginner)*\n\nDocker Compose stack. Complete these tasks: Dockerfile; docker-compose.yml. Deliverable for this phase: README + demo video.\n\nCode Reference:\n```text\n- [ ] Dockerfile\n- [ ] docker-compose.yml\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Deploy is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the README + demo video to the teacher.",
+      "key_takeaways": [
+        "Phase Deploy is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the README + demo video to the teacher."
+      ],
+      "what_it_is": "Phase Deploy is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the README + demo video to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: GitHub repo; OpenAPI spec; Test report; Demo video. Skills demonstrated: Spring Boot, JPA, REST, Docker. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: GitHub repo\nDeliverable: OpenAPI spec\nDeliverable: Test report\nDeliverable: Demo video\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits GitHub repo and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits GitHub repo and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits GitHub repo and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

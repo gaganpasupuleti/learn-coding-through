@@ -1,0 +1,136 @@
+{
+  "id": "project-pdf-q-a-chatbot-with-rag",
+  "title": "Project Report: PDF Q&A Chatbot with RAG — Generative AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "gen-ai",
+  "family_name": "Generative AI Engineer",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "PDF Q&A Chatbot with RAG",
+  "project_index": 1,
+  "duration": "2–3 weeks",
+  "summary": "Upload PDFs, chunk and embed with OpenAI/HuggingFace, answer questions with retrieved context.",
+  "objectives": [
+    "PDF text extraction and chunking",
+    "Vector store (Chroma/FAISS)",
+    "RAG prompt pipeline",
+    "Simple Streamlit or Gradio UI"
+  ],
+  "tools": [
+    "LangChain",
+    "OpenAI",
+    "Chroma",
+    "Streamlit"
+  ],
+  "deliverables": [
+    "GitHub repo",
+    "Demo video",
+    "Sample Q&A log"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**PDF Q&A Chatbot with RAG** is a beginner-level end-to-end project for Generative AI Engineer. Duration: 2–3 weeks. Upload PDFs, chunk and embed with OpenAI/HuggingFace, answer questions with retrieved context. Tools: LangChain, OpenAI, Chroma, Streamlit.\n\nCode Reference:\n```text\nObjective: PDF text extraction and chunking\nObjective: Vector store (Chroma/FAISS)\nObjective: RAG prompt pipeline\nObjective: Simple Streamlit or Gradio UI\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nGenerative AI Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Generative AI Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Generative AI Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Generative AI Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Generative AI Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Ingest",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Ingest** *(Level: Beginner)*\n\nPDF → chunks. Complete these tasks: LangChain loader; Splitter config. Deliverable for this phase: Indexed documents.\n\nCode Reference:\n```text\n- [ ] LangChain loader\n- [ ] Splitter config\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Ingest is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nGenerative AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Indexed documents to the teacher.",
+      "key_takeaways": [
+        "Phase Ingest is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Indexed documents to the teacher."
+      ],
+      "what_it_is": "Phase Ingest is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Generative AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Indexed documents to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Embed",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Embed** *(Level: Beginner)*\n\nVector store setup. Complete these tasks: OpenAI embeddings; Similarity search. Deliverable for this phase: Working retrieval.\n\nCode Reference:\n```text\n- [ ] OpenAI embeddings\n- [ ] Similarity search\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Embed is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nGenerative AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Working retrieval to the teacher.",
+      "key_takeaways": [
+        "Phase Embed is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Working retrieval to the teacher."
+      ],
+      "what_it_is": "Phase Embed is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Generative AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Working retrieval to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: RAG",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: RAG** *(Level: Beginner)*\n\nPrompt with context. Complete these tasks: System prompt; Source citations. Deliverable for this phase: Q&A demo.\n\nCode Reference:\n```text\n- [ ] System prompt\n- [ ] Source citations\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase RAG is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nGenerative AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Q&A demo to the teacher.",
+      "key_takeaways": [
+        "Phase RAG is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Q&A demo to the teacher."
+      ],
+      "what_it_is": "Phase RAG is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Generative AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Q&A demo to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: UI",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: UI** *(Level: Beginner)*\n\nStreamlit chat interface. Complete these tasks: Upload PDF; Chat history. Deliverable for this phase: Deployed app URL.\n\nCode Reference:\n```text\n- [ ] Upload PDF\n- [ ] Chat history\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase UI is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nGenerative AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Deployed app URL to the teacher.",
+      "key_takeaways": [
+        "Phase UI is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Deployed app URL to the teacher."
+      ],
+      "what_it_is": "Phase UI is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Generative AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Deployed app URL to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: GitHub repo; Demo video; Sample Q&A log. Skills demonstrated: RAG, Embeddings, LLM APIs. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: GitHub repo\nDeliverable: Demo video\nDeliverable: Sample Q&A log\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits GitHub repo and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits GitHub repo and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits GitHub repo and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

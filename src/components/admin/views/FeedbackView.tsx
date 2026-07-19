@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
+import { formatDateTimeIST } from '@/lib/formatDateTimeIST'
 import { cn } from '@/lib/utils'
 
 import { useAdminWorkspaceContext } from '../AdminWorkspaceContext'
@@ -107,7 +108,7 @@ export function FeedbackView() {
               </p>
 
               <p className="mt-2 text-[10px] text-muted-foreground">
-                {new Date(entry.created_at).toLocaleString()}
+                {entry.created_at_ist ?? formatDateTimeIST(entry.created_at)}
               </p>
 
               {entry.status === 'reviewed' && entry.admin_notes ? (
@@ -119,7 +120,7 @@ export function FeedbackView() {
 
               {entry.status === 'reviewed' && entry.reviewed_at ? (
                 <p className="mt-1 text-[10px] text-muted-foreground">
-                  Reviewed {new Date(entry.reviewed_at).toLocaleString()}
+                  Reviewed {entry.reviewed_at_ist ?? formatDateTimeIST(entry.reviewed_at)}
                 </p>
               ) : null}
 

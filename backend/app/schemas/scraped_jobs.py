@@ -9,11 +9,14 @@ VALID_PROFILES = (
     "fresher_india",
     "entry_level_india",
     "experienced_manual_india",
+    "platform_crm_india",
+    "ai_india",
 )
 
 
 class NormalizedJob(BaseModel):
     id: str
+    jobId: str | None = None
     source: str
     title: str
     company: str | None = None
@@ -27,6 +30,7 @@ class NormalizedJob(BaseModel):
     jobUrl: str
     applyUrl: str | None = None
     createdAt: datetime | None = None
+    createdAtIST: str | None = None
     linkStatus: str | None = "active"
 
 
@@ -42,7 +46,7 @@ class ScrapeRequest(BaseModel):
     location: str = FIXED_JOB_LOCATION
     resultsWanted: int = Field(default=50, ge=1, le=50)
     hoursOld: int = Field(default=48, ge=1, le=168)
-    sources: list[str] = Field(default_factory=lambda: ["indeed", "google", "naukri"])
+    sources: list[str] = Field(default_factory=lambda: ["indeed", "google", "linkedin"])
 
     @field_validator("location", mode="before")
     @classmethod
@@ -52,7 +56,7 @@ class ScrapeRequest(BaseModel):
 
 class RefreshRequest(BaseModel):
     profile: str
-    sources: list[str] = Field(default_factory=lambda: ["indeed", "google", "naukri"])
+    sources: list[str] = Field(default_factory=lambda: ["indeed", "google", "linkedin"])
     runMode: str = "manual"
     hoursOld: int | None = Field(default=None, ge=1, le=336)
     dateRangeDays: int | None = None
@@ -112,6 +116,8 @@ class CleanupLinksResponse(BaseModel):
     totalExpired: int
     totalLinkFailed: int
     totalUnknown: int
+    deletedJobs: int = 0
+    deletedEnrichments: int = 0
     scrapeRunId: int | None = None
 
 
@@ -164,14 +170,32 @@ class ScrapeRunSummary(BaseModel):
 
 class LatestJobSummary(BaseModel):
     id: str
+    jobId: str | None = None
+    ingestProfile: str | None = None
+    actualRoleId: str | None = None
+    actualRoleName: str | None = None
     source: str
     title: str
     company: str | None
     location: str | None
     datePosted: datetime | None
     createdAt: datetime
+    createdAtIST: str | None = None
     jobUrl: str
     linkStatus: str | None = "active"
+
+
+class ProfileBreakdownItem(BaseModel):
+    profile: str
+    label: str
+    count: int
+    autoEnabled: bool = False
+
+
+class EnrichmentRoleCountItem(BaseModel):
+    roleId: str
+    roleName: str
+    count: int
 
 
 class JobStatsResponse(BaseModel):
@@ -192,6 +216,23 @@ class JobStatsResponse(BaseModel):
     recentScrapeRuns: list[ScrapeRunSummary]
     latestJobs: list[LatestJobSummary]
     expiredJobSamples: list[LatestJobSummary]
+    profileBreakdown: list[ProfileBreakdownItem] = Field(default_factory=list)
+    enrichmentRoleSummary: list[EnrichmentRoleCountItem] = Field(default_factory=list)
+
+
+class JobBoardOverviewResponse(BaseModel):
+    """Student-safe job board KPIs (no admin scrape audit fields)."""
+
+    totalJobs: int
+    activeJobs: int
+    loadedToday: int
+    loadedLast24Hours: int
+    loadedLast7Days: int
+    latestLoadedAt: datetime | None
+    lastAutoRefreshAt: datetime | None
+    profileBreakdown: list[ProfileBreakdownItem] = Field(default_factory=list)
+    sourceBreakdown: list[SourceBreakdownItem] = Field(default_factory=list)
+    enrichmentRoleSummary: list[EnrichmentRoleCountItem] = Field(default_factory=list)
 
 
 class DigestSummary(BaseModel):
@@ -237,6 +278,7 @@ class EmailPreviewResponse(BaseModel):
 class SendDigestRequest(EmailDigestFields):
     mode: str = "test"
     testEmail: str | None = None
+    recipientEmails: list[str] | None = None
 
 
 class SendDigestResponse(BaseModel):

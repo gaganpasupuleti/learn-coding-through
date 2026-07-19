@@ -1,3 +1,5 @@
+import { parseUtcDate } from '@/lib/formatDateTimeIST'
+
 function localDayKey(d: Date): string {
   const y = d.getFullYear()
   const m = String(d.getMonth() + 1).padStart(2, '0')
@@ -24,7 +26,7 @@ export function bucketIsoDatesByDay(
 
   for (const iso of isos) {
     if (!iso) continue
-    const t = new Date(iso)
+    const t = parseUtcDate(iso)
     if (Number.isNaN(t.getTime())) continue
     const k = localDayKey(t)
     if (buckets.has(k)) {
@@ -69,7 +71,7 @@ export function bucketJobsByWeek(
 
   for (const job of jobs) {
     if (!job.created_at) continue
-    const t = new Date(job.created_at)
+    const t = parseUtcDate(job.created_at)
     if (Number.isNaN(t.getTime())) continue
     const weekStart = startOfIsoWeek(t)
     const k = localDayKey(weekStart)
@@ -114,7 +116,7 @@ export function bucketIsoDatesInRange(
 
   for (const iso of isos) {
     if (!iso) continue
-    const t = new Date(iso)
+    const t = parseUtcDate(iso)
     if (Number.isNaN(t.getTime())) continue
     if (t < start || t > end) continue
     const k = localDayKey(t)
@@ -156,7 +158,7 @@ export function bucketJobsByWeekInRange(
 
   for (const job of jobs) {
     if (!job.created_at) continue
-    const t = new Date(job.created_at)
+    const t = parseUtcDate(job.created_at)
     if (Number.isNaN(t.getTime()) || t < start || t > end) continue
     const weekStart = startOfIsoWeek(t)
     const k = localDayKey(weekStart)

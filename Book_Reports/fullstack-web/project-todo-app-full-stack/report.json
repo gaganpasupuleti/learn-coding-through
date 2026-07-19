@@ -1,0 +1,136 @@
+{
+  "id": "project-todo-app-full-stack",
+  "title": "Project Report: Todo App Full Stack — Full Stack Web Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "fullstack-web",
+  "family_name": "Full Stack Web Developer",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Todo App Full Stack",
+  "project_index": 1,
+  "duration": "2 weeks",
+  "summary": "React frontend + Express API + SQLite: create, complete, delete todos with persistence.",
+  "objectives": [
+    "REST API for todos",
+    "React UI with forms",
+    "SQLite persistence",
+    "Basic error handling"
+  ],
+  "tools": [
+    "React",
+    "Node.js",
+    "Express",
+    "SQLite"
+  ],
+  "deliverables": [
+    "GitHub monorepo",
+    "Live frontend",
+    "Live API"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Todo App Full Stack** is a beginner-level end-to-end project for Full Stack Web Developer. Duration: 2 weeks. React frontend + Express API + SQLite: create, complete, delete todos with persistence. Tools: React, Node.js, Express, SQLite.\n\nCode Reference:\n```text\nObjective: REST API for todos\nObjective: React UI with forms\nObjective: SQLite persistence\nObjective: Basic error handling\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nFull Stack Web Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Full Stack Web Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Full Stack Web Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Full Stack Web Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Full Stack Web Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: API",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: API** *(Level: Beginner)*\n\nExpress CRUD routes. Complete these tasks: SQLite schema; Validation. Deliverable for this phase: API tested with curl.\n\nCode Reference:\n```text\n- [ ] SQLite schema\n- [ ] Validation\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase API is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the API tested with curl to the teacher.",
+      "key_takeaways": [
+        "Phase API is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the API tested with curl to the teacher."
+      ],
+      "what_it_is": "Phase API is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the API tested with curl to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: UI",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: UI** *(Level: Beginner)*\n\nReact todo list. Complete these tasks: Add/complete/delete; Optimistic UI. Deliverable for this phase: Working frontend.\n\nCode Reference:\n```text\n- [ ] Add/complete/delete\n- [ ] Optimistic UI\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase UI is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Working frontend to the teacher.",
+      "key_takeaways": [
+        "Phase UI is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Working frontend to the teacher."
+      ],
+      "what_it_is": "Phase UI is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Working frontend to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Connect",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Connect** *(Level: Beginner)*\n\nfetch from React. Complete these tasks: CORS setup; Loading states. Deliverable for this phase: Full stack running.\n\nCode Reference:\n```text\n- [ ] CORS setup\n- [ ] Loading states\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Connect is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Full stack running to the teacher.",
+      "key_takeaways": [
+        "Phase Connect is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Full stack running to the teacher."
+      ],
+      "what_it_is": "Phase Connect is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Full stack running to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Deploy",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Deploy** *(Level: Beginner)*\n\nFrontend + API deploy. Complete these tasks: Vercel + Render; Env vars. Deliverable for this phase: Live URLs.\n\nCode Reference:\n```text\n- [ ] Vercel + Render\n- [ ] Env vars\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Deploy is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Live URLs to the teacher.",
+      "key_takeaways": [
+        "Phase Deploy is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Live URLs to the teacher."
+      ],
+      "what_it_is": "Phase Deploy is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Live URLs to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: GitHub monorepo; Live frontend; Live API. Skills demonstrated: React, Express, SQL. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: GitHub monorepo\nDeliverable: Live frontend\nDeliverable: Live API\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits GitHub monorepo and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits GitHub monorepo and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits GitHub monorepo and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

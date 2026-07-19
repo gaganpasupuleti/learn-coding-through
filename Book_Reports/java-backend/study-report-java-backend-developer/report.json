@@ -1,0 +1,611 @@
+{
+  "id": "study-report-java-backend-developer",
+  "title": "Study Report: Java Backend Developer — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "java-backend",
+  "family_name": "Java Backend Developer",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "Enterprise Java backend engineering with Java 21 LTS, Spring Boot 3, virtual threads, Jakarta Persistence, microservices, OAuth2 security, and Kubernetes deployment. This path moves from JVM fundamentals through production-grade REST APIs to observable, horizontally scaled services used in banking, e-commerce, and SaaS platforms.",
+  "skill_stack": {
+    "beginner": [
+      "Java syntax and JVM basics",
+      "Object-oriented design (classes, interfaces, inheritance)",
+      "Collections Framework (List, Map, Stream API)",
+      "Exception handling and logging (SLF4J)",
+      "Maven/Gradle project structure",
+      "JUnit 5 unit testing",
+      "Git workflow and code reviews"
+    ],
+    "intermediate": [
+      "Spring Boot 3 REST API design",
+      "Spring Data JPA and transaction management",
+      "Java 21 virtual threads and structured concurrency",
+      "Spring Security with JWT and OAuth2",
+      "OpenAPI/Swagger documentation",
+      "Docker containerization",
+      "Integration testing with Testcontainers",
+      "PostgreSQL schema design and migrations (Flyway)"
+    ],
+    "advanced": [
+      "Microservices with Spring Cloud",
+      "Event-driven architecture (Kafka/RabbitMQ)",
+      "Kubernetes deployment and Helm charts",
+      "Distributed tracing (Micrometer, OpenTelemetry)",
+      "Performance profiling and JVM tuning",
+      "Circuit breakers and resilience patterns",
+      "Zero-downtime deployment strategies"
+    ]
+  },
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/21/",
+    "https://docs.spring.io/spring-boot/docs/current/reference/html/",
+    "https://spring.io/guides",
+    "https://jakarta.ee/specifications/persistence/3.1/",
+    "https://kubernetes.io/docs/tutorials/",
+    "https://openjdk.org/jeps/444"
+  ],
+  "recommended_books": [
+    {
+      "title": "Head First Java",
+      "author": "Kathy Sierra & Bert Bates",
+      "level": "Beginner",
+      "focus": "Visual introduction to Java OOP, classes, and the JVM.",
+      "url": "https://www.oreilly.com/library/view/head-first-java/9781492072830/",
+      "free_online": false
+    },
+    {
+      "title": "Effective Java",
+      "author": "Joshua Bloch",
+      "level": "Intermediate",
+      "focus": "Best practices for Java APIs, generics, enums, and collections.",
+      "url": "https://www.oreilly.com/library/view/effective-java/9780134685991/",
+      "free_online": false
+    },
+    {
+      "title": "Spring Boot in Action",
+      "author": "Craig Walls",
+      "level": "Intermediate",
+      "focus": "Spring Boot 3 REST APIs, security, data access, and production config.",
+      "url": "https://www.manning.com/books/spring-boot-in-action",
+      "free_online": false
+    },
+    {
+      "title": "Java Concurrency in Practice",
+      "author": "Brian Goetz",
+      "level": "Advanced",
+      "focus": "Thread safety, executors, and concurrency for high-throughput servers.",
+      "url": "https://jcip.net/",
+      "free_online": false
+    },
+    {
+      "title": "Cloud Native Spring in Action",
+      "author": "Thomas Vitale",
+      "level": "Advanced",
+      "focus": "Microservices, Kubernetes, and cloud-native Spring patterns.",
+      "url": "https://www.manning.com/books/cloud-native-spring-in-action",
+      "free_online": false
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "User Management REST API",
+      "level": "Beginner",
+      "duration": "2–3 weeks",
+      "overview": "Spring Boot 3 CRUD API with JPA, validation, OpenAPI, and Docker Compose + PostgreSQL.",
+      "objectives": [
+        "Design REST endpoints with proper HTTP status codes",
+        "Persist User entity with unique email",
+        "Write JUnit + MockMvc tests",
+        "Containerize with Flyway migrations"
+      ],
+      "phases": [
+        {
+          "name": "Scaffold",
+          "description": "Initialize Spring Boot with web, JPA, validation.",
+          "tasks": [
+            "Create User entity",
+            "Configure PostgreSQL"
+          ],
+          "deliverable": "Health endpoint running"
+        },
+        {
+          "name": "REST Layer",
+          "description": "Build controller, service, DTO layers.",
+          "tasks": [
+            "CRUD endpoints",
+            "Global exception handler"
+          ],
+          "deliverable": "Postman collection all green"
+        },
+        {
+          "name": "Testing",
+          "description": "Unit and integration tests.",
+          "tasks": [
+            "@WebMvcTest",
+            "@DataJpaTest"
+          ],
+          "deliverable": "80%+ coverage report"
+        },
+        {
+          "name": "Deploy",
+          "description": "Docker Compose stack.",
+          "tasks": [
+            "Dockerfile",
+            "docker-compose.yml"
+          ],
+          "deliverable": "README + demo video"
+        }
+      ],
+      "skills_applied": [
+        "Spring Boot",
+        "JPA",
+        "REST",
+        "Docker"
+      ],
+      "tools": [
+        "Java 21",
+        "Spring Boot 3",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "deliverables": [
+        "GitHub repo",
+        "OpenAPI spec",
+        "Test report",
+        "Demo video"
+      ]
+    },
+    {
+      "title": "E-Commerce Order Microservice",
+      "level": "Intermediate",
+      "duration": "4–5 weeks",
+      "overview": "Order service with inventory checks, JWT auth, Redis cache, and Kafka event publishing.",
+      "objectives": [
+        "Implement JWT authentication",
+        "Publish OrderCreated events to Kafka",
+        "Add Redis caching for product catalog",
+        "Integration tests with Testcontainers"
+      ],
+      "phases": [
+        {
+          "name": "Domain",
+          "description": "Order and OrderItem entities with state machine.",
+          "tasks": [
+            "Order statuses",
+            "Inventory client"
+          ],
+          "deliverable": "Domain model docs"
+        },
+        {
+          "name": "Security",
+          "description": "OAuth2 resource server.",
+          "tasks": [
+            "JWT validation",
+            "Role-based endpoints"
+          ],
+          "deliverable": "Secured API"
+        },
+        {
+          "name": "Events",
+          "description": "Kafka producer/consumer.",
+          "tasks": [
+            "OrderCreated topic",
+            "Inventory listener"
+          ],
+          "deliverable": "Event flow diagram"
+        },
+        {
+          "name": "Observability",
+          "description": "Metrics and structured logging.",
+          "tasks": [
+            "Micrometer",
+            "JSON logs"
+          ],
+          "deliverable": "Grafana dashboard screenshot"
+        }
+      ],
+      "skills_applied": [
+        "Microservices",
+        "Kafka",
+        "Security",
+        "Caching"
+      ],
+      "tools": [
+        "Spring Boot 3",
+        "Kafka",
+        "Redis",
+        "PostgreSQL"
+      ],
+      "deliverables": [
+        "Architecture diagram",
+        "Running microservice",
+        "Grafana dashboard",
+        "Postman collection"
+      ]
+    },
+    {
+      "title": "Cloud-Native Banking API Platform",
+      "level": "Advanced",
+      "duration": "6–8 weeks",
+      "overview": "Multi-service platform on Kubernetes with virtual threads, circuit breakers, and distributed tracing.",
+      "objectives": [
+        "Deploy 3 services on Kubernetes with Helm",
+        "Enable Java 21 virtual threads",
+        "Implement Resilience4j circuit breakers",
+        "End-to-end tracing with OpenTelemetry"
+      ],
+      "phases": [
+        {
+          "name": "K8s Setup",
+          "description": "Helm charts and namespaces.",
+          "tasks": [
+            "Dev/staging/prod",
+            "Ingress + TLS"
+          ],
+          "deliverable": "Cluster running"
+        },
+        {
+          "name": "Virtual Threads",
+          "description": "High-concurrency payment endpoints.",
+          "tasks": [
+            "Structured concurrency",
+            "Load test"
+          ],
+          "deliverable": "JMeter report"
+        },
+        {
+          "name": "Resilience",
+          "description": "Circuit breakers and retries.",
+          "tasks": [
+            "Resilience4j config",
+            "Fallback handlers"
+          ],
+          "deliverable": "Chaos test video"
+        },
+        {
+          "name": "Tracing",
+          "description": "OpenTelemetry across services.",
+          "tasks": [
+            "Trace IDs in logs",
+            "Jaeger UI"
+          ],
+          "deliverable": "Trace screenshot walkthrough"
+        }
+      ],
+      "skills_applied": [
+        "Kubernetes",
+        "Observability",
+        "Performance",
+        "Resilience"
+      ],
+      "tools": [
+        "Java 21",
+        "K8s",
+        "Helm",
+        "OpenTelemetry"
+      ],
+      "deliverables": [
+        "Helm charts",
+        "Load test report",
+        "Jaeger traces",
+        "Architecture doc"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Java 21 Platform and JVM Fundamentals",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Java 21 Platform and JVM Fundamentals** *(Level: Beginner)*\n\nJava 21 is the current LTS release with pattern matching, record types, and sequenced collections. Backend developers compile source to bytecode that runs on the JVM, giving write-once-run-anywhere portability. Understanding the JDK (compiler, runtime, tools) versus the JRE helps you debug classpath and module issues early. Enterprise teams standardize on LTS versions for predictable security patches and long support windows.\n\nCode Reference:\n```java\npublic class App {\n    public static void main(String[] args) {\n        var message = \"Java 21 Backend\";\n        System.out.println(message);\n    }\n}\n```\nWhat it shows: The var keyword infers type locally; main is the JVM entry point.\n\n### What it actually is\nJava is a statically typed, object-oriented language compiled to JVM bytecode for server-side applications.\n\n### When to use it\nChoose Java when you need mature tooling, strong typing, vast libraries, and enterprise support.\n\n### Where to use it\nBanking cores, insurance systems, large e-commerce backends, and Spring-based microservices.\n\n### Real use example\nA payments team ships Java 21 because their SLA requires LTS security updates and proven JVM performance under load.",
+      "key_takeaways": [
+        "Java is a statically typed, object-oriented language compiled to JVM bytecode for server-side applications.",
+        "Choose Java when you need mature tooling, strong typing, vast libraries, and enterprise support.",
+        "A payments team ships Java 21 because their SLA requires LTS security updates and proven JVM performance under load."
+      ],
+      "what_it_is": "Java is a statically typed, object-oriented language compiled to JVM bytecode for server-side applications.",
+      "when_to_use": "Choose Java when you need mature tooling, strong typing, vast libraries, and enterprise support.",
+      "where_to_use": "Banking cores, insurance systems, large e-commerce backends, and Spring-based microservices.",
+      "real_use_example": "A payments team ships Java 21 because their SLA requires LTS security updates and proven JVM performance under load."
+    },
+    {
+      "number": 2,
+      "title": "Object-Oriented Design in Java",
+      "topic": "oop",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Object-Oriented Design in Java** *(Level: Beginner)*\n\nClasses encapsulate state and behavior; interfaces define contracts without implementation. Use composition over inheritance to keep services testable and avoid fragile base classes. Records (Java 16+) provide immutable data carriers ideal for DTOs returned from REST APIs. Sealed classes restrict inheritance hierarchies, making domain modeling explicit and safer.\n\nCode Reference:\n```java\npublic record UserDto(Long id, String email, String role) {}\n\npublic interface UserService {\n    UserDto findById(Long id);\n}\n```\nWhat it shows: Records auto-generate equals/hashCode; interfaces decouple controllers from implementations.\n\n### What it actually is\nOOP organizes code into classes, interfaces, and packages that mirror business domains.\n\n### When to use it\nModel every persistent entity, service, and external adapter as typed classes with clear responsibilities.\n\n### Where to use it\nSpring @Service classes, JPA @Entity models, and REST response DTOs.\n\n### Real use example\nOrderService depends on OrderRepository interface so unit tests swap in an in-memory fake.",
+      "key_takeaways": [
+        "OOP organizes code into classes, interfaces, and packages that mirror business domains.",
+        "Model every persistent entity, service, and external adapter as typed classes with clear responsibilities.",
+        "OrderService depends on OrderRepository interface so unit tests swap in an in-memory fake."
+      ],
+      "what_it_is": "OOP organizes code into classes, interfaces, and packages that mirror business domains.",
+      "when_to_use": "Model every persistent entity, service, and external adapter as typed classes with clear responsibilities.",
+      "where_to_use": "Spring @Service classes, JPA @Entity models, and REST response DTOs.",
+      "real_use_example": "OrderService depends on OrderRepository interface so unit tests swap in an in-memory fake."
+    },
+    {
+      "number": 3,
+      "title": "Collections, Streams, and Functional APIs",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Collections, Streams, and Functional APIs** *(Level: Beginner)*\n\nThe Collections Framework provides List, Set, Map, and Queue implementations tuned for different access patterns. Streams enable declarative filtering, mapping, and reduction over collections without manual loops. Optional reduces null-pointer bugs by forcing explicit handling of missing values. Backend code uses streams to transform database results into API responses efficiently.\n\nCode Reference:\n```java\nList<Order> active = orders.stream()\n    .filter(o -> o.status() == Status.ACTIVE)\n    .sorted(Comparator.comparing(Order::createdAt))\n    .toList();\n```\nWhat it shows: Stream pipeline filters and sorts orders immutably; toList returns unmodifiable list.\n\n### What it actually is\nCollections hold groups of objects; Streams process them with functional operations.\n\n### When to use it\nUse streams for in-memory transforms; push heavy filtering to SQL when datasets are large.\n\n### Where to use it\nService-layer aggregation, report generation, and batch preprocessing before persistence.\n\n### Real use example\nA dashboard API streams 10,000 orders in memory to compute top customers for the last 24 hours.",
+      "key_takeaways": [
+        "Collections hold groups of objects; Streams process them with functional operations.",
+        "Use streams for in-memory transforms; push heavy filtering to SQL when datasets are large.",
+        "A dashboard API streams 10,000 orders in memory to compute top customers for the last 24 hours."
+      ],
+      "what_it_is": "Collections hold groups of objects; Streams process them with functional operations.",
+      "when_to_use": "Use streams for in-memory transforms; push heavy filtering to SQL when datasets are large.",
+      "where_to_use": "Service-layer aggregation, report generation, and batch preprocessing before persistence.",
+      "real_use_example": "A dashboard API streams 10,000 orders in memory to compute top customers for the last 24 hours."
+    },
+    {
+      "number": 4,
+      "title": "Maven Build System and Project Layout",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Maven Build System and Project Layout** *(Level: Beginner)*\n\nMaven coordinates projects with groupId, artifactId, and version declared in pom.xml. Standard layout separates src/main/java, src/test/java, and resources for reproducible builds. Dependency management imports BOMs (e.g., Spring Boot parent) to align library versions. Lifecycle phases compile, test, package, and install artifacts to local or remote repositories.\n\nCode Reference:\n```xml\n<parent>\n  <groupId>org.springframework.boot</groupId>\n  <artifactId>spring-boot-starter-parent</artifactId>\n  <version>3.3.0</version>\n</parent>\n```\nWhat it shows: Spring Boot parent POM pins compatible dependency versions automatically.\n\n### What it actually is\nMaven is the de facto build and dependency manager for Java enterprise projects.\n\n### When to use it\nUse Maven or Gradle on every professional Java project; never commit IDE-specific library copies.\n\n### Where to use it\nCI pipelines, corporate monorepos, and open-source Java libraries on Maven Central.\n\n### Real use example\nAdding spring-boot-starter-data-jpa to pom.xml pulls Hibernate and JDBC drivers transitively.",
+      "key_takeaways": [
+        "Maven is the de facto build and dependency manager for Java enterprise projects.",
+        "Use Maven or Gradle on every professional Java project; never commit IDE-specific library copies.",
+        "Adding spring-boot-starter-data-jpa to pom."
+      ],
+      "what_it_is": "Maven is the de facto build and dependency manager for Java enterprise projects.",
+      "when_to_use": "Use Maven or Gradle on every professional Java project; never commit IDE-specific library copies.",
+      "where_to_use": "CI pipelines, corporate monorepos, and open-source Java libraries on Maven Central.",
+      "real_use_example": "Adding spring-boot-starter-data-jpa to pom.xml pulls Hibernate and JDBC drivers transitively."
+    },
+    {
+      "number": 5,
+      "title": "Exception Handling and Logging",
+      "topic": "errors",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Exception Handling and Logging** *(Level: Beginner)*\n\nChecked exceptions force callers to handle failure modes; unchecked RuntimeExceptions signal programming bugs. Never swallow exceptions—log context and rethrow or map to HTTP status codes at the boundary. SLF4J with Logback provides structured logging levels (DEBUG, INFO, WARN, ERROR). Include correlation IDs in log MDC so distributed requests trace across services.\n\nCode Reference:\n```java\ntry {\n    userService.create(dto);\n} catch (DuplicateEmailException ex) {\n    log.warn(\"Duplicate email attempt: {}\", dto.email());\n    throw new ResponseStatusException(HttpStatus.CONFLICT, \"Email already exists\");\n}\n```\nWhat it shows: Domain exceptions translate to 409 Conflict at the REST boundary with structured logging.\n\n### What it actually is\nExceptions signal failure; logging records operational events for debugging and auditing.\n\n### When to use it\nCatch at layer boundaries; let service exceptions bubble to @ControllerAdvice handlers.\n\n### Where to use it\nGlobal exception handlers, audit trails, and on-call incident investigation.\n\n### Real use example\nSupport finds a failed checkout by searching logs for the correlation ID returned to the client.",
+      "key_takeaways": [
+        "Exceptions signal failure; logging records operational events for debugging and auditing.",
+        "Catch at layer boundaries; let service exceptions bubble to @ControllerAdvice handlers.",
+        "Support finds a failed checkout by searching logs for the correlation ID returned to the client."
+      ],
+      "what_it_is": "Exceptions signal failure; logging records operational events for debugging and auditing.",
+      "when_to_use": "Catch at layer boundaries; let service exceptions bubble to @ControllerAdvice handlers.",
+      "where_to_use": "Global exception handlers, audit trails, and on-call incident investigation.",
+      "real_use_example": "Support finds a failed checkout by searching logs for the correlation ID returned to the client."
+    },
+    {
+      "number": 6,
+      "title": "JUnit 5 and Test-Driven Development",
+      "topic": "errors",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: JUnit 5 and Test-Driven Development** *(Level: Beginner)*\n\nJUnit 5 (Jupiter) uses @Test, @BeforeEach, and assertThat for readable assertions. Parameterized tests run the same logic with multiple inputs, reducing boilerplate. Mockito stubs collaborators so unit tests isolate the class under test. TDD writes a failing test first, implements minimal code, then refactors with confidence.\n\nCode Reference:\n```java\n@Test\nvoid calculateTotal_appliesTax() {\n    var cart = new Cart(List.of(new LineItem(\"Book\", 10.0)));\n    assertEquals(10.8, cart.totalWithTax(0.08));\n}\n```\nWhat it shows: Test verifies tax calculation; assertEquals fails fast on regression.\n\n### What it actually is\nAutomated tests verify behavior and prevent regressions on every commit.\n\n### When to use it\nWrite unit tests for services and utilities; integration tests for repositories and controllers.\n\n### Where to use it\nCI pipelines block merges when mvn test fails; coverage gates enforce minimum thresholds.\n\n### Real use example\nA pull request adding discount logic includes tests proving edge cases for zero and negative prices.",
+      "key_takeaways": [
+        "Automated tests verify behavior and prevent regressions on every commit.",
+        "Write unit tests for services and utilities; integration tests for repositories and controllers.",
+        "A pull request adding discount logic includes tests proving edge cases for zero and negative prices."
+      ],
+      "what_it_is": "Automated tests verify behavior and prevent regressions on every commit.",
+      "when_to_use": "Write unit tests for services and utilities; integration tests for repositories and controllers.",
+      "where_to_use": "CI pipelines block merges when mvn test fails; coverage gates enforce minimum thresholds.",
+      "real_use_example": "A pull request adding discount logic includes tests proving edge cases for zero and negative prices."
+    },
+    {
+      "number": 7,
+      "title": "Spring Boot 3 REST API Design",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Spring Boot 3 REST API Design** *(Level: Intermediate)*\n\nSpring Boot 3 runs on Spring Framework 6 with native Jakarta EE namespaces (jakarta.*). Controllers use @RestController and HTTP method annotations to expose resources. DTOs decouple API contracts from JPA entities, preventing lazy-loading leaks in JSON. Problem Details (RFC 7807) standardize error payloads for client-friendly debugging.\n\nCode Reference:\n```java\n@RestController\n@RequestMapping(\"/api/v1/products\")\n@RequiredArgsConstructor\npublic class ProductController {\n    private final ProductService service;\n\n    @GetMapping(\"/{id}\")\n    public ProductDto get(@PathVariable Long id) {\n        return service.findById(id);\n    }\n}\n```\nWhat it shows: @RequiredArgsConstructor injects final dependencies; path variable binds URL segment to parameter.\n\n### What it actually is\nSpring Boot auto-configures a servlet stack (or WebFlux) for production REST APIs with minimal boilerplate.\n\n### When to use it\nUse Spring Boot for microservices, monolith APIs, and internal tools requiring fast iteration.\n\n### Where to use it\nPublic mobile backends, partner integrations, admin APIs, and BFF layers.\n\n### Real use example\nA retail app calls GET /api/v1/products/42 and receives JSON with price, SKU, and stock level.",
+      "key_takeaways": [
+        "Spring Boot auto-configures a servlet stack (or WebFlux) for production REST APIs with minimal boilerplate.",
+        "Use Spring Boot for microservices, monolith APIs, and internal tools requiring fast iteration.",
+        "A retail app calls GET /api/v1/products/42 and receives JSON with price, SKU, and stock level."
+      ],
+      "what_it_is": "Spring Boot auto-configures a servlet stack (or WebFlux) for production REST APIs with minimal boilerplate.",
+      "when_to_use": "Use Spring Boot for microservices, monolith APIs, and internal tools requiring fast iteration.",
+      "where_to_use": "Public mobile backends, partner integrations, admin APIs, and BFF layers.",
+      "real_use_example": "A retail app calls GET /api/v1/products/42 and receives JSON with price, SKU, and stock level."
+    },
+    {
+      "number": 8,
+      "title": "Spring Data JPA and Transactions",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Spring Data JPA and Transactions** *(Level: Intermediate)*\n\nJPA maps Java objects to relational tables with @Entity, @OneToMany, and lifecycle callbacks. Spring Data derives queries from method names or @Query annotations. @Transactional defines atomic units—rollback on unchecked exceptions by default. N+1 query problems appear when lazy associations load in loops; fix with JOIN FETCH or @EntityGraph.\n\nCode Reference:\n```java\n@Entity\npublic class Order {\n    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)\n    private Long id;\n    @OneToMany(mappedBy = \"order\", cascade = CascadeType.ALL)\n    private List<OrderLine> lines = new ArrayList<>();\n}\n```\nWhat it shows: Bidirectional association mappedBy avoids duplicate foreign keys; cascade persists lines with order.\n\n### What it actually is\nJPA is Java's standard ORM; Spring Data adds repository abstraction over EntityManager.\n\n### When to use it\nUse JPA for CRUD-heavy domains; consider JDBC/jOOQ for complex reporting queries.\n\n### Where to use it\nPostgreSQL and MySQL backends in Spring services with Flyway/Liquibase migrations.\n\n### Real use example\nfindByCustomerIdAndStatusOrderByCreatedAtDesc returns recent open orders without handwritten SQL.",
+      "key_takeaways": [
+        "JPA is Java's standard ORM; Spring Data adds repository abstraction over EntityManager.",
+        "Use JPA for CRUD-heavy domains; consider JDBC/jOOQ for complex reporting queries.",
+        "findByCustomerIdAndStatusOrderByCreatedAtDesc returns recent open orders without handwritten SQL."
+      ],
+      "what_it_is": "JPA is Java's standard ORM; Spring Data adds repository abstraction over EntityManager.",
+      "when_to_use": "Use JPA for CRUD-heavy domains; consider JDBC/jOOQ for complex reporting queries.",
+      "where_to_use": "PostgreSQL and MySQL backends in Spring services with Flyway/Liquibase migrations.",
+      "real_use_example": "findByCustomerIdAndStatusOrderByCreatedAtDesc returns recent open orders without handwritten SQL."
+    },
+    {
+      "number": 9,
+      "title": "Java 21 Virtual Threads",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Java 21 Virtual Threads** *(Level: Intermediate)*\n\nVirtual threads are lightweight threads scheduled by the JVM, not the OS. They excel at I/O-bound workloads—HTTP calls, DB queries—without thread-pool exhaustion. Enable with spring.threads.virtual.enabled=true in Spring Boot 3.2+. Avoid pinning virtual threads with synchronized blocks around long I/O inside native code.\n\nCode Reference:\n```java\ntry (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n    List<Future<String>> futures = urls.stream()\n        .map(url -> executor.submit(() -> fetch(url)))\n        .toList();\n    futures.forEach(f -> System.out.println(f.get()));\n}\n```\nWhat it shows: Each URL fetch runs on its own virtual thread; try-with-resources shuts down executor.\n\n### What it actually is\nVirtual threads massively increase concurrency for blocking I/O without reactive programming complexity.\n\n### When to use it\nAdopt for REST endpoints that call external APIs or databases under high concurrent load.\n\n### Where to use it\nSpring Boot servlet containers, batch fetchers, and integration adapters.\n\n### Real use example\nAn API gateway handles 10,000 concurrent upstream calls using virtual threads instead of a 200-thread platform pool.",
+      "key_takeaways": [
+        "Virtual threads massively increase concurrency for blocking I/O without reactive programming complexity.",
+        "Adopt for REST endpoints that call external APIs or databases under high concurrent load.",
+        "An API gateway handles 10,000 concurrent upstream calls using virtual threads instead of a 200-thread platform pool."
+      ],
+      "what_it_is": "Virtual threads massively increase concurrency for blocking I/O without reactive programming complexity.",
+      "when_to_use": "Adopt for REST endpoints that call external APIs or databases under high concurrent load.",
+      "where_to_use": "Spring Boot servlet containers, batch fetchers, and integration adapters.",
+      "real_use_example": "An API gateway handles 10,000 concurrent upstream calls using virtual threads instead of a 200-thread platform pool."
+    },
+    {
+      "number": 10,
+      "title": "Spring Security and JWT Authentication",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Spring Security and JWT Authentication** *(Level: Intermediate)*\n\nSpring Security filters authenticate requests before they reach controllers. OAuth2 resource-server support validates JWT access tokens from identity providers. Method security (@PreAuthorize) enforces fine-grained roles on service methods. Never store plaintext passwords—use BCryptPasswordEncoder with sufficient strength factor.\n\nCode Reference:\n```java\n@Bean\nSecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n    return http\n        .csrf(csrf -> csrf.disable())\n        .authorizeHttpRequests(auth -> auth\n            .requestMatchers(\"/actuator/health\").permitAll()\n            .anyRequest().authenticated())\n        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))\n        .build();\n}\n```\nWhat it shows: JWT resource server protects all routes except health; CSRF disabled for stateless APIs.\n\n### What it actually is\nSpring Security provides authentication, authorization, and protection against common web attacks.\n\n### When to use it\nApply on every production API handling user data, payments, or admin operations.\n\n### Where to use it\nMobile backends, SPA APIs, microservice meshes with centralized identity.\n\n### Real use example\nOnly tokens with scope orders:write can POST /api/orders; read-only tokens get 403 Forbidden.",
+      "key_takeaways": [
+        "Spring Security provides authentication, authorization, and protection against common web attacks.",
+        "Apply on every production API handling user data, payments, or admin operations.",
+        "Only tokens with scope orders:write can POST /api/orders; read-only tokens get 403 Forbidden."
+      ],
+      "what_it_is": "Spring Security provides authentication, authorization, and protection against common web attacks.",
+      "when_to_use": "Apply on every production API handling user data, payments, or admin operations.",
+      "where_to_use": "Mobile backends, SPA APIs, microservice meshes with centralized identity.",
+      "real_use_example": "Only tokens with scope orders:write can POST /api/orders; read-only tokens get 403 Forbidden."
+    },
+    {
+      "number": 11,
+      "title": "Integration Testing with Testcontainers",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Integration Testing with Testcontainers** *(Level: Intermediate)*\n\nTestcontainers spin up real PostgreSQL, Kafka, or Redis in Docker during tests. @SpringBootTest loads the full application context for end-to-end verification. @DynamicPropertySource injects container host/port into Spring configuration. Tests against real infrastructure catch SQL dialect and serialization bugs mocks miss.\n\nCode Reference:\n```java\n@SpringBootTest\n@Testcontainers\nclass OrderRepositoryIT {\n    @Container\n    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(\"postgres:16\");\n\n    @DynamicPropertySource\n    static void props(DynamicPropertyRegistry registry) {\n        registry.add(\"spring.datasource.url\", postgres::getJdbcUrl);\n    }\n}\n```\nWhat it shows: PostgreSQL container starts once per test class; datasource URL wired dynamically.\n\n### What it actually is\nIntegration tests verify components work together against real external systems.\n\n### When to use it\nRun in CI with Docker available; complement unit tests, do not replace them entirely.\n\n### Where to use it\nRepository tests, Kafka consumer tests, and full API flow verification.\n\n### Real use example\nCI catches a Flyway migration bug because Testcontainers applies SQL against real Postgres.",
+      "key_takeaways": [
+        "Integration tests verify components work together against real external systems.",
+        "Run in CI with Docker available; complement unit tests, do not replace them entirely.",
+        "CI catches a Flyway migration bug because Testcontainers applies SQL against real Postgres."
+      ],
+      "what_it_is": "Integration tests verify components work together against real external systems.",
+      "when_to_use": "Run in CI with Docker available; complement unit tests, do not replace them entirely.",
+      "where_to_use": "Repository tests, Kafka consumer tests, and full API flow verification.",
+      "real_use_example": "CI catches a Flyway migration bug because Testcontainers applies SQL against real Postgres."
+    },
+    {
+      "number": 12,
+      "title": "Microservices and Spring Cloud Basics",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Microservices and Spring Cloud Basics** *(Level: Intermediate)*\n\nMicroservices decompose systems into independently deployable services with bounded contexts. Spring Cloud provides service discovery (Eureka), config server, and gateway routing. Synchronous REST between services creates coupling—prefer events for eventually consistent workflows. Each service owns its database; shared tables are an anti-pattern.\n\nCode Reference:\n```yaml\nspring:\n  cloud:\n    gateway:\n      routes:\n        - id: orders\n          uri: lb://order-service\n          predicates:\n            - Path=/api/orders/**\n```\nWhat it shows: Gateway routes /api/orders to order-service via load-balanced service name.\n\n### What it actually is\nMicroservices trade monolith simplicity for independent scaling and team autonomy.\n\n### When to use it\nAdopt when teams and traffic scale beyond a modular monolith's coordination limits.\n\n### Where to use it\nLarge e-commerce, streaming platforms, and multi-team SaaS products.\n\n### Real use example\nThe catalog team deploys daily without coordinating releases with the checkout team.",
+      "key_takeaways": [
+        "Microservices trade monolith simplicity for independent scaling and team autonomy.",
+        "Adopt when teams and traffic scale beyond a modular monolith's coordination limits.",
+        "The catalog team deploys daily without coordinating releases with the checkout team."
+      ],
+      "what_it_is": "Microservices trade monolith simplicity for independent scaling and team autonomy.",
+      "when_to_use": "Adopt when teams and traffic scale beyond a modular monolith's coordination limits.",
+      "where_to_use": "Large e-commerce, streaming platforms, and multi-team SaaS products.",
+      "real_use_example": "The catalog team deploys daily without coordinating releases with the checkout team."
+    },
+    {
+      "number": 13,
+      "title": "Dockerizing Spring Boot Applications",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Dockerizing Spring Boot Applications** *(Level: Intermediate)*\n\nMulti-stage Dockerfiles build with Maven then copy the JAR into a slim JRE image. Use eclipse-temurin:21-jre-alpine or distroless bases to reduce attack surface. Health checks and graceful shutdown hooks let orchestrators drain connections before stop. Never bake secrets into images—inject via environment variables or secret managers.\n\nCode Reference:\n```dockerfile\nFROM eclipse-temurin:21-jre-alpine\nWORKDIR /app\nCOPY target/*.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n```\nWhat it shows: Alpine JRE image runs the fat JAR; EXPOSE documents the HTTP port.\n\n### What it actually is\nContainers package apps with dependencies for consistent deployment across environments.\n\n### When to use it\nContainerize before deploying to Kubernetes, ECS, or any cloud runtime.\n\n### Where to use it\nDev/staging/prod parity, local developer onboarding, and CI/CD artifact promotion.\n\n### Real use example\nDevelopers run docker compose up and get API + Postgres matching production topology.",
+      "key_takeaways": [
+        "Containers package apps with dependencies for consistent deployment across environments.",
+        "Containerize before deploying to Kubernetes, ECS, or any cloud runtime.",
+        "Developers run docker compose up and get API + Postgres matching production topology."
+      ],
+      "what_it_is": "Containers package apps with dependencies for consistent deployment across environments.",
+      "when_to_use": "Containerize before deploying to Kubernetes, ECS, or any cloud runtime.",
+      "where_to_use": "Dev/staging/prod parity, local developer onboarding, and CI/CD artifact promotion.",
+      "real_use_example": "Developers run docker compose up and get API + Postgres matching production topology."
+    },
+    {
+      "number": 14,
+      "title": "Kubernetes Deployment for Java Services",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Kubernetes Deployment for Java Services** *(Level: Advanced)*\n\nKubernetes schedules pods across nodes with declarative Deployments and Services. Probes (liveness, readiness, startup) integrate with Spring Actuator health endpoints. Resource requests/limits prevent noisy neighbors and enable autoscaling. Ingress controllers terminate TLS and route hostnames to backend services.\n\nCode Reference:\n```yaml\nlivenessProbe:\n  httpGet:\n    path: /actuator/health/liveness\n    port: 8080\n  initialDelaySeconds: 30\nreadinessProbe:\n  httpGet:\n    path: /actuator/health/readiness\n    port: 8080\n```\nWhat it shows: Liveness restarts unhealthy pods; readiness removes pods from load balancing until ready.\n\n### What it actually is\nKubernetes orchestrates containerized workloads with self-healing and horizontal scaling.\n\n### When to use it\nUse when running multiple Java microservices that need automated rollout and scaling.\n\n### Where to use it\nCloud-native production environments on AWS EKS, GKE, Azure AKS, or on-prem clusters.\n\n### Real use example\nBlack Friday traffic triggers HPA to scale order-service from 3 to 30 pods automatically.",
+      "key_takeaways": [
+        "Kubernetes orchestrates containerized workloads with self-healing and horizontal scaling.",
+        "Use when running multiple Java microservices that need automated rollout and scaling.",
+        "Black Friday traffic triggers HPA to scale order-service from 3 to 30 pods automatically."
+      ],
+      "what_it_is": "Kubernetes orchestrates containerized workloads with self-healing and horizontal scaling.",
+      "when_to_use": "Use when running multiple Java microservices that need automated rollout and scaling.",
+      "where_to_use": "Cloud-native production environments on AWS EKS, GKE, Azure AKS, or on-prem clusters.",
+      "real_use_example": "Black Friday traffic triggers HPA to scale order-service from 3 to 30 pods automatically."
+    },
+    {
+      "number": 15,
+      "title": "Event-Driven Architecture with Kafka",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Event-Driven Architecture with Kafka** *(Level: Advanced)*\n\nEvents capture facts that happened (OrderPlaced) rather than commands (CreateOrder). Kafka provides durable, partitioned logs with consumer groups for parallel processing. Idempotent consumers and exactly-once semantics require careful offset and key design. Schema Registry enforces Avro/JSON schema evolution across producer and consumer teams.\n\nCode Reference:\n```java\n@KafkaListener(topics = \"orders\", groupId = \"inventory-service\")\npublic void onOrderPlaced(OrderPlacedEvent event) {\n    inventoryService.reserve(event.orderId(), event.lines());\n}\n```\nWhat it shows: Listener consumes order events; groupId ensures each message processed once per consumer group.\n\n### What it actually is\nEvent-driven systems decouple services through asynchronous, durable message streams.\n\n### When to use it\nUse when workflows span teams, require replay, or tolerate eventual consistency.\n\n### Where to use it\nOrder fulfillment, notification pipelines, audit logs, and CDC-driven integrations.\n\n### Real use example\nInventory service replays last week's events to rebuild stock state after a bug fix.",
+      "key_takeaways": [
+        "Event-driven systems decouple services through asynchronous, durable message streams.",
+        "Use when workflows span teams, require replay, or tolerate eventual consistency.",
+        "Inventory service replays last week's events to rebuild stock state after a bug fix."
+      ],
+      "what_it_is": "Event-driven systems decouple services through asynchronous, durable message streams.",
+      "when_to_use": "Use when workflows span teams, require replay, or tolerate eventual consistency.",
+      "where_to_use": "Order fulfillment, notification pipelines, audit logs, and CDC-driven integrations.",
+      "real_use_example": "Inventory service replays last week's events to rebuild stock state after a bug fix."
+    },
+    {
+      "number": 16,
+      "title": "Distributed Tracing and Observability",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Distributed Tracing and Observability** *(Level: Advanced)*\n\nMicrometer exports metrics; OpenTelemetry traces requests across service boundaries. Trace context propagates via W3C traceparent headers on outbound HTTP and Kafka messages. Structured JSON logs with traceId tie together metrics, traces, and log lines in Grafana. SLO dashboards alert on error rate and latency percentiles before users notice outages.\n\nCode Reference:\n```yaml\nmanagement:\n  tracing:\n    sampling:\n      probability: 1.0\n  otlp:\n    tracing:\n      endpoint: http://tempo:4318/v1/traces\n```\nWhat it shows: 100% trace sampling in dev; OTLP exporter sends spans to Tempo backend.\n\n### What it actually is\nObservability combines metrics, logs, and traces for production system understanding.\n\n### When to use it\nInstrument every microservice before production; define SLOs for critical user journeys.\n\n### Where to use it\nOn-call runbooks, capacity planning, and post-incident reviews.\n\n### Real use example\nAn engineer traces a 502 error through gateway → auth → orders in Jaeger within two minutes.",
+      "key_takeaways": [
+        "Observability combines metrics, logs, and traces for production system understanding.",
+        "Instrument every microservice before production; define SLOs for critical user journeys.",
+        "An engineer traces a 502 error through gateway → auth → orders in Jaeger within two minutes."
+      ],
+      "what_it_is": "Observability combines metrics, logs, and traces for production system understanding.",
+      "when_to_use": "Instrument every microservice before production; define SLOs for critical user journeys.",
+      "where_to_use": "On-call runbooks, capacity planning, and post-incident reviews.",
+      "real_use_example": "An engineer traces a 502 error through gateway → auth → orders in Jaeger within two minutes."
+    },
+    {
+      "number": 17,
+      "title": "JVM Performance Tuning and Profiling",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: JVM Performance Tuning and Profiling** *(Level: Advanced)*\n\nGC choice (G1, ZGC) affects pause times under heap pressure. Async-profiler and JFR reveal hot methods and allocation hotspots without heavy overhead. Connection pool sizing, thread counts, and cache TTLs often dominate latency more than micro-optimizations. Load test with realistic payloads before tuning flags in production.\n\nCode Reference:\n```bash\njava -XX:+UseZGC -Xms512m -Xmx512m -jar app.jar\n```\nWhat it shows: ZGC targets low pause times; fixed heap avoids resize churn during steady state.\n\n### What it actually is\nJVM tuning balances throughput, latency, and memory for server workloads.\n\n### When to use it\nProfile when latency SLOs break under load or GC logs show frequent long pauses.\n\n### Where to use it\nHigh-throughput payment processors, search indexing, and batch ETL services.\n\n### Real use example\nSwitching to ZGC drops P99 latency from 800ms to 120ms during promotion spikes.",
+      "key_takeaways": [
+        "JVM tuning balances throughput, latency, and memory for server workloads.",
+        "Profile when latency SLOs break under load or GC logs show frequent long pauses.",
+        "Switching to ZGC drops P99 latency from 800ms to 120ms during promotion spikes."
+      ],
+      "what_it_is": "JVM tuning balances throughput, latency, and memory for server workloads.",
+      "when_to_use": "Profile when latency SLOs break under load or GC logs show frequent long pauses.",
+      "where_to_use": "High-throughput payment processors, search indexing, and batch ETL services.",
+      "real_use_example": "Switching to ZGC drops P99 latency from 800ms to 120ms during promotion spikes."
+    },
+    {
+      "number": 18,
+      "title": "Resilience Patterns and Zero-Downtime Deploys",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Resilience Patterns and Zero-Downtime Deploys** *(Level: Advanced)*\n\nCircuit breakers stop cascading failures when downstream services degrade. Resilience4j integrates with Spring Boot for retry, rate limit, bulkhead, and circuit breaker. Blue-green and canary deployments shift traffic gradually while monitoring error budgets. Feature flags decouple code deployment from feature activation for safer releases.\n\nCode Reference:\n```java\n@CircuitBreaker(name = \"inventory\", fallbackMethod = \"fallbackCheck\")\npublic StockStatus checkStock(Long sku) {\n    return inventoryClient.getStock(sku);\n}\n```\nWhat it shows: Circuit opens after failure threshold; fallback returns cached or degraded response.\n\n### What it actually is\nResilience patterns keep systems available when dependencies fail or deploys roll out.\n\n### When to use it\nApply breakers on all external HTTP calls; use canary releases for high-risk changes.\n\n### Where to use it\nMission-critical checkout, payment authorization, and multi-region active-active setups.\n\n### Real use example\nDuring inventory outage, checkout shows 'limited stock info' instead of total failure.",
+      "key_takeaways": [
+        "Resilience patterns keep systems available when dependencies fail or deploys roll out.",
+        "Apply breakers on all external HTTP calls; use canary releases for high-risk changes.",
+        "During inventory outage, checkout shows 'limited stock info' instead of total failure."
+      ],
+      "what_it_is": "Resilience patterns keep systems available when dependencies fail or deploys roll out.",
+      "when_to_use": "Apply breakers on all external HTTP calls; use canary releases for high-risk changes.",
+      "where_to_use": "Mission-critical checkout, payment authorization, and multi-region active-active setups.",
+      "real_use_example": "During inventory outage, checkout shows 'limited stock info' instead of total failure."
+    }
+  ],
+  "chapter_count": 18
+}

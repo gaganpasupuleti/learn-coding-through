@@ -1,0 +1,45 @@
+{
+  "id": "02-python-crash-courses",
+  "name": "Python Crash Courses",
+  "description": "Fast-track learning paths for short study windows.",
+  "source_count": 7,
+  "report_count": 4,
+  "reports": [
+    {
+      "id": "study-report-learn-python-in-one-day-and-learn-it-well-python-for-begi",
+      "title": "Study Report: Learn Python in One Day and Learn It Well - Python for Beginners with Hands-on Project",
+      "family_id": "02-python-crash-courses",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-one-day-and-learn-it-well-python-for-begi/report.json",
+      "markdown": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-one-day-and-learn-it-well-python-for-begi/report.md"
+    },
+    {
+      "id": "study-report-learn-python-in-a-weekend-python-for-beginners",
+      "title": "Study Report: Learn Python In a Weekend, Python for Beginners",
+      "family_id": "02-python-crash-courses",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-a-weekend-python-for-beginners/report.json",
+      "markdown": "Book_Reports/02-python-crash-courses/study-report-learn-python-in-a-weekend-python-for-beginners/report.md"
+    },
+    {
+      "id": "study-report-learn-python-the-crash-course-for-beginners-to-learn-pyth",
+      "title": "Study Report: Learn Python - The Crash Course for Beginners to Learn Python Coding Well in 1 Week",
+      "family_id": "02-python-crash-courses",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/02-python-crash-courses/study-report-learn-python-the-crash-course-for-beginners-to-learn-pyth/report.json",
+      "markdown": "Book_Reports/02-python-crash-courses/study-report-learn-python-the-crash-course-for-beginners-to-learn-pyth/report.md"
+    },
+    {
+      "id": "study-report-python-for-beginners-start-right-now-to-learn-computer-pr",
+      "title": "Study Report: Python for Beginners - Start Right Now to Learn Computer Programming with the Best Cras...",
+      "family_id": "02-python-crash-courses",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/02-python-crash-courses/study-report-python-for-beginners-start-right-now-to-learn-computer-pr/report.json",
+      "markdown": "Book_Reports/02-python-crash-courses/study-report-python-for-beginners-start-right-now-to-learn-computer-pr/report.md"
+    }
+  ]
+}

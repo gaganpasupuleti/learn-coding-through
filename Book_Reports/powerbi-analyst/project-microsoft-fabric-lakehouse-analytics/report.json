@@ -1,0 +1,136 @@
+{
+  "id": "project-microsoft-fabric-lakehouse-analytics",
+  "title": "Project Report: Microsoft Fabric Lakehouse Analytics — Power BI Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "powerbi-analyst",
+  "family_name": "Power BI Analyst",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "Microsoft Fabric Lakehouse Analytics",
+  "project_index": 3,
+  "duration": "5–6 weeks",
+  "summary": "Build Fabric lakehouse: ingest raw data, transform in notebooks, semantic model, and executive dashboard.",
+  "objectives": [
+    "Create Fabric workspace and lakehouse",
+    "Ingest CSV/Parquet with pipelines",
+    "Build semantic model in Direct Lake mode",
+    "Executive dashboard with drill-through"
+  ],
+  "tools": [
+    "Microsoft Fabric",
+    "Power BI",
+    "OneLake"
+  ],
+  "deliverables": [
+    "Fabric workspace",
+    "Pipeline definition",
+    "Published report",
+    "Architecture diagram"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**Microsoft Fabric Lakehouse Analytics** is a advanced-level end-to-end project for Power BI Analyst. Duration: 5–6 weeks. Build Fabric lakehouse: ingest raw data, transform in notebooks, semantic model, and executive dashboard. Tools: Microsoft Fabric, Power BI, OneLake.\n\nCode Reference:\n```text\nObjective: Create Fabric workspace and lakehouse\nObjective: Ingest CSV/Parquet with pipelines\nObjective: Build semantic model in Direct Lake mode\nObjective: Executive dashboard with drill-through\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nPower BI Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Power BI Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Power BI Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Power BI Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Power BI Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Lakehouse",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Lakehouse** *(Level: Advanced)*\n\nOneLake setup. Complete these tasks: Shortcuts; Tables. Deliverable for this phase: Lakehouse schema.\n\nCode Reference:\n```text\n- [ ] Shortcuts\n- [ ] Tables\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Lakehouse is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Lakehouse schema to the teacher.",
+      "key_takeaways": [
+        "Phase Lakehouse is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Lakehouse schema to the teacher."
+      ],
+      "what_it_is": "Phase Lakehouse is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Lakehouse schema to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Pipeline",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Pipeline** *(Level: Advanced)*\n\nData Factory pipeline. Complete these tasks: Schedule refresh; Error handling. Deliverable for this phase: Pipeline run history.\n\nCode Reference:\n```text\n- [ ] Schedule refresh\n- [ ] Error handling\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Pipeline is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Pipeline run history to the teacher.",
+      "key_takeaways": [
+        "Phase Pipeline is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Pipeline run history to the teacher."
+      ],
+      "what_it_is": "Phase Pipeline is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Pipeline run history to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Semantic",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Semantic** *(Level: Advanced)*\n\nDirect Lake model. Complete these tasks: Relationships; Aggregations. Deliverable for this phase: Semantic model.\n\nCode Reference:\n```text\n- [ ] Relationships\n- [ ] Aggregations\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Semantic is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Semantic model to the teacher.",
+      "key_takeaways": [
+        "Phase Semantic is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Semantic model to the teacher."
+      ],
+      "what_it_is": "Phase Semantic is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Semantic model to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Dashboard",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Dashboard** *(Level: Advanced)*\n\nExecutive landing page. Complete these tasks: KPI cards; Drill-through. Deliverable for this phase: Published Fabric report.\n\nCode Reference:\n```text\n- [ ] KPI cards\n- [ ] Drill-through\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Dashboard is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nPower BI Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Published Fabric report to the teacher.",
+      "key_takeaways": [
+        "Phase Dashboard is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Published Fabric report to the teacher."
+      ],
+      "what_it_is": "Phase Dashboard is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Power BI Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Published Fabric report to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Fabric workspace; Pipeline definition; Published report; Architecture diagram. Skills demonstrated: Fabric, Lakehouse, Pipelines. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Fabric workspace\nDeliverable: Pipeline definition\nDeliverable: Published report\nDeliverable: Architecture diagram\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Fabric workspace and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Fabric workspace and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Fabric workspace and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

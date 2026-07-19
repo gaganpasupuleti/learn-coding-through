@@ -1,0 +1,137 @@
+{
+  "id": "project-multi-agent-devops-copilot",
+  "title": "Project Report: Multi-Agent DevOps Copilot — Agentic AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "agentic-ai",
+  "family_name": "Agentic AI Engineer",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "Multi-Agent DevOps Copilot",
+  "project_index": 3,
+  "duration": "5–6 weeks",
+  "summary": "Planner + executor + reviewer agents orchestrate deployment tasks via MCP tools with safety constraints.",
+  "objectives": [
+    "3 specialized agents (plan, execute, review)",
+    "MCP tools for git, CI, and logs",
+    "Safety: block destructive ops without approval",
+    "Full trace visualization"
+  ],
+  "tools": [
+    "LangGraph",
+    "MCP",
+    "OpenAI",
+    "Langfuse"
+  ],
+  "deliverables": [
+    "Multi-agent system",
+    "MCP config",
+    "Safety tests",
+    "Trace demo video"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**Multi-Agent DevOps Copilot** is a advanced-level end-to-end project for Agentic AI Engineer. Duration: 5–6 weeks. Planner + executor + reviewer agents orchestrate deployment tasks via MCP tools with safety constraints. Tools: LangGraph, MCP, OpenAI, Langfuse.\n\nCode Reference:\n```text\nObjective: 3 specialized agents (plan, execute, review)\nObjective: MCP tools for git, CI, and logs\nObjective: Safety: block destructive ops without approval\nObjective: Full trace visualization\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nAgentic AI Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Agentic AI Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Agentic AI Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Agentic AI Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Agentic AI Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: MCP",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: MCP** *(Level: Advanced)*\n\nConnect MCP servers. Complete these tasks: Git tools; CI API; Log reader. Deliverable for this phase: MCP tool catalog.\n\nCode Reference:\n```text\n- [ ] Git tools\n- [ ] CI API\n- [ ] Log reader\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase MCP is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the MCP tool catalog to the teacher.",
+      "key_takeaways": [
+        "Phase MCP is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the MCP tool catalog to the teacher."
+      ],
+      "what_it_is": "Phase MCP is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the MCP tool catalog to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Agents",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Agents** *(Level: Advanced)*\n\nMulti-agent graph. Complete these tasks: Planner; Executor; Reviewer. Deliverable for this phase: Agent interaction diagram.\n\nCode Reference:\n```text\n- [ ] Planner\n- [ ] Executor\n- [ ] Reviewer\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Agents is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Agent interaction diagram to the teacher.",
+      "key_takeaways": [
+        "Phase Agents is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Agent interaction diagram to the teacher."
+      ],
+      "what_it_is": "Phase Agents is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Agent interaction diagram to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Safety",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Safety** *(Level: Advanced)*\n\nDestructive op gate. Complete these tasks: Block list; Approval flow. Deliverable for this phase: Safety test cases passed.\n\nCode Reference:\n```text\n- [ ] Block list\n- [ ] Approval flow\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Safety is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Safety test cases passed to the teacher.",
+      "key_takeaways": [
+        "Phase Safety is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Safety test cases passed to the teacher."
+      ],
+      "what_it_is": "Phase Safety is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Safety test cases passed to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Trace",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Trace** *(Level: Advanced)*\n\nFull run visualization. Complete these tasks: LangSmith/Langfuse; Step replay. Deliverable for this phase: Trace walkthrough video.\n\nCode Reference:\n```text\n- [ ] LangSmith/Langfuse\n- [ ] Step replay\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Trace is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Trace walkthrough video to the teacher.",
+      "key_takeaways": [
+        "Phase Trace is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Trace walkthrough video to the teacher."
+      ],
+      "what_it_is": "Phase Trace is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Trace walkthrough video to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Multi-agent system; MCP config; Safety tests; Trace demo video. Skills demonstrated: Multi-agent, MCP, Safety. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Multi-agent system\nDeliverable: MCP config\nDeliverable: Safety tests\nDeliverable: Trace demo video\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Multi-agent system and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Multi-agent system and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Multi-agent system and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

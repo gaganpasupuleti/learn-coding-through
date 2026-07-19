@@ -1,4 +1,5 @@
 import { Card } from '@/components/ui/card'
+import { formatDateTimeIST } from '@/lib/formatDateTimeIST'
 import { cn } from '@/lib/utils'
 
 import { useAdminWorkspaceContext } from '../AdminWorkspaceContext'
@@ -26,7 +27,7 @@ export function ActivityView() {
             <div key={entry.id} className="rounded-md border p-2">
               <div className="flex flex-wrap items-center gap-2">
                 <StatusBadge text={entry.action} />
-                <p className="text-[10px] text-muted-foreground">{new Date(entry.created_at).toLocaleString()}</p>
+                <p className="text-[10px] text-muted-foreground">{entry.created_at_ist ?? formatDateTimeIST(entry.created_at)}</p>
               </div>
               <p className="mt-1 text-[11px] leading-snug">{entry.details || 'No details'}</p>
               <p className="mt-1 text-[10px] text-muted-foreground">

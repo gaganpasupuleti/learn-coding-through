@@ -1,0 +1,137 @@
+{
+  "id": "project-codequest-admin-power-platform-suite",
+  "title": "Project Report: CodeQuest Admin Power Platform Suite — Microsoft Power Platform Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "power-platform",
+  "family_name": "Microsoft Power Platform Developer",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "CodeQuest Admin Power Platform Suite",
+  "project_index": 3,
+  "duration": "4–5 weeks",
+  "summary": "Model-driven app + embedded Power BI + ALM across environments for school admin reporting.",
+  "objectives": [
+    "Model-driven app for student/report management",
+    "Embedded Power BI class performance tile",
+    "Solution ALM dev → test → prod",
+    "Security roles for admin and teacher"
+  ],
+  "tools": [
+    "Power Apps",
+    "Power BI",
+    "Dataverse",
+    "Solutions"
+  ],
+  "deliverables": [
+    "Published app",
+    "BI dashboard embed",
+    "ALM doc",
+    "Security matrix"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**CodeQuest Admin Power Platform Suite** is a advanced-level end-to-end project for Microsoft Power Platform Developer. Duration: 4–5 weeks. Model-driven app + embedded Power BI + ALM across environments for school admin reporting. Tools: Power Apps, Power BI, Dataverse, Solutions.\n\nCode Reference:\n```text\nObjective: Model-driven app for student/report management\nObjective: Embedded Power BI class performance tile\nObjective: Solution ALM dev → test → prod\nObjective: Security roles for admin and teacher\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nMicrosoft Power Platform Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Microsoft Power Platform Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Microsoft Power Platform Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Microsoft Power Platform Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Microsoft Power Platform Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Model App",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Model App** *(Level: Advanced)*\n\nDataverse tables. Complete these tasks: Students; Reports; Marks. Deliverable for this phase: Model app published.\n\nCode Reference:\n```text\n- [ ] Students\n- [ ] Reports\n- [ ] Marks\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Model App is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Model app published to the teacher.",
+      "key_takeaways": [
+        "Phase Model App is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Model app published to the teacher."
+      ],
+      "what_it_is": "Phase Model App is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Model app published to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: BI Embed",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: BI Embed** *(Level: Advanced)*\n\nPower BI in app. Complete these tasks: Class avg tile; Drill-through. Deliverable for this phase: Embedded BI screenshot.\n\nCode Reference:\n```text\n- [ ] Class avg tile\n- [ ] Drill-through\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase BI Embed is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Embedded BI screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase BI Embed is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Embedded BI screenshot to the teacher."
+      ],
+      "what_it_is": "Phase BI Embed is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Embedded BI screenshot to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: ALM",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: ALM** *(Level: Advanced)*\n\nSolution pipeline. Complete these tasks: Unmanaged dev; Managed prod. Deliverable for this phase: ALM documentation.\n\nCode Reference:\n```text\n- [ ] Unmanaged dev\n- [ ] Managed prod\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase ALM is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the ALM documentation to the teacher.",
+      "key_takeaways": [
+        "Phase ALM is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the ALM documentation to the teacher."
+      ],
+      "what_it_is": "Phase ALM is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the ALM documentation to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Security",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Security** *(Level: Advanced)*\n\nRole definitions. Complete these tasks: Admin full; Teacher limited. Deliverable for this phase: Security test results.\n\nCode Reference:\n```text\n- [ ] Admin full\n- [ ] Teacher limited\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Security is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Security test results to the teacher.",
+      "key_takeaways": [
+        "Phase Security is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Security test results to the teacher."
+      ],
+      "what_it_is": "Phase Security is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Security test results to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Published app; BI dashboard embed; ALM doc; Security matrix. Skills demonstrated: Model-driven apps, Power BI, ALM. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Published app\nDeliverable: BI dashboard embed\nDeliverable: ALM doc\nDeliverable: Security matrix\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Published app and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Published app and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Published app and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

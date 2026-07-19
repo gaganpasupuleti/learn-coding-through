@@ -1,0 +1,36 @@
+{
+  "id": "10-comprehensive-and-projects",
+  "name": "Comprehensive and Projects",
+  "description": "Broader references, automation, cookbooks, and project practice.",
+  "source_count": 5,
+  "report_count": 3,
+  "reports": [
+    {
+      "id": "study-report-python-all-in-one-for-dummies",
+      "title": "Study Report: Python All - in-One For Dummies",
+      "family_id": "10-comprehensive-and-projects",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/10-comprehensive-and-projects/study-report-python-all-in-one-for-dummies/report.json",
+      "markdown": "Book_Reports/10-comprehensive-and-projects/study-report-python-all-in-one-for-dummies/report.md"
+    },
+    {
+      "id": "study-report-python-programming-cookbook-for-absolute-beginners-a-comp",
+      "title": "Study Report: Python Programming Cookbook for Absolute Beginners - A Complete Crash Course and Tutorial",
+      "family_id": "10-comprehensive-and-projects",
+      "chapter_count": 10,
+      "level": "Intermediate",
+      "path": "Book_Reports/10-comprehensive-and-projects/study-report-python-programming-cookbook-for-absolute-beginners-a-comp/report.json",
+      "markdown": "Book_Reports/10-comprehensive-and-projects/study-report-python-programming-cookbook-for-absolute-beginners-a-comp/report.md"
+    },
+    {
+      "id": "study-report-automate-the-boring-stuff-with-python-practical-programmi",
+      "title": "Study Report: Automate The Boring Stuff With Python - Practical Programming For Total Beginners",
+      "family_id": "10-comprehensive-and-projects",
+      "chapter_count": 6,
+      "level": "Intermediate",
+      "path": "Book_Reports/10-comprehensive-and-projects/study-report-automate-the-boring-stuff-with-python-practical-programmi/report.json",
+      "markdown": "Book_Reports/10-comprehensive-and-projects/study-report-automate-the-boring-stuff-with-python-practical-programmi/report.md"
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
 
-import { LandingPage, type LandingNavTarget } from '@/components/pages/LandingPage'
+import { PublicLandingPage } from '@/components/pages/PublicLandingPage'
 
 import { ProjectsPage } from '@/components/pages/ProjectsPage'
 
@@ -39,6 +39,8 @@ import { StudentHubPage } from '@/components/pages/StudentHubPage'
 
 import { JobSpyPage } from '@/components/pages/JobSpyPage'
 
+import { StudyMaterialsPage } from '@/components/pages/StudyMaterialsPage'
+
 import { CodePracticePage } from '@/features/code-practice/components/CodePracticePage'
 
 import { CODE_PRACTICE_ROUTE } from '@/features/code-practice/types/codePractice.types'
@@ -56,6 +58,10 @@ import { PasswordSetupGate } from '@/components/auth/PasswordSetupGate'
 import {
 
   getStoredUser,
+
+  getAuthToken,
+
+  clearAuth,
 
   isDemoUser,
 
@@ -121,8 +127,6 @@ const PRACTICE_PATH_TO_PAGE: Record<string, StudentPage> = {
 
 export type StudentPage =
 
-  | 'landing'
-
   | 'dashboard'
 
   | 'projects'
@@ -146,6 +150,8 @@ export type StudentPage =
   | 'hub'
 
   | 'jobspy'
+
+  | 'study-materials'
 
   | 'learning-planner'
 
@@ -207,6 +213,15 @@ function App() {
 
   const [authState, setAuthState] = useState<AuthState>(() => getStoredUser())
 
+  const [authChecked, setAuthChecked] = useState(() => getStoredUser() === null)
+
+  const [unauthView, setUnauthView] = useState<'landing' | 'login'>(() => {
+    if (typeof window === 'undefined') return 'landing'
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('page') === 'login' || window.location.hash === '#login') return 'login'
+    return 'landing'
+  })
+
   const [studentPage, setStudentPage] = useState<StudentPage>('dashboard')
 
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
@@ -231,7 +246,11 @@ function App() {
 
   const handleLogout = () => {
 
+    clearAuth()
+
     setAuthState(null)
+
+    setUnauthView('landing')
 
     setStudentPage('dashboard')
 
@@ -240,6 +259,68 @@ function App() {
     toast.success('Logged out successfully.')
 
   }
+
+
+
+  useEffect(() => {
+
+    const storedUser = getStoredUser()
+
+    if (!storedUser) {
+
+      setAuthChecked(true)
+
+      return
+
+    }
+
+    const token = getAuthToken()
+
+    if (!token) {
+
+      clearAuth()
+
+      setAuthState(null)
+
+      setAuthChecked(true)
+
+      return
+
+    }
+
+    let cancelled = false
+
+    void fetchCurrentUser(token).then((currentUser) => {
+
+      if (cancelled) return
+
+      if (!currentUser) {
+
+        clearAuth()
+
+        setAuthState(null)
+
+        toast.error('Your session expired. Please sign in again.')
+
+      } else {
+
+        storeUser(currentUser)
+
+        setAuthState(currentUser)
+
+      }
+
+      setAuthChecked(true)
+
+    })
+
+    return () => {
+
+      cancelled = true
+
+    }
+
+  }, [])
 
 
 
@@ -277,11 +358,19 @@ function App() {
 
     const params = new URLSearchParams(window.location.search)
 
-    const pageParam = params.get('page') as StudentPage | null
+    const rawPage = params.get('page')
+    if (rawPage === 'login') {
+      setUnauthView('login')
+    }
+    if (rawPage === 'landing') {
+      setStudentPage('dashboard')
+      return
+    }
+    const pageParam = rawPage as StudentPage | null
 
   const DEEP_LINK_PAGES: StudentPage[] = [
     'dashboard', 'calendar', 'progress', 'learning-planner', 'projects', 'hub',
-    'quiz', 'flow-roadmap', 'jobspy', 'roadmapper', 'resume', 'resume-builder',
+    'quiz', 'flow-roadmap', 'jobspy', 'study-materials', 'roadmapper', 'resume', 'resume-builder',
     'practice-code', 'practice-sql', 'practice-typing', 'practice-powerbi',
   ]
 
@@ -310,10 +399,13 @@ function App() {
 
 
 
-  const handleStudentNavigate = (
-    page: StudentPage | 'practice' | 'practice-ground' | 'typing' | LandingNavTarget,
-  ) => {
-
+  const handleStudentNavigate = (page: StudentPage | 'practice' | 'practice-ground' | 'typing' | 'landing') => {
+    if (page === 'landing') {
+      setStudentPage('dashboard')
+      setSelectedProjectId(null)
+      syncPracticePath('dashboard')
+      return
+    }
     if (page === 'practice' || page === 'practice-ground') {
 
       setStudentPage('practice-code')
@@ -471,20 +563,40 @@ function App() {
 
 
 
-  if (!authState) {
+  if (!authChecked) {
 
     return (
 
       <div className={wrapperClass}>
 
-        <LoginPage onAuthenticated={handleAuthenticated} />
+        <div className="flex min-h-screen items-center justify-center bg-[#050807] px-6 text-center text-sm font-medium text-[#FAF3E0]/70">
 
-        <Toaster position="top-center" />
+          Checking your CodeQuest session…
+
+        </div>
 
       </div>
 
     )
 
+  }
+
+
+
+  if (!authState) {
+    return (
+      <div className={wrapperClass}>
+        {unauthView === 'landing' ? (
+          <PublicLandingPage onStartQuest={() => setUnauthView('login')} />
+        ) : (
+          <LoginPage
+            onAuthenticated={handleAuthenticated}
+            onBackToLanding={() => setUnauthView('landing')}
+          />
+        )}
+        <Toaster position="top-center" />
+      </div>
+    )
   }
 
 
@@ -553,6 +665,8 @@ function App() {
 
         contentMode={studentPage === 'resume-builder' ? 'fill' : 'scroll'}
 
+        canvasVariant={studentPage === 'dashboard' ? 'mission-control' : 'default'}
+
         user={user}
 
         onNavigate={handleStudentNavigate}
@@ -560,14 +674,6 @@ function App() {
         onLogout={handleLogout}
 
       >
-
-        {studentPage === 'landing' && (
-
-          <LandingPage onNavigate={handleStudentNavigate} />
-
-        )}
-
-
 
         {studentPage === 'dashboard' && (
 
@@ -608,6 +714,10 @@ function App() {
 
 
         {studentPage === 'jobspy' && <JobSpyPage />}
+
+
+
+        {studentPage === 'study-materials' && <StudyMaterialsPage />}
 
 
 

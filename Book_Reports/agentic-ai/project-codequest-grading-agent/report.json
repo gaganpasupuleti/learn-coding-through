@@ -1,0 +1,137 @@
+{
+  "id": "project-codequest-grading-agent",
+  "title": "Project Report: CodeQuest Grading Agent — Agentic AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "agentic-ai",
+  "family_name": "Agentic AI Engineer",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "CodeQuest Grading Agent",
+  "project_index": 2,
+  "duration": "3–4 weeks",
+  "summary": "Agent reads student report submission, checks rubric criteria, drafts feedback — human approves before publish.",
+  "objectives": [
+    "Tools: load_report, check_rubric, draft_feedback",
+    "LangGraph state machine",
+    "Human-in-the-loop approval step",
+    "Audit log of all agent actions"
+  ],
+  "tools": [
+    "LangGraph",
+    "FastAPI",
+    "OpenAI",
+    "React"
+  ],
+  "deliverables": [
+    "Grading agent",
+    "Graph diagram",
+    "Approval demo",
+    "Audit log"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**CodeQuest Grading Agent** is a intermediate-level end-to-end project for Agentic AI Engineer. Duration: 3–4 weeks. Agent reads student report submission, checks rubric criteria, drafts feedback — human approves before publish. Tools: LangGraph, FastAPI, OpenAI, React.\n\nCode Reference:\n```text\nObjective: Tools: load_report, check_rubric, draft_feedback\nObjective: LangGraph state machine\nObjective: Human-in-the-loop approval step\nObjective: Audit log of all agent actions\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nAgentic AI Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Agentic AI Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Agentic AI Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Agentic AI Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Agentic AI Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Tools",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Tools** *(Level: Intermediate)*\n\nReport + rubric tools. Complete these tasks: JSON report loader; Rubric scorer. Deliverable for this phase: Tool unit tests.\n\nCode Reference:\n```text\n- [ ] JSON report loader\n- [ ] Rubric scorer\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Tools is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Tool unit tests to the teacher.",
+      "key_takeaways": [
+        "Phase Tools is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Tool unit tests to the teacher."
+      ],
+      "what_it_is": "Phase Tools is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Tool unit tests to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Graph",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Graph** *(Level: Intermediate)*\n\nLangGraph workflow. Complete these tasks: Agent → Tools → Review node. Deliverable for this phase: Graph diagram.\n\nCode Reference:\n```text\n- [ ] Agent → Tools → Review node\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Graph is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Graph diagram to the teacher.",
+      "key_takeaways": [
+        "Phase Graph is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Graph diagram to the teacher."
+      ],
+      "what_it_is": "Phase Graph is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Graph diagram to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: HITL",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: HITL** *(Level: Intermediate)*\n\nApproval gate. Complete these tasks: Teacher confirm UI; Reject/revise loop. Deliverable for this phase: Approval flow demo.\n\nCode Reference:\n```text\n- [ ] Teacher confirm UI\n- [ ] Reject/revise loop\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase HITL is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Approval flow demo to the teacher.",
+      "key_takeaways": [
+        "Phase HITL is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Approval flow demo to the teacher."
+      ],
+      "what_it_is": "Phase HITL is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Approval flow demo to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Audit",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Audit** *(Level: Intermediate)*\n\nLog every action. Complete these tasks: Tool calls; Prompts; Outputs. Deliverable for this phase: Audit log sample.\n\nCode Reference:\n```text\n- [ ] Tool calls\n- [ ] Prompts\n- [ ] Outputs\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Audit is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Audit log sample to the teacher.",
+      "key_takeaways": [
+        "Phase Audit is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Audit log sample to the teacher."
+      ],
+      "what_it_is": "Phase Audit is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Audit log sample to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: Grading agent; Graph diagram; Approval demo; Audit log. Skills demonstrated: LangGraph, HITL, Tool calling. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Grading agent\nDeliverable: Graph diagram\nDeliverable: Approval demo\nDeliverable: Audit log\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Grading agent and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Grading agent and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Grading agent and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

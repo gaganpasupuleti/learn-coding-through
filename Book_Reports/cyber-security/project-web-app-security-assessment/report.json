@@ -1,0 +1,135 @@
+{
+  "id": "project-web-app-security-assessment",
+  "title": "Project Report: Web App Security Assessment — Cybersecurity Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "cyber-security",
+  "family_name": "Cybersecurity Analyst",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "Web App Security Assessment",
+  "project_index": 2,
+  "duration": "3–4 weeks",
+  "summary": "OWASP Top 10 assessment of a demo web app: ZAP scan, manual testing, remediation report.",
+  "objectives": [
+    "OWASP ZAP automated scan",
+    "Manual test for auth and injection",
+    "Risk-rated findings report",
+    "Remediation recommendations with priority"
+  ],
+  "tools": [
+    "OWASP ZAP",
+    "Burp Suite Community",
+    "Browser devtools"
+  ],
+  "deliverables": [
+    "ZAP report",
+    "Manual test log",
+    "Assessment report PDF"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**Web App Security Assessment** is a intermediate-level end-to-end project for Cybersecurity Analyst. Duration: 3–4 weeks. OWASP Top 10 assessment of a demo web app: ZAP scan, manual testing, remediation report. Tools: OWASP ZAP, Burp Suite Community, Browser devtools.\n\nCode Reference:\n```text\nObjective: OWASP ZAP automated scan\nObjective: Manual test for auth and injection\nObjective: Risk-rated findings report\nObjective: Remediation recommendations with priority\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nCybersecurity Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Cybersecurity Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Cybersecurity Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Cybersecurity Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Cybersecurity Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Recon",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Recon** *(Level: Intermediate)*\n\nMap application. Complete these tasks: Endpoints; Tech stack. Deliverable for this phase: App inventory.\n\nCode Reference:\n```text\n- [ ] Endpoints\n- [ ] Tech stack\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Recon is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the App inventory to the teacher.",
+      "key_takeaways": [
+        "Phase Recon is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the App inventory to the teacher."
+      ],
+      "what_it_is": "Phase Recon is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the App inventory to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Scan",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Scan** *(Level: Intermediate)*\n\nZAP baseline + active. Complete these tasks: Authentication; Spider crawl. Deliverable for this phase: ZAP report HTML.\n\nCode Reference:\n```text\n- [ ] Authentication\n- [ ] Spider crawl\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Scan is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the ZAP report HTML to the teacher.",
+      "key_takeaways": [
+        "Phase Scan is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the ZAP report HTML to the teacher."
+      ],
+      "what_it_is": "Phase Scan is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the ZAP report HTML to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Manual",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Manual** *(Level: Intermediate)*\n\nTop 10 manual tests. Complete these tasks: SQLi; XSS; Auth bypass. Deliverable for this phase: Manual test log.\n\nCode Reference:\n```text\n- [ ] SQLi\n- [ ] XSS\n- [ ] Auth bypass\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Manual is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Manual test log to the teacher.",
+      "key_takeaways": [
+        "Phase Manual is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Manual test log to the teacher."
+      ],
+      "what_it_is": "Phase Manual is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Manual test log to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Report",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Report** *(Level: Intermediate)*\n\nFindings + remediation. Complete these tasks: Critical/High/Med/Low; Fix guidance. Deliverable for this phase: Security assessment PDF.\n\nCode Reference:\n```text\n- [ ] Critical/High/Med/Low\n- [ ] Fix guidance\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Report is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nCybersecurity Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Security assessment PDF to the teacher.",
+      "key_takeaways": [
+        "Phase Report is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Security assessment PDF to the teacher."
+      ],
+      "what_it_is": "Phase Report is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Cybersecurity Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Security assessment PDF to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: ZAP report; Manual test log; Assessment report PDF. Skills demonstrated: OWASP, Pen testing, Reporting. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: ZAP report\nDeliverable: Manual test log\nDeliverable: Assessment report PDF\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits ZAP report and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits ZAP report and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits ZAP report and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

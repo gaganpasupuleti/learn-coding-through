@@ -1,0 +1,135 @@
+{
+  "id": "project-incident-response-tabletop-exercise",
+  "title": "Project Report: Incident Response Tabletop Exercise — IT Support / Helpdesk",
+  "author": "Gagan Pasupuleti",
+  "family_id": "it-support",
+  "family_name": "IT Support / Helpdesk",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "Incident Response Tabletop Exercise",
+  "project_index": 3,
+  "duration": "3–4 weeks",
+  "summary": "Simulate ransomware incident: detect, contain, eradicate, recover, and write post-incident report.",
+  "objectives": [
+    "Incident response plan document",
+    "Tabletop exercise with timeline",
+    "Containment playbook",
+    "Post-incident report with lessons learned"
+  ],
+  "tools": [
+    "NIST IR framework",
+    "ITIL"
+  ],
+  "deliverables": [
+    "IR plan",
+    "Exercise timeline",
+    "PIR document",
+    "Updated playbook"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**Incident Response Tabletop Exercise** is a advanced-level end-to-end project for IT Support / Helpdesk. Duration: 3–4 weeks. Simulate ransomware incident: detect, contain, eradicate, recover, and write post-incident report. Tools: NIST IR framework, ITIL.\n\nCode Reference:\n```text\nObjective: Incident response plan document\nObjective: Tabletop exercise with timeline\nObjective: Containment playbook\nObjective: Post-incident report with lessons learned\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nIT Support / Helpdesk portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a IT Support / Helpdesk resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a IT Support / Helpdesk resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "IT Support / Helpdesk portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a IT Support / Helpdesk resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Plan",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Plan** *(Level: Advanced)*\n\nIR plan document. Complete these tasks: Roles; Escalation; Contacts. Deliverable for this phase: IR plan PDF.\n\nCode Reference:\n```text\n- [ ] Roles\n- [ ] Escalation\n- [ ] Contacts\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Plan is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the IR plan PDF to the teacher.",
+      "key_takeaways": [
+        "Phase Plan is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the IR plan PDF to the teacher."
+      ],
+      "what_it_is": "Phase Plan is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the IR plan PDF to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Simulate",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Simulate** *(Level: Advanced)*\n\nRansomware scenario. Complete these tasks: Detection; Isolation steps. Deliverable for this phase: Exercise timeline.\n\nCode Reference:\n```text\n- [ ] Detection\n- [ ] Isolation steps\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Simulate is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Exercise timeline to the teacher.",
+      "key_takeaways": [
+        "Phase Simulate is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Exercise timeline to the teacher."
+      ],
+      "what_it_is": "Phase Simulate is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Exercise timeline to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Contain",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Contain** *(Level: Advanced)*\n\nExecute containment. Complete these tasks: Network isolate; Backup restore. Deliverable for this phase: Containment log.\n\nCode Reference:\n```text\n- [ ] Network isolate\n- [ ] Backup restore\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Contain is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Containment log to the teacher.",
+      "key_takeaways": [
+        "Phase Contain is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Containment log to the teacher."
+      ],
+      "what_it_is": "Phase Contain is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Containment log to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Report",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Report** *(Level: Advanced)*\n\nPost-incident review. Complete these tasks: Root cause; Improvements. Deliverable for this phase: PIR document.\n\nCode Reference:\n```text\n- [ ] Root cause\n- [ ] Improvements\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Report is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the PIR document to the teacher.",
+      "key_takeaways": [
+        "Phase Report is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the PIR document to the teacher."
+      ],
+      "what_it_is": "Phase Report is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the PIR document to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: IR plan; Exercise timeline; PIR document; Updated playbook. Skills demonstrated: Incident response, Security, Documentation. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: IR plan\nDeliverable: Exercise timeline\nDeliverable: PIR document\nDeliverable: Updated playbook\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits IR plan and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits IR plan and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits IR plan and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

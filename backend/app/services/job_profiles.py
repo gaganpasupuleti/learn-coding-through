@@ -15,9 +15,15 @@ MAX_MANUAL_RANGE_DAYS = 14
 MAX_HOURS_OLD = MAX_MANUAL_RANGE_DAYS * 24
 ALLOWED_MANUAL_RANGE_DAYS = (1, 3, 7, 14)
 DEFAULT_MANUAL_RANGE_DAYS = 3
-DEFAULT_SOURCES = ["indeed", "google", "naukri"]
+DEFAULT_SOURCES = ["indeed", "google", "linkedin"]
 
-AUTO_PROFILES = ("internship_india", "fresher_india", "entry_level_india")
+AUTO_PROFILES = (
+    "internship_india",
+    "fresher_india",
+    "entry_level_india",
+    "platform_crm_india",
+    "ai_india",
+)
 
 
 @dataclass(frozen=True)
@@ -38,6 +44,11 @@ SCRAPE_PROFILES: dict[str, ScrapeProfile] = {
             "software engineer intern",
             "data analyst intern",
             "graduate intern india",
+            "cyber security intern",
+            "salesforce intern",
+            "power apps intern",
+            "gen ai intern",
+            "ai intern india",
         ),
         auto_enabled=True,
         experience_tier="intern_fresher",
@@ -50,6 +61,12 @@ SCRAPE_PROFILES: dict[str, ScrapeProfile] = {
             "graduate trainee",
             "python developer fresher",
             "software engineer fresher",
+            "react developer fresher",
+            "salesforce fresher",
+            "power apps fresher",
+            "cyber security fresher",
+            "gen ai fresher",
+            "llm engineer fresher",
         ),
         auto_enabled=True,
         experience_tier="intern_fresher",
@@ -62,6 +79,10 @@ SCRAPE_PROFILES: dict[str, ScrapeProfile] = {
             "junior developer",
             "data analyst fresher",
             "associate software engineer",
+            "frontend developer fresher",
+            "soc analyst fresher",
+            "machine learning fresher",
+            "ai engineer fresher",
         ),
         auto_enabled=True,
         experience_tier="entry",
@@ -76,6 +97,38 @@ SCRAPE_PROFILES: dict[str, ScrapeProfile] = {
         ),
         auto_enabled=False,
         experience_tier="experienced",
+    ),
+    "platform_crm_india": ScrapeProfile(
+        key="platform_crm_india",
+        label="CRM & Low-Code Platform",
+        search_terms=(
+            "salesforce fresher",
+            "salesforce developer fresher",
+            "power apps fresher",
+            "power platform fresher",
+            "dynamics 365 fresher",
+            "cyber security fresher",
+            "soc analyst fresher",
+            "information security fresher",
+        ),
+        auto_enabled=True,
+        experience_tier="intern_fresher",
+    ),
+    "ai_india": ScrapeProfile(
+        key="ai_india",
+        label="AI / Gen AI / Agentic",
+        search_terms=(
+            "gen ai fresher",
+            "generative ai fresher",
+            "llm engineer fresher",
+            "prompt engineer fresher",
+            "agentic ai fresher",
+            "ai agent developer fresher",
+            "machine learning fresher",
+            "data science fresher",
+        ),
+        auto_enabled=True,
+        experience_tier="intern_fresher",
     ),
 }
 

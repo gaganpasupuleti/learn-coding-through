@@ -1,0 +1,606 @@
+{
+  "id": "study-report-frontend-react-developer-career-path",
+  "title": "Study Report: Frontend React Developer — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "frontend-react",
+  "family_name": "Frontend React Developer",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "Modern frontend engineering with React 19, TypeScript, Vite, React Router 7, TanStack Query, component testing, and accessible UI patterns. Covers JSX fundamentals through performant production SPAs with design systems and CI-driven quality gates.",
+  "skill_stack": {
+    "beginner": [
+      "HTML5 semantic markup and accessibility basics",
+      "CSS Flexbox, Grid, and responsive design",
+      "JavaScript ES2024 (modules, destructuring, async/await)",
+      "React components, props, and state with useState",
+      "JSX syntax and event handling",
+      "npm/pnpm package management",
+      "Browser DevTools debugging"
+    ],
+    "intermediate": [
+      "TypeScript interfaces, generics, and strict mode",
+      "React 19 hooks (useEffect, useMemo, useCallback, useRef)",
+      "React Router data APIs and nested routes",
+      "TanStack Query for server state caching",
+      "Vite build optimization and code splitting",
+      "CSS Modules or Tailwind component styling",
+      "Vitest and React Testing Library",
+      "Forms with React Hook Form and Zod validation"
+    ],
+    "advanced": [
+      "React Server Components and streaming (where applicable)",
+      "Performance profiling (React DevTools Profiler)",
+      "Design systems with Storybook and compound components",
+      "Micro-frontends and module federation",
+      "E2E testing with Playwright",
+      "Accessibility audits (axe, WCAG 2.2)",
+      "CI/CD with preview deployments"
+    ]
+  },
+  "sources": [
+    "https://react.dev/",
+    "https://www.typescriptlang.org/docs/",
+    "https://vitejs.dev/guide/",
+    "https://reactrouter.com/",
+    "https://tanstack.com/query/latest",
+    "https://testing-library.com/docs/react-testing-library/intro/"
+  ],
+  "recommended_books": [
+    {
+      "title": "Learning React",
+      "author": "Alex Banks & Eve Porcello",
+      "level": "Beginner",
+      "focus": "React 19 components, hooks, and modern frontend patterns.",
+      "url": "https://www.oreilly.com/library/view/learning-react-2nd/9781492051721/",
+      "free_online": false
+    },
+    {
+      "title": "Programming TypeScript",
+      "author": "Boris Cherny",
+      "level": "Intermediate",
+      "focus": "Type-safe React apps with interfaces, generics, and tooling.",
+      "url": "https://www.oreilly.com/library/view/programming-typescript/9781492037657/",
+      "free_online": false
+    },
+    {
+      "title": "React Documentation",
+      "author": "React Team",
+      "level": "Beginner",
+      "focus": "Official react.dev guides for components, hooks, and Server Components.",
+      "url": "https://react.dev/learn",
+      "free_online": true
+    },
+    {
+      "title": "Refactoring UI",
+      "author": "Adam Wathan & Steve Schoger",
+      "level": "Intermediate",
+      "focus": "Visual design principles for developers building UIs.",
+      "url": "https://www.refactoringui.com/",
+      "free_online": false
+    },
+    {
+      "title": "You Don't Know JS Yet",
+      "author": "Kyle Simpson",
+      "level": "Intermediate",
+      "focus": "Deep JavaScript: scope, closures, async, and the event loop.",
+      "url": "https://github.com/getify/You-Dont-Know-JS",
+      "free_online": true
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Personal Portfolio SPA",
+      "level": "Beginner",
+      "duration": "2 weeks",
+      "overview": "React + Vite portfolio with responsive layout, React Router pages, and contact form.",
+      "objectives": [
+        "3 routed pages (Home, Projects, Contact)",
+        "Responsive CSS/Tailwind layout",
+        "Deploy to Vercel/Netlify"
+      ],
+      "phases": [
+        {
+          "name": "Setup",
+          "description": "Vite + React + Router.",
+          "tasks": [
+            "Project structure",
+            "Navbar"
+          ],
+          "deliverable": "Running dev server"
+        },
+        {
+          "name": "Pages",
+          "description": "Build 3 page components.",
+          "tasks": [
+            "Project cards",
+            "About section"
+          ],
+          "deliverable": "All routes working"
+        },
+        {
+          "name": "Style",
+          "description": "Mobile-first responsive.",
+          "tasks": [
+            "Flexbox/Grid",
+            "Dark mode toggle"
+          ],
+          "deliverable": "Lighthouse 90+ score"
+        },
+        {
+          "name": "Deploy",
+          "description": "CI deploy to Vercel.",
+          "tasks": [
+            "GitHub Actions",
+            "Custom domain"
+          ],
+          "deliverable": "Live URL"
+        }
+      ],
+      "skills_applied": [
+        "React",
+        "Routing",
+        "CSS"
+      ],
+      "tools": [
+        "React 19",
+        "Vite",
+        "React Router",
+        "Tailwind"
+      ],
+      "deliverables": [
+        "GitHub repo",
+        "Live site URL",
+        "Lighthouse report"
+      ]
+    },
+    {
+      "title": "CodeQuest Reports Catalog App",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "React app fetching catalog.json: search, filter by family, detail view with chapter list, TypeScript throughout.",
+      "objectives": [
+        "Fetch and display catalog.json",
+        "Search and filter by family/level",
+        "Report detail page with chapters",
+        "TanStack Query for caching"
+      ],
+      "phases": [
+        {
+          "name": "Data",
+          "description": "Fetch catalog API.",
+          "tasks": [
+            "TanStack Query",
+            "Loading states"
+          ],
+          "deliverable": "Catalog grid page"
+        },
+        {
+          "name": "Search",
+          "description": "Filter and sort.",
+          "tasks": [
+            "Debounced search",
+            "Family chips"
+          ],
+          "deliverable": "Search UX demo"
+        },
+        {
+          "name": "Detail",
+          "description": "Report detail route.",
+          "tasks": [
+            "Chapter list",
+            "Book sidebar"
+          ],
+          "deliverable": "/reports/:id page"
+        },
+        {
+          "name": "Tests",
+          "description": "Vitest + Testing Library.",
+          "tasks": [
+            "Component tests",
+            "MSW mocks"
+          ],
+          "deliverable": "Test coverage report"
+        }
+      ],
+      "skills_applied": [
+        "React",
+        "TypeScript",
+        "Data fetching"
+      ],
+      "tools": [
+        "React 19",
+        "TypeScript",
+        "TanStack Query",
+        "Vitest"
+      ],
+      "deliverables": [
+        "GitHub repo",
+        "Live demo",
+        "Test report",
+        "Component storybook optional"
+      ]
+    },
+    {
+      "title": "Real-Time Dashboard with WebSockets",
+      "level": "Advanced",
+      "duration": "4–5 weeks",
+      "overview": "React dashboard with live metrics via WebSocket, Recharts visualizations, auth, and error boundaries.",
+      "objectives": [
+        "WebSocket live data feed",
+        "Recharts time-series charts",
+        "Auth-protected routes",
+        "Error boundaries + retry logic"
+      ],
+      "phases": [
+        {
+          "name": "WS Client",
+          "description": "Custom useWebSocket hook.",
+          "tasks": [
+            "Reconnect logic",
+            "Heartbeat"
+          ],
+          "deliverable": "Hook unit tests"
+        },
+        {
+          "name": "Charts",
+          "description": "Live updating Recharts.",
+          "tasks": [
+            "Buffer last 100 points",
+            "Pause/resume"
+          ],
+          "deliverable": "Dashboard page"
+        },
+        {
+          "name": "Auth",
+          "description": "JWT login flow.",
+          "tasks": [
+            "Protected routes",
+            "Token refresh"
+          ],
+          "deliverable": "Login → dashboard flow"
+        },
+        {
+          "name": "Harden",
+          "description": "Error boundaries, Suspense.",
+          "tasks": [
+            "Fallback UI",
+            "Sentry integration"
+          ],
+          "deliverable": "Error handling demo video"
+        }
+      ],
+      "skills_applied": [
+        "WebSockets",
+        "Charts",
+        "Auth"
+      ],
+      "tools": [
+        "React 19",
+        "Recharts",
+        "WebSocket",
+        "JWT"
+      ],
+      "deliverables": [
+        "Live dashboard",
+        "Architecture doc",
+        "Error handling demo",
+        "Performance profile"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Modern Frontend Role Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Modern Frontend Role Overview** *(Level: Beginner)*\n\nFrontend developers translate designs into interactive, accessible web experiences. React 19 emphasizes functional components, hooks, and improved hydration. You collaborate with designers, backend engineers, and QA to ship features users touch daily. Strong fundamentals in HTML, CSS, and JavaScript precede any framework mastery.\n\nCode Reference:\n```javascript\nfunction Welcome({ name }: { name: string }) {\n  return <h1>Hello, {name}</h1>;\n}\n\nexport default Welcome;\n```\nWhat it shows: Functional component receives props and returns JSX describing UI.\n\n### What it actually is\nFrontend development builds user interfaces that run in the browser.\n\n### When to use it\nChoose this path when you enjoy visual problem-solving and user-facing product work.\n\n### Where to use it\nWeb apps, SaaS dashboards, marketing sites, and mobile hybrid shells.\n\n### Real use example\nA fintech dashboard shows live balances because React re-renders when API data arrives.",
+      "key_takeaways": [
+        "Frontend development builds user interfaces that run in the browser.",
+        "Choose this path when you enjoy visual problem-solving and user-facing product work.",
+        "A fintech dashboard shows live balances because React re-renders when API data arrives."
+      ],
+      "what_it_is": "Frontend development builds user interfaces that run in the browser.",
+      "when_to_use": "Choose this path when you enjoy visual problem-solving and user-facing product work.",
+      "where_to_use": "Web apps, SaaS dashboards, marketing sites, and mobile hybrid shells.",
+      "real_use_example": "A fintech dashboard shows live balances because React re-renders when API data arrives."
+    },
+    {
+      "number": 2,
+      "title": "HTML Semantics and Accessibility",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: HTML Semantics and Accessibility** *(Level: Beginner)*\n\nSemantic tags (nav, main, article, button) convey meaning to browsers and assistive tech. Every interactive control must be keyboard reachable with visible focus indicators. Alt text, labels, and ARIA roles fill gaps only when native HTML cannot express intent. Accessibility is not optional—it's a legal and ethical requirement in many markets.\n\nCode Reference:\n```html\n<nav aria-label=\"Primary\">\n  <a href=\"/home\">Home</a>\n  <button type=\"button\" aria-expanded=\"false\">Menu</button>\n</nav>\n```\nWhat it shows: aria-label names the nav region; button declares type for assistive technologies.\n\n### What it actually is\nSemantic HTML structures content for humans, search engines, and screen readers.\n\n### When to use it\nApply on every page and component from the first commit.\n\n### Where to use it\nPublic websites, government portals, and enterprise SaaS with compliance requirements.\n\n### Real use example\nA blind user navigates checkout entirely by keyboard because form fields have proper labels.",
+      "key_takeaways": [
+        "Semantic HTML structures content for humans, search engines, and screen readers.",
+        "Apply on every page and component from the first commit.",
+        "A blind user navigates checkout entirely by keyboard because form fields have proper labels."
+      ],
+      "what_it_is": "Semantic HTML structures content for humans, search engines, and screen readers.",
+      "when_to_use": "Apply on every page and component from the first commit.",
+      "where_to_use": "Public websites, government portals, and enterprise SaaS with compliance requirements.",
+      "real_use_example": "A blind user navigates checkout entirely by keyboard because form fields have proper labels."
+    },
+    {
+      "number": 3,
+      "title": "CSS Layout with Flexbox and Grid",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: CSS Layout with Flexbox and Grid** *(Level: Beginner)*\n\nFlexbox aligns items in one dimension—rows or columns—ideal for nav bars and toolbars. Grid defines two-dimensional layouts for dashboards and card galleries. Mobile-first media queries scale layouts from small screens upward. CSS variables centralize colors and spacing for theming consistency.\n\nCode Reference:\n```css\n.card-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));\n  gap: 1.5rem;\n}\n```\nWhat it shows: auto-fill creates responsive columns without JavaScript breakpoint logic.\n\n### What it actually is\nCSS layout systems position and space UI elements visually.\n\n### When to use it\nUse Flexbox for component internals; Grid for page-level structure.\n\n### Where to use it\nResponsive landing pages, admin dashboards, and design system layouts.\n\n### Real use example\nProduct cards reflow from one column on phones to four on wide monitors automatically.",
+      "key_takeaways": [
+        "CSS layout systems position and space UI elements visually.",
+        "Use Flexbox for component internals; Grid for page-level structure.",
+        "Product cards reflow from one column on phones to four on wide monitors automatically."
+      ],
+      "what_it_is": "CSS layout systems position and space UI elements visually.",
+      "when_to_use": "Use Flexbox for component internals; Grid for page-level structure.",
+      "where_to_use": "Responsive landing pages, admin dashboards, and design system layouts.",
+      "real_use_example": "Product cards reflow from one column on phones to four on wide monitors automatically."
+    },
+    {
+      "number": 4,
+      "title": "JavaScript ES Modules and async/await",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: JavaScript ES Modules and async/await** *(Level: Beginner)*\n\nES modules use import/export for explicit dependencies instead of global script tags. async/await syntax reads synchronously while awaiting Promises for fetch calls. Destructuring extracts fields from objects and arrays concisely. Optional chaining (?.) prevents errors when accessing nested nullable properties.\n\nCode Reference:\n```javascript\nexport async function loadUser(id) {\n  const res = await fetch(`/api/users/${id}`);\n  if (!res.ok) throw new Error('Failed to load user');\n  return res.json();\n}\n```\nWhat it shows: async function returns Promise; await pauses until fetch resolves.\n\n### What it actually is\nModern JavaScript modules and async I/O underpin every React data fetch.\n\n### When to use it\nMaster before adding state management libraries or complex hooks.\n\n### Where to use it\nAPI clients, event handlers, and utility modules in React codebases.\n\n### Real use example\nProfile page awaits loadUser then passes data to child components as props.",
+      "key_takeaways": [
+        "Modern JavaScript modules and async I/O underpin every React data fetch.",
+        "Master before adding state management libraries or complex hooks.",
+        "Profile page awaits loadUser then passes data to child components as props."
+      ],
+      "what_it_is": "Modern JavaScript modules and async I/O underpin every React data fetch.",
+      "when_to_use": "Master before adding state management libraries or complex hooks.",
+      "where_to_use": "API clients, event handlers, and utility modules in React codebases.",
+      "real_use_example": "Profile page awaits loadUser then passes data to child components as props."
+    },
+    {
+      "number": 5,
+      "title": "React Components, Props, and State",
+      "topic": "web",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: React Components, Props, and State** *(Level: Beginner)*\n\nComponents are functions returning JSX; props pass read-only data from parent to child. useState hook stores local UI state like form inputs and toggle visibility. Lift state up when siblings need shared data—pass callbacks to update parent state. Keys on list items help React reconcile dynamic lists efficiently.\n\nCode Reference:\n```javascript\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  return (\n    <button onClick={() => setCount(c => c + 1)}>\n      Count: {count}\n    </button>\n  );\n}\n```\nWhat it shows: Functional updater c => c + 1 avoids stale closure when batching updates.\n\n### What it actually is\nReact components compose UI from reusable, stateful building blocks.\n\n### When to use it\nUse local state for UI-only concerns; fetch server data with dedicated libraries later.\n\n### Where to use it\nForms, modals, toggles, and any interactive widget in SPAs.\n\n### Real use example\nShopping cart badge shows item count from lifted state in App shell.",
+      "key_takeaways": [
+        "React components compose UI from reusable, stateful building blocks.",
+        "Use local state for UI-only concerns; fetch server data with dedicated libraries later.",
+        "Shopping cart badge shows item count from lifted state in App shell."
+      ],
+      "what_it_is": "React components compose UI from reusable, stateful building blocks.",
+      "when_to_use": "Use local state for UI-only concerns; fetch server data with dedicated libraries later.",
+      "where_to_use": "Forms, modals, toggles, and any interactive widget in SPAs.",
+      "real_use_example": "Shopping cart badge shows item count from lifted state in App shell."
+    },
+    {
+      "number": 6,
+      "title": "Vite Dev Server and Project Setup",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Vite Dev Server and Project Setup** *(Level: Beginner)*\n\nVite provides instant HMR (Hot Module Replacement) using native ES modules in dev. Production builds use Rollup for tree-shaking and optimized chunks. npm create vite@latest scaffolds React + TypeScript templates in seconds. Environment variables prefixed VITE_ expose safe public config to client code.\n\nCode Reference:\n```bash\nnpm create vite@latest my-app -- --template react-ts\ncd my-app && npm install && npm run dev\n```\nWhat it shows: react-ts template includes TypeScript, ESLint, and Vite config out of the box.\n\n### What it actually is\nVite is the modern build tool replacing Create React App for new React projects.\n\n### When to use it\nStart every new SPA with Vite unless framework constraints require otherwise.\n\n### Where to use it\nLocal development, open-source React libraries, and production SPAs.\n\n### Real use example\nDeveloper edits a component and sees changes in browser within 200ms without full reload.",
+      "key_takeaways": [
+        "Vite is the modern build tool replacing Create React App for new React projects.",
+        "Start every new SPA with Vite unless framework constraints require otherwise.",
+        "Developer edits a component and sees changes in browser within 200ms without full reload."
+      ],
+      "what_it_is": "Vite is the modern build tool replacing Create React App for new React projects.",
+      "when_to_use": "Start every new SPA with Vite unless framework constraints require otherwise.",
+      "where_to_use": "Local development, open-source React libraries, and production SPAs.",
+      "real_use_example": "Developer edits a component and sees changes in browser within 200ms without full reload."
+    },
+    {
+      "number": 7,
+      "title": "TypeScript for React Components",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: TypeScript for React Components** *(Level: Intermediate)*\n\nTypeScript catches prop mismatches and null errors at compile time, not in production. Define Props interfaces with optional fields and union types for variants. Generics type reusable components like DataTable<T>. Enable strict mode in tsconfig for maximum safety on growing codebases.\n\nCode Reference:\n```typescript\ninterface ButtonProps {\n  variant: 'primary' | 'secondary';\n  disabled?: boolean;\n  onClick: () => void;\n  children: React.ReactNode;\n}\n\nexport function Button({ variant, ...rest }: ButtonProps) { /* ... */ }\n```\nWhat it shows: Union type restricts variant strings; ReactNode accepts any renderable children.\n\n### What it actually is\nTypeScript adds static typing to JavaScript for safer React development.\n\n### When to use it\nAdopt TypeScript on all professional React projects from day one.\n\n### Where to use it\nComponent libraries, large SPAs, and teams needing refactor confidence.\n\n### Real use example\nCI fails when developer passes invalid variant='danger' not in union type.",
+      "key_takeaways": [
+        "TypeScript adds static typing to JavaScript for safer React development.",
+        "Adopt TypeScript on all professional React projects from day one.",
+        "CI fails when developer passes invalid variant='danger' not in union type."
+      ],
+      "what_it_is": "TypeScript adds static typing to JavaScript for safer React development.",
+      "when_to_use": "Adopt TypeScript on all professional React projects from day one.",
+      "where_to_use": "Component libraries, large SPAs, and teams needing refactor confidence.",
+      "real_use_example": "CI fails when developer passes invalid variant='danger' not in union type."
+    },
+    {
+      "number": 8,
+      "title": "React 19 Hooks Deep Dive",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: React 19 Hooks Deep Dive** *(Level: Intermediate)*\n\nuseEffect runs side effects after render—fetching, subscriptions, DOM sync. useMemo caches expensive computations; useCallback stabilizes function references for memoized children. useRef holds mutable values without triggering re-renders—DOM nodes and timers. React 19 improves batching and offers use() for reading promises in render where supported.\n\nCode Reference:\n```javascript\nuseEffect(() => {\n  const controller = new AbortController();\n  fetch('/api/stats', { signal: controller.signal })\n    .then(r => r.json())\n    .then(setStats);\n  return () => controller.abort();\n}, []);\n```\nWhat it shows: AbortController cancels fetch on unmount preventing setState on unmounted component.\n\n### What it actually is\nHooks attach state and lifecycle behavior to functional components without classes.\n\n### When to use it\nUse built-in hooks before reaching for external state libraries.\n\n### Where to use it\nData fetching effects, form side effects, and third-party widget integration.\n\n### Real use example\nAnalytics script loads once on mount; cleanup removes listener when user navigates away.",
+      "key_takeaways": [
+        "Hooks attach state and lifecycle behavior to functional components without classes.",
+        "Use built-in hooks before reaching for external state libraries.",
+        "Analytics script loads once on mount; cleanup removes listener when user navigates away."
+      ],
+      "what_it_is": "Hooks attach state and lifecycle behavior to functional components without classes.",
+      "when_to_use": "Use built-in hooks before reaching for external state libraries.",
+      "where_to_use": "Data fetching effects, form side effects, and third-party widget integration.",
+      "real_use_example": "Analytics script loads once on mount; cleanup removes listener when user navigates away."
+    },
+    {
+      "number": 9,
+      "title": "React Router 7 Data Routes",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: React Router 7 Data Routes** *(Level: Intermediate)*\n\nReact Router 7 supports loaders fetching data before route renders. Nested routes share layouts while child routes swap content in Outlet. Error boundaries on routes catch loader failures with user-friendly fallbacks. URL is shareable application state—encode filters and pagination in search params.\n\nCode Reference:\n```javascript\nexport async function productLoader({ params }) {\n  const product = await fetchProduct(params.id);\n  if (!product) throw new Response('Not Found', { status: 404 });\n  return product;\n}\n```\nWhat it shows: Loader runs before component mount; throwing Response triggers error boundary.\n\n### What it actually is\nReact Router manages client-side navigation and URL-driven UI state.\n\n### When to use it\nUse on multi-page SPAs needing bookmarkable URLs and back-button support.\n\n### Where to use it\nDashboards, wizards, and admin panels with deep navigation hierarchies.\n\n### Real use example\nUser shares /products/42 URL; colleague sees identical product detail instantly.",
+      "key_takeaways": [
+        "React Router manages client-side navigation and URL-driven UI state.",
+        "Use on multi-page SPAs needing bookmarkable URLs and back-button support.",
+        "User shares /products/42 URL; colleague sees identical product detail instantly."
+      ],
+      "what_it_is": "React Router manages client-side navigation and URL-driven UI state.",
+      "when_to_use": "Use on multi-page SPAs needing bookmarkable URLs and back-button support.",
+      "where_to_use": "Dashboards, wizards, and admin panels with deep navigation hierarchies.",
+      "real_use_example": "User shares /products/42 URL; colleague sees identical product detail instantly."
+    },
+    {
+      "number": 10,
+      "title": "TanStack Query Server State",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: TanStack Query Server State** *(Level: Intermediate)*\n\nTanStack Query caches API responses and synchronizes server state with UI automatically. useQuery handles loading, error, and stale-while-revalidate patterns out of the box. Query keys identify cache entries; invalidateQueries refreshes after mutations. Prefetch on hover makes navigation feel instant without redundant global state.\n\nCode Reference:\n```javascript\nconst { data, isLoading, error } = useQuery({\n  queryKey: ['products', filters],\n  queryFn: () => fetchProducts(filters),\n  staleTime: 60_000,\n});\n```\nWhat it shows: staleTime keeps data fresh for 60s avoiding refetch on every mount.\n\n### What it actually is\nTanStack Query manages async server data caching separate from UI state.\n\n### When to use it\nReplace manual useEffect fetch logic in data-heavy screens.\n\n### Where to use it\nProduct lists, infinite scroll feeds, and admin tables with pagination.\n\n### Real use example\nAfter creating a product, invalidateQueries(['products']) refreshes list without page reload.",
+      "key_takeaways": [
+        "TanStack Query manages async server data caching separate from UI state.",
+        "Replace manual useEffect fetch logic in data-heavy screens.",
+        "After creating a product, invalidateQueries(['products']) refreshes list without page reload."
+      ],
+      "what_it_is": "TanStack Query manages async server data caching separate from UI state.",
+      "when_to_use": "Replace manual useEffect fetch logic in data-heavy screens.",
+      "where_to_use": "Product lists, infinite scroll feeds, and admin tables with pagination.",
+      "real_use_example": "After creating a product, invalidateQueries(['products']) refreshes list without page reload."
+    },
+    {
+      "number": 11,
+      "title": "Forms with React Hook Form and Zod",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Forms with React Hook Form and Zod** *(Level: Intermediate)*\n\nReact Hook Form minimizes re-renders by registering uncontrolled inputs. Zod schemas validate and infer TypeScript types from one source of truth. resolver connects Zod to RHF for inline field errors and submit blocking. Accessible error messages link to inputs via aria-describedby.\n\nCode Reference:\n```typescript\nconst schema = z.object({ email: z.string().email(), password: z.string().min(8) });\nconst { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(schema) });\n```\nWhat it shows: zodResolver runs validation on submit and populates errors object per field.\n\n### What it actually is\nTyped form libraries reduce boilerplate and validation bugs in complex forms.\n\n### When to use it\nUse on login, checkout, settings, and any multi-field user input.\n\n### Where to use it\nSaaS signup, e-commerce checkout, and admin create/edit dialogs.\n\n### Real use example\nCheckout blocks submit until card fields pass Zod rules; errors announce to screen readers.",
+      "key_takeaways": [
+        "Typed form libraries reduce boilerplate and validation bugs in complex forms.",
+        "Use on login, checkout, settings, and any multi-field user input.",
+        "Checkout blocks submit until card fields pass Zod rules; errors announce to screen readers."
+      ],
+      "what_it_is": "Typed form libraries reduce boilerplate and validation bugs in complex forms.",
+      "when_to_use": "Use on login, checkout, settings, and any multi-field user input.",
+      "where_to_use": "SaaS signup, e-commerce checkout, and admin create/edit dialogs.",
+      "real_use_example": "Checkout blocks submit until card fields pass Zod rules; errors announce to screen readers."
+    },
+    {
+      "number": 12,
+      "title": "Vitest and React Testing Library",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Vitest and React Testing Library** *(Level: Intermediate)*\n\nReact Testing Library queries DOM as users do—by role, label, and text. Vitest runs tests in Vite's transform pipeline for fast feedback. userEvent simulates realistic clicks and keyboard input better than fireEvent. Test behavior, not implementation—avoid asserting internal state directly.\n\nCode Reference:\n```javascript\ntest('adds item to cart', async () => {\n  render(<ProductCard product={mockProduct} />);\n  await userEvent.click(screen.getByRole('button', { name: /add to cart/i }));\n  expect(screen.getByText(/1 in cart/i)).toBeInTheDocument();\n});\n```\nWhat it shows: getByRole finds button by accessible name; assertion checks visible outcome.\n\n### What it actually is\nComponent tests verify UI behavior from the user's perspective.\n\n### When to use it\nWrite tests for critical user journeys before refactoring legacy components.\n\n### Where to use it\nCI pipelines, design system packages, and regression prevention.\n\n### Real use example\nRefactoring CartContext passes tests proving user-visible behavior unchanged.",
+      "key_takeaways": [
+        "Component tests verify UI behavior from the user's perspective.",
+        "Write tests for critical user journeys before refactoring legacy components.",
+        "Refactoring CartContext passes tests proving user-visible behavior unchanged."
+      ],
+      "what_it_is": "Component tests verify UI behavior from the user's perspective.",
+      "when_to_use": "Write tests for critical user journeys before refactoring legacy components.",
+      "where_to_use": "CI pipelines, design system packages, and regression prevention.",
+      "real_use_example": "Refactoring CartContext passes tests proving user-visible behavior unchanged."
+    },
+    {
+      "number": 13,
+      "title": "Vite Production Build and Code Splitting",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Vite Production Build and Code Splitting** *(Level: Intermediate)*\n\nDynamic import() creates async chunks loaded on demand per route. Manual chunks separate vendor libraries from application code for cache efficiency. Analyze bundle with rollup-plugin-visualizer to find heavyweight dependencies. Lazy + Suspense show fallbacks while route chunks download.\n\nCode Reference:\n```javascript\nconst AdminPanel = lazy(() => import('./AdminPanel'));\n\n<Suspense fallback={<Spinner />}>\n  <AdminPanel />\n</Suspense>\n```\nWhat it shows: Admin code downloads only when user navigates to admin route.\n\n### What it actually is\nCode splitting reduces initial JavaScript payload for faster first paint.\n\n### When to use it\nSplit by route and heavy widgets on any non-trivial SPA.\n\n### Where to use it\nAdmin sections, chart libraries, and markdown editors loaded on demand.\n\n### Real use example\nInitial bundle drops from 800KB to 220KB; admin chunk loads in 400ms when needed.",
+      "key_takeaways": [
+        "Code splitting reduces initial JavaScript payload for faster first paint.",
+        "Split by route and heavy widgets on any non-trivial SPA.",
+        "Initial bundle drops from 800KB to 220KB; admin chunk loads in 400ms when needed."
+      ],
+      "what_it_is": "Code splitting reduces initial JavaScript payload for faster first paint.",
+      "when_to_use": "Split by route and heavy widgets on any non-trivial SPA.",
+      "where_to_use": "Admin sections, chart libraries, and markdown editors loaded on demand.",
+      "real_use_example": "Initial bundle drops from 800KB to 220KB; admin chunk loads in 400ms when needed."
+    },
+    {
+      "number": 14,
+      "title": "Performance Profiling and Memoization",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Performance Profiling and Memoization** *(Level: Advanced)*\n\nReact DevTools Profiler records render durations and why components re-rendered. React.memo skips re-render when props shallow-equal; use sparingly after profiling. Virtualize long lists with TanStack Virtual to render only visible rows. Avoid inline object/array literals in props—they break memoization every render.\n\nCode Reference:\n```typescript\nconst MemoRow = memo(function Row({ item }: { item: Item }) {\n  return <tr><td>{item.name}</td><td>{item.price}</td></tr>;\n});\n```\nWhat it shows: memo wraps Row; parent must pass stable item references for skip to work.\n\n### What it actually is\nPerformance optimization targets measured bottlenecks, not premature micro-optimizations.\n\n### When to use it\nProfile when Interaction to Next Paint (INP) regresses or lists lag on scroll.\n\n### Where to use it\nData tables with 10k rows, real-time dashboards, and animation-heavy UIs.\n\n### Real use example\nVirtualizing order list cuts render nodes from 5000 to 20, restoring 60fps scroll.",
+      "key_takeaways": [
+        "Performance optimization targets measured bottlenecks, not premature micro-optimizations.",
+        "Profile when Interaction to Next Paint (INP) regresses or lists lag on scroll.",
+        "Virtualizing order list cuts render nodes from 5000 to 20, restoring 60fps scroll."
+      ],
+      "what_it_is": "Performance optimization targets measured bottlenecks, not premature micro-optimizations.",
+      "when_to_use": "Profile when Interaction to Next Paint (INP) regresses or lists lag on scroll.",
+      "where_to_use": "Data tables with 10k rows, real-time dashboards, and animation-heavy UIs.",
+      "real_use_example": "Virtualizing order list cuts render nodes from 5000 to 20, restoring 60fps scroll."
+    },
+    {
+      "number": 15,
+      "title": "Design Systems and Storybook",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Design Systems and Storybook** *(Level: Advanced)*\n\nDesign systems document tokens, components, and usage guidelines for consistency. Storybook isolates components with controls for props exploration and visual QA. Compound components (Tabs.List, Tabs.Panel) share implicit state via context. Document accessibility requirements in each story's parameters.a11y config.\n\nCode Reference:\n```javascript\nexport default { component: Button, tags: ['autodocs'], argTypes: { variant: { control: 'select', options: ['primary', 'ghost'] } } };\n```\nWhat it shows: Meta export configures Storybook docs and interactive controls automatically.\n\n### What it actually is\nStorybook accelerates component development, review, and regression testing.\n\n### When to use it\nAdopt when three or more teams share UI primitives across products.\n\n### Where to use it\nEnterprise SaaS, white-label platforms, and open-source component libraries.\n\n### Real use example\nDesigner reviews Button stories in deployed Chromatic before approving release.",
+      "key_takeaways": [
+        "Storybook accelerates component development, review, and regression testing.",
+        "Adopt when three or more teams share UI primitives across products.",
+        "Designer reviews Button stories in deployed Chromatic before approving release."
+      ],
+      "what_it_is": "Storybook accelerates component development, review, and regression testing.",
+      "when_to_use": "Adopt when three or more teams share UI primitives across products.",
+      "where_to_use": "Enterprise SaaS, white-label platforms, and open-source component libraries.",
+      "real_use_example": "Designer reviews Button stories in deployed Chromatic before approving release."
+    },
+    {
+      "number": 16,
+      "title": "Playwright End-to-End Testing",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Playwright End-to-End Testing** *(Level: Advanced)*\n\nE2E tests simulate real user flows across pages in Chromium, Firefox, and WebKit. Playwright auto-waits for elements—reducing flaky sleep-based tests. Fixtures authenticate once and reuse storage state across specs. Run E2E in CI on preview deployments before merging to main.\n\nCode Reference:\n```javascript\ntest('checkout flow', async ({ page }) => {\n  await page.goto('/products');\n  await page.getByRole('button', { name: 'Add to cart' }).click();\n  await page.getByRole('link', { name: 'Checkout' }).click();\n  await expect(page.getByText('Order confirmed')).toBeVisible();\n});\n```\nWhat it shows: getByRole locators mirror Testing Library; expect waits for assertion automatically.\n\n### What it actually is\nE2E tests validate critical business flows across integrated frontend and backend.\n\n### When to use it\nCover signup, checkout, and payment paths; keep count small and stable.\n\n### Where to use it\nRelease gates, regression suites, and compliance-critical workflows.\n\n### Real use example\nCI blocks deploy when checkout E2E fails after payment provider UI change.",
+      "key_takeaways": [
+        "E2E tests validate critical business flows across integrated frontend and backend.",
+        "Cover signup, checkout, and payment paths; keep count small and stable.",
+        "CI blocks deploy when checkout E2E fails after payment provider UI change."
+      ],
+      "what_it_is": "E2E tests validate critical business flows across integrated frontend and backend.",
+      "when_to_use": "Cover signup, checkout, and payment paths; keep count small and stable.",
+      "where_to_use": "Release gates, regression suites, and compliance-critical workflows.",
+      "real_use_example": "CI blocks deploy when checkout E2E fails after payment provider UI change."
+    },
+    {
+      "number": 17,
+      "title": "Micro-Frontends and Module Federation",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Micro-Frontends and Module Federation** *(Level: Advanced)*\n\nMicro-frontends let teams deploy UI slices independently within one shell app. Module Federation shares dependencies like React as singletons across remotes. Define clear integration contracts—routing, auth tokens, and event bus semantics. Over-splitting creates UX inconsistency and operational overhead—start monolith-first.\n\nCode Reference:\n```javascript\nfederation({ name: 'shell', remotes: { shop: 'shop@https://cdn.example/remoteEntry.js' } })\n```\nWhat it shows: Shell app loads shop remote at runtime from CDN URL.\n\n### What it actually is\nMicro-frontends scale frontend org structure for large multi-team products.\n\n### When to use it\nConsider when independent release cadences justify integration complexity.\n\n### Where to use it\nLarge enterprises with acquisition integrations and platform teams.\n\n### Real use example\nMarketing team deploys promo banner remote without rebuilding core banking shell.",
+      "key_takeaways": [
+        "Micro-frontends scale frontend org structure for large multi-team products.",
+        "Consider when independent release cadences justify integration complexity.",
+        "Marketing team deploys promo banner remote without rebuilding core banking shell."
+      ],
+      "what_it_is": "Micro-frontends scale frontend org structure for large multi-team products.",
+      "when_to_use": "Consider when independent release cadences justify integration complexity.",
+      "where_to_use": "Large enterprises with acquisition integrations and platform teams.",
+      "real_use_example": "Marketing team deploys promo banner remote without rebuilding core banking shell."
+    },
+    {
+      "number": 18,
+      "title": "CI/CD and Preview Deployments",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: CI/CD and Preview Deployments** *(Level: Advanced)*\n\nGitHub Actions runs lint, typecheck, unit, and E2E on every pull request. Preview URLs deploy ephemeral environments per PR for designer and QA review. Lighthouse CI asserts performance budgets on critical pages. Production promotes immutable artifacts tested on staging—never rebuild untested SHAs.\n\nCode Reference:\n```yaml\nname: CI\non: [pull_request]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm ci && npm run lint && npm test && npm run build\n```\nWhat it shows: Single workflow installs deps, lints, tests, and verifies production build.\n\n### What it actually is\nCI/CD automates quality gates and deployment for frontend teams.\n\n### When to use it\nSet up before team grows beyond two developers.\n\n### Where to use it\nOpen-source projects, SaaS products, and agencies shipping client sites.\n\n### Real use example\nPR #842 gets preview URL; PM approves pixel-perfect match before merge.",
+      "key_takeaways": [
+        "CI/CD automates quality gates and deployment for frontend teams.",
+        "Set up before team grows beyond two developers.",
+        "PR #842 gets preview URL; PM approves pixel-perfect match before merge."
+      ],
+      "what_it_is": "CI/CD automates quality gates and deployment for frontend teams.",
+      "when_to_use": "Set up before team grows beyond two developers.",
+      "where_to_use": "Open-source projects, SaaS products, and agencies shipping client sites.",
+      "real_use_example": "PR #842 gets preview URL; PM approves pixel-perfect match before merge."
+    }
+  ],
+  "chapter_count": 18
+}

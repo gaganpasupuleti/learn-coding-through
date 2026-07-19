@@ -1,0 +1,27 @@
+{
+  "id": "04-data-analysis",
+  "name": "Data Analysis",
+  "description": "Working with tables, summaries, and analysis workflows in Python.",
+  "source_count": 2,
+  "report_count": 2,
+  "reports": [
+    {
+      "id": "study-report-python-learn-coding-programs-with-python-programming-and",
+      "title": "Study Report: PYTHON - Learn Coding Programs with Python Programming and Master Data Analysis & Analy...",
+      "family_id": "04-data-analysis",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/04-data-analysis/study-report-python-learn-coding-programs-with-python-programming-and/report.json",
+      "markdown": "Book_Reports/04-data-analysis/study-report-python-learn-coding-programs-with-python-programming-and/report.md"
+    },
+    {
+      "id": "study-report-python-for-beginners-learn-coding-programming-data-analys",
+      "title": "Study Report: Python for beginners - Learn Coding, Programming, Data analysis and Algorithmic thinking",
+      "family_id": "04-data-analysis",
+      "chapter_count": 12,
+      "level": "Intermediate",
+      "path": "Book_Reports/04-data-analysis/study-report-python-for-beginners-learn-coding-programming-data-analys/report.json",
+      "markdown": "Book_Reports/04-data-analysis/study-report-python-for-beginners-learn-coding-programming-data-analys/report.md"
+    }
+  ]
+}

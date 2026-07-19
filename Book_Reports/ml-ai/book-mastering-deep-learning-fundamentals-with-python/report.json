@@ -1,0 +1,139 @@
+{
+  "id": "book-mastering-deep-learning-fundamentals-with-python",
+  "title": "Study Report: Mastering Deep Learning Fundamentals with Python — ML / AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "ml-ai",
+  "family_name": "ML / AI Engineer",
+  "level": "Advanced",
+  "report_type": "role_book_study",
+  "book_title": "Mastering Deep Learning Fundamentals with Python",
+  "book_author": "CodeQuest Collection",
+  "book_index": 4,
+  "summary": "Study report for *Mastering Deep Learning Fundamentals with Python* by CodeQuest Collection (Advanced level) mapped to the ML / AI Engineer role. Neural networks, training loops, and deep learning projects.",
+  "sources": [
+    "Book_Reports/07-deep-learning-and-ai/study-report-mastering-deep-learning-fundamentals-with-python-the-abso/report.json"
+  ],
+  "source_file": "Reference: Mastering Deep Learning Fundamentals with Python — CodeQuest Collection",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Mastering Deep Learning Fundamentals with Python",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Mastering Deep Learning Fundamentals with Python** *(Level: Advanced)*\n\nThis study report summarizes *Mastering Deep Learning Fundamentals with Python* by CodeQuest Collection for the ML / AI Engineer role. The resource is rated Advanced level. Neural networks, training loops, and deep learning projects. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Mastering Deep Learning Fundamentals with Python\n# Author: CodeQuest Collection\n# Role: ML / AI Engineer\n# Level: Advanced\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Mastering Deep Learning Fundamentals with Python.\n\n### When to use it\nWhen learning ML / AI Engineer skills at Advanced level.\n\n### Where to use it\nML / AI Engineer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Mastering Deep Learning Fundamentals with Python.",
+        "When learning ML / AI Engineer skills at Advanced level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Mastering Deep Learning Fundamentals with Python.",
+      "when_to_use": "When learning ML / AI Engineer skills at Advanced level.",
+      "where_to_use": "ML / AI Engineer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Advanced)*\n\nML / AI Engineer professionals use ideas from Mastering Deep Learning Fundamentals with Python to solve real workplace problems. Neural networks, training loops, and deep learning projects. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: ML / AI Engineer\nBook focus: Neural networks, training loops, and deep learning projects.\nRecommended level: Advanced\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nML / AI Engineer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a advanced skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a advanced skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "ML / AI Engineer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a advanced skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Advanced",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Advanced)*\n\nThe main topics in Mastering Deep Learning Fundamentals with Python include practical concepts described as: Neural networks, training loops, and deep learning projects. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in ML / AI Engineer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Production Model Monitoring",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Production Model Monitoring** *(Level: Advanced)*\n\nTrack data drift, prediction drift, and performance decay. Evidently generates HTML reports; alert when PSI > threshold. Shadow deployments compare champion/challenger.\n\nCode Reference:\n```markdown\n# Weekly job: compare production features vs training reference\n# Alert if drift_share > 0.3 on top features\n```\nWhat it shows: Automated drift share triggers human review before silent degradation.\n\n### What it actually is\nMonitoring catches world changes models weren't trained on.\n\n### When to use it\nEvery production model with business impact.\n\n### Where to use it\nCredit, recommendations, and dynamic pricing.\n\n### Real use example\nSession length distribution shifted post-redesign — retrain triggered before AUC collapsed.",
+      "key_takeaways": [
+        "Monitoring catches world changes models weren't trained on.",
+        "Every production model with business impact.",
+        "Session length distribution shifted post-redesign — retrain triggered before AUC collapsed."
+      ],
+      "what_it_is": "Monitoring catches world changes models weren't trained on.",
+      "when_to_use": "Every production model with business impact.",
+      "where_to_use": "Credit, recommendations, and dynamic pricing.",
+      "real_use_example": "Session length distribution shifted post-redesign — retrain triggered before AUC collapsed."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Fairness and Bias Mitigation",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Fairness and Bias Mitigation** *(Level: Advanced)*\n\nMeasure metrics across groups (demographic parity, equalized odds). Mitigate with reweighing, threshold optimization, or constrained training. Document limitations.\n\nCode Reference:\n```python\nfrom fairlearn.metrics import MetricFrame\nfrom sklearn.metrics import precision_score\nmf = MetricFrame(precision_score, y_test, y_pred, sensitive_features=groups)\n```\nWhat it shows: MetricFrame breaks precision by group — surfaces disparate impact.\n\n### What it actually is\nFairness practices reduce harm from biased training data.\n\n### When to use it\nWhen models allocate opportunities, credit, or healthcare resources.\n\n### Where to use it\nHiring tools, lending, healthcare triage.\n\n### Real use example\nReweighting training data reduces approval rate gap without huge AUC loss.",
+      "key_takeaways": [
+        "Fairness practices reduce harm from biased training data.",
+        "When models allocate opportunities, credit, or healthcare resources.",
+        "Reweighting training data reduces approval rate gap without huge AUC loss."
+      ],
+      "what_it_is": "Fairness practices reduce harm from biased training data.",
+      "when_to_use": "When models allocate opportunities, credit, or healthcare resources.",
+      "where_to_use": "Hiring tools, lending, healthcare triage.",
+      "real_use_example": "Reweighting training data reduces approval rate gap without huge AUC loss."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Ensemble Methods and Stacking",
+      "topic": "ml_intro",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Ensemble Methods and Stacking** *(Level: Advanced)*\n\nBagging (RandomForest), boosting (XGBoost, LightGBM), stacking combine weak learners. Stacking uses out-of-fold preds as meta-features — powerful but watch overfitting.\n\nCode Reference:\n```python\nfrom sklearn.ensemble import StackingClassifier\nfrom sklearn.linear_model import LogisticRegression\nfrom xgboost import XGBClassifier\n\nstack = StackingClassifier(estimators=[('xgb', XGBClassifier()), ('rf', RandomForestClassifier())], final_estimator=LogisticRegression())\n```\nWhat it shows: Stacking learns how to weight base model votes.\n\n### What it actually is\nEnsembles squeeze extra performance from diverse models.\n\n### When to use it\nWhen single models plateau and competition or revenue depends on marginal gains.\n\n### Where to use it\nInsurance loss, click-through rate, and fraud stacks.\n\n### Real use example\nStacked model beats single XGBoost by 0.015 AUC on private leaderboard.",
+      "key_takeaways": [
+        "Ensembles squeeze extra performance from diverse models.",
+        "When single models plateau and competition or revenue depends on marginal gains.",
+        "Stacked model beats single XGBoost by 0."
+      ],
+      "what_it_is": "Ensembles squeeze extra performance from diverse models.",
+      "when_to_use": "When single models plateau and competition or revenue depends on marginal gains.",
+      "where_to_use": "Insurance loss, click-through rate, and fraud stacks.",
+      "real_use_example": "Stacked model beats single XGBoost by 0.015 AUC on private leaderboard."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Advanced)*\n\nFinish Mastering Deep Learning Fundamentals with Python with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to ML / AI Engineer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a advanced project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a advanced project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a advanced project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

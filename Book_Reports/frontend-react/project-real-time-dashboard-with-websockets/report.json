@@ -1,0 +1,137 @@
+{
+  "id": "project-real-time-dashboard-with-websockets",
+  "title": "Project Report: Real-Time Dashboard with WebSockets — Frontend React Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "frontend-react",
+  "family_name": "Frontend React Developer",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "Real-Time Dashboard with WebSockets",
+  "project_index": 3,
+  "duration": "4–5 weeks",
+  "summary": "React dashboard with live metrics via WebSocket, Recharts visualizations, auth, and error boundaries.",
+  "objectives": [
+    "WebSocket live data feed",
+    "Recharts time-series charts",
+    "Auth-protected routes",
+    "Error boundaries + retry logic"
+  ],
+  "tools": [
+    "React 19",
+    "Recharts",
+    "WebSocket",
+    "JWT"
+  ],
+  "deliverables": [
+    "Live dashboard",
+    "Architecture doc",
+    "Error handling demo",
+    "Performance profile"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**Real-Time Dashboard with WebSockets** is a advanced-level end-to-end project for Frontend React Developer. Duration: 4–5 weeks. React dashboard with live metrics via WebSocket, Recharts visualizations, auth, and error boundaries. Tools: React 19, Recharts, WebSocket, JWT.\n\nCode Reference:\n```text\nObjective: WebSocket live data feed\nObjective: Recharts time-series charts\nObjective: Auth-protected routes\nObjective: Error boundaries + retry logic\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nFrontend React Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Frontend React Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Frontend React Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Frontend React Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Frontend React Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: WS Client",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: WS Client** *(Level: Advanced)*\n\nCustom useWebSocket hook. Complete these tasks: Reconnect logic; Heartbeat. Deliverable for this phase: Hook unit tests.\n\nCode Reference:\n```text\n- [ ] Reconnect logic\n- [ ] Heartbeat\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase WS Client is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Hook unit tests to the teacher.",
+      "key_takeaways": [
+        "Phase WS Client is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Hook unit tests to the teacher."
+      ],
+      "what_it_is": "Phase WS Client is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Hook unit tests to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Charts",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Charts** *(Level: Advanced)*\n\nLive updating Recharts. Complete these tasks: Buffer last 100 points; Pause/resume. Deliverable for this phase: Dashboard page.\n\nCode Reference:\n```text\n- [ ] Buffer last 100 points\n- [ ] Pause/resume\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Charts is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Dashboard page to the teacher.",
+      "key_takeaways": [
+        "Phase Charts is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Dashboard page to the teacher."
+      ],
+      "what_it_is": "Phase Charts is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Dashboard page to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Auth",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Auth** *(Level: Advanced)*\n\nJWT login flow. Complete these tasks: Protected routes; Token refresh. Deliverable for this phase: Login → dashboard flow.\n\nCode Reference:\n```text\n- [ ] Protected routes\n- [ ] Token refresh\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Auth is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Login → dashboard flow to the teacher.",
+      "key_takeaways": [
+        "Phase Auth is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Login → dashboard flow to the teacher."
+      ],
+      "what_it_is": "Phase Auth is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Login → dashboard flow to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Harden",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Harden** *(Level: Advanced)*\n\nError boundaries, Suspense. Complete these tasks: Fallback UI; Sentry integration. Deliverable for this phase: Error handling demo video.\n\nCode Reference:\n```text\n- [ ] Fallback UI\n- [ ] Sentry integration\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Harden is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Error handling demo video to the teacher.",
+      "key_takeaways": [
+        "Phase Harden is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Error handling demo video to the teacher."
+      ],
+      "what_it_is": "Phase Harden is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Error handling demo video to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Live dashboard; Architecture doc; Error handling demo; Performance profile. Skills demonstrated: WebSockets, Charts, Auth. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Live dashboard\nDeliverable: Architecture doc\nDeliverable: Error handling demo\nDeliverable: Performance profile\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Live dashboard and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Live dashboard and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Live dashboard and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

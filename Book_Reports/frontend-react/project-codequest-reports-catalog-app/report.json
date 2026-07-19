@@ -1,0 +1,137 @@
+{
+  "id": "project-codequest-reports-catalog-app",
+  "title": "Project Report: CodeQuest Reports Catalog App — Frontend React Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "frontend-react",
+  "family_name": "Frontend React Developer",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "CodeQuest Reports Catalog App",
+  "project_index": 2,
+  "duration": "3–4 weeks",
+  "summary": "React app fetching catalog.json: search, filter by family, detail view with chapter list, TypeScript throughout.",
+  "objectives": [
+    "Fetch and display catalog.json",
+    "Search and filter by family/level",
+    "Report detail page with chapters",
+    "TanStack Query for caching"
+  ],
+  "tools": [
+    "React 19",
+    "TypeScript",
+    "TanStack Query",
+    "Vitest"
+  ],
+  "deliverables": [
+    "GitHub repo",
+    "Live demo",
+    "Test report",
+    "Component storybook optional"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**CodeQuest Reports Catalog App** is a intermediate-level end-to-end project for Frontend React Developer. Duration: 3–4 weeks. React app fetching catalog.json: search, filter by family, detail view with chapter list, TypeScript throughout. Tools: React 19, TypeScript, TanStack Query, Vitest.\n\nCode Reference:\n```text\nObjective: Fetch and display catalog.json\nObjective: Search and filter by family/level\nObjective: Report detail page with chapters\nObjective: TanStack Query for caching\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nFrontend React Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Frontend React Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Frontend React Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Frontend React Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Frontend React Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Data",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Data** *(Level: Intermediate)*\n\nFetch catalog API. Complete these tasks: TanStack Query; Loading states. Deliverable for this phase: Catalog grid page.\n\nCode Reference:\n```text\n- [ ] TanStack Query\n- [ ] Loading states\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Data is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Catalog grid page to the teacher.",
+      "key_takeaways": [
+        "Phase Data is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Catalog grid page to the teacher."
+      ],
+      "what_it_is": "Phase Data is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Catalog grid page to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Search",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Search** *(Level: Intermediate)*\n\nFilter and sort. Complete these tasks: Debounced search; Family chips. Deliverable for this phase: Search UX demo.\n\nCode Reference:\n```text\n- [ ] Debounced search\n- [ ] Family chips\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Search is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Search UX demo to the teacher.",
+      "key_takeaways": [
+        "Phase Search is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Search UX demo to the teacher."
+      ],
+      "what_it_is": "Phase Search is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Search UX demo to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Detail",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Detail** *(Level: Intermediate)*\n\nReport detail route. Complete these tasks: Chapter list; Book sidebar. Deliverable for this phase: /reports/:id page.\n\nCode Reference:\n```text\n- [ ] Chapter list\n- [ ] Book sidebar\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Detail is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the /reports/:id page to the teacher.",
+      "key_takeaways": [
+        "Phase Detail is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the /reports/:id page to the teacher."
+      ],
+      "what_it_is": "Phase Detail is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the /reports/:id page to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Tests",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Tests** *(Level: Intermediate)*\n\nVitest + Testing Library. Complete these tasks: Component tests; MSW mocks. Deliverable for this phase: Test coverage report.\n\nCode Reference:\n```text\n- [ ] Component tests\n- [ ] MSW mocks\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Tests is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nFrontend React Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Test coverage report to the teacher.",
+      "key_takeaways": [
+        "Phase Tests is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Test coverage report to the teacher."
+      ],
+      "what_it_is": "Phase Tests is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Frontend React Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Test coverage report to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: GitHub repo; Live demo; Test report; Component storybook optional. Skills demonstrated: React, TypeScript, Data fetching. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: GitHub repo\nDeliverable: Live demo\nDeliverable: Test report\nDeliverable: Component storybook optional\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits GitHub repo and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits GitHub repo and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits GitHub repo and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

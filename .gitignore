@@ -48,3 +48,13 @@ backend/fixture_cohort_logins.json
 
 # Screenshots from smoke tests
 scripts/screenshots/
+
+# Generated Excel exports (run scripts/export_jobs_excel.py to regenerate)
+*.xlsx
+
+# Local job enrichment prep (exports + working batches — do not commit unless approved)
+local-data/
+
+# Legacy Railway DB exports before service deletion (production data — keep local only)
+pre-deleted-files/**/*
+!pre-deleted-files/README.md

@@ -3,7 +3,7 @@ import { House, Cube, Code, ListChecks, MapTrifold, ShieldCheck } from '@phospho
 
 interface NavigationProps {
   currentPage: string
-  onNavigate: (page: 'landing' | 'projects' | 'practice' | 'practice-code' | 'quiz' | 'roadmapper' | 'flow-roadmap' | 'admin') => void
+  onNavigate: (page: 'dashboard' | 'projects' | 'practice' | 'practice-code' | 'quiz' | 'roadmapper' | 'flow-roadmap' | 'admin') => void
 }
 
 export function Navigation({ currentPage, onNavigate }: NavigationProps) {
@@ -20,12 +20,12 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
 
           <div className="flex items-center gap-2 flex-wrap justify-end">
             <Button
-              variant={currentPage === 'landing' ? 'default' : 'ghost'}
+              variant={currentPage === 'dashboard' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => onNavigate('landing')}
-              className={currentPage === 'landing' ? 'bg-primary' : ''}
+              onClick={() => onNavigate('dashboard')}
+              className={currentPage === 'dashboard' ? 'bg-primary' : ''}
             >
-              <House size={18} className="mr-2" weight={currentPage === 'landing' ? 'fill' : 'regular'} />
+              <House size={18} className="mr-2" weight={currentPage === 'dashboard' ? 'fill' : 'regular'} />
               Home
             </Button>
             <Button

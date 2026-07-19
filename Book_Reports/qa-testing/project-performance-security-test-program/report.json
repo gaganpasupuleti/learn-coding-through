@@ -1,0 +1,136 @@
+{
+  "id": "project-performance-security-test-program",
+  "title": "Project Report: Performance + Security Test Program — QA & Test Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "qa-testing",
+  "family_name": "QA & Test Engineer",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "Performance + Security Test Program",
+  "project_index": 3,
+  "duration": "4–5 weeks",
+  "summary": "k6 load test plan, OWASP ZAP scan, and combined quality gate report for a web application.",
+  "objectives": [
+    "k6 load test to 500 virtual users",
+    "OWASP ZAP automated scan",
+    "Performance baseline document",
+    "Combined quality gate checklist"
+  ],
+  "tools": [
+    "k6",
+    "OWASP ZAP",
+    "GitHub Actions"
+  ],
+  "deliverables": [
+    "k6 report",
+    "ZAP report",
+    "Quality gate doc",
+    "Sign-off deck"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**Performance + Security Test Program** is a advanced-level end-to-end project for QA & Test Engineer. Duration: 4–5 weeks. k6 load test plan, OWASP ZAP scan, and combined quality gate report for a web application. Tools: k6, OWASP ZAP, GitHub Actions.\n\nCode Reference:\n```text\nObjective: k6 load test to 500 virtual users\nObjective: OWASP ZAP automated scan\nObjective: Performance baseline document\nObjective: Combined quality gate checklist\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nQA & Test Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a QA & Test Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a QA & Test Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "QA & Test Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a QA & Test Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Load",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Load** *(Level: Advanced)*\n\nk6 scripts. Complete these tasks: Ramp up/down; Thresholds. Deliverable for this phase: k6 HTML report.\n\nCode Reference:\n```text\n- [ ] Ramp up/down\n- [ ] Thresholds\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Load is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the k6 HTML report to the teacher.",
+      "key_takeaways": [
+        "Phase Load is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the k6 HTML report to the teacher."
+      ],
+      "what_it_is": "Phase Load is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the k6 HTML report to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Security",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Security** *(Level: Advanced)*\n\nZAP baseline scan. Complete these tasks: Top 10 checks; Remediation list. Deliverable for this phase: ZAP report.\n\nCode Reference:\n```text\n- [ ] Top 10 checks\n- [ ] Remediation list\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Security is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the ZAP report to the teacher.",
+      "key_takeaways": [
+        "Phase Security is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the ZAP report to the teacher."
+      ],
+      "what_it_is": "Phase Security is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the ZAP report to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Gate",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Gate** *(Level: Advanced)*\n\nQuality criteria. Complete these tasks: p95 < 500ms; Zero critical vulns. Deliverable for this phase: Gate checklist.\n\nCode Reference:\n```text\n- [ ] p95 < 500ms\n- [ ] Zero critical vulns\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Gate is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Gate checklist to the teacher.",
+      "key_takeaways": [
+        "Phase Gate is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Gate checklist to the teacher."
+      ],
+      "what_it_is": "Phase Gate is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Gate checklist to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Present",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Present** *(Level: Advanced)*\n\nQA sign-off deck. Complete these tasks: Findings; Go/no-go. Deliverable for this phase: Sign-off presentation.\n\nCode Reference:\n```text\n- [ ] Findings\n- [ ] Go/no-go\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Present is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Sign-off presentation to the teacher.",
+      "key_takeaways": [
+        "Phase Present is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Sign-off presentation to the teacher."
+      ],
+      "what_it_is": "Phase Present is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Sign-off presentation to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: k6 report; ZAP report; Quality gate doc; Sign-off deck. Skills demonstrated: Performance, Security, Quality gates. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: k6 report\nDeliverable: ZAP report\nDeliverable: Quality gate doc\nDeliverable: Sign-off deck\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits k6 report and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits k6 report and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits k6 report and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

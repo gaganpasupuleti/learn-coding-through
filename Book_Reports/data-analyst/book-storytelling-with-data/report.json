@@ -1,0 +1,139 @@
+{
+  "id": "book-storytelling-with-data",
+  "title": "Study Report: Storytelling with Data — Data Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "data-analyst",
+  "family_name": "Data Analyst",
+  "level": "Beginner",
+  "report_type": "role_book_study",
+  "book_title": "Storytelling with Data",
+  "book_author": "Cole Nussbaumer Knaflic",
+  "book_index": 2,
+  "summary": "Study report for *Storytelling with Data* by Cole Nussbaumer Knaflic (Beginner level) mapped to the Data Analyst role. Design charts and narratives that executives understand.",
+  "sources": [
+    "https://www.storytellingwithdata.com/book"
+  ],
+  "source_file": "Reference: Storytelling with Data — Cole Nussbaumer Knaflic",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Storytelling with Data",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Storytelling with Data** *(Level: Beginner)*\n\nThis study report summarizes *Storytelling with Data* by Cole Nussbaumer Knaflic for the Data Analyst role. The resource is rated Beginner level. Design charts and narratives that executives understand. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Storytelling with Data\n# Author: Cole Nussbaumer Knaflic\n# Role: Data Analyst\n# Level: Beginner\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Storytelling with Data.\n\n### When to use it\nWhen learning Data Analyst skills at Beginner level.\n\n### Where to use it\nData Analyst training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Storytelling with Data.",
+        "When learning Data Analyst skills at Beginner level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Storytelling with Data.",
+      "when_to_use": "When learning Data Analyst skills at Beginner level.",
+      "where_to_use": "Data Analyst training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Beginner)*\n\nData Analyst professionals use ideas from Storytelling with Data to solve real workplace problems. Design charts and narratives that executives understand. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Data Analyst\nBook focus: Design charts and narratives that executives understand.\nRecommended level: Beginner\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nData Analyst bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a beginner skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a beginner skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Data Analyst bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a beginner skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Beginner)*\n\nThe main topics in Storytelling with Data include practical concepts described as: Design charts and narratives that executives understand. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Data Analyst jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Data Analyst Role in 2024-2026",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Data Analyst Role in 2024-2026** *(Level: Beginner)*\n\nData analysts turn raw business data into decisions. Modern teams expect SQL fluency, spreadsheet agility, Python/pandas for heavier work, and clear communication. You partner with product, marketing, and finance — not just build charts.\n\nCode Reference:\n```python\nSELECT COUNT(*) AS total_orders\nFROM orders\nWHERE order_date >= '2025-01-01';\n```\nWhat it shows: A simple count query answers 'how many orders this year?' — the bread-and-butter analyst task.\n\n### What it actually is\nA data analyst queries, cleans, analyzes, and explains data to drive business action.\n\n### When to use it\nWhen stakeholders need metrics, trends, or evidence for a decision.\n\n### Where to use it\nSaaS dashboards, retail sales reviews, healthcare operations, and ed-tech reporting.\n\n### Real use example\nA CodeQuest teacher asks 'which learning path has the highest completion rate?' — you answer with SQL and a one-slide chart.",
+      "key_takeaways": [
+        "A data analyst queries, cleans, analyzes, and explains data to drive business action.",
+        "When stakeholders need metrics, trends, or evidence for a decision.",
+        "A CodeQuest teacher asks 'which learning path has the highest completion rate?' — you answer with SQL and a one-slide chart."
+      ],
+      "what_it_is": "A data analyst queries, cleans, analyzes, and explains data to drive business action.",
+      "when_to_use": "When stakeholders need metrics, trends, or evidence for a decision.",
+      "where_to_use": "SaaS dashboards, retail sales reviews, healthcare operations, and ed-tech reporting.",
+      "real_use_example": "A CodeQuest teacher asks 'which learning path has the highest completion rate?' — you answer with SQL and a one-slide chart."
+    },
+    {
+      "number": 5,
+      "title": "Applied: SQL SELECT, FILTER, and GROUP BY",
+      "topic": "sql",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: SQL SELECT, FILTER, and GROUP BY** *(Level: Beginner)*\n\nSQL is the analyst's primary language for warehouse data. SELECT picks columns; WHERE filters rows; GROUP BY aggregates by category. Always alias expressions and comment non-obvious business logic.\n\nCode Reference:\n```sql\nSELECT region,\n       COUNT(*) AS orders,\n       SUM(amount) AS revenue\nFROM sales\nWHERE status = 'completed'\nGROUP BY region\nORDER BY revenue DESC;\n```\nWhat it shows: GROUP BY region rolls up revenue per region; ORDER BY surfaces top performers first.\n\n### What it actually is\nSQL is a declarative language for querying relational tables.\n\n### When to use it\nWhenever data lives in PostgreSQL, BigQuery, Snowflake, or DuckDB.\n\n### Where to use it\nRevenue reports, user counts, inventory snapshots, and audit extracts.\n\n### Real use example\nMarketing wants top 5 regions by Q1 revenue — one GROUP BY query exports to Excel in seconds.",
+      "key_takeaways": [
+        "SQL is a declarative language for querying relational tables.",
+        "Whenever data lives in PostgreSQL, BigQuery, Snowflake, or DuckDB.",
+        "Marketing wants top 5 regions by Q1 revenue — one GROUP BY query exports to Excel in seconds."
+      ],
+      "what_it_is": "SQL is a declarative language for querying relational tables.",
+      "when_to_use": "Whenever data lives in PostgreSQL, BigQuery, Snowflake, or DuckDB.",
+      "where_to_use": "Revenue reports, user counts, inventory snapshots, and audit extracts.",
+      "real_use_example": "Marketing wants top 5 regions by Q1 revenue — one GROUP BY query exports to Excel in seconds."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Excel Tables, Pivot Tables, and XLOOKUP",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Excel Tables, Pivot Tables, and XLOOKUP** *(Level: Beginner)*\n\nExcel remains the universal analyst interface. Convert ranges to Tables for auto-expansion; PivotTables summarize exports; XLOOKUP replaces brittle VLOOKUP. Use Power Query when files repeat weekly.\n\nCode Reference:\n```excel\n=XLOOKUP(A2, Products[SKU], Products[Price], \"Not found\")\n```\nWhat it shows: XLOOKUP finds price by SKU with a clear not-found fallback.\n\n### What it actually is\nExcel is a spreadsheet tool for exploration, ad-hoc analysis, and stakeholder handoffs.\n\n### When to use it\nFor quick what-if models, finance-friendly formats, and non-technical audiences.\n\n### Where to use it\nBudget trackers, campaign ROI sheets, and executive one-pagers.\n\n### Real use example\nFinance shares a CSV export — you build a pivot by department and month before the standup.",
+      "key_takeaways": [
+        "Excel is a spreadsheet tool for exploration, ad-hoc analysis, and stakeholder handoffs.",
+        "For quick what-if models, finance-friendly formats, and non-technical audiences.",
+        "Finance shares a CSV export — you build a pivot by department and month before the standup."
+      ],
+      "what_it_is": "Excel is a spreadsheet tool for exploration, ad-hoc analysis, and stakeholder handoffs.",
+      "when_to_use": "For quick what-if models, finance-friendly formats, and non-technical audiences.",
+      "where_to_use": "Budget trackers, campaign ROI sheets, and executive one-pagers.",
+      "real_use_example": "Finance shares a CSV export — you build a pivot by department and month before the standup."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Beginner)*\n\nFinish Storytelling with Data with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Data Analyst. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a beginner project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a beginner project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a beginner project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

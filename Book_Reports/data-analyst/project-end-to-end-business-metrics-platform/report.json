@@ -1,0 +1,137 @@
+{
+  "id": "project-end-to-end-business-metrics-platform",
+  "title": "Project Report: End-to-End Business Metrics Platform — Data Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "data-analyst",
+  "family_name": "Data Analyst",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "End-to-End Business Metrics Platform",
+  "project_index": 3,
+  "duration": "4–5 weeks",
+  "summary": "Automated weekly KPI report: SQL extraction, Python pipeline, validation checks, and email delivery.",
+  "objectives": [
+    "Automate data extraction with Python",
+    "Data quality validation rules",
+    "Scheduled report generation",
+    "Document data dictionary"
+  ],
+  "tools": [
+    "Python",
+    "SQL",
+    "Great Expectations",
+    "Jinja2"
+  ],
+  "deliverables": [
+    "Pipeline code",
+    "Quality report",
+    "Sample weekly report",
+    "Data dictionary"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**End-to-End Business Metrics Platform** is a advanced-level end-to-end project for Data Analyst. Duration: 4–5 weeks. Automated weekly KPI report: SQL extraction, Python pipeline, validation checks, and email delivery. Tools: Python, SQL, Great Expectations, Jinja2.\n\nCode Reference:\n```text\nObjective: Automate data extraction with Python\nObjective: Data quality validation rules\nObjective: Scheduled report generation\nObjective: Document data dictionary\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nData Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Data Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Data Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Data Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Data Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Pipeline",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Pipeline** *(Level: Advanced)*\n\nExtract-transform-load script. Complete these tasks: SQL → pandas; Schedule cron. Deliverable for this phase: pipeline.py.\n\nCode Reference:\n```text\n- [ ] SQL → pandas\n- [ ] Schedule cron\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Pipeline is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the pipeline.py to the teacher.",
+      "key_takeaways": [
+        "Phase Pipeline is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the pipeline."
+      ],
+      "what_it_is": "Phase Pipeline is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the pipeline.py to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Quality",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Quality** *(Level: Advanced)*\n\nGreat Expectations checks. Complete these tasks: Null rate; Row count. Deliverable for this phase: Quality report.\n\nCode Reference:\n```text\n- [ ] Null rate\n- [ ] Row count\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Quality is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Quality report to the teacher.",
+      "key_takeaways": [
+        "Phase Quality is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Quality report to the teacher."
+      ],
+      "what_it_is": "Phase Quality is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Quality report to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Report",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Report** *(Level: Advanced)*\n\nAuto-generate PDF/HTML. Complete these tasks: Jinja template; Charts embedded. Deliverable for this phase: Sample weekly report.\n\nCode Reference:\n```text\n- [ ] Jinja template\n- [ ] Charts embedded\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Report is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Sample weekly report to the teacher.",
+      "key_takeaways": [
+        "Phase Report is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Sample weekly report to the teacher."
+      ],
+      "what_it_is": "Phase Report is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Sample weekly report to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Docs",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Docs** *(Level: Advanced)*\n\nData dictionary and lineage. Complete these tasks: Column definitions; Source mapping. Deliverable for this phase: Data catalog doc.\n\nCode Reference:\n```text\n- [ ] Column definitions\n- [ ] Source mapping\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Docs is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Data catalog doc to the teacher.",
+      "key_takeaways": [
+        "Phase Docs is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Data catalog doc to the teacher."
+      ],
+      "what_it_is": "Phase Docs is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Data catalog doc to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Pipeline code; Quality report; Sample weekly report; Data dictionary. Skills demonstrated: ETL, Data quality, Automation. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Pipeline code\nDeliverable: Quality report\nDeliverable: Sample weekly report\nDeliverable: Data dictionary\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Pipeline code and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Pipeline code and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Pipeline code and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

@@ -311,6 +311,7 @@ export interface AdminActivityLog {
   action: string
   details: string | null
   created_at: string
+  created_at_ist?: string | null
 }
 
 export interface AdminPieSlice {
@@ -368,6 +369,8 @@ export interface AdminRegistrationWaitlistEntry {
   attempt_count: number
   first_attempted_at: string
   last_attempted_at: string
+  first_attempted_at_ist?: string | null
+  last_attempted_at_ist?: string | null
 }
 
 export interface AdminUserActivity {
@@ -380,6 +383,7 @@ export interface AdminUserActivity {
   duration_ms: number | null
   metadata_json: string | null
   occurred_at: string
+  occurred_at_ist?: string | null
 }
 
 export interface DatabaseHealth {
@@ -644,7 +648,11 @@ async function parseOrThrow(response: Response) {
 
 const ADMIN_STUDENTS_PAGE_SIZE = 200
 
-export async function fetchAdminStudents(token: string, search?: string): Promise<AdminStudent[]> {
+export async function fetchAdminStudents(
+  token: string,
+  search?: string,
+  options?: { isActive?: boolean },
+): Promise<AdminStudent[]> {
   const all: AdminStudent[] = []
   let skip = 0
 
@@ -653,6 +661,7 @@ export async function fetchAdminStudents(token: string, search?: string): Promis
     params.set('limit', String(ADMIN_STUDENTS_PAGE_SIZE))
     params.set('skip', String(skip))
     if (search?.trim()) params.set('search', search.trim())
+    if (options?.isActive !== undefined) params.set('is_active', String(options.isActive))
 
     const response = await fetchWithAuthApiFallback(`/api/v1/admin/students?${params}`, token)
     const page = (await parseOrThrow(response)) as AdminStudent[]
@@ -1374,6 +1383,8 @@ export interface AdminFeedbackItem {
   reviewed_by_user_id: number | null
   reviewed_at: string | null
   created_at: string
+  created_at_ist?: string | null
+  reviewed_at_ist?: string | null
 }
 
 export async function submitStudentFeedback(

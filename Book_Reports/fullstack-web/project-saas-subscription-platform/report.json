@@ -1,0 +1,137 @@
+{
+  "id": "project-saas-subscription-platform",
+  "title": "Project Report: SaaS Subscription Platform — Full Stack Web Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "fullstack-web",
+  "family_name": "Full Stack Web Developer",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "SaaS Subscription Platform",
+  "project_index": 3,
+  "duration": "6–8 weeks",
+  "summary": "Multi-tenant SaaS with Stripe billing, team invites, admin panel, and observability.",
+  "objectives": [
+    "Stripe subscription checkout",
+    "Multi-tenant data isolation",
+    "Team invite flow",
+    "Admin analytics panel"
+  ],
+  "tools": [
+    "React",
+    "Node.js",
+    "Stripe",
+    "PostgreSQL"
+  ],
+  "deliverables": [
+    "Live SaaS app",
+    "Stripe test receipts",
+    "Ops runbook",
+    "Architecture diagram"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**SaaS Subscription Platform** is a advanced-level end-to-end project for Full Stack Web Developer. Duration: 6–8 weeks. Multi-tenant SaaS with Stripe billing, team invites, admin panel, and observability. Tools: React, Node.js, Stripe, PostgreSQL.\n\nCode Reference:\n```text\nObjective: Stripe subscription checkout\nObjective: Multi-tenant data isolation\nObjective: Team invite flow\nObjective: Admin analytics panel\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nFull Stack Web Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Full Stack Web Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Full Stack Web Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Full Stack Web Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Full Stack Web Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Billing",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Billing** *(Level: Advanced)*\n\nStripe integration. Complete these tasks: Checkout session; Webhooks. Deliverable for this phase: Test subscription flow.\n\nCode Reference:\n```text\n- [ ] Checkout session\n- [ ] Webhooks\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Billing is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Test subscription flow to the teacher.",
+      "key_takeaways": [
+        "Phase Billing is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Test subscription flow to the teacher."
+      ],
+      "what_it_is": "Phase Billing is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Test subscription flow to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Tenants",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Tenants** *(Level: Advanced)*\n\nOrg-scoped data. Complete these tasks: Middleware tenant ID; Row isolation. Deliverable for this phase: Multi-tenant tests.\n\nCode Reference:\n```text\n- [ ] Middleware tenant ID\n- [ ] Row isolation\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Tenants is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Multi-tenant tests to the teacher.",
+      "key_takeaways": [
+        "Phase Tenants is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Multi-tenant tests to the teacher."
+      ],
+      "what_it_is": "Phase Tenants is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Multi-tenant tests to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Teams",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Teams** *(Level: Advanced)*\n\nInvite and roles. Complete these tasks: Email invite; RBAC. Deliverable for this phase: Team management UI.\n\nCode Reference:\n```text\n- [ ] Email invite\n- [ ] RBAC\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Teams is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Team management UI to the teacher.",
+      "key_takeaways": [
+        "Phase Teams is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Team management UI to the teacher."
+      ],
+      "what_it_is": "Phase Teams is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Team management UI to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Ops",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Ops** *(Level: Advanced)*\n\nLogging and monitoring. Complete these tasks: Structured logs; Health checks. Deliverable for this phase: Ops runbook.\n\nCode Reference:\n```text\n- [ ] Structured logs\n- [ ] Health checks\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Ops is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nFull Stack Web Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Ops runbook to the teacher.",
+      "key_takeaways": [
+        "Phase Ops is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Ops runbook to the teacher."
+      ],
+      "what_it_is": "Phase Ops is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Full Stack Web Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Ops runbook to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Live SaaS app; Stripe test receipts; Ops runbook; Architecture diagram. Skills demonstrated: SaaS, Billing, Multi-tenant. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Live SaaS app\nDeliverable: Stripe test receipts\nDeliverable: Ops runbook\nDeliverable: Architecture diagram\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Live SaaS app and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Live SaaS app and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Live SaaS app and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

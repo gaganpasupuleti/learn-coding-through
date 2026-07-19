@@ -1,11 +1,13 @@
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { JobSpyOverviewPanel } from '@/components/jobspy/JobSpyOverviewPanel'
 import { JobSpyApiStatusBadge } from '@/components/jobspy/JobSpyApiStatus'
 import { JobSpyFilters } from '@/components/jobspy/JobSpyFilters'
 import { JobSpyJobCard } from '@/components/jobspy/JobSpyJobCard'
 import { JobSpyJobDetail } from '@/components/jobspy/JobSpyJobDetail'
 import { useJobSpyJobs, type JobSpyTab } from '@/components/jobspy/useJobSpyJobs'
 import { cn } from '@/lib/utils'
+import { jobSpySiteLabel } from '@/lib/jobspy-api'
 
 const TABS: { id: JobSpyTab; label: string }[] = [
   { id: 'browse', label: 'Browse' },
@@ -22,6 +24,8 @@ export function JobSpyPage() {
     savedIds,
     displayJobs,
     total,
+    overview,
+    overviewLoading,
     loading,
     applying,
     applyNotice,
@@ -31,6 +35,7 @@ export function JobSpyPage() {
     selectedJob,
     setSelectedJob,
     handleFilterChange,
+    handleSourceSelect,
     handleSearch,
     openJob,
     handleSave,
@@ -120,6 +125,13 @@ export function JobSpyPage() {
 
         {showFilters && apiStatus === 'ok' && (
           <>
+            <JobSpyOverviewPanel
+              overview={overview}
+              loading={overviewLoading}
+              selectedSource={filters.site ?? ''}
+              onSelectSource={handleSourceSelect}
+            />
+
             <JobSpyFilters
               filters={filters}
               loading={loading}
@@ -127,14 +139,28 @@ export function JobSpyPage() {
               onSearch={handleSearch}
             />
 
-            <div className="flex items-center justify-between gap-4">
-              <p className="text-sm text-slate-600">
-                {loading ? 'Loading…' : (
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-2 text-sm text-slate-600">
+                {loading ? (
+                  'Loading…'
+                ) : (
                   <>
-                    <span className="font-semibold text-slate-900">{total.toLocaleString('en-IN')}</span> jobs found
+                    <span>
+                      <span className="font-semibold text-slate-900">{total.toLocaleString('en-IN')}</span> jobs
+                      {filters.site ? ` from ${jobSpySiteLabel(filters.site)}` : ' matching filters'}
+                    </span>
+                    {filters.site && (
+                      <button
+                        type="button"
+                        className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-800 hover:bg-blue-100"
+                        onClick={() => handleSourceSelect('')}
+                      >
+                        {jobSpySiteLabel(filters.site)} ×
+                      </button>
+                    )}
                   </>
                 )}
-              </p>
+              </div>
               <span className="text-xs text-slate-500">India only</span>
             </div>
           </>

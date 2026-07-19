@@ -1,0 +1,134 @@
+{
+  "id": "project-helpdesk-ticket-simulation-lab",
+  "title": "Project Report: Helpdesk Ticket Simulation Lab — IT Support / Helpdesk",
+  "author": "Gagan Pasupuleti",
+  "family_id": "it-support",
+  "family_name": "IT Support / Helpdesk",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Helpdesk Ticket Simulation Lab",
+  "project_index": 1,
+  "duration": "1–2 weeks",
+  "summary": "Process 20 simulated tickets: triage, troubleshoot, document resolution, calculate SLA metrics.",
+  "objectives": [
+    "Triage 20 tickets by priority",
+    "Document resolution steps",
+    "Calculate average resolution time",
+    "Create KB article"
+  ],
+  "tools": [
+    "Ticketing template",
+    "KB template"
+  ],
+  "deliverables": [
+    "20 ticket resolutions",
+    "3 KB articles",
+    "SLA report"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Helpdesk Ticket Simulation Lab** is a beginner-level end-to-end project for IT Support / Helpdesk. Duration: 1–2 weeks. Process 20 simulated tickets: triage, troubleshoot, document resolution, calculate SLA metrics. Tools: Ticketing template, KB template.\n\nCode Reference:\n```text\nObjective: Triage 20 tickets by priority\nObjective: Document resolution steps\nObjective: Calculate average resolution time\nObjective: Create KB article\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nIT Support / Helpdesk portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a IT Support / Helpdesk resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a IT Support / Helpdesk resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "IT Support / Helpdesk portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a IT Support / Helpdesk resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Triage",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Triage** *(Level: Beginner)*\n\nPriority matrix. Complete these tasks: P1-P4 classification; Assignment. Deliverable for this phase: Triage spreadsheet.\n\nCode Reference:\n```text\n- [ ] P1-P4 classification\n- [ ] Assignment\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Triage is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Triage spreadsheet to the teacher.",
+      "key_takeaways": [
+        "Phase Triage is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Triage spreadsheet to the teacher."
+      ],
+      "what_it_is": "Phase Triage is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Triage spreadsheet to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Resolve",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Resolve** *(Level: Beginner)*\n\nFix 20 scenarios. Complete these tasks: Password reset; Network; Software. Deliverable for this phase: Resolution log.\n\nCode Reference:\n```text\n- [ ] Password reset\n- [ ] Network\n- [ ] Software\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Resolve is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Resolution log to the teacher.",
+      "key_takeaways": [
+        "Phase Resolve is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Resolution log to the teacher."
+      ],
+      "what_it_is": "Phase Resolve is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Resolution log to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: KB",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: KB** *(Level: Beginner)*\n\nWrite 3 KB articles. Complete these tasks: Step-by-step; Screenshots. Deliverable for this phase: KB articles PDF.\n\nCode Reference:\n```text\n- [ ] Step-by-step\n- [ ] Screenshots\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase KB is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the KB articles PDF to the teacher.",
+      "key_takeaways": [
+        "Phase KB is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the KB articles PDF to the teacher."
+      ],
+      "what_it_is": "Phase KB is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the KB articles PDF to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Metrics",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Metrics** *(Level: Beginner)*\n\nSLA report. Complete these tasks: Avg resolution; First contact rate. Deliverable for this phase: SLA dashboard.\n\nCode Reference:\n```text\n- [ ] Avg resolution\n- [ ] First contact rate\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Metrics is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nIT Support / Helpdesk agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the SLA dashboard to the teacher.",
+      "key_takeaways": [
+        "Phase Metrics is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the SLA dashboard to the teacher."
+      ],
+      "what_it_is": "Phase Metrics is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "IT Support / Helpdesk agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the SLA dashboard to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: 20 ticket resolutions; 3 KB articles; SLA report. Skills demonstrated: Troubleshooting, Documentation, SLA. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: 20 ticket resolutions\nDeliverable: 3 KB articles\nDeliverable: SLA report\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits 20 ticket resolutions and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits 20 ticket resolutions and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits 20 ticket resolutions and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

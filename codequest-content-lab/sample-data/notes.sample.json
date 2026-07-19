@@ -1,0 +1,82 @@
+{
+  "_note": "Original Code Quest study notes. content_body is written by Code Quest admins/instructors in our own words — NOT copied from any source. license_type is always internal.",
+  "_rules": [
+    "content_body must be original expression authored by Code Quest. Never paste text from third-party books, courses, or articles.",
+    "Facts and ideas are fine to teach; copying someone else's wording or structure is not.",
+    "further_reading holds outbound links to curated sources (see curated-external-links.sample.json). Attribution only, no content copied.",
+    "license_type is always internal; source_type is always manual."
+  ],
+  "notes": [
+    {
+      "id": "note-001",
+      "content_type": "notes",
+      "title": "Python for Data Science: NumPy and Pandas Essentials",
+      "domain": "python",
+      "tags": ["python", "numpy", "pandas", "data-analysis", "cheatsheet"],
+      "author": "Code Quest Team",
+      "source_type": "manual",
+      "license_type": "internal",
+      "review_status": "approved",
+      "difficulty_level": "beginner",
+      "reading_time_mins": 12,
+      "content_body": "# Python for Data Science: NumPy and Pandas Essentials\n\nThese are the two libraries you reach for first in almost any data task.\n\n## NumPy — fast numeric arrays\n- `np.array([...])` creates an n-dimensional array. Operations are vectorised, so `a * 2` runs on the whole array without a Python loop.\n- Common creators: `np.zeros`, `np.ones`, `np.arange`, `np.linspace`.\n- Reshape with `a.reshape(rows, cols)`; inspect with `a.shape` and `a.dtype`.\n- Aggregate along an axis: `a.sum(axis=0)` sums each column, `axis=1` each row.\n\n## Pandas — labelled tables\n- A `DataFrame` is a table; a `Series` is one column.\n- Load data: `pd.read_csv(\"file.csv\")`. Peek with `df.head()` and `df.info()`.\n- Select columns with `df[\"col\"]`; filter rows with a boolean mask: `df[df[\"age\"] > 30]`.\n- Group and summarise: `df.groupby(\"country\")[\"sales\"].mean()`.\n- Handle gaps: `df.dropna()` removes missing rows, `df.fillna(0)` replaces them.\n\n## A minimal workflow\n1. Load the data into a DataFrame.\n2. Clean it (types, missing values, duplicates).\n3. Explore with `describe()`, `value_counts()`, and quick plots.\n4. Transform (group, merge, pivot) into the shape your question needs.\n\n> Practice tip: pick one messy CSV and take it end to end. You learn more from one full cleanup than from ten tutorials.",
+      "further_reading": [
+        { "label": "Python Data Science Handbook", "external_link_id": "link-002", "url": "https://github.com/jakevdp/PythonDataScienceHandbook" }
+      ]
+    },
+    {
+      "id": "note-002",
+      "content_type": "notes",
+      "title": "The Data Science Workflow in Five Steps",
+      "domain": "data-science",
+      "tags": ["data-science", "workflow", "process", "beginner"],
+      "author": "Code Quest Team",
+      "source_type": "manual",
+      "license_type": "internal",
+      "review_status": "approved",
+      "difficulty_level": "beginner",
+      "reading_time_mins": 8,
+      "content_body": "# The Data Science Workflow in Five Steps\n\nMost real data projects follow the same loop, no matter the tools.\n\n1. **Ask a clear question.** \"Are sales falling?\" is vague. \"Did revenue per customer drop after the March price change?\" is answerable.\n2. **Get and clean the data.** Expect this to take most of your time: fixing types, missing values, duplicates, and inconsistent labels.\n3. **Explore (EDA).** Summaries and simple charts before any modelling. Look at distributions, outliers, and relationships between variables.\n4. **Model or analyse.** Start with the simplest thing that could answer the question — a group-by, a baseline, a linear model — before anything fancy.\n5. **Communicate.** A result nobody understands has zero value. State the finding, the confidence, and the caveats.\n\n## Skills that pay off\n- **Statistics:** distributions, sampling, correlation vs. causation.\n- **Programming:** Python or R, plus SQL for pulling data.\n- **Communication:** turning a chart into a decision.\n\n> The order isn't strictly linear — you loop back constantly. Cleaning reveals new questions; exploring reveals dirty data.",
+      "further_reading": [
+        { "label": "OSSU Data Science curriculum", "external_link_id": "link-007", "url": "https://github.com/ossu/data-science" },
+        { "label": "Awesome Data Science", "external_link_id": "link-004", "url": "https://github.com/academic/awesome-datascience" }
+      ]
+    },
+    {
+      "id": "note-003",
+      "content_type": "notes",
+      "title": "Machine Learning Foundations: The Core Ideas",
+      "domain": "ai-ml",
+      "tags": ["machine-learning", "ai-ml", "fundamentals", "overfitting"],
+      "author": "Code Quest Team",
+      "source_type": "manual",
+      "license_type": "internal",
+      "review_status": "approved",
+      "difficulty_level": "intermediate",
+      "reading_time_mins": 10,
+      "content_body": "# Machine Learning Foundations: The Core Ideas\n\nBefore any specific algorithm, these ideas explain what ML is actually doing.\n\n## Supervised vs. unsupervised\n- **Supervised:** you have labelled examples (input → known answer). Split into *classification* (predict a category) and *regression* (predict a number).\n- **Unsupervised:** no labels; you find structure — e.g. *clustering* similar items.\n\n## The central tension: generalisation\nA model that memorises the training data but fails on new data is **overfit**. One that is too simple to capture the pattern is **underfit**. The whole game is landing between the two.\n\n## How you keep yourself honest\n- **Train/test split:** never judge a model on data it trained on.\n- **Cross-validation:** rotate which slice is held out to get a stabler estimate.\n- **A baseline:** always compare against something trivial (predict the average, predict the majority class). If your model can't beat it, rethink.\n\n## Typical loop\n1. Split data into train and test.\n2. Fit the model on train.\n3. Evaluate on test with a metric that matches the goal (accuracy, RMSE, F1...).\n4. Tune, then re-check on data you haven't touched.\n\n> Rule of thumb: more and cleaner data usually beats a fancier algorithm.",
+      "further_reading": [
+        { "label": "Awesome Machine Learning — Books", "external_link_id": "link-005", "url": "https://github.com/josephmisiti/awesome-machine-learning/blob/master/books.md" }
+      ]
+    },
+    {
+      "id": "note-004",
+      "content_type": "notes",
+      "title": "How to Study Computer Science Fundamentals",
+      "domain": "dsa",
+      "tags": ["computer-science", "dsa", "study-plan", "self-study"],
+      "author": "Code Quest Team",
+      "source_type": "manual",
+      "license_type": "internal",
+      "review_status": "approved",
+      "difficulty_level": "beginner",
+      "reading_time_mins": 9,
+      "content_body": "# How to Study Computer Science Fundamentals\n\nA self-taught CS path works best when you cover a few pillars in a sensible order.\n\n## A sensible order\n1. **Programming basics** — one language well (variables, loops, functions, data types).\n2. **Data structures** — arrays, linked lists, stacks, queues, hash maps, trees, graphs. Know *when* each is the right tool, not just how it works.\n3. **Algorithms** — searching, sorting, recursion, then Big-O so you can reason about cost.\n4. **Systems** — how memory, the OS, and networks actually run your code.\n5. **Theory + math** — discrete math and a little theory to tie it together.\n\n## Big-O in one line\nIt describes how work grows as input grows. `O(1)` is constant, `O(n)` scales linearly, `O(n^2)` is a nested loop, `O(log n)` halves the problem each step (binary search).\n\n## How to actually learn it\n- Build, don't just watch. Implement each data structure once from scratch.\n- Solve a few problems per topic instead of grinding hundreds blindly.\n- Space it out over weeks; fundamentals stick with repetition, not cramming.\n\n> A structured curriculum removes the \"what next?\" decision fatigue — pick one and follow it.",
+      "further_reading": [
+        { "label": "OSSU Computer Science curriculum", "external_link_id": "link-006", "url": "https://github.com/ossu/computer-science" },
+        { "label": "Awesome Courses", "external_link_id": "link-008", "url": "https://github.com/prakhar1989/awesome-courses" },
+        { "label": "Free Programming Books", "external_link_id": "link-001", "url": "https://github.com/EbookFoundation/free-programming-books" }
+      ]
+    }
+  ]
+}

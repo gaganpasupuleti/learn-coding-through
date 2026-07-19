@@ -1,0 +1,137 @@
+{
+  "id": "project-e-commerce-order-microservice",
+  "title": "Project Report: E-Commerce Order Microservice — Java Backend Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "java-backend",
+  "family_name": "Java Backend Developer",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "E-Commerce Order Microservice",
+  "project_index": 2,
+  "duration": "4–5 weeks",
+  "summary": "Order service with inventory checks, JWT auth, Redis cache, and Kafka event publishing.",
+  "objectives": [
+    "Implement JWT authentication",
+    "Publish OrderCreated events to Kafka",
+    "Add Redis caching for product catalog",
+    "Integration tests with Testcontainers"
+  ],
+  "tools": [
+    "Spring Boot 3",
+    "Kafka",
+    "Redis",
+    "PostgreSQL"
+  ],
+  "deliverables": [
+    "Architecture diagram",
+    "Running microservice",
+    "Grafana dashboard",
+    "Postman collection"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**E-Commerce Order Microservice** is a intermediate-level end-to-end project for Java Backend Developer. Duration: 4–5 weeks. Order service with inventory checks, JWT auth, Redis cache, and Kafka event publishing. Tools: Spring Boot 3, Kafka, Redis, PostgreSQL.\n\nCode Reference:\n```text\nObjective: Implement JWT authentication\nObjective: Publish OrderCreated events to Kafka\nObjective: Add Redis caching for product catalog\nObjective: Integration tests with Testcontainers\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nJava Backend Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Java Backend Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Java Backend Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Java Backend Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Java Backend Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Domain",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Domain** *(Level: Intermediate)*\n\nOrder and OrderItem entities with state machine. Complete these tasks: Order statuses; Inventory client. Deliverable for this phase: Domain model docs.\n\nCode Reference:\n```text\n- [ ] Order statuses\n- [ ] Inventory client\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Domain is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Domain model docs to the teacher.",
+      "key_takeaways": [
+        "Phase Domain is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Domain model docs to the teacher."
+      ],
+      "what_it_is": "Phase Domain is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Domain model docs to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Security",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Security** *(Level: Intermediate)*\n\nOAuth2 resource server. Complete these tasks: JWT validation; Role-based endpoints. Deliverable for this phase: Secured API.\n\nCode Reference:\n```text\n- [ ] JWT validation\n- [ ] Role-based endpoints\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Security is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Secured API to the teacher.",
+      "key_takeaways": [
+        "Phase Security is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Secured API to the teacher."
+      ],
+      "what_it_is": "Phase Security is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Secured API to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Events",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Events** *(Level: Intermediate)*\n\nKafka producer/consumer. Complete these tasks: OrderCreated topic; Inventory listener. Deliverable for this phase: Event flow diagram.\n\nCode Reference:\n```text\n- [ ] OrderCreated topic\n- [ ] Inventory listener\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Events is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Event flow diagram to the teacher.",
+      "key_takeaways": [
+        "Phase Events is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Event flow diagram to the teacher."
+      ],
+      "what_it_is": "Phase Events is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Event flow diagram to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Observability",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Observability** *(Level: Intermediate)*\n\nMetrics and structured logging. Complete these tasks: Micrometer; JSON logs. Deliverable for this phase: Grafana dashboard screenshot.\n\nCode Reference:\n```text\n- [ ] Micrometer\n- [ ] JSON logs\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Observability is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nJava Backend Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Grafana dashboard screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase Observability is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Grafana dashboard screenshot to the teacher."
+      ],
+      "what_it_is": "Phase Observability is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Java Backend Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Grafana dashboard screenshot to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: Architecture diagram; Running microservice; Grafana dashboard; Postman collection. Skills demonstrated: Microservices, Kafka, Security, Caching. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Architecture diagram\nDeliverable: Running microservice\nDeliverable: Grafana dashboard\nDeliverable: Postman collection\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Architecture diagram and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Architecture diagram and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Architecture diagram and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

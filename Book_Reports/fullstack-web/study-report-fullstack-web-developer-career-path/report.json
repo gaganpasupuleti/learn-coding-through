@@ -1,0 +1,607 @@
+{
+  "id": "study-report-fullstack-web-developer-career-path",
+  "title": "Study Report: Full Stack Web Developer — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "fullstack-web",
+  "family_name": "Full Stack Web Developer",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "End-to-end web development spanning HTML/CSS/JavaScript, React frontends, Node.js/Express APIs, PostgreSQL persistence, authentication, and cloud deployment. Builds complete products from database schema to deployed SPA with secure auth and CI pipelines.",
+  "skill_stack": {
+    "beginner": [
+      "HTML5 structure and CSS responsive layouts",
+      "JavaScript DOM manipulation and fetch API",
+      "Git branching and pull request workflow",
+      "Node.js basics and npm scripts",
+      "Express routing and middleware",
+      "PostgreSQL tables, SELECT, INSERT, JOIN",
+      "Environment variables and .env patterns"
+    ],
+    "intermediate": [
+      "React SPA with component architecture",
+      "REST API design and status code semantics",
+      "SQL migrations and ORM/query builders (Prisma/Drizzle)",
+      "Session and JWT authentication flows",
+      "CORS, cookies, and secure HTTP headers",
+      "Input validation on client and server",
+      "Docker Compose full-stack local dev",
+      "Basic AWS/Vercel/Railway deployment"
+    ],
+    "advanced": [
+      "OAuth social login integration",
+      "WebSockets or SSE for real-time features",
+      "Caching with Redis",
+      "File uploads to S3-compatible storage",
+      "Rate limiting and API security hardening",
+      "Monorepo tooling (Turborepo)",
+      "Production monitoring and error tracking (Sentry)"
+    ]
+  },
+  "sources": [
+    "https://developer.mozilla.org/en-US/docs/Web",
+    "https://react.dev/",
+    "https://expressjs.com/",
+    "https://www.postgresql.org/docs/",
+    "https://nodejs.org/docs/latest/api/",
+    "https://jwt.io/introduction"
+  ],
+  "recommended_books": [
+    {
+      "title": "Eloquent JavaScript",
+      "author": "Marijn Haverbeke",
+      "level": "Beginner",
+      "focus": "JavaScript, DOM, Node.js — free interactive online book.",
+      "url": "https://eloquentjavascript.net/",
+      "free_online": true
+    },
+    {
+      "title": "Full Stack React and TypeScript",
+      "author": "Ryan Lanciaux",
+      "level": "Intermediate",
+      "focus": "React frontend with TypeScript and API integration patterns.",
+      "url": "https://www.newline.co/fullstack-react-typescript",
+      "free_online": false
+    },
+    {
+      "title": "Node.js Design Patterns",
+      "author": "Mario Casciaro & Luciano Mammino",
+      "level": "Intermediate",
+      "focus": "Express APIs, middleware, streams, and scalable Node architecture.",
+      "url": "https://www.nodejsdesignpatterns.com/",
+      "free_online": false
+    },
+    {
+      "title": "PostgreSQL: Up and Running",
+      "author": "Regina Obe & Leo Hsu",
+      "level": "Intermediate",
+      "focus": "Relational schema design, queries, and indexes for web apps.",
+      "url": "https://www.oreilly.com/library/view/postgresql-up-and/9781449324599/",
+      "free_online": false
+    },
+    {
+      "title": "The Pragmatic Programmer",
+      "author": "David Thomas & Andrew Hunt",
+      "level": "Advanced",
+      "focus": "Professional habits: DRY, testing, automation, and craft.",
+      "url": "https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/",
+      "free_online": false
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Todo App Full Stack",
+      "level": "Beginner",
+      "duration": "2 weeks",
+      "overview": "React frontend + Express API + SQLite: create, complete, delete todos with persistence.",
+      "objectives": [
+        "REST API for todos",
+        "React UI with forms",
+        "SQLite persistence",
+        "Basic error handling"
+      ],
+      "phases": [
+        {
+          "name": "API",
+          "description": "Express CRUD routes.",
+          "tasks": [
+            "SQLite schema",
+            "Validation"
+          ],
+          "deliverable": "API tested with curl"
+        },
+        {
+          "name": "UI",
+          "description": "React todo list.",
+          "tasks": [
+            "Add/complete/delete",
+            "Optimistic UI"
+          ],
+          "deliverable": "Working frontend"
+        },
+        {
+          "name": "Connect",
+          "description": "fetch from React.",
+          "tasks": [
+            "CORS setup",
+            "Loading states"
+          ],
+          "deliverable": "Full stack running"
+        },
+        {
+          "name": "Deploy",
+          "description": "Frontend + API deploy.",
+          "tasks": [
+            "Vercel + Render",
+            "Env vars"
+          ],
+          "deliverable": "Live URLs"
+        }
+      ],
+      "skills_applied": [
+        "React",
+        "Express",
+        "SQL"
+      ],
+      "tools": [
+        "React",
+        "Node.js",
+        "Express",
+        "SQLite"
+      ],
+      "deliverables": [
+        "GitHub monorepo",
+        "Live frontend",
+        "Live API"
+      ]
+    },
+    {
+      "title": "CodeQuest Teacher Review Platform",
+      "level": "Intermediate",
+      "duration": "4–5 weeks",
+      "overview": "Teachers log in, browse reports by family, mark rubric scores, download PDF — full auth stack.",
+      "objectives": [
+        "JWT auth with bcrypt passwords",
+        "Role-based access (teacher/student)",
+        "Report listing from catalog.json",
+        "Marking form with rubric fields"
+      ],
+      "phases": [
+        {
+          "name": "Auth",
+          "description": "Register/login API.",
+          "tasks": [
+            "bcrypt hash",
+            "JWT middleware"
+          ],
+          "deliverable": "Auth Postman tests"
+        },
+        {
+          "name": "Reports",
+          "description": "Catalog API + UI.",
+          "tasks": [
+            "Filter by family",
+            "PDF download link"
+          ],
+          "deliverable": "Reports browse page"
+        },
+        {
+          "name": "Marking",
+          "description": "Rubric submission.",
+          "tasks": [
+            "Score fields",
+            "Comments"
+          ],
+          "deliverable": "Marking workflow demo"
+        },
+        {
+          "name": "Deploy",
+          "description": "Full stack deploy.",
+          "tasks": [
+            "PostgreSQL on Supabase",
+            "CI pipeline"
+          ],
+          "deliverable": "Production URL"
+        }
+      ],
+      "skills_applied": [
+        "Full stack",
+        "Auth",
+        "CRUD"
+      ],
+      "tools": [
+        "React",
+        "Express",
+        "PostgreSQL",
+        "JWT"
+      ],
+      "deliverables": [
+        "Production app",
+        "API docs",
+        "User guide",
+        "Demo video"
+      ]
+    },
+    {
+      "title": "SaaS Subscription Platform",
+      "level": "Advanced",
+      "duration": "6–8 weeks",
+      "overview": "Multi-tenant SaaS with Stripe billing, team invites, admin panel, and observability.",
+      "objectives": [
+        "Stripe subscription checkout",
+        "Multi-tenant data isolation",
+        "Team invite flow",
+        "Admin analytics panel"
+      ],
+      "phases": [
+        {
+          "name": "Billing",
+          "description": "Stripe integration.",
+          "tasks": [
+            "Checkout session",
+            "Webhooks"
+          ],
+          "deliverable": "Test subscription flow"
+        },
+        {
+          "name": "Tenants",
+          "description": "Org-scoped data.",
+          "tasks": [
+            "Middleware tenant ID",
+            "Row isolation"
+          ],
+          "deliverable": "Multi-tenant tests"
+        },
+        {
+          "name": "Teams",
+          "description": "Invite and roles.",
+          "tasks": [
+            "Email invite",
+            "RBAC"
+          ],
+          "deliverable": "Team management UI"
+        },
+        {
+          "name": "Ops",
+          "description": "Logging and monitoring.",
+          "tasks": [
+            "Structured logs",
+            "Health checks"
+          ],
+          "deliverable": "Ops runbook"
+        }
+      ],
+      "skills_applied": [
+        "SaaS",
+        "Billing",
+        "Multi-tenant"
+      ],
+      "tools": [
+        "React",
+        "Node.js",
+        "Stripe",
+        "PostgreSQL"
+      ],
+      "deliverables": [
+        "Live SaaS app",
+        "Stripe test receipts",
+        "Ops runbook",
+        "Architecture diagram"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Full Stack Developer Role Map",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Full Stack Developer Role Map** *(Level: Beginner)*\n\nFull stack developers own features from database to UI, coordinating across layers. You understand how HTTP requests flow from browser to server to database and back as JSON. Breadth is your strength—depth grows in frontend or backend specialization over time. Modern stacks pair React SPAs with Node APIs and PostgreSQL for relational data.\n\nCode Reference:\n```javascript\n// Client\nconst res = await fetch('/api/tasks');\nconst tasks = await res.json();\n\n// Server (Express)\napp.get('/api/tasks', async (req, res) => {\n  const { rows } = await pool.query('SELECT * FROM tasks ORDER BY id');\n  res.json(rows);\n});\n```\nWhat it shows: fetch calls same-origin API; Express queries Postgres and returns JSON array.\n\n### What it actually is\nFull stack development spans client, server, database, and deployment layers.\n\n### When to use it\nChoose when you want ownership of entire features and rapid prototyping ability.\n\n### Where to use it\nStartups, agencies, indie products, and small product teams.\n\n### Real use example\nSolo founder ships MVP in weeks because one person wires UI, API, and DB together.",
+      "key_takeaways": [
+        "Full stack development spans client, server, database, and deployment layers.",
+        "Choose when you want ownership of entire features and rapid prototyping ability.",
+        "Solo founder ships MVP in weeks because one person wires UI, API, and DB together."
+      ],
+      "what_it_is": "Full stack development spans client, server, database, and deployment layers.",
+      "when_to_use": "Choose when you want ownership of entire features and rapid prototyping ability.",
+      "where_to_use": "Startups, agencies, indie products, and small product teams.",
+      "real_use_example": "Solo founder ships MVP in weeks because one person wires UI, API, and DB together."
+    },
+    {
+      "number": 2,
+      "title": "HTML/CSS/JS Browser Foundations",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: HTML/CSS/JS Browser Foundations** *(Level: Beginner)*\n\nThe browser parses HTML into DOM tree, applies CSS cascade, and executes JavaScript. Document Object Model APIs let scripts read and mutate page content dynamically. Event delegation handles clicks efficiently on lists rendered from data. fetch replaces legacy XMLHttpRequest for HTTP from the browser.\n\nCode Reference:\n```javascript\ndocument.querySelector('#add-btn').addEventListener('click', async () => {\n  const title = document.querySelector('#title').value;\n  await fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title }) });\n  loadTasks();\n});\n```\nWhat it shows: Click handler reads input, POSTs JSON, then reloads task list.\n\n### What it actually is\nBrowser APIs connect user interactions to backend services via HTTP.\n\n### When to use it\nMaster before adopting React—concepts transfer directly to component event handlers.\n\n### Where to use it\nLegacy pages, lightweight widgets, and understanding framework abstractions.\n\n### Real use example\nTodo widget on marketing site POSTs new items without full SPA framework.",
+      "key_takeaways": [
+        "Browser APIs connect user interactions to backend services via HTTP.",
+        "Master before adopting React—concepts transfer directly to component event handlers.",
+        "Todo widget on marketing site POSTs new items without full SPA framework."
+      ],
+      "what_it_is": "Browser APIs connect user interactions to backend services via HTTP.",
+      "when_to_use": "Master before adopting React—concepts transfer directly to component event handlers.",
+      "where_to_use": "Legacy pages, lightweight widgets, and understanding framework abstractions.",
+      "real_use_example": "Todo widget on marketing site POSTs new items without full SPA framework."
+    },
+    {
+      "number": 3,
+      "title": "Node.js and Express Server Basics",
+      "topic": "web",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Node.js and Express Server Basics** *(Level: Beginner)*\n\nNode.js runs JavaScript on the server with non-blocking I/O event loop. Express adds routing and middleware chain for HTTP request processing. Middleware parses JSON bodies, logs requests, and handles errors uniformly. Organize routes in modules as API surface grows.\n\nCode Reference:\n```javascript\nconst express = require('express');\nconst app = express();\napp.use(express.json());\napp.get('/api/health', (req, res) => res.json({ status: 'ok' }));\napp.listen(3000);\n```\nWhat it shows: express.json() parses POST bodies; health route confirms server running.\n\n### What it actually is\nExpress is the minimal web framework for Node.js REST APIs.\n\n### When to use it\nUse for JSON APIs serving React SPAs and mobile clients.\n\n### Where to use it\nCRUD backends, webhooks, and server-rendered hybrids.\n\n### Real use example\nMobile app consumes Express JSON API hosted on same domain with reverse proxy.",
+      "key_takeaways": [
+        "Express is the minimal web framework for Node.",
+        "Use for JSON APIs serving React SPAs and mobile clients.",
+        "Mobile app consumes Express JSON API hosted on same domain with reverse proxy."
+      ],
+      "what_it_is": "Express is the minimal web framework for Node.js REST APIs.",
+      "when_to_use": "Use for JSON APIs serving React SPAs and mobile clients.",
+      "where_to_use": "CRUD backends, webhooks, and server-rendered hybrids.",
+      "real_use_example": "Mobile app consumes Express JSON API hosted on same domain with reverse proxy."
+    },
+    {
+      "number": 4,
+      "title": "PostgreSQL Fundamentals for Web Apps",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: PostgreSQL Fundamentals for Web Apps** *(Level: Beginner)*\n\nPostgreSQL stores relational data with ACID transactions and rich SQL features. Primary keys identify rows; foreign keys enforce referential integrity between tables. JOIN combines related tables—users with their posts in one query. Indexes speed lookups but slow writes—add for frequent WHERE columns.\n\nCode Reference:\n```sql\nCREATE TABLE users (\n  id SERIAL PRIMARY KEY,\n  email VARCHAR(255) UNIQUE NOT NULL,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nSELECT u.email, p.title FROM users u JOIN posts p ON p.user_id = u.id;\n```\nWhat it shows: SERIAL auto-increments id; JOIN links posts to owners by foreign key.\n\n### What it actually is\nPostgreSQL is the default relational database for modern web applications.\n\n### When to use it\nUse when data has relationships, transactions, or complex queries.\n\n### Where to use it\nUser accounts, orders, content management, and analytics warehouses.\n\n### Real use example\nDashboard query JOINs orders and customers for revenue-by-segment report.",
+      "key_takeaways": [
+        "PostgreSQL is the default relational database for modern web applications.",
+        "Use when data has relationships, transactions, or complex queries.",
+        "Dashboard query JOINs orders and customers for revenue-by-segment report."
+      ],
+      "what_it_is": "PostgreSQL is the default relational database for modern web applications.",
+      "when_to_use": "Use when data has relationships, transactions, or complex queries.",
+      "where_to_use": "User accounts, orders, content management, and analytics warehouses.",
+      "real_use_example": "Dashboard query JOINs orders and customers for revenue-by-segment report."
+    },
+    {
+      "number": 5,
+      "title": "Connecting Express to PostgreSQL",
+      "topic": "web",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Connecting Express to PostgreSQL** *(Level: Beginner)*\n\nnode-postgres (pg) Pool reuses connections efficiently under concurrent requests. Parameterized queries ($1, $2) prevent SQL injection—never interpolate user strings. Transactions wrap multiple statements in atomic commit or rollback. Handle pool errors and close gracefully on SIGTERM during deploys.\n\nCode Reference:\n```javascript\nconst { rows } = await pool.query(\n  'INSERT INTO tasks (title) VALUES ($1) RETURNING *',\n  [req.body.title]\n);\nres.status(201).json(rows[0]);\n```\nWhat it shows: $1 placeholder binds title safely; RETURNING sends created row to client.\n\n### What it actually is\nDatabase pools bridge Express handlers and PostgreSQL with safe parameterized SQL.\n\n### When to use it\nWire up on every Express project using raw SQL or ORM underneath.\n\n### Where to use it\nAPI routes persisting user-generated content.\n\n### Real use example\nCreate task endpoint inserts row and returns 201 with new id in milliseconds.",
+      "key_takeaways": [
+        "Database pools bridge Express handlers and PostgreSQL with safe parameterized SQL.",
+        "Wire up on every Express project using raw SQL or ORM underneath.",
+        "Create task endpoint inserts row and returns 201 with new id in milliseconds."
+      ],
+      "what_it_is": "Database pools bridge Express handlers and PostgreSQL with safe parameterized SQL.",
+      "when_to_use": "Wire up on every Express project using raw SQL or ORM underneath.",
+      "where_to_use": "API routes persisting user-generated content.",
+      "real_use_example": "Create task endpoint inserts row and returns 201 with new id in milliseconds."
+    },
+    {
+      "number": 6,
+      "title": "Git Workflow and Project Structure",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Git Workflow and Project Structure** *(Level: Beginner)*\n\nFeature branches isolate work; pull requests enable review before merging to main. Monorepos place client/ and server/ in one repository with shared tooling. Separate repos suit teams with independent release cycles. Consistent README, .env.example, and scripts (dev, test, build) onboard teammates fast.\n\nCode Reference:\n```json\n# package.json scripts\n\"scripts\": {\n  \"dev\": \"concurrently \\\"npm run dev:server\\\" \\\"npm run dev:client\\\"\",\n  \"dev:server\": \"nodemon server/index.js\",\n  \"dev:client\": \"vite\"\n}\n```\nWhat it shows: concurrently runs API and Vite dev servers with one npm run dev command.\n\n### What it actually is\nStructured repos and Git workflows enable team collaboration on full stack apps.\n\n### When to use it\nEstablish conventions before second contributor joins.\n\n### Where to use it\nEvery professional web project and open-source full stack template.\n\n### Real use example\nNew contributor clones repo, copies .env.example, runs npm dev successfully.",
+      "key_takeaways": [
+        "Structured repos and Git workflows enable team collaboration on full stack apps.",
+        "Establish conventions before second contributor joins.",
+        "New contributor clones repo, copies ."
+      ],
+      "what_it_is": "Structured repos and Git workflows enable team collaboration on full stack apps.",
+      "when_to_use": "Establish conventions before second contributor joins.",
+      "where_to_use": "Every professional web project and open-source full stack template.",
+      "real_use_example": "New contributor clones repo, copies .env.example, runs npm dev successfully."
+    },
+    {
+      "number": 7,
+      "title": "React SPA Consumption of REST APIs",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: React SPA Consumption of REST APIs** *(Level: Intermediate)*\n\nSPAs fetch JSON after initial HTML shell loads; routing happens client-side. Centralize API calls in services/hooks with base URL from environment. Handle 401 globally—redirect to login when token expires mid-session. Optimistic UI updates feel fast; rollback on server rejection.\n\nCode Reference:\n```javascript\nasync function createTask(title) {\n  const res = await fetch(`${API_URL}/tasks`, {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },\n    body: JSON.stringify({ title }),\n  });\n  if (!res.ok) throw new ApiError(res.status, await res.text());\n  return res.json();\n}\n```\nWhat it shows: Authorization header sends JWT; ApiError preserves status for UI handling.\n\n### What it actually is\nClient API layer abstracts HTTP details from React components.\n\n### When to use it\nBuild once and reuse across components and React Query hooks.\n\n### Where to use it\nDashboards, forms, and infinite scroll lists backed by Express.\n\n### Real use example\nTask list optimistically adds card then rolls back if server returns 409 duplicate.",
+      "key_takeaways": [
+        "Client API layer abstracts HTTP details from React components.",
+        "Build once and reuse across components and React Query hooks.",
+        "Task list optimistically adds card then rolls back if server returns 409 duplicate."
+      ],
+      "what_it_is": "Client API layer abstracts HTTP details from React components.",
+      "when_to_use": "Build once and reuse across components and React Query hooks.",
+      "where_to_use": "Dashboards, forms, and infinite scroll lists backed by Express.",
+      "real_use_example": "Task list optimistically adds card then rolls back if server returns 409 duplicate."
+    },
+    {
+      "number": 8,
+      "title": "Authentication with JWT and Cookies",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Authentication with JWT and Cookies** *(Level: Intermediate)*\n\nRegister stores bcrypt hash; login verifies and returns short-lived access JWT. HttpOnly cookies store refresh tokens safe from XSS JavaScript access. SameSite=Lax or Strict mitigates CSRF on cookie-based auth. Server middleware verifies JWT on protected routes before business logic.\n\nCode Reference:\n```javascript\nfunction authMiddleware(req, res, next) {\n  const header = req.headers.authorization || '';\n  const token = header.startsWith('Bearer ') ? header.slice(7) : null;\n  if (!token) return res.status(401).json({ error: 'Unauthorized' });\n  try { req.user = jwt.verify(token, process.env.JWT_SECRET); next(); }\n  catch { res.status(401).json({ error: 'Invalid token' }); }\n}\n```\nWhat it shows: Middleware extracts bearer token, verifies signature, attaches user payload.\n\n### What it actually is\nJWT auth enables stateless API authentication for SPAs.\n\n### When to use it\nImplement on any app with user accounts and protected resources.\n\n### Where to use it\nSaaS apps, social platforms, and admin tools.\n\n### Real use example\nExpired access token triggers silent refresh via HttpOnly cookie endpoint.",
+      "key_takeaways": [
+        "JWT auth enables stateless API authentication for SPAs.",
+        "Implement on any app with user accounts and protected resources.",
+        "Expired access token triggers silent refresh via HttpOnly cookie endpoint."
+      ],
+      "what_it_is": "JWT auth enables stateless API authentication for SPAs.",
+      "when_to_use": "Implement on any app with user accounts and protected resources.",
+      "where_to_use": "SaaS apps, social platforms, and admin tools.",
+      "real_use_example": "Expired access token triggers silent refresh via HttpOnly cookie endpoint."
+    },
+    {
+      "number": 9,
+      "title": "Schema Migrations with Prisma or SQL",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Schema Migrations with Prisma or SQL** *(Level: Intermediate)*\n\nMigrations version database schema alongside application code in Git. Prisma schema defines models generating type-safe client and migration SQL. Never edit production DB manually—always apply tested migration files. Rollback strategy: write reversible migrations or restore from backup.\n\nCode Reference:\n```sql\n-- migration: 20260301_add_posts.sql\nCREATE TABLE posts (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n  body TEXT NOT NULL\n);\n```\nWhat it shows: UUID primary key; ON DELETE CASCADE removes posts when user deleted.\n\n### What it actually is\nMigrations evolve database schema predictably across environments.\n\n### When to use it\nAdopt before team collaboration or production deployment.\n\n### Where to use it\nEvery serious PostgreSQL-backed web application.\n\n### Real use example\nDeploy pipeline runs prisma migrate deploy before starting new server version.",
+      "key_takeaways": [
+        "Migrations evolve database schema predictably across environments.",
+        "Adopt before team collaboration or production deployment.",
+        "Deploy pipeline runs prisma migrate deploy before starting new server version."
+      ],
+      "what_it_is": "Migrations evolve database schema predictably across environments.",
+      "when_to_use": "Adopt before team collaboration or production deployment.",
+      "where_to_use": "Every serious PostgreSQL-backed web application.",
+      "real_use_example": "Deploy pipeline runs prisma migrate deploy before starting new server version."
+    },
+    {
+      "number": 10,
+      "title": "CORS, Security Headers, and Validation",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: CORS, Security Headers, and Validation** *(Level: Intermediate)*\n\nCORS headers allow browser on localhost:5173 to call API on localhost:3000 during dev. Helmet sets secure defaults: X-Content-Type-Options, frameguard, HSTS in production. Validate req.body with Zod on server—never trust client validation alone. Rate limit auth endpoints to slow credential stuffing attacks.\n\nCode Reference:\n```javascript\napp.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));\napp.use(helmet());\napp.use('/api/', rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));\n```\nWhat it shows: cors whitelists frontend origin; rateLimit caps requests per IP per window.\n\n### What it actually is\nHTTP security layers protect APIs consumed by browser-based clients.\n\n### When to use it\nConfigure before exposing any API to the public internet.\n\n### Where to use it\nProduction SPAs, OAuth callbacks, and cookie-based sessions.\n\n### Real use example\nPen test finds no open CORS * because only production domain is whitelisted.",
+      "key_takeaways": [
+        "HTTP security layers protect APIs consumed by browser-based clients.",
+        "Configure before exposing any API to the public internet.",
+        "Pen test finds no open CORS * because only production domain is whitelisted."
+      ],
+      "what_it_is": "HTTP security layers protect APIs consumed by browser-based clients.",
+      "when_to_use": "Configure before exposing any API to the public internet.",
+      "where_to_use": "Production SPAs, OAuth callbacks, and cookie-based sessions.",
+      "real_use_example": "Pen test finds no open CORS * because only production domain is whitelisted."
+    },
+    {
+      "number": 11,
+      "title": "Docker Compose Full Stack Dev",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Docker Compose Full Stack Dev** *(Level: Intermediate)*\n\nCompose defines api, db, and optional redis services in one YAML file. Named volumes persist Postgres data across container restarts. Development mounts source code for hot reload inside containers. Healthcheck on db prevents API starting before Postgres accepts connections.\n\nCode Reference:\n```yaml\nservices:\n  db:\n    image: postgres:16\n    environment:\n      POSTGRES_PASSWORD: dev\n  api:\n    build: ./server\n    depends_on:\n      db:\n        condition: service_healthy\n```\nWhat it shows: depends_on with health condition orders startup correctly.\n\n### What it actually is\nDocker Compose reproduces multi-service stacks on any developer machine.\n\n### When to use it\nUse when stack has database plus one or more app services.\n\n### Where to use it\nLocal dev parity, onboarding, and integration test environments.\n\n### Real use example\nQA spins identical stack to reproduce bug found in staging.",
+      "key_takeaways": [
+        "Docker Compose reproduces multi-service stacks on any developer machine.",
+        "Use when stack has database plus one or more app services.",
+        "QA spins identical stack to reproduce bug found in staging."
+      ],
+      "what_it_is": "Docker Compose reproduces multi-service stacks on any developer machine.",
+      "when_to_use": "Use when stack has database plus one or more app services.",
+      "where_to_use": "Local dev parity, onboarding, and integration test environments.",
+      "real_use_example": "QA spins identical stack to reproduce bug found in staging."
+    },
+    {
+      "number": 12,
+      "title": "Deployment to Cloud Platforms",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Deployment to Cloud Platforms** *(Level: Intermediate)*\n\nStatic frontend deploys to CDN (Vercel, Netlify, S3+CloudFront). Node API deploys to Render, Railway, Fly.io, or container orchestrators. Environment secrets configure DATABASE_URL and JWT_SECRET per environment. Run migrations as release step before traffic shifts to new version.\n\nCode Reference:\n```bash\nrailway up  # or: fly deploy\n# Ensure DATABASE_URL and NODE_ENV=production set in dashboard\n```\nWhat it shows: CLI deploy pushes container; env vars injected by platform secret store.\n\n### What it actually is\nCloud deployment makes full stack apps accessible to users worldwide.\n\n### When to use it\nDeploy early—even MVP—to validate infra assumptions.\n\n### Where to use it\nSide projects, client deliverables, and startup MVPs.\n\n### Real use example\nFounder shares beta URL Friday after CI deploys main branch automatically.",
+      "key_takeaways": [
+        "Cloud deployment makes full stack apps accessible to users worldwide.",
+        "Deploy early—even MVP—to validate infra assumptions.",
+        "Founder shares beta URL Friday after CI deploys main branch automatically."
+      ],
+      "what_it_is": "Cloud deployment makes full stack apps accessible to users worldwide.",
+      "when_to_use": "Deploy early—even MVP—to validate infra assumptions.",
+      "where_to_use": "Side projects, client deliverables, and startup MVPs.",
+      "real_use_example": "Founder shares beta URL Friday after CI deploys main branch automatically."
+    },
+    {
+      "number": 13,
+      "title": "Error Handling and API Contracts",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Error Handling and API Contracts** *(Level: Intermediate)*\n\nConsistent error JSON { error: { code, message, details } } helps clients handle failures. Map domain errors to 400/404/409/422; unexpected errors log server-side and return 500 without stack traces. OpenAPI or typed shared packages document contracts between client and server. Version breaking API changes to avoid breaking deployed SPAs.\n\nCode Reference:\n```javascript\napp.use((err, req, res, next) => {\n  console.error(err);\n  res.status(err.status || 500).json({ error: { code: err.code || 'INTERNAL', message: err.publicMessage || 'Server error' } });\n});\n```\nWhat it shows: Central handler hides internal details while logging full error server-side.\n\n### What it actually is\nConsistent API contracts reduce integration bugs between frontend and backend.\n\n### When to use it\nDefine before parallel client/server development on larger features.\n\n### Where to use it\nMulti-client APIs, mobile plus web, and third-party integrators.\n\n### Real use example\nFrontend switches on error.code === 'EMAIL_TAKEN' to show field-specific message.",
+      "key_takeaways": [
+        "Consistent API contracts reduce integration bugs between frontend and backend.",
+        "Define before parallel client/server development on larger features.",
+        "Frontend switches on error."
+      ],
+      "what_it_is": "Consistent API contracts reduce integration bugs between frontend and backend.",
+      "when_to_use": "Define before parallel client/server development on larger features.",
+      "where_to_use": "Multi-client APIs, mobile plus web, and third-party integrators.",
+      "real_use_example": "Frontend switches on error.code === 'EMAIL_TAKEN' to show field-specific message."
+    },
+    {
+      "number": 14,
+      "title": "OAuth Social Login Integration",
+      "topic": "web",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: OAuth Social Login Integration** *(Level: Advanced)*\n\nOAuth2 authorization code flow redirects user to Google/GitHub then returns code to callback URL. Server exchanges code for tokens and creates or links local user record. Store provider subject id; never use access token as session indefinitely. PKCE protects public clients (SPAs) without client secret exposure.\n\nCode Reference:\n```javascript\napp.get('/auth/google/callback', async (req, res) => {\n  const tokens = await exchangeCode(req.query.code);\n  const profile = await fetchGoogleProfile(tokens.access_token);\n  const user = await upsertUserFromOAuth('google', profile);\n  res.redirect(`${CLIENT_URL}/auth/success?token=${signJwt(user)}`);\n});\n```\nWhat it shows: Callback exchanges code server-side; JWT issued for SPA after OAuth completes.\n\n### What it actually is\nOAuth delegates authentication to trusted identity providers users already have.\n\n### When to use it\nOffer alongside email/password on consumer-facing signup flows.\n\n### Where to use it\nB2C SaaS, community platforms, and developer tools.\n\n### Real use example\nUser signs up with GitHub in two clicks; avatar and email pre-filled.",
+      "key_takeaways": [
+        "OAuth delegates authentication to trusted identity providers users already have.",
+        "Offer alongside email/password on consumer-facing signup flows.",
+        "User signs up with GitHub in two clicks; avatar and email pre-filled."
+      ],
+      "what_it_is": "OAuth delegates authentication to trusted identity providers users already have.",
+      "when_to_use": "Offer alongside email/password on consumer-facing signup flows.",
+      "where_to_use": "B2C SaaS, community platforms, and developer tools.",
+      "real_use_example": "User signs up with GitHub in two clicks; avatar and email pre-filled."
+    },
+    {
+      "number": 15,
+      "title": "Real-Time Features with WebSockets",
+      "topic": "web",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Real-Time Features with WebSockets** *(Level: Advanced)*\n\nWebSockets maintain persistent bidirectional connection after HTTP upgrade handshake. ws library on Node broadcasts events to subscribed clients in same room. Heartbeats detect dead connections; clients reconnect with exponential backoff. Authorize socket connections with same JWT verified on HTTP middleware.\n\nCode Reference:\n```javascript\nwss.on('connection', (socket, req) => {\n  const user = verifyTokenFromQuery(req);\n  if (!user) return socket.close(4401, 'Unauthorized');\n  socket.on('message', (data) => broadcastToRoom(user.orgId, data));\n});\n```\nWhat it shows: Token verified at connection; messages scoped to user's organization room.\n\n### What it actually is\nWebSockets push server updates instantly without client polling overhead.\n\n### When to use it\nUse for chat, live notifications, collaborative editing, and live dashboards.\n\n### Where to use it\nSupport chat, order tracking, and multiplayer features.\n\n### Real use example\nSupport agent sees customer typing indicator via WebSocket event.",
+      "key_takeaways": [
+        "WebSockets push server updates instantly without client polling overhead.",
+        "Use for chat, live notifications, collaborative editing, and live dashboards.",
+        "Support agent sees customer typing indicator via WebSocket event."
+      ],
+      "what_it_is": "WebSockets push server updates instantly without client polling overhead.",
+      "when_to_use": "Use for chat, live notifications, collaborative editing, and live dashboards.",
+      "where_to_use": "Support chat, order tracking, and multiplayer features.",
+      "real_use_example": "Support agent sees customer typing indicator via WebSocket event."
+    },
+    {
+      "number": 16,
+      "title": "Redis Caching and Session Store",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Redis Caching and Session Store** *(Level: Advanced)*\n\nRedis in-memory store caches expensive query results with TTL expiration. Cache-aside pattern: read Redis first, on miss query Postgres and populate cache. Invalidate cache keys on writes affecting aggregated data. Redis also stores session data when horizontal scaling Node instances.\n\nCode Reference:\n```javascript\nconst cached = await redis.get(`dashboard:${orgId}`);\nif (cached) return JSON.parse(cached);\nconst data = await computeDashboard(orgId);\nawait redis.setex(`dashboard:${orgId}`, 300, JSON.stringify(data));\nreturn data;\n```\nWhat it shows: Five-minute TTL balances freshness vs DB load for dashboard aggregates.\n\n### What it actually is\nRedis reduces database load and enables shared session state across servers.\n\n### When to use it\nAdd when read-heavy endpoints slow down or sessions must survive deploys.\n\n### Where to use it\nAnalytics dashboards, rate limiting counters, and pub/sub fan-out.\n\n### Real use example\nDashboard load drops DB queries 80% after Redis caches rollup metrics.",
+      "key_takeaways": [
+        "Redis reduces database load and enables shared session state across servers.",
+        "Add when read-heavy endpoints slow down or sessions must survive deploys.",
+        "Dashboard load drops DB queries 80% after Redis caches rollup metrics."
+      ],
+      "what_it_is": "Redis reduces database load and enables shared session state across servers.",
+      "when_to_use": "Add when read-heavy endpoints slow down or sessions must survive deploys.",
+      "where_to_use": "Analytics dashboards, rate limiting counters, and pub/sub fan-out.",
+      "real_use_example": "Dashboard load drops DB queries 80% after Redis caches rollup metrics."
+    },
+    {
+      "number": 17,
+      "title": "Monorepo Tooling with Turborepo",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Monorepo Tooling with Turborepo** *(Level: Advanced)*\n\nMonorepos share types between packages/apps via workspace protocol. Turborepo caches task outputs—build and test skip unchanged packages. Shared eslint config and tsconfig base reduce duplication. Deploy only changed app while types package version bumps propagate.\n\nCode Reference:\n```json\n{\n  \"scripts\": { \"build\": \"turbo run build\" },\n  \"devDependencies\": { \"turbo\": \"^2.0.0\" }\n}\n```\nWhat it shows: turbo run build executes package dependency graph with remote caching optional.\n\n### What it actually is\nMonorepo tooling coordinates full stack code in one repository efficiently.\n\n### When to use it\nAdopt when sharing types/utilities between client and server teams.\n\n### Where to use it\nProduct companies with web app plus admin plus shared UI library.\n\n### Real use example\nShared User type changes once; both API and React compile fail until aligned.",
+      "key_takeaways": [
+        "Monorepo tooling coordinates full stack code in one repository efficiently.",
+        "Adopt when sharing types/utilities between client and server teams.",
+        "Shared User type changes once; both API and React compile fail until aligned."
+      ],
+      "what_it_is": "Monorepo tooling coordinates full stack code in one repository efficiently.",
+      "when_to_use": "Adopt when sharing types/utilities between client and server teams.",
+      "where_to_use": "Product companies with web app plus admin plus shared UI library.",
+      "real_use_example": "Shared User type changes once; both API and React compile fail until aligned."
+    },
+    {
+      "number": 18,
+      "title": "Production Monitoring with Sentry",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Production Monitoring with Sentry** *(Level: Advanced)*\n\nSentry captures frontend and backend exceptions with stack traces and breadcrumbs. Source maps upload makes minified production errors readable. Release tracking ties errors to git SHA for quick rollback decisions. Alert on error rate spikes before users flood support channels.\n\nCode Reference:\n```javascript\nSentry.init({ dsn: process.env.SENTRY_DSN, tracesSampleRate: 0.2, release: process.env.GIT_SHA });\napp.use(Sentry.Handlers.requestHandler());\n```\nWhat it shows: requestHandler attaches request context; release links errors to deploy version.\n\n### What it actually is\nError monitoring surfaces production failures invisible in local development.\n\n### When to use it\nIntegrate before first real users—not after first outage.\n\n### Where to use it\nEvery production web application with SLA commitments.\n\n### Real use example\nOn-call gets Slack alert with stack trace pointing to exact line in release abc123.",
+      "key_takeaways": [
+        "Error monitoring surfaces production failures invisible in local development.",
+        "Integrate before first real users—not after first outage.",
+        "On-call gets Slack alert with stack trace pointing to exact line in release abc123."
+      ],
+      "what_it_is": "Error monitoring surfaces production failures invisible in local development.",
+      "when_to_use": "Integrate before first real users—not after first outage.",
+      "where_to_use": "Every production web application with SLA commitments.",
+      "real_use_example": "On-call gets Slack alert with stack trace pointing to exact line in release abc123."
+    }
+  ],
+  "chapter_count": 18
+}

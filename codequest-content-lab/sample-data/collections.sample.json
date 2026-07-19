@@ -1,0 +1,87 @@
+{
+  "_note": "Mock learning path collection records. Items reference sample IDs from articles.sample.json, books.sample.json, papers.sample.json, and curated-external-links.sample.json.",
+  "_rules": [
+    "Collections contain only approved content items.",
+    "Position field defines the reading order within the collection.",
+    "Collections are created by admins. Students cannot create collections in Phase 26e.",
+    "Collection status must be published before it is visible to students."
+  ],
+  "collections": [
+    {
+      "id": "col-001",
+      "title": "Python for Data Science: Getting Started",
+      "slug": "python-for-data-science-getting-started",
+      "description": "A curated path covering Python fundamentals, Pandas, and basic data analysis — designed for students with no prior Python experience.",
+      "domain": "python",
+      "difficulty_level": "beginner",
+      "status": "published",
+      "created_by": "admin-001",
+      "items": [
+        { "position": 1, "content_item_id": "art-001", "note": "Start here: core Pandas operations." },
+        { "position": 2, "content_item_id": "art-004", "note": "Build a simple API once you know Python basics." }
+      ]
+    },
+    {
+      "id": "col-002",
+      "title": "SQL Mastery Path",
+      "slug": "sql-mastery-path",
+      "description": "From basic SELECT statements to advanced window functions and query optimization. Suitable for analysts and engineers.",
+      "domain": "sql",
+      "difficulty_level": "intermediate",
+      "status": "published",
+      "created_by": "admin-001",
+      "items": [
+        { "position": 1, "content_item_id": "art-002", "note": "Window functions are essential for analytical SQL." }
+      ]
+    },
+    {
+      "id": "col-003",
+      "title": "AI and Machine Learning Foundations",
+      "slug": "ai-ml-foundations",
+      "description": "Covers neural networks, transformer models, and the mathematics behind modern machine learning systems.",
+      "domain": "ai-ml",
+      "difficulty_level": "advanced",
+      "status": "draft",
+      "created_by": "admin-002",
+      "items": [
+        { "position": 1, "content_item_id": "art-003", "note": "Start with neural network intuition." },
+        { "position": 2, "content_item_id": "paper-001", "note": "The Attention paper is essential reading for anyone working with LLMs." },
+        { "position": 3, "content_item_id": "paper-002", "note": "Survey to consolidate understanding of NLP approaches." }
+      ]
+    },
+    {
+      "id": "col-004",
+      "title": "Career and Resume Essentials",
+      "slug": "career-resume-essentials",
+      "description": "A practical guide to writing a strong resume, preparing for interviews, and building a job search strategy.",
+      "domain": "career",
+      "difficulty_level": "beginner",
+      "status": "published",
+      "created_by": "admin-001",
+      "items": [
+        { "position": 1, "content_item_id": "book-001", "note": "Strong writing is essential for professional communication." },
+        { "position": 2, "content_item_id": "book-004", "note": "Strategic thinking applies directly to career planning." }
+      ]
+    },
+    {
+      "id": "col-005",
+      "title": "Free Programming & Data Science Resources",
+      "slug": "free-programming-data-science-resources",
+      "description": "Curated GitHub lists and open curricula — books, courses, tutorials and self-study paths. Link-only; no content hosted in Code Quest.",
+      "domain": "data-science",
+      "difficulty_level": "beginner",
+      "status": "published",
+      "created_by": "admin-001",
+      "items": [
+        { "position": 1, "content_item_id": "link-001", "note": "Best overall starting point for free programming books and courses." },
+        { "position": 2, "content_item_id": "link-002", "note": "Hands-on Python data science with notebooks." },
+        { "position": 3, "content_item_id": "link-003", "note": "Data science and statistics book list." },
+        { "position": 4, "content_item_id": "link-004", "note": "Broader data-science topic index." },
+        { "position": 5, "content_item_id": "link-005", "note": "ML and statistics books section." },
+        { "position": 6, "content_item_id": "link-006", "note": "Full CS self-study curriculum." },
+        { "position": 7, "content_item_id": "link-007", "note": "Structured data-science degree path." },
+        { "position": 8, "content_item_id": "link-008", "note": "University CS courses with materials." }
+      ]
+    }
+  ]
+}

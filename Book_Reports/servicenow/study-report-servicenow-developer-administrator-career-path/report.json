@@ -1,0 +1,603 @@
+{
+  "id": "study-report-servicenow-developer-administrator-career-path",
+  "title": "Study Report: ServiceNow Developer / Administrator — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "servicenow",
+  "family_name": "ServiceNow Developer / Administrator",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "ServiceNow career path covering ITSM incident, problem, and change workflows, CMDB foundation data, Flow Designer automation, GlideRecord server-side scripting, Service Portal widgets, REST integrations, and scoped application development. Built from ServiceNow Developer documentation, Now Learning, and CSA/CIS certification objectives.",
+  "skill_stack": {
+    "core": [
+      "ITSM incident, problem, change, and request fulfillment",
+      "CMDB CI classes, relationships, and discovery",
+      "Flow Designer and Workflow Editor automation",
+      "GlideRecord, GlideAjax, and Business Rules",
+      "Service Portal and UI Builder experiences",
+      "Integration Hub spokes and REST Message APIs"
+    ],
+    "tools": [
+      "ServiceNow Studio and Application Navigator",
+      "Flow Designer and Integration Hub",
+      "Service Portal / UI Builder",
+      "MID Server and Discovery",
+      "Update Sets and scoped apps",
+      "ServiceNow Performance Analytics"
+    ],
+    "platforms": [
+      "ServiceNow Now Platform",
+      "ITSM Pro",
+      "ITOM",
+      "CSM",
+      "HRSD"
+    ],
+    "certifications": [
+      "ServiceNow Certified System Administrator (CSA)",
+      "ServiceNow Certified Implementation Specialist (CIS-ITSM)",
+      "ServiceNow Certified Application Developer (CAD)"
+    ]
+  },
+  "sources": [
+    "https://developer.servicenow.com/dev.do",
+    "https://docs.servicenow.com/",
+    "https://learning.servicenow.com/",
+    "https://www.servicenow.com/products/itsm.html",
+    "https://www.servicenow.com/community/developer-articles/",
+    "https://docs.servicenow.com/bundle/zurich-api-reference/page/script/server-scripting/concept/c_GlideRecordAPI.html"
+  ],
+  "recommended_books": [
+    {
+      "title": "Learning ServiceNow",
+      "author": "Tim Woodruff",
+      "level": "Beginner",
+      "focus": "Platform navigation, incidents, CMDB, and admin fundamentals.",
+      "url": "https://www.packtpub.com/en-us/product/learning-servicenow-9781785885815",
+      "free_online": false
+    },
+    {
+      "title": "ServiceNow Development Handbook",
+      "author": "Tim Woodruff",
+      "level": "Intermediate",
+      "focus": "GlideRecord, business rules, script includes, and integrations.",
+      "url": "https://www.packtpub.com/en-us/product/servicenow-development-handbook-9781803232165",
+      "free_online": false
+    },
+    {
+      "title": "ServiceNow Documentation",
+      "author": "ServiceNow",
+      "level": "Beginner",
+      "focus": "Official ITSM, Flow Designer, and developer references.",
+      "url": "https://docs.servicenow.com/",
+      "free_online": true
+    },
+    {
+      "title": "ServiceNow Certified System Administrator",
+      "author": "ServiceNow Learning",
+      "level": "Intermediate",
+      "focus": "Official CSA exam path and platform configuration skills.",
+      "url": "https://learning.servicenow.com/lxp/en/pages/landing/certification",
+      "free_online": true
+    },
+    {
+      "title": "ServiceNow IT Operations Management",
+      "author": "Packt",
+      "level": "Advanced",
+      "focus": "Event management, discovery, and operational workflows.",
+      "url": "https://www.packtpub.com/en-us/product/servicenow-it-operations-management-9781803232165",
+      "free_online": false
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "ITSM Incident Management Setup",
+      "level": "Beginner",
+      "duration": "2–3 weeks",
+      "overview": "Configure incident table, assignment groups, SLAs, and email-to-incident on Personal Developer Instance.",
+      "objectives": [
+        "Configure assignment groups",
+        "Set SLA definitions",
+        "Email-to-incident inbound action",
+        "Create 5 test incidents"
+      ],
+      "phases": [
+        {
+          "name": "Groups",
+          "description": "Assignment groups + roles.",
+          "tasks": [
+            "Service Desk",
+            "Network Team"
+          ],
+          "deliverable": "Group structure"
+        },
+        {
+          "name": "SLA",
+          "description": "Response + resolution SLAs.",
+          "tasks": [
+            "P1 1hr",
+            "P3 8hr"
+          ],
+          "deliverable": "SLA records active"
+        },
+        {
+          "name": "Email",
+          "description": "Inbound email action.",
+          "tasks": [
+            "Parse subject/body",
+            "Auto-assign"
+          ],
+          "deliverable": "Email creates incident demo"
+        },
+        {
+          "name": "Test",
+          "description": "5 incident scenarios.",
+          "tasks": [
+            "Assign",
+            "Resolve",
+            "Close"
+          ],
+          "deliverable": "Test incident screenshots"
+        }
+      ],
+      "skills_applied": [
+        "ITSM",
+        "SLA",
+        "Configuration"
+      ],
+      "tools": [
+        "ServiceNow PDI",
+        "ITSM module"
+      ],
+      "deliverables": [
+        "PDI config export",
+        "SLA doc",
+        "Test screenshots"
+      ]
+    },
+    {
+      "title": "Employee Onboarding Flow",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "Flow Designer automation: new hire triggers tasks for IT, HR, and facilities with approval steps.",
+      "objectives": [
+        "Record-triggered flow on new hire",
+        "Parallel tasks for IT/HR/Facilities",
+        "Manager approval step",
+        "Dashboard showing onboarding status"
+      ],
+      "phases": [
+        {
+          "name": "Flow",
+          "description": "Record-triggered flow.",
+          "tasks": [
+            "Trigger conditions",
+            "Variables"
+          ],
+          "deliverable": "Flow diagram export"
+        },
+        {
+          "name": "Tasks",
+          "description": "Parallel subflows.",
+          "tasks": [
+            "Laptop request",
+            "Badge",
+            "Accounts"
+          ],
+          "deliverable": "Task templates"
+        },
+        {
+          "name": "Approval",
+          "description": "Manager sign-off.",
+          "tasks": [
+            "Approval action",
+            "Rejection path"
+          ],
+          "deliverable": "Approval demo video"
+        },
+        {
+          "name": "Dashboard",
+          "description": "Onboarding tracker.",
+          "tasks": [
+            "Reports",
+            "Metrics"
+          ],
+          "deliverable": "Dashboard screenshot"
+        }
+      ],
+      "skills_applied": [
+        "Flow Designer",
+        "Automation",
+        "ITSM"
+      ],
+      "tools": [
+        "ServiceNow PDI",
+        "Flow Designer"
+      ],
+      "deliverables": [
+        "Flow export XML",
+        "Demo video",
+        "Dashboard screenshot"
+      ]
+    },
+    {
+      "title": "CMDB + Event Management Integration",
+      "level": "Advanced",
+      "duration": "4–5 weeks",
+      "overview": "Populate CMDB with server CIs, integrate monitoring alerts to auto-create incidents with enrichment.",
+      "objectives": [
+        "CMDB CI classes and relationships",
+        "Discovery or manual CI import",
+        "Event rules for alert → incident",
+        "CI impact analysis on changes"
+      ],
+      "phases": [
+        {
+          "name": "CMDB",
+          "description": "CI model setup.",
+          "tasks": [
+            "Server class",
+            "Relationships"
+          ],
+          "deliverable": "CMDB populated"
+        },
+        {
+          "name": "Discovery",
+          "description": "Import/discover CIs.",
+          "tasks": [
+            "CSV import",
+            "Relationship map"
+          ],
+          "deliverable": "CMDB diagram"
+        },
+        {
+          "name": "Events",
+          "description": "Alert integration.",
+          "tasks": [
+            "Event rules",
+            "Severity mapping"
+          ],
+          "deliverable": "Auto-incident demo"
+        },
+        {
+          "name": "Impact",
+          "description": "Change impact check.",
+          "tasks": [
+            "Affected CIs",
+            "Business services"
+          ],
+          "deliverable": "Impact analysis report"
+        }
+      ],
+      "skills_applied": [
+        "CMDB",
+        "Event Management",
+        "Integration"
+      ],
+      "tools": [
+        "ServiceNow PDI",
+        "CMDB",
+        "Integration Hub"
+      ],
+      "deliverables": [
+        "CMDB export",
+        "Event rule config",
+        "Impact analysis demo",
+        "Architecture doc"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "ServiceNow Platform and Instance Navigation",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: ServiceNow Platform and Instance Navigation** *(Level: Beginner)*\n\nServiceNow is a cloud platform built on a single data model with tables, records, and roles. Administrators use Application Navigator, lists, forms, and filters daily. Personal Developer Instances (PDIs) let you practice without risking production. Understand global vs scoped applications and the difference between configuration and customization.\n\nCode Reference:\n```javascript\ngs.info('CodeQuest learner exploring instance: ' + gs.getSession().getClientIP());\n// Application Navigator -> Incident -> Open\n```\nWhat it shows: Server-side gs.info logs help trace script execution in System Logs.\n\n### What it actually is\nThe Now Platform is a low-code enterprise workflow and data platform.\n\n### When to use it\nWhen organizations standardize ITSM, HR, or customer service on one system of record.\n\n### Where to use it\nFortune 500 IT departments, MSPs, universities, and government agencies.\n\n### Real use example\nA CodeQuest cohort provisions PDIs, favorites the Incident app, and completes the 'Welcome to ServiceNow' guided setup before touching production-like data.",
+      "key_takeaways": [
+        "The Now Platform is a low-code enterprise workflow and data platform.",
+        "When organizations standardize ITSM, HR, or customer service on one system of record.",
+        "A CodeQuest cohort provisions PDIs, favorites the Incident app, and completes the 'Welcome to ServiceNow' guided setup before touching production-like data."
+      ],
+      "what_it_is": "The Now Platform is a low-code enterprise workflow and data platform.",
+      "when_to_use": "When organizations standardize ITSM, HR, or customer service on one system of record.",
+      "where_to_use": "Fortune 500 IT departments, MSPs, universities, and government agencies.",
+      "real_use_example": "A CodeQuest cohort provisions PDIs, favorites the Incident app, and completes the 'Welcome to ServiceNow' guided setup before touching production-like data."
+    },
+    {
+      "number": 2,
+      "title": "ITSM Incident Management Fundamentals",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: ITSM Incident Management Fundamentals** *(Level: Beginner)*\n\nIncidents restore normal service quickly. Core fields: caller, category, priority (impact × urgency), assignment group, and state (New → In Progress → Resolved → Closed). SLAs attach response and resolution clocks. Major incident management coordinates war rooms for widespread outages.\n\nCode Reference:\n```javascript\nvar gr = new GlideRecord('incident');\ngr.addQuery('priority', '1');\ngr.query();\nwhile (gr.next()) {\n  gs.info('P1: ' + gr.number);\n}\n```\nWhat it shows: GlideRecord queries open P1 incidents for morning standup dashboards.\n\n### What it actually is\nIncident management is the reactive restore-service ITIL practice on ServiceNow.\n\n### When to use it\nWhen users report broken services: VPN down, email bounce, portal 500 errors.\n\n### Where to use it\nService desk, NOC, and application support queues.\n\n### Real use example\nDuring finals week a learning portal returns 503; P1 incident auto-assigns to Web-Ops with executive notification from a Flow Designer trigger.",
+      "key_takeaways": [
+        "Incident management is the reactive restore-service ITIL practice on ServiceNow.",
+        "When users report broken services: VPN down, email bounce, portal 500 errors.",
+        "During finals week a learning portal returns 503; P1 incident auto-assigns to Web-Ops with executive notification from a Flow Designer trigger."
+      ],
+      "what_it_is": "Incident management is the reactive restore-service ITIL practice on ServiceNow.",
+      "when_to_use": "When users report broken services: VPN down, email bounce, portal 500 errors.",
+      "where_to_use": "Service desk, NOC, and application support queues.",
+      "real_use_example": "During finals week a learning portal returns 503; P1 incident auto-assigns to Web-Ops with executive notification from a Flow Designer trigger."
+    },
+    {
+      "number": 3,
+      "title": "Problem, Change, and Request Fulfillment",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Problem, Change, and Request Fulfillment** *(Level: Beginner)*\n\nProblems investigate root cause behind recurring incidents. Changes control risk through CAB approval, schedules, and backout plans. Service Catalog and Request items fulfill standard offerings like laptop requests. Link records: incident → problem → change → knowledge article.\n\nCode Reference:\n```javascript\n// Change state workflow: New -> Assess -> Authorize -> Scheduled -> Implement -> Review\n// Request: sc_req_item table\n```\nWhat it shows: ITIL practice tables interconnect for traceable service lifecycle.\n\n### What it actually is\nThese practices move teams from firefighting to controlled improvement.\n\n### When to use it\nMature IT organizations with CAB meetings and known error databases.\n\n### Where to use it\nEnterprise change windows, hardware refresh programs, and software rollouts.\n\n### Real use example\nRepeated Moodle login failures spawn a problem record; authorized change adds SSO patch Saturday 2 AM.",
+      "key_takeaways": [
+        "These practices move teams from firefighting to controlled improvement.",
+        "Mature IT organizations with CAB meetings and known error databases.",
+        "Repeated Moodle login failures spawn a problem record; authorized change adds SSO patch Saturday 2 AM."
+      ],
+      "what_it_is": "These practices move teams from firefighting to controlled improvement.",
+      "when_to_use": "Mature IT organizations with CAB meetings and known error databases.",
+      "where_to_use": "Enterprise change windows, hardware refresh programs, and software rollouts.",
+      "real_use_example": "Repeated Moodle login failures spawn a problem record; authorized change adds SSO patch Saturday 2 AM."
+    },
+    {
+      "number": 4,
+      "title": "Users, Groups, Roles, and ACLs",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Users, Groups, Roles, and ACLs** *(Level: Beginner)*\n\nSecurity in ServiceNow is role-based. Groups bundle users; roles grant table and field access. ACLs (Access Control Lists) evaluate create/read/update/delete row and field conditions. Always apply least privilege: grant itil role to agents, not admin, unless justified.\n\nCode Reference:\n```javascript\n// ACL example condition script:\n// answer = current.assigned_to == gs.getUserID();\n```\nWhat it shows: ACL condition scripts restrict records to assignee or group members.\n\n### What it actually is\nACLs enforce who sees which records at the database layer.\n\n### When to use it\nEvery table with sensitive HR, security, or financial data.\n\n### Where to use it\nMulti-department instances sharing incident data but isolating salary tables.\n\n### Real use example\nStudent workers get scoped read on their own incidents via ACL and cannot view executive tickets.",
+      "key_takeaways": [
+        "ACLs enforce who sees which records at the database layer.",
+        "Every table with sensitive HR, security, or financial data.",
+        "Student workers get scoped read on their own incidents via ACL and cannot view executive tickets."
+      ],
+      "what_it_is": "ACLs enforce who sees which records at the database layer.",
+      "when_to_use": "Every table with sensitive HR, security, or financial data.",
+      "where_to_use": "Multi-department instances sharing incident data but isolating salary tables.",
+      "real_use_example": "Student workers get scoped read on their own incidents via ACL and cannot view executive tickets."
+    },
+    {
+      "number": 5,
+      "title": "Lists, Filters, and Reporting Basics",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Lists, Filters, and Reporting Basics** *(Level: Beginner)*\n\nLists display query results; filters save conditions for reuse and dashboards. Reporting supports bar, pie, trend, and heat maps. ServiceNow Performance Analytics adds indicators and breakdowns. Export responsibly—PII in CSV exports violates policy.\n\nCode Reference:\n```javascript\nvar ga = new GlideAggregate('incident');\nga.addAggregate('COUNT');\nga.groupBy('category');\nga.query();\nwhile (ga.next()) {\n  gs.info(ga.category + ': ' + ga.getAggregate('COUNT'));\n}\n```\nWhat it shows: GlideAggregate counts incidents by category for weekly management reports.\n\n### What it actually is\nLists and reports turn ticket data into operational insight.\n\n### When to use it\nWeekly service review meetings and SLA compliance tracking.\n\n### Where to use it\nManager dashboards, team standups, and executive QBR decks.\n\n### Real use example\nCodeQuest mentor reviews category breakdown showing 35% password-reset tickets—drives KB investment.",
+      "key_takeaways": [
+        "Lists and reports turn ticket data into operational insight.",
+        "Weekly service review meetings and SLA compliance tracking.",
+        "CodeQuest mentor reviews category breakdown showing 35% password-reset tickets—drives KB investment."
+      ],
+      "what_it_is": "Lists and reports turn ticket data into operational insight.",
+      "when_to_use": "Weekly service review meetings and SLA compliance tracking.",
+      "where_to_use": "Manager dashboards, team standups, and executive QBR decks.",
+      "real_use_example": "CodeQuest mentor reviews category breakdown showing 35% password-reset tickets—drives KB investment."
+    },
+    {
+      "number": 6,
+      "title": "Service Portal Introduction",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Service Portal Introduction** *(Level: Beginner)*\n\nService Portal delivers branded self-service with pages, widgets, and themes. Employees search knowledge, submit requests, and track incidents without calling the desk. Widgets use AngularJS client controllers and server scripts. UI Builder is the modern successor for Experience workflows.\n\nCode Reference:\n```javascript\n// Client controller snippet\nfunction($scope, spUtil) {\n  $scope.submit = function() {\n    spUtil.update('incident');\n  };\n}\n```\nWhat it shows: Client controllers bind form actions to Service Portal record producers.\n\n### What it actually is\nService Portal is the employee-facing front door to ITSM.\n\n### When to use it\nWhen deflecting Tier 1 tickets through self-service and knowledge.\n\n### Where to use it\nCorporate intranets, university IT portals, and HR service centers.\n\n### Real use example\nFaculty portal adds 'Report Wi-Fi Issue' widget; submissions create pre-categorized incidents.",
+      "key_takeaways": [
+        "Service Portal is the employee-facing front door to ITSM.",
+        "When deflecting Tier 1 tickets through self-service and knowledge.",
+        "Faculty portal adds 'Report Wi-Fi Issue' widget; submissions create pre-categorized incidents."
+      ],
+      "what_it_is": "Service Portal is the employee-facing front door to ITSM.",
+      "when_to_use": "When deflecting Tier 1 tickets through self-service and knowledge.",
+      "where_to_use": "Corporate intranets, university IT portals, and HR service centers.",
+      "real_use_example": "Faculty portal adds 'Report Wi-Fi Issue' widget; submissions create pre-categorized incidents."
+    },
+    {
+      "number": 7,
+      "title": "CMDB and Configuration Items",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: CMDB and Configuration Items** *(Level: Intermediate)*\n\nThe CMDB stores Configuration Items (CIs)—servers, databases, applications—with attributes and relationships. Accurate CI data powers change impact analysis and incident assignment. Identification rules reconcile duplicates; baselines track drift. Avoid garbage-in by governing manual CI creation.\n\nCode Reference:\n```javascript\nvar rel = new GlideRecord('cmdb_rel_ci');\nrel.addQuery('parent', serverSysId);\nrel.query();\nwhile (rel.next()) {\n  gs.info('Depends on: ' + rel.child.name);\n}\n```\nWhat it shows: Relationship queries reveal downstream CIs before server patching.\n\n### What it actually is\nCMDB is the technical inventory graph underpinning IT operations.\n\n### When to use it\nChange planning, outage communication, and root cause mapping.\n\n### Where to use it\nData centers, hybrid cloud estates, and application portfolios.\n\n### Real use example\nPlanned DB maintenance queries CMDB to notify all apps depending on SQL-PROD-03.",
+      "key_takeaways": [
+        "CMDB is the technical inventory graph underpinning IT operations.",
+        "Change planning, outage communication, and root cause mapping.",
+        "Planned DB maintenance queries CMDB to notify all apps depending on SQL-PROD-03."
+      ],
+      "what_it_is": "CMDB is the technical inventory graph underpinning IT operations.",
+      "when_to_use": "Change planning, outage communication, and root cause mapping.",
+      "where_to_use": "Data centers, hybrid cloud estates, and application portfolios.",
+      "real_use_example": "Planned DB maintenance queries CMDB to notify all apps depending on SQL-PROD-03."
+    },
+    {
+      "number": 8,
+      "title": "Flow Designer vs Workflow Editor",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Flow Designer vs Workflow Editor** *(Level: Intermediate)*\n\nFlow Designer is the modern, low-code automation tool with triggers, conditions, and actions across tables. Legacy Workflow Editor still exists on older instances—know both. Flows can call subflows, ask for approval, invoke scripts, and integrate via spokes. Test in subprod with rollback plans before production promotion.\n\nCode Reference:\n```javascript\n// Flow trigger: Record Created on incident\n// Action: If priority == 1 -> Send Email + Create Major Incident task\n```\nWhat it shows: Declarative flows replace hundreds of lines of custom workflow code.\n\n### What it actually is\nFlow Designer automates multi-step business processes with observability.\n\n### When to use it\nSLA breaches, approvals, notifications, and cross-table updates.\n\n### Where to use it\nHR onboarding, access provisioning, and major incident orchestration.\n\n### Real use example\nNew-hire flow creates AD request, hardware catalog item, and Slack notification automatically.",
+      "key_takeaways": [
+        "Flow Designer automates multi-step business processes with observability.",
+        "SLA breaches, approvals, notifications, and cross-table updates.",
+        "New-hire flow creates AD request, hardware catalog item, and Slack notification automatically."
+      ],
+      "what_it_is": "Flow Designer automates multi-step business processes with observability.",
+      "when_to_use": "SLA breaches, approvals, notifications, and cross-table updates.",
+      "where_to_use": "HR onboarding, access provisioning, and major incident orchestration.",
+      "real_use_example": "New-hire flow creates AD request, hardware catalog item, and Slack notification automatically."
+    },
+    {
+      "number": 9,
+      "title": "GlideRecord Server-Side Scripting",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: GlideRecord Server-Side Scripting** *(Level: Intermediate)*\n\nGlideRecord is the primary API for querying and mutating records server-side. Use addQuery, setLimit, chooseFields, and getValue/setValue. Avoid GlideRecord in client scripts—use GlideAjax instead. Performance matters: nested loops on large tables cause transaction timeouts.\n\nCode Reference:\n```javascript\nvar gr = new GlideRecord('incident');\ngr.addEncodedQuery('active=true^priorityIN1,2');\ngr.orderBy('opened_at');\ngr.setLimit(100);\ngr.query();\n```\nWhat it shows: Encoded queries mirror list filter syntax for maintainable scripts.\n\n### What it actually is\nGlideRecord is the server-side database access layer.\n\n### When to use it\nBusiness rules, scheduled jobs, script includes, and fix scripts.\n\n### Where to use it\nAny automation touching multiple records or complex conditions.\n\n### Real use example\nScheduled job reopens stale P2 incidents lacking updates after 48 hours for manager review.",
+      "key_takeaways": [
+        "GlideRecord is the server-side database access layer.",
+        "Business rules, scheduled jobs, script includes, and fix scripts.",
+        "Scheduled job reopens stale P2 incidents lacking updates after 48 hours for manager review."
+      ],
+      "what_it_is": "GlideRecord is the server-side database access layer.",
+      "when_to_use": "Business rules, scheduled jobs, script includes, and fix scripts.",
+      "where_to_use": "Any automation touching multiple records or complex conditions.",
+      "real_use_example": "Scheduled job reopens stale P2 incidents lacking updates after 48 hours for manager review."
+    },
+    {
+      "number": 10,
+      "title": "Business Rules, Client Scripts, and UI Policies",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Business Rules, Client Scripts, and UI Policies** *(Level: Intermediate)*\n\nBusiness rules run server-side on insert/update/delete (before or after). Client scripts react in the browser—onLoad, onChange, onSubmit. UI policies show/hide mandatory fields without code when possible. Order of execution matters: UI Policy → Client Script → Business Rule → Flow.\n\nCode Reference:\n```javascript\n// Business Rule (before): if (current.priority == 1) current.assignment_group = 'Major Incident';\n```\nWhat it shows: Before business rules mutate records prior to database commit.\n\n### What it actually is\nThese artifacts implement field logic and data integrity at multiple tiers.\n\n### When to use it\nForm behavior, validation, and auto-population scenarios.\n\n### Where to use it\nIncident categorization, change risk scoring, and catalog variable logic.\n\n### Real use example\nChanging category to 'Network' auto-assigns Network-Ops via onChange client script and business rule.",
+      "key_takeaways": [
+        "These artifacts implement field logic and data integrity at multiple tiers.",
+        "Form behavior, validation, and auto-population scenarios.",
+        "Changing category to 'Network' auto-assigns Network-Ops via onChange client script and business rule."
+      ],
+      "what_it_is": "These artifacts implement field logic and data integrity at multiple tiers.",
+      "when_to_use": "Form behavior, validation, and auto-population scenarios.",
+      "where_to_use": "Incident categorization, change risk scoring, and catalog variable logic.",
+      "real_use_example": "Changing category to 'Network' auto-assigns Network-Ops via onChange client script and business rule."
+    },
+    {
+      "number": 11,
+      "title": "Service Catalog and Record Producers",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Service Catalog and Record Producers** *(Level: Intermediate)*\n\nService Catalog presents orderable items with variables, workflows, and fulfillment tasks. Record producers create records (often incidents) from portal forms. Variable sets reuse common questions. Price and recurring price fields support chargeback reporting.\n\nCode Reference:\n```javascript\n// Catalog item variables: u_device_type, u_justification\n// Produces: sc_req_item -> requested item tasks\n```\nWhat it shows: Catalog variables map to task and CI fields downstream.\n\n### What it actually is\nService Catalog standardizes fulfillment for repeated requests.\n\n### When to use it\nHardware refresh, software licenses, access grants, and facilities.\n\n### Where to use it\nEmployee self-service and CodeQuest sandbox 'request sandbox VM' lab item.\n\n### Real use example\nDeveloper requests cloud sandbox; catalog flow creates approval, provisioning task, and closure survey.",
+      "key_takeaways": [
+        "Service Catalog standardizes fulfillment for repeated requests.",
+        "Hardware refresh, software licenses, access grants, and facilities.",
+        "Developer requests cloud sandbox; catalog flow creates approval, provisioning task, and closure survey."
+      ],
+      "what_it_is": "Service Catalog standardizes fulfillment for repeated requests.",
+      "when_to_use": "Hardware refresh, software licenses, access grants, and facilities.",
+      "where_to_use": "Employee self-service and CodeQuest sandbox 'request sandbox VM' lab item.",
+      "real_use_example": "Developer requests cloud sandbox; catalog flow creates approval, provisioning task, and closure survey."
+    },
+    {
+      "number": 12,
+      "title": "Integration Hub and REST Messages",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Integration Hub and REST Messages** *(Level: Intermediate)*\n\nIntegration Hub provides spokes and connections to external systems (Jira, Azure, Slack). REST Message defines endpoints, headers, and authentication. MID Server reaches on-prem targets. Log integration errors to dedicated tables and build retry subflows for resilience.\n\nCode Reference:\n```javascript\nvar rm = new sn_ws.RESTMessageV2('CodeQuest_Asset_API', 'get_assets');\nvar response = rm.execute();\nvar body = response.getBody();\n```\nWhat it shows: RESTMessageV2 calls external asset APIs from a scheduled data pull.\n\n### What it actually is\nIntegrations connect ServiceNow to the wider enterprise toolchain.\n\n### When to use it\nBi-directional ticket sync, CMDB enrichment, and chatops alerts.\n\n### Where to use it\nMulti-tool IT stacks where ServiceNow remains the system of engagement.\n\n### Real use example\nJira defect linked to ServiceNow incident via Integration Hub spoke keeps dev and ops aligned.",
+      "key_takeaways": [
+        "Integrations connect ServiceNow to the wider enterprise toolchain.",
+        "Bi-directional ticket sync, CMDB enrichment, and chatops alerts.",
+        "Jira defect linked to ServiceNow incident via Integration Hub spoke keeps dev and ops aligned."
+      ],
+      "what_it_is": "Integrations connect ServiceNow to the wider enterprise toolchain.",
+      "when_to_use": "Bi-directional ticket sync, CMDB enrichment, and chatops alerts.",
+      "where_to_use": "Multi-tool IT stacks where ServiceNow remains the system of engagement.",
+      "real_use_example": "Jira defect linked to ServiceNow incident via Integration Hub spoke keeps dev and ops aligned."
+    },
+    {
+      "number": 13,
+      "title": "Update Sets and Deployment Pipeline",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Update Sets and Deployment Pipeline** *(Level: Intermediate)*\n\nUpdate Sets capture configuration changes for promotion across instances (dev → test → prod). Scoped apps use source control and pipelines in modern shops. Preview conflicts before merge. Never edit prod directly—route through change control with peer review.\n\nCode Reference:\n```javascript\n// Compare Update Sets: Incidents_Flow_v2\n// Pipeline: Dev PDI -> Team Dev -> QA -> Prod (Change CHG001234)\n```\nWhat it shows: Promotion path mirrors software delivery lifecycle.\n\n### What it actually is\nControlled promotion prevents untested changes in production.\n\n### When to use it\nEvery enterprise with segregated ServiceNow instances.\n\n### Where to use it\nAgile product teams shipping weekly catalog improvements.\n\n### Real use example\nFlow fix tested in QA update set; CAB-approved change deploys Saturday with rollback set ready.",
+      "key_takeaways": [
+        "Controlled promotion prevents untested changes in production.",
+        "Every enterprise with segregated ServiceNow instances.",
+        "Flow fix tested in QA update set; CAB-approved change deploys Saturday with rollback set ready."
+      ],
+      "what_it_is": "Controlled promotion prevents untested changes in production.",
+      "when_to_use": "Every enterprise with segregated ServiceNow instances.",
+      "where_to_use": "Agile product teams shipping weekly catalog improvements.",
+      "real_use_example": "Flow fix tested in QA update set; CAB-approved change deploys Saturday with rollback set ready."
+    },
+    {
+      "number": 14,
+      "title": "Scoped Application Development",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Scoped Application Development** *(Level: Advanced)*\n\nScoped applications isolate code and data with application-specific tables and ACLs. Use ServiceNow Studio, application files, and ATF tests. Script Includes encapsulate reusable logic. Follow ServiceNow JavaScript APIs—avoid unsupported DOM hacks.\n\nCode Reference:\n```javascript\nvar AssetUtils = Class.create();\nAssetUtils.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {\n  process: function() { return this.getParameter('sysparm_query'); }\n});\n```\nWhat it shows: Script Includes extend AbstractAjaxProcessor for GlideAjax endpoints.\n\n### What it actually is\nScoped apps package maintainable custom solutions on the platform.\n\n### When to use it\nISVs, internal platform teams, and complex custom processes.\n\n### Where to use it\nCustom vendor management app with own tables, modules, and portal.\n\n### Real use example\nCodeQuest capstone ships scoped inventory app through store-ready checklist and ATF suite.",
+      "key_takeaways": [
+        "Scoped apps package maintainable custom solutions on the platform.",
+        "ISVs, internal platform teams, and complex custom processes.",
+        "CodeQuest capstone ships scoped inventory app through store-ready checklist and ATF suite."
+      ],
+      "what_it_is": "Scoped apps package maintainable custom solutions on the platform.",
+      "when_to_use": "ISVs, internal platform teams, and complex custom processes.",
+      "where_to_use": "Custom vendor management app with own tables, modules, and portal.",
+      "real_use_example": "CodeQuest capstone ships scoped inventory app through store-ready checklist and ATF suite."
+    },
+    {
+      "number": 15,
+      "title": "Performance and GlideAggregate Optimization",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Performance and GlideAggregate Optimization** *(Level: Advanced)*\n\nSlow queries hurt UX and batch jobs. Use indexes, avoid dot-walking in large loops, prefer GlideAggregate to manual counting. Enable Debug Business Rule and SQL explain plans in non-prod. Partition long-running jobs with setLimit and resume markers.\n\nCode Reference:\n```javascript\nvar ga = new GlideAggregate('task');\nga.addAggregate('COUNT');\nga.addQuery('assignment_group', groupId);\nga.setGroup(false);\nga.query();\nvar count = ga.next() ? ga.getAggregate('COUNT') : 0;\n```\nWhat it shows: Aggregate queries replace thousands of getRowCount loops.\n\n### What it actually is\nPerformance tuning keeps instances responsive at enterprise scale.\n\n### When to use it\nInstances exceeding millions of task rows or heavy integrations.\n\n### Where to use it\nGlobal enterprises and high-volume MSP instances.\n\n### Real use example\nDashboard widget refactored from GlideRecord loop to GlideAggregate—load time drops 18s to 0.4s.",
+      "key_takeaways": [
+        "Performance tuning keeps instances responsive at enterprise scale.",
+        "Instances exceeding millions of task rows or heavy integrations.",
+        "Dashboard widget refactored from GlideRecord loop to GlideAggregate—load time drops 18s to 0."
+      ],
+      "what_it_is": "Performance tuning keeps instances responsive at enterprise scale.",
+      "when_to_use": "Instances exceeding millions of task rows or heavy integrations.",
+      "where_to_use": "Global enterprises and high-volume MSP instances.",
+      "real_use_example": "Dashboard widget refactored from GlideRecord loop to GlideAggregate—load time drops 18s to 0.4s."
+    },
+    {
+      "number": 16,
+      "title": "Scripted REST APIs and OAuth",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Scripted REST APIs and OAuth** *(Level: Advanced)*\n\nScripted REST APIs expose custom endpoints with scripted processing and ACL enforcement. Define resources, HTTP verbs, and API security profiles. OAuth 2.0 and JWT bearer tokens gate access for mobile apps and external dashboards.\n\nCode Reference:\n```javascript\n(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {\n  var body = request.body.dataString;\n  response.setStatus(200);\n  response.setBody({status: 'ok'});\n})(request, response);\n```\nWhat it shows: Scripted REST handlers validate payloads and return JSON responses.\n\n### What it actually is\nScripted REST enables platform-as-backend for custom experiences.\n\n### When to use it\nMobile apps, partner portals, and machine-to-machine automation.\n\n### Where to use it\nSecure external integrations without sharing user credentials.\n\n### Real use example\nCodeQuest mobile app fetches open incidents via OAuth-secured Scripted REST for student interns.",
+      "key_takeaways": [
+        "Scripted REST enables platform-as-backend for custom experiences.",
+        "Mobile apps, partner portals, and machine-to-machine automation.",
+        "CodeQuest mobile app fetches open incidents via OAuth-secured Scripted REST for student interns."
+      ],
+      "what_it_is": "Scripted REST enables platform-as-backend for custom experiences.",
+      "when_to_use": "Mobile apps, partner portals, and machine-to-machine automation.",
+      "where_to_use": "Secure external integrations without sharing user credentials.",
+      "real_use_example": "CodeQuest mobile app fetches open incidents via OAuth-secured Scripted REST for student interns."
+    },
+    {
+      "number": 17,
+      "title": "Domain Separation and Enterprise Scale",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Domain Separation and Enterprise Scale** *(Level: Advanced)*\n\nDomain separation partitions data for MSPs or conglomerates. Domain visibility rules control cross-domain access. Process separation duplicates tables per domain—heavyweight. Design domains early; retrofits are painful.\n\nCode Reference:\n```javascript\ngs.getSession().setDomainID(domainSysId);\nvar gr = new GlideRecord('incident');\ngr.query(); // returns only domain-visible records\n```\nWhat it shows: Session domain context filters queries automatically.\n\n### What it actually is\nDomain separation multi-tenants one instance safely.\n\n### When to use it\nMSPs managing hundreds of customers on shared infrastructure.\n\n### Where to use it\nGlobal companies with regional IT autonomy.\n\n### Real use example\nMSP adds new school district domain; agents see only that district's incidents and CIs.",
+      "key_takeaways": [
+        "Domain separation multi-tenants one instance safely.",
+        "MSPs managing hundreds of customers on shared infrastructure.",
+        "MSP adds new school district domain; agents see only that district's incidents and CIs."
+      ],
+      "what_it_is": "Domain separation multi-tenants one instance safely.",
+      "when_to_use": "MSPs managing hundreds of customers on shared infrastructure.",
+      "where_to_use": "Global companies with regional IT autonomy.",
+      "real_use_example": "MSP adds new school district domain; agents see only that district's incidents and CIs."
+    },
+    {
+      "number": 18,
+      "title": "Event Management and ITOM",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Event Management and ITOM** *(Level: Advanced)*\n\nEvent Management correlates monitoring alerts into actionable incidents. Connectors ingest from SolarWinds, Datadog, or Nagios. MOGs group related events; CI binding ties alerts to CMDB. Threshold rules reduce noise before ticket spam.\n\nCode Reference:\n```javascript\n// Event rule: 3+ CPU alerts on same CI in 10 min -> create incident P2\n```\nWhat it shows: Correlation rules prevent alert storms from flooding the desk.\n\n### What it actually is\nITOM practices bridge monitoring tools and ServiceNow workflow.\n\n### When to use it\nNOC environments with thousands of daily monitoring events.\n\n### Where to use it\nHybrid cloud shops with tool sprawl.\n\n### Real use example\nDatabase failover generates 50 alerts; correlation opens one major incident with linked events.",
+      "key_takeaways": [
+        "ITOM practices bridge monitoring tools and ServiceNow workflow.",
+        "NOC environments with thousands of daily monitoring events.",
+        "Database failover generates 50 alerts; correlation opens one major incident with linked events."
+      ],
+      "what_it_is": "ITOM practices bridge monitoring tools and ServiceNow workflow.",
+      "when_to_use": "NOC environments with thousands of daily monitoring events.",
+      "where_to_use": "Hybrid cloud shops with tool sprawl.",
+      "real_use_example": "Database failover generates 50 alerts; correlation opens one major incident with linked events."
+    }
+  ],
+  "chapter_count": 18
+}

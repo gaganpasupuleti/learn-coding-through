@@ -153,6 +153,7 @@ export interface JobSpyJobFilters {
   experience?: string
   site?: string
   bucket?: string
+  profile?: string
   page?: number
   page_size?: number
 }
@@ -170,9 +171,10 @@ export const JOBSPY_EXPERIENCE_OPTIONS: { value: string; label: string }[] = [
 export const JOBSPY_SOURCE_OPTIONS: { value: string; label: string }[] = [
   { value: '', label: 'All sources' },
   { value: 'indeed', label: 'Indeed' },
-  { value: 'google', label: 'Google' },
-  { value: 'naukri', label: 'Naukri' },
   { value: 'linkedin', label: 'LinkedIn' },
+  { value: 'naukri', label: 'Naukri' },
+  { value: 'foundit', label: 'Foundit' },
+  { value: 'google', label: 'Google' },
 ]
 
 export interface JobSpyDashboardStats {
@@ -271,6 +273,10 @@ export interface JobStatsScrapeRun {
 
 export interface JobStatsLatestJob {
   id: string
+  jobId?: string | null
+  ingestProfile?: string | null
+  actualRoleId?: string | null
+  actualRoleName?: string | null
   source: string
   title: string
   company: string | null
@@ -279,6 +285,32 @@ export interface JobStatsLatestJob {
   createdAt: string
   jobUrl: string
   linkStatus?: string
+}
+
+export interface JobStatsProfileItem {
+  profile: string
+  label: string
+  count: number
+  autoEnabled: boolean
+}
+
+export interface JobStatsEnrichmentRoleItem {
+  roleId: string
+  roleName: string
+  count: number
+}
+
+export interface JobBoardOverview {
+  totalJobs: number
+  activeJobs: number
+  loadedToday: number
+  loadedLast24Hours: number
+  loadedLast7Days: number
+  latestLoadedAt: string | null
+  lastAutoRefreshAt: string | null
+  profileBreakdown: JobStatsProfileItem[]
+  sourceBreakdown: JobStatsSourceItem[]
+  enrichmentRoleSummary: JobStatsEnrichmentRoleItem[]
 }
 
 export interface JobStatsResponse {
@@ -299,6 +331,8 @@ export interface JobStatsResponse {
   recentScrapeRuns: JobStatsScrapeRun[]
   latestJobs: JobStatsLatestJob[]
   expiredJobSamples: JobStatsLatestJob[]
+  profileBreakdown: JobStatsProfileItem[]
+  enrichmentRoleSummary: JobStatsEnrichmentRoleItem[]
 }
 
 export interface RefreshRequestBody {
@@ -339,6 +373,8 @@ export interface CleanupLinksResponse {
   totalExpired: number
   totalLinkFailed: number
   totalUnknown: number
+  deletedJobs?: number
+  deletedEnrichments?: number
   scrapeRunId?: number
 }
 
@@ -383,6 +419,63 @@ export interface SendDigestResponse {
   jobCount?: number | null
 }
 
+export interface EnrichmentRoleSummaryItem {
+  role_id: string
+  role_name: string
+  count: number
+}
+
+export interface EnrichmentLevelSummaryItem {
+  role_level_id: string
+  experience_level: string
+  count: number
+}
+
+export interface JobEnrichmentSummaryResponse {
+  total_enrichments: number
+  pending_count: number
+  needs_review_count: number
+  approved_count: number
+  rejected_count: number
+  live_count: number
+  expired_count: number
+  unknown_live_status_count: number
+  role_summary: EnrichmentRoleSummaryItem[]
+  level_summary: EnrichmentLevelSummaryItem[]
+  quiz_pack_linked_count: number
+  quiz_pack_missing_count: number
+}
+
+export interface JobEnrichmentRowPreview {
+  row_number: number
+  job_id: string
+  errors: string[]
+  warnings: string[]
+}
+
+export interface JobEnrichmentImportPreviewResponse {
+  total_rows: number
+  valid_rows: number
+  invalid_rows: number
+  warning_rows: number
+  row_errors: JobEnrichmentRowPreview[]
+  role_summary: Array<{ role_id: string; count: number }>
+  status_summary: Record<string, Record<string, number>>
+  quiz_pack_summary: Array<{ quiz_pack_id: string; count: number; exists: boolean }>
+}
+
+export interface JobEnrichmentImportCommitResponse {
+  total_rows: number
+  inserted_count: number
+  updated_count: number
+  skipped_count: number
+  invalid_rows: number
+  warning_rows: number
+  row_errors: JobEnrichmentRowPreview[]
+  saved_job_ids: string[]
+  skipped_job_ids: string[]
+}
+
 function mapApiJob(job: NormalizedJobApi): JobSpyJob {
   return {
     id: job.id,
@@ -406,8 +499,33 @@ function adminHeaders(adminKey: string): Record<string, string> {
   return adminKey ? { 'X-Admin-Key': adminKey } : {}
 }
 
+async function jobspyAdminRequest<T>(path: string, adminKey: string, options: RequestInit = {}): Promise<T> {
+  const base = jobsBaseUrl()
+  const headers: Record<string, string> = {
+    ...adminHeaders(adminKey),
+    ...(options.headers as Record<string, string> | undefined),
+  }
+  const res = await fetch(`${base}${path}`, { ...options, headers })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }))
+    throw new Error(formatApiError((err as { detail?: unknown }).detail, res.status))
+  }
+  if (res.status === 204) return undefined as T
+  return res.json() as Promise<T>
+}
+
 export const jobspyApi = {
   health: () => jobspyRequest<{ status: string }>('/health'),
+
+  getJobBoardOverview: async (): Promise<JobBoardOverview> => {
+    const data = await jobspyRequest<JobBoardOverview>('/api/jobs/overview')
+    return {
+      ...data,
+      profileBreakdown: data.profileBreakdown ?? [],
+      sourceBreakdown: data.sourceBreakdown ?? [],
+      enrichmentRoleSummary: data.enrichmentRoleSummary ?? [],
+    }
+  },
 
   getRoles: async (): Promise<JobSpyRole[]> => [],
   getLocations: async (): Promise<JobSpyLocation[]> => [],
@@ -431,6 +549,7 @@ export const jobspyApi = {
     if (params.location) qs.set('location', params.location)
     if (params.site) qs.set('source', params.site)
     if (params.experience) qs.set('experience', params.experience)
+    if (params.profile) qs.set('profile', params.profile)
     qs.set('page', String(params.page ?? 1))
     qs.set('limit', String(params.page_size ?? 20))
     const data = await jobspyRequest<{ jobs: NormalizedJobApi[]; total: number; page: number; limit: number }>(
@@ -486,7 +605,7 @@ export const jobspyApi = {
         location: 'India',
         resultsWanted: Math.min(limit * 5, 25),
         hoursOld: 48,
-        sources: ['indeed', 'google'],
+        sources: ['indeed', 'google', 'linkedin'],
       },
       adminKey,
     )
@@ -500,7 +619,7 @@ export const jobspyApi = {
         location: 'India',
         resultsWanted: Math.min(limit * 5, 25),
         hoursOld: 48,
-        sources: ['indeed', 'google'],
+        sources: ['indeed', 'google', 'linkedin'],
       },
       adminKey,
     )
@@ -516,15 +635,28 @@ export const jobspyApi = {
       body: JSON.stringify(body),
     }),
 
-  getJobStats: (adminKey: string, params?: { days?: number; limit?: number }) => {
+  getJobStats: async (adminKey: string, params?: { days?: number; limit?: number; profile?: string; roleId?: string }) => {
     const qs = new URLSearchParams()
     if (params?.days) qs.set('days', String(params.days))
     if (params?.limit) qs.set('limit', String(params.limit))
+    if (params?.profile) qs.set('profile', params.profile)
+    if (params?.roleId) qs.set('roleId', params.roleId)
     const query = qs.toString()
-    return jobspyRequest<JobStatsResponse>(
+    const data = await jobspyRequest<JobStatsResponse>(
       `/api/admin/jobs/stats${query ? `?${query}` : ''}`,
       { headers: adminHeaders(adminKey) },
     )
+    // ponytail: old backend builds omit new stats fields; default empty arrays here once.
+    return {
+      ...data,
+      profileBreakdown: data.profileBreakdown ?? [],
+      enrichmentRoleSummary: data.enrichmentRoleSummary ?? [],
+      latestJobs: data.latestJobs ?? [],
+      expiredJobSamples: data.expiredJobSamples ?? [],
+      recentScrapeRuns: data.recentScrapeRuns ?? [],
+      sourceBreakdown: data.sourceBreakdown ?? [],
+      locationBreakdown: data.locationBreakdown ?? [],
+    }
   },
 
   refreshJobs: (body: RefreshRequestBody, adminKey: string) =>
@@ -548,7 +680,11 @@ export const jobspyApi = {
     }),
 
   sendDigest: (
-    body: EmailDigestBody & { mode: 'test' | 'dry_run' | 'live'; testEmail?: string },
+    body: EmailDigestBody & {
+      mode: 'test' | 'dry_run' | 'live'
+      testEmail?: string
+      recipientEmails?: string[]
+    },
     adminKey: string,
   ) =>
     jobspyRequest<SendDigestResponse>('/api/admin/jobs/send-digest', {
@@ -556,6 +692,29 @@ export const jobspyApi = {
       headers: adminHeaders(adminKey),
       body: JSON.stringify(body),
     }),
+
+  getEnrichmentSummary: (adminKey: string) =>
+    jobspyAdminRequest<JobEnrichmentSummaryResponse>('/api/admin/jobs/enrichment/summary', adminKey),
+
+  enrichmentImportPreview: (adminKey: string, file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return jobspyAdminRequest<JobEnrichmentImportPreviewResponse>(
+      '/api/admin/jobs/enrichment/import-preview',
+      adminKey,
+      { method: 'POST', body: form },
+    )
+  },
+
+  enrichmentImportCommit: (adminKey: string, file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return jobspyAdminRequest<JobEnrichmentImportCommitResponse>(
+      '/api/admin/jobs/enrichment/import-commit',
+      adminKey,
+      { method: 'POST', body: form },
+    )
+  },
 }
 
 export function parseJobSpySkills(raw: JobSpyJob['key_skills']): string[] {
@@ -581,8 +740,15 @@ export function jobSpySiteLabel(site?: string | null): string {
     glassdoor: 'Glassdoor',
     google: 'Google',
     naukri: 'Naukri',
+    foundit: 'Foundit',
   }
   return map[site] ?? site
+}
+
+export function profileKeyLabel(profile: string | null | undefined, breakdown?: JobStatsProfileItem[]): string {
+  if (!profile) return '—'
+  const hit = breakdown?.find((p) => p.profile === profile)
+  return hit?.label ?? profile.replace(/_india$/, '').replace(/_/g, ' ')
 }
 
 export function formatJobSpySalary(job: JobSpyJob): string | null {
@@ -597,4 +763,30 @@ export function jobSpyApplyUrl(job: JobSpyJob): string | null {
   const direct = job.job_url_direct?.trim()
   const url = job.job_url?.trim()
   return direct || url || null
+}
+
+/**
+ * Fetch /api/admin/jobs/export as a Blob using the correct API base and X-Admin-Key header.
+ * Returns { blob, filename } on success, throws on failure.
+ */
+export async function exportJobsCsv(adminKey: string, limit = 5000): Promise<{ blob: Blob; filename: string }> {
+  const base = jobsBaseUrl()
+  const url = `${base}/api/admin/jobs/export?limit=${limit}`
+  const res = await fetch(url, {
+    headers: { 'X-Admin-Key': adminKey },
+  })
+  if (!res.ok) {
+    let detail = res.statusText
+    try {
+      const body = (await res.json()) as { detail?: string }
+      if (body.detail) detail = body.detail
+    } catch { /* ignore */ }
+    console.error('[exportJobsCsv] failed', { url, status: res.status, detail })
+    throw new Error(`Export failed (${res.status}): ${detail}`)
+  }
+  const disposition = res.headers.get('Content-Disposition') ?? ''
+  const match = disposition.match(/filename="?([^";\n]+)"?/)
+  const filename = match?.[1] ?? 'jobs_export.csv'
+  const blob = await res.blob()
+  return { blob, filename }
 }

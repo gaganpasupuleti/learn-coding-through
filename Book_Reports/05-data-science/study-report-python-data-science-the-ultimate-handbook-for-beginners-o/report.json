@@ -1,0 +1,133 @@
+{
+  "id": "study-report-python-data-science-the-ultimate-handbook-for-beginners-o",
+  "title": "Study Report: Python Data Science — The Ultimate Handbook for Beginners on How to Explore NumPy, Pandas, and More",
+  "author": "Gagan Pasupuleti",
+  "family_id": "05-data-science",
+  "family_name": "Data Science",
+  "level": "Intermediate",
+  "summary": "This report covers a practical handbook focused on the tools of data science. It gets started with Python for data scientists, then covers descriptive statistics, data analysis libraries, NumPy arrays and vectorized computation, data analysis with Pandas, data visualization, data mining, and an introduction to machine learning including a simple learning algorithm. It is aimed at readers ready to work with real data tools.",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Getting Started with Python for Data Scientists",
+      "topic": "data_science",
+      "content": "**Chapter focus: Getting Started with Python for Data Scientists**\n\nData science uses programming to collect, clean, analyze, and explain data. The typical flow: ask a question, load data (CSV, database), explore with summaries and charts, find patterns, and share results. Python is popular because libraries like NumPy, Pandas, and Matplotlib handle heavy work. You still need clean data and clear questions — tools alone do not guarantee good insights.\n\nCode Reference:\n```python\nimport pandas as pd\ndf = pd.DataFrame({\"sales\": [120, 150, 90]})\nprint(df[\"sales\"].mean())\nprint(df.describe())\n```\nWhat it shows: Pandas loads a table; mean() averages sales; describe() shows count, min, max, and more.\n\n### What it actually is\nData science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.\n\n### When to use it\nWhen you have data and need trends, comparisons, forecasts, or evidence for decisions.\n\n### Where to use it\nMarketing analytics, healthcare research, sports stats, finance, and school science projects.\n\n### Real use example\nA store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order.",
+      "key_takeaways": [
+        "Data science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.",
+        "When you have data and need trends, comparisons, forecasts, or evidence for decisions.",
+        "A store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order."
+      ],
+      "what_it_is": "Data science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.",
+      "when_to_use": "When you have data and need trends, comparisons, forecasts, or evidence for decisions.",
+      "where_to_use": "Marketing analytics, healthcare research, sports stats, finance, and school science projects.",
+      "real_use_example": "A store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order."
+    },
+    {
+      "number": 2,
+      "title": "Descriptive Statistics",
+      "topic": "data_science",
+      "content": "**Chapter focus: Descriptive Statistics**\n\nData science uses programming to collect, clean, analyze, and explain data. The typical flow: ask a question, load data (CSV, database), explore with summaries and charts, find patterns, and share results. Python is popular because libraries like NumPy, Pandas, and Matplotlib handle heavy work. You still need clean data and clear questions — tools alone do not guarantee good insights.\n\nCode Reference:\n```python\nimport pandas as pd\ndf = pd.DataFrame({\"sales\": [120, 150, 90]})\nprint(df[\"sales\"].mean())\nprint(df.describe())\n```\nWhat it shows: Pandas loads a table; mean() averages sales; describe() shows count, min, max, and more.\n\n### What it actually is\nData science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.\n\n### When to use it\nWhen you have data and need trends, comparisons, forecasts, or evidence for decisions.\n\n### Where to use it\nMarketing analytics, healthcare research, sports stats, finance, and school science projects.\n\n### Real use example\nA store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order.",
+      "key_takeaways": [
+        "Data science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.",
+        "When you have data and need trends, comparisons, forecasts, or evidence for decisions.",
+        "A store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order."
+      ],
+      "what_it_is": "Data science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.",
+      "when_to_use": "When you have data and need trends, comparisons, forecasts, or evidence for decisions.",
+      "where_to_use": "Marketing analytics, healthcare research, sports stats, finance, and school science projects.",
+      "real_use_example": "A store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order."
+    },
+    {
+      "number": 3,
+      "title": "Data Analysis and Libraries",
+      "topic": "data_science",
+      "content": "**Chapter focus: Data Analysis and Libraries**\n\nData science uses programming to collect, clean, analyze, and explain data. The typical flow: ask a question, load data (CSV, database), explore with summaries and charts, find patterns, and share results. Python is popular because libraries like NumPy, Pandas, and Matplotlib handle heavy work. You still need clean data and clear questions — tools alone do not guarantee good insights.\n\nCode Reference:\n```python\nimport pandas as pd\ndf = pd.DataFrame({\"sales\": [120, 150, 90]})\nprint(df[\"sales\"].mean())\nprint(df.describe())\n```\nWhat it shows: Pandas loads a table; mean() averages sales; describe() shows count, min, max, and more.\n\n### What it actually is\nData science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.\n\n### When to use it\nWhen you have data and need trends, comparisons, forecasts, or evidence for decisions.\n\n### Where to use it\nMarketing analytics, healthcare research, sports stats, finance, and school science projects.\n\n### Real use example\nA store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order.",
+      "key_takeaways": [
+        "Data science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.",
+        "When you have data and need trends, comparisons, forecasts, or evidence for decisions.",
+        "A store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order."
+      ],
+      "what_it_is": "Data science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.",
+      "when_to_use": "When you have data and need trends, comparisons, forecasts, or evidence for decisions.",
+      "where_to_use": "Marketing analytics, healthcare research, sports stats, finance, and school science projects.",
+      "real_use_example": "A store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order."
+    },
+    {
+      "number": 4,
+      "title": "NumPy Arrays and Vectorized Computation",
+      "topic": "numpy",
+      "content": "**Chapter focus: NumPy Arrays and Vectorized Computation**\n\nNumPy arrays must have one dtype; mixing types forces conversion. Use np.zeros((3,3)) for matrices.\n\nCode Reference:\n```python\nimport numpy as np\narr = np.array([1, 2, 3, 4])\nprint(arr.mean())\nprint(arr * 2)  # [2 4 6 8]\n```\nWhat it shows: mean() averages all elements; arr * 2 multiplies every item at once (vectorization).\n\n### What it actually is\nNumPy is the core numeric library for Python scientific computing, built around the ndarray type.\n\n### When to use it\nNumeric arrays, matrix math, random numbers, image pixels as arrays, speed-critical calculations.\n\n### Where to use it\nData science stacks, physics simulations, computer vision preprocessing, ML feature arrays.\n\n### Real use example\nImage pixels load as a NumPy array shape (height, width, 3) for fast brightness adjustment.",
+      "key_takeaways": [
+        "NumPy is the core numeric library for Python scientific computing, built around the ndarray type.",
+        "Numeric arrays, matrix math, random numbers, image pixels as arrays, speed-critical calculations.",
+        "Image pixels load as a NumPy array shape (height, width, 3) for fast brightness adjustment."
+      ],
+      "what_it_is": "NumPy is the core numeric library for Python scientific computing, built around the ndarray type.",
+      "when_to_use": "Numeric arrays, matrix math, random numbers, image pixels as arrays, speed-critical calculations.",
+      "where_to_use": "Data science stacks, physics simulations, computer vision preprocessing, ML feature arrays.",
+      "real_use_example": "Image pixels load as a NumPy array shape (height, width, 3) for fast brightness adjustment."
+    },
+    {
+      "number": 5,
+      "title": "Data Analysis with Pandas",
+      "topic": "pandas",
+      "content": "**Chapter focus: Data Analysis with Pandas**\n\nUse df.isna().sum() to find missing values; df.fillna(0) or dropna() to clean. read_csv thousands of rows in one line.\n\nCode Reference:\n```python\nimport pandas as pd\ndf = pd.read_csv(\"students.csv\")\nprint(df.head())\nprint(df.groupby(\"class\")[\"score\"].mean())\n```\nWhat it shows: head() previews rows; groupby averages score per class.\n\n### What it actually is\nPandas is a library for tabular data — rows and columns with labels, filters, and aggregations.\n\n### When to use it\nCSV/Excel analysis, joining tables, missing data cleanup, summary statistics, export reports.\n\n### Where to use it\nAnalyst workflows, Kaggle competitions, business reporting, research data prep.\n\n### Real use example\nAn analyst filters df[df['country']=='IN'], groups by city, and exports top 10 sales cities to Excel.",
+      "key_takeaways": [
+        "Pandas is a library for tabular data — rows and columns with labels, filters, and aggregations.",
+        "CSV/Excel analysis, joining tables, missing data cleanup, summary statistics, export reports.",
+        "An analyst filters df[df['country']=='IN'], groups by city, and exports top 10 sales cities to Excel."
+      ],
+      "what_it_is": "Pandas is a library for tabular data — rows and columns with labels, filters, and aggregations.",
+      "when_to_use": "CSV/Excel analysis, joining tables, missing data cleanup, summary statistics, export reports.",
+      "where_to_use": "Analyst workflows, Kaggle competitions, business reporting, research data prep.",
+      "real_use_example": "An analyst filters df[df['country']=='IN'], groups by city, and exports top 10 sales cities to Excel."
+    },
+    {
+      "number": 6,
+      "title": "Data Visualization",
+      "topic": "visualization",
+      "content": "**Chapter focus: Data Visualization**\n\nVisualization turns numbers into charts so patterns are easy to see. Matplotlib draws line, bar, and scatter plots; labels and titles make charts readable. Good charts answer one clear question. Start simple — one variable or one comparison — before complex dashboards.\n\nCode Reference:\n```python\nimport matplotlib.pyplot as plt\nmonths = [\"Jan\", \"Feb\", \"Mar\"]\nsales = [120, 150, 90]\nplt.bar(months, sales)\nplt.title(\"Monthly Sales\")\nplt.show()\n```\nWhat it shows: bar() draws columns; title labels the chart; show() displays it.\n\n### What it actually is\nData visualization is graphical display of data to reveal trends, outliers, and comparisons.\n\n### When to use it\nPresenting results, exploring data, spotting spikes/drops, reports and slides.\n\n### Where to use it\nBusiness dashboards, science papers, journalism, ML training curve monitoring.\n\n### Real use example\nA teacher plots test scores as a histogram, sees most students clustered at 70–80, and schedules extra help before the final exam.",
+      "key_takeaways": [
+        "Data visualization is graphical display of data to reveal trends, outliers, and comparisons.",
+        "Presenting results, exploring data, spotting spikes/drops, reports and slides.",
+        "A teacher plots test scores as a histogram, sees most students clustered at 70–80, and schedules extra help before the final exam."
+      ],
+      "what_it_is": "Data visualization is graphical display of data to reveal trends, outliers, and comparisons.",
+      "when_to_use": "Presenting results, exploring data, spotting spikes/drops, reports and slides.",
+      "where_to_use": "Business dashboards, science papers, journalism, ML training curve monitoring.",
+      "real_use_example": "A teacher plots test scores as a histogram, sees most students clustered at 70–80, and schedules extra help before the final exam."
+    },
+    {
+      "number": 7,
+      "title": "Data Mining",
+      "topic": "data_science",
+      "content": "**Chapter focus: Data Mining**\n\nData science uses programming to collect, clean, analyze, and explain data. The typical flow: ask a question, load data (CSV, database), explore with summaries and charts, find patterns, and share results. Python is popular because libraries like NumPy, Pandas, and Matplotlib handle heavy work. You still need clean data and clear questions — tools alone do not guarantee good insights.\n\nCode Reference:\n```python\nimport pandas as pd\ndf = pd.DataFrame({\"sales\": [120, 150, 90]})\nprint(df[\"sales\"].mean())\nprint(df.describe())\n```\nWhat it shows: Pandas loads a table; mean() averages sales; describe() shows count, min, max, and more.\n\n### What it actually is\nData science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.\n\n### When to use it\nWhen you have data and need trends, comparisons, forecasts, or evidence for decisions.\n\n### Where to use it\nMarketing analytics, healthcare research, sports stats, finance, and school science projects.\n\n### Real use example\nA store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order.",
+      "key_takeaways": [
+        "Data science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.",
+        "When you have data and need trends, comparisons, forecasts, or evidence for decisions.",
+        "A store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order."
+      ],
+      "what_it_is": "Data science is turning raw data into useful answers using statistics, visualization, and sometimes machine learning.",
+      "when_to_use": "When you have data and need trends, comparisons, forecasts, or evidence for decisions.",
+      "where_to_use": "Marketing analytics, healthcare research, sports stats, finance, and school science projects.",
+      "real_use_example": "A store loads monthly sales CSV, computes average per product, plots a bar chart, and finds which item dropped 20% — guiding the next order."
+    },
+    {
+      "number": 8,
+      "title": "Introduction to Machine Learning",
+      "topic": "intro",
+      "content": "**Chapter focus: Introduction to Machine Learning**\n\nAlways split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nprint(\"Hello, Python!\")\nprint(2 + 3)\n```\nWhat it shows: The first line prints text. The second shows Python can also calculate numbers.\n\n### What it actually is\nPython is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step. It comes with a large standard library and thousands of third-party packages.\n\n### When to use it\nUse Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.\n\n### Where to use it\nUsed at Google, Netflix, NASA, and in schools worldwide. Common in data science teams, DevOps automation, scripting, and beginner coding courses.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "Python is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step.",
+        "Use Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "Python is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step. It comes with a large standard library and thousands of third-party packages.",
+      "when_to_use": "Use Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.",
+      "where_to_use": "Used at Google, Netflix, NASA, and in schools worldwide. Common in data science teams, DevOps automation, scripting, and beginner coding courses.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    }
+  ],
+  "chapter_count": 8,
+  "source_file": "Python Data Science - The Ultimate Handbook for Beginners on How to Explore NumPy, Pandas.epub"
+}

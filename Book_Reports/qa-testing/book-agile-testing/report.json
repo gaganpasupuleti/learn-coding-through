@@ -1,0 +1,139 @@
+{
+  "id": "book-agile-testing",
+  "title": "Study Report: Agile Testing — QA & Test Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "qa-testing",
+  "family_name": "QA & Test Engineer",
+  "level": "Intermediate",
+  "report_type": "role_book_study",
+  "book_title": "Agile Testing",
+  "book_author": "Lisa Crispin & Janet Gregory",
+  "book_index": 3,
+  "summary": "Study report for *Agile Testing* by Lisa Crispin & Janet Gregory (Intermediate level) mapped to the QA & Test Engineer role. Testing in Scrum: whole-team quality and automation strategy.",
+  "sources": [
+    "https://agiletester.ca/agile-testing-book/"
+  ],
+  "source_file": "Reference: Agile Testing — Lisa Crispin & Janet Gregory",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Agile Testing",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Agile Testing** *(Level: Intermediate)*\n\nThis study report summarizes *Agile Testing* by Lisa Crispin & Janet Gregory for the QA & Test Engineer role. The resource is rated Intermediate level. Testing in Scrum: whole-team quality and automation strategy. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Agile Testing\n# Author: Lisa Crispin & Janet Gregory\n# Role: QA & Test Engineer\n# Level: Intermediate\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Agile Testing.\n\n### When to use it\nWhen learning QA & Test Engineer skills at Intermediate level.\n\n### Where to use it\nQA & Test Engineer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Agile Testing.",
+        "When learning QA & Test Engineer skills at Intermediate level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Agile Testing.",
+      "when_to_use": "When learning QA & Test Engineer skills at Intermediate level.",
+      "where_to_use": "QA & Test Engineer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Intermediate)*\n\nQA & Test Engineer professionals use ideas from Agile Testing to solve real workplace problems. Testing in Scrum: whole-team quality and automation strategy. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: QA & Test Engineer\nBook focus: Testing in Scrum: whole-team quality and automation strategy.\nRecommended level: Intermediate\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nQA & Test Engineer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a intermediate skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a intermediate skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "QA & Test Engineer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a intermediate skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Intermediate",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Intermediate)*\n\nThe main topics in Agile Testing include practical concepts described as: Testing in Scrum: whole-team quality and automation strategy. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in QA & Test Engineer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: pytest Automation Framework Structure",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: pytest Automation Framework Structure** *(Level: Intermediate)*\n\nconftest.py shares fixtures across test packages without import boilerplate. Arrange-Act-Assert keeps tests readable; one logical assertion focus per test when possible. Markers (@pytest.mark.smoke) slice suites for fast PR gates vs full nightly runs. pytest.param combines inputs with test ids for clear failure output.\n\nCode Reference:\n```python\nimport pytest\n\n@pytest.mark.parametrize('email,expected', [\n    ('user@example.com', 201),\n    ('not-an-email', 422),\n    ('', 422),\n], ids=['valid', 'invalid-format', 'empty'])\ndef test_register_status(api_client, email, expected):\n    assert api_client.post('/register', json={'email': email}).status_code == expected\n```\nWhat it shows: parametrize runs three cases; ids label each in failure reports.\n\n### What it actually is\npytest is the standard Python test runner for API and unit automation.\n\n### When to use it\nAdopt for all Python-based test automation in backend-heavy teams.\n\n### Where to use it\nCI smoke suites, microservice contract tests, and data pipeline validation.\n\n### Real use example\nSmoke marker runs in 3 minutes on PR; full regression runs nightly in 45 minutes.",
+      "key_takeaways": [
+        "pytest is the standard Python test runner for API and unit automation.",
+        "Adopt for all Python-based test automation in backend-heavy teams.",
+        "Smoke marker runs in 3 minutes on PR; full regression runs nightly in 45 minutes."
+      ],
+      "what_it_is": "pytest is the standard Python test runner for API and unit automation.",
+      "when_to_use": "Adopt for all Python-based test automation in backend-heavy teams.",
+      "where_to_use": "CI smoke suites, microservice contract tests, and data pipeline validation.",
+      "real_use_example": "Smoke marker runs in 3 minutes on PR; full regression runs nightly in 45 minutes."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Selenium WebDriver and Page Object Model",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: Selenium WebDriver and Page Object Model** *(Level: Intermediate)*\n\nSelenium drives browsers programmatically; WebDriver W3C standardizes API across languages. Page Object Model encapsulates locators and actions in page classes reducing duplication. Explicit waits (WebDriverWait) handle async UI better than sleep(5) flakes. Run headless in CI; headed locally for debugging selector issues.\n\nCode Reference:\n```python\nclass LoginPage:\n    def __init__(self, driver):\n        self.driver = driver\n    def login(self, email, password):\n        self.driver.find_element(By.ID, 'email').send_keys(email)\n        self.driver.find_element(By.ID, 'password').send_keys(password)\n        self.driver.find_element(By.CSS_SELECTOR, 'button[type=submit]').click()\n```\nWhat it shows: LoginPage hides locator details; tests call login() with credentials only.\n\n### What it actually is\nSelenium automates browser UI regression at scale with mature ecosystem.\n\n### When to use it\nUse when Playwright not available or legacy Java/C# grid infrastructure exists.\n\n### Where to use it\nEnterprise regression grids, cross-browser corporate apps, and SAP web UIs.\n\n### Real use example\nLocator change updates LoginPage once; fifty tests keep passing unchanged.",
+      "key_takeaways": [
+        "Selenium automates browser UI regression at scale with mature ecosystem.",
+        "Use when Playwright not available or legacy Java/C# grid infrastructure exists.",
+        "Locator change updates LoginPage once; fifty tests keep passing unchanged."
+      ],
+      "what_it_is": "Selenium automates browser UI regression at scale with mature ecosystem.",
+      "when_to_use": "Use when Playwright not available or legacy Java/C# grid infrastructure exists.",
+      "where_to_use": "Enterprise regression grids, cross-browser corporate apps, and SAP web UIs.",
+      "real_use_example": "Locator change updates LoginPage once; fifty tests keep passing unchanged."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Playwright Modern E2E Testing",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: Playwright Modern E2E Testing** *(Level: Intermediate)*\n\nPlaywright auto-waits for element actionability reducing flaky explicit wait code. Trace viewer records DOM, network, and screenshots step-by-step on failure. Built-in test generator records actions producing starter locators—refine to getByRole. Python sync API suits pytest teams; async available for advanced flows.\n\nCode Reference:\n```python\ndef test_search_product(page):\n    page.goto('https://demo.shop')\n    page.get_by_label('Search').fill('keyboard')\n    page.get_by_role('button', name='Search').click()\n    expect(page.get_by_role('heading', name='Results')).to_be_visible()\n```\nWhat it shows: get_by_label and get_by_role prefer accessible selectors over brittle CSS.\n\n### What it actually is\nPlaywright is the preferred 2024–2026 browser automation for new E2E suites.\n\n### When to use it\nStart new E2E projects with Playwright unless constrained by existing Selenium grid.\n\n### Where to use it\nCross-browser CI, visual debug, and mobile viewport emulation.\n\n### Real use example\nFailed CI uploads trace.zip; QA replays exact click sequence seeing network 500.",
+      "key_takeaways": [
+        "Playwright is the preferred 2024–2026 browser automation for new E2E suites.",
+        "Start new E2E projects with Playwright unless constrained by existing Selenium grid.",
+        "Failed CI uploads trace."
+      ],
+      "what_it_is": "Playwright is the preferred 2024–2026 browser automation for new E2E suites.",
+      "when_to_use": "Start new E2E projects with Playwright unless constrained by existing Selenium grid.",
+      "where_to_use": "Cross-browser CI, visual debug, and mobile viewport emulation.",
+      "real_use_example": "Failed CI uploads trace.zip; QA replays exact click sequence seeing network 500."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Intermediate)*\n\nFinish Agile Testing with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to QA & Test Engineer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a intermediate project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a intermediate project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a intermediate project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

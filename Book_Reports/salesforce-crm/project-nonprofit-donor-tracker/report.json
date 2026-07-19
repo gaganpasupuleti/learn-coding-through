@@ -1,0 +1,134 @@
+{
+  "id": "project-nonprofit-donor-tracker",
+  "title": "Project Report: Nonprofit Donor Tracker — Salesforce CRM Developer / Administrator",
+  "author": "Gagan Pasupuleti",
+  "family_id": "salesforce-crm",
+  "family_name": "Salesforce CRM Developer / Administrator",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Nonprofit Donor Tracker",
+  "project_index": 1,
+  "duration": "2–3 weeks",
+  "summary": "Custom objects for Donors and Donations, page layouts, reports, and a simple Flow for thank-you email.",
+  "objectives": [
+    "Custom Donor and Donation objects",
+    "Page layouts and list views",
+    "Donation summary report",
+    "Record-triggered thank-you email Flow"
+  ],
+  "tools": [
+    "Salesforce Developer Edition",
+    "Flow Builder"
+  ],
+  "deliverables": [
+    "DE org config",
+    "Report screenshots",
+    "Flow demo"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Nonprofit Donor Tracker** is a beginner-level end-to-end project for Salesforce CRM Developer / Administrator. Duration: 2–3 weeks. Custom objects for Donors and Donations, page layouts, reports, and a simple Flow for thank-you email. Tools: Salesforce Developer Edition, Flow Builder.\n\nCode Reference:\n```text\nObjective: Custom Donor and Donation objects\nObjective: Page layouts and list views\nObjective: Donation summary report\nObjective: Record-triggered thank-you email Flow\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nSalesforce CRM Developer / Administrator portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Salesforce CRM Developer / Administrator resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Salesforce CRM Developer / Administrator resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Salesforce CRM Developer / Administrator portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Salesforce CRM Developer / Administrator resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Objects",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Objects** *(Level: Beginner)*\n\nDonor + Donation custom objects. Complete these tasks: Fields; Lookup relationship. Deliverable for this phase: Object schema doc.\n\nCode Reference:\n```text\n- [ ] Fields\n- [ ] Lookup relationship\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Objects is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Object schema doc to the teacher.",
+      "key_takeaways": [
+        "Phase Objects is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Object schema doc to the teacher."
+      ],
+      "what_it_is": "Phase Objects is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Object schema doc to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: UI",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: UI** *(Level: Beginner)*\n\nPage layouts. Complete these tasks: Related lists; Compact layout. Deliverable for this phase: Layout screenshots.\n\nCode Reference:\n```text\n- [ ] Related lists\n- [ ] Compact layout\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase UI is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Layout screenshots to the teacher.",
+      "key_takeaways": [
+        "Phase UI is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Layout screenshots to the teacher."
+      ],
+      "what_it_is": "Phase UI is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Layout screenshots to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Report",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Report** *(Level: Beginner)*\n\nDonation dashboard. Complete these tasks: Total by month; Top donors. Deliverable for this phase: Report + dashboard.\n\nCode Reference:\n```text\n- [ ] Total by month\n- [ ] Top donors\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Report is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Report + dashboard to the teacher.",
+      "key_takeaways": [
+        "Phase Report is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Report + dashboard to the teacher."
+      ],
+      "what_it_is": "Phase Report is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Report + dashboard to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Flow",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Flow** *(Level: Beginner)*\n\nThank-you email. Complete these tasks: Record-triggered; Email template. Deliverable for this phase: Flow demo video.\n\nCode Reference:\n```text\n- [ ] Record-triggered\n- [ ] Email template\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Flow is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Flow demo video to the teacher.",
+      "key_takeaways": [
+        "Phase Flow is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Flow demo video to the teacher."
+      ],
+      "what_it_is": "Phase Flow is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Flow demo video to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: DE org config; Report screenshots; Flow demo. Skills demonstrated: Salesforce admin, Objects, Flows. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: DE org config\nDeliverable: Report screenshots\nDeliverable: Flow demo\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits DE org config and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits DE org config and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits DE org config and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

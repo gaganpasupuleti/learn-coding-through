@@ -1,0 +1,148 @@
+{
+  "id": "study-report-python-and-hadoop-basics-programming-for-beginners-2-book",
+  "title": "Study Report: Python and Hadoop Basics — Programming for Beginners (2 Books in 1)",
+  "author": "Gagan Pasupuleti",
+  "family_id": "05-data-science",
+  "family_name": "Data Science",
+  "level": "Beginner to Intermediate",
+  "summary": "This report covers a two-in-one bundle that teaches Python fundamentals and then introduces Hadoop for big data. The Python half covers history, first programs, variables, data types, operators, comments, if-else, loops (for and while), break and continue, and tuples. The Hadoop half introduces the Hadoop ecosystem, its modules, YARN, and MapReduce for processing large datasets. Together they bridge everyday coding and big-data processing.",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Python Introduction, History, and First Program",
+      "topic": "intro",
+      "content": "**Chapter focus: Python Introduction, History, and First Program**\n\nPython is a general-purpose programming language known for readable syntax and wide use in web development, automation, data analysis, and machine learning. Unlike many languages that use braces and semicolons, Python uses indentation to show structure, which helps beginners see how code is organized. You write instructions in a .py file or run them line by line in the interactive shell. Each instruction tells the computer to do something: store a value, print text, make a decision, or repeat a task.\n\nCode Reference:\n```python\nprint(\"Hello, Python!\")\nprint(2 + 3)\n```\nWhat it shows: The first line prints text. The second shows Python can also calculate numbers.\n\n### What it actually is\nPython is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step. It comes with a large standard library and thousands of third-party packages.\n\n### When to use it\nUse Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.\n\n### Where to use it\nUsed at Google, Netflix, NASA, and in schools worldwide. Common in data science teams, DevOps automation, scripting, and beginner coding courses.\n\n### Real use example\nA small business owner writes a 10-line Python script that renames 200 invoice PDFs by date every month, saving an hour of manual work.",
+      "key_takeaways": [
+        "Python is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step.",
+        "Use Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.",
+        "A small business owner writes a 10-line Python script that renames 200 invoice PDFs by date every month, saving an hour of manual work."
+      ],
+      "what_it_is": "Python is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step. It comes with a large standard library and thousands of third-party packages.",
+      "when_to_use": "Use Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.",
+      "where_to_use": "Used at Google, Netflix, NASA, and in schools worldwide. Common in data science teams, DevOps automation, scripting, and beginner coding courses.",
+      "real_use_example": "A small business owner writes a 10-line Python script that renames 200 invoice PDFs by date every month, saving an hour of manual work."
+    },
+    {
+      "number": 2,
+      "title": "Variables and Data Types",
+      "topic": "variables",
+      "content": "**Chapter focus: Variables and Data Types**\n\nA variable is a name that points to a value stored in memory. You create one with the assignment operator (=): the name goes on the left, the value on the right. Python figures out the type automatically — you do not declare int or str first. Common types are integers (whole numbers), floats (decimals), strings (text in quotes), and booleans (True/False). You can change a variable later by assigning a new value. Clear names like user_age or total_price make code easier to read than single letters.\n\nCode Reference:\n```python\ncount = 5          # integer\nlabel = \"box\"      # string\nprice = 2.5        # float\nis_open = True     # boolean\nprint(type(count))  # <class 'int'>\n```\nWhat it shows: Each variable stores one value. type() tells you what kind of data it holds.\n\n### What it actually is\nVariables are labeled containers for data. The label (name) lets you reuse and update values throughout a program without repeating the actual number or text.\n\n### When to use it\nUse variables whenever a value might change, will be reused later, or needs a meaningful name — scores, user names, prices, flags, counters.\n\n### Where to use it\nEvery Python program: games (player score), web apps (username), data scripts (file path), calculators (operands), and loops (counters).\n\n### Real use example\nAn online shop stores item_price = 499, quantity = 2, and computes total = item_price * quantity so the checkout page shows Rs 998 without hard-coding numbers.",
+      "key_takeaways": [
+        "Variables are labeled containers for data.",
+        "Use variables whenever a value might change, will be reused later, or needs a meaningful name — scores, user names, prices, flags, counters.",
+        "An online shop stores item_price = 499, quantity = 2, and computes total = item_price * quantity so the checkout page shows Rs 998 without hard-coding numbers."
+      ],
+      "what_it_is": "Variables are labeled containers for data. The label (name) lets you reuse and update values throughout a program without repeating the actual number or text.",
+      "when_to_use": "Use variables whenever a value might change, will be reused later, or needs a meaningful name — scores, user names, prices, flags, counters.",
+      "where_to_use": "Every Python program: games (player score), web apps (username), data scripts (file path), calculators (operands), and loops (counters).",
+      "real_use_example": "An online shop stores item_price = 499, quantity = 2, and computes total = item_price * quantity so the checkout page shows Rs 998 without hard-coding numbers."
+    },
+    {
+      "number": 3,
+      "title": "Operators, Keywords, and Comments",
+      "topic": "variables",
+      "content": "**Chapter focus: Operators, Keywords, and Comments**\n\nOperators are symbols that perform actions on values: + - * / for math, == != < > for comparisons, and and or not for logic. Assignment operators like += update a variable in place (count += 1 means count = count + 1). Understanding precedence avoids bugs — parentheses make order explicit.\n\nCode Reference:\n```python\na, b = 10, 3\nprint(a + b, a // b, a % b)   # 13 3 1\nprint(a > b and b > 0)        # True\n```\nWhat it shows: // is integer division; % is remainder; and combines two True/False tests.\n\n### What it actually is\nOperators are symbols that tell Python to compute, compare, or combine values. Expressions like price * 1.18 produce new values from existing ones.\n\n### When to use it\nUse operators in every calculation, comparison, and logical test — totals, averages, valid ranges, and combining yes/no checks.\n\n### Where to use it\nCalculators, grading logic, game scoring, filtering data, and updating counters in loops.\n\n### Real use example\nA shopping cart uses total += price * qty inside a loop to accumulate the bill instead of rewriting total = total + ... every time.",
+      "key_takeaways": [
+        "Operators are symbols that tell Python to compute, compare, or combine values.",
+        "Use operators in every calculation, comparison, and logical test — totals, averages, valid ranges, and combining yes/no checks.",
+        "A shopping cart uses total += price * qty inside a loop to accumulate the bill instead of rewriting total = total +."
+      ],
+      "what_it_is": "Operators are symbols that tell Python to compute, compare, or combine values. Expressions like price * 1.18 produce new values from existing ones.",
+      "when_to_use": "Use operators in every calculation, comparison, and logical test — totals, averages, valid ranges, and combining yes/no checks.",
+      "where_to_use": "Calculators, grading logic, game scoring, filtering data, and updating counters in loops.",
+      "real_use_example": "A shopping cart uses total += price * qty inside a loop to accumulate the bill instead of rewriting total = total + ... every time."
+    },
+    {
+      "number": 4,
+      "title": "If-Else Statements",
+      "topic": "conditionals",
+      "content": "**Chapter focus: If-Else Statements**\n\nConditional statements let a program choose different actions based on whether a condition is True or False. Start with if, add elif for extra tests, and else for the fallback. Only one branch runs — the first condition that is true. Conditions use comparison operators (==, !=, <, >) and logical operators (and, or, not). Indentation shows which lines belong to each branch.\n\nCode Reference:\n```python\nscore = 76\nif score >= 90:\n    grade = \"A\"\nelif score >= 60:\n    grade = \"Pass\"\nelse:\n    grade = \"Fail\"\nprint(grade)  # Pass\n```\nWhat it shows: Each condition is checked top to bottom; the first true branch sets grade.\n\n### What it actually is\nA conditional is a decision gate in code. The program evaluates a boolean expression and runs only the matching block of statements.\n\n### When to use it\nUse conditionals whenever the program should behave differently based on data: age checks, valid input, empty lists, file exists, user role.\n\n### Where to use it\nLogin systems, grading, game win/lose, error handling paths, menu choices, and filtering data.\n\n### Real use example\nAn ATM checks if balance >= amount: if true it withdraws; elif balance > 0 it shows 'insufficient funds'; else it shows 'zero balance'.",
+      "key_takeaways": [
+        "A conditional is a decision gate in code.",
+        "Use conditionals whenever the program should behave differently based on data: age checks, valid input, empty lists, file exists, user role.",
+        "An ATM checks if balance >= amount: if true it withdraws; elif balance > 0 it shows 'insufficient funds'; else it shows 'zero balance'."
+      ],
+      "what_it_is": "A conditional is a decision gate in code. The program evaluates a boolean expression and runs only the matching block of statements.",
+      "when_to_use": "Use conditionals whenever the program should behave differently based on data: age checks, valid input, empty lists, file exists, user role.",
+      "where_to_use": "Login systems, grading, game win/lose, error handling paths, menu choices, and filtering data.",
+      "real_use_example": "An ATM checks if balance >= amount: if true it withdraws; elif balance > 0 it shows 'insufficient funds'; else it shows 'zero balance'."
+    },
+    {
+      "number": 5,
+      "title": "Loops: for and while",
+      "topic": "loops",
+      "content": "**Chapter focus: Loops: for and while**\n\nChoose for when you know how many items or iterations; choose while when waiting for a condition (valid input, game running). Nested loops handle grids and tables.\n\nCode Reference:\n```python\ntotal = 0\nfor n in [10, 20, 30]:\n    total += n\nprint(total)  # 60\n\nfor i in range(3):\n    print(\"Try\", i + 1)\n```\nWhat it shows: First loop sums list values; second uses range for a fixed number of repetitions.\n\n### What it actually is\nA loop is a control structure that repeats execution. for is for known iterations; while is for repeat-until-done patterns.\n\n### When to use it\nUse loops to process every item in a collection, repeat until valid input, run a game main loop, or accumulate totals.\n\n### Where to use it\nReading files line by line, batch renaming files, training epochs in ML, printing tables, polling sensors on Arduino.\n\n### Real use example\nA multiplication table uses nested for loops over rows and columns to print 1x1 through 10x10.",
+      "key_takeaways": [
+        "A loop is a control structure that repeats execution.",
+        "Use loops to process every item in a collection, repeat until valid input, run a game main loop, or accumulate totals.",
+        "A multiplication table uses nested for loops over rows and columns to print 1x1 through 10x10."
+      ],
+      "what_it_is": "A loop is a control structure that repeats execution. for is for known iterations; while is for repeat-until-done patterns.",
+      "when_to_use": "Use loops to process every item in a collection, repeat until valid input, run a game main loop, or accumulate totals.",
+      "where_to_use": "Reading files line by line, batch renaming files, training epochs in ML, printing tables, polling sensors on Arduino.",
+      "real_use_example": "A multiplication table uses nested for loops over rows and columns to print 1x1 through 10x10."
+    },
+    {
+      "number": 6,
+      "title": "Break, Continue, and Tuples",
+      "topic": "loops",
+      "content": "**Chapter focus: Break, Continue, and Tuples**\n\nTuples use parentheses, keep order, and cannot be changed after creation — ideal for coordinates, RGB colors, and database rows returned from queries.\n\nCode Reference:\n```python\ntotal = 0\nfor n in [10, 20, 30]:\n    total += n\nprint(total)  # 60\n\nfor i in range(3):\n    print(\"Try\", i + 1)\n```\nWhat it shows: First loop sums list values; second uses range for a fixed number of repetitions.\n\n### What it actually is\nA loop is a control structure that repeats execution. for is for known iterations; while is for repeat-until-done patterns.\n\n### When to use it\nUse loops to process every item in a collection, repeat until valid input, run a game main loop, or accumulate totals.\n\n### Where to use it\nReading files line by line, batch renaming files, training epochs in ML, printing tables, polling sensors on Arduino.\n\n### Real use example\nA GPS app stores each waypoint as (latitude, longitude) tuples in a route list that must not be altered accidentally.",
+      "key_takeaways": [
+        "A loop is a control structure that repeats execution.",
+        "Use loops to process every item in a collection, repeat until valid input, run a game main loop, or accumulate totals.",
+        "A GPS app stores each waypoint as (latitude, longitude) tuples in a route list that must not be altered accidentally."
+      ],
+      "what_it_is": "A loop is a control structure that repeats execution. for is for known iterations; while is for repeat-until-done patterns.",
+      "when_to_use": "Use loops to process every item in a collection, repeat until valid input, run a game main loop, or accumulate totals.",
+      "where_to_use": "Reading files line by line, batch renaming files, training epochs in ML, printing tables, polling sensors on Arduino.",
+      "real_use_example": "A GPS app stores each waypoint as (latitude, longitude) tuples in a route list that must not be altered accidentally."
+    },
+    {
+      "number": 7,
+      "title": "Introduction to Hadoop",
+      "topic": "intro",
+      "content": "**Chapter focus: Introduction to Hadoop**\n\nHDFS splits files into blocks across nodes; MapReduce processes each block locally to minimize moving data over the network.\n\nCode Reference:\n```python\nprint(\"Hello, Python!\")\nprint(2 + 3)\n```\nWhat it shows: The first line prints text. The second shows Python can also calculate numbers.\n\n### What it actually is\nPython is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step. It comes with a large standard library and thousands of third-party packages.\n\n### When to use it\nUse Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.\n\n### Where to use it\nUsed at Google, Netflix, NASA, and in schools worldwide. Common in data science teams, DevOps automation, scripting, and beginner coding courses.\n\n### Real use example\nA web company counts clicks per page from a 10 TB log file by mapping counts on each server then reducing totals centrally.",
+      "key_takeaways": [
+        "Python is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step.",
+        "Use Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.",
+        "A web company counts clicks per page from a 10 TB log file by mapping counts on each server then reducing totals centrally."
+      ],
+      "what_it_is": "Python is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step. It comes with a large standard library and thousands of third-party packages.",
+      "when_to_use": "Use Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.",
+      "where_to_use": "Used at Google, Netflix, NASA, and in schools worldwide. Common in data science teams, DevOps automation, scripting, and beginner coding courses.",
+      "real_use_example": "A web company counts clicks per page from a 10 TB log file by mapping counts on each server then reducing totals centrally."
+    },
+    {
+      "number": 8,
+      "title": "Hadoop Modules and YARN",
+      "topic": "modules",
+      "content": "**Chapter focus: Hadoop Modules and YARN**\n\nHDFS splits files into blocks across nodes; MapReduce processes each block locally to minimize moving data over the network.\n\nCode Reference:\n```python\nimport random\nfrom datetime import date\n\nprint(random.randint(1, 6))\nprint(date.today())\n```\nWhat it shows: random gives a dice roll; date.today() returns today's date from the standard library.\n\n### What it actually is\nA module is a shared toolbox of functions and classes. import loads it into your program.\n\n### When to use it\nUse modules whenever you need math, dates, file paths, HTTP, randomness, or any feature already implemented in a library.\n\n### Where to use it\nNearly every real project: os for folders, requests for web, pandas for data, flask for web apps.\n\n### Real use example\nA web company counts clicks per page from a 10 TB log file by mapping counts on each server then reducing totals centrally.",
+      "key_takeaways": [
+        "A module is a shared toolbox of functions and classes.",
+        "Use modules whenever you need math, dates, file paths, HTTP, randomness, or any feature already implemented in a library.",
+        "A web company counts clicks per page from a 10 TB log file by mapping counts on each server then reducing totals centrally."
+      ],
+      "what_it_is": "A module is a shared toolbox of functions and classes. import loads it into your program.",
+      "when_to_use": "Use modules whenever you need math, dates, file paths, HTTP, randomness, or any feature already implemented in a library.",
+      "where_to_use": "Nearly every real project: os for folders, requests for web, pandas for data, flask for web apps.",
+      "real_use_example": "A web company counts clicks per page from a 10 TB log file by mapping counts on each server then reducing totals centrally."
+    },
+    {
+      "number": 9,
+      "title": "MapReduce and Data Flow",
+      "topic": "big_data",
+      "content": "**Chapter focus: MapReduce and Data Flow**\n\nBig data is datasets too large for one computer — think logs from millions of users. Hadoop distributes storage (HDFS) and processing (MapReduce) across many machines. Map step processes chunks in parallel; Reduce step combines results. Modern stacks often use Spark with Python, but Hadoop concepts still explain distributed thinking.\n\nCode Reference:\n```python\n# Conceptual MapReduce idea\n# Map: count words per chunk -> Reduce: sum counts per word\npairs = [(\"apple\", 1), (\"banana\", 1), (\"apple\", 1)]\ncounts = {}\nfor word, n in pairs:\n    counts[word] = counts.get(word, 0) + n\nprint(counts)  # {'apple': 2, 'banana': 1}\n```\nWhat it shows: Simulates combining mapped counts — the core idea behind distributed word counting.\n\n### What it actually is\nBig data systems store and process huge datasets by splitting work across a cluster of computers.\n\n### When to use it\nWeb-scale logs, billions of rows, data that does not fit on one disk or RAM.\n\n### Where to use it\nLarge tech firms, log analytics, recommendation pipelines, scientific datasets.\n\n### Real use example\nA social network counts hashtag usage across 500 servers nightly, each processing a slice of posts, then merges totals for trending topics.",
+      "key_takeaways": [
+        "Big data systems store and process huge datasets by splitting work across a cluster of computers.",
+        "Web-scale logs, billions of rows, data that does not fit on one disk or RAM.",
+        "A social network counts hashtag usage across 500 servers nightly, each processing a slice of posts, then merges totals for trending topics."
+      ],
+      "what_it_is": "Big data systems store and process huge datasets by splitting work across a cluster of computers.",
+      "when_to_use": "Web-scale logs, billions of rows, data that does not fit on one disk or RAM.",
+      "where_to_use": "Large tech firms, log analytics, recommendation pipelines, scientific datasets.",
+      "real_use_example": "A social network counts hashtag usage across 500 servers nightly, each processing a slice of posts, then merges totals for trending topics."
+    }
+  ],
+  "chapter_count": 9,
+  "source_file": "PYTHON AND HADOOP BASICS - PROGRAMMING FOR BEGINNERS - 2 BOOKS IN 1.epub"
+}

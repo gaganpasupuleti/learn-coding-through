@@ -1,0 +1,139 @@
+{
+  "id": "book-effective-java",
+  "title": "Study Report: Effective Java — Java Backend Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "java-backend",
+  "family_name": "Java Backend Developer",
+  "level": "Intermediate",
+  "report_type": "role_book_study",
+  "book_title": "Effective Java",
+  "book_author": "Joshua Bloch",
+  "book_index": 2,
+  "summary": "Study report for *Effective Java* by Joshua Bloch (Intermediate level) mapped to the Java Backend Developer role. Best practices for Java APIs, generics, enums, and collections.",
+  "sources": [
+    "https://www.oreilly.com/library/view/effective-java/9780134685991/"
+  ],
+  "source_file": "Reference: Effective Java — Joshua Bloch",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Effective Java",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Effective Java** *(Level: Intermediate)*\n\nThis study report summarizes *Effective Java* by Joshua Bloch for the Java Backend Developer role. The resource is rated Intermediate level. Best practices for Java APIs, generics, enums, and collections. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Effective Java\n# Author: Joshua Bloch\n# Role: Java Backend Developer\n# Level: Intermediate\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Effective Java.\n\n### When to use it\nWhen learning Java Backend Developer skills at Intermediate level.\n\n### Where to use it\nJava Backend Developer training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Effective Java.",
+        "When learning Java Backend Developer skills at Intermediate level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Effective Java.",
+      "when_to_use": "When learning Java Backend Developer skills at Intermediate level.",
+      "where_to_use": "Java Backend Developer training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Intermediate)*\n\nJava Backend Developer professionals use ideas from Effective Java to solve real workplace problems. Best practices for Java APIs, generics, enums, and collections. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Java Backend Developer\nBook focus: Best practices for Java APIs, generics, enums, and collections.\nRecommended level: Intermediate\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nJava Backend Developer bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a intermediate skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a intermediate skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Java Backend Developer bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a intermediate skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Intermediate",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Intermediate)*\n\nThe main topics in Effective Java include practical concepts described as: Best practices for Java APIs, generics, enums, and collections. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Java Backend Developer jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Spring Boot 3 REST API Design",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: Spring Boot 3 REST API Design** *(Level: Intermediate)*\n\nSpring Boot 3 runs on Spring Framework 6 with native Jakarta EE namespaces (jakarta.*). Controllers use @RestController and HTTP method annotations to expose resources. DTOs decouple API contracts from JPA entities, preventing lazy-loading leaks in JSON. Problem Details (RFC 7807) standardize error payloads for client-friendly debugging.\n\nCode Reference:\n```java\n@RestController\n@RequestMapping(\"/api/v1/products\")\n@RequiredArgsConstructor\npublic class ProductController {\n    private final ProductService service;\n\n    @GetMapping(\"/{id}\")\n    public ProductDto get(@PathVariable Long id) {\n        return service.findById(id);\n    }\n}\n```\nWhat it shows: @RequiredArgsConstructor injects final dependencies; path variable binds URL segment to parameter.\n\n### What it actually is\nSpring Boot auto-configures a servlet stack (or WebFlux) for production REST APIs with minimal boilerplate.\n\n### When to use it\nUse Spring Boot for microservices, monolith APIs, and internal tools requiring fast iteration.\n\n### Where to use it\nPublic mobile backends, partner integrations, admin APIs, and BFF layers.\n\n### Real use example\nA retail app calls GET /api/v1/products/42 and receives JSON with price, SKU, and stock level.",
+      "key_takeaways": [
+        "Spring Boot auto-configures a servlet stack (or WebFlux) for production REST APIs with minimal boilerplate.",
+        "Use Spring Boot for microservices, monolith APIs, and internal tools requiring fast iteration.",
+        "A retail app calls GET /api/v1/products/42 and receives JSON with price, SKU, and stock level."
+      ],
+      "what_it_is": "Spring Boot auto-configures a servlet stack (or WebFlux) for production REST APIs with minimal boilerplate.",
+      "when_to_use": "Use Spring Boot for microservices, monolith APIs, and internal tools requiring fast iteration.",
+      "where_to_use": "Public mobile backends, partner integrations, admin APIs, and BFF layers.",
+      "real_use_example": "A retail app calls GET /api/v1/products/42 and receives JSON with price, SKU, and stock level."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Spring Data JPA and Transactions",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: Spring Data JPA and Transactions** *(Level: Intermediate)*\n\nJPA maps Java objects to relational tables with @Entity, @OneToMany, and lifecycle callbacks. Spring Data derives queries from method names or @Query annotations. @Transactional defines atomic units—rollback on unchecked exceptions by default. N+1 query problems appear when lazy associations load in loops; fix with JOIN FETCH or @EntityGraph.\n\nCode Reference:\n```java\n@Entity\npublic class Order {\n    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)\n    private Long id;\n    @OneToMany(mappedBy = \"order\", cascade = CascadeType.ALL)\n    private List<OrderLine> lines = new ArrayList<>();\n}\n```\nWhat it shows: Bidirectional association mappedBy avoids duplicate foreign keys; cascade persists lines with order.\n\n### What it actually is\nJPA is Java's standard ORM; Spring Data adds repository abstraction over EntityManager.\n\n### When to use it\nUse JPA for CRUD-heavy domains; consider JDBC/jOOQ for complex reporting queries.\n\n### Where to use it\nPostgreSQL and MySQL backends in Spring services with Flyway/Liquibase migrations.\n\n### Real use example\nfindByCustomerIdAndStatusOrderByCreatedAtDesc returns recent open orders without handwritten SQL.",
+      "key_takeaways": [
+        "JPA is Java's standard ORM; Spring Data adds repository abstraction over EntityManager.",
+        "Use JPA for CRUD-heavy domains; consider JDBC/jOOQ for complex reporting queries.",
+        "findByCustomerIdAndStatusOrderByCreatedAtDesc returns recent open orders without handwritten SQL."
+      ],
+      "what_it_is": "JPA is Java's standard ORM; Spring Data adds repository abstraction over EntityManager.",
+      "when_to_use": "Use JPA for CRUD-heavy domains; consider JDBC/jOOQ for complex reporting queries.",
+      "where_to_use": "PostgreSQL and MySQL backends in Spring services with Flyway/Liquibase migrations.",
+      "real_use_example": "findByCustomerIdAndStatusOrderByCreatedAtDesc returns recent open orders without handwritten SQL."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Java 21 Virtual Threads",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "book-applied",
+      "content": "**Chapter focus: Java 21 Virtual Threads** *(Level: Intermediate)*\n\nVirtual threads are lightweight threads scheduled by the JVM, not the OS. They excel at I/O-bound workloads—HTTP calls, DB queries—without thread-pool exhaustion. Enable with spring.threads.virtual.enabled=true in Spring Boot 3.2+. Avoid pinning virtual threads with synchronized blocks around long I/O inside native code.\n\nCode Reference:\n```java\ntry (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n    List<Future<String>> futures = urls.stream()\n        .map(url -> executor.submit(() -> fetch(url)))\n        .toList();\n    futures.forEach(f -> System.out.println(f.get()));\n}\n```\nWhat it shows: Each URL fetch runs on its own virtual thread; try-with-resources shuts down executor.\n\n### What it actually is\nVirtual threads massively increase concurrency for blocking I/O without reactive programming complexity.\n\n### When to use it\nAdopt for REST endpoints that call external APIs or databases under high concurrent load.\n\n### Where to use it\nSpring Boot servlet containers, batch fetchers, and integration adapters.\n\n### Real use example\nAn API gateway handles 10,000 concurrent upstream calls using virtual threads instead of a 200-thread platform pool.",
+      "key_takeaways": [
+        "Virtual threads massively increase concurrency for blocking I/O without reactive programming complexity.",
+        "Adopt for REST endpoints that call external APIs or databases under high concurrent load.",
+        "An API gateway handles 10,000 concurrent upstream calls using virtual threads instead of a 200-thread platform pool."
+      ],
+      "what_it_is": "Virtual threads massively increase concurrency for blocking I/O without reactive programming complexity.",
+      "when_to_use": "Adopt for REST endpoints that call external APIs or databases under high concurrent load.",
+      "where_to_use": "Spring Boot servlet containers, batch fetchers, and integration adapters.",
+      "real_use_example": "An API gateway handles 10,000 concurrent upstream calls using virtual threads instead of a 200-thread platform pool."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Intermediate)*\n\nFinish Effective Java with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Java Backend Developer. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a intermediate project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a intermediate project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a intermediate project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

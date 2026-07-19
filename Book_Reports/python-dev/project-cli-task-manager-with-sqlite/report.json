@@ -1,0 +1,135 @@
+{
+  "id": "project-cli-task-manager-with-sqlite",
+  "title": "Project Report: CLI Task Manager with SQLite — Python Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "python-dev",
+  "family_name": "Python Developer",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "CLI Task Manager with SQLite",
+  "project_index": 1,
+  "duration": "1–2 weeks",
+  "summary": "Command-line todo app with SQLite persistence, argparse, and pytest coverage.",
+  "objectives": [
+    "CRUD tasks from terminal",
+    "SQLite schema with migrations",
+    "pytest unit tests",
+    "Package with pyproject.toml"
+  ],
+  "tools": [
+    "Python 3.12",
+    "sqlite3",
+    "pytest"
+  ],
+  "deliverables": [
+    "GitHub repo",
+    "Coverage report",
+    "README with usage examples"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**CLI Task Manager with SQLite** is a beginner-level end-to-end project for Python Developer. Duration: 1–2 weeks. Command-line todo app with SQLite persistence, argparse, and pytest coverage. Tools: Python 3.12, sqlite3, pytest.\n\nCode Reference:\n```text\nObjective: CRUD tasks from terminal\nObjective: SQLite schema with migrations\nObjective: pytest unit tests\nObjective: Package with pyproject.toml\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nPython Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Python Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Python Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Python Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Python Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Schema",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Schema** *(Level: Beginner)*\n\nDesign tasks table. Complete these tasks: CREATE TABLE; Seed data. Deliverable for this phase: schema.sql.\n\nCode Reference:\n```text\n- [ ] CREATE TABLE\n- [ ] Seed data\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Schema is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nPython Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the schema.sql to the teacher.",
+      "key_takeaways": [
+        "Phase Schema is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the schema."
+      ],
+      "what_it_is": "Phase Schema is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Python Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the schema.sql to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: CLI",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: CLI** *(Level: Beginner)*\n\nargparse subcommands. Complete these tasks: add/list/done/delete. Deliverable for this phase: Working CLI.\n\nCode Reference:\n```text\n- [ ] add/list/done/delete\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase CLI is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nPython Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Working CLI to the teacher.",
+      "key_takeaways": [
+        "Phase CLI is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Working CLI to the teacher."
+      ],
+      "what_it_is": "Phase CLI is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Python Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Working CLI to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Tests",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Tests** *(Level: Beginner)*\n\npytest for all commands. Complete these tasks: Fixtures; Temp DB. Deliverable for this phase: 90% coverage.\n\nCode Reference:\n```text\n- [ ] Fixtures\n- [ ] Temp DB\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Tests is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nPython Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the 90% coverage to the teacher.",
+      "key_takeaways": [
+        "Phase Tests is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the 90% coverage to the teacher."
+      ],
+      "what_it_is": "Phase Tests is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Python Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the 90% coverage to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Polish",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Polish** *(Level: Beginner)*\n\nREADME and packaging. Complete these tasks: pyproject.toml; Entry point. Deliverable for this phase: pip installable package.\n\nCode Reference:\n```text\n- [ ] pyproject.toml\n- [ ] Entry point\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Polish is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nPython Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the pip installable package to the teacher.",
+      "key_takeaways": [
+        "Phase Polish is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the pip installable package to the teacher."
+      ],
+      "what_it_is": "Phase Polish is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Python Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the pip installable package to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: GitHub repo; Coverage report; README with usage examples. Skills demonstrated: CLI, SQLite, pytest. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: GitHub repo\nDeliverable: Coverage report\nDeliverable: README with usage examples\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits GitHub repo and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits GitHub repo and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits GitHub repo and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

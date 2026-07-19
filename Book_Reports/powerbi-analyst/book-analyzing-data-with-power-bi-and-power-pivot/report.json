@@ -1,0 +1,139 @@
+{
+  "id": "book-analyzing-data-with-power-bi-and-power-pivot",
+  "title": "Study Report: Analyzing Data with Power BI and Power Pivot — Power BI Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "powerbi-analyst",
+  "family_name": "Power BI Analyst",
+  "level": "Advanced",
+  "report_type": "role_book_study",
+  "book_title": "Analyzing Data with Power BI and Power Pivot",
+  "book_author": "Marco Russo & Alberto Ferrari",
+  "book_index": 5,
+  "summary": "Study report for *Analyzing Data with Power BI and Power Pivot* by Marco Russo & Alberto Ferrari (Advanced level) mapped to the Power BI Analyst role. Data modeling and DAX for complex enterprise models.",
+  "sources": [
+    "https://www.sqlbi.com/books/analyzing-data-with-power-bi-and-power-pivot/"
+  ],
+  "source_file": "Reference: Analyzing Data with Power BI and Power Pivot — Marco Russo & Alberto Ferrari",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About Analyzing Data with Power BI and Power Pivot",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-intro",
+      "content": "**Chapter focus: About Analyzing Data with Power BI and Power Pivot** *(Level: Advanced)*\n\nThis study report summarizes *Analyzing Data with Power BI and Power Pivot* by Marco Russo & Alberto Ferrari for the Power BI Analyst role. The resource is rated Advanced level. Data modeling and DAX for complex enterprise models. Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# Analyzing Data with Power BI and Power Pivot\n# Author: Marco Russo & Alberto Ferrari\n# Role: Power BI Analyst\n# Level: Advanced\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on Analyzing Data with Power BI and Power Pivot.\n\n### When to use it\nWhen learning Power BI Analyst skills at Advanced level.\n\n### Where to use it\nPower BI Analyst training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on Analyzing Data with Power BI and Power Pivot.",
+        "When learning Power BI Analyst skills at Advanced level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on Analyzing Data with Power BI and Power Pivot.",
+      "when_to_use": "When learning Power BI Analyst skills at Advanced level.",
+      "where_to_use": "Power BI Analyst training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Advanced)*\n\nPower BI Analyst professionals use ideas from Analyzing Data with Power BI and Power Pivot to solve real workplace problems. Data modeling and DAX for complex enterprise models. This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Power BI Analyst\nBook focus: Data modeling and DAX for complex enterprise models.\nRecommended level: Advanced\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nPower BI Analyst bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a advanced skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a advanced skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Power BI Analyst bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a advanced skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Advanced",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Advanced)*\n\nThe main topics in Analyzing Data with Power BI and Power Pivot include practical concepts described as: Data modeling and DAX for complex enterprise models. Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Power BI Analyst jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Composite Models and Aggregations",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Composite Models and Aggregations** *(Level: Advanced)*\n\nComposite models mix Import and DirectQuery tables. Aggregation tables pre-summarize facts for drill-down performance. User hierarchies hit agg first, then detail — transparent to report users.\n\nCode Reference:\n```dax\nSales Agg = SUMMARIZE ( Sales, Date[Month], Product[Category], \"Amount\", SUM ( Sales[Amount] ) )\n```\nWhat it shows: SUMMARIZE builds an aggregation table DAX engine can substitute automatically.\n\n### What it actually is\nComposite + aggregation optimizes large models without losing detail.\n\n### When to use it\nWhen Import models exceed memory or DirectQuery is too slow for drill-down.\n\n### Where to use it\nGlobal retail chains and multi-year telemetry models.\n\n### Real use example\nRetail BI team uses agg table for monthly scans — detail loads only on drill-through.",
+      "key_takeaways": [
+        "Composite + aggregation optimizes large models without losing detail.",
+        "When Import models exceed memory or DirectQuery is too slow for drill-down.",
+        "Retail BI team uses agg table for monthly scans — detail loads only on drill-through."
+      ],
+      "what_it_is": "Composite + aggregation optimizes large models without losing detail.",
+      "when_to_use": "When Import models exceed memory or DirectQuery is too slow for drill-down.",
+      "where_to_use": "Global retail chains and multi-year telemetry models.",
+      "real_use_example": "Retail BI team uses agg table for monthly scans — detail loads only on drill-through."
+    },
+    {
+      "number": 5,
+      "title": "Applied: Advanced DAX: Context Transition",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Advanced DAX: Context Transition** *(Level: Advanced)*\n\nCalculated columns evaluate row-by-row; measures use filter context. Context transition occurs when CALCULATE iterates — a common source of bugs. Use variables (VAR) for readability and single evaluation.\n\nCode Reference:\n```dax\nRank in Category =\nVAR CatSales = CALCULATE ( [Total Sales], ALLEXCEPT ( Product, Product[Category] ) )\nRETURN RANKX ( ALL ( Product[Product] ), CatSales, , DESC, Dense )\n```\nWhat it shows: VAR stores intermediate results — easier to debug than nested CALCULATE.\n\n### What it actually is\nAdvanced DAX handles ranking, moving averages, and dynamic segmentation.\n\n### When to use it\nWhen CALCULATE-heavy measures misbehave or rankings are needed in visuals.\n\n### Where to use it\nSubscription analytics with tiered discount logic.\n\n### Real use example\nVAR-based rank measure finally matches Excel prototype after context transition fix.",
+      "key_takeaways": [
+        "Advanced DAX handles ranking, moving averages, and dynamic segmentation.",
+        "When CALCULATE-heavy measures misbehave or rankings are needed in visuals.",
+        "VAR-based rank measure finally matches Excel prototype after context transition fix."
+      ],
+      "what_it_is": "Advanced DAX handles ranking, moving averages, and dynamic segmentation.",
+      "when_to_use": "When CALCULATE-heavy measures misbehave or rankings are needed in visuals.",
+      "where_to_use": "Subscription analytics with tiered discount logic.",
+      "real_use_example": "VAR-based rank measure finally matches Excel prototype after context transition fix."
+    },
+    {
+      "number": 6,
+      "title": "Applied: Fabric Data Factory Pipelines",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "book-applied",
+      "content": "**Chapter focus: Fabric Data Factory Pipelines** *(Level: Advanced)*\n\nFabric Data Factory (successor patterns to ADF in Fabric) orchestrates copy, notebook, and Dataflow Gen2 activities on OneLake. Schedule pipelines for bronze ingestion before semantic refresh.\n\nCode Reference:\n```markdown\n# Pipeline: Copy blob -> Notebook cleanse -> Refresh dataset\n# Trigger: daily 05:00 UTC\n```\nWhat it shows: Orchestration ensures silver tables update before Power BI refresh fires.\n\n### What it actually is\nData Factory pipelines automate lakehouse ingestion in Fabric.\n\n### When to use it\nWhen bronze/silver loads must run before semantic model refresh on OneLake.\n\n### Where to use it\nNightly ERP extracts and multi-source consolidation.\n\n### Real use example\nPipeline failure blocks dataset refresh — ops gets alert before executives see stale KPIs.",
+      "key_takeaways": [
+        "Data Factory pipelines automate lakehouse ingestion in Fabric.",
+        "When bronze/silver loads must run before semantic model refresh on OneLake.",
+        "Pipeline failure blocks dataset refresh — ops gets alert before executives see stale KPIs."
+      ],
+      "what_it_is": "Data Factory pipelines automate lakehouse ingestion in Fabric.",
+      "when_to_use": "When bronze/silver loads must run before semantic model refresh on OneLake.",
+      "where_to_use": "Nightly ERP extracts and multi-source consolidation.",
+      "real_use_example": "Pipeline failure blocks dataset refresh — ops gets alert before executives see stale KPIs."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Advanced)*\n\nFinish Analyzing Data with Power BI and Power Pivot with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Power BI Analyst. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a advanced project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a advanced project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a advanced project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

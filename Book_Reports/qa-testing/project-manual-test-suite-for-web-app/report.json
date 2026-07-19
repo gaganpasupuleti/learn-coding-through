@@ -1,0 +1,135 @@
+{
+  "id": "project-manual-test-suite-for-web-app",
+  "title": "Project Report: Manual Test Suite for Web App — QA & Test Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "qa-testing",
+  "family_name": "QA & Test Engineer",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Manual Test Suite for Web App",
+  "project_index": 1,
+  "duration": "1–2 weeks",
+  "summary": "Write 30 test cases, execute exploratory sessions, log bugs in a tracking template.",
+  "objectives": [
+    "30 structured test cases",
+    "5 exploratory charters",
+    "10 bug reports with severity",
+    "Test summary report"
+  ],
+  "tools": [
+    "Excel/Sheets",
+    "Bug tracker template"
+  ],
+  "deliverables": [
+    "Test plan",
+    "30 test cases",
+    "10 bug reports",
+    "Summary report"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Manual Test Suite for Web App** is a beginner-level end-to-end project for QA & Test Engineer. Duration: 1–2 weeks. Write 30 test cases, execute exploratory sessions, log bugs in a tracking template. Tools: Excel/Sheets, Bug tracker template.\n\nCode Reference:\n```text\nObjective: 30 structured test cases\nObjective: 5 exploratory charters\nObjective: 10 bug reports with severity\nObjective: Test summary report\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nQA & Test Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a QA & Test Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a QA & Test Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "QA & Test Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a QA & Test Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Plan",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Plan** *(Level: Beginner)*\n\nTest strategy document. Complete these tasks: Scope; Risks. Deliverable for this phase: Test plan PDF.\n\nCode Reference:\n```text\n- [ ] Scope\n- [ ] Risks\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Plan is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Test plan PDF to the teacher.",
+      "key_takeaways": [
+        "Phase Plan is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Test plan PDF to the teacher."
+      ],
+      "what_it_is": "Phase Plan is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Test plan PDF to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Cases",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Cases** *(Level: Beginner)*\n\nWrite test cases. Complete these tasks: Happy path; Edge cases. Deliverable for this phase: Test case spreadsheet.\n\nCode Reference:\n```text\n- [ ] Happy path\n- [ ] Edge cases\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Cases is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Test case spreadsheet to the teacher.",
+      "key_takeaways": [
+        "Phase Cases is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Test case spreadsheet to the teacher."
+      ],
+      "what_it_is": "Phase Cases is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Test case spreadsheet to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Execute",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Execute** *(Level: Beginner)*\n\nRun manual tests. Complete these tasks: Exploratory sessions; Screenshots. Deliverable for this phase: Execution log.\n\nCode Reference:\n```text\n- [ ] Exploratory sessions\n- [ ] Screenshots\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Execute is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Execution log to the teacher.",
+      "key_takeaways": [
+        "Phase Execute is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Execution log to the teacher."
+      ],
+      "what_it_is": "Phase Execute is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Execution log to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Report",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Report** *(Level: Beginner)*\n\nSummary for stakeholders. Complete these tasks: Pass/fail stats; Open defects. Deliverable for this phase: Test summary report.\n\nCode Reference:\n```text\n- [ ] Pass/fail stats\n- [ ] Open defects\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Report is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Test summary report to the teacher.",
+      "key_takeaways": [
+        "Phase Report is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Test summary report to the teacher."
+      ],
+      "what_it_is": "Phase Report is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Test summary report to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: Test plan; 30 test cases; 10 bug reports; Summary report. Skills demonstrated: Manual testing, Documentation. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Test plan\nDeliverable: 30 test cases\nDeliverable: 10 bug reports\nDeliverable: Summary report\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Test plan and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Test plan and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Test plan and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

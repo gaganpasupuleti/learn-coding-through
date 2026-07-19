@@ -1,0 +1,134 @@
+{
+  "id": "project-sales-pipeline-automation",
+  "title": "Project Report: Sales Pipeline Automation — Salesforce CRM Developer / Administrator",
+  "author": "Gagan Pasupuleti",
+  "family_id": "salesforce-crm",
+  "family_name": "Salesforce CRM Developer / Administrator",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "Sales Pipeline Automation",
+  "project_index": 2,
+  "duration": "3–4 weeks",
+  "summary": "Lead conversion, opportunity stages, approval process for discounts, and Lightning dashboard.",
+  "objectives": [
+    "Lead conversion process",
+    "Opportunity stage validation rules",
+    "Discount approval process",
+    "Sales manager Lightning dashboard"
+  ],
+  "tools": [
+    "Salesforce DE",
+    "Process Builder/Flow"
+  ],
+  "deliverables": [
+    "DE config",
+    "Approval demo",
+    "Dashboard screenshot"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**Sales Pipeline Automation** is a intermediate-level end-to-end project for Salesforce CRM Developer / Administrator. Duration: 3–4 weeks. Lead conversion, opportunity stages, approval process for discounts, and Lightning dashboard. Tools: Salesforce DE, Process Builder/Flow.\n\nCode Reference:\n```text\nObjective: Lead conversion process\nObjective: Opportunity stage validation rules\nObjective: Discount approval process\nObjective: Sales manager Lightning dashboard\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nSalesforce CRM Developer / Administrator portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Salesforce CRM Developer / Administrator resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Salesforce CRM Developer / Administrator resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Salesforce CRM Developer / Administrator portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Salesforce CRM Developer / Administrator resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Leads",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Leads** *(Level: Intermediate)*\n\nConversion mapping. Complete these tasks: Lead → Account/Contact/Opp; Required fields. Deliverable for this phase: Conversion demo.\n\nCode Reference:\n```text\n- [ ] Lead → Account/Contact/Opp\n- [ ] Required fields\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Leads is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Conversion demo to the teacher.",
+      "key_takeaways": [
+        "Phase Leads is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Conversion demo to the teacher."
+      ],
+      "what_it_is": "Phase Leads is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Conversion demo to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Pipeline",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Pipeline** *(Level: Intermediate)*\n\nStage gates. Complete these tasks: Validation rules; Probability. Deliverable for this phase: Stage config doc.\n\nCode Reference:\n```text\n- [ ] Validation rules\n- [ ] Probability\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Pipeline is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Stage config doc to the teacher.",
+      "key_takeaways": [
+        "Phase Pipeline is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Stage config doc to the teacher."
+      ],
+      "what_it_is": "Phase Pipeline is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Stage config doc to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Approval",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Approval** *(Level: Intermediate)*\n\nDiscount approval. Complete these tasks: >20% needs manager; Email alerts. Deliverable for this phase: Approval demo video.\n\nCode Reference:\n```text\n- [ ] >20% needs manager\n- [ ] Email alerts\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Approval is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Approval demo video to the teacher.",
+      "key_takeaways": [
+        "Phase Approval is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Approval demo video to the teacher."
+      ],
+      "what_it_is": "Phase Approval is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Approval demo video to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Dashboard",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Dashboard** *(Level: Intermediate)*\n\nSales KPIs. Complete these tasks: Pipeline value; Win rate; Forecast. Deliverable for this phase: Dashboard screenshot.\n\nCode Reference:\n```text\n- [ ] Pipeline value\n- [ ] Win rate\n- [ ] Forecast\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Dashboard is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nSalesforce CRM Developer / Administrator agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Dashboard screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase Dashboard is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Dashboard screenshot to the teacher."
+      ],
+      "what_it_is": "Phase Dashboard is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Salesforce CRM Developer / Administrator agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Dashboard screenshot to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: DE config; Approval demo; Dashboard screenshot. Skills demonstrated: CRM, Automation, Approvals. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: DE config\nDeliverable: Approval demo\nDeliverable: Dashboard screenshot\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits DE config and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits DE config and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits DE config and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

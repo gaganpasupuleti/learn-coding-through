@@ -1,0 +1,36 @@
+{
+  "id": "07-deep-learning-and-ai",
+  "name": "Deep Learning and AI",
+  "description": "Neural nets and beginner AI project thinking.",
+  "source_count": 4,
+  "report_count": 3,
+  "reports": [
+    {
+      "id": "study-report-machine-learning-the-ultimate-guide-for-beginners-to-prog",
+      "title": "Study Report: Machine Learning - The Ultimate Guide for Beginners to Programming and Deep Learning Wi...",
+      "family_id": "07-deep-learning-and-ai",
+      "chapter_count": 9,
+      "level": "Mixed",
+      "path": "Book_Reports/07-deep-learning-and-ai/study-report-machine-learning-the-ultimate-guide-for-beginners-to-prog/report.json",
+      "markdown": "Book_Reports/07-deep-learning-and-ai/study-report-machine-learning-the-ultimate-guide-for-beginners-to-prog/report.md"
+    },
+    {
+      "id": "study-report-mastering-deep-learning-fundamentals-with-python-the-abso",
+      "title": "Study Report: Mastering Deep Learning Fundamentals with Python - The Absolute Ultimate Guide for Begi...",
+      "family_id": "07-deep-learning-and-ai",
+      "chapter_count": 12,
+      "level": "Mixed",
+      "path": "Book_Reports/07-deep-learning-and-ai/study-report-mastering-deep-learning-fundamentals-with-python-the-abso/report.json",
+      "markdown": "Book_Reports/07-deep-learning-and-ai/study-report-mastering-deep-learning-fundamentals-with-python-the-abso/report.md"
+    },
+    {
+      "id": "study-report-python-artificial-intelligence-projects-for-beginners",
+      "title": "Study Report: Python Artificial Intelligence Projects for Beginners",
+      "family_id": "07-deep-learning-and-ai",
+      "chapter_count": 12,
+      "level": "Mixed",
+      "path": "Book_Reports/07-deep-learning-and-ai/study-report-python-artificial-intelligence-projects-for-beginners/report.json",
+      "markdown": "Book_Reports/07-deep-learning-and-ai/study-report-python-artificial-intelligence-projects-for-beginners/report.md"
+    }
+  ]
+}

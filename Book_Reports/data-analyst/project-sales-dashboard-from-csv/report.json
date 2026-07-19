@@ -1,0 +1,136 @@
+{
+  "id": "project-sales-dashboard-from-csv",
+  "title": "Project Report: Sales Dashboard from CSV — Data Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "data-analyst",
+  "family_name": "Data Analyst",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Sales Dashboard from CSV",
+  "project_index": 1,
+  "duration": "1–2 weeks",
+  "summary": "Clean a messy sales CSV with pandas, analyze trends, and build charts in Excel + matplotlib.",
+  "objectives": [
+    "Load and clean CSV data",
+    "Calculate KPIs (revenue, growth)",
+    "Create 5 charts",
+    "Write 2-page summary report"
+  ],
+  "tools": [
+    "Python",
+    "pandas",
+    "matplotlib",
+    "Excel"
+  ],
+  "deliverables": [
+    "Clean dataset",
+    "Chart pack",
+    "Executive summary PDF"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Sales Dashboard from CSV** is a beginner-level end-to-end project for Data Analyst. Duration: 1–2 weeks. Clean a messy sales CSV with pandas, analyze trends, and build charts in Excel + matplotlib. Tools: Python, pandas, matplotlib, Excel.\n\nCode Reference:\n```text\nObjective: Load and clean CSV data\nObjective: Calculate KPIs (revenue, growth)\nObjective: Create 5 charts\nObjective: Write 2-page summary report\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nData Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Data Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Data Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Data Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Data Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Clean",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Clean** *(Level: Beginner)*\n\nHandle missing values and types. Complete these tasks: dropna; astype. Deliverable for this phase: clean_sales.csv.\n\nCode Reference:\n```text\n- [ ] dropna\n- [ ] astype\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Clean is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the clean_sales.csv to the teacher.",
+      "key_takeaways": [
+        "Phase Clean is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the clean_sales."
+      ],
+      "what_it_is": "Phase Clean is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the clean_sales.csv to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Analyze",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Analyze** *(Level: Beginner)*\n\nGroupby and pivot tables. Complete these tasks: Monthly revenue; Top products. Deliverable for this phase: KPI spreadsheet.\n\nCode Reference:\n```text\n- [ ] Monthly revenue\n- [ ] Top products\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Analyze is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the KPI spreadsheet to the teacher.",
+      "key_takeaways": [
+        "Phase Analyze is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the KPI spreadsheet to the teacher."
+      ],
+      "what_it_is": "Phase Analyze is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the KPI spreadsheet to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Visualize",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Visualize** *(Level: Beginner)*\n\nBar, line, pie charts. Complete these tasks: matplotlib; Excel charts. Deliverable for this phase: Chart pack PDF.\n\nCode Reference:\n```text\n- [ ] matplotlib\n- [ ] Excel charts\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Visualize is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Chart pack PDF to the teacher.",
+      "key_takeaways": [
+        "Phase Visualize is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Chart pack PDF to the teacher."
+      ],
+      "what_it_is": "Phase Visualize is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Chart pack PDF to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Report",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Report** *(Level: Beginner)*\n\nExecutive summary. Complete these tasks: Findings; Recommendations. Deliverable for this phase: Final report PDF.\n\nCode Reference:\n```text\n- [ ] Findings\n- [ ] Recommendations\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Report is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Final report PDF to the teacher.",
+      "key_takeaways": [
+        "Phase Report is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Final report PDF to the teacher."
+      ],
+      "what_it_is": "Phase Report is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Final report PDF to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: Clean dataset; Chart pack; Executive summary PDF. Skills demonstrated: pandas, Excel, Visualization. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Clean dataset\nDeliverable: Chart pack\nDeliverable: Executive summary PDF\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Clean dataset and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Clean dataset and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Clean dataset and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

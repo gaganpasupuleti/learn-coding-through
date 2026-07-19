@@ -1,0 +1,134 @@
+{
+  "id": "project-customer-service-case-management",
+  "title": "Project Report: Customer Service Case Management — Dynamics 365 CRM Consultant",
+  "author": "Gagan Pasupuleti",
+  "family_id": "dynamics-crm",
+  "family_name": "Dynamics 365 CRM Consultant",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "Customer Service Case Management",
+  "project_index": 2,
+  "duration": "3–4 weeks",
+  "summary": "Case entity with queues, SLAs, routing rules, knowledge articles, and Power Automate notifications.",
+  "objectives": [
+    "Case queues by priority",
+    "SLA timers on cases",
+    "Routing rules to teams",
+    "Power Automate Teams notification on case creation"
+  ],
+  "tools": [
+    "Dynamics 365 CS",
+    "Power Automate"
+  ],
+  "deliverables": [
+    "Case config doc",
+    "SLA setup",
+    "Flow demo video"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**Customer Service Case Management** is a intermediate-level end-to-end project for Dynamics 365 CRM Consultant. Duration: 3–4 weeks. Case entity with queues, SLAs, routing rules, knowledge articles, and Power Automate notifications. Tools: Dynamics 365 CS, Power Automate.\n\nCode Reference:\n```text\nObjective: Case queues by priority\nObjective: SLA timers on cases\nObjective: Routing rules to teams\nObjective: Power Automate Teams notification on case creation\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nDynamics 365 CRM Consultant portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Dynamics 365 CRM Consultant resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Dynamics 365 CRM Consultant resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Dynamics 365 CRM Consultant portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Dynamics 365 CRM Consultant resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Cases",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Cases** *(Level: Intermediate)*\n\nCase entity config. Complete these tasks: Categories; Priority; Stages. Deliverable for this phase: Case form screenshot.\n\nCode Reference:\n```text\n- [ ] Categories\n- [ ] Priority\n- [ ] Stages\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Cases is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Case form screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase Cases is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Case form screenshot to the teacher."
+      ],
+      "what_it_is": "Phase Cases is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Case form screenshot to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: SLA",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: SLA** *(Level: Intermediate)*\n\nResponse/resolution KPIs. Complete these tasks: Timer; Warning actions. Deliverable for this phase: SLA config doc.\n\nCode Reference:\n```text\n- [ ] Timer\n- [ ] Warning actions\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase SLA is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the SLA config doc to the teacher.",
+      "key_takeaways": [
+        "Phase SLA is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the SLA config doc to the teacher."
+      ],
+      "what_it_is": "Phase SLA is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the SLA config doc to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Routing",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Routing** *(Level: Intermediate)*\n\nQueue + routing rules. Complete these tasks: Skill-based; Round robin. Deliverable for this phase: Routing test cases.\n\nCode Reference:\n```text\n- [ ] Skill-based\n- [ ] Round robin\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Routing is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Routing test cases to the teacher.",
+      "key_takeaways": [
+        "Phase Routing is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Routing test cases to the teacher."
+      ],
+      "what_it_is": "Phase Routing is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Routing test cases to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Automate",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Automate** *(Level: Intermediate)*\n\nTeams notification flow. Complete these tasks: Trigger on create; Adaptive card. Deliverable for this phase: Flow demo video.\n\nCode Reference:\n```text\n- [ ] Trigger on create\n- [ ] Adaptive card\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Automate is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Flow demo video to the teacher.",
+      "key_takeaways": [
+        "Phase Automate is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Flow demo video to the teacher."
+      ],
+      "what_it_is": "Phase Automate is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Flow demo video to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: Case config doc; SLA setup; Flow demo video. Skills demonstrated: Customer Service, SLA, Power Automate. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Case config doc\nDeliverable: SLA setup\nDeliverable: Flow demo video\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Case config doc and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Case config doc and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Case config doc and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

@@ -1,0 +1,36 @@
+{
+  "id": "03-combo-crash-paths",
+  "name": "Combo Learning Paths",
+  "description": "Multi-book style paths covering Python plus related skills.",
+  "source_count": 3,
+  "report_count": 3,
+  "reports": [
+    {
+      "id": "study-report-python-2-books-in-1-python-for-beginners-python-programmi",
+      "title": "Study Report: Python - 2 books in 1 - Python For Beginners + Python Programming",
+      "family_id": "03-combo-crash-paths",
+      "chapter_count": 5,
+      "level": "Mixed",
+      "path": "Book_Reports/03-combo-crash-paths/study-report-python-2-books-in-1-python-for-beginners-python-programmi/report.json",
+      "markdown": "Book_Reports/03-combo-crash-paths/study-report-python-2-books-in-1-python-for-beginners-python-programmi/report.md"
+    },
+    {
+      "id": "study-report-python-for-beginners-2-books-in-1-coding-for-beginners-us",
+      "title": "Study Report: Python for Beginners, 2 Books in 1 - Coding for Beginners Using Python + Python Crash C...",
+      "family_id": "03-combo-crash-paths",
+      "chapter_count": 12,
+      "level": "Mixed",
+      "path": "Book_Reports/03-combo-crash-paths/study-report-python-for-beginners-2-books-in-1-coding-for-beginners-us/report.json",
+      "markdown": "Book_Reports/03-combo-crash-paths/study-report-python-for-beginners-2-books-in-1-coding-for-beginners-us/report.md"
+    },
+    {
+      "id": "study-report-python-highway-2-books-in-1-the-fastest-way-for-beginners",
+      "title": "Study Report: Python Highway - 2 Books in 1 - The Fastest Way for Beginners to Learn Python Programming",
+      "family_id": "03-combo-crash-paths",
+      "chapter_count": 12,
+      "level": "Mixed",
+      "path": "Book_Reports/03-combo-crash-paths/study-report-python-highway-2-books-in-1-the-fastest-way-for-beginners/report.json",
+      "markdown": "Book_Reports/03-combo-crash-paths/study-report-python-highway-2-books-in-1-the-fastest-way-for-beginners/report.md"
+    }
+  ]
+}

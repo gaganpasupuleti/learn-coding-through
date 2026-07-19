@@ -2,29 +2,48 @@
 
 from __future__ import annotations
 
+import csv
+import io
+import secrets
 import time
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import func, or_
+from fastapi import APIRouter, Depends, File, Header, HTTPException, Query, UploadFile
+from fastapi.responses import StreamingResponse
+from sqlalchemy import ColumnElement, and_, func, not_, or_
 from sqlalchemy.orm import Session
 
 from app.api.deps import require_jobs_admin
+from app.api.deps import get_optional_user, oauth2_scheme
 from app.core.config import settings
 from app.core.database import get_db
-from app.models.models import ScrapedJob, User, UserRole
+from app.core.datetime_utils import format_ist, now_utc, to_ist
+from app.models.models import JobEnrichment, ScrapedJob, User, UserRole
+from app.schemas.job_enrichment import (
+    JobEnrichmentListResponse,
+    JobEnrichmentReviewResponse,
+    JobEnrichmentRow,
+    JobEnrichmentSummaryResponse,
+)
+from app.schemas.job_enrichment_import import (
+    JobEnrichmentImportCommitResponse,
+    JobEnrichmentImportPreviewResponse,
+)
 from app.schemas.scraped_jobs import (
     CleanupLinksResponse,
     DigestSummary,
     EmailDigestFields,
     EmailPreviewRequest,
     EmailPreviewResponse,
+    EnrichmentRoleCountItem,
     FIXED_JOB_LOCATION,
     JobStatsResponse,
+    JobBoardOverviewResponse,
     JobsListResponse,
     LatestJobSummary,
     LocationBreakdownItem,
     NormalizedJob,
+    ProfileBreakdownItem,
     RefreshRequest,
     RefreshResponse,
     ScrapeRequest,
@@ -33,6 +52,16 @@ from app.schemas.scraped_jobs import (
     SendDigestRequest,
     SendDigestResponse,
     SourceBreakdownItem,
+)
+from app.services.job_enrichment_import import (
+    commit_job_enrichment_import,
+    preview_job_enrichment_import,
+)
+from app.services.job_enrichment_read import (
+    get_job_enrichment_by_id,
+    get_job_enrichment_review_rows,
+    get_job_enrichment_summary,
+    list_job_enrichments,
 )
 from app.services.job_email import build_digest, send_email
 from app.services.job_link_checker import cleanup_job_links
@@ -49,12 +78,15 @@ from app.services.job_store import (
     count_jobs_since,
     count_total_jobs,
     create_scrape_run,
+    delete_non_active_scraped_jobs,
     get_expired_jobs,
     get_last_successful_auto_run,
     get_last_run_by_type,
     get_latest_jobs,
     get_latest_loaded_at,
     get_location_breakdown,
+    get_enrichment_role_breakdown,
+    get_profile_breakdown,
     get_recent_scrape_runs,
     get_source_breakdown,
     get_source_failure_counts,
@@ -67,35 +99,91 @@ from app.services.job_store import (
 router = APIRouter(tags=["Jobs"])
 admin_router = APIRouter(prefix="/admin/jobs", tags=["Admin Jobs"])
 
-# Student-friendly experience filters mapped to title/description keywords.
-# Inferred from job text since scraped listings have no structured experience field.
-EXPERIENCE_KEYWORDS: dict[str, list[str]] = {
-    "internship": ["intern"],
-    "fresher": [
-        "fresher",
-        "entry level",
-        "entry-level",
-        "graduate",
-        "trainee",
-        "junior",
-        "0-1 year",
-        "0 - 1 year",
-        "0 to 1",
-    ],
-    "1plus": ["1 year", "1+ year", "1 - 2 year", "1-2 year", "1 to 2", "minimum 1 year", "1 yr"],
-    "2plus": ["2 year", "2+ year", "2 - 3 year", "2-3 year", "2 to 3", "2 yr"],
-    "3plus": ["3 year", "3+ year", "3 - 5 year", "3-5 year", "3 to 5", "3 yr"],
-    "5plus": ["5 year", "5+ year", "senior", "lead", "principal", "architect", "5 yr"],
+# Experience filter → ingest profiles (preferred signal when present).
+EXPERIENCE_PROFILES: dict[str, tuple[str, ...]] = {
+    "internship": ("internship_india",),
+    "fresher": ("fresher_india", "entry_level_india"),
+    "1plus": ("experienced_manual_india",),
+    "2plus": ("experienced_manual_india",),
+    "3plus": ("experienced_manual_india",),
+    "5plus": ("experienced_manual_india",),
 }
+
+# Title/job_type whole-word patterns. Do NOT search description for short tokens —
+# ilike('%intern%') falsely matches "internal" / "international" in senior JD text.
+EXPERIENCE_TITLE_PATTERNS: dict[str, tuple[str, ...]] = {
+    "internship": (r"(^|[^a-z0-9])intern(ship|s)?([^a-z0-9]|$)",),
+    "fresher": (
+        r"(^|[^a-z0-9])fresher(s)?([^a-z0-9]|$)",
+        r"(^|[^a-z0-9])graduate(s)?([^a-z0-9]|$)",
+        r"(^|[^a-z0-9])trainee(s)?([^a-z0-9]|$)",
+        r"(^|[^a-z0-9])junior([^a-z0-9]|$)",
+        r"entry[\s\-]?level",
+        r"0\s*[-–to]+\s*1\s*(year|yr)",
+    ),
+    "1plus": (r"(^|[^a-z0-9])1\s*(\+|plus|\-\s*2)\s*(year|yr)", r"minimum\s*1\s*(year|yr)"),
+    "2plus": (r"(^|[^a-z0-9])2\s*(\+|plus|\-\s*3)\s*(year|yr)",),
+    "3plus": (r"(^|[^a-z0-9])3\s*(\+|plus|\-\s*[45])\s*(year|yr)",),
+    "5plus": (
+        r"(^|[^a-z0-9])5\s*(\+|plus|\-\s*\d+)\s*(year|yr)",
+        r"(^|[^a-z0-9])(senior|lead|principal|architect)([^a-z0-9]|$)",
+    ),
+}
+
+# job_type values like "5-6 Yrs" mean mid/senior — exclude from intern/fresher filters.
+_EXPERIENCED_JOB_TYPE_RE = r"(^|[^a-z0-9])([2-9]|[1-9]\d+)\s*(\+|[-–]\s*\d+)?\s*(year|yr|yrs)\b"
+
+
+def _column_regex_any(column: ColumnElement, patterns: tuple[str, ...]) -> ColumnElement:
+    return or_(*[column.op("~*")(pattern) for pattern in patterns])
+
+
+def _experience_filter_clause(experience: str) -> ColumnElement | None:
+    """Build a SQLAlchemy filter for the student experience dropdown.
+
+    Prefers ingest_profile, then whole-word matches on title/job_type only.
+    """
+    key = experience.strip().lower()
+    profiles = EXPERIENCE_PROFILES.get(key)
+    patterns = EXPERIENCE_TITLE_PATTERNS.get(key)
+    if not profiles and not patterns:
+        return None
+
+    title_lower = func.lower(func.coalesce(ScrapedJob.title, ""))
+    type_lower = func.lower(func.coalesce(ScrapedJob.job_type, ""))
+
+    clauses: list[ColumnElement] = []
+    if profiles:
+        clauses.append(ScrapedJob.ingest_profile.in_(profiles))
+    if patterns:
+        clauses.append(_column_regex_any(title_lower, patterns))
+        clauses.append(_column_regex_any(type_lower, patterns))
+
+    matched = or_(*clauses)
+    # Intern/fresher must not include postings whose job_type is clearly mid/senior years,
+    # unless the title itself is an intern/fresher role.
+    if key in {"internship", "fresher"} and patterns:
+        title_is_tier = _column_regex_any(title_lower, patterns)
+        experienced_type = type_lower.op("~*")(_EXPERIENCED_JOB_TYPE_RE)
+        return and_(matched, or_(title_is_tier, not_(experienced_type)))
+    return matched
 
 
 def _to_normalized(row: ScrapedJob) -> NormalizedJob:
     return NormalizedJob(**scraped_job_to_dict(row))
 
 
-def _to_latest_summary(row: ScrapedJob) -> LatestJobSummary:
+def _to_latest_summary(
+    row: ScrapedJob,
+    enrichment_by_job_id: dict[str, JobEnrichment] | None = None,
+) -> LatestJobSummary:
+    enrich = enrichment_by_job_id.get(row.job_id) if enrichment_by_job_id and row.job_id else None
     return LatestJobSummary(
         id=row.id,
+        jobId=row.job_id,
+        ingestProfile=row.ingest_profile,
+        actualRoleId=enrich.actual_role_id if enrich else None,
+        actualRoleName=enrich.actual_role_name if enrich else None,
         source=row.source,
         title=row.title,
         company=row.company,
@@ -113,6 +201,35 @@ def _triggered_by_label(admin: User | None) -> str:
     return "admin_key"
 
 
+def _job_board_count_snapshot(db: Session) -> dict:
+    now = datetime.utcnow()
+    start_of_today = datetime(now.year, now.month, now.day)
+    since_24h = now - timedelta(hours=24)
+    since_7d = now - timedelta(days=7)
+    last_auto = get_last_successful_auto_run(db)
+    return {
+        "totalJobs": count_total_jobs(db),
+        "activeJobs": count_active_jobs(db),
+        "loadedToday": count_jobs_since(db, start_of_today),
+        "loadedLast24Hours": count_jobs_since(db, since_24h),
+        "loadedLast7Days": count_jobs_since(db, since_7d),
+        "latestLoadedAt": get_latest_loaded_at(db),
+        "lastAutoRefreshAt": last_auto.finished_at if last_auto else None,
+    }
+
+
+def _build_job_board_overview(db: Session) -> JobBoardOverviewResponse:
+    counts = _job_board_count_snapshot(db)
+    return JobBoardOverviewResponse(
+        **counts,
+        profileBreakdown=[ProfileBreakdownItem(**item) for item in get_profile_breakdown(db)],
+        sourceBreakdown=[SourceBreakdownItem(**item) for item in get_source_breakdown(db, active_only=True)],
+        enrichmentRoleSummary=[
+            EnrichmentRoleCountItem(**item) for item in get_enrichment_role_breakdown(db)
+        ],
+    )
+
+
 @router.get("/jobs", response_model=JobsListResponse)
 def list_jobs(
     search: str | None = Query(None),
@@ -120,6 +237,7 @@ def list_jobs(
     source: str | None = Query(None),
     company: str | None = Query(None),
     experience: str | None = Query(None),
+    profile: str | None = Query(None, description="Filter by ingest profile key"),
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
     include_inactive: bool = Query(False),
@@ -143,15 +261,12 @@ def list_jobs(
         query = query.filter(ScrapedJob.location.ilike(f"%{location.strip()}%"))
     if source:
         query = query.filter(ScrapedJob.source == source.strip().lower())
+    if profile:
+        query = query.filter(ScrapedJob.ingest_profile == profile.strip())
     if experience:
-        keywords = EXPERIENCE_KEYWORDS.get(experience.strip().lower())
-        if keywords:
-            clauses = []
-            for kw in keywords:
-                like = f"%{kw}%"
-                clauses.append(ScrapedJob.title.ilike(like))
-                clauses.append(ScrapedJob.description.ilike(like))
-            query = query.filter(or_(*clauses))
+        clause = _experience_filter_clause(experience)
+        if clause is not None:
+            query = query.filter(clause)
 
     total = query.count()
     rows = (
@@ -168,6 +283,11 @@ def list_jobs(
     )
 
 
+@router.get("/jobs/overview", response_model=JobBoardOverviewResponse)
+def job_board_overview(db: Session = Depends(get_db)):
+    return _build_job_board_overview(db)
+
+
 @router.get("/jobs/{job_id}", response_model=NormalizedJob)
 def get_job(job_id: str, db: Session = Depends(get_db)):
     row = db.query(ScrapedJob).filter(ScrapedJob.id == job_id).first()
@@ -180,38 +300,48 @@ def get_job(job_id: str, db: Session = Depends(get_db)):
 def admin_job_stats(
     days: int = Query(7, ge=1, le=90),
     limit: int = Query(10, ge=1, le=50),
+    profile: str | None = Query(None, description="Filter latest jobs by ingest profile key"),
+    role_id: str | None = Query(None, alias="roleId", description="Filter latest jobs by enriched role ID"),
     db: Session = Depends(get_db),
     _admin: User | None = Depends(require_jobs_admin),
 ):
-    now = datetime.utcnow()
-    start_of_today = datetime(now.year, now.month, now.day)
-    since_24h = now - timedelta(hours=24)
-    since_7d = now - timedelta(days=7)
-
-    runs = get_recent_scrape_runs(db, days=days, limit=limit)
-    latest = get_latest_jobs(db, limit=limit, active_only=True)
-    expired_samples = get_expired_jobs(db, limit=limit)
-    last_auto = get_last_successful_auto_run(db)
+    counts = _job_board_count_snapshot(db)
     last_cleanup = get_last_run_by_type(db, "cleanup")
 
+    runs = get_recent_scrape_runs(db, days=days, limit=limit)
+    latest_rows = get_latest_jobs(
+        db,
+        limit=limit,
+        active_only=True,
+        profile=profile if profile and profile != "all" else None,
+        role_id=role_id if role_id and role_id != "all" else None,
+    )
+    job_ids = [row.job_id for row in latest_rows if row.job_id]
+    enrichments = (
+        db.query(JobEnrichment).filter(JobEnrichment.job_id.in_(job_ids)).all() if job_ids else []
+    )
+    enrichment_by_job_id = {row.job_id: row for row in enrichments}
+
+    expired_samples = get_expired_jobs(db, limit=limit)
+
     return JobStatsResponse(
-        totalJobs=count_total_jobs(db),
-        activeJobs=count_active_jobs(db),
-        loadedToday=count_jobs_since(db, start_of_today),
-        loadedLast24Hours=count_jobs_since(db, since_24h),
-        loadedLast7Days=count_jobs_since(db, since_7d),
-        latestLoadedAt=get_latest_loaded_at(db),
+        **counts,
         expiredJobs=count_jobs_by_link_status(db, "expired"),
         linkFailedJobs=count_jobs_by_link_status(db, "link_failed"),
         unknownLinkJobs=count_jobs_by_link_status(db, "unknown"),
-        lastAutoRefreshAt=last_auto.finished_at if last_auto else None,
         lastCleanupAt=last_cleanup.finished_at if last_cleanup else None,
-        sourceBreakdown=[SourceBreakdownItem(**item) for item in get_source_breakdown(db)],
+        sourceBreakdown=[SourceBreakdownItem(**item) for item in get_source_breakdown(db, active_only=True)],
         sourceFailureCounts=get_source_failure_counts(db, days=days),
         locationBreakdown=[LocationBreakdownItem(**item) for item in get_location_breakdown(db, limit=limit)],
         recentScrapeRuns=[ScrapeRunSummary(**scrape_run_to_dict(r)) for r in runs],
-        latestJobs=[_to_latest_summary(row) for row in latest],
+        latestJobs=[
+            _to_latest_summary(row, enrichment_by_job_id) for row in latest_rows
+        ],
         expiredJobSamples=[_to_latest_summary(row) for row in expired_samples],
+        profileBreakdown=[ProfileBreakdownItem(**item) for item in get_profile_breakdown(db)],
+        enrichmentRoleSummary=[
+            EnrichmentRoleCountItem(**item) for item in get_enrichment_role_breakdown(db)
+        ],
     )
 
 
@@ -277,6 +407,16 @@ def admin_cleanup_links(
     )
 
     summary = cleanup_job_links(db, limit=limit)
+    purge = delete_non_active_scraped_jobs(db)
+    summary.update(purge)
+    summary.update(
+        {
+            "totalActive": count_active_jobs(db),
+            "totalExpired": count_jobs_by_link_status(db, "expired"),
+            "totalLinkFailed": count_jobs_by_link_status(db, "link_failed"),
+            "totalUnknown": count_jobs_by_link_status(db, "unknown"),
+        }
+    )
     duration_ms = max(0, int((time.perf_counter() - started) * 1000))
     finished_at = datetime.utcnow()
 
@@ -388,23 +528,24 @@ def admin_send_digest(
         )
 
     if mode == "dry_run":
-        recipients = _student_recipient_emails(db)
+        recipients = _resolve_digest_recipients(db, payload)
         cap = settings.job_mail_max_recipients_per_run
         capped = recipients[:cap]
+        scope = "selected active student(s)" if payload.recipientEmails else "active student(s)"
         return SendDigestResponse(
             sentCount=0,
             failedCount=0,
             failedEmails=[],
             mode="dry_run",
             message=(
-                f"Dry run: {len(capped)} registered student(s) would receive digest "
+                f"Dry run: {len(capped)} {scope} would receive digest "
                 f"({len(recipients)} unique emails in roster; cap {cap}). No emails sent."
             ),
             recipientCount=len(capped),
             jobCount=job_count,
         )
 
-    recipients = _student_recipient_emails(db)
+    recipients = _resolve_digest_recipients(db, payload)
     if not recipients:
         raise HTTPException(
             status_code=400,
@@ -443,7 +584,7 @@ def _count_active_jobs(db: Session) -> int:
 def _count_recent_by_category(db: Session, *, hours: int = 24) -> tuple[int, int]:
     """Count active internship and fresher jobs opened within the last `hours`.
 
-    Classification uses the ingest profile first, then title/job_type keyword fallbacks.
+    Uses the same experience filter as the student Jobs browse page.
     Returns (internships_count, freshers_count).
     """
     cutoff = datetime.utcnow() - timedelta(hours=hours)
@@ -452,28 +593,8 @@ def _count_recent_by_category(db: Session, *, hours: int = 24) -> tuple[int, int
         ScrapedJob.created_at >= cutoff,
     )
 
-    title_lower = func.lower(func.coalesce(ScrapedJob.title, ""))
-    type_lower = func.lower(func.coalesce(ScrapedJob.job_type, ""))
-
-    internships = base.filter(
-        or_(
-            ScrapedJob.ingest_profile == "internship_india",
-            title_lower.like("%intern%"),
-            type_lower.like("%intern%"),
-        )
-    ).count()
-
-    freshers = base.filter(
-        or_(
-            ScrapedJob.ingest_profile == "fresher_india",
-            title_lower.like("%fresher%"),
-            title_lower.like("%graduate%"),
-            title_lower.like("%entry level%"),
-            title_lower.like("%entry-level%"),
-            title_lower.like("%trainee%"),
-        )
-    ).count()
-
+    internships = base.filter(_experience_filter_clause("internship")).count()
+    freshers = base.filter(_experience_filter_clause("fresher")).count()
     return internships, freshers
 
 
@@ -515,10 +636,10 @@ def _load_jobs_for_digest(db: Session, job_ids: list[str], *, max_jobs: int = 20
     return [scraped_job_to_dict(r) for r in rows]
 
 
-def _student_recipient_emails(db: Session) -> list[str]:
+def _active_student_emails(db: Session) -> list[str]:
     rows = (
         db.query(User.email)
-        .filter(User.role == UserRole.STUDENT)
+        .filter(User.role == UserRole.STUDENT, User.is_active.is_(True))
         .order_by(User.id.asc())
         .all()
     )
@@ -534,3 +655,213 @@ def _student_recipient_emails(db: Session) -> list[str]:
         seen.add(key)
         unique.append(raw)
     return unique
+
+
+def _resolve_digest_recipients(db: Session, payload: SendDigestRequest) -> list[str]:
+    if not payload.recipientEmails:
+        return _active_student_emails(db)
+
+    allowed = {email.lower() for email in _active_student_emails(db)}
+    seen: set[str] = set()
+    resolved: list[str] = []
+    for raw in payload.recipientEmails:
+        email = (raw or "").strip()
+        if not email:
+            continue
+        key = email.lower()
+        if key not in allowed or key in seen:
+            continue
+        seen.add(key)
+        resolved.append(email)
+    return resolved
+
+
+# ---------------------------------------------------------------------------
+# CSV export — admin only
+# Browser-friendly: accepts admin_key as query param so native file downloads work.
+# ---------------------------------------------------------------------------
+
+def _check_export_auth(
+    token_user: User | None,
+    x_admin_key: str | None,
+    admin_key_query: str | None,
+) -> None:
+    """Accepts JWT admin role, X-Admin-Key header, or admin_key query param."""
+    if token_user is not None and token_user.role in (UserRole.ADMIN, UserRole.SUPER_ADMIN):
+        return
+    expected = (settings.admin_job_key or "").strip()
+    if settings.environment == "production" and not expected:
+        raise HTTPException(status_code=403, detail="ADMIN_JOB_KEY must be set in production")
+    provided = (x_admin_key or admin_key_query or "").strip()
+    if expected and provided and secrets.compare_digest(provided, expected):
+        return
+    raise HTTPException(status_code=403, detail="Admin access required (JWT admin or admin_key)")
+
+
+@admin_router.get("/export")
+def export_jobs_csv(
+    limit: int = Query(500, ge=1, le=5000),
+    include_inactive: bool = Query(False),
+    admin_key: str | None = Query(None),
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(None, alias="X-Admin-Key"),
+    token: str | None = Depends(oauth2_scheme),
+) -> StreamingResponse:
+    """Stream active scraped jobs as a downloadable CSV file."""
+    user = get_optional_user(db, token)  # type: ignore[arg-type]
+    _check_export_auth(user, x_admin_key, admin_key)
+
+    query = db.query(ScrapedJob)
+    if not include_inactive:
+        query = query.filter(ScrapedJob.link_status == "active")
+    rows = query.order_by(ScrapedJob.created_at.desc()).limit(limit).all()
+
+    def _salary(row: ScrapedJob) -> str:
+        lo = float(row.salary_min) if row.salary_min else None
+        hi = float(row.salary_max) if row.salary_max else None
+        cur = row.currency or ""
+        if lo and hi:
+            return f"{cur} {int(lo):,} – {int(hi):,}".strip()
+        if lo:
+            return f"{cur} {int(lo):,}+".strip()
+        if hi:
+            return f"up to {cur} {int(hi):,}".strip()
+        return ""
+
+    def _date(v: datetime | None) -> str:
+        return v.strftime("%Y-%m-%d") if v else ""
+
+    buf = io.StringIO()
+    writer = csv.writer(buf)
+    writer.writerow([
+        "#", "Job ID", "Title", "Company", "Location", "Source",
+        "Type", "Date Posted", "Salary", "Status", "Profile",
+        "Apply Link", "Job URL", "Added (IST)",
+    ])
+    for seq, row in enumerate(rows, start=1):
+        job_id = getattr(row, "job_id", None) or row.id
+        apply = row.apply_url or row.job_url or ""
+        writer.writerow([
+            seq,
+            job_id,
+            row.title,
+            row.company or "",
+            row.location or "",
+            row.source,
+            row.job_type or "",
+            _date(row.date_posted),
+            _salary(row),
+            getattr(row, "link_status", "active") or "active",
+            getattr(row, "ingest_profile", "") or "",
+            apply,
+            row.job_url or "",
+            format_ist(row.created_at) or "",
+        ])
+
+    buf.seek(0)
+    now_ist = to_ist(now_utc())
+    filename = f"jobs_export_{now_ist.strftime('%Y%m%d_%H%M')}_IST.csv"
+    return StreamingResponse(
+        iter([buf.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@admin_router.get("/enrichment/summary", response_model=JobEnrichmentSummaryResponse)
+def admin_job_enrichment_summary(
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentSummaryResponse:
+    """Aggregate counts for saved job enrichment rows."""
+    return get_job_enrichment_summary(db)
+
+
+@admin_router.get("/enrichment/review", response_model=JobEnrichmentReviewResponse)
+def admin_job_enrichment_review(
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentReviewResponse:
+    """Rows needing admin review (NEEDS_REVIEW or manual_review_needed)."""
+    return get_job_enrichment_review_rows(db)
+
+
+@admin_router.get("/enrichment", response_model=JobEnrichmentListResponse)
+def admin_job_enrichment_list(
+    approved_status: str | None = Query(None),
+    actual_role_id: str | None = Query(None),
+    experience_level: str | None = Query(None),
+    job_live_status: str | None = Query(None),
+    manual_review_needed: bool | None = Query(None),
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentListResponse:
+    """Paginated list of saved job enrichment rows."""
+    return list_job_enrichments(
+        db,
+        approved_status=approved_status,
+        actual_role_id=actual_role_id,
+        experience_level=experience_level,
+        job_live_status=job_live_status,
+        manual_review_needed=manual_review_needed,
+        limit=limit,
+        offset=offset,
+    )
+
+
+@admin_router.get("/enrichment/{job_id}", response_model=JobEnrichmentRow)
+def admin_job_enrichment_detail(
+    job_id: str,
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentRow:
+    """One saved job enrichment row by job_id."""
+    row = get_job_enrichment_by_id(db, job_id)
+    if not row:
+        raise HTTPException(status_code=404, detail="Job enrichment not found")
+    return row
+
+
+@admin_router.post("/enrichment/import-preview", response_model=JobEnrichmentImportPreviewResponse)
+async def admin_job_enrichment_import_preview(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentImportPreviewResponse:
+    """Validate enriched job CSV without writing to job_enrichments or quiz tables."""
+    filename = (file.filename or "").strip().lower()
+    if not filename.endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Upload a .csv file")
+
+    raw = await file.read()
+    if not raw.strip():
+        raise HTTPException(status_code=400, detail="CSV file is empty")
+
+    try:
+        return preview_job_enrichment_import(db, raw)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@admin_router.post("/enrichment/import-commit", response_model=JobEnrichmentImportCommitResponse)
+async def admin_job_enrichment_import_commit(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    _admin: User | None = Depends(require_jobs_admin),
+) -> JobEnrichmentImportCommitResponse:
+    """Validate and upsert enriched job rows into job_enrichments."""
+    filename = (file.filename or "").strip().lower()
+    if not filename.endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Upload a .csv file")
+
+    raw = await file.read()
+    if not raw.strip():
+        raise HTTPException(status_code=400, detail="CSV file is empty")
+
+    try:
+        return commit_job_enrichment_import(db, raw)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+

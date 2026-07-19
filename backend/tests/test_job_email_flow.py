@@ -285,9 +285,10 @@ class DigestTemplateUnitTests(unittest.TestCase):
         content = build_digest(self._sample_jobs(4), total_active_jobs=200, max_jobs=4)
         h = content.html
         self.assertIn("Jobs Radar", h)
-        self.assertIn("Active jobs scanned", h)
-        self.assertIn("Handpicked roles", h)
+        self.assertIn("Active Jobs", h)
+        self.assertIn("Handpicked Roles", h)
         self.assertIn("Why these roles?", h)
+        self.assertIn("680px", h)
 
     def test_radar_source_split_hidden(self) -> None:
         content = build_digest(self._sample_jobs(3), total_active_jobs=10, max_jobs=3)

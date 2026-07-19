@@ -1,0 +1,137 @@
+{
+  "id": "project-sql-python-customer-churn-analysis",
+  "title": "Project Report: SQL + Python Customer Churn Analysis — Data Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "data-analyst",
+  "family_name": "Data Analyst",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "SQL + Python Customer Churn Analysis",
+  "project_index": 2,
+  "duration": "3 weeks",
+  "summary": "Query PostgreSQL warehouse, join customer data in pandas, analyze churn drivers, present to stakeholders.",
+  "objectives": [
+    "Write 10+ SQL queries with JOINs and window functions",
+    "Identify churn predictors",
+    "Build cohort analysis",
+    "Present findings with storytelling framework"
+  ],
+  "tools": [
+    "PostgreSQL",
+    "Python",
+    "Jupyter",
+    "PowerPoint"
+  ],
+  "deliverables": [
+    "SQL scripts",
+    "Jupyter notebook",
+    "Slide deck",
+    "Presentation recording"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**SQL + Python Customer Churn Analysis** is a intermediate-level end-to-end project for Data Analyst. Duration: 3 weeks. Query PostgreSQL warehouse, join customer data in pandas, analyze churn drivers, present to stakeholders. Tools: PostgreSQL, Python, Jupyter, PowerPoint.\n\nCode Reference:\n```text\nObjective: Write 10+ SQL queries with JOINs and window functions\nObjective: Identify churn predictors\nObjective: Build cohort analysis\nObjective: Present findings with storytelling framework\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nData Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Data Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Data Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Data Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Data Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: SQL",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: SQL** *(Level: Intermediate)*\n\nExtract cohorts from warehouse. Complete these tasks: CTE queries; Window functions. Deliverable for this phase: SQL script file.\n\nCode Reference:\n```text\n- [ ] CTE queries\n- [ ] Window functions\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase SQL is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the SQL script file to the teacher.",
+      "key_takeaways": [
+        "Phase SQL is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the SQL script file to the teacher."
+      ],
+      "what_it_is": "Phase SQL is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the SQL script file to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Python",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Python** *(Level: Intermediate)*\n\npandas analysis on extract. Complete these tasks: Feature correlation; Cohort retention. Deliverable for this phase: Jupyter notebook.\n\nCode Reference:\n```text\n- [ ] Feature correlation\n- [ ] Cohort retention\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Python is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Jupyter notebook to the teacher.",
+      "key_takeaways": [
+        "Phase Python is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Jupyter notebook to the teacher."
+      ],
+      "what_it_is": "Phase Python is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Jupyter notebook to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Story",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Story** *(Level: Intermediate)*\n\nApply Storytelling with Data. Complete these tasks: 3 key charts; So what? narrative. Deliverable for this phase: Slide deck.\n\nCode Reference:\n```text\n- [ ] 3 key charts\n- [ ] So what? narrative\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Story is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Slide deck to the teacher.",
+      "key_takeaways": [
+        "Phase Story is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Slide deck to the teacher."
+      ],
+      "what_it_is": "Phase Story is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Slide deck to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Present",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Present** *(Level: Intermediate)*\n\nMock stakeholder review. Complete these tasks: Q&A prep; Appendix tables. Deliverable for this phase: Recorded presentation.\n\nCode Reference:\n```text\n- [ ] Q&A prep\n- [ ] Appendix tables\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Present is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nData Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Recorded presentation to the teacher.",
+      "key_takeaways": [
+        "Phase Present is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Recorded presentation to the teacher."
+      ],
+      "what_it_is": "Phase Present is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Data Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Recorded presentation to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: SQL scripts; Jupyter notebook; Slide deck; Presentation recording. Skills demonstrated: SQL, pandas, Statistics, Storytelling. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: SQL scripts\nDeliverable: Jupyter notebook\nDeliverable: Slide deck\nDeliverable: Presentation recording\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits SQL scripts and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits SQL scripts and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits SQL scripts and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

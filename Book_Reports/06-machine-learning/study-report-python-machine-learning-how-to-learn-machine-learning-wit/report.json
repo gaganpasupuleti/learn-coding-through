@@ -1,0 +1,133 @@
+{
+  "id": "study-report-python-machine-learning-how-to-learn-machine-learning-wit",
+  "title": "Study Report: Python Machine Learning — How to Learn Machine Learning with Python",
+  "author": "Gagan Pasupuleti",
+  "family_id": "06-machine-learning",
+  "family_name": "Machine Learning",
+  "level": "Intermediate",
+  "summary": "This report covers a focused machine learning book. It starts with the history and concept of machine learning, then covers mathematical notation and terminology, using Python for ML, artificial neural networks, classification, training models, developing a model in Python, training simple algorithms for classification, and building good training sets. It builds a clear conceptual and practical foundation for machine learning with Python.",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Introduction: A Short History of Machine Learning",
+      "topic": "intro",
+      "content": "**Chapter focus: Introduction: A Short History of Machine Learning**\n\nAlways split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nprint(\"Hello, Python!\")\nprint(2 + 3)\n```\nWhat it shows: The first line prints text. The second shows Python can also calculate numbers.\n\n### What it actually is\nPython is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step. It comes with a large standard library and thousands of third-party packages.\n\n### When to use it\nUse Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.\n\n### Where to use it\nUsed at Google, Netflix, NASA, and in schools worldwide. Common in data science teams, DevOps automation, scripting, and beginner coding courses.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "Python is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step.",
+        "Use Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "Python is a high-level, interpreted language: you write human-readable code and the Python interpreter runs it without a separate compile step. It comes with a large standard library and thousands of third-party packages.",
+      "when_to_use": "Use Python when you want to build something quickly, automate repetitive tasks, analyze data, create a web backend, or learn programming for the first time.",
+      "where_to_use": "Used at Google, Netflix, NASA, and in schools worldwide. Common in data science teams, DevOps automation, scripting, and beginner coding courses.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    },
+    {
+      "number": 2,
+      "title": "The Concept of Machine Learning",
+      "topic": "ml_intro",
+      "content": "**Chapter focus: The Concept of Machine Learning**\n\nAlways split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nfrom sklearn.tree import DecisionTreeClassifier\nX = [[1, 0], [1, 1], [0, 0], [0, 1]]\ny = [1, 1, 0, 0]\nmodel = DecisionTreeClassifier()\nmodel.fit(X, y)\nprint(model.predict([[1, 0]]))  # [1]\n```\nWhat it shows: fit() learns from X and y; predict() guesses the label for a new row.\n\n### What it actually is\nMachine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.\n\n### When to use it\nWhen rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.\n\n### Where to use it\nTech companies, banks, hospitals (with care), e-commerce recommenders, and research labs.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "Machine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.",
+        "When rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "Machine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.",
+      "when_to_use": "When rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.",
+      "where_to_use": "Tech companies, banks, hospitals (with care), e-commerce recommenders, and research labs.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    },
+    {
+      "number": 3,
+      "title": "Notation, Terminology, and Building ML Systems",
+      "topic": "ml_intro",
+      "content": "**Chapter focus: Notation, Terminology, and Building ML Systems**\n\nMachine learning teaches computers to learn patterns from examples instead of following fixed rules. In supervised learning, each example has a label (spam/not spam). The model trains on many examples and predicts labels for new data. It is not magic — quality and quantity of data matter. Python libraries like scikit-learn provide ready-made algorithms.\n\nCode Reference:\n```python\nfrom sklearn.tree import DecisionTreeClassifier\nX = [[1, 0], [1, 1], [0, 0], [0, 1]]\ny = [1, 1, 0, 0]\nmodel = DecisionTreeClassifier()\nmodel.fit(X, y)\nprint(model.predict([[1, 0]]))  # [1]\n```\nWhat it shows: fit() learns from X and y; predict() guesses the label for a new row.\n\n### What it actually is\nMachine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.\n\n### When to use it\nWhen rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.\n\n### Where to use it\nTech companies, banks, hospitals (with care), e-commerce recommenders, and research labs.\n\n### Real use example\nAn email app trains on 10,000 labeled messages, learns patterns in spam words, and flags new mail automatically with 95% accuracy.",
+      "key_takeaways": [
+        "Machine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.",
+        "When rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.",
+        "An email app trains on 10,000 labeled messages, learns patterns in spam words, and flags new mail automatically with 95% accuracy."
+      ],
+      "what_it_is": "Machine learning is a way to make predictions or decisions by learning from data rather than hand-coded if-rules.",
+      "when_to_use": "When rules are too complex to write by hand: email spam, image labels, recommendation, fraud detection.",
+      "where_to_use": "Tech companies, banks, hospitals (with care), e-commerce recommenders, and research labs.",
+      "real_use_example": "An email app trains on 10,000 labeled messages, learns patterns in spam words, and flags new mail automatically with 95% accuracy."
+    },
+    {
+      "number": 4,
+      "title": "Using Python for Machine Learning",
+      "topic": "ml_models",
+      "content": "**Chapter focus: Using Python for Machine Learning**\n\nAlways split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n# X features, y target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(model.score(X_test, y_test))\n```\nWhat it shows: train_test_split holds out 20% for testing; score measures how well predictions match.\n\n### What it actually is\nA model is the output of training — a mathematical function that maps inputs to predicted outputs.\n\n### When to use it\nAfter you have cleaned data and a clear prediction goal (price, category, yes/no).\n\n### Where to use it\nHouse price estimation, customer churn, medical risk scores (with validation), and demand forecasting.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+        "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+      "when_to_use": "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+      "where_to_use": "House price estimation, customer churn, medical risk scores (with validation), and demand forecasting.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    },
+    {
+      "number": 5,
+      "title": "Artificial Neural Networks",
+      "topic": "deep_learning",
+      "content": "**Chapter focus: Artificial Neural Networks**\n\nDeep learning uses neural networks with many layers to learn complex patterns — especially in images, text, and speech. Each layer transforms data; activation functions add non-linearity. Training adjusts weights using lots of data and compute. CNNs excel at images; frameworks like TensorFlow and PyTorch implement the heavy math. Start with solid Python and ML basics before diving into deep learning.\n\nCode Reference:\n```python\nimport numpy as np\n\ndef relu(x):\n    return np.maximum(0, x)\n\nprint(relu(np.array([-2, 0, 3])))  # [0 0 3]\n```\nWhat it shows: ReLU is a common activation: negative values become 0, positives stay — enabling deep networks.\n\n### What it actually is\nDeep learning is machine learning with multi-layer neural networks that automatically learn features from raw data.\n\n### When to use it\nLarge datasets, complex patterns (faces, speech, translation) where simpler models fall short.\n\n### Where to use it\nPhoto tagging, voice assistants, self-driving perception, medical imaging research.\n\n### Real use example\nA phone keyboard uses a small neural network trained on typing patterns to suggest the next word more accurately than rule-based lists.",
+      "key_takeaways": [
+        "Deep learning is machine learning with multi-layer neural networks that automatically learn features from raw data.",
+        "Large datasets, complex patterns (faces, speech, translation) where simpler models fall short.",
+        "A phone keyboard uses a small neural network trained on typing patterns to suggest the next word more accurately than rule-based lists."
+      ],
+      "what_it_is": "Deep learning is machine learning with multi-layer neural networks that automatically learn features from raw data.",
+      "when_to_use": "Large datasets, complex patterns (faces, speech, translation) where simpler models fall short.",
+      "where_to_use": "Photo tagging, voice assistants, self-driving perception, medical imaging research.",
+      "real_use_example": "A phone keyboard uses a small neural network trained on typing patterns to suggest the next word more accurately than rule-based lists."
+    },
+    {
+      "number": 6,
+      "title": "Machine Learning Classification",
+      "topic": "ml_models",
+      "content": "**Chapter focus: Machine Learning Classification**\n\nEach class defines attributes (data) and methods (behavior). Inheritance shares code; overriding replaces parent behavior in the child. Always split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n# X features, y target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(model.score(X_test, y_test))\n```\nWhat it shows: train_test_split holds out 20% for testing; score measures how well predictions match.\n\n### What it actually is\nA model is the output of training — a mathematical function that maps inputs to predicted outputs.\n\n### When to use it\nAfter you have cleaned data and a clear prediction goal (price, category, yes/no).\n\n### Where to use it\nHouse price estimation, customer churn, medical risk scores (with validation), and demand forecasting.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+        "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+      "when_to_use": "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+      "where_to_use": "House price estimation, customer churn, medical risk scores (with validation), and demand forecasting.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    },
+    {
+      "number": 7,
+      "title": "Training a Machine Learning Model",
+      "topic": "ml_models",
+      "content": "**Chapter focus: Training a Machine Learning Model**\n\nAlways split data into train and test sets. Never evaluate only on data the model already saw — that inflates scores misleadingly.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n# X features, y target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(model.score(X_test, y_test))\n```\nWhat it shows: train_test_split holds out 20% for testing; score measures how well predictions match.\n\n### What it actually is\nA model is the output of training — a mathematical function that maps inputs to predicted outputs.\n\n### When to use it\nAfter you have cleaned data and a clear prediction goal (price, category, yes/no).\n\n### Where to use it\nHouse price estimation, customer churn, medical risk scores (with validation), and demand forecasting.\n\n### Real use example\nA fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only.",
+      "key_takeaways": [
+        "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+        "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+        "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+      ],
+      "what_it_is": "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+      "when_to_use": "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+      "where_to_use": "House price estimation, customer churn, medical risk scores (with validation), and demand forecasting.",
+      "real_use_example": "A fruit classifier trains on 800 labeled photos, tests on 200 held-out photos, and reports 88% accuracy on the test set only."
+    },
+    {
+      "number": 8,
+      "title": "Developing a Model and Building Good Training Sets",
+      "topic": "ml_models",
+      "content": "**Chapter focus: Developing a Model and Building Good Training Sets**\n\nAn ML model is the learned representation of patterns in data. You split data into training and test sets, call fit() to train, and predict() on new rows. Common models: linear regression (numbers), logistic regression and decision trees (categories), k-nearest neighbors (compare to nearby examples). Evaluate with accuracy, precision, or mean error so you know if the model actually works.\n\nCode Reference:\n```python\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\n# X features, y target\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\nmodel = LinearRegression().fit(X_train, y_train)\nprint(model.score(X_test, y_test))\n```\nWhat it shows: train_test_split holds out 20% for testing; score measures how well predictions match.\n\n### What it actually is\nA model is the output of training — a mathematical function that maps inputs to predicted outputs.\n\n### When to use it\nAfter you have cleaned data and a clear prediction goal (price, category, yes/no).\n\n### Where to use it\nHouse price estimation, customer churn, medical risk scores (with validation), and demand forecasting.\n\n### Real use example\nA delivery company trains on past trips (distance, traffic, time) and predicts ETA for new orders to show customers a realistic arrival window.",
+      "key_takeaways": [
+        "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+        "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+        "A delivery company trains on past trips (distance, traffic, time) and predicts ETA for new orders to show customers a realistic arrival window."
+      ],
+      "what_it_is": "A model is the output of training — a mathematical function that maps inputs to predicted outputs.",
+      "when_to_use": "After you have cleaned data and a clear prediction goal (price, category, yes/no).",
+      "where_to_use": "House price estimation, customer churn, medical risk scores (with validation), and demand forecasting.",
+      "real_use_example": "A delivery company trains on past trips (distance, traffic, time) and predicts ETA for new orders to show customers a realistic arrival window."
+    }
+  ],
+  "chapter_count": 8,
+  "source_file": "Python Machine Learning - How to learn Machine Learning with Python.epub"
+}

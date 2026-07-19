@@ -2,6 +2,8 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
+import { formatDateTimeIST } from '@/lib/formatDateTimeIST'
+
 import { useAdminWorkspaceContext } from '../AdminWorkspaceContext'
 import { StatusBadge } from '../widgets/StatusBadge'
 
@@ -35,7 +37,9 @@ export function AccessView() {
                     <p className="text-[10px] text-muted-foreground">
                       {entry.full_name || 'No name'} · {entry.source} · tries {entry.attempt_count}
                     </p>
-                    <p className="text-[10px] text-muted-foreground">{new Date(entry.last_attempted_at).toLocaleString()}</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {entry.last_attempted_at_ist ?? formatDateTimeIST(entry.last_attempted_at)}
+                    </p>
                   </div>
                   <StatusBadge
                     text={entry.status}
@@ -95,7 +99,7 @@ export function AccessView() {
                 </div>
                 <p className="mt-1 text-[10px] text-muted-foreground">
                   User #{entry.user_id ?? 'anon'} · {entry.status_code ?? '-'} · {entry.duration_ms ?? 0}ms ·{' '}
-                  {new Date(entry.occurred_at).toLocaleString()}
+                  {entry.occurred_at_ist ?? formatDateTimeIST(entry.occurred_at)}
                 </p>
               </div>
             ))}

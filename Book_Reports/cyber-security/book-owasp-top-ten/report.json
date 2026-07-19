@@ -1,0 +1,139 @@
+{
+  "id": "book-owasp-top-ten",
+  "title": "Study Report: OWASP Top Ten — Cybersecurity Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "cyber-security",
+  "family_name": "Cybersecurity Analyst",
+  "level": "Beginner",
+  "report_type": "role_book_study",
+  "book_title": "OWASP Top Ten",
+  "book_author": "OWASP Foundation",
+  "book_index": 2,
+  "summary": "Study report for *OWASP Top Ten* by OWASP Foundation (Beginner level) mapped to the Cybersecurity Analyst role. Free guide to the ten most critical web application risks (2021).",
+  "sources": [
+    "https://owasp.org/www-project-top-ten/"
+  ],
+  "source_file": "Reference: OWASP Top Ten — OWASP Foundation",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "About OWASP Top Ten",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-intro",
+      "content": "**Chapter focus: About OWASP Top Ten** *(Level: Beginner)*\n\nThis study report summarizes *OWASP Top Ten* by OWASP Foundation for the Cybersecurity Analyst role. The resource is rated Beginner level. Free guide to the ten most critical web application risks (2021). Use this report alongside the official material to prepare for CodeQuest review.\n\nCode Reference:\n```text\n# OWASP Top Ten\n# Author: OWASP Foundation\n# Role: Cybersecurity Analyst\n# Level: Beginner\n```\nWhat it shows: Metadata block records the source book and target role family.\n\n### What it actually is\nA structured study report based on OWASP Top Ten.\n\n### When to use it\nWhen learning Cybersecurity Analyst skills at Beginner level.\n\n### Where to use it\nCybersecurity Analyst training paths and certification prep.\n\n### Real use example\nA learner reads this report before starting the full book or free online guide.",
+      "key_takeaways": [
+        "A structured study report based on OWASP Top Ten.",
+        "When learning Cybersecurity Analyst skills at Beginner level.",
+        "A learner reads this report before starting the full book or free online guide."
+      ],
+      "what_it_is": "A structured study report based on OWASP Top Ten.",
+      "when_to_use": "When learning Cybersecurity Analyst skills at Beginner level.",
+      "where_to_use": "Cybersecurity Analyst training paths and certification prep.",
+      "real_use_example": "A learner reads this report before starting the full book or free online guide."
+    },
+    {
+      "number": 2,
+      "title": "Why This Book Matters for Your Role",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-context",
+      "content": "**Chapter focus: Why This Book Matters for Your Role** *(Level: Beginner)*\n\nCybersecurity Analyst professionals use ideas from OWASP Top Ten to solve real workplace problems. Free guide to the ten most critical web application risks (2021). This chapter explains how the book fits into your learning path and what you should be able to do after studying it.\n\nCode Reference:\n```text\nRole: Cybersecurity Analyst\nBook focus: Free guide to the ten most critical web application risks (2021).\nRecommended level: Beginner\n```\nWhat it shows: Connects the book topic to the job role outcomes.\n\n### What it actually is\nRole-aligned learning connects theory to job tasks.\n\n### When to use it\nDuring career planning and syllabus design.\n\n### Where to use it\nCybersecurity Analyst bootcamps and CodeQuest teacher assignments.\n\n### Real use example\nA teacher assigns this book report before a beginner skills checkpoint.",
+      "key_takeaways": [
+        "Role-aligned learning connects theory to job tasks.",
+        "During career planning and syllabus design.",
+        "A teacher assigns this book report before a beginner skills checkpoint."
+      ],
+      "what_it_is": "Role-aligned learning connects theory to job tasks.",
+      "when_to_use": "During career planning and syllabus design.",
+      "where_to_use": "Cybersecurity Analyst bootcamps and CodeQuest teacher assignments.",
+      "real_use_example": "A teacher assigns this book report before a beginner skills checkpoint."
+    },
+    {
+      "number": 3,
+      "title": "Key Topics Covered",
+      "topic": "modules",
+      "level": "Beginner",
+      "track": "book-topics",
+      "content": "**Chapter focus: Key Topics Covered** *(Level: Beginner)*\n\nThe main topics in OWASP Top Ten include practical concepts described as: Free guide to the ten most critical web application risks (2021). Study each topic with hands-on practice. Take notes on definitions, workflows, and examples that match tools used in Cybersecurity Analyst jobs today.\n\nCode Reference:\n```text\n- Topic 1: core concept\n- Topic 2: core concept\n- Topic 3: core concept\n- Topic 4: core concept\n```\nWhat it shows: Topic list guides what to study chapter-by-chapter in the source.\n\n### What it actually is\nTopic maps turn a book into actionable learning objectives.\n\n### When to use it\nBefore reading and while building chapter summaries.\n\n### Where to use it\nSelf-study, flipped classroom, and revision.\n\n### Real use example\nA student maps each book chapter to a CodeQuest report section.",
+      "key_takeaways": [
+        "Topic maps turn a book into actionable learning objectives.",
+        "Before reading and while building chapter summaries.",
+        "A student maps each book chapter to a CodeQuest report section."
+      ],
+      "what_it_is": "Topic maps turn a book into actionable learning objectives.",
+      "when_to_use": "Before reading and while building chapter summaries.",
+      "where_to_use": "Self-study, flipped classroom, and revision.",
+      "real_use_example": "A student maps each book chapter to a CodeQuest report section."
+    },
+    {
+      "number": 4,
+      "title": "Applied: Security Analyst Role and Defense in Depth",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: Security Analyst Role and Defense in Depth** *(Level: Beginner)*\n\nSecurity analysts protect confidentiality, integrity, and availability. Defense in depth layers controls: policies, network segmentation, identity, endpoint, application, and monitoring. Blue team focuses on detect-and-respond; understand red team findings without becoming adversarial. Document everything—incidents become legal evidence.\n\nCode Reference:\n```python\nlayers = ['Policy', 'Perimeter', 'Network', 'Host', 'App', 'Data', 'Monitoring']\n```\nWhat it shows: Layer model explains where controls belong in architecture reviews.\n\n### What it actually is\nCybersecurity analysts detect threats and reduce organizational risk.\n\n### When to use it\nContinuous monitoring of enterprise IT and cloud estates.\n\n### Where to use it\nSOCs, MSSPs, internal security teams, and compliance-heavy orgs.\n\n### Real use example\nCodeQuest SOC analyst spots unusual API traffic pattern during nightly log review.",
+      "key_takeaways": [
+        "Cybersecurity analysts detect threats and reduce organizational risk.",
+        "Continuous monitoring of enterprise IT and cloud estates.",
+        "CodeQuest SOC analyst spots unusual API traffic pattern during nightly log review."
+      ],
+      "what_it_is": "Cybersecurity analysts detect threats and reduce organizational risk.",
+      "when_to_use": "Continuous monitoring of enterprise IT and cloud estates.",
+      "where_to_use": "SOCs, MSSPs, internal security teams, and compliance-heavy orgs.",
+      "real_use_example": "CodeQuest SOC analyst spots unusual API traffic pattern during nightly log review."
+    },
+    {
+      "number": 5,
+      "title": "Applied: OWASP Top 10 2021 Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: OWASP Top 10 2021 Overview** *(Level: Beginner)*\n\nOWASP Top 10 lists critical web risks: Broken Access Control, Cryptographic Failures, Injection, Insecure Design, Security Misconfiguration, Vulnerable Components, Auth Failures, Integrity Failures, Logging Failures, and SSRF. Developers and analysts share this vocabulary for prioritization.\n\nCode Reference:\n```python\nowasp_2021 = ['A01 Broken Access Control', 'A02 Crypto Failures', 'A03 Injection',\n              'A04 Insecure Design', 'A05 Misconfiguration']\n```\nWhat it shows: Enumerating categories structures appsec assessment checklists.\n\n### What it actually is\nOWASP Top 10 is the industry standard web application risk list.\n\n### When to use it\nWeb app pen tests, secure SDLC training, and bug bounty triage.\n\n### Where to use it\nSaaS products, education portals, and e-commerce platforms.\n\n### Real use example\nIDOR in quiz API lets student A view student B grades—A01 broken access control.",
+      "key_takeaways": [
+        "OWASP Top 10 is the industry standard web application risk list.",
+        "Web app pen tests, secure SDLC training, and bug bounty triage.",
+        "IDOR in quiz API lets student A view student B grades—A01 broken access control."
+      ],
+      "what_it_is": "OWASP Top 10 is the industry standard web application risk list.",
+      "when_to_use": "Web app pen tests, secure SDLC training, and bug bounty triage.",
+      "where_to_use": "SaaS products, education portals, and e-commerce platforms.",
+      "real_use_example": "IDOR in quiz API lets student A view student B grades—A01 broken access control."
+    },
+    {
+      "number": 6,
+      "title": "Applied: CIA Triad and Authentication Basics",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "book-applied",
+      "content": "**Chapter focus: CIA Triad and Authentication Basics** *(Level: Beginner)*\n\nConfidentiality (encryption, access control), Integrity (hashing, signing), Availability (redundancy, DDoS mitigation). Authentication proves identity; authorization grants permissions. MFA blocks most credential stuffing. Password policies alone are insufficient.\n\nCode Reference:\n```python\nimport hashlib\nhashlib.sha256(b'password123').hexdigest()  # never store plaintext\n```\nWhat it shows: Hashing demos why databases must not store raw passwords.\n\n### What it actually is\nCIA triad frames every security control decision.\n\n### When to use it\nDesigning systems handling student PII and payment data.\n\n### Where to use it\nIdentity systems, databases, and API gateways.\n\n### Real use example\nMFA rollout stops 99% of spray attempts against teacher admin portal.",
+      "key_takeaways": [
+        "CIA triad frames every security control decision.",
+        "Designing systems handling student PII and payment data.",
+        "MFA rollout stops 99% of spray attempts against teacher admin portal."
+      ],
+      "what_it_is": "CIA triad frames every security control decision.",
+      "when_to_use": "Designing systems handling student PII and payment data.",
+      "where_to_use": "Identity systems, databases, and API gateways.",
+      "real_use_example": "MFA rollout stops 99% of spray attempts against teacher admin portal."
+    },
+    {
+      "number": 7,
+      "title": "Study Plan and Practice",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "book-plan",
+      "content": "**Chapter focus: Study Plan and Practice** *(Level: Beginner)*\n\nFinish OWASP Top Ten with a weekly plan: read one section, write a summary, complete one exercise, and reflect on how it applies to Cybersecurity Analyst. If a free edition exists, practice every example. Submit your notes and one mini-project demo for teacher review.\n\nCode Reference:\n```text\nWeek 1: Read + notes\nWeek 2: Exercises\nWeek 3: Mini project\nWeek 4: Review + quiz\n```\nWhat it shows: A 4-week plan turns reading into demonstrable skill.\n\n### What it actually is\nStructured study plans improve retention and portfolio outcomes.\n\n### When to use it\nAfter finishing the key topics chapters.\n\n### Where to use it\nCodeQuest end-of-unit assessments.\n\n### Real use example\nA learner completes the study plan and uploads a beginner project screenshot.",
+      "key_takeaways": [
+        "Structured study plans improve retention and portfolio outcomes.",
+        "After finishing the key topics chapters.",
+        "A learner completes the study plan and uploads a beginner project screenshot."
+      ],
+      "what_it_is": "Structured study plans improve retention and portfolio outcomes.",
+      "when_to_use": "After finishing the key topics chapters.",
+      "where_to_use": "CodeQuest end-of-unit assessments.",
+      "real_use_example": "A learner completes the study plan and uploads a beginner project screenshot."
+    }
+  ],
+  "chapter_count": 7
+}

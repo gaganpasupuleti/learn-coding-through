@@ -1,0 +1,137 @@
+{
+  "id": "project-automated-api-ui-test-suite",
+  "title": "Project Report: Automated API + UI Test Suite — QA & Test Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "qa-testing",
+  "family_name": "QA & Test Engineer",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "Automated API + UI Test Suite",
+  "project_index": 2,
+  "duration": "3–4 weeks",
+  "summary": "pytest API tests + Playwright E2E for login flow; run in GitHub Actions on every PR.",
+  "objectives": [
+    "pytest API test collection",
+    "Playwright E2E login + navigation",
+    "GitHub Actions CI pipeline",
+    "Test coverage report for API"
+  ],
+  "tools": [
+    "pytest",
+    "Playwright",
+    "GitHub Actions",
+    "httpx"
+  ],
+  "deliverables": [
+    "Test repo",
+    "CI pipeline",
+    "HTML report",
+    "E2E videos"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**Automated API + UI Test Suite** is a intermediate-level end-to-end project for QA & Test Engineer. Duration: 3–4 weeks. pytest API tests + Playwright E2E for login flow; run in GitHub Actions on every PR. Tools: pytest, Playwright, GitHub Actions, httpx.\n\nCode Reference:\n```text\nObjective: pytest API test collection\nObjective: Playwright E2E login + navigation\nObjective: GitHub Actions CI pipeline\nObjective: Test coverage report for API\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nQA & Test Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a QA & Test Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a QA & Test Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "QA & Test Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a QA & Test Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: API",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: API** *(Level: Intermediate)*\n\npytest + httpx tests. Complete these tasks: Auth endpoints; CRUD tests. Deliverable for this phase: API test suite.\n\nCode Reference:\n```text\n- [ ] Auth endpoints\n- [ ] CRUD tests\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase API is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the API test suite to the teacher.",
+      "key_takeaways": [
+        "Phase API is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the API test suite to the teacher."
+      ],
+      "what_it_is": "Phase API is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the API test suite to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: E2E",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: E2E** *(Level: Intermediate)*\n\nPlaywright browser tests. Complete these tasks: Login flow; Page assertions. Deliverable for this phase: E2E video recordings.\n\nCode Reference:\n```text\n- [ ] Login flow\n- [ ] Page assertions\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase E2E is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the E2E video recordings to the teacher.",
+      "key_takeaways": [
+        "Phase E2E is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the E2E video recordings to the teacher."
+      ],
+      "what_it_is": "Phase E2E is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the E2E video recordings to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: CI",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: CI** *(Level: Intermediate)*\n\nGitHub Actions workflow. Complete these tasks: Run on PR; Fail on red. Deliverable for this phase: CI badge green.\n\nCode Reference:\n```text\n- [ ] Run on PR\n- [ ] Fail on red\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase CI is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the CI badge green to the teacher.",
+      "key_takeaways": [
+        "Phase CI is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the CI badge green to the teacher."
+      ],
+      "what_it_is": "Phase CI is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the CI badge green to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Report",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Report** *(Level: Intermediate)*\n\nAllure or HTML report. Complete these tasks: Trends; Flaky test tracking. Deliverable for this phase: Test dashboard HTML.\n\nCode Reference:\n```text\n- [ ] Trends\n- [ ] Flaky test tracking\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Report is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nQA & Test Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Test dashboard HTML to the teacher.",
+      "key_takeaways": [
+        "Phase Report is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Test dashboard HTML to the teacher."
+      ],
+      "what_it_is": "Phase Report is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "QA & Test Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Test dashboard HTML to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: Test repo; CI pipeline; HTML report; E2E videos. Skills demonstrated: pytest, Playwright, CI/CD. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Test repo\nDeliverable: CI pipeline\nDeliverable: HTML report\nDeliverable: E2E videos\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Test repo and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Test repo and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Test repo and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

@@ -1,0 +1,135 @@
+{
+  "id": "project-requirements-doc-for-mobile-app-feature",
+  "title": "Project Report: Requirements Doc for Mobile App Feature — Business Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "business-analyst",
+  "family_name": "Business Analyst",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Requirements Doc for Mobile App Feature",
+  "project_index": 1,
+  "duration": "2 weeks",
+  "summary": "Elicit requirements for a 'dark mode' feature: interviews, user stories, acceptance criteria, mock wireframe.",
+  "objectives": [
+    "2 stakeholder interview summaries",
+    "5 user stories with acceptance criteria",
+    "Wireframe mockup",
+    "Requirements traceability matrix"
+  ],
+  "tools": [
+    "Figma/Balsamiq",
+    "Confluence template"
+  ],
+  "deliverables": [
+    "Requirements doc",
+    "User stories",
+    "Wireframe",
+    "RTM"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Requirements Doc for Mobile App Feature** is a beginner-level end-to-end project for Business Analyst. Duration: 2 weeks. Elicit requirements for a 'dark mode' feature: interviews, user stories, acceptance criteria, mock wireframe. Tools: Figma/Balsamiq, Confluence template.\n\nCode Reference:\n```text\nObjective: 2 stakeholder interview summaries\nObjective: 5 user stories with acceptance criteria\nObjective: Wireframe mockup\nObjective: Requirements traceability matrix\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nBusiness Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Business Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Business Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Business Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Business Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Elicit",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Elicit** *(Level: Beginner)*\n\nStakeholder interviews. Complete these tasks: Question guide; Notes. Deliverable for this phase: Interview summaries.\n\nCode Reference:\n```text\n- [ ] Question guide\n- [ ] Notes\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Elicit is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Interview summaries to the teacher.",
+      "key_takeaways": [
+        "Phase Elicit is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Interview summaries to the teacher."
+      ],
+      "what_it_is": "Phase Elicit is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Interview summaries to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Stories",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Stories** *(Level: Beginner)*\n\nUser stories + AC. Complete these tasks: Given/When/Then; Priority. Deliverable for this phase: Backlog document.\n\nCode Reference:\n```text\n- [ ] Given/When/Then\n- [ ] Priority\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Stories is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Backlog document to the teacher.",
+      "key_takeaways": [
+        "Phase Stories is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Backlog document to the teacher."
+      ],
+      "what_it_is": "Phase Stories is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Backlog document to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Wireframe",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Wireframe** *(Level: Beginner)*\n\nLow-fi mockup. Complete these tasks: Figma/Balsamiq; Annotations. Deliverable for this phase: Wireframe PDF.\n\nCode Reference:\n```text\n- [ ] Figma/Balsamiq\n- [ ] Annotations\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Wireframe is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Wireframe PDF to the teacher.",
+      "key_takeaways": [
+        "Phase Wireframe is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Wireframe PDF to the teacher."
+      ],
+      "what_it_is": "Phase Wireframe is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Wireframe PDF to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: RTM",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: RTM** *(Level: Beginner)*\n\nTraceability matrix. Complete these tasks: Story → AC → Test. Deliverable for this phase: RTM spreadsheet.\n\nCode Reference:\n```text\n- [ ] Story → AC → Test\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase RTM is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the RTM spreadsheet to the teacher.",
+      "key_takeaways": [
+        "Phase RTM is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the RTM spreadsheet to the teacher."
+      ],
+      "what_it_is": "Phase RTM is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the RTM spreadsheet to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: Requirements doc; User stories; Wireframe; RTM. Skills demonstrated: Requirements, User stories, Wireframing. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Requirements doc\nDeliverable: User stories\nDeliverable: Wireframe\nDeliverable: RTM\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Requirements doc and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Requirements doc and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Requirements doc and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

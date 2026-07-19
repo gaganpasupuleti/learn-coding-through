@@ -1,0 +1,28 @@
+{
+  "books": [
+    {
+      "id": "52",
+      "title": "Pride and Prejudice",
+      "description": "PLACEHOLDER summary: A classic novel of manners following Elizabeth Bennet.",
+      "url_text_source": "https://example-gutenberg-placeholder.invalid/ebooks/1342",
+      "url_librivox": "https://example-librivox-placeholder.invalid/pride-and-prejudice",
+      "language": "English",
+      "copyright_year": "1813",
+      "num_sections": "61",
+      "totaltimes": "11:35:24",
+      "authors": [{ "id": "24", "first_name": "Jane", "last_name": "Austen", "dob": "1775", "dod": "1817" }]
+    },
+    {
+      "id": "140",
+      "title": "The Time Machine",
+      "description": "PLACEHOLDER summary: A scientist travels forward in time to explore humanity's future.",
+      "url_text_source": "https://example-gutenberg-placeholder.invalid/ebooks/35",
+      "url_librivox": "https://example-librivox-placeholder.invalid/the-time-machine",
+      "language": "English",
+      "copyright_year": "1895",
+      "num_sections": "12",
+      "totaltimes": "3:18:02",
+      "authors": [{ "id": "52", "first_name": "H.G.", "last_name": "Wells", "dob": "1866", "dod": "1946" }]
+    }
+  ]
+}

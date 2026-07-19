@@ -6,15 +6,44 @@ import json
 from datetime import datetime, timedelta
 from typing import Any
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
+from app.core.datetime_utils import format_ist, ist_date_yyyymmdd
 from app.models.models import JobScrapeRun, ScrapedJob
 
 
+# ---------------------------------------------------------------------------
+# job_id generation
+# ---------------------------------------------------------------------------
+
+def _next_job_id_seq(db: Session, date_str: str) -> int:
+    """Next sequence number for CQJ-YYYYMMDD-NNNN (reads committed rows only)."""
+    prefix = f"CQJ-{date_str}-"
+    existing = (
+        db.query(ScrapedJob.job_id)
+        .filter(ScrapedJob.job_id.like(f"{prefix}%"))
+        .all()
+    )
+    max_seq = 0
+    for (jid,) in existing:
+        if jid:
+            try:
+                max_seq = max(max_seq, int(jid.rsplit("-", 1)[-1]))
+            except ValueError:
+                pass
+    return max_seq + 1
+
+
+def _format_job_id(date_str: str, seq: int) -> str:
+    return f"CQJ-{date_str}-{seq:04d}"
+
+
 def scraped_job_to_dict(row: ScrapedJob) -> dict[str, Any]:
+    created_at = row.created_at
     return {
         "id": row.id,
+        "jobId": getattr(row, "job_id", None),
         "source": row.source,
         "title": row.title,
         "company": row.company,
@@ -27,7 +56,8 @@ def scraped_job_to_dict(row: ScrapedJob) -> dict[str, Any]:
         "description": row.description,
         "jobUrl": row.job_url,
         "applyUrl": row.apply_url or row.job_url,
-        "createdAt": row.created_at,
+        "createdAt": created_at,
+        "createdAtIST": format_ist(created_at),
         "linkStatus": getattr(row, "link_status", None) or "active",
         "ingestProfile": getattr(row, "ingest_profile", None),
     }
@@ -42,6 +72,8 @@ def save_scraped_jobs(
     """Insert new jobs, skip duplicates. Returns (saved_count, skipped_duplicates)."""
     saved = 0
     skipped = 0
+    # ponytail: bump in-memory per date — unflushed rows are invisible to _next_job_id_seq.
+    next_seq_by_date: dict[str, int] = {}
     for job in jobs:
         existing = db.query(ScrapedJob).filter(ScrapedJob.id == job["id"]).first()
         if existing:
@@ -65,6 +97,13 @@ def save_scraped_jobs(
             link_status="active",
             ingest_profile=job.get("ingestProfile") or profile_key,
         )
+        created = row.created_at or datetime.utcnow()
+        date_str = ist_date_yyyymmdd(created)
+        if date_str not in next_seq_by_date:
+            next_seq_by_date[date_str] = _next_job_id_seq(db, date_str)
+        else:
+            next_seq_by_date[date_str] += 1
+        row.job_id = _format_job_id(date_str, next_seq_by_date[date_str])
         db.add(row)
         saved += 1
     if saved:
@@ -161,10 +200,92 @@ def get_last_successful_auto_run(db: Session) -> JobScrapeRun | None:
     )
 
 
-def get_latest_jobs(db: Session, limit: int = 10, *, active_only: bool = True) -> list[ScrapedJob]:
+def get_profile_breakdown(db: Session, *, active_only: bool = True) -> list[dict[str, Any]]:
+    from app.services.job_profiles import SCRAPE_PROFILES
+
+    query = db.query(ScrapedJob.ingest_profile, func.count()).group_by(ScrapedJob.ingest_profile)
+    if active_only:
+        query = query.filter(ScrapedJob.link_status == "active")
+    raw = {row[0] or "unassigned": int(row[1]) for row in query.all()}
+
+    items: list[dict[str, Any]] = []
+    for key, profile in SCRAPE_PROFILES.items():
+        items.append(
+            {
+                "profile": key,
+                "label": profile.label,
+                "count": raw.get(key, 0),
+                "autoEnabled": profile.auto_enabled,
+            }
+        )
+    unassigned = raw.get("unassigned", 0)
+    if unassigned:
+        items.append(
+            {
+                "profile": "unassigned",
+                "label": "Unassigned",
+                "count": unassigned,
+                "autoEnabled": False,
+            }
+        )
+    return sorted(items, key=lambda row: -row["count"])
+
+
+def get_enrichment_role_breakdown(db: Session, *, active_only: bool = True) -> list[dict[str, Any]]:
+    """All active taxonomy roles with enrichment counts (includes zeros)."""
+    from app.models.models import JobEnrichment, JobRole
+
+    count_query = db.query(JobEnrichment.actual_role_id, func.count()).join(
+        ScrapedJob, ScrapedJob.job_id == JobEnrichment.job_id
+    )
+    if active_only:
+        count_query = count_query.filter(ScrapedJob.link_status == "active")
+    count_rows = count_query.group_by(JobEnrichment.actual_role_id).all()
+    counts = {role_id: int(count) for role_id, count in count_rows if role_id}
+
+    roles = (
+        db.query(JobRole)
+        .filter(JobRole.active.is_(True))
+        .order_by(JobRole.role_name)
+        .all()
+    )
+    known_ids = {role.role_id for role in roles}
+    items: list[dict[str, Any]] = [
+        {
+            "roleId": role.role_id,
+            "roleName": role.role_name,
+            "count": counts.get(role.role_id, 0),
+        }
+        for role in roles
+    ]
+    for role_id, count in counts.items():
+        if role_id not in known_ids:
+            items.append({"roleId": role_id, "roleName": role_id, "count": count})
+    return sorted(items, key=lambda row: (-row["count"], row["roleName"]))
+
+
+def get_latest_jobs(
+    db: Session,
+    limit: int = 10,
+    *,
+    active_only: bool = True,
+    profile: str | None = None,
+    role_id: str | None = None,
+) -> list[ScrapedJob]:
     query = db.query(ScrapedJob)
     if active_only:
         query = query.filter(ScrapedJob.link_status == "active")
+    if role_id:
+        from app.models.models import JobEnrichment
+
+        query = query.join(JobEnrichment, ScrapedJob.job_id == JobEnrichment.job_id).filter(
+            JobEnrichment.actual_role_id == role_id
+        )
+    elif profile:
+        if profile == "unassigned":
+            query = query.filter(or_(ScrapedJob.ingest_profile.is_(None), ScrapedJob.ingest_profile == ""))
+        else:
+            query = query.filter(ScrapedJob.ingest_profile == profile)
     return query.order_by(ScrapedJob.created_at.desc()).limit(limit).all()
 
 
@@ -176,6 +297,39 @@ def get_expired_jobs(db: Session, limit: int = 20) -> list[ScrapedJob]:
         .limit(limit)
         .all()
     )
+
+
+NON_ACTIVE_LINK_STATUSES = ("expired", "link_failed", "unknown")
+
+
+def delete_non_active_scraped_jobs(db: Session) -> dict[str, int]:
+    """Remove expired, dead, and unknown link rows (+ matching enrichment overlays)."""
+    from app.models.models import JobEnrichment
+
+    doomed_job_ids = [
+        job_id
+        for (job_id,) in db.query(ScrapedJob.job_id)
+        .filter(ScrapedJob.link_status.in_(NON_ACTIVE_LINK_STATUSES))
+        .all()
+        if job_id
+    ]
+
+    deleted_enrichments = 0
+    if doomed_job_ids:
+        deleted_enrichments = (
+            db.query(JobEnrichment)
+            .filter(JobEnrichment.job_id.in_(doomed_job_ids))
+            .delete(synchronize_session=False)
+        )
+
+    deleted_jobs = (
+        db.query(ScrapedJob)
+        .filter(ScrapedJob.link_status.in_(NON_ACTIVE_LINK_STATUSES))
+        .delete(synchronize_session=False)
+    )
+    if deleted_jobs or deleted_enrichments:
+        db.commit()
+    return {"deletedJobs": deleted_jobs, "deletedEnrichments": deleted_enrichments}
 
 
 def get_source_failure_counts(db: Session, days: int = 7) -> dict[str, int]:
@@ -289,7 +443,9 @@ def scrape_run_to_dict(run: JobScrapeRun) -> dict[str, Any]:
         "errorCount": run.error_count,
         "status": run.status,
         "startedAt": run.started_at,
+        "startedAtIST": format_ist(run.started_at),
         "finishedAt": run.finished_at,
+        "finishedAtIST": format_ist(run.finished_at),
         "durationMs": run.duration_ms,
         "runType": getattr(run, "run_type", None) or "manual",
         "profile": getattr(run, "profile", None),

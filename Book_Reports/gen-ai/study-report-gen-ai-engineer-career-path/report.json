@@ -1,0 +1,608 @@
+{
+  "id": "study-report-gen-ai-engineer-career-path",
+  "title": "Study Report: Generative AI Engineer — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "gen-ai",
+  "family_name": "Generative AI Engineer",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "This report maps the Generative AI Engineer role for 2024-2026: LLM fundamentals, prompt engineering, RAG pipelines, vector databases, OpenAI and Hugging Face APIs, evaluation (RAGAS), safety guardrails, and cost/latency optimization for production copilots.",
+  "skill_stack": {
+    "beginner": [
+      "LLM tokens and context windows",
+      "Prompt structure (role, task, format)",
+      "OpenAI Chat Completions API",
+      "Hugging Face pipeline basics",
+      "Embeddings and cosine similarity",
+      "Chunking strategies for documents",
+      "Basic Python async for APIs"
+    ],
+    "intermediate": [
+      "RAG retrieval architecture",
+      "Vector DBs (Chroma, Pinecone, pgvector)",
+      "LangChain / LlamaIndex patterns",
+      "Hybrid search (BM25 + vectors)",
+      "RAG evaluation with RAGAS",
+      "Guardrails and output validation",
+      "Caching and batching for cost",
+      "Fine-tuning vs RAG decision matrix"
+    ],
+    "advanced": [
+      "Multimodal models (vision + text)",
+      "Production RAG with re-ranking",
+      "Enterprise GenAI governance",
+      "Red teaming and jailbreak defense",
+      "Speculative decoding / latency tricks",
+      "Multi-tenant vector isolation",
+      "GenAI platform architecture",
+      "EU AI Act documentation patterns"
+    ]
+  },
+  "sources": [
+    "https://platform.openai.com/docs/",
+    "https://huggingface.co/docs/transformers/",
+    "https://python.langchain.com/docs/",
+    "https://docs.llamaindex.ai/",
+    "https://docs.ragas.io/",
+    "https://www.anthropic.com/research"
+  ],
+  "recommended_books": [
+    {
+      "title": "Build a Large Language Model (From Scratch)",
+      "author": "Sebastian Raschka",
+      "level": "Advanced",
+      "focus": "Transformer architecture, training, and inference from first principles.",
+      "url": "https://www.manning.com/books/build-a-large-language-model-from-scratch",
+      "free_online": false
+    },
+    {
+      "title": "Prompt Engineering for Generative AI",
+      "author": "James Phoenix & Mike Taylor",
+      "level": "Beginner",
+      "focus": "Prompt patterns, few-shot, chain-of-thought, and evaluation.",
+      "url": "https://www.oreilly.com/library/view/prompt-engineering-for/9781098153434/",
+      "free_online": false
+    },
+    {
+      "title": "Generative AI with LangChain",
+      "author": "Ben Auffarth & Laura Trotta",
+      "level": "Intermediate",
+      "focus": "LangChain chains, RAG, agents, and LLM application structure.",
+      "url": "https://www.packtpub.com/en-us/product/generative-ai-with-langchain-9781835084848",
+      "free_online": false
+    },
+    {
+      "title": "Natural Language Processing with Transformers",
+      "author": "Lewis Tunstall et al.",
+      "level": "Advanced",
+      "focus": "Hugging Face transformers, fine-tuning, and NLP tasks.",
+      "url": "https://www.oreilly.com/library/view/natural-language-processing/9781098136789/",
+      "free_online": false
+    },
+    {
+      "title": "OpenAI API Documentation",
+      "author": "OpenAI",
+      "level": "Beginner",
+      "focus": "Chat completions, embeddings, function calling, and best practices.",
+      "url": "https://platform.openai.com/docs/",
+      "free_online": true
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "PDF Q&A Chatbot with RAG",
+      "level": "Beginner",
+      "duration": "2–3 weeks",
+      "overview": "Upload PDFs, chunk and embed with OpenAI/HuggingFace, answer questions with retrieved context.",
+      "objectives": [
+        "PDF text extraction and chunking",
+        "Vector store (Chroma/FAISS)",
+        "RAG prompt pipeline",
+        "Simple Streamlit or Gradio UI"
+      ],
+      "phases": [
+        {
+          "name": "Ingest",
+          "description": "PDF → chunks.",
+          "tasks": [
+            "LangChain loader",
+            "Splitter config"
+          ],
+          "deliverable": "Indexed documents"
+        },
+        {
+          "name": "Embed",
+          "description": "Vector store setup.",
+          "tasks": [
+            "OpenAI embeddings",
+            "Similarity search"
+          ],
+          "deliverable": "Working retrieval"
+        },
+        {
+          "name": "RAG",
+          "description": "Prompt with context.",
+          "tasks": [
+            "System prompt",
+            "Source citations"
+          ],
+          "deliverable": "Q&A demo"
+        },
+        {
+          "name": "UI",
+          "description": "Streamlit chat interface.",
+          "tasks": [
+            "Upload PDF",
+            "Chat history"
+          ],
+          "deliverable": "Deployed app URL"
+        }
+      ],
+      "skills_applied": [
+        "RAG",
+        "Embeddings",
+        "LLM APIs"
+      ],
+      "tools": [
+        "LangChain",
+        "OpenAI",
+        "Chroma",
+        "Streamlit"
+      ],
+      "deliverables": [
+        "GitHub repo",
+        "Demo video",
+        "Sample Q&A log"
+      ]
+    },
+    {
+      "title": "CodeQuest Study Report Tutor",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "RAG over study report JSON/Markdown; structured prompts return chapter summaries and quiz questions.",
+      "objectives": [
+        "Index Role_Reports catalog and chapters",
+        "Structured JSON output for quizzes",
+        "Rate limiting and cost tracking",
+        "Evaluation set with 20 benchmark questions"
+      ],
+      "phases": [
+        {
+          "name": "Index",
+          "description": "Load report corpus.",
+          "tasks": [
+            "JSON + MD parsers",
+            "Metadata filters"
+          ],
+          "deliverable": "Vector index"
+        },
+        {
+          "name": "Prompts",
+          "description": "Tutor persona prompts.",
+          "tasks": [
+            "Summary template",
+            "Quiz template"
+          ],
+          "deliverable": "Prompt library"
+        },
+        {
+          "name": "Eval",
+          "description": "20 benchmark Q&A.",
+          "tasks": [
+            "Accuracy scoring",
+            "Hallucination check"
+          ],
+          "deliverable": "Eval spreadsheet"
+        },
+        {
+          "name": "API",
+          "description": "FastAPI wrapper.",
+          "tasks": [
+            "/summarize",
+            "/quiz"
+          ],
+          "deliverable": "Live tutor API"
+        }
+      ],
+      "skills_applied": [
+        "RAG",
+        "Prompt engineering",
+        "Evaluation"
+      ],
+      "tools": [
+        "LangChain",
+        "FastAPI",
+        "OpenAI",
+        "Chroma"
+      ],
+      "deliverables": [
+        "Tutor API",
+        "Eval report",
+        "Prompt library doc",
+        "Demo video"
+      ]
+    },
+    {
+      "title": "Enterprise Document Intelligence Platform",
+      "level": "Advanced",
+      "duration": "5–6 weeks",
+      "overview": "Multi-tenant RAG with hybrid search, reranking, guardrails, and admin analytics dashboard.",
+      "objectives": [
+        "Hybrid search (BM25 + vector)",
+        "Cross-encoder reranking",
+        "PII redaction guardrails",
+        "Admin dashboard with usage analytics"
+      ],
+      "phases": [
+        {
+          "name": "Hybrid",
+          "description": "BM25 + vector fusion.",
+          "tasks": [
+            "Reciprocal rank fusion",
+            "Tuning"
+          ],
+          "deliverable": "Search quality benchmark"
+        },
+        {
+          "name": "Rerank",
+          "description": "Cross-encoder reranker.",
+          "tasks": [
+            "Top-20 → Top-5",
+            "Latency test"
+          ],
+          "deliverable": "Reranker eval"
+        },
+        {
+          "name": "Guardrails",
+          "description": "PII filter + topic block.",
+          "tasks": [
+            "Regex + LLM check",
+            "Audit log"
+          ],
+          "deliverable": "Safety test cases"
+        },
+        {
+          "name": "Admin",
+          "description": "Usage dashboard.",
+          "tasks": [
+            "Token costs",
+            "Query logs"
+          ],
+          "deliverable": "Admin UI screenshot"
+        }
+      ],
+      "skills_applied": [
+        "Hybrid search",
+        "Safety",
+        "Enterprise RAG"
+      ],
+      "tools": [
+        "LangChain",
+        "Elasticsearch",
+        "OpenAI",
+        "React"
+      ],
+      "deliverables": [
+        "Platform demo",
+        "Search benchmark",
+        "Safety test report",
+        "Admin dashboard"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Generative AI Engineer Role Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Generative AI Engineer Role Overview** *(Level: Beginner)*\n\nGenAI engineers build LLM-powered products: copilots, search, summarization, and codegen assistants. Skills span prompting, retrieval, evaluation, and safety — not just calling an API. 2025-2026 teams ship RAG before fine-tuning unless domain gap is proven.\n\nCode Reference:\n```python\nresponse = client.chat.completions.create(\n  model='gpt-4o-mini',\n  messages=[{'role':'system','content':'You are a helpful tutor.'},\n            {'role':'user','content':'Explain SQL JOINs briefly.'}]\n)\n```\nWhat it shows: System + user messages frame behavior — cheapest path to useful apps.\n\n### What it actually is\nA GenAI engineer integrates LLMs into reliable user-facing applications.\n\n### When to use it\nWhen unstructured knowledge or language tasks dominate the product.\n\n### Where to use it\nSupport bots, doc search, content generation, and code assistants.\n\n### Real use example\nCodeQuest study copilot answers from official docs only — you own retrieval quality.",
+      "key_takeaways": [
+        "A GenAI engineer integrates LLMs into reliable user-facing applications.",
+        "When unstructured knowledge or language tasks dominate the product.",
+        "CodeQuest study copilot answers from official docs only — you own retrieval quality."
+      ],
+      "what_it_is": "A GenAI engineer integrates LLMs into reliable user-facing applications.",
+      "when_to_use": "When unstructured knowledge or language tasks dominate the product.",
+      "where_to_use": "Support bots, doc search, content generation, and code assistants.",
+      "real_use_example": "CodeQuest study copilot answers from official docs only — you own retrieval quality."
+    },
+    {
+      "number": 2,
+      "title": "LLM Fundamentals: Tokens and Context",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: LLM Fundamentals: Tokens and Context** *(Level: Beginner)*\n\nModels read text as tokens (~4 chars English). Context window limits total input+output (128k+ on flagship 2025 models). Long prompts cost money and latency — summarize or retrieve instead of stuffing context.\n\nCode Reference:\n```python\nimport tiktoken\nenc = tiktoken.encoding_for_model('gpt-4o')\nprint(len(enc.encode('Hello, how many tokens am I?')))\n```\nWhat it shows: tiktoken estimates billable tokens before sending requests.\n\n### What it actually is\nTokenization and context limits shape every LLM application design.\n\n### When to use it\nSizing prompts, choosing models, and estimating cost.\n\n### Where to use it\nAll Chat Completions and embedding workloads.\n\n### Real use example\nA 200-page PDF won't fit — chunking + RAG is mandatory not optional.",
+      "key_takeaways": [
+        "Tokenization and context limits shape every LLM application design.",
+        "Sizing prompts, choosing models, and estimating cost.",
+        "A 200-page PDF won't fit — chunking + RAG is mandatory not optional."
+      ],
+      "what_it_is": "Tokenization and context limits shape every LLM application design.",
+      "when_to_use": "Sizing prompts, choosing models, and estimating cost.",
+      "where_to_use": "All Chat Completions and embedding workloads.",
+      "real_use_example": "A 200-page PDF won't fit — chunking + RAG is mandatory not optional."
+    },
+    {
+      "number": 3,
+      "title": "Prompt Engineering Patterns",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Prompt Engineering Patterns** *(Level: Beginner)*\n\nPatterns: zero-shot, few-shot, chain-of-thought, JSON mode, structured outputs (2024+). Be explicit about format, length, and refusal conditions. Version prompts in Git.\n\nCode Reference:\n```python\nSYSTEM = \"\"\"Answer using only provided context. If unsure, say I don't know.\nRespond as JSON: {\"answer\": str, \"citations\": [int]}\"\"\"\n```\nWhat it shows: JSON schema reduces parsing bugs vs free-form answers.\n\n### What it actually is\nPrompt engineering steers model behavior without weight updates.\n\n### When to use it\nEvery LLM feature before investing in fine-tuning.\n\n### Where to use it\nExtraction, classification, tutoring, and support macros.\n\n### Real use example\nFew-shot examples fix date format inconsistencies in invoice parsing.",
+      "key_takeaways": [
+        "Prompt engineering steers model behavior without weight updates.",
+        "Every LLM feature before investing in fine-tuning.",
+        "Few-shot examples fix date format inconsistencies in invoice parsing."
+      ],
+      "what_it_is": "Prompt engineering steers model behavior without weight updates.",
+      "when_to_use": "Every LLM feature before investing in fine-tuning.",
+      "where_to_use": "Extraction, classification, tutoring, and support macros.",
+      "real_use_example": "Few-shot examples fix date format inconsistencies in invoice parsing."
+    },
+    {
+      "number": 4,
+      "title": "OpenAI API and Chat Completions",
+      "topic": "web",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: OpenAI API and Chat Completions** *(Level: Beginner)*\n\nUse official SDK; set temperature low (0-0.3) for factual tasks. Stream responses for UX; handle rate limits with tenacity retries. Never log API keys.\n\nCode Reference:\n```python\nfrom openai import OpenAI\nclient = OpenAI()\nfor chunk in client.chat.completions.create(model='gpt-4o-mini', messages=msgs, stream=True):\n    print(chunk.choices[0].delta.content or '', end='')\n```\nWhat it shows: Streaming prints tokens as generated — feels instant to users.\n\n### What it actually is\nHosted LLM APIs provide state-of-the-art models without GPU ops.\n\n### When to use it\nPrototypes and production when data can leave VPC policy.\n\n### Where to use it\nCopilots, summarizers, and codegen tools.\n\n### Real use example\nRetry wrapper handles 429 rate limit during launch traffic spike.",
+      "key_takeaways": [
+        "Hosted LLM APIs provide state-of-the-art models without GPU ops.",
+        "Prototypes and production when data can leave VPC policy.",
+        "Retry wrapper handles 429 rate limit during launch traffic spike."
+      ],
+      "what_it_is": "Hosted LLM APIs provide state-of-the-art models without GPU ops.",
+      "when_to_use": "Prototypes and production when data can leave VPC policy.",
+      "where_to_use": "Copilots, summarizers, and codegen tools.",
+      "real_use_example": "Retry wrapper handles 429 rate limit during launch traffic spike."
+    },
+    {
+      "number": 5,
+      "title": "Hugging Face Transformers Basics",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Hugging Face Transformers Basics** *(Level: Beginner)*\n\nRun open models locally or on HF Inference Endpoints. pipeline() abstracts tokenization + model. Model cards document bias and intended use — read before production.\n\nCode Reference:\n```python\nfrom transformers import pipeline\nclf = pipeline('text-classification', model='distilbert-base-uncased-finetuned-sst-2-english')\nprint(clf('I love this course!'))\n```\nWhat it shows: pipeline returns label + score without manual tensor code.\n\n### What it actually is\nHugging Face hosts open weights and standardized inference APIs.\n\n### When to use it\nWhen data residency or cost rules out closed APIs.\n\n### Where to use it\nOn-prem sentiment, NER, and embedding models.\n\n### Real use example\nDistilBERT sentiment runs on CPU for PII-sensitive support ticket routing.",
+      "key_takeaways": [
+        "Hugging Face hosts open weights and standardized inference APIs.",
+        "When data residency or cost rules out closed APIs.",
+        "DistilBERT sentiment runs on CPU for PII-sensitive support ticket routing."
+      ],
+      "what_it_is": "Hugging Face hosts open weights and standardized inference APIs.",
+      "when_to_use": "When data residency or cost rules out closed APIs.",
+      "where_to_use": "On-prem sentiment, NER, and embedding models.",
+      "real_use_example": "DistilBERT sentiment runs on CPU for PII-sensitive support ticket routing."
+    },
+    {
+      "number": 6,
+      "title": "Embeddings and Vector Search Intro",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Embeddings and Vector Search Intro** *(Level: Beginner)*\n\nEmbeddings map text to dense vectors; similar meaning → nearby vectors. Cosine similarity ranks matches. Normalize vectors for fair comparison.\n\nCode Reference:\n```python\nimport numpy as np\n\ndef cosine(a, b):\n    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))\n\n# higher cosine = more similar chunks\n```\nWhat it shows: Cosine is standard for OpenAI and sentence-transformer embeddings.\n\n### What it actually is\nVector search finds relevant passages for RAG retrieval.\n\n### When to use it\nDocument Q&A, duplicate detection, and recommendations.\n\n### Where to use it\nKnowledge bases, policy manuals, and course content.\n\n### Real use example\nTop-3 chunks about 'window functions' retrieved for SQL tutor prompt.",
+      "key_takeaways": [
+        "Vector search finds relevant passages for RAG retrieval.",
+        "Document Q&A, duplicate detection, and recommendations.",
+        "Top-3 chunks about 'window functions' retrieved for SQL tutor prompt."
+      ],
+      "what_it_is": "Vector search finds relevant passages for RAG retrieval.",
+      "when_to_use": "Document Q&A, duplicate detection, and recommendations.",
+      "where_to_use": "Knowledge bases, policy manuals, and course content.",
+      "real_use_example": "Top-3 chunks about 'window functions' retrieved for SQL tutor prompt."
+    },
+    {
+      "number": 7,
+      "title": "RAG Pipeline Architecture",
+      "topic": "ml_intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: RAG Pipeline Architecture** *(Level: Intermediate)*\n\nRAG = Retrieve relevant chunks → Augment prompt → Generate answer. Components: ingest, chunk, embed, index, retrieve, rerank, generate, cite. Failure modes: wrong retrieval, hallucination despite context, stale index.\n\nCode Reference:\n```markdown\n# RAG flow\n# query -> embed -> top_k retrieve -> build prompt with context -> LLM -> answer + cites\n```\nWhat it shows: Explicit flow diagram helps debug which stage failed.\n\n### What it actually is\nRAG grounds LLM answers in private or fresh documents.\n\n### When to use it\nEnterprise knowledge assistants and support bots.\n\n### Where to use it\nLegal, HR policy, and technical documentation copilots.\n\n### Real use example\nTeacher asks about grading rubric — RAG pulls 2025 PDF not outdated blog.",
+      "key_takeaways": [
+        "RAG grounds LLM answers in private or fresh documents.",
+        "Enterprise knowledge assistants and support bots.",
+        "Teacher asks about grading rubric — RAG pulls 2025 PDF not outdated blog."
+      ],
+      "what_it_is": "RAG grounds LLM answers in private or fresh documents.",
+      "when_to_use": "Enterprise knowledge assistants and support bots.",
+      "where_to_use": "Legal, HR policy, and technical documentation copilots.",
+      "real_use_example": "Teacher asks about grading rubric — RAG pulls 2025 PDF not outdated blog."
+    },
+    {
+      "number": 8,
+      "title": "Chunking and Metadata Strategies",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Chunking and Metadata Strategies** *(Level: Intermediate)*\n\nChunk size 500-1000 tokens with 10-20% overlap preserves continuity. Attach metadata (source, page, section) for citations and filtered retrieval.\n\nCode Reference:\n```python\nfrom langchain_text_splitters import RecursiveCharacterTextSplitter\nsplitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=120)\nchunks = splitter.split_documents(docs)\n```\nWhat it shows: Recursive splitter respects paragraph boundaries better than fixed char cuts.\n\n### What it actually is\nSmart chunking balances retrieval precision and context completeness.\n\n### When to use it\nIndexing long PDFs, wikis, and API docs.\n\n### Where to use it\nAny RAG system over heterogeneous documents.\n\n### Real use example\nSmaller chunks improved recall on API reference; larger chunks helped narrative guides.",
+      "key_takeaways": [
+        "Smart chunking balances retrieval precision and context completeness.",
+        "Indexing long PDFs, wikis, and API docs.",
+        "Smaller chunks improved recall on API reference; larger chunks helped narrative guides."
+      ],
+      "what_it_is": "Smart chunking balances retrieval precision and context completeness.",
+      "when_to_use": "Indexing long PDFs, wikis, and API docs.",
+      "where_to_use": "Any RAG system over heterogeneous documents.",
+      "real_use_example": "Smaller chunks improved recall on API reference; larger chunks helped narrative guides."
+    },
+    {
+      "number": 9,
+      "title": "Vector Databases: Chroma, Pinecone, pgvector",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Vector Databases: Chroma, Pinecone, pgvector** *(Level: Intermediate)*\n\nChroma is local/dev-friendly; Pinecone managed scale; pgvector keeps vectors in Postgres. Use namespaces per tenant; HNSW indexes trade memory for speed.\n\nCode Reference:\n```sql\n# pgvector\nCREATE EXTENSION vector;\nCREATE TABLE chunks (id serial, content text, embedding vector(1536));\nCREATE INDEX ON chunks USING hnsw (embedding vector_cosine_ops);\n```\nWhat it shows: HNSW index accelerates similarity search on millions of vectors.\n\n### What it actually is\nVector DBs persist embeddings with fast approximate nearest neighbor search.\n\n### When to use it\nProduction RAG at scale with filtered metadata queries.\n\n### Where to use it\nSaaS copilots, semantic search, and recommendation recall.\n\n### Real use example\npgvector co-locates vectors with OLTP data — simpler ops for mid-size teams.",
+      "key_takeaways": [
+        "Vector DBs persist embeddings with fast approximate nearest neighbor search.",
+        "Production RAG at scale with filtered metadata queries.",
+        "pgvector co-locates vectors with OLTP data — simpler ops for mid-size teams."
+      ],
+      "what_it_is": "Vector DBs persist embeddings with fast approximate nearest neighbor search.",
+      "when_to_use": "Production RAG at scale with filtered metadata queries.",
+      "where_to_use": "SaaS copilots, semantic search, and recommendation recall.",
+      "real_use_example": "pgvector co-locates vectors with OLTP data — simpler ops for mid-size teams."
+    },
+    {
+      "number": 10,
+      "title": "LangChain and LlamaIndex Patterns",
+      "topic": "ml_intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: LangChain and LlamaIndex Patterns** *(Level: Intermediate)*\n\nFrameworks wire retrievers, memory, and tools. LlamaIndex excels at indexing; LangChain at composable chains. Don't over-abstract — understand raw retrieval calls underneath.\n\nCode Reference:\n```python\nfrom langchain_openai import ChatOpenAI\nfrom langchain.chains import RetrievalQA\n\nqa = RetrievalQA.from_chain_type(llm=ChatOpenAI(model='gpt-4o-mini'), retriever=vectordb.as_retriever(search_kwargs={'k': 5}))\n```\nWhat it shows: RetrievalQA wires retriever + LLM in few lines — swap components easily.\n\n### What it actually is\nOrchestration libraries speed RAG prototyping with swappable parts.\n\n### When to use it\nRapid POCs and standard integration patterns.\n\n### Where to use it\nInternal tools teams shipping copilots in weeks.\n\n### Real use example\nSwap OpenAI for local Llama by changing llm class — chain unchanged.",
+      "key_takeaways": [
+        "Orchestration libraries speed RAG prototyping with swappable parts.",
+        "Rapid POCs and standard integration patterns.",
+        "Swap OpenAI for local Llama by changing llm class — chain unchanged."
+      ],
+      "what_it_is": "Orchestration libraries speed RAG prototyping with swappable parts.",
+      "when_to_use": "Rapid POCs and standard integration patterns.",
+      "where_to_use": "Internal tools teams shipping copilots in weeks.",
+      "real_use_example": "Swap OpenAI for local Llama by changing llm class — chain unchanged."
+    },
+    {
+      "number": 11,
+      "title": "RAG Evaluation with RAGAS",
+      "topic": "ml_intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: RAG Evaluation with RAGAS** *(Level: Intermediate)*\n\nRAGAS scores faithfulness, answer relevance, context precision/recall without human labels for every row. Build golden set of 50-100 QA pairs; run on every prompt/index change.\n\nCode Reference:\n```python\nfrom ragas import evaluate\nfrom ragas.metrics import faithfulness, answer_relevancy\nresult = evaluate(dataset=eval_ds, metrics=[faithfulness, answer_relevancy])\n```\nWhat it shows: faithfulness catches hallucinations not supported by retrieved context.\n\n### What it actually is\nAutomated RAG eval prevents silent quality regressions.\n\n### When to use it\nBefore promoting index or prompt changes to production.\n\n### Where to use it\nCI gates for enterprise copilots.\n\n### Real use example\nFaithfulness drops 0.12 after chunk size change — PR blocked until fixed.",
+      "key_takeaways": [
+        "Automated RAG eval prevents silent quality regressions.",
+        "Before promoting index or prompt changes to production.",
+        "Faithfulness drops 0."
+      ],
+      "what_it_is": "Automated RAG eval prevents silent quality regressions.",
+      "when_to_use": "Before promoting index or prompt changes to production.",
+      "where_to_use": "CI gates for enterprise copilots.",
+      "real_use_example": "Faithfulness drops 0.12 after chunk size change — PR blocked until fixed."
+    },
+    {
+      "number": 12,
+      "title": "Safety, Guardrails, and Red Teaming",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Safety, Guardrails, and Red Teaming** *(Level: Intermediate)*\n\nValidate outputs with Pydantic/JSON schema; filter PII; block jailbreak patterns. Red team with adversarial prompts monthly. Log refusals for review.\n\nCode Reference:\n```python\nfrom guardrails import Guard\nguard = Guard().use_many(Validators...)\nvalidated = guard.parse(llm_output)\n```\nWhat it shows: Guardrails reject malformed or policy-violating LLM outputs.\n\n### What it actually is\nSafety layers reduce legal, privacy, and brand risk.\n\n### When to use it\nCustomer-facing and employee-facing copilots.\n\n### Where to use it\nHealthcare, finance, and education assistants.\n\n### Real use example\nOutput filter strips SSN pattern before showing answer to support agent.",
+      "key_takeaways": [
+        "Safety layers reduce legal, privacy, and brand risk.",
+        "Customer-facing and employee-facing copilots.",
+        "Output filter strips SSN pattern before showing answer to support agent."
+      ],
+      "what_it_is": "Safety layers reduce legal, privacy, and brand risk.",
+      "when_to_use": "Customer-facing and employee-facing copilots.",
+      "where_to_use": "Healthcare, finance, and education assistants.",
+      "real_use_example": "Output filter strips SSN pattern before showing answer to support agent."
+    },
+    {
+      "number": 13,
+      "title": "Cost and Latency Optimization",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Cost and Latency Optimization** *(Level: Intermediate)*\n\nUse smaller models for routing; cache embeddings; batch embed jobs; set max_tokens; semantic cache returns prior answers for similar queries (2024+ libs).\n\nCode Reference:\n```markdown\n# Cost tactics\n# - gpt-4o-mini for draft, gpt-4o for escalate\n# - Redis semantic cache\n# - Precompute embeddings nightly\n```\nWhat it shows: Tiered models cut bill 60% with quality guard on escalate path.\n\n### What it actually is\nOptimization keeps GenAI economically viable at scale.\n\n### When to use it\nHigh-traffic copilots with finance scrutiny.\n\n### Where to use it\nSupport chat, search autocomplete, and codegen.\n\n### Real use example\nSemantic cache hit rate 35% — p95 latency 1.2s → 0.4s.",
+      "key_takeaways": [
+        "Optimization keeps GenAI economically viable at scale.",
+        "High-traffic copilots with finance scrutiny.",
+        "Semantic cache hit rate 35% — p95 latency 1."
+      ],
+      "what_it_is": "Optimization keeps GenAI economically viable at scale.",
+      "when_to_use": "High-traffic copilots with finance scrutiny.",
+      "where_to_use": "Support chat, search autocomplete, and codegen.",
+      "real_use_example": "Semantic cache hit rate 35% — p95 latency 1.2s → 0.4s."
+    },
+    {
+      "number": 14,
+      "title": "Multimodal Models (Vision + Text)",
+      "topic": "ml_intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Multimodal Models (Vision + Text)** *(Level: Advanced)*\n\nGPT-4o, Claude 3.5+, and Gemini accept images + text. Use for diagram explanation, receipt OCR, and UI screenshot debugging. Watch image token pricing.\n\nCode Reference:\n```python\nresponse = client.chat.completions.create(\n  model='gpt-4o',\n  messages=[{'role':'user','content':[\n    {'type':'text','text':'What error is shown?'},\n    {'type':'image_url','image_url':{'url': 'data:image/png;base64,...'}}\n  ]}]\n)\n```\nWhat it shows: image_url content block sends screenshot with question in one call.\n\n### What it actually is\nMultimodal LLMs reason over pixels and text jointly.\n\n### When to use it\nVisual troubleshooting, document understanding, and accessibility.\n\n### Where to use it\nEd-tech diagram help, insurance claims, and field service apps.\n\n### Real use example\nStudent uploads stats plot — tutor explains axis mislabel from vision input.",
+      "key_takeaways": [
+        "Multimodal LLMs reason over pixels and text jointly.",
+        "Visual troubleshooting, document understanding, and accessibility.",
+        "Student uploads stats plot — tutor explains axis mislabel from vision input."
+      ],
+      "what_it_is": "Multimodal LLMs reason over pixels and text jointly.",
+      "when_to_use": "Visual troubleshooting, document understanding, and accessibility.",
+      "where_to_use": "Ed-tech diagram help, insurance claims, and field service apps.",
+      "real_use_example": "Student uploads stats plot — tutor explains axis mislabel from vision input."
+    },
+    {
+      "number": 15,
+      "title": "Production RAG with Re-Ranking",
+      "topic": "ml_intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Production RAG with Re-Ranking** *(Level: Advanced)*\n\nBi-encoder retrieval is fast but coarse; cross-encoder rerankers (Cohere rerank v3, bge-reranker) rescore top-50 to top-5 precisely. Latency tradeoff ~100-200ms.\n\nCode Reference:\n```python\nfrom cohere import Client\nr = cohere_client.rerank(model='rerank-v3.5', query=q, documents=chunks, top_n=5)\n```\nWhat it shows: Rerank pushes truly relevant chunk to top for generation.\n\n### What it actually is\nRe-ranking dramatically improves answer quality on noisy corpora.\n\n### When to use it\nLarge wikis and multi-topic enterprise search.\n\n### Where to use it\nCompliance corpora where wrong paragraph is costly.\n\n### Real use example\nRerank fixes case where BM25 top hit was glossary not procedure.",
+      "key_takeaways": [
+        "Re-ranking dramatically improves answer quality on noisy corpora.",
+        "Large wikis and multi-topic enterprise search.",
+        "Rerank fixes case where BM25 top hit was glossary not procedure."
+      ],
+      "what_it_is": "Re-ranking dramatically improves answer quality on noisy corpora.",
+      "when_to_use": "Large wikis and multi-topic enterprise search.",
+      "where_to_use": "Compliance corpora where wrong paragraph is costly.",
+      "real_use_example": "Rerank fixes case where BM25 top hit was glossary not procedure."
+    },
+    {
+      "number": 16,
+      "title": "Fine-Tuning vs RAG vs Prompting",
+      "topic": "ml_intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Fine-Tuning vs RAG vs Prompting** *(Level: Advanced)*\n\nPrompt when model knows task; RAG when knowledge is private/fresh; fine-tune when style/format/tool-use must be consistent and data is labeled. RLHF/DPO is vendor territory for most teams.\n\nCode Reference:\n```markdown\n# Decision matrix\n# Private docs -> RAG\n# Brand tone / JSON tool style -> fine-tune LoRA\n# General reasoning -> prompt + best model\n```\nWhat it shows: Matrix prevents expensive fine-tune on problems RAG solves.\n\n### What it actually is\nArchitecture choice affects cost, maintenance, and quality ceiling.\n\n### When to use it\nGreenfield GenAI feature planning.\n\n### Where to use it\nSupport tone fine-tune + policy RAG is common hybrid.\n\n### Real use example\nLoRA on 2k examples fixes JSON extraction; RAG still supplies facts.",
+      "key_takeaways": [
+        "Architecture choice affects cost, maintenance, and quality ceiling.",
+        "Greenfield GenAI feature planning.",
+        "LoRA on 2k examples fixes JSON extraction; RAG still supplies facts."
+      ],
+      "what_it_is": "Architecture choice affects cost, maintenance, and quality ceiling.",
+      "when_to_use": "Greenfield GenAI feature planning.",
+      "where_to_use": "Support tone fine-tune + policy RAG is common hybrid.",
+      "real_use_example": "LoRA on 2k examples fixes JSON extraction; RAG still supplies facts."
+    },
+    {
+      "number": 17,
+      "title": "Enterprise GenAI Governance",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Enterprise GenAI Governance** *(Level: Advanced)*\n\nCatalog models, prompts, and datasets. Require security review for PII flows; data processing agreements with vendors; retention policies on logs.\n\nCode Reference:\n```markdown\n# Governance artifacts\n# - AI use case registry\n# - DPIA for student data\n# - Prompt version control\n# - Incident response playbook\n```\nWhat it shows: Registry proves which model processed which data class.\n\n### What it actually is\nGovernance makes GenAI deployable in regulated enterprises.\n\n### When to use it\nEU AI Act readiness and SOC2 customer questionnaires.\n\n### Where to use it\nEd-tech, health, and financial services.\n\n### Real use example\nDPIA documents copilot uses anonymized snippets only — legal approves launch.",
+      "key_takeaways": [
+        "Governance makes GenAI deployable in regulated enterprises.",
+        "EU AI Act readiness and SOC2 customer questionnaires.",
+        "DPIA documents copilot uses anonymized snippets only — legal approves launch."
+      ],
+      "what_it_is": "Governance makes GenAI deployable in regulated enterprises.",
+      "when_to_use": "EU AI Act readiness and SOC2 customer questionnaires.",
+      "where_to_use": "Ed-tech, health, and financial services.",
+      "real_use_example": "DPIA documents copilot uses anonymized snippets only — legal approves launch."
+    },
+    {
+      "number": 18,
+      "title": "GenAI Platform Architecture",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: GenAI Platform Architecture** *(Level: Advanced)*\n\nPlatform exposes ingest API, embed jobs, chat API, eval hooks, and admin. Shared services: auth, rate limits, metering, vector isolation, observability (LangSmith/Langfuse).\n\nCode Reference:\n```markdown\n# Services\n# ingest | embed-worker | retriever | chat-api | eval-runner | admin-ui\n```\nWhat it shows: Horizontal services let product teams ship vertical copilots faster.\n\n### What it actually is\nGenAI platforms prevent one-off copilots with divergent security postures.\n\n### When to use it\nCompanies with 5+ LLM features.\n\n### Where to use it\nShopify Sidekick-style internal platforms.\n\n### Real use example\nNew 'HR policy bot' uses platform auth and metering — shipped in 1 sprint not 3.",
+      "key_takeaways": [
+        "GenAI platforms prevent one-off copilots with divergent security postures.",
+        "Companies with 5+ LLM features.",
+        "New 'HR policy bot' uses platform auth and metering — shipped in 1 sprint not 3."
+      ],
+      "what_it_is": "GenAI platforms prevent one-off copilots with divergent security postures.",
+      "when_to_use": "Companies with 5+ LLM features.",
+      "where_to_use": "Shopify Sidekick-style internal platforms.",
+      "real_use_example": "New 'HR policy bot' uses platform auth and metering — shipped in 1 sprint not 3."
+    }
+  ],
+  "chapter_count": 18
+}

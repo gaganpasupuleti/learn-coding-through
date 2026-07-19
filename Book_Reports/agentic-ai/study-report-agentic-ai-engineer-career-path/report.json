@@ -1,0 +1,608 @@
+{
+  "id": "study-report-agentic-ai-engineer-career-path",
+  "title": "Study Report: Agentic AI Engineer — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "agentic-ai",
+  "family_name": "Agentic AI Engineer",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "This report covers the Agentic AI Engineer role for 2025-2026: autonomous agents, tool calling, LangGraph state machines, MCP (Model Context Protocol), multi-agent orchestration, human-in-the-loop approval gates, observability, and secure deployment of agent systems.",
+  "skill_stack": {
+    "beginner": [
+      "Agents vs chatbots distinction",
+      "OpenAI function / tool calling",
+      "ReAct reasoning loop pattern",
+      "JSON schema tool definitions",
+      "State and memory basics",
+      "Error handling in agent loops",
+      "Human approval for risky actions"
+    ],
+    "intermediate": [
+      "LangGraph nodes and edges",
+      "MCP client and server basics",
+      "Multi-step plan execution",
+      "Persistent checkpointing",
+      "LangSmith tracing",
+      "Prompt injection defenses",
+      "Parallel tool calls",
+      "Supervisor multi-agent patterns"
+    ],
+    "advanced": [
+      "Custom MCP server development",
+      "Long-horizon workflow durability",
+      "Enterprise agent governance",
+      "Agent eval harnesses (task success rate)",
+      "Cost caps and budget-aware routing",
+      "Cross-agent security boundaries",
+      "Human-in-the-loop SLA design",
+      "Agent platform architecture (2026)"
+    ]
+  },
+  "sources": [
+    "https://langchain-ai.github.io/langgraph/",
+    "https://modelcontextprotocol.io/docs",
+    "https://platform.openai.com/docs/guides/function-calling",
+    "https://docs.anthropic.com/en/docs/build-with-claude/tool-use",
+    "https://docs.smith.langchain.com/",
+    "https://google.github.io/adk-docs/"
+  ],
+  "recommended_books": [
+    {
+      "title": "AI Agents in Action",
+      "author": "Michael Lanham",
+      "level": "Intermediate",
+      "focus": "Agent loops, tool use, planning, and multi-step reasoning.",
+      "url": "https://www.manning.com/books/ai-agents-in-action",
+      "free_online": false
+    },
+    {
+      "title": "Building LLM Powered Applications",
+      "author": "Valentina Alto",
+      "level": "Intermediate",
+      "focus": "Production LLM apps: RAG, agents, guardrails, and scaling.",
+      "url": "https://www.oreilly.com/library/view/building-llm-powered/9781098152918/",
+      "free_online": false
+    },
+    {
+      "title": "LangGraph Documentation",
+      "author": "LangChain",
+      "level": "Advanced",
+      "focus": "State graphs, cycles, human-in-the-loop, and agent orchestration.",
+      "url": "https://langchain-ai.github.io/langgraph/",
+      "free_online": true
+    },
+    {
+      "title": "Model Context Protocol",
+      "author": "Anthropic",
+      "level": "Advanced",
+      "focus": "MCP standard for connecting LLMs to tools and data sources.",
+      "url": "https://modelcontextprotocol.io/",
+      "free_online": true
+    },
+    {
+      "title": "Multi-Agent Systems",
+      "author": "Gerhard Weiss",
+      "level": "Advanced",
+      "focus": "Theory and design of coordinated autonomous agent systems.",
+      "url": "https://mitpress.mit.edu/9780262737317/multiagent-systems/",
+      "free_online": false
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Research Agent with Web Search",
+      "level": "Beginner",
+      "duration": "2 weeks",
+      "overview": "LangChain agent that searches the web, summarizes findings, and cites sources.",
+      "objectives": [
+        "Define 3 tools (search, summarize, save)",
+        "Agent loop with max 5 steps",
+        "Output markdown report with citations"
+      ],
+      "phases": [
+        {
+          "name": "Tools",
+          "description": "Implement tool functions.",
+          "tasks": [
+            "Web search API",
+            "File writer"
+          ],
+          "deliverable": "Tool schemas"
+        },
+        {
+          "name": "Agent",
+          "description": "ReAct agent loop.",
+          "tasks": [
+            "System prompt",
+            "Step limit"
+          ],
+          "deliverable": "Agent running"
+        },
+        {
+          "name": "Output",
+          "description": "Markdown report.",
+          "tasks": [
+            "Citations",
+            "Summary sections"
+          ],
+          "deliverable": "Sample research report"
+        },
+        {
+          "name": "Test",
+          "description": "5 benchmark queries.",
+          "tasks": [
+            "Accuracy check",
+            "Source verify"
+          ],
+          "deliverable": "Test results doc"
+        }
+      ],
+      "skills_applied": [
+        "Agents",
+        "Tool use",
+        "LangChain"
+      ],
+      "tools": [
+        "LangChain",
+        "Python",
+        "Search API"
+      ],
+      "deliverables": [
+        "Agent code",
+        "Sample reports",
+        "Test results"
+      ]
+    },
+    {
+      "title": "CodeQuest Grading Agent",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "Agent reads student report submission, checks rubric criteria, drafts feedback — human approves before publish.",
+      "objectives": [
+        "Tools: load_report, check_rubric, draft_feedback",
+        "LangGraph state machine",
+        "Human-in-the-loop approval step",
+        "Audit log of all agent actions"
+      ],
+      "phases": [
+        {
+          "name": "Tools",
+          "description": "Report + rubric tools.",
+          "tasks": [
+            "JSON report loader",
+            "Rubric scorer"
+          ],
+          "deliverable": "Tool unit tests"
+        },
+        {
+          "name": "Graph",
+          "description": "LangGraph workflow.",
+          "tasks": [
+            "Agent → Tools → Review node"
+          ],
+          "deliverable": "Graph diagram"
+        },
+        {
+          "name": "HITL",
+          "description": "Approval gate.",
+          "tasks": [
+            "Teacher confirm UI",
+            "Reject/revise loop"
+          ],
+          "deliverable": "Approval flow demo"
+        },
+        {
+          "name": "Audit",
+          "description": "Log every action.",
+          "tasks": [
+            "Tool calls",
+            "Prompts",
+            "Outputs"
+          ],
+          "deliverable": "Audit log sample"
+        }
+      ],
+      "skills_applied": [
+        "LangGraph",
+        "HITL",
+        "Tool calling"
+      ],
+      "tools": [
+        "LangGraph",
+        "FastAPI",
+        "OpenAI",
+        "React"
+      ],
+      "deliverables": [
+        "Grading agent",
+        "Graph diagram",
+        "Approval demo",
+        "Audit log"
+      ]
+    },
+    {
+      "title": "Multi-Agent DevOps Copilot",
+      "level": "Advanced",
+      "duration": "5–6 weeks",
+      "overview": "Planner + executor + reviewer agents orchestrate deployment tasks via MCP tools with safety constraints.",
+      "objectives": [
+        "3 specialized agents (plan, execute, review)",
+        "MCP tools for git, CI, and logs",
+        "Safety: block destructive ops without approval",
+        "Full trace visualization"
+      ],
+      "phases": [
+        {
+          "name": "MCP",
+          "description": "Connect MCP servers.",
+          "tasks": [
+            "Git tools",
+            "CI API",
+            "Log reader"
+          ],
+          "deliverable": "MCP tool catalog"
+        },
+        {
+          "name": "Agents",
+          "description": "Multi-agent graph.",
+          "tasks": [
+            "Planner",
+            "Executor",
+            "Reviewer"
+          ],
+          "deliverable": "Agent interaction diagram"
+        },
+        {
+          "name": "Safety",
+          "description": "Destructive op gate.",
+          "tasks": [
+            "Block list",
+            "Approval flow"
+          ],
+          "deliverable": "Safety test cases passed"
+        },
+        {
+          "name": "Trace",
+          "description": "Full run visualization.",
+          "tasks": [
+            "LangSmith/Langfuse",
+            "Step replay"
+          ],
+          "deliverable": "Trace walkthrough video"
+        }
+      ],
+      "skills_applied": [
+        "Multi-agent",
+        "MCP",
+        "Safety"
+      ],
+      "tools": [
+        "LangGraph",
+        "MCP",
+        "OpenAI",
+        "Langfuse"
+      ],
+      "deliverables": [
+        "Multi-agent system",
+        "MCP config",
+        "Safety tests",
+        "Trace demo video"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Agentic AI Engineer Role Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Agentic AI Engineer Role Overview** *(Level: Beginner)*\n\nAgentic AI engineers build systems that plan, call tools, and act over multiple steps — not single-shot chat. 2025-2026 stacks center on LangGraph, MCP, and vendor tool APIs. Safety and human oversight are first-class, not afterthoughts.\n\nCode Reference:\n```markdown\n# Agent loop\n# 1. Observe user goal\n# 2. Plan steps\n# 3. Call tools\n# 4. Reflect and continue or finish\n```\nWhat it shows: Loop structure distinguishes agents from one-turn completions.\n\n### What it actually is\nAn agentic AI engineer designs autonomous workflows with tools and guardrails.\n\n### When to use it\nWhen tasks require multiple API calls, code execution, or document retrieval.\n\n### Where to use it\nDevOps copilots, sales research agents, and support automation.\n\n### Real use example\nCodeQuest grading agent fetches rubric, runs tests, drafts feedback — teacher approves send.",
+      "key_takeaways": [
+        "An agentic AI engineer designs autonomous workflows with tools and guardrails.",
+        "When tasks require multiple API calls, code execution, or document retrieval.",
+        "CodeQuest grading agent fetches rubric, runs tests, drafts feedback — teacher approves send."
+      ],
+      "what_it_is": "An agentic AI engineer designs autonomous workflows with tools and guardrails.",
+      "when_to_use": "When tasks require multiple API calls, code execution, or document retrieval.",
+      "where_to_use": "DevOps copilots, sales research agents, and support automation.",
+      "real_use_example": "CodeQuest grading agent fetches rubric, runs tests, drafts feedback — teacher approves send."
+    },
+    {
+      "number": 2,
+      "title": "Agents vs Chatbots",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Agents vs Chatbots** *(Level: Beginner)*\n\nChatbots respond once per message. Agents maintain state, choose tools, and iterate until a stop condition. Extra failure modes: infinite loops, wrong tool args, cascading errors.\n\nCode Reference:\n```markdown\nCHATBOT: user -> LLM -> reply\nAGENT: user -> LLM -> tool -> result -> LLM -> ... -> final reply\n```\nWhat it shows: Diagram shows agent's extra tool feedback edges.\n\n### What it actually is\nAgents extend LLMs with action loops and environment interaction.\n\n### When to use it\nMulti-step workflows exceeding one prompt's capability.\n\n### Where to use it\nTicket triage, data analysis requests, and deployment assistants.\n\n### Real use example\nChatbot can't query DB; agent runs SQL tool then summarizes — correct answer.",
+      "key_takeaways": [
+        "Agents extend LLMs with action loops and environment interaction.",
+        "Multi-step workflows exceeding one prompt's capability.",
+        "Chatbot can't query DB; agent runs SQL tool then summarizes — correct answer."
+      ],
+      "what_it_is": "Agents extend LLMs with action loops and environment interaction.",
+      "when_to_use": "Multi-step workflows exceeding one prompt's capability.",
+      "where_to_use": "Ticket triage, data analysis requests, and deployment assistants.",
+      "real_use_example": "Chatbot can't query DB; agent runs SQL tool then summarizes — correct answer."
+    },
+    {
+      "number": 3,
+      "title": "Tool Calling with OpenAI API",
+      "topic": "web",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Tool Calling with OpenAI API** *(Level: Beginner)*\n\nDefine tools with JSON Schema parameters. Model returns tool_calls; you execute and append tool role messages. Parallel tool calls supported in GPT-4o+.\n\nCode Reference:\n```python\ntools = [{\n  'type': 'function',\n  'function': {\n    'name': 'get_weather',\n    'parameters': {'type':'object','properties':{'city':{'type':'string'}},'required':['city']}\n  }\n}]\n```\nWhat it shows: Schema tells model argument names and types — reduces malformed calls.\n\n### What it actually is\nTool calling lets LLMs invoke your code and external APIs safely.\n\n### When to use it\nAny agent needing live data or side effects.\n\n### Where to use it\nCalendar booking, CRM updates, and warehouse queries.\n\n### Real use example\nAgent calls get_order_count(customer_id) — factual answer not hallucinated revenue.",
+      "key_takeaways": [
+        "Tool calling lets LLMs invoke your code and external APIs safely.",
+        "Any agent needing live data or side effects.",
+        "Agent calls get_order_count(customer_id) — factual answer not hallucinated revenue."
+      ],
+      "what_it_is": "Tool calling lets LLMs invoke your code and external APIs safely.",
+      "when_to_use": "Any agent needing live data or side effects.",
+      "where_to_use": "Calendar booking, CRM updates, and warehouse queries.",
+      "real_use_example": "Agent calls get_order_count(customer_id) — factual answer not hallucinated revenue."
+    },
+    {
+      "number": 4,
+      "title": "ReAct: Reason and Act Loop",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: ReAct: Reason and Act Loop** *(Level: Beginner)*\n\nReAct interleaves Thought, Action, Observation text or structured tool calls. Cap max iterations; detect repeated actions as loop guard.\n\nCode Reference:\n```python\nfor step in range(MAX_STEPS):\n    action = llm.choose_tool(messages)\n    if action.name == 'finish': break\n    result = run_tool(action)\n    messages.append(tool_result(result))\n```\nWhat it shows: MAX_STEPS prevents runaway token spend on confused agents.\n\n### What it actually is\nReAct is the foundational pattern for LLM agents before graph frameworks.\n\n### When to use it\nTeaching agents, prototypes, and simple automation.\n\n### Where to use it\nResearch summarizers and internal ops bots.\n\n### Real use example\nAgent tries search twice, gets same snippet — loop guard triggers human escalation.",
+      "key_takeaways": [
+        "ReAct is the foundational pattern for LLM agents before graph frameworks.",
+        "Teaching agents, prototypes, and simple automation.",
+        "Agent tries search twice, gets same snippet — loop guard triggers human escalation."
+      ],
+      "what_it_is": "ReAct is the foundational pattern for LLM agents before graph frameworks.",
+      "when_to_use": "Teaching agents, prototypes, and simple automation.",
+      "where_to_use": "Research summarizers and internal ops bots.",
+      "real_use_example": "Agent tries search twice, gets same snippet — loop guard triggers human escalation."
+    },
+    {
+      "number": 5,
+      "title": "Designing Tool Schemas",
+      "topic": "ml_intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Designing Tool Schemas** *(Level: Beginner)*\n\nOne tool = one clear action. Required fields explicit; enums for allowed values. Write descriptions models read — 'Use only when user asks about orders'.\n\nCode Reference:\n```json\n{\n  'name': 'run_sql_readonly',\n  'description': 'Run SELECT query on analytics warehouse. Never INSERT.',\n  'parameters': {'type':'object','properties':{'query':{'type':'string'}},'required':['query']}\n}\n```\nWhat it shows: Description constrains when model invokes SQL — reduces destructive mistakes.\n\n### What it actually is\nTool schemas are the API contract between LLM and your backend.\n\n### When to use it\nDesigning every agent tool surface.\n\n### Where to use it\nSQL agents, Git agents, and ticketing integrations.\n\n### Real use example\nEnum status filter prevents agent inventing invalid order status values.",
+      "key_takeaways": [
+        "Tool schemas are the API contract between LLM and your backend.",
+        "Designing every agent tool surface.",
+        "Enum status filter prevents agent inventing invalid order status values."
+      ],
+      "what_it_is": "Tool schemas are the API contract between LLM and your backend.",
+      "when_to_use": "Designing every agent tool surface.",
+      "where_to_use": "SQL agents, Git agents, and ticketing integrations.",
+      "real_use_example": "Enum status filter prevents agent inventing invalid order status values."
+    },
+    {
+      "number": 6,
+      "title": "Human-in-the-Loop Basics",
+      "topic": "errors",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Human-in-the-Loop Basics** *(Level: Beginner)*\n\nIrreversible actions (send email, charge card, delete row) require human approval. Pause agent, surface proposed action in UI, resume on approve/reject.\n\nCode Reference:\n```python\nif tool_name in NEEDS_APPROVAL:\n    pending = request_human_approval(tool_args)\n    if not pending.approved:\n        return 'Action cancelled by user'\n```\nWhat it shows: Approval gate blocks autonomous sends — compliance requirement in many domains.\n\n### What it actually is\nHuman-in-the-loop keeps agents accountable for high-impact actions.\n\n### When to use it\nBefore any irreversible side effect executes in an agent workflow.\n\n### Where to use it\nFinance, healthcare, external communications, and prod deploys.\n\n### Real use example\nTeacher approves batch feedback emails before agent sends to 200 students.",
+      "key_takeaways": [
+        "Human-in-the-loop keeps agents accountable for high-impact actions.",
+        "Before any irreversible side effect executes in an agent workflow.",
+        "Teacher approves batch feedback emails before agent sends to 200 students."
+      ],
+      "what_it_is": "Human-in-the-loop keeps agents accountable for high-impact actions.",
+      "when_to_use": "Before any irreversible side effect executes in an agent workflow.",
+      "where_to_use": "Finance, healthcare, external communications, and prod deploys.",
+      "real_use_example": "Teacher approves batch feedback emails before agent sends to 200 students."
+    },
+    {
+      "number": 7,
+      "title": "LangGraph StateGraph Fundamentals",
+      "topic": "ml_intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: LangGraph StateGraph Fundamentals** *(Level: Intermediate)*\n\nLangGraph models agents as graphs: nodes mutate shared state; edges route conditionally. Supports cycles, persistence, and interrupts — unlike DAG-only chains.\n\nCode Reference:\n```python\nfrom langgraph.graph import StateGraph, END\n\ngraph = StateGraph(AgentState)\ngraph.add_node('plan', plan_node)\ngraph.add_node('act', act_node)\ngraph.add_edge('plan', 'act')\ngraph.add_conditional_edges('act', should_continue, {'continue': 'plan', 'end': END})\n```\nWhat it shows: conditional_edges implement loop-or-stop logic declaratively.\n\n### What it actually is\nLangGraph is a framework for durable, stateful agent workflows.\n\n### When to use it\nProduction agents needing checkpoints and branching.\n\n### Where to use it\nSupport automation, coding agents, and ops runbooks.\n\n### Real use example\nGraph resumes from checkpoint after server restart mid-workflow.",
+      "key_takeaways": [
+        "LangGraph is a framework for durable, stateful agent workflows.",
+        "Production agents needing checkpoints and branching.",
+        "Graph resumes from checkpoint after server restart mid-workflow."
+      ],
+      "what_it_is": "LangGraph is a framework for durable, stateful agent workflows.",
+      "when_to_use": "Production agents needing checkpoints and branching.",
+      "where_to_use": "Support automation, coding agents, and ops runbooks.",
+      "real_use_example": "Graph resumes from checkpoint after server restart mid-workflow."
+    },
+    {
+      "number": 8,
+      "title": "MCP: Model Context Protocol",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: MCP: Model Context Protocol** *(Level: Intermediate)*\n\nMCP (Anthropic, 2024-2025) standardizes how hosts connect to tools/data via JSON-RPC. Servers expose resources, prompts, and tools — Cursor and Claude Desktop use MCP today.\n\nCode Reference:\n```json\n{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"tools/call\",\n  \"params\": {\"name\": \"query_db\", \"arguments\": {\"sql\": \"SELECT 1\"}}\n}\n```\nWhat it shows: tools/call invokes MCP server capability with typed args.\n\n### What it actually is\nMCP is an open protocol for portable tool integrations across LLM hosts.\n\n### When to use it\nBuilding reusable connectors instead of one-off agent hacks.\n\n### Where to use it\nIDE assistants, enterprise copilots, and shared data access layers.\n\n### Real use example\nRailway MCP server deploys services — agent uses same tool in Cursor and internal bot.",
+      "key_takeaways": [
+        "MCP is an open protocol for portable tool integrations across LLM hosts.",
+        "Building reusable connectors instead of one-off agent hacks.",
+        "Railway MCP server deploys services — agent uses same tool in Cursor and internal bot."
+      ],
+      "what_it_is": "MCP is an open protocol for portable tool integrations across LLM hosts.",
+      "when_to_use": "Building reusable connectors instead of one-off agent hacks.",
+      "where_to_use": "IDE assistants, enterprise copilots, and shared data access layers.",
+      "real_use_example": "Railway MCP server deploys services — agent uses same tool in Cursor and internal bot."
+    },
+    {
+      "number": 9,
+      "title": "Building an MCP Server",
+      "topic": "web",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Building an MCP Server** *(Level: Intermediate)*\n\nPython MCP SDK: define @server.list_tools and @server.call_tool handlers. Run stdio for local hosts or SSE for remote. Validate inputs; never expose raw shell.\n\nCode Reference:\n```python\nfrom mcp.server import Server\nserver = Server('docs-search')\n\n@server.list_tools()\nasync def list_tools():\n    return [Tool(name='search', description='Search internal wiki', inputSchema={...})]\n```\nWhat it shows: list_tools advertises capabilities; call_tool executes with validation.\n\n### What it actually is\nCustom MCP servers package domain tools for any compatible host.\n\n### When to use it\nShared internal tools across Claude, Cursor, and custom agents.\n\n### Where to use it\nWiki search, Jira, and data catalog integrations.\n\n### Real use example\nDocs MCP server powers both IDE and Slack agent with one codebase.",
+      "key_takeaways": [
+        "Custom MCP servers package domain tools for any compatible host.",
+        "Shared internal tools across Claude, Cursor, and custom agents.",
+        "Docs MCP server powers both IDE and Slack agent with one codebase."
+      ],
+      "what_it_is": "Custom MCP servers package domain tools for any compatible host.",
+      "when_to_use": "Shared internal tools across Claude, Cursor, and custom agents.",
+      "where_to_use": "Wiki search, Jira, and data catalog integrations.",
+      "real_use_example": "Docs MCP server powers both IDE and Slack agent with one codebase."
+    },
+    {
+      "number": 10,
+      "title": "Multi-Agent Supervisor Pattern",
+      "topic": "ml_intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Multi-Agent Supervisor Pattern** *(Level: Intermediate)*\n\nSupervisor agent delegates to specialists (researcher, coder, reviewer). Workers return concise results; supervisor maintains global plan. Avoid chatty inter-agent loops.\n\nCode Reference:\n```python\nSUPERVISOR_PROMPT = \"\"\"Break task into subtasks. Delegate to researcher or coder.\nMerge results. Stop when acceptance criteria met.\"\"\"\n```\nWhat it shows: Supervisor prompt enforces delegation discipline — reduces token waste.\n\n### What it actually is\nMulti-agent splits complex work across focused prompts and tools.\n\n### When to use it\nLarge tasks: feature specs, incident response, market research reports.\n\n### Where to use it\nConsulting research, software feature shipping, security triage.\n\n### Real use example\nSupervisor sends coder only the API snippet — not entire 50-page spec.",
+      "key_takeaways": [
+        "Multi-agent splits complex work across focused prompts and tools.",
+        "Large tasks: feature specs, incident response, market research reports.",
+        "Supervisor sends coder only the API snippet — not entire 50-page spec."
+      ],
+      "what_it_is": "Multi-agent splits complex work across focused prompts and tools.",
+      "when_to_use": "Large tasks: feature specs, incident response, market research reports.",
+      "where_to_use": "Consulting research, software feature shipping, security triage.",
+      "real_use_example": "Supervisor sends coder only the API snippet — not entire 50-page spec."
+    },
+    {
+      "number": 11,
+      "title": "Checkpointing and Durable Execution",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Checkpointing and Durable Execution** *(Level: Intermediate)*\n\nLangGraph checkpointers (SQLite, Postgres) save state per thread_id. Enables pause/resume, crash recovery, and human approval mid-flight.\n\nCode Reference:\n```python\nfrom langgraph.checkpoint.sqlite import SqliteSaver\nmemory = SqliteSaver.from_conn_string('checkpoints.db')\napp = graph.compile(checkpointer=memory)\napp.invoke(input, config={'configurable': {'thread_id': 'job-42'}})\n```\nWhat it shows: thread_id keys state — same user continues conversation days later.\n\n### What it actually is\nDurable execution makes agents reliable for long-running work.\n\n### When to use it\nApprovals spanning hours; workflows surviving deploys.\n\n### Where to use it\nLoan processing agents, multi-day research jobs.\n\n### Real use example\nServer redeploy during agent run — resumes from last checkpoint not from scratch.",
+      "key_takeaways": [
+        "Durable execution makes agents reliable for long-running work.",
+        "Approvals spanning hours; workflows surviving deploys.",
+        "Server redeploy during agent run — resumes from last checkpoint not from scratch."
+      ],
+      "what_it_is": "Durable execution makes agents reliable for long-running work.",
+      "when_to_use": "Approvals spanning hours; workflows surviving deploys.",
+      "where_to_use": "Loan processing agents, multi-day research jobs.",
+      "real_use_example": "Server redeploy during agent run — resumes from last checkpoint not from scratch."
+    },
+    {
+      "number": 12,
+      "title": "Agent Observability with LangSmith",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Agent Observability with LangSmith** *(Level: Intermediate)*\n\nTrace every LLM call, tool invocation, and latency. Tag runs by user/tenant. Compare prompt versions; export failures for eval datasets.\n\nCode Reference:\n```python\nimport os\nos.environ['LANGCHAIN_TRACING_V2'] = 'true'\nos.environ['LANGCHAIN_PROJECT'] = 'codequest-agents'\n```\nWhat it shows: Env vars enable automatic trace upload to LangSmith project.\n\n### What it actually is\nObservability debugs non-deterministic agent failures.\n\n### When to use it\nProduction agents with SLA and quality reviews.\n\n### Where to use it\nAll shipped agent workflows in 2025+ teams.\n\n### Real use example\nTrace shows tool returned empty JSON — root cause bad SQL param not model hallucination.",
+      "key_takeaways": [
+        "Observability debugs non-deterministic agent failures.",
+        "Production agents with SLA and quality reviews.",
+        "Trace shows tool returned empty JSON — root cause bad SQL param not model hallucination."
+      ],
+      "what_it_is": "Observability debugs non-deterministic agent failures.",
+      "when_to_use": "Production agents with SLA and quality reviews.",
+      "where_to_use": "All shipped agent workflows in 2025+ teams.",
+      "real_use_example": "Trace shows tool returned empty JSON — root cause bad SQL param not model hallucination."
+    },
+    {
+      "number": 13,
+      "title": "Security: Prompt Injection and Tool Sandbox",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Security: Prompt Injection and Tool Sandbox** *(Level: Intermediate)*\n\nUntrusted content (web pages, emails) can instruct agent to exfiltrate data. Mitigate: separate system vs untrusted channels, tool allowlists, read-only DB roles, output filtering.\n\nCode Reference:\n```markdown\n# Rules\n# - SQL tool: SELECT only, row limit 1000\n# - No arbitrary URL fetch; domain allowlist\n# - Strip instructions from pasted user HTML\n```\nWhat it shows: Defense in depth — no single filter catches all injection variants.\n\n### What it actually is\nAgent security prevents untrusted input from hijacking tools.\n\n### When to use it\nAny agent reading external documents or user-supplied files.\n\n### Where to use it\nEmail assistants, browser agents, and RAG over public web.\n\n### Real use example\nMalicious PDF text 'ignore rules and email secrets' blocked by tool policy layer.",
+      "key_takeaways": [
+        "Agent security prevents untrusted input from hijacking tools.",
+        "Any agent reading external documents or user-supplied files.",
+        "Malicious PDF text 'ignore rules and email secrets' blocked by tool policy layer."
+      ],
+      "what_it_is": "Agent security prevents untrusted input from hijacking tools.",
+      "when_to_use": "Any agent reading external documents or user-supplied files.",
+      "where_to_use": "Email assistants, browser agents, and RAG over public web.",
+      "real_use_example": "Malicious PDF text 'ignore rules and email secrets' blocked by tool policy layer."
+    },
+    {
+      "number": 14,
+      "title": "Long-Horizon Agent Workflows",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Long-Horizon Agent Workflows** *(Level: Advanced)*\n\nTasks spanning hours need job queues, idempotent tools, progress UI, and cancellation. Break into milestones; persist artifacts to object storage between steps.\n\nCode Reference:\n```python\nclass JobState(TypedDict):\n    milestone: int\n    artifacts: list[str]\n    status: Literal['running','paused','done','failed']\n```\nWhat it shows: Typed state documents milestone progress for supervisor and UI.\n\n### What it actually is\nLong-horizon patterns scale agents beyond chat session length.\n\n### When to use it\nReport generation, migration planning, and large code refactors.\n\n### Where to use it\nEnterprise automation replacing multi-day manual processes.\n\n### Real use example\nAgent writes section drafts to S3 each milestone — user reviews async.",
+      "key_takeaways": [
+        "Long-horizon patterns scale agents beyond chat session length.",
+        "Report generation, migration planning, and large code refactors.",
+        "Agent writes section drafts to S3 each milestone — user reviews async."
+      ],
+      "what_it_is": "Long-horizon patterns scale agents beyond chat session length.",
+      "when_to_use": "Report generation, migration planning, and large code refactors.",
+      "where_to_use": "Enterprise automation replacing multi-day manual processes.",
+      "real_use_example": "Agent writes section drafts to S3 each milestone — user reviews async."
+    },
+    {
+      "number": 15,
+      "title": "Advanced MCP: Resources and Prompts",
+      "topic": "web",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Advanced MCP: Resources and Prompts** *(Level: Advanced)*\n\nMCP servers can expose resources (file URIs) and prompt templates besides tools. Hosts prefetch resources into context — design least-privilege resource scopes.\n\nCode Reference:\n```json\n{\n  \"method\": \"resources/read\",\n  \"params\": {\"uri\": \"file:///policy/handbook.md\"}\n}\n```\nWhat it shows: resources/read returns content host may inject before agent acts.\n\n### What it actually is\nFull MCP surface enables richer integrations than tools alone.\n\n### When to use it\nIDE and ops agents needing structured context injection.\n\n### Where to use it\nPolicy handbooks, runbooks, and schema catalogs.\n\n### Real use example\nAgent pulls latest on-call runbook resource URI — always current version.",
+      "key_takeaways": [
+        "Full MCP surface enables richer integrations than tools alone.",
+        "IDE and ops agents needing structured context injection.",
+        "Agent pulls latest on-call runbook resource URI — always current version."
+      ],
+      "what_it_is": "Full MCP surface enables richer integrations than tools alone.",
+      "when_to_use": "IDE and ops agents needing structured context injection.",
+      "where_to_use": "Policy handbooks, runbooks, and schema catalogs.",
+      "real_use_example": "Agent pulls latest on-call runbook resource URI — always current version."
+    },
+    {
+      "number": 16,
+      "title": "Evaluating Agent Reliability",
+      "topic": "ml_intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Evaluating Agent Reliability** *(Level: Advanced)*\n\nDefine task success criteria per scenario (tool called, correct arg, final answer contains X). Run nightly regression; track success rate, steps-to-complete, cost per task.\n\nCode Reference:\n```python\ndef eval_task(run):\n    assert run.tool_calls[0].name == 'search'\n    assert 'Q3 revenue' in run.final_answer\n    assert run.steps <= 8\n```\nWhat it shows: Assert-style evals codify pass/fail for CI agent regression.\n\n### What it actually is\nAgent evals measure reliability beyond single-turn LLM benchmarks.\n\n### When to use it\nBefore promoting agent prompt or tool changes.\n\n### Where to use it\nPlatform teams and regulated agent deployments.\n\n### Real use example\nSuccess rate drops from 92% to 81% after model swap — rollback triggered.",
+      "key_takeaways": [
+        "Agent evals measure reliability beyond single-turn LLM benchmarks.",
+        "Before promoting agent prompt or tool changes.",
+        "Success rate drops from 92% to 81% after model swap — rollback triggered."
+      ],
+      "what_it_is": "Agent evals measure reliability beyond single-turn LLM benchmarks.",
+      "when_to_use": "Before promoting agent prompt or tool changes.",
+      "where_to_use": "Platform teams and regulated agent deployments.",
+      "real_use_example": "Success rate drops from 92% to 81% after model swap — rollback triggered."
+    },
+    {
+      "number": 17,
+      "title": "Enterprise Agent Governance (2025-2026)",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Enterprise Agent Governance (2025-2026)** *(Level: Advanced)*\n\nRegister agents with owner, allowed tools, data classes, and blast radius. Require security sign-off for write tools; audit every tool call; per-tenant isolation.\n\nCode Reference:\n```markdown\n# Agent registry fields\n# id, owner, tools[], data_classification, max_cost_usd, requires_hitl\n```\nWhat it shows: Registry blocks deploy if write tool enabled without HITL flag.\n\n### What it actually is\nGovernance scales agent adoption without shadow IT bots.\n\n### When to use it\nEnterprises with hundreds of employees using AI assistants.\n\n### Where to use it\nBanks, insurers, and global SaaS vendors.\n\n### Real use example\nNew sales agent can't access prod DB — registry enforces read replica tool only.",
+      "key_takeaways": [
+        "Governance scales agent adoption without shadow IT bots.",
+        "Enterprises with hundreds of employees using AI assistants.",
+        "New sales agent can't access prod DB — registry enforces read replica tool only."
+      ],
+      "what_it_is": "Governance scales agent adoption without shadow IT bots.",
+      "when_to_use": "Enterprises with hundreds of employees using AI assistants.",
+      "where_to_use": "Banks, insurers, and global SaaS vendors.",
+      "real_use_example": "New sales agent can't access prod DB — registry enforces read replica tool only."
+    },
+    {
+      "number": 18,
+      "title": "Agentic Platform Architecture",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Agentic Platform Architecture** *(Level: Advanced)*\n\nPlatform provides: agent runtime, MCP registry, secrets, HITL inbox, eval CI, and cost dashboard. Product teams deploy graphs like microservices with standard auth and logging.\n\nCode Reference:\n```markdown\n# Platform map\n# gateway | graph-runtime | mcp-registry | hitl-service | eval-runner | billing\n```\nWhat it shows: Gateway enforces ACLs before any tool executes — single security choke point.\n\n### What it actually is\nAgent platforms industrialize agents like microservices platforms did for APIs.\n\n### When to use it\nOrganizations running 10+ distinct agent workflows.\n\n### Where to use it\nInternal developer platforms and customer-facing agent marketplaces.\n\n### Real use example\nTeam ships incident-response graph to platform — inherits SSO, traces, and budgets day one.",
+      "key_takeaways": [
+        "Agent platforms industrialize agents like microservices platforms did for APIs.",
+        "Organizations running 10+ distinct agent workflows.",
+        "Team ships incident-response graph to platform — inherits SSO, traces, and budgets day one."
+      ],
+      "what_it_is": "Agent platforms industrialize agents like microservices platforms did for APIs.",
+      "when_to_use": "Organizations running 10+ distinct agent workflows.",
+      "where_to_use": "Internal developer platforms and customer-facing agent marketplaces.",
+      "real_use_example": "Team ships incident-response graph to platform — inherits SSO, traces, and budgets day one."
+    }
+  ],
+  "chapter_count": 18
+}

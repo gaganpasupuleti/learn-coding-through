@@ -1,0 +1,603 @@
+{
+  "id": "study-report-salesforce-crm-career-path",
+  "title": "Study Report: Salesforce CRM Developer / Administrator — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "salesforce-crm",
+  "family_name": "Salesforce CRM Developer / Administrator",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "Salesforce CRM career path from Trailhead fundamentals through declarative automation (Flows), Apex and triggers, Lightning Web Components, security model, data model design, and integration patterns. Targets Admin, Platform Developer, and Consultant roles using official Salesforce documentation and Well-Architected guidance.",
+  "skill_stack": {
+    "core": [
+      "Sales Cloud and Service Cloud objects",
+      "Declarative automation: Flow, Process Builder migration",
+      "Apex, triggers, and bulkification patterns",
+      "Lightning Web Components and Aura migration",
+      "Profiles, permission sets, sharing rules",
+      "Integration: REST, Bulk API, Platform Events"
+    ],
+    "tools": [
+      "Salesforce Setup and App Builder",
+      "Flow Builder and Debug logs",
+      "VS Code + Salesforce CLI",
+      "Data Loader and SFDX",
+      "Trailhead Playgrounds"
+    ],
+    "platforms": [
+      "Sales Cloud",
+      "Service Cloud",
+      "Experience Cloud",
+      "Marketing Cloud connectors"
+    ],
+    "certifications": [
+      "Salesforce Certified Administrator",
+      "Platform App Builder",
+      "Platform Developer I",
+      "Service Cloud Consultant"
+    ]
+  },
+  "sources": [
+    "https://trailhead.salesforce.com/",
+    "https://developer.salesforce.com/docs",
+    "https://help.salesforce.com/s/",
+    "https://architect.salesforce.com/well-architected",
+    "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/",
+    "https://developer.salesforce.com/docs/component-library/documentation/en/lwc"
+  ],
+  "recommended_books": [
+    {
+      "title": "Salesforce Admins Handbook",
+      "author": "Paul M. Kowalski",
+      "level": "Beginner",
+      "focus": "Objects, fields, security, flows, and Lightning App Builder.",
+      "url": "https://www.packtpub.com/en-us/product/salesforce-admins-handbook-9781803232165",
+      "free_online": false
+    },
+    {
+      "title": "Trailhead — Admin Beginner Trail",
+      "author": "Salesforce",
+      "level": "Beginner",
+      "focus": "Free interactive modules for CRM admin certification path.",
+      "url": "https://trailhead.salesforce.com/content/learn/trails/force_com_admin_beginner",
+      "free_online": true
+    },
+    {
+      "title": "Advanced Apex Programming",
+      "author": "Dan Appleman",
+      "level": "Advanced",
+      "focus": "Bulk-safe Apex, triggers, and governor limit patterns.",
+      "url": "https://www.salesforce.com/blog/advanced-apex-programming/",
+      "free_online": false
+    },
+    {
+      "title": "Salesforce Lightning Web Components",
+      "author": "Salesforce Developers",
+      "level": "Intermediate",
+      "focus": "Official LWC guide for custom UI on the Salesforce platform.",
+      "url": "https://developer.salesforce.com/docs/component-library/documentation/en/lwc",
+      "free_online": true
+    },
+    {
+      "title": "Salesforce Certified Administrator Study Guide",
+      "author": "Salesforce Ben",
+      "level": "Intermediate",
+      "focus": "Exam-focused admin prep: security, automation, and reports.",
+      "url": "https://www.salesforceben.com/salesforce-admin-certification-guide/",
+      "free_online": true
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Nonprofit Donor Tracker",
+      "level": "Beginner",
+      "duration": "2–3 weeks",
+      "overview": "Custom objects for Donors and Donations, page layouts, reports, and a simple Flow for thank-you email.",
+      "objectives": [
+        "Custom Donor and Donation objects",
+        "Page layouts and list views",
+        "Donation summary report",
+        "Record-triggered thank-you email Flow"
+      ],
+      "phases": [
+        {
+          "name": "Objects",
+          "description": "Donor + Donation custom objects.",
+          "tasks": [
+            "Fields",
+            "Lookup relationship"
+          ],
+          "deliverable": "Object schema doc"
+        },
+        {
+          "name": "UI",
+          "description": "Page layouts.",
+          "tasks": [
+            "Related lists",
+            "Compact layout"
+          ],
+          "deliverable": "Layout screenshots"
+        },
+        {
+          "name": "Report",
+          "description": "Donation dashboard.",
+          "tasks": [
+            "Total by month",
+            "Top donors"
+          ],
+          "deliverable": "Report + dashboard"
+        },
+        {
+          "name": "Flow",
+          "description": "Thank-you email.",
+          "tasks": [
+            "Record-triggered",
+            "Email template"
+          ],
+          "deliverable": "Flow demo video"
+        }
+      ],
+      "skills_applied": [
+        "Salesforce admin",
+        "Objects",
+        "Flows"
+      ],
+      "tools": [
+        "Salesforce Developer Edition",
+        "Flow Builder"
+      ],
+      "deliverables": [
+        "DE org config",
+        "Report screenshots",
+        "Flow demo"
+      ]
+    },
+    {
+      "title": "Sales Pipeline Automation",
+      "level": "Intermediate",
+      "duration": "3–4 weeks",
+      "overview": "Lead conversion, opportunity stages, approval process for discounts, and Lightning dashboard.",
+      "objectives": [
+        "Lead conversion process",
+        "Opportunity stage validation rules",
+        "Discount approval process",
+        "Sales manager Lightning dashboard"
+      ],
+      "phases": [
+        {
+          "name": "Leads",
+          "description": "Conversion mapping.",
+          "tasks": [
+            "Lead → Account/Contact/Opp",
+            "Required fields"
+          ],
+          "deliverable": "Conversion demo"
+        },
+        {
+          "name": "Pipeline",
+          "description": "Stage gates.",
+          "tasks": [
+            "Validation rules",
+            "Probability"
+          ],
+          "deliverable": "Stage config doc"
+        },
+        {
+          "name": "Approval",
+          "description": "Discount approval.",
+          "tasks": [
+            ">20% needs manager",
+            "Email alerts"
+          ],
+          "deliverable": "Approval demo video"
+        },
+        {
+          "name": "Dashboard",
+          "description": "Sales KPIs.",
+          "tasks": [
+            "Pipeline value",
+            "Win rate",
+            "Forecast"
+          ],
+          "deliverable": "Dashboard screenshot"
+        }
+      ],
+      "skills_applied": [
+        "CRM",
+        "Automation",
+        "Approvals"
+      ],
+      "tools": [
+        "Salesforce DE",
+        "Process Builder/Flow"
+      ],
+      "deliverables": [
+        "DE config",
+        "Approval demo",
+        "Dashboard screenshot"
+      ]
+    },
+    {
+      "title": "LWC Custom Component Suite",
+      "level": "Advanced",
+      "duration": "4–5 weeks",
+      "overview": "Build 3 Lightning Web Components with Apex controllers, Jest tests, and deploy via Salesforce CLI.",
+      "objectives": [
+        "3 LWC components (lookup, datatable, chart)",
+        "Apex controllers with SOQL",
+        "Jest unit tests",
+        "CI deploy with sf CLI"
+      ],
+      "phases": [
+        {
+          "name": "LWC",
+          "description": "Build 3 components.",
+          "tasks": [
+            "lookupSearch",
+            "dataTable",
+            "chartWidget"
+          ],
+          "deliverable": "Components in org"
+        },
+        {
+          "name": "Apex",
+          "description": "Controllers + tests.",
+          "tasks": [
+            "@AuraEnabled",
+            "Test classes 75%+"
+          ],
+          "deliverable": "Apex test results"
+        },
+        {
+          "name": "Jest",
+          "description": "LWC Jest tests.",
+          "tasks": [
+            "Mock data",
+            "Event tests"
+          ],
+          "deliverable": "Jest coverage report"
+        },
+        {
+          "name": "CI",
+          "description": "GitHub Actions deploy.",
+          "tasks": [
+            "sf project deploy",
+            "Scratch org test"
+          ],
+          "deliverable": "CI pipeline green"
+        }
+      ],
+      "skills_applied": [
+        "LWC",
+        "Apex",
+        "CI/CD"
+      ],
+      "tools": [
+        "Salesforce CLI",
+        "LWC",
+        "Apex",
+        "Jest"
+      ],
+      "deliverables": [
+        "GitHub repo",
+        "Deployed components",
+        "Test reports",
+        "CI pipeline"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Salesforce Platform and Trailhead Navigation",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Salesforce Platform and Trailhead Navigation** *(Level: Beginner)*\n\nSalesforce is a multi-tenant cloud CRM platform. Orgs contain standard and custom objects, apps, tabs, and setup menus. Trailhead modules provide free hands-on learning with playgrounds. Understand production vs sandbox vs scratch org lifecycle.\n\nCode Reference:\n```javascript\n// Open Developer Console: Setup -> Developer Console\n// Query: SELECT Id, Name FROM Account LIMIT 5\n```\nWhat it shows: SOQL in Developer Console validates data during admin tasks.\n\n### What it actually is\nSalesforce is the leading cloud CRM and low-code app platform.\n\n### When to use it\nSales, service, marketing, and custom business app delivery.\n\n### Where to use it\nEnterprises, nonprofits, and ed-tech companies running student CRM.\n\n### Real use example\nCodeQuest learner completes Admin Beginner trail before touching client sandbox.",
+      "key_takeaways": [
+        "Salesforce is the leading cloud CRM and low-code app platform.",
+        "Sales, service, marketing, and custom business app delivery.",
+        "CodeQuest learner completes Admin Beginner trail before touching client sandbox."
+      ],
+      "what_it_is": "Salesforce is the leading cloud CRM and low-code app platform.",
+      "when_to_use": "Sales, service, marketing, and custom business app delivery.",
+      "where_to_use": "Enterprises, nonprofits, and ed-tech companies running student CRM.",
+      "real_use_example": "CodeQuest learner completes Admin Beginner trail before touching client sandbox."
+    },
+    {
+      "number": 2,
+      "title": "Standard Objects and Data Model",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Standard Objects and Data Model** *(Level: Beginner)*\n\nCore objects: Lead, Account, Contact, Opportunity, Case, Campaign. Relationships: lookup vs master-detail (rollup implications). Activities (Tasks, Events) polymorphically relate to parents. Design for reporting—excessive lookups hurt performance.\n\nCode Reference:\n```javascript\nSELECT Id, Name, (SELECT Id, LastName FROM Contacts) FROM Account WHERE Industry = 'Education'\n```\nWhat it shows: Subqueries retrieve related contacts for account hierarchy reports.\n\n### What it actually is\nThe data model structures how business entities relate in CRM.\n\n### When to use it\nEvery Salesforce implementation and integration mapping exercise.\n\n### Where to use it\nB2B sales, customer support, and partner management.\n\n### Real use example\nEducation Account links Contacts (teachers) and Opportunities (district deals).",
+      "key_takeaways": [
+        "The data model structures how business entities relate in CRM.",
+        "Every Salesforce implementation and integration mapping exercise.",
+        "Education Account links Contacts (teachers) and Opportunities (district deals)."
+      ],
+      "what_it_is": "The data model structures how business entities relate in CRM.",
+      "when_to_use": "Every Salesforce implementation and integration mapping exercise.",
+      "where_to_use": "B2B sales, customer support, and partner management.",
+      "real_use_example": "Education Account links Contacts (teachers) and Opportunities (district deals)."
+    },
+    {
+      "number": 3,
+      "title": "Security Model: Profiles and Permission Sets",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Security Model: Profiles and Permission Sets** *(Level: Beginner)*\n\nProfiles define baseline object and field permissions; permission sets grant additive access. Use permission set groups for role bundles. Field-Level Security hides sensitive columns; UI does not bypass FLS—Apex must enforce stripInaccessible.\n\nCode Reference:\n```javascript\n// Check FLS in Apex:\n// SObjectAccessDecision decision = Security.stripInaccessible(AccessType.READABLE, records);\n```\nWhat it shows: stripInaccessible enforces field-level security in Apex queries.\n\n### What it actually is\nSalesforce security is layered: org, object, field, record.\n\n### When to use it\nUser onboarding, compliance, and least-privilege reviews.\n\n### Where to use it\nEvery org with more than one user persona.\n\n### Real use example\nFinance permission set grants invoice fields without cloning admin profile.",
+      "key_takeaways": [
+        "Salesforce security is layered: org, object, field, record.",
+        "User onboarding, compliance, and least-privilege reviews.",
+        "Finance permission set grants invoice fields without cloning admin profile."
+      ],
+      "what_it_is": "Salesforce security is layered: org, object, field, record.",
+      "when_to_use": "User onboarding, compliance, and least-privilege reviews.",
+      "where_to_use": "Every org with more than one user persona.",
+      "real_use_example": "Finance permission set grants invoice fields without cloning admin profile."
+    },
+    {
+      "number": 4,
+      "title": "Sharing Rules and Record Access",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Sharing Rules and Record Access** *(Level: Beginner)*\n\nOWD (org-wide defaults) set baseline private/public read/write. Sharing rules, roles, teams, and manual sharing widen access. Apex sharing keywords: with sharing, without sharing, inherited sharing. Run sharing recalc after bulk loads.\n\nCode Reference:\n```javascript\nSELECT Id, Name, AccessLevel FROM AccountShare WHERE AccountId = '001...'\n```\nWhat it shows: AccountShare queries debug why users cannot see records.\n\n### What it actually is\nRecord-level sharing controls who sees which rows.\n\n### When to use it\nPrivate sales orgs, partner portals, and case segregation.\n\n### Where to use it\nMulti-region sales teams and support queues.\n\n### Real use example\nAPAC reps see only APAC accounts via role hierarchy and territory rules.",
+      "key_takeaways": [
+        "Record-level sharing controls who sees which rows.",
+        "Private sales orgs, partner portals, and case segregation.",
+        "APAC reps see only APAC accounts via role hierarchy and territory rules."
+      ],
+      "what_it_is": "Record-level sharing controls who sees which rows.",
+      "when_to_use": "Private sales orgs, partner portals, and case segregation.",
+      "where_to_use": "Multi-region sales teams and support queues.",
+      "real_use_example": "APAC reps see only APAC accounts via role hierarchy and territory rules."
+    },
+    {
+      "number": 5,
+      "title": "Reports, Dashboards, and List Views",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Reports, Dashboards, and List Views** *(Level: Beginner)*\n\nReports summarize CRM data; dashboards visualize KPIs for executives. Report types define join paths. Subscribe to dashboard refreshes. List views power daily rep workflows—pin favorites for My Open Opportunities.\n\nCode Reference:\n```javascript\nSELECT StageName, COUNT(Id) cnt FROM Opportunity GROUP BY StageName\n```\nWhat it shows: Aggregate SOQL mirrors report summarization logic.\n\n### What it actually is\nReports translate CRM data into decisions without code.\n\n### When to use it\nPipeline reviews, service level reviews, and campaign ROI.\n\n### Where to use it\nSales managers, support leads, and marketing ops.\n\n### Real use example\nDashboard shows CodeQuest pilot conversion rate dropped—triggers campaign review.",
+      "key_takeaways": [
+        "Reports translate CRM data into decisions without code.",
+        "Pipeline reviews, service level reviews, and campaign ROI.",
+        "Dashboard shows CodeQuest pilot conversion rate dropped—triggers campaign review."
+      ],
+      "what_it_is": "Reports translate CRM data into decisions without code.",
+      "when_to_use": "Pipeline reviews, service level reviews, and campaign ROI.",
+      "where_to_use": "Sales managers, support leads, and marketing ops.",
+      "real_use_example": "Dashboard shows CodeQuest pilot conversion rate dropped—triggers campaign review."
+    },
+    {
+      "number": 6,
+      "title": "Validation Rules and Page Layouts",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Validation Rules and Page Layouts** *(Level: Beginner)*\n\nValidation rules block bad data at save time with formula errors. Page layouts control field visibility per profile. Dynamic forms (UI API) modernize layout per record type. Combine validation with Flow for cross-field checks.\n\nCode Reference:\n```javascript\nAND(ISBLANK(Phone), ISBLANK(Email))\n// Error: Provide Phone or Email\n```\nWhat it shows: Validation formulas enforce contactability on lead capture.\n\n### What it actually is\nDeclarative validation prevents garbage data entering CRM.\n\n### When to use it\nData quality initiatives and required field policies.\n\n### Where to use it\nLead capture forms, opportunity closure gates.\n\n### Real use example\nCannot close Won opportunity without Contract signed checkbox—validation enforces.",
+      "key_takeaways": [
+        "Declarative validation prevents garbage data entering CRM.",
+        "Data quality initiatives and required field policies.",
+        "Cannot close Won opportunity without Contract signed checkbox—validation enforces."
+      ],
+      "what_it_is": "Declarative validation prevents garbage data entering CRM.",
+      "when_to_use": "Data quality initiatives and required field policies.",
+      "where_to_use": "Lead capture forms, opportunity closure gates.",
+      "real_use_example": "Cannot close Won opportunity without Contract signed checkbox—validation enforces."
+    },
+    {
+      "number": 7,
+      "title": "Flow Builder and Automation Strategy",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Flow Builder and Automation Strategy** *(Level: Intermediate)*\n\nRecord-triggered Flows replace Workflow Rules and Process Builder. Use before-save flows for field updates without extra DML. Screen flows guide users through multi-step wizards. Document automation inventory—overlapping flows cause recursion errors.\n\nCode Reference:\n```javascript\n// Flow: Record-Triggered After Save on Opportunity\n// Decision: Stage = Closed Won -> Create Task\n```\nWhat it shows: Flow decision elements branch automation without Apex.\n\n### What it actually is\nFlow is the primary declarative automation tool on Salesforce.\n\n### When to use it\nAssignment, notifications, approvals, and integrations.\n\n### Where to use it\nMost admin and consultant day-to-day configuration.\n\n### Real use example\nClosed Won flow creates onboarding task and emails customer success.",
+      "key_takeaways": [
+        "Flow is the primary declarative automation tool on Salesforce.",
+        "Assignment, notifications, approvals, and integrations.",
+        "Closed Won flow creates onboarding task and emails customer success."
+      ],
+      "what_it_is": "Flow is the primary declarative automation tool on Salesforce.",
+      "when_to_use": "Assignment, notifications, approvals, and integrations.",
+      "where_to_use": "Most admin and consultant day-to-day configuration.",
+      "real_use_example": "Closed Won flow creates onboarding task and emails customer success."
+    },
+    {
+      "number": 8,
+      "title": "Apex Triggers and Bulkification",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Apex Triggers and Bulkification** *(Level: Intermediate)*\n\nTriggers fire before/after insert/update/delete. Bulkify: never SOQL or DML inside loops over Trigger.new. Use handler pattern separating logic from trigger stub. Governor limits: 100 SOQL, 150 DML rows per transaction—design accordingly.\n\nCode Reference:\n```javascript\ntrigger OpportunityTrigger on Opportunity (after update) {\n  OpportunityHandler.onAfterUpdate(Trigger.new, Trigger.oldMap);\n}\n```\nWhat it shows: One-line trigger delegates to testable handler class.\n\n### What it actually is\nApex triggers implement complex logic Flow cannot express.\n\n### When to use it\nCross-object updates, callouts, and fine-grained control.\n\n### Where to use it\nEnterprise orgs with custom business rules.\n\n### Real use example\nHandler aggregates opportunity line changes—one DML update for 200 rows.",
+      "key_takeaways": [
+        "Apex triggers implement complex logic Flow cannot express.",
+        "Cross-object updates, callouts, and fine-grained control.",
+        "Handler aggregates opportunity line changes—one DML update for 200 rows."
+      ],
+      "what_it_is": "Apex triggers implement complex logic Flow cannot express.",
+      "when_to_use": "Cross-object updates, callouts, and fine-grained control.",
+      "where_to_use": "Enterprise orgs with custom business rules.",
+      "real_use_example": "Handler aggregates opportunity line changes—one DML update for 200 rows."
+    },
+    {
+      "number": 9,
+      "title": "SOQL, SOSL, and Governor Limits",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: SOQL, SOSL, and Governor Limits** *(Level: Intermediate)*\n\nSOQL queries structured data; SOSL searches text across objects. Selective queries use indexed fields (Id, Name, foreign keys). Avoid selective filter failures on custom fields without indexes. Query plan tool explains performance.\n\nCode Reference:\n```javascript\nList<Account> accts = [SELECT Id, Name FROM Account WHERE Industry = 'Education' LIMIT 200];\n```\nWhat it shows: LIMIT clause prevents accidental full-table scans in loops.\n\n### What it actually is\nEfficient queries keep Apex within governor limits.\n\n### When to use it\nEvery Apex class touching database records.\n\n### Where to use it\nTriggers, batch jobs, and LWC @wire adapters.\n\n### Real use example\nUnindexed filter on custom status field times out—admin requests custom index.",
+      "key_takeaways": [
+        "Efficient queries keep Apex within governor limits.",
+        "Every Apex class touching database records.",
+        "Unindexed filter on custom status field times out—admin requests custom index."
+      ],
+      "what_it_is": "Efficient queries keep Apex within governor limits.",
+      "when_to_use": "Every Apex class touching database records.",
+      "where_to_use": "Triggers, batch jobs, and LWC @wire adapters.",
+      "real_use_example": "Unindexed filter on custom status field times out—admin requests custom index."
+    },
+    {
+      "number": 10,
+      "title": "Lightning Web Components Basics",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Lightning Web Components Basics** *(Level: Intermediate)*\n\nLWC uses HTML templates, JavaScript modules, and CSS scoped to components. @api exposes properties; @track reactive state. Use lightning-datatable, navigation mixin, and lightning/uiRecordApi for standard UX consistency.\n\nCode Reference:\n```javascript\nimport { LightningElement, api } from 'lwc';\nexport default class CourseCard extends LightningElement {\n  @api courseName;\n}\n```\nWhat it shows: @api properties pass data from parent App Builder pages.\n\n### What it actually is\nLWC is Salesforce's modern UI framework for custom UX.\n\n### When to use it\nCustom record actions, dashboards, and Experience Cloud.\n\n### Where to use it\nReplacing legacy Visualforce and Aura components.\n\n### Real use example\nCourseCard LWC embeds on Account page showing enrolled CodeQuest modules.",
+      "key_takeaways": [
+        "LWC is Salesforce's modern UI framework for custom UX.",
+        "Custom record actions, dashboards, and Experience Cloud.",
+        "CourseCard LWC embeds on Account page showing enrolled CodeQuest modules."
+      ],
+      "what_it_is": "LWC is Salesforce's modern UI framework for custom UX.",
+      "when_to_use": "Custom record actions, dashboards, and Experience Cloud.",
+      "where_to_use": "Replacing legacy Visualforce and Aura components.",
+      "real_use_example": "CourseCard LWC embeds on Account page showing enrolled CodeQuest modules."
+    },
+    {
+      "number": 11,
+      "title": "Integration with REST and Bulk API",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Integration with REST and Bulk API** *(Level: Intermediate)*\n\nREST API handles CRUD on sObjects with OAuth JWT or username-password flow (discouraged). Bulk API 2.0 ingests millions of rows asynchronously. Composite API batches dependent requests. Respect API limits and idempotency for retries.\n\nCode Reference:\n```javascript\nHttpRequest req = new HttpRequest();\nreq.setEndpoint('callout:ERP_Named_Credential/accounts');\nreq.setMethod('GET');\n```\nWhat it shows: Named Credentials store auth for secure callouts from Apex.\n\n### What it actually is\nAPIs connect Salesforce to ERP, LMS, and data warehouses.\n\n### When to use it\nNightly syncs, real-time notifications, and MDM integrations.\n\n### Where to use it\nBi-directional student enrollment between LMS and Salesforce.\n\n### Real use example\nBulk API loads 500k nightly rows from data lake into custom staging object.",
+      "key_takeaways": [
+        "APIs connect Salesforce to ERP, LMS, and data warehouses.",
+        "Nightly syncs, real-time notifications, and MDM integrations.",
+        "Bulk API loads 500k nightly rows from data lake into custom staging object."
+      ],
+      "what_it_is": "APIs connect Salesforce to ERP, LMS, and data warehouses.",
+      "when_to_use": "Nightly syncs, real-time notifications, and MDM integrations.",
+      "where_to_use": "Bi-directional student enrollment between LMS and Salesforce.",
+      "real_use_example": "Bulk API loads 500k nightly rows from data lake into custom staging object."
+    },
+    {
+      "number": 12,
+      "title": "Experience Cloud and Portals",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Experience Cloud and Portals** *(Level: Intermediate)*\n\nExperience Cloud sites expose CRM data to partners and customers with branded UX. Configure sharing sets, guest user record access (tighten carefully), and CMS content. LWC runs in Experience Builder pages.\n\nCode Reference:\n```javascript\n// Guest user: minimal object access + CAPTCHA on public forms\n```\nWhat it shows: Security comments remind architects of guest user risks.\n\n### What it actually is\nExperience Cloud delivers external-facing CRM experiences.\n\n### When to use it\nPartner deal registration, customer support, and student portals.\n\n### Where to use it\nB2B ecosystems and education community sites.\n\n### Real use example\nDistrict admins view support cases in portal without full internal license.",
+      "key_takeaways": [
+        "Experience Cloud delivers external-facing CRM experiences.",
+        "Partner deal registration, customer support, and student portals.",
+        "District admins view support cases in portal without full internal license."
+      ],
+      "what_it_is": "Experience Cloud delivers external-facing CRM experiences.",
+      "when_to_use": "Partner deal registration, customer support, and student portals.",
+      "where_to_use": "B2B ecosystems and education community sites.",
+      "real_use_example": "District admins view support cases in portal without full internal license."
+    },
+    {
+      "number": 13,
+      "title": "Deployment with Salesforce DX",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Deployment with Salesforce DX** *(Level: Intermediate)*\n\nSFDX uses source control, scratch orgs, and manifest package.xml. sf project deploy start pushes metadata; CI runs Apex tests on pull requests. Never change prod directly—pipeline promotes dev → UAT → prod with change sets or pipelines.\n\nCode Reference:\n```javascript\nsf org login web --alias uat\nsf project deploy start --target-org uat --test-level RunLocalTests\n```\nWhat it shows: CLI deploy with tests mirrors enterprise ALM gates.\n\n### What it actually is\nSalesforce DX modernizes metadata lifecycle management.\n\n### When to use it\nTeam development and regulated release processes.\n\n### Where to use it\nISVs and internal centers of excellence.\n\n### Real use example\nPull request fails on 78% coverage—developer adds handler tests before merge.",
+      "key_takeaways": [
+        "Salesforce DX modernizes metadata lifecycle management.",
+        "Team development and regulated release processes.",
+        "Pull request fails on 78% coverage—developer adds handler tests before merge."
+      ],
+      "what_it_is": "Salesforce DX modernizes metadata lifecycle management.",
+      "when_to_use": "Team development and regulated release processes.",
+      "where_to_use": "ISVs and internal centers of excellence.",
+      "real_use_example": "Pull request fails on 78% coverage—developer adds handler tests before merge."
+    },
+    {
+      "number": 14,
+      "title": "Asynchronous Apex Patterns",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Asynchronous Apex Patterns** *(Level: Advanced)*\n\nQueueable, Batch Apex, and Schedulable process large volumes beyond synchronous limits. Batch implements Database.Batchable with scope chunks. Platform Events decouple publishers and subscribers for event-driven scale.\n\nCode Reference:\n```javascript\npublic class EnrollmentBatch implements Database.Batchable<SObject> {\n  public Database.QueryLocator start(Database.BatchableContext bc) {\n    return Database.getQueryLocator('SELECT Id FROM Enrollment__c');\n  }\n}\n```\nWhat it shows: Batch skeleton processes custom enrollment objects nightly.\n\n### What it actually is\nAsync Apex handles enterprise data volume outside user transactions.\n\n### When to use it\nNightly syncs, rollups, and data archival.\n\n### Where to use it\nOrgs exceeding synchronous governor thresholds.\n\n### Real use example\nBatch recalculates district utilization scores for 2M child records.",
+      "key_takeaways": [
+        "Async Apex handles enterprise data volume outside user transactions.",
+        "Nightly syncs, rollups, and data archival.",
+        "Batch recalculates district utilization scores for 2M child records."
+      ],
+      "what_it_is": "Async Apex handles enterprise data volume outside user transactions.",
+      "when_to_use": "Nightly syncs, rollups, and data archival.",
+      "where_to_use": "Orgs exceeding synchronous governor thresholds.",
+      "real_use_example": "Batch recalculates district utilization scores for 2M child records."
+    },
+    {
+      "number": 15,
+      "title": "Enterprise Integration Architecture",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Enterprise Integration Architecture** *(Level: Advanced)*\n\nApply Salesforce Well-Architected: reliable, secure, adaptable. Use anti-corruption layers, outbox patterns, and idempotent consumers. MuleSoft or Event Relay for hybrid buses.\n\nCode Reference:\n```javascript\n// Change Data Capture subscriber processes Account updates to ERP\n```\nWhat it shows: CDC comment illustrates event-driven integration style.\n\n### What it actually is\nIntegration architecture prevents brittle point-to-point spaghetti.\n\n### When to use it\nMulti-system landscapes with ERP, LMS, and billing.\n\n### Where to use it\nLarge enterprises and acquisition-heavy portfolios.\n\n### Real use example\nCDC streams opportunity wins to provisioning microservice within seconds.",
+      "key_takeaways": [
+        "Integration architecture prevents brittle point-to-point spaghetti.",
+        "Multi-system landscapes with ERP, LMS, and billing.",
+        "CDC streams opportunity wins to provisioning microservice within seconds."
+      ],
+      "what_it_is": "Integration architecture prevents brittle point-to-point spaghetti.",
+      "when_to_use": "Multi-system landscapes with ERP, LMS, and billing.",
+      "where_to_use": "Large enterprises and acquisition-heavy portfolios.",
+      "real_use_example": "CDC streams opportunity wins to provisioning microservice within seconds."
+    },
+    {
+      "number": 16,
+      "title": "Advanced Security and Shield",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Advanced Security and Shield** *(Level: Advanced)*\n\nShield Platform Encryption, Event Monitoring, and Field Audit Trail address compliance. Transaction Security policies block CSV exports by profile. Monitor Login Forensics for credential stuffing. Tenant secret rotation requires planning.\n\nCode Reference:\n```javascript\n// Event Monitoring: ReportEvent for bulk data export detection\n```\nWhat it shows: ReportEvent tracks who exported large contact lists.\n\n### What it actually is\nAdvanced security features protect regulated CRM data.\n\n### When to use it\nHealthcare, financial services, and public sector CRM.\n\n### Where to use it\nOrgs under HIPAA, PCI, or FedRAMP requirements.\n\n### Real use example\nTransaction Security blocks guest user SOQL injection attempt.",
+      "key_takeaways": [
+        "Advanced security features protect regulated CRM data.",
+        "Healthcare, financial services, and public sector CRM.",
+        "Transaction Security blocks guest user SOQL injection attempt."
+      ],
+      "what_it_is": "Advanced security features protect regulated CRM data.",
+      "when_to_use": "Healthcare, financial services, and public sector CRM.",
+      "where_to_use": "Orgs under HIPAA, PCI, or FedRAMP requirements.",
+      "real_use_example": "Transaction Security blocks guest user SOQL injection attempt."
+    },
+    {
+      "number": 17,
+      "title": "Performance Optimization and Caching",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Performance Optimization and Caching** *(Level: Advanced)*\n\nOptimize LWC with lazy load and wire cacheable Apex. Server-side: selective SOQL, custom indexes, skinny triggers. Use debug logs and Apex Profiler. Platform Cache stores session and org cache partitions for hot data.\n\nCode Reference:\n```javascript\n@AuraEnabled(cacheable=true)\npublic static List<Metric> getMetrics(Id accountId) { ... }\n```\nWhat it shows: Cacheable Apex reduces redundant database hits for dashboards.\n\n### What it actually is\nPerformance tuning keeps UX snappy at enterprise user counts.\n\n### When to use it\nSlow pages, timeout errors, and large-data Lightning apps.\n\n### Where to use it\nGlobal sales teams with heavy custom UIs.\n\n### Real use example\nCacheable metrics API drops LWC load from 4s to 400ms.",
+      "key_takeaways": [
+        "Performance tuning keeps UX snappy at enterprise user counts.",
+        "Slow pages, timeout errors, and large-data Lightning apps.",
+        "Cacheable metrics API drops LWC load from 4s to 400ms."
+      ],
+      "what_it_is": "Performance tuning keeps UX snappy at enterprise user counts.",
+      "when_to_use": "Slow pages, timeout errors, and large-data Lightning apps.",
+      "where_to_use": "Global sales teams with heavy custom UIs.",
+      "real_use_example": "Cacheable metrics API drops LWC load from 4s to 400ms."
+    },
+    {
+      "number": 18,
+      "title": "Einstein and AI on Salesforce",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Einstein and AI on Salesforce** *(Level: Advanced)*\n\nEinstein Lead Scoring, Case Classification, and Prompt Builder bring AI into CRM workflows. Understand model bias, human review gates, and data grounding. Agentforce orchestrates actions with audit trails for compliance.\n\nCode Reference:\n```javascript\n// Einstein Case Classification suggests Reason field on new cases\n```\nWhat it shows: Classification suggestions speed agent triage with human override.\n\n### What it actually is\nSalesforce AI augments reps and agents with predictive and generative features.\n\n### When to use it\nHigh-volume service queues and inside sales teams.\n\n### Where to use it\nOrgs adopting CRM-embedded AI instead of bolt-on tools.\n\n### Real use example\nEinstein summarizes long Case email threads before CodeQuest agent responds.",
+      "key_takeaways": [
+        "Salesforce AI augments reps and agents with predictive and generative features.",
+        "High-volume service queues and inside sales teams.",
+        "Einstein summarizes long Case email threads before CodeQuest agent responds."
+      ],
+      "what_it_is": "Salesforce AI augments reps and agents with predictive and generative features.",
+      "when_to_use": "High-volume service queues and inside sales teams.",
+      "where_to_use": "Orgs adopting CRM-embedded AI instead of bolt-on tools.",
+      "real_use_example": "Einstein summarizes long Case email threads before CodeQuest agent responds."
+    }
+  ],
+  "chapter_count": 18
+}

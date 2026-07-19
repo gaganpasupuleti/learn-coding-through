@@ -1,0 +1,137 @@
+{
+  "id": "project-customer-churn-classifier-with-mlflow",
+  "title": "Project Report: Customer Churn Classifier with MLflow — ML / AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "ml-ai",
+  "family_name": "ML / AI Engineer",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "Customer Churn Classifier with MLflow",
+  "project_index": 2,
+  "duration": "3–4 weeks",
+  "summary": "Classification pipeline logged in MLflow, compared experiments, deployed as FastAPI endpoint.",
+  "objectives": [
+    "Feature engineering for churn",
+    "Train 3 models and compare in MLflow",
+    "Select best by F1/recall",
+    "Deploy as REST API"
+  ],
+  "tools": [
+    "scikit-learn",
+    "MLflow",
+    "FastAPI",
+    "SHAP"
+  ],
+  "deliverables": [
+    "MLflow experiments",
+    "Best model",
+    "API endpoint",
+    "Model card"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**Customer Churn Classifier with MLflow** is a intermediate-level end-to-end project for ML / AI Engineer. Duration: 3–4 weeks. Classification pipeline logged in MLflow, compared experiments, deployed as FastAPI endpoint. Tools: scikit-learn, MLflow, FastAPI, SHAP.\n\nCode Reference:\n```text\nObjective: Feature engineering for churn\nObjective: Train 3 models and compare in MLflow\nObjective: Select best by F1/recall\nObjective: Deploy as REST API\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nML / AI Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a ML / AI Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a ML / AI Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "ML / AI Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a ML / AI Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Data",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Data** *(Level: Intermediate)*\n\nFeature engineering. Complete these tasks: RFM features; Train/test split. Deliverable for this phase: Feature matrix.\n\nCode Reference:\n```text\n- [ ] RFM features\n- [ ] Train/test split\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Data is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nML / AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Feature matrix to the teacher.",
+      "key_takeaways": [
+        "Phase Data is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Feature matrix to the teacher."
+      ],
+      "what_it_is": "Phase Data is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "ML / AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Feature matrix to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Experiments",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Experiments** *(Level: Intermediate)*\n\nMLflow tracking. Complete these tasks: 3 algorithms; Parameter logging. Deliverable for this phase: MLflow UI screenshot.\n\nCode Reference:\n```text\n- [ ] 3 algorithms\n- [ ] Parameter logging\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Experiments is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nML / AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the MLflow UI screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase Experiments is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the MLflow UI screenshot to the teacher."
+      ],
+      "what_it_is": "Phase Experiments is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "ML / AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the MLflow UI screenshot to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Select",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Select** *(Level: Intermediate)*\n\nBest model by recall. Complete these tasks: Confusion matrix; SHAP summary. Deliverable for this phase: Model comparison report.\n\nCode Reference:\n```text\n- [ ] Confusion matrix\n- [ ] SHAP summary\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Select is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nML / AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Model comparison report to the teacher.",
+      "key_takeaways": [
+        "Phase Select is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Model comparison report to the teacher."
+      ],
+      "what_it_is": "Phase Select is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "ML / AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Model comparison report to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Serve",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Serve** *(Level: Intermediate)*\n\nFastAPI endpoint. Complete these tasks: /predict; Input schema. Deliverable for this phase: Live prediction API.\n\nCode Reference:\n```text\n- [ ] /predict\n- [ ] Input schema\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Serve is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nML / AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Live prediction API to the teacher.",
+      "key_takeaways": [
+        "Phase Serve is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Live prediction API to the teacher."
+      ],
+      "what_it_is": "Phase Serve is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "ML / AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Live prediction API to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: MLflow experiments; Best model; API endpoint; Model card. Skills demonstrated: Classification, MLflow, Deployment. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: MLflow experiments\nDeliverable: Best model\nDeliverable: API endpoint\nDeliverable: Model card\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits MLflow experiments and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits MLflow experiments and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits MLflow experiments and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

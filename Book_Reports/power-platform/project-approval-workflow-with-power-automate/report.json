@@ -1,0 +1,136 @@
+{
+  "id": "project-approval-workflow-with-power-automate",
+  "title": "Project Report: Approval Workflow with Power Automate — Microsoft Power Platform Developer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "power-platform",
+  "family_name": "Microsoft Power Platform Developer",
+  "level": "Intermediate",
+  "report_type": "role_project",
+  "project_title": "Approval Workflow with Power Automate",
+  "project_index": 2,
+  "duration": "2–3 weeks",
+  "summary": "Purchase request app + automated approval flow with Teams adaptive cards and Dataverse audit log.",
+  "objectives": [
+    "Canvas app for purchase requests",
+    "Automated approval flow with conditions",
+    "Teams adaptive card notification",
+    "Dataverse table for audit trail"
+  ],
+  "tools": [
+    "Power Apps",
+    "Power Automate",
+    "Dataverse",
+    "Teams"
+  ],
+  "deliverables": [
+    "App + flow exports",
+    "Teams screenshot",
+    "Audit view screenshot"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Intermediate)*\n\n**Approval Workflow with Power Automate** is a intermediate-level end-to-end project for Microsoft Power Platform Developer. Duration: 2–3 weeks. Purchase request app + automated approval flow with Teams adaptive cards and Dataverse audit log. Tools: Power Apps, Power Automate, Dataverse, Teams.\n\nCode Reference:\n```text\nObjective: Canvas app for purchase requests\nObjective: Automated approval flow with conditions\nObjective: Teams adaptive card notification\nObjective: Dataverse table for audit trail\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nMicrosoft Power Platform Developer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Microsoft Power Platform Developer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Microsoft Power Platform Developer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Microsoft Power Platform Developer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Microsoft Power Platform Developer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: App",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: App** *(Level: Intermediate)*\n\nRequest form. Complete these tasks: Amount; Category; Justification. Deliverable for this phase: Canvas app.\n\nCode Reference:\n```text\n- [ ] Amount\n- [ ] Category\n- [ ] Justification\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase App is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Canvas app to the teacher.",
+      "key_takeaways": [
+        "Phase App is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Canvas app to the teacher."
+      ],
+      "what_it_is": "Phase App is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Canvas app to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Flow",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Flow** *(Level: Intermediate)*\n\nApproval logic. Complete these tasks: Manager if >$500; Finance if >$5000. Deliverable for this phase: Flow diagram export.\n\nCode Reference:\n```text\n- [ ] Manager if >$500\n- [ ] Finance if >$5000\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Flow is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Flow diagram export to the teacher.",
+      "key_takeaways": [
+        "Phase Flow is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Flow diagram export to the teacher."
+      ],
+      "what_it_is": "Phase Flow is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Flow diagram export to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Teams",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Teams** *(Level: Intermediate)*\n\nAdaptive card. Complete these tasks: Approve/Reject buttons; Comments. Deliverable for this phase: Teams notification screenshot.\n\nCode Reference:\n```text\n- [ ] Approve/Reject buttons\n- [ ] Comments\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Teams is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Teams notification screenshot to the teacher.",
+      "key_takeaways": [
+        "Phase Teams is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Teams notification screenshot to the teacher."
+      ],
+      "what_it_is": "Phase Teams is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Teams notification screenshot to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Audit",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Audit** *(Level: Intermediate)*\n\nDataverse log table. Complete these tasks: Request ID; Decision; Timestamp. Deliverable for this phase: Audit report view.\n\nCode Reference:\n```text\n- [ ] Request ID\n- [ ] Decision\n- [ ] Timestamp\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Audit is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nMicrosoft Power Platform Developer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Audit report view to the teacher.",
+      "key_takeaways": [
+        "Phase Audit is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Audit report view to the teacher."
+      ],
+      "what_it_is": "Phase Audit is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Microsoft Power Platform Developer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Audit report view to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Intermediate)*\n\nSubmit all final deliverables: App + flow exports; Teams screenshot; Audit view screenshot. Skills demonstrated: Power Automate, Approvals, Teams. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: App + flow exports\nDeliverable: Teams screenshot\nDeliverable: Audit view screenshot\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits App + flow exports and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits App + flow exports and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits App + flow exports and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

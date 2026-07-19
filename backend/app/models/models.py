@@ -481,11 +481,13 @@ class ScrapedJob(Base):
     __tablename__ = "scraped_jobs"
     __table_args__ = (
         UniqueConstraint("source", "job_url", name="uq_scraped_jobs_source_url"),
+        UniqueConstraint("job_id", name="uq_scraped_jobs_job_id"),
         Index("ix_scraped_jobs_created", "created_at"),
         Index("ix_scraped_jobs_source", "source"),
     )
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    job_id: Mapped[str | None] = mapped_column(String(32), nullable=True, unique=True, index=True)
     source: Mapped[str] = mapped_column(String(40), nullable=False)
     title: Mapped[str] = mapped_column(String(300), nullable=False)
     company: Mapped[str | None] = mapped_column(String(200), nullable=True)
@@ -531,6 +533,144 @@ class JobScrapeRun(Base):
     duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     triggered_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="failed")
+
+
+# ---------------------------------------------------------------------------
+# Job enrichment foundation (Phase 27B) — manual import overlay on scraped_jobs
+# ---------------------------------------------------------------------------
+
+class JobRole(Base):
+    """Stable role taxonomy for enriched job imports."""
+
+    __tablename__ = "job_roles"
+
+    role_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    role_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    role_family: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    core_skills: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    levels = relationship("JobRoleLevel", back_populates="role", cascade="all,delete-orphan")
+
+
+class JobRoleLevel(Base):
+    """Experience band within a job role (fresher / entry / experienced)."""
+
+    __tablename__ = "job_role_levels"
+
+    role_level_id: Mapped[str] = mapped_column(String(80), primary_key=True)
+    role_id: Mapped[str] = mapped_column(ForeignKey("job_roles.role_id"), nullable=False, index=True)
+    experience_level: Mapped[str] = mapped_column(String(32), nullable=False)
+    min_years: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    max_years: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    readiness_topics: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    role = relationship("JobRole", back_populates="levels")
+
+
+class JobEnrichment(Base):
+    """Curated enrichment overlay joined to scraped_jobs.job_id — raw scrape rows are not mutated."""
+
+    __tablename__ = "job_enrichments"
+    __table_args__ = (
+        Index("ix_job_enrichments_actual_role", "actual_role_id"),
+        Index("ix_job_enrichments_role_level", "role_level_id"),
+        Index("ix_job_enrichments_approved_status", "approved_status"),
+    )
+
+    # ponytail: no FK to scraped_jobs — manual import may save enrichment before/alongside scrape row
+    job_id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    actual_role_id: Mapped[str] = mapped_column(ForeignKey("job_roles.role_id"), nullable=False)
+    actual_role_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    role_level_id: Mapped[str] = mapped_column(ForeignKey("job_role_levels.role_level_id"), nullable=False)
+    experience_level: Mapped[str] = mapped_column(String(32), nullable=False)
+    job_live_status: Mapped[str] = mapped_column(String(16), nullable=False, default="UNKNOWN")
+    jd_fetch_status: Mapped[str] = mapped_column(String(16), nullable=False, default="UNKNOWN")
+    jd_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    required_skills: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    good_to_have_skills: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    tools: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    programming_languages: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    databases: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    frameworks: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    student_preparation_topics: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    quiz_pack_id: Mapped[str | None] = mapped_column(
+        ForeignKey("quiz_packs.quiz_pack_id"), nullable=True, index=True
+    )
+    mapping_confidence: Mapped[float | None] = mapped_column(Numeric(4, 3), nullable=True)
+    manual_review_needed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    approved_status: Mapped[str] = mapped_column(String(20), nullable=False, default="PENDING")
+    approved_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    approved_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+
+class QuizPack(Base):
+    """Role-preparation quiz pack linked from job enrichments."""
+
+    __tablename__ = "quiz_packs"
+
+    quiz_pack_id: Mapped[str] = mapped_column(String(80), primary_key=True)
+    role_id: Mapped[str] = mapped_column(ForeignKey("job_roles.role_id"), nullable=False, index=True)
+    role_level_id: Mapped[str] = mapped_column(ForeignKey("job_role_levels.role_level_id"), nullable=False, index=True)
+    week_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    difficulty: Mapped[str] = mapped_column(String(20), nullable=False, default="easy")
+    question_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    linked_jobs_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    questions = relationship("QuizPackQuestion", back_populates="quiz_pack", cascade="all,delete-orphan")
+
+
+class QuizPackQuestion(Base):
+    """Individual question within a job-enrichment quiz pack.
+
+    ponytail: table is quiz_pack_questions — quiz_questions is owned by Stage/Role quizzes.
+    """
+
+    __tablename__ = "quiz_pack_questions"
+    __table_args__ = (Index("ix_quiz_pack_questions_pack", "quiz_pack_id"),)
+
+    question_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    quiz_pack_id: Mapped[str] = mapped_column(ForeignKey("quiz_packs.quiz_pack_id"), nullable=False)
+    question_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    skill_tag: Mapped[str] = mapped_column(String(64), nullable=False)
+    difficulty: Mapped[str] = mapped_column(String(20), nullable=False, default="easy")
+    question: Mapped[str] = mapped_column(Text, nullable=False)
+    option_a: Mapped[str | None] = mapped_column(Text, nullable=True)
+    option_b: Mapped[str | None] = mapped_column(Text, nullable=True)
+    option_c: Mapped[str | None] = mapped_column(Text, nullable=True)
+    option_d: Mapped[str | None] = mapped_column(Text, nullable=True)
+    correct_option: Mapped[str | None] = mapped_column(String(1), nullable=True)
+    explanation: Mapped[str] = mapped_column(Text, nullable=False)
+    workbench_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    starter_code_or_query: Mapped[str | None] = mapped_column(Text, nullable=True)
+    expected_output: Mapped[str | None] = mapped_column(Text, nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    quiz_pack = relationship("QuizPack", back_populates="questions")
 
 
 # ---------------------------------------------------------------------------

@@ -24,6 +24,8 @@ import {
   Menu,
   X,
   Lock,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
@@ -36,15 +38,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { SubmitFeedbackDialog } from '@/components/feedback/SubmitFeedbackDialog'
+import { useStudentNavCollapsed } from '@/hooks/useStudentNavCollapsed'
 import { type AuthUser, clearAuth, isDemoUser } from '@/lib/auth'
 import { canAccessResumeLab } from '@/lib/resume-lab-access'
 import { cn } from '@/lib/utils'
 
 type StudentPage =
-  | 'landing'
   | 'dashboard'
   | 'hub'
   | 'jobspy'
+  | 'study-materials'
   | 'projects'
   | 'practice-code'
   | 'practice-sql'
@@ -76,13 +79,13 @@ const ICON = 16
 
 const NAV_GROUPS: SidebarGroup[] = [
   {
-      label: 'Menu',
+    label: 'Menu',
     items: [
       { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={ICON} aria-hidden /> },
       { page: 'jobspy', label: 'Jobs', icon: <Briefcase size={ICON} aria-hidden /> },
       { label: 'Live Classes', icon: <GraduationCap size={ICON} aria-hidden />, soon: true },
       { label: 'Practice Studio', icon: <FlaskConical size={ICON} aria-hidden />, soon: true },
-      { label: 'Study Materials', icon: <BookOpen size={ICON} aria-hidden />, soon: true },
+      { page: 'study-materials', label: 'Study Materials', icon: <BookOpen size={ICON} aria-hidden /> },
       { label: 'Assignments', icon: <ClipboardList size={ICON} aria-hidden />, soon: true },
       { page: 'progress', label: 'Progress', icon: <TrendingUp size={ICON} aria-hidden /> },
       { label: 'Settings', icon: <Settings size={ICON} aria-hidden />, soon: true },
@@ -131,11 +134,7 @@ function SidebarLink({
 
   if (item.locked) {
     return (
-      <span
-        aria-disabled
-        title="Locked"
-        className={cn(base, 'cursor-not-allowed text-white/35')}
-      >
+      <span aria-disabled title="Locked" className={cn(base, 'cursor-not-allowed text-white/35')}>
         {item.icon}
         <span className="truncate">{item.label}</span>
         <Lock size={12} className="ml-auto flex-shrink-0 text-white/35" aria-hidden />
@@ -145,11 +144,7 @@ function SidebarLink({
 
   if (item.soon || !item.page) {
     return (
-      <span
-        aria-disabled
-        title="Coming soon"
-        className={cn(base, 'cursor-not-allowed text-white/30')}
-      >
+      <span aria-disabled title="Coming soon" className={cn(base, 'cursor-not-allowed text-white/30')}>
         {item.icon}
         <span className="truncate">{item.label}</span>
         <span className="ml-auto rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white/45">
@@ -178,6 +173,7 @@ function SidebarLink({
 
 function SidebarBody({
   currentPage,
+  onToggleHidden,
   onNavigate,
   user,
   isDemo,
@@ -185,6 +181,7 @@ function SidebarBody({
   onOpenFeedback,
 }: {
   currentPage: StudentPage
+  onToggleHidden: () => void
   onNavigate: (page: StudentPage) => void
   user: AuthUser
   isDemo: boolean
@@ -201,26 +198,37 @@ function SidebarBody({
       .toUpperCase() || 'U'
 
   return (
-    <div className="flex h-full flex-col">
-      <button
-        type="button"
-        onClick={() => onNavigate('dashboard')}
-        className="flex items-center gap-2.5 px-4 py-4 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50"
-        aria-label="CodeQuest dashboard"
-      >
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 shadow-sm">
-          <Code2 size={17} className="text-white" strokeWidth={2.5} />
-        </div>
-        <span className="text-[15px] font-bold tracking-tight text-white">CodeQuest</span>
-        {isDemo && (
-          <Badge
-            variant="outline"
-            className="h-4 rounded-full border-amber-400/60 bg-amber-400/10 px-1.5 text-[10px] font-medium text-amber-300"
-          >
-            Demo
-          </Badge>
-        )}
-      </button>
+    <div className="flex h-full w-60 flex-col">
+      <div className="flex items-center gap-1 px-3 py-3">
+        <button
+          type="button"
+          onClick={() => onNavigate('dashboard')}
+          className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg py-1 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50"
+          aria-label="CodeQuest dashboard"
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 shadow-sm">
+            <Code2 size={17} className="text-white" strokeWidth={2.5} />
+          </div>
+          <span className="truncate text-[15px] font-bold tracking-tight text-white">CodeQuest</span>
+          {isDemo && (
+            <Badge
+              variant="outline"
+              className="h-4 shrink-0 rounded-full border-amber-400/60 bg-amber-400/10 px-1.5 text-[10px] font-medium text-amber-300"
+            >
+              Demo
+            </Badge>
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={onToggleHidden}
+          className="shrink-0 rounded-lg p-2 text-white/60 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-blue-400/50"
+          aria-label="Hide menu"
+          title="Hide menu"
+        >
+          <PanelLeftClose size={ICON} aria-hidden />
+        </button>
+      </div>
 
       <nav className="flex-1 overflow-y-auto px-3 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Primary">
         {NAV_GROUPS.map((group) => (
@@ -253,7 +261,7 @@ function SidebarBody({
           className="mb-2 flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-white/65 outline-none transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-blue-400/50"
         >
           <MessageSquare size={ICON} aria-hidden />
-          Feedback
+          <span>Feedback</span>
         </button>
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -300,6 +308,32 @@ function SidebarBody({
   )
 }
 
+function NavToggleButton({
+  hidden,
+  onToggle,
+  className,
+}: {
+  hidden: boolean
+  onToggle: () => void
+  className?: string
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-lg border border-[#0A1020]/12 bg-white px-2.5 py-1.5 text-[12px] font-semibold text-[#0A1020] shadow-sm transition-colors hover:bg-[#FAF3E0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB]/40',
+        className,
+      )}
+      aria-label={hidden ? 'Show navigation menu' : 'Hide navigation menu'}
+      title={hidden ? 'Show menu' : 'Hide menu'}
+    >
+      {hidden ? <PanelLeftOpen className="h-4 w-4" aria-hidden /> : <PanelLeftClose className="h-4 w-4" aria-hidden />}
+      <span>{hidden ? 'Show menu' : 'Hide menu'}</span>
+    </button>
+  )
+}
+
 export function StudentShell({
   currentPage,
   user,
@@ -312,13 +346,13 @@ export function StudentShell({
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const fillMode = contentMode === 'fill'
+  const { hidden, toggleHidden } = useStudentNavCollapsed()
 
   const handleLogout = () => {
     clearAuth()
     onLogout()
   }
 
-  // Navigating from the sidebar also closes the mobile drawer.
   const go = (page: StudentPage) => {
     setMobileOpen(false)
     onNavigate(page)
@@ -327,6 +361,7 @@ export function StudentShell({
   const sidebar = (
     <SidebarBody
       currentPage={currentPage}
+      onToggleHidden={toggleHidden}
       onNavigate={go}
       user={user}
       isDemo={isDemo}
@@ -337,10 +372,16 @@ export function StudentShell({
 
   return (
     <div className="flex h-dvh max-h-dvh min-h-0 overflow-hidden bg-slate-50">
-      {/* Desktop: static sidebar */}
-      <aside className="hidden w-60 flex-shrink-0 bg-[#0A1020] lg:block">{sidebar}</aside>
+      <aside
+        className={cn(
+          'hidden flex-shrink-0 overflow-hidden bg-[#0A1020] transition-[width,margin] duration-200 lg:block',
+          hidden ? 'w-0' : 'w-60',
+        )}
+        aria-hidden={hidden}
+      >
+        {!hidden ? sidebar : null}
+      </aside>
 
-      {/* Mobile: slide-in drawer + backdrop */}
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -365,31 +406,32 @@ export function StudentShell({
         {sidebar}
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        {/* Mobile-only slim bar with the menu toggle (desktop has no top bar) */}
-        <div className="flex h-12 flex-shrink-0 items-center gap-2 border-b border-slate-200 bg-[#0A1020] px-3 pt-[env(safe-area-inset-top)] lg:hidden">
+      <div className="relative flex min-w-0 flex-1 flex-col">
+        <div className="flex h-12 flex-shrink-0 items-center gap-2 border-b border-slate-200 bg-[#FFFDF6] px-3 pt-[env(safe-area-inset-top)] lg:h-11">
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-1.5 text-white outline-none hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-blue-400/50"
+            className="rounded-lg p-1.5 text-[#0A1020] outline-none hover:bg-[#0A1020]/5 focus-visible:ring-2 focus-visible:ring-blue-400/50 lg:hidden"
             aria-label="Open menu"
             aria-expanded={mobileOpen}
           >
             <Menu size={20} aria-hidden />
           </button>
+
+          <NavToggleButton hidden={hidden} onToggle={toggleHidden} className="hidden lg:inline-flex" />
+
           <button
             type="button"
             onClick={() => go('dashboard')}
-            className="flex min-h-11 items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50"
+            className="flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 lg:hidden"
             aria-label="CodeQuest dashboard"
           >
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-600">
               <Code2 size={13} className="text-white" strokeWidth={2.5} />
             </div>
-            <span className="text-sm font-bold tracking-tight text-white">CodeQuest</span>
+            <span className="text-sm font-bold tracking-tight text-[#0A1020]">CodeQuest</span>
           </button>
         </div>
-
         <main
           id="main-content"
           className={cn(
@@ -408,3 +450,5 @@ export function StudentShell({
     </div>
   )
 }
+
+export { NavToggleButton }

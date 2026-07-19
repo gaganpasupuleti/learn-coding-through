@@ -1,0 +1,601 @@
+{
+  "id": "study-report-business-analyst-career-path",
+  "title": "Study Report: Business Analyst — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "business-analyst",
+  "family_name": "Business Analyst",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "Business analysis career path aligned to BABOK v3: elicitation, requirements lifecycle, user stories and acceptance criteria, BPMN process modeling, backlog refinement, UAT planning, and Agile stakeholder facilitation. Combines IIBA guidance with practical Agile delivery for software, operations, and digital transformation initiatives.",
+  "skill_stack": {
+    "core": [
+      "BABOK knowledge areas and BA planning",
+      "Requirements elicitation and facilitation",
+      "User stories, epics, and acceptance criteria (Gherkin)",
+      "BPMN 2.0 process modeling and gap analysis",
+      "UAT planning, test cases, and sign-off",
+      "Agile ceremonies: refinement, sprint review, retro"
+    ],
+    "tools": [
+      "Jira / Azure DevOps / Linear",
+      "Confluence / Notion / SharePoint",
+      "Miro / Lucidchart for BPMN",
+      "Figma / Balsamiq wireframes",
+      "Excel / Python pandas for analysis"
+    ],
+    "platforms": [
+      "Agile Scrum teams",
+      "SAFe programs",
+      "Waterfall PMO",
+      "Citizen dev / low-code"
+    ],
+    "certifications": [
+      "IIBA ECBA / CCBA / CBAP",
+      "PMI-PBA",
+      "ICAgile Agile Product Ownership"
+    ]
+  },
+  "sources": [
+    "https://www.iiba.org/standards-and-resources/babok/",
+    "https://www.agilealliance.org/glossary/",
+    "https://www.omg.org/spec/BPMN/",
+    "https://cucumber.io/docs/gherkin/",
+    "https://learn.microsoft.com/azure/devops/boards/",
+    "https://www.scrum.org/resources"
+  ],
+  "recommended_books": [
+    {
+      "title": "Business Analysis Body of Knowledge (BABOK v3)",
+      "author": "IIBA",
+      "level": "Intermediate",
+      "focus": "Industry standard for requirements, elicitation, and solution evaluation.",
+      "url": "https://www.iiba.org/business-analysis-standards/business-analysis-body-of-knowledge/",
+      "free_online": false
+    },
+    {
+      "title": "User Story Mapping",
+      "author": "Jeff Patton",
+      "level": "Beginner",
+      "focus": "Visual backlog design and release planning with user stories.",
+      "url": "https://www.jpattonassociates.com/user-story-mapping/",
+      "free_online": false
+    },
+    {
+      "title": "Writing Effective Use Cases",
+      "author": "Alistair Cockburn",
+      "level": "Intermediate",
+      "focus": "Use case structure for clear functional requirements.",
+      "url": "https://www.oreilly.com/library/view/writing-effective-use/9780131422284/",
+      "free_online": false
+    },
+    {
+      "title": "Agile Estimating and Planning",
+      "author": "Mike Cohn",
+      "level": "Intermediate",
+      "focus": "Story points, velocity, and sprint planning for BAs in Agile teams.",
+      "url": "https://www.mountaingoatsoftware.com/books/agile-estimating-and-planning",
+      "free_online": false
+    },
+    {
+      "title": "BPMN Method and Style",
+      "author": "Bruce Silver",
+      "level": "Beginner",
+      "focus": "Process modeling notation for workflow and approval diagrams.",
+      "url": "https://www.bpmswatch.com/bpmn-method-and-style/",
+      "free_online": false
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "Requirements Doc for Mobile App Feature",
+      "level": "Beginner",
+      "duration": "2 weeks",
+      "overview": "Elicit requirements for a 'dark mode' feature: interviews, user stories, acceptance criteria, mock wireframe.",
+      "objectives": [
+        "2 stakeholder interview summaries",
+        "5 user stories with acceptance criteria",
+        "Wireframe mockup",
+        "Requirements traceability matrix"
+      ],
+      "phases": [
+        {
+          "name": "Elicit",
+          "description": "Stakeholder interviews.",
+          "tasks": [
+            "Question guide",
+            "Notes"
+          ],
+          "deliverable": "Interview summaries"
+        },
+        {
+          "name": "Stories",
+          "description": "User stories + AC.",
+          "tasks": [
+            "Given/When/Then",
+            "Priority"
+          ],
+          "deliverable": "Backlog document"
+        },
+        {
+          "name": "Wireframe",
+          "description": "Low-fi mockup.",
+          "tasks": [
+            "Figma/Balsamiq",
+            "Annotations"
+          ],
+          "deliverable": "Wireframe PDF"
+        },
+        {
+          "name": "RTM",
+          "description": "Traceability matrix.",
+          "tasks": [
+            "Story → AC → Test"
+          ],
+          "deliverable": "RTM spreadsheet"
+        }
+      ],
+      "skills_applied": [
+        "Requirements",
+        "User stories",
+        "Wireframing"
+      ],
+      "tools": [
+        "Figma/Balsamiq",
+        "Confluence template"
+      ],
+      "deliverables": [
+        "Requirements doc",
+        "User stories",
+        "Wireframe",
+        "RTM"
+      ]
+    },
+    {
+      "title": "CodeQuest Marking Workflow Analysis",
+      "level": "Intermediate",
+      "duration": "3 weeks",
+      "overview": "Map current vs future state with BPMN, define requirements for teacher marking feature, write UAT plan.",
+      "objectives": [
+        "As-is and to-be BPMN diagrams",
+        "15 functional requirements",
+        "UAT test plan with 10 cases",
+        "Stakeholder sign-off template"
+      ],
+      "phases": [
+        {
+          "name": "As-Is",
+          "description": "Current process map.",
+          "tasks": [
+            "Pain points",
+            "Bottlenecks"
+          ],
+          "deliverable": "As-is BPMN"
+        },
+        {
+          "name": "To-Be",
+          "description": "Future state design.",
+          "tasks": [
+            "Automation points",
+            "Roles"
+          ],
+          "deliverable": "To-be BPMN"
+        },
+        {
+          "name": "Requirements",
+          "description": "Functional + non-functional.",
+          "tasks": [
+            "FR-001 to FR-015",
+            "NFRs"
+          ],
+          "deliverable": "Requirements spec"
+        },
+        {
+          "name": "UAT",
+          "description": "Test plan.",
+          "tasks": [
+            "10 test cases",
+            "Sign-off form"
+          ],
+          "deliverable": "UAT plan PDF"
+        }
+      ],
+      "skills_applied": [
+        "BPMN",
+        "Requirements",
+        "UAT"
+      ],
+      "tools": [
+        "Bizagi/draw.io",
+        "Confluence"
+      ],
+      "deliverables": [
+        "BPMN diagrams",
+        "Requirements spec",
+        "UAT plan"
+      ]
+    },
+    {
+      "title": "ERP Replacement Business Case",
+      "level": "Advanced",
+      "duration": "4–5 weeks",
+      "overview": "Full business case: cost-benefit analysis, risk register, implementation roadmap, and executive presentation.",
+      "objectives": [
+        "Cost-benefit analysis (3-year TCO)",
+        "Risk register with mitigations",
+        "Phased implementation roadmap",
+        "Executive summary presentation"
+      ],
+      "phases": [
+        {
+          "name": "Analysis",
+          "description": "Current state costs.",
+          "tasks": [
+            "License",
+            "Maintenance",
+            "Labor"
+          ],
+          "deliverable": "Cost baseline"
+        },
+        {
+          "name": "Business Case",
+          "description": "ROI and benefits.",
+          "tasks": [
+            "Efficiency gains",
+            "Risk reduction"
+          ],
+          "deliverable": "Business case doc"
+        },
+        {
+          "name": "Roadmap",
+          "description": "3-phase implementation.",
+          "tasks": [
+            "Pilot",
+            "Rollout",
+            "Optimize"
+          ],
+          "deliverable": "Gantt roadmap"
+        },
+        {
+          "name": "Present",
+          "description": "Executive deck.",
+          "tasks": [
+            "Recommendation",
+            "Ask"
+          ],
+          "deliverable": "Board presentation PDF"
+        }
+      ],
+      "skills_applied": [
+        "Business case",
+        "ROI",
+        "Project planning"
+      ],
+      "tools": [
+        "Excel",
+        "PowerPoint",
+        "BABOK"
+      ],
+      "deliverables": [
+        "Business case document",
+        "Risk register",
+        "Roadmap",
+        "Executive deck"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Business Analyst Role and BABOK Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Business Analyst Role and BABOK Overview** *(Level: Beginner)*\n\nBusiness analysts bridge business problems and technical solutions. BABOK v3 defines six knowledge areas: planning, elicitation, requirements life cycle, strategy analysis, design definition, and solution evaluation. BAs facilitate—they rarely dictate. Success is measured by delivered outcomes and stakeholder satisfaction, not document page count.\n\nCode Reference:\n```python\n# BABOK knowledge areas\nareas = ['Planning', 'Elicitation', 'Requirements', 'Strategy',\n         'Design', 'Evaluation']\n```\nWhat it shows: Listing BABOK areas frames your study plan for IIBA certifications.\n\n### What it actually is\nA business analyst clarifies needs and translates them into actionable requirements.\n\n### When to use it\nNew product features, process improvements, and system replacements.\n\n### Where to use it\nSoftware teams, banks, healthcare IT, and public-sector digital services.\n\n### Real use example\nCodeQuest hires a BA to interview instructors about grading pain before developers write code.",
+      "key_takeaways": [
+        "A business analyst clarifies needs and translates them into actionable requirements.",
+        "New product features, process improvements, and system replacements.",
+        "CodeQuest hires a BA to interview instructors about grading pain before developers write code."
+      ],
+      "what_it_is": "A business analyst clarifies needs and translates them into actionable requirements.",
+      "when_to_use": "New product features, process improvements, and system replacements.",
+      "where_to_use": "Software teams, banks, healthcare IT, and public-sector digital services.",
+      "real_use_example": "CodeQuest hires a BA to interview instructors about grading pain before developers write code."
+    },
+    {
+      "number": 2,
+      "title": "Stakeholder Identification and RACI",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Stakeholder Identification and RACI** *(Level: Beginner)*\n\nMap stakeholders by influence and interest. RACI charts assign Responsible, Accountable, Consulted, and Informed roles per deliverable. Executive sponsors need concise updates; end users need empathy and jargon-free language. Maintain a stakeholder register with communication preferences.\n\nCode Reference:\n```python\nstakeholders = {\n  'Product Owner': 'Accountable',\n  'Lead Teacher': 'Consulted',\n  'Dev Team': 'Responsible',\n  'Compliance': 'Informed'\n}\n```\nWhat it shows: RACI dictionaries prevent approval bottlenecks during delivery.\n\n### What it actually is\nStakeholder analysis ensures the right voices are heard at the right time.\n\n### When to use it\nProject kickoff and whenever scope or org changes.\n\n### Where to use it\nCross-functional Agile squads and PMO-led programs.\n\n### Real use example\nRACI clarifies who approves scope changes when legal must be Consulted on student data features.",
+      "key_takeaways": [
+        "Stakeholder analysis ensures the right voices are heard at the right time.",
+        "Project kickoff and whenever scope or org changes.",
+        "RACI clarifies who approves scope changes when legal must be Consulted on student data features."
+      ],
+      "what_it_is": "Stakeholder analysis ensures the right voices are heard at the right time.",
+      "when_to_use": "Project kickoff and whenever scope or org changes.",
+      "where_to_use": "Cross-functional Agile squads and PMO-led programs.",
+      "real_use_example": "RACI clarifies who approves scope changes when legal must be Consulted on student data features."
+    },
+    {
+      "number": 3,
+      "title": "Elicitation Techniques",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Elicitation Techniques** *(Level: Beginner)*\n\nTechniques include interviews, workshops, observation, document analysis, prototyping, and surveys. Combine methods—workshops surface alignment; interviews reveal nuance. Prepare open-ended questions, paraphrase answers, and validate with 'Did I understand correctly?'\n\nCode Reference:\n```python\nquestions = [\n  'What triggers this process today?',\n  'What breaks most often?',\n  'How do you measure success?'\n]\n```\nWhat it shows: Open questions uncover root needs instead of confirming biases.\n\n### What it actually is\nElicitation gathers tacit and explicit business knowledge.\n\n### When to use it\nDiscovery phases before committing to solutions.\n\n### Where to use it\nAny project with human workflows and policy constraints.\n\n### Real use example\nWorkshop reveals teachers export CSV manually weekly—hidden step never in original RFP.",
+      "key_takeaways": [
+        "Elicitation gathers tacit and explicit business knowledge.",
+        "Discovery phases before committing to solutions.",
+        "Workshop reveals teachers export CSV manually weekly—hidden step never in original RFP."
+      ],
+      "what_it_is": "Elicitation gathers tacit and explicit business knowledge.",
+      "when_to_use": "Discovery phases before committing to solutions.",
+      "where_to_use": "Any project with human workflows and policy constraints.",
+      "real_use_example": "Workshop reveals teachers export CSV manually weekly—hidden step never in original RFP."
+    },
+    {
+      "number": 4,
+      "title": "User Stories and INVEST Criteria",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: User Stories and INVEST Criteria** *(Level: Beginner)*\n\nUser stories follow: As a <role>, I want <capability>, so that <benefit>. INVEST: Independent, Negotiable, Valuable, Estimable, Small, Testable. Split epics vertically by user outcome, not horizontally by technical layer. Definition of Ready gates sprint planning.\n\nCode Reference:\n```python\nstory = '''As a student, I want to resume a quiz after logout,\nso that I do not lose progress during network drops.'''\n```\nWhat it shows: Well-formed stories anchor refinement and acceptance testing.\n\n### What it actually is\nUser stories express requirements in user-value language for Agile teams.\n\n### When to use it\nProduct backlog creation and sprint refinement.\n\n### Where to use it\nScrum teams, Kanban boards, and hybrid Agile-Waterfall.\n\n### Real use example\nEpic 'Analytics' splits into stories for filters, export, and role-based dashboards.",
+      "key_takeaways": [
+        "User stories express requirements in user-value language for Agile teams.",
+        "Product backlog creation and sprint refinement.",
+        "Epic 'Analytics' splits into stories for filters, export, and role-based dashboards."
+      ],
+      "what_it_is": "User stories express requirements in user-value language for Agile teams.",
+      "when_to_use": "Product backlog creation and sprint refinement.",
+      "where_to_use": "Scrum teams, Kanban boards, and hybrid Agile-Waterfall.",
+      "real_use_example": "Epic 'Analytics' splits into stories for filters, export, and role-based dashboards."
+    },
+    {
+      "number": 5,
+      "title": "Acceptance Criteria and Gherkin",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Acceptance Criteria and Gherkin** *(Level: Beginner)*\n\nAcceptance criteria define done from the business perspective. Gherkin Given-When-Then scenarios become automated tests in Cucumber or SpecFlow. Write positive, negative, and edge cases. Avoid technical implementation in criteria—focus on observable behavior.\n\nCode Reference:\n```python\nScenario: Resume quiz\n  Given a student started quiz Q7\n  When they log in within 24 hours\n  Then they continue at Q7\n```\nWhat it shows: Gherkin bridges BA specs and QA automation.\n\n### What it actually is\nAcceptance criteria are testable conditions for story completion.\n\n### When to use it\nRefinement, sprint planning, and UAT script authoring.\n\n### Where to use it\nAgile software delivery and regulated industries needing audit trails.\n\n### Real use example\nCriteria catch ambiguous 'fast loading' by specifying '< 2s at p95 on 4G'.",
+      "key_takeaways": [
+        "Acceptance criteria are testable conditions for story completion.",
+        "Refinement, sprint planning, and UAT script authoring.",
+        "Criteria catch ambiguous 'fast loading' by specifying '< 2s at p95 on 4G'."
+      ],
+      "what_it_is": "Acceptance criteria are testable conditions for story completion.",
+      "when_to_use": "Refinement, sprint planning, and UAT script authoring.",
+      "where_to_use": "Agile software delivery and regulated industries needing audit trails.",
+      "real_use_example": "Criteria catch ambiguous 'fast loading' by specifying '< 2s at p95 on 4G'."
+    },
+    {
+      "number": 6,
+      "title": "Requirements Documentation Types",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Requirements Documentation Types** *(Level: Beginner)*\n\nBAs produce business requirements documents (BRD), functional specs, wireframes, data dictionaries, and context diagrams. Tailor depth to methodology—Agile favors living wiki pages over shelf-ware. Version everything; trace IDs link stories to regulations.\n\nCode Reference:\n```python\nreq = {'id': 'BR-014', 'text': 'Export grades CSV', 'source': 'Sponsor interview 2026-03-01'}\n```\nWhat it shows: Structured requirement objects support traceability matrices.\n\n### What it actually is\nDocumentation types communicate needs to distinct audiences.\n\n### When to use it\nHandoffs to developers, vendors, auditors, and operations.\n\n### Where to use it\nWaterfall RFPs, compliance projects, and enterprise SaaS configs.\n\n### Real use example\nBRD section maps GDPR Article 17 to deletion user story DEV-221.",
+      "key_takeaways": [
+        "Documentation types communicate needs to distinct audiences.",
+        "Handoffs to developers, vendors, auditors, and operations.",
+        "BRD section maps GDPR Article 17 to deletion user story DEV-221."
+      ],
+      "what_it_is": "Documentation types communicate needs to distinct audiences.",
+      "when_to_use": "Handoffs to developers, vendors, auditors, and operations.",
+      "where_to_use": "Waterfall RFPs, compliance projects, and enterprise SaaS configs.",
+      "real_use_example": "BRD section maps GDPR Article 17 to deletion user story DEV-221."
+    },
+    {
+      "number": 7,
+      "title": "BPMN 2.0 Process Modeling",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: BPMN 2.0 Process Modeling** *(Level: Intermediate)*\n\nBPMN uses pools, lanes, tasks, gateways (XOR, AND, OR), events, and message flows. AS-IS models document reality including workarounds; TO-BE models target automation. Keep diagrams readable—split into subprocesses when pages exceed one screen.\n\nCode Reference:\n```python\n# BPMN elements (conceptual)\n# Start -> User Task -> XOR gateway -> Service Task -> End\n```\nWhat it shows: Gateway notation shows decision branching for developers and ops.\n\n### What it actually is\nBPMN is the standard notation for business process analysis.\n\n### When to use it\nProcess reengineering, RPA discovery, and ERP implementations.\n\n### Where to use it\nFinance, HR onboarding, claims processing, and IT service workflows.\n\n### Real use example\nTO-BE model replaces three email handoffs with ServiceNow catalog flow.",
+      "key_takeaways": [
+        "BPMN is the standard notation for business process analysis.",
+        "Process reengineering, RPA discovery, and ERP implementations.",
+        "TO-BE model replaces three email handoffs with ServiceNow catalog flow."
+      ],
+      "what_it_is": "BPMN is the standard notation for business process analysis.",
+      "when_to_use": "Process reengineering, RPA discovery, and ERP implementations.",
+      "where_to_use": "Finance, HR onboarding, claims processing, and IT service workflows.",
+      "real_use_example": "TO-BE model replaces three email handoffs with ServiceNow catalog flow."
+    },
+    {
+      "number": 8,
+      "title": "Backlog Refinement and Prioritization",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Backlog Refinement and Prioritization** *(Level: Intermediate)*\n\nRefinement decomposes epics, estimates collaboratively, and clarifies dependencies. Prioritization frameworks: MoSCoW, WSJF (SAFe), Kano, and value vs effort matrices. Product Owner owns order; BA ensures each item is ready with clear value hypothesis.\n\nCode Reference:\n```python\nitems = [('Must', 'SSO login'), ('Should', 'Dark mode'), ('Could', 'Badge export')]\nfor m, title in sorted(items):\n    print(f'{m}: {title}')\n```\nWhat it shows: MoSCoW buckets communicate release scope to executives quickly.\n\n### What it actually is\nBacklog refinement keeps delivery focused on highest business value.\n\n### When to use it\nEvery sprint cycle in Agile product development.\n\n### Where to use it\nSaaS roadmaps, internal tools, and transformation backlogs.\n\n### Real use example\nWSJF elevates regulatory reporting over cosmetic UI in Q3 planning.",
+      "key_takeaways": [
+        "Backlog refinement keeps delivery focused on highest business value.",
+        "Every sprint cycle in Agile product development.",
+        "WSJF elevates regulatory reporting over cosmetic UI in Q3 planning."
+      ],
+      "what_it_is": "Backlog refinement keeps delivery focused on highest business value.",
+      "when_to_use": "Every sprint cycle in Agile product development.",
+      "where_to_use": "SaaS roadmaps, internal tools, and transformation backlogs.",
+      "real_use_example": "WSJF elevates regulatory reporting over cosmetic UI in Q3 planning."
+    },
+    {
+      "number": 9,
+      "title": "Data Analysis for Business Decisions",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Data Analysis for Business Decisions** *(Level: Intermediate)*\n\nBAs analyze spreadsheets, survey results, and product telemetry. Python pandas loads CSV exports for pivot tables, cohort analysis, and anomaly detection. Visualize with simple charts—stakeholders grasp trends faster than raw tables.\n\nCode Reference:\n```python\nimport pandas as pd\ndf = pd.read_csv('quiz_completions.csv')\nprint(df.groupby('course')['score'].mean().sort_values(ascending=False))\n```\nWhat it shows: pandas groupby surfaces course-level performance for prioritization workshops.\n\n### What it actually is\nData analysis grounds requirements in evidence not opinions.\n\n### When to use it\nWhen stakeholders disagree or volume hides patterns.\n\n### Where to use it\nEdTech metrics, sales funnels, and operations KPI reviews.\n\n### Real use example\nCompletion data shows mobile users abandon at Q3—drives responsive UI story.",
+      "key_takeaways": [
+        "Data analysis grounds requirements in evidence not opinions.",
+        "When stakeholders disagree or volume hides patterns.",
+        "Completion data shows mobile users abandon at Q3—drives responsive UI story."
+      ],
+      "what_it_is": "Data analysis grounds requirements in evidence not opinions.",
+      "when_to_use": "When stakeholders disagree or volume hides patterns.",
+      "where_to_use": "EdTech metrics, sales funnels, and operations KPI reviews.",
+      "real_use_example": "Completion data shows mobile users abandon at Q3—drives responsive UI story."
+    },
+    {
+      "number": 10,
+      "title": "Wireframes and Prototyping",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Wireframes and Prototyping** *(Level: Intermediate)*\n\nLow-fidelity wireframes align layout before expensive build. Clickable prototypes in Figma validate flows with users. Annotate accessibility, validation rules, and empty states. Prototype tests reduce rework—one hour of testing saves days of dev churn.\n\nCode Reference:\n```python\n# Wireframe checklist: primary CTA, error state, loading, mobile breakpoint\n```\nWhat it shows: Checklists ensure prototypes cover non-happy paths.\n\n### What it actually is\nWireframes communicate UI requirements without final visual design.\n\n### When to use it\nNew screens, portal redesigns, and mobile-first initiatives.\n\n### Where to use it\nWeb apps, admin consoles, and customer-facing portals.\n\n### Real use example\nFigma prototype test exposes confusing 'Submit' vs 'Save draft'—story rewritten before sprint.",
+      "key_takeaways": [
+        "Wireframes communicate UI requirements without final visual design.",
+        "New screens, portal redesigns, and mobile-first initiatives.",
+        "Figma prototype test exposes confusing 'Submit' vs 'Save draft'—story rewritten before sprint."
+      ],
+      "what_it_is": "Wireframes communicate UI requirements without final visual design.",
+      "when_to_use": "New screens, portal redesigns, and mobile-first initiatives.",
+      "where_to_use": "Web apps, admin consoles, and customer-facing portals.",
+      "real_use_example": "Figma prototype test exposes confusing 'Submit' vs 'Save draft'—story rewritten before sprint."
+    },
+    {
+      "number": 11,
+      "title": "Non-Functional Requirements",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Non-Functional Requirements** *(Level: Intermediate)*\n\nNFRs cover performance, security, availability, scalability, compliance, and usability. Make them measurable: '99.9% uptime', 'WCAG 2.1 AA', 'p95 < 500ms'. Link NFRs to architecture decisions and test plans—they are not optional nice-to-haves.\n\nCode Reference:\n```python\nnfrs = {'performance': 'p95 API < 300ms at 500 RPS',\n        'security': 'OWASP ASVS L2',\n        'a11y': 'WCAG 2.1 AA'}\n```\nWhat it shows: Quantified NFRs become acceptance tests and monitoring alerts.\n\n### What it actually is\nNon-functional requirements define how well the system must behave.\n\n### When to use it\nEnterprise procurement, regulated systems, and scale-up products.\n\n### Where to use it\nHealthcare LMS, payment portals, and public-sector services.\n\n### Real use example\nNFR workshop adds audit logging before CodeQuest handles payment data.",
+      "key_takeaways": [
+        "Non-functional requirements define how well the system must behave.",
+        "Enterprise procurement, regulated systems, and scale-up products.",
+        "NFR workshop adds audit logging before CodeQuest handles payment data."
+      ],
+      "what_it_is": "Non-functional requirements define how well the system must behave.",
+      "when_to_use": "Enterprise procurement, regulated systems, and scale-up products.",
+      "where_to_use": "Healthcare LMS, payment portals, and public-sector services.",
+      "real_use_example": "NFR workshop adds audit logging before CodeQuest handles payment data."
+    },
+    {
+      "number": 12,
+      "title": "Agile Ceremonies from a BA Lens",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Agile Ceremonies from a BA Lens** *(Level: Intermediate)*\n\nIn Scrum, BAs often partner with PO on backlog, facilitate refinement, clarify stories during planning, demo business scenarios in review, and capture improvement actions in retro. Prepare concise talking points—ceremonies are time-boxed.\n\nCode Reference:\n```python\nsprint_events = ['Planning', 'Daily', 'Refinement', 'Review', 'Retro']\n```\nWhat it shows: Knowing ceremony purpose prevents BA work happening in wrong forum.\n\n### What it actually is\nAgile ceremonies synchronize team and stakeholder expectations.\n\n### When to use it\nOngoing delivery cadence in Scrum and Kanban teams.\n\n### Where to use it\nProduct engineering orgs and digital agencies.\n\n### Real use example\nSprint review demo uses real teacher data scenario—stakeholder signs off increment.",
+      "key_takeaways": [
+        "Agile ceremonies synchronize team and stakeholder expectations.",
+        "Ongoing delivery cadence in Scrum and Kanban teams.",
+        "Sprint review demo uses real teacher data scenario—stakeholder signs off increment."
+      ],
+      "what_it_is": "Agile ceremonies synchronize team and stakeholder expectations.",
+      "when_to_use": "Ongoing delivery cadence in Scrum and Kanban teams.",
+      "where_to_use": "Product engineering orgs and digital agencies.",
+      "real_use_example": "Sprint review demo uses real teacher data scenario—stakeholder signs off increment."
+    },
+    {
+      "number": 13,
+      "title": "Requirements Traceability Matrix",
+      "topic": "intro",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Requirements Traceability Matrix** *(Level: Intermediate)*\n\nRTM links business requirements → user stories → test cases → releases. Essential for audits, regulated industries, and scope change impact analysis. Automate links in Jira/Azure DevOps when possible; manual spreadsheets rot quickly.\n\nCode Reference:\n```python\nrtm_row = {'BR': 'BR-009', 'Story': 'CQ-142', 'Test': 'TC-088', 'Release': 'R2.3'}\n```\nWhat it shows: RTM rows prove coverage for compliance sign-off.\n\n### What it actually is\nTraceability shows every requirement is built and verified.\n\n### When to use it\nFDA, SOX, GDPR, and government contract deliveries.\n\n### Where to use it\nEnterprise QA and formal PMO governance.\n\n### Real use example\nAuditor requests proof of password policy—RTM points to stories and penetration test.",
+      "key_takeaways": [
+        "Traceability shows every requirement is built and verified.",
+        "FDA, SOX, GDPR, and government contract deliveries.",
+        "Auditor requests proof of password policy—RTM points to stories and penetration test."
+      ],
+      "what_it_is": "Traceability shows every requirement is built and verified.",
+      "when_to_use": "FDA, SOX, GDPR, and government contract deliveries.",
+      "where_to_use": "Enterprise QA and formal PMO governance.",
+      "real_use_example": "Auditor requests proof of password policy—RTM points to stories and penetration test."
+    },
+    {
+      "number": 14,
+      "title": "Strategy Analysis and Business Cases",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Strategy Analysis and Business Cases** *(Level: Advanced)*\n\nStrategy analysis frames problems, assesses capabilities, and defines solution scope. Business cases weigh costs, benefits, risks, and alternatives. Use ROI, NPV, and qualitative strategic fit. Executives need one-page decision summaries with clear ask.\n\nCode Reference:\n```python\nbenefits = 120_000\ncosts = 85_000\nroi = (benefits - costs) / costs\nprint(f'ROI: {roi:.0%}')\n```\nWhat it shows: Simple ROI models support build-vs-buy workshops.\n\n### What it actually is\nStrategy analysis aligns initiatives with enterprise goals.\n\n### When to use it\nPortfolio prioritization and funding approval gates.\n\n### Where to use it\nCIO offices, transformation PMOs, and startup board reviews.\n\n### Real use example\nBA recommends buying LMS integration over custom build—NPV positive in year two.",
+      "key_takeaways": [
+        "Strategy analysis aligns initiatives with enterprise goals.",
+        "Portfolio prioritization and funding approval gates.",
+        "BA recommends buying LMS integration over custom build—NPV positive in year two."
+      ],
+      "what_it_is": "Strategy analysis aligns initiatives with enterprise goals.",
+      "when_to_use": "Portfolio prioritization and funding approval gates.",
+      "where_to_use": "CIO offices, transformation PMOs, and startup board reviews.",
+      "real_use_example": "BA recommends buying LMS integration over custom build—NPV positive in year two."
+    },
+    {
+      "number": 15,
+      "title": "Solution Evaluation and Benefits Realization",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Solution Evaluation and Benefits Realization** *(Level: Advanced)*\n\nPost-launch, BAs measure outcomes against success metrics. Define KPIs upfront: adoption, cycle time, error rate, NPS. Benefits realization tracks value through 6–12 months, not just go-live. Feed learnings into backlog for continuous improvement.\n\nCode Reference:\n```python\nkpis = {'adoption': 0.78, 'avg_grade_time_hrs': 1.2, 'support_tickets': -35}\n```\nWhat it shows: KPI dictionaries compare baseline vs post-release targets.\n\n### What it actually is\nSolution evaluation proves the delivery actually solved the problem.\n\n### When to use it\nAfter major releases and transformation program stage gates.\n\n### Where to use it\nProgram management offices and product operations.\n\n### Real use example\nThree months post-launch, quiz analytics cuts grading time 40%—validates original hypothesis.",
+      "key_takeaways": [
+        "Solution evaluation proves the delivery actually solved the problem.",
+        "After major releases and transformation program stage gates.",
+        "Three months post-launch, quiz analytics cuts grading time 40%—validates original hypothesis."
+      ],
+      "what_it_is": "Solution evaluation proves the delivery actually solved the problem.",
+      "when_to_use": "After major releases and transformation program stage gates.",
+      "where_to_use": "Program management offices and product operations.",
+      "real_use_example": "Three months post-launch, quiz analytics cuts grading time 40%—validates original hypothesis."
+    },
+    {
+      "number": 16,
+      "title": "Facilitating Conflict and Scope Negotiation",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Facilitating Conflict and Scope Negotiation** *(Level: Advanced)*\n\nConflicts arise on scope, timelines, and trade-offs. Use interest-based negotiation, document decisions in ADRs, and escalate with data not drama. MVP mindset defers low-value gold plating while protecting regulatory must-haves.\n\nCode Reference:\n```python\n# ADR: Defer gamification badges to R3; ship SSO in R2 for contract deadline\n```\nWhat it shows: Architecture Decision Records capture scope trade-offs for audit.\n\n### What it actually is\nFacilitation skills keep delivery moving when stakeholders disagree.\n\n### When to use it\nScope creep, resource cuts, and cross-department priority clashes.\n\n### Where to use it\nComplex programs with multiple funding sources.\n\n### Real use example\nLegal mandates SSO by July; BA negotiates badge delay without losing sponsor trust.",
+      "key_takeaways": [
+        "Facilitation skills keep delivery moving when stakeholders disagree.",
+        "Scope creep, resource cuts, and cross-department priority clashes.",
+        "Legal mandates SSO by July; BA negotiates badge delay without losing sponsor trust."
+      ],
+      "what_it_is": "Facilitation skills keep delivery moving when stakeholders disagree.",
+      "when_to_use": "Scope creep, resource cuts, and cross-department priority clashes.",
+      "where_to_use": "Complex programs with multiple funding sources.",
+      "real_use_example": "Legal mandates SSO by July; BA negotiates badge delay without losing sponsor trust."
+    },
+    {
+      "number": 17,
+      "title": "Enterprise Analysis and Capability Mapping",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Enterprise Analysis and Capability Mapping** *(Level: Advanced)*\n\nCapability maps show what the organization does vs how systems support it. Gap heatmaps highlight invest-or-outsource decisions. Link capabilities to OKRs so technology spend maps to measurable business outcomes.\n\nCode Reference:\n```python\ncapabilities = {'Assessment': 'Weak', 'Reporting': 'Strong', 'Integration': 'Gap'}\n```\nWhat it shows: Heatmaps visualize investment priorities for steering committees.\n\n### What it actually is\nEnterprise analysis connects architecture to business strategy.\n\n### When to use it\nDigital transformation, mergers, and platform rationalization.\n\n### Where to use it\nLarge edu-tech providers and multi-brand corporations.\n\n### Real use example\nCapability map shows reporting strong but integration gap—prioritizes API program.",
+      "key_takeaways": [
+        "Enterprise analysis connects architecture to business strategy.",
+        "Digital transformation, mergers, and platform rationalization.",
+        "Capability map shows reporting strong but integration gap—prioritizes API program."
+      ],
+      "what_it_is": "Enterprise analysis connects architecture to business strategy.",
+      "when_to_use": "Digital transformation, mergers, and platform rationalization.",
+      "where_to_use": "Large edu-tech providers and multi-brand corporations.",
+      "real_use_example": "Capability map shows reporting strong but integration gap—prioritizes API program."
+    },
+    {
+      "number": 18,
+      "title": "AI-Augmented BA Workflow",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: AI-Augmented BA Workflow** *(Level: Advanced)*\n\nModern BAs use AI to draft story variants, summarize workshops, and generate test ideas—always validating for bias and hallucination. Maintain human accountability for sign-offs. Prompt libraries accelerate repetitive artifacts while preserving domain judgment.\n\nCode Reference:\n```python\nprompt = 'Summarize interview themes; list risks as bullets; cite quotes'\n# Human reviews before Jira paste\n```\nWhat it shows: Human-in-the-loop review prevents bad AI output entering backlog.\n\n### What it actually is\nAI augments throughput on documentation-heavy BA tasks.\n\n### When to use it\nHigh-volume backlogs and distributed stakeholder interviews.\n\n### Where to use it\nRemote-first product teams using CodeQuest-style async collaboration.\n\n### Real use example\nBA uses AI transcript summary, manually verifies quotes, saves 4 hours per workshop.",
+      "key_takeaways": [
+        "AI augments throughput on documentation-heavy BA tasks.",
+        "High-volume backlogs and distributed stakeholder interviews.",
+        "BA uses AI transcript summary, manually verifies quotes, saves 4 hours per workshop."
+      ],
+      "what_it_is": "AI augments throughput on documentation-heavy BA tasks.",
+      "when_to_use": "High-volume backlogs and distributed stakeholder interviews.",
+      "where_to_use": "Remote-first product teams using CodeQuest-style async collaboration.",
+      "real_use_example": "BA uses AI transcript summary, manually verifies quotes, saves 4 hours per workshop."
+    }
+  ],
+  "chapter_count": 18
+}

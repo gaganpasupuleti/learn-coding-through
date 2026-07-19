@@ -1,0 +1,134 @@
+{
+  "id": "project-research-agent-with-web-search",
+  "title": "Project Report: Research Agent with Web Search — Agentic AI Engineer",
+  "author": "Gagan Pasupuleti",
+  "family_id": "agentic-ai",
+  "family_name": "Agentic AI Engineer",
+  "level": "Beginner",
+  "report_type": "role_project",
+  "project_title": "Research Agent with Web Search",
+  "project_index": 1,
+  "duration": "2 weeks",
+  "summary": "LangChain agent that searches the web, summarizes findings, and cites sources.",
+  "objectives": [
+    "Define 3 tools (search, summarize, save)",
+    "Agent loop with max 5 steps",
+    "Output markdown report with citations"
+  ],
+  "tools": [
+    "LangChain",
+    "Python",
+    "Search API"
+  ],
+  "deliverables": [
+    "Agent code",
+    "Sample reports",
+    "Test results"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Beginner)*\n\n**Research Agent with Web Search** is a beginner-level end-to-end project for Agentic AI Engineer. Duration: 2 weeks. LangChain agent that searches the web, summarizes findings, and cites sources. Tools: LangChain, Python, Search API.\n\nCode Reference:\n```text\nObjective: Define 3 tools (search, summarize, save)\nObjective: Agent loop with max 5 steps\nObjective: Output markdown report with citations\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nAgentic AI Engineer portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Agentic AI Engineer resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Agentic AI Engineer resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Agentic AI Engineer portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Agentic AI Engineer resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Tools",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Tools** *(Level: Beginner)*\n\nImplement tool functions. Complete these tasks: Web search API; File writer. Deliverable for this phase: Tool schemas.\n\nCode Reference:\n```text\n- [ ] Web search API\n- [ ] File writer\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Tools is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Tool schemas to the teacher.",
+      "key_takeaways": [
+        "Phase Tools is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Tool schemas to the teacher."
+      ],
+      "what_it_is": "Phase Tools is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Tool schemas to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Agent",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Agent** *(Level: Beginner)*\n\nReAct agent loop. Complete these tasks: System prompt; Step limit. Deliverable for this phase: Agent running.\n\nCode Reference:\n```text\n- [ ] System prompt\n- [ ] Step limit\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Agent is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Agent running to the teacher.",
+      "key_takeaways": [
+        "Phase Agent is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Agent running to the teacher."
+      ],
+      "what_it_is": "Phase Agent is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Agent running to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Output",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Output** *(Level: Beginner)*\n\nMarkdown report. Complete these tasks: Citations; Summary sections. Deliverable for this phase: Sample research report.\n\nCode Reference:\n```text\n- [ ] Citations\n- [ ] Summary sections\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Output is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Sample research report to the teacher.",
+      "key_takeaways": [
+        "Phase Output is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Sample research report to the teacher."
+      ],
+      "what_it_is": "Phase Output is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Sample research report to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Test",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Test** *(Level: Beginner)*\n\n5 benchmark queries. Complete these tasks: Accuracy check; Source verify. Deliverable for this phase: Test results doc.\n\nCode Reference:\n```text\n- [ ] Accuracy check\n- [ ] Source verify\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Test is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nAgentic AI Engineer agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Test results doc to the teacher.",
+      "key_takeaways": [
+        "Phase Test is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Test results doc to the teacher."
+      ],
+      "what_it_is": "Phase Test is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Agentic AI Engineer agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Test results doc to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Beginner",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Beginner)*\n\nSubmit all final deliverables: Agent code; Sample reports; Test results. Skills demonstrated: Agents, Tool use, LangChain. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Agent code\nDeliverable: Sample reports\nDeliverable: Test results\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Agent code and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Agent code and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Agent code and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

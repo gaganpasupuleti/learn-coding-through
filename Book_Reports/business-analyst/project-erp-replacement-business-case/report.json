@@ -1,0 +1,136 @@
+{
+  "id": "project-erp-replacement-business-case",
+  "title": "Project Report: ERP Replacement Business Case — Business Analyst",
+  "author": "Gagan Pasupuleti",
+  "family_id": "business-analyst",
+  "family_name": "Business Analyst",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "ERP Replacement Business Case",
+  "project_index": 3,
+  "duration": "4–5 weeks",
+  "summary": "Full business case: cost-benefit analysis, risk register, implementation roadmap, and executive presentation.",
+  "objectives": [
+    "Cost-benefit analysis (3-year TCO)",
+    "Risk register with mitigations",
+    "Phased implementation roadmap",
+    "Executive summary presentation"
+  ],
+  "tools": [
+    "Excel",
+    "PowerPoint",
+    "BABOK"
+  ],
+  "deliverables": [
+    "Business case document",
+    "Risk register",
+    "Roadmap",
+    "Executive deck"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**ERP Replacement Business Case** is a advanced-level end-to-end project for Business Analyst. Duration: 4–5 weeks. Full business case: cost-benefit analysis, risk register, implementation roadmap, and executive presentation. Tools: Excel, PowerPoint, BABOK.\n\nCode Reference:\n```text\nObjective: Cost-benefit analysis (3-year TCO)\nObjective: Risk register with mitigations\nObjective: Phased implementation roadmap\nObjective: Executive summary presentation\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nBusiness Analyst portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Business Analyst resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Business Analyst resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Business Analyst portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Business Analyst resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Analysis",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Analysis** *(Level: Advanced)*\n\nCurrent state costs. Complete these tasks: License; Maintenance; Labor. Deliverable for this phase: Cost baseline.\n\nCode Reference:\n```text\n- [ ] License\n- [ ] Maintenance\n- [ ] Labor\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Analysis is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Cost baseline to the teacher.",
+      "key_takeaways": [
+        "Phase Analysis is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Cost baseline to the teacher."
+      ],
+      "what_it_is": "Phase Analysis is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Cost baseline to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Business Case",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Business Case** *(Level: Advanced)*\n\nROI and benefits. Complete these tasks: Efficiency gains; Risk reduction. Deliverable for this phase: Business case doc.\n\nCode Reference:\n```text\n- [ ] Efficiency gains\n- [ ] Risk reduction\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Business Case is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Business case doc to the teacher.",
+      "key_takeaways": [
+        "Phase Business Case is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Business case doc to the teacher."
+      ],
+      "what_it_is": "Phase Business Case is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Business case doc to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: Roadmap",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Roadmap** *(Level: Advanced)*\n\n3-phase implementation. Complete these tasks: Pilot; Rollout; Optimize. Deliverable for this phase: Gantt roadmap.\n\nCode Reference:\n```text\n- [ ] Pilot\n- [ ] Rollout\n- [ ] Optimize\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Roadmap is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Gantt roadmap to the teacher.",
+      "key_takeaways": [
+        "Phase Roadmap is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the Gantt roadmap to the teacher."
+      ],
+      "what_it_is": "Phase Roadmap is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Gantt roadmap to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Present",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Present** *(Level: Advanced)*\n\nExecutive deck. Complete these tasks: Recommendation; Ask. Deliverable for this phase: Board presentation PDF.\n\nCode Reference:\n```text\n- [ ] Recommendation\n- [ ] Ask\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Present is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nBusiness Analyst agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Board presentation PDF to the teacher.",
+      "key_takeaways": [
+        "Phase Present is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Board presentation PDF to the teacher."
+      ],
+      "what_it_is": "Phase Present is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Business Analyst agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Board presentation PDF to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Business case document; Risk register; Roadmap; Executive deck. Skills demonstrated: Business case, ROI, Project planning. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Business case document\nDeliverable: Risk register\nDeliverable: Roadmap\nDeliverable: Executive deck\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Business case document and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Business case document and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Business case document and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}

@@ -1,0 +1,608 @@
+{
+  "id": "study-report-data-engineer-career-path",
+  "title": "Study Report: Data Engineer — Career Path & Core Skills",
+  "author": "Gagan Pasupuleti",
+  "family_id": "data-engineer",
+  "family_name": "Data Engineer",
+  "level": "Beginner to Advanced",
+  "levels_covered": [
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ],
+  "report_type": "role_career_path",
+  "summary": "This report maps the Data Engineer role for 2024-2026: ETL/ELT pipelines, SQL, Python, Apache Spark, Airflow, dbt, cloud warehouses (Snowflake, BigQuery, Databricks), and data quality. Covers batch and streaming, table formats (Delta/Iceberg), observability, and cost-aware design.",
+  "skill_stack": {
+    "beginner": [
+      "ETL vs ELT concepts",
+      "SQL for transformations",
+      "Python scripting for pipelines",
+      "Parquet/CSV/JSON file formats",
+      "Cloud warehouse basics",
+      "Git and code review",
+      "Idempotent job design"
+    ],
+    "intermediate": [
+      "PySpark DataFrame API (3.5+)",
+      "Airflow DAGs and operators",
+      "dbt models, tests, and docs",
+      "Great Expectations suites",
+      "CDC and incremental loads",
+      "Delta Lake / Apache Iceberg",
+      "Terraform for data infra",
+      "Docker for local pipeline dev"
+    ],
+    "advanced": [
+      "Kafka + Structured Streaming",
+      "Data mesh and data contracts",
+      "Multi-cloud federation patterns",
+      "Pipeline observability (OpenLineage)",
+      "FinOps for warehouse spend",
+      "Real-time feature pipelines",
+      "Zero-downtime schema evolution",
+      "Disaster recovery for data platforms"
+    ]
+  },
+  "sources": [
+    "https://spark.apache.org/docs/latest/",
+    "https://airflow.apache.org/docs/",
+    "https://docs.getdbt.com/",
+    "https://docs.snowflake.com/",
+    "https://cloud.google.com/bigquery/docs",
+    "https://greatexpectations.io/docs/"
+  ],
+  "recommended_books": [
+    {
+      "title": "Fundamentals of Data Engineering",
+      "author": "Joe Reis & Matt Housley",
+      "level": "Beginner",
+      "focus": "Modern data stack, pipelines, and team roles in 2024+.",
+      "url": "https://www.oreilly.com/library/view/fundamentals-of-data/9781098108298/",
+      "free_online": false
+    },
+    {
+      "title": "Designing Data-Intensive Applications",
+      "author": "Martin Kleppmann",
+      "level": "Advanced",
+      "focus": "Storage, replication, streaming, and distributed systems.",
+      "url": "https://dataintensive.net/",
+      "free_online": false
+    },
+    {
+      "title": "Learning Spark",
+      "author": "Jules Damji et al.",
+      "level": "Intermediate",
+      "focus": "PySpark DataFrames, SQL, and cluster processing at scale.",
+      "url": "https://www.oreilly.com/library/view/learning-spark-2nd/9781492050045/",
+      "free_online": false
+    },
+    {
+      "title": "dbt Developer Hub",
+      "author": "dbt Labs",
+      "level": "Intermediate",
+      "focus": "Analytics engineering: models, tests, and documentation in SQL.",
+      "url": "https://docs.getdbt.com/docs/introduction",
+      "free_online": true
+    },
+    {
+      "title": "The Data Warehouse Toolkit",
+      "author": "Ralph Kimball",
+      "level": "Intermediate",
+      "focus": "Dimensional modeling, star schema, and ETL design.",
+      "url": "https://www.kimballgroup.com/data-warehouse-toolkit/",
+      "free_online": false
+    }
+  ],
+  "end_to_end_projects": [
+    {
+      "title": "CSV-to-Warehouse Batch Pipeline",
+      "level": "Beginner",
+      "duration": "2 weeks",
+      "overview": "Python ETL script: extract CSV, transform with pandas, load to PostgreSQL with logging.",
+      "objectives": [
+        "Extract from CSV/API",
+        "Transform and validate",
+        "Load to PostgreSQL",
+        "Idempotent daily run"
+      ],
+      "phases": [
+        {
+          "name": "Extract",
+          "description": "Read CSV with pandas.",
+          "tasks": [
+            "Schema detection",
+            "Error rows"
+          ],
+          "deliverable": "Raw landing table"
+        },
+        {
+          "name": "Transform",
+          "description": "Clean and enrich.",
+          "tasks": [
+            "Dedup",
+            "Type cast"
+          ],
+          "deliverable": "Staging table"
+        },
+        {
+          "name": "Load",
+          "description": "Upsert to warehouse.",
+          "tasks": [
+            "ON CONFLICT",
+            "Transaction"
+          ],
+          "deliverable": "Final table populated"
+        },
+        {
+          "name": "Schedule",
+          "description": "Cron + logging.",
+          "tasks": [
+            "Log rotation",
+            "Alert on fail"
+          ],
+          "deliverable": "Scheduled job running"
+        }
+      ],
+      "skills_applied": [
+        "ETL",
+        "Python",
+        "SQL"
+      ],
+      "tools": [
+        "Python",
+        "pandas",
+        "PostgreSQL"
+      ],
+      "deliverables": [
+        "Pipeline script",
+        "SQL DDL",
+        "Run log sample"
+      ]
+    },
+    {
+      "title": "Airflow + dbt Analytics Pipeline",
+      "level": "Intermediate",
+      "duration": "4–5 weeks",
+      "overview": "Airflow DAG orchestrates dbt models on BigQuery/Snowflake with data quality tests.",
+      "objectives": [
+        "Airflow DAG with task dependencies",
+        "dbt models with tests",
+        "Data quality checks",
+        "Slack alert on failure"
+      ],
+      "phases": [
+        {
+          "name": "dbt",
+          "description": "Staging + mart models.",
+          "tasks": [
+            "sources.yml",
+            "schema tests"
+          ],
+          "deliverable": "dbt docs site"
+        },
+        {
+          "name": "Airflow",
+          "description": "DAG scheduling.",
+          "tasks": [
+            "Sensors",
+            "Retries"
+          ],
+          "deliverable": "DAG running daily"
+        },
+        {
+          "name": "Quality",
+          "description": "dbt tests + custom.",
+          "tasks": [
+            "Unique",
+            "Not null",
+            "Freshness"
+          ],
+          "deliverable": "Quality report"
+        },
+        {
+          "name": "Alert",
+          "description": "Slack on failure.",
+          "tasks": [
+            "Webhook",
+            "Run summary"
+          ],
+          "deliverable": "Alert screenshot"
+        }
+      ],
+      "skills_applied": [
+        "Airflow",
+        "dbt",
+        "Data quality"
+      ],
+      "tools": [
+        "Airflow",
+        "dbt",
+        "BigQuery/Snowflake"
+      ],
+      "deliverables": [
+        "dbt project",
+        "Airflow DAG",
+        "dbt docs URL",
+        "Quality report"
+      ]
+    },
+    {
+      "title": "Real-Time Streaming Pipeline",
+      "level": "Advanced",
+      "duration": "6–8 weeks",
+      "overview": "Kafka → Spark Structured Streaming → Delta Lake with monitoring and exactly-once semantics.",
+      "objectives": [
+        "Kafka topic ingestion",
+        "Spark streaming transforms",
+        "Delta Lake sink",
+        "Grafana monitoring dashboard"
+      ],
+      "phases": [
+        {
+          "name": "Kafka",
+          "description": "Producer + consumer.",
+          "tasks": [
+            "Avro schema",
+            "Partitions"
+          ],
+          "deliverable": "Topic flowing"
+        },
+        {
+          "name": "Spark",
+          "description": "Structured streaming job.",
+          "tasks": [
+            "Window aggregations",
+            "Watermark"
+          ],
+          "deliverable": "Streaming job running"
+        },
+        {
+          "name": "Delta",
+          "description": "ACID sink.",
+          "tasks": [
+            "Merge upserts",
+            "Time travel query"
+          ],
+          "deliverable": "Delta table"
+        },
+        {
+          "name": "Monitor",
+          "description": "Metrics dashboard.",
+          "tasks": [
+            "Lag",
+            "Throughput",
+            "Errors"
+          ],
+          "deliverable": "Grafana dashboard"
+        }
+      ],
+      "skills_applied": [
+        "Kafka",
+        "Spark",
+        "Streaming"
+      ],
+      "tools": [
+        "Kafka",
+        "Spark",
+        "Delta Lake",
+        "Grafana"
+      ],
+      "deliverables": [
+        "Streaming job code",
+        "Delta table",
+        "Grafana dashboard",
+        "Architecture doc"
+      ]
+    }
+  ],
+  "source_file": "Official docs, free libraries, and industry-standard references (see sources and books)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Data Engineer Role Overview",
+      "topic": "intro",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Data Engineer Role Overview** *(Level: Beginner)*\n\nData engineers build reliable pipelines that move and transform data at scale. You own ingestion, modeling layers, orchestration, and data quality — enabling analysts and ML teams. Cloud-native tooling (managed Spark, serverless warehouses) dominates in 2024-2026.\n\nCode Reference:\n```markdown\n# Pipeline layers: ingest -> bronze -> silver -> gold -> serve\n```\nWhat it shows: Layered architecture separates raw from trusted data.\n\n### What it actually is\nA data engineer designs and operates data pipelines and platform infrastructure.\n\n### When to use it\nWhen data volume, variety, or SLA exceeds spreadsheet/manual scripts.\n\n### Where to use it\nSaaS analytics, fintech ledgers, ad-tech events, and ML feature stores.\n\n### Real use example\nCodeQuest nightly exports land in S3; your job makes them queryable by 6 AM for teachers.",
+      "key_takeaways": [
+        "A data engineer designs and operates data pipelines and platform infrastructure.",
+        "When data volume, variety, or SLA exceeds spreadsheet/manual scripts.",
+        "CodeQuest nightly exports land in S3; your job makes them queryable by 6 AM for teachers."
+      ],
+      "what_it_is": "A data engineer designs and operates data pipelines and platform infrastructure.",
+      "when_to_use": "When data volume, variety, or SLA exceeds spreadsheet/manual scripts.",
+      "where_to_use": "SaaS analytics, fintech ledgers, ad-tech events, and ML feature stores.",
+      "real_use_example": "CodeQuest nightly exports land in S3; your job makes them queryable by 6 AM for teachers."
+    },
+    {
+      "number": 2,
+      "title": "ETL vs ELT and Batch vs Streaming",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: ETL vs ELT and Batch vs Streaming** *(Level: Beginner)*\n\nETL transforms before load; ELT loads raw then transforms in the warehouse (dbt). Batch runs on schedule; streaming processes events continuously. Pick batch unless sub-hour latency is a hard requirement — streaming adds operational complexity.\n\nCode Reference:\n```python\nbatch_schedule = '0 2 * * *'  # daily 2 AM UTC\n# streaming: micro-batch or continuous with watermarks\n```\nWhat it shows: Cron illustrates batch; streaming needs separate ops playbook.\n\n### What it actually is\nETL/ELT define where transformation runs; batch/stream define timing.\n\n### When to use it\nDesigning any new data source integration.\n\n### Where to use it\nNightly ERP syncs vs clickstream real-time dashboards.\n\n### Real use example\nFinance needs T+1 batch; fraud team needs 30-second streaming — you run both patterns.",
+      "key_takeaways": [
+        "ETL/ELT define where transformation runs; batch/stream define timing.",
+        "Designing any new data source integration.",
+        "Finance needs T+1 batch; fraud team needs 30-second streaming — you run both patterns."
+      ],
+      "what_it_is": "ETL/ELT define where transformation runs; batch/stream define timing.",
+      "when_to_use": "Designing any new data source integration.",
+      "where_to_use": "Nightly ERP syncs vs clickstream real-time dashboards.",
+      "real_use_example": "Finance needs T+1 batch; fraud team needs 30-second streaming — you run both patterns."
+    },
+    {
+      "number": 3,
+      "title": "SQL for Data Transformations",
+      "topic": "sql",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: SQL for Data Transformations** *(Level: Beginner)*\n\nEngineers write heavy SQL: MERGE for upserts, window functions for dedupe, CREATE TABLE AS for snapshots. Use explicit column lists; avoid SELECT *. Version SQL in Git with migration tools.\n\nCode Reference:\n```sql\nMERGE INTO curated.orders t\nUSING staging.orders s ON t.id = s.id\nWHEN MATCHED THEN UPDATE SET amount = s.amount\nWHEN NOT MATCHED THEN INSERT (id, amount) VALUES (s.id, s.amount);\n```\nWhat it shows: MERGE idempotently applies daily deltas without duplicate rows.\n\n### What it actually is\nSQL remains the transformation lingua franca in warehouses.\n\n### When to use it\nCurated layer builds, incremental syncs, and backfills.\n\n### Where to use it\nSnowflake, BigQuery, Redshift, and Databricks SQL.\n\n### Real use example\nStaging duplicate keys are resolved with ROW_NUMBER before MERGE — finance totals stay correct.",
+      "key_takeaways": [
+        "SQL remains the transformation lingua franca in warehouses.",
+        "Curated layer builds, incremental syncs, and backfills.",
+        "Staging duplicate keys are resolved with ROW_NUMBER before MERGE — finance totals stay correct."
+      ],
+      "what_it_is": "SQL remains the transformation lingua franca in warehouses.",
+      "when_to_use": "Curated layer builds, incremental syncs, and backfills.",
+      "where_to_use": "Snowflake, BigQuery, Redshift, and Databricks SQL.",
+      "real_use_example": "Staging duplicate keys are resolved with ROW_NUMBER before MERGE — finance totals stay correct."
+    },
+    {
+      "number": 4,
+      "title": "Python for Pipeline Scripts",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Python for Pipeline Scripts** *(Level: Beginner)*\n\nPython orchestrates file I/O, API pagination, and cloud SDK calls. Structure projects with click or typer CLIs, pydantic for config, and logging not print. Pin dependencies in requirements.lock.\n\nCode Reference:\n```python\nimport logging\nimport pandas as pd\n\nlogging.basicConfig(level=logging.INFO)\n\ndef load_csv(path: str) -> pd.DataFrame:\n    df = pd.read_csv(path)\n    logging.info('Loaded %s rows from %s', len(df), path)\n    return df\n```\nWhat it shows: Structured logging aids production debugging in Airflow task logs.\n\n### What it actually is\nPython glues together extraction and load steps warehouses cannot do natively.\n\n### When to use it\nAPI ingestion, file validation, and custom transforms.\n\n### Where to use it\nS3→warehouse loaders, SaaS extractors, and notification hooks.\n\n### Real use example\nA HubSpot extractor paginates contacts and lands parquet partitioned by extract_date.",
+      "key_takeaways": [
+        "Python glues together extraction and load steps warehouses cannot do natively.",
+        "API ingestion, file validation, and custom transforms.",
+        "A HubSpot extractor paginates contacts and lands parquet partitioned by extract_date."
+      ],
+      "what_it_is": "Python glues together extraction and load steps warehouses cannot do natively.",
+      "when_to_use": "API ingestion, file validation, and custom transforms.",
+      "where_to_use": "S3→warehouse loaders, SaaS extractors, and notification hooks.",
+      "real_use_example": "A HubSpot extractor paginates contacts and lands parquet partitioned by extract_date."
+    },
+    {
+      "number": 5,
+      "title": "File Formats: Parquet, JSON, Avro",
+      "topic": "data_science",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: File Formats: Parquet, JSON, Avro** *(Level: Beginner)*\n\nParquet is columnar — efficient for analytics. JSON lines suit semi-structured logs. Avro with schema registry protects streaming contracts. Store raw immutable; transform to Parquet in silver.\n\nCode Reference:\n```python\ndf.to_parquet('s3://bucket/silver/orders/date=2025-07-01/data.parquet', index=False)\n```\nWhat it shows: Partition columns (date=) enable predicate pushdown — cheaper queries.\n\n### What it actually is\nFile format choice affects cost, schema evolution, and query speed.\n\n### When to use it\nLakehouse storage and exchange between systems.\n\n### Where to use it\nData lakes, event archives, and ML training sets.\n\n### Real use example\nSwitching CSV exports to Snappy Parquet cuts storage 80% and speeds Spark reads 5×.",
+      "key_takeaways": [
+        "File format choice affects cost, schema evolution, and query speed.",
+        "Lakehouse storage and exchange between systems.",
+        "Switching CSV exports to Snappy Parquet cuts storage 80% and speeds Spark reads 5×."
+      ],
+      "what_it_is": "File format choice affects cost, schema evolution, and query speed.",
+      "when_to_use": "Lakehouse storage and exchange between systems.",
+      "where_to_use": "Data lakes, event archives, and ML training sets.",
+      "real_use_example": "Switching CSV exports to Snappy Parquet cuts storage 80% and speeds Spark reads 5×."
+    },
+    {
+      "number": 6,
+      "title": "Cloud Warehouse Basics",
+      "topic": "sql",
+      "level": "Beginner",
+      "track": "beginner",
+      "content": "**Chapter focus: Cloud Warehouse Basics** *(Level: Beginner)*\n\nSnowflake separates storage/compute; BigQuery is serverless; both support nested types and RBAC. Understand warehouses/virtual warehouses, roles, and cost monitors before production loads.\n\nCode Reference:\n```sql\nCREATE WAREHOUSE etl_wh WITH WAREHOUSE_SIZE = 'MEDIUM' AUTO_SUSPEND = 60;\n```\nWhat it shows: Auto-suspend stops idle compute billing — critical FinOps habit.\n\n### What it actually is\nCloud warehouses are managed analytical databases at petabyte scale.\n\n### When to use it\nCentral curated layer for BI and ML features.\n\n### Where to use it\nEnterprise analytics, ad-hoc SQL, and dbt transforms.\n\n### Real use example\nYou right-size warehouse from XL to S after profiling — monthly bill drops 40%.",
+      "key_takeaways": [
+        "Cloud warehouses are managed analytical databases at petabyte scale.",
+        "Central curated layer for BI and ML features.",
+        "You right-size warehouse from XL to S after profiling — monthly bill drops 40%."
+      ],
+      "what_it_is": "Cloud warehouses are managed analytical databases at petabyte scale.",
+      "when_to_use": "Central curated layer for BI and ML features.",
+      "where_to_use": "Enterprise analytics, ad-hoc SQL, and dbt transforms.",
+      "real_use_example": "You right-size warehouse from XL to S after profiling — monthly bill drops 40%."
+    },
+    {
+      "number": 7,
+      "title": "PySpark DataFrames (Spark 3.5+)",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: PySpark DataFrames (Spark 3.5+)** *(Level: Intermediate)*\n\nPySpark distributes transforms across clusters. Use DataFrame API (not RDDs); lazy evaluation builds logical plans optimized by Catalyst. Cache judiciously — memory is finite.\n\nCode Reference:\n```python\nfrom pyspark.sql import functions as F\n\ndf = spark.read.parquet('s3://bucket/events/')\nagg = df.groupBy('country').agg(F.count('*').alias('events'))\nagg.write.mode('overwrite').parquet('s3://bucket/gold/events_by_country/')\n```\nWhat it shows: groupBy + write parquet is the canonical silver→gold pattern.\n\n### What it actually is\nPySpark processes terabyte-scale data on commodity clusters.\n\n### When to use it\nHeavy transforms that choke single-node pandas.\n\n### Where to use it\nLakehouse ETL, log aggregation, and ML preprocessing.\n\n### Real use example\nDaily 500GB clickstream dedupe finishes in 12 minutes on 8 workers.",
+      "key_takeaways": [
+        "PySpark processes terabyte-scale data on commodity clusters.",
+        "Heavy transforms that choke single-node pandas.",
+        "Daily 500GB clickstream dedupe finishes in 12 minutes on 8 workers."
+      ],
+      "what_it_is": "PySpark processes terabyte-scale data on commodity clusters.",
+      "when_to_use": "Heavy transforms that choke single-node pandas.",
+      "where_to_use": "Lakehouse ETL, log aggregation, and ML preprocessing.",
+      "real_use_example": "Daily 500GB clickstream dedupe finishes in 12 minutes on 8 workers."
+    },
+    {
+      "number": 8,
+      "title": "Apache Airflow DAGs",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Apache Airflow DAGs** *(Level: Intermediate)*\n\nAirflow DAGs define task dependencies with operators (Python, SQL, S3). Use idempotent tasks; retry with exponential backoff; store secrets in Connections/Variables backend (Vault, AWS SM).\n\nCode Reference:\n```python\nfrom airflow import DAG\nfrom airflow.operators.python import PythonOperator\nfrom datetime import datetime\n\nwith DAG('daily_orders', start_date=datetime(2025,1,1), schedule='0 2 * * *') as dag:\n    extract = PythonOperator(task_id='extract', python_callable=extract_orders)\n    load = PythonOperator(task_id='load', python_callable=load_to_warehouse)\n    extract >> load\n```\nWhat it shows: >> sets dependency — load waits for successful extract.\n\n### What it actually is\nAirflow orchestrates when and in what order pipeline tasks run.\n\n### When to use it\nAny multi-step pipeline needing schedules, retries, and observability.\n\n### Where to use it\ndbt + Spark + quality checks coordinated nightly.\n\n### Real use example\nFailed load triggers Slack alert; retry succeeds after upstream API blip.",
+      "key_takeaways": [
+        "Airflow orchestrates when and in what order pipeline tasks run.",
+        "Any multi-step pipeline needing schedules, retries, and observability.",
+        "Failed load triggers Slack alert; retry succeeds after upstream API blip."
+      ],
+      "what_it_is": "Airflow orchestrates when and in what order pipeline tasks run.",
+      "when_to_use": "Any multi-step pipeline needing schedules, retries, and observability.",
+      "where_to_use": "dbt + Spark + quality checks coordinated nightly.",
+      "real_use_example": "Failed load triggers Slack alert; retry succeeds after upstream API blip."
+    },
+    {
+      "number": 9,
+      "title": "dbt Models, Tests, and Documentation",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: dbt Models, Tests, and Documentation** *(Level: Intermediate)*\n\ndbt compiles SQL models with ref() dependencies. Add tests: unique, not_null, relationships. Generate docs site for lineage. Use tags and selectors for CI slim runs.\n\nCode Reference:\n```sql\n-- models/fct_orders.sql\nselect\n  order_id,\n  customer_id,\n  amount\nfrom {{ ref('stg_orders') }}\nwhere status = 'completed'\n```\nWhat it shows: ref() builds DAG of models — runs in correct order automatically.\n\n### What it actually is\ndbt is analytics engineering: transform in warehouse with software practices.\n\n### When to use it\nGold layer metrics consumed by BI and analysts.\n\n### Where to use it\nSnowflake/BigQuery + GitHub Actions CI.\n\n### Real use example\nrelationships test catches orphan customer_id before executives see wrong LTV.",
+      "key_takeaways": [
+        "dbt is analytics engineering: transform in warehouse with software practices.",
+        "Gold layer metrics consumed by BI and analysts.",
+        "relationships test catches orphan customer_id before executives see wrong LTV."
+      ],
+      "what_it_is": "dbt is analytics engineering: transform in warehouse with software practices.",
+      "when_to_use": "Gold layer metrics consumed by BI and analysts.",
+      "where_to_use": "Snowflake/BigQuery + GitHub Actions CI.",
+      "real_use_example": "relationships test catches orphan customer_id before executives see wrong LTV."
+    },
+    {
+      "number": 10,
+      "title": "Data Quality with Great Expectations",
+      "topic": "errors",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Data Quality with Great Expectations** *(Level: Intermediate)*\n\nDefine Expectations on columns: expect_column_values_to_be_between, expect_unique. Run validation checkpoints in Airflow; fail pipeline on critical violations; quarantine bad batches.\n\nCode Reference:\n```python\nimport great_expectations as gx\ncontext = gx.get_context()\nsuite = context.add_expectation_suite('orders_suite')\n# expect_column_values_to_not_be_null on order_id\n```\nWhat it shows: Checkpoints integrate with pipeline gates — bad data never reaches gold.\n\n### What it actually is\nData quality frameworks codify trust rules executable in CI/CD.\n\n### When to use it\nAfter ingest and before publishing to consumers.\n\n### Where to use it\nFinance pipelines, healthcare claims, and public metrics.\n\n### Real use example\nNull order_id batch routed to quarantine bucket — analysts notified with GE Data Docs link.",
+      "key_takeaways": [
+        "Data quality frameworks codify trust rules executable in CI/CD.",
+        "After ingest and before publishing to consumers.",
+        "Null order_id batch routed to quarantine bucket — analysts notified with GE Data Docs link."
+      ],
+      "what_it_is": "Data quality frameworks codify trust rules executable in CI/CD.",
+      "when_to_use": "After ingest and before publishing to consumers.",
+      "where_to_use": "Finance pipelines, healthcare claims, and public metrics.",
+      "real_use_example": "Null order_id batch routed to quarantine bucket — analysts notified with GE Data Docs link."
+    },
+    {
+      "number": 11,
+      "title": "CDC and Incremental Loading",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: CDC and Incremental Loading** *(Level: Intermediate)*\n\nChange Data Capture tracks inserts/updates/deletes. Patterns: timestamp watermark, log-based Debezium, merge keys. Handle late-arriving facts with lookback windows.\n\nCode Reference:\n```sql\nSELECT * FROM source.orders\nWHERE updated_at >= '{{ prev_run_ts }}'\n  AND updated_at < '{{ curr_run_ts }}'\n```\nWhat it shows: Watermark bounds incremental pull — idempotent with MERGE on id.\n\n### What it actually is\nIncremental loads minimize data transfer and warehouse spend.\n\n### When to use it\nLarge tables where full reloads are too slow or expensive.\n\n### Where to use it\nCRM, billing, and inventory sources with frequent updates.\n\n### Real use example\n7-day lookback catches late updates without nightly full table scan.",
+      "key_takeaways": [
+        "Incremental loads minimize data transfer and warehouse spend.",
+        "Large tables where full reloads are too slow or expensive.",
+        "7-day lookback catches late updates without nightly full table scan."
+      ],
+      "what_it_is": "Incremental loads minimize data transfer and warehouse spend.",
+      "when_to_use": "Large tables where full reloads are too slow or expensive.",
+      "where_to_use": "CRM, billing, and inventory sources with frequent updates.",
+      "real_use_example": "7-day lookback catches late updates without nightly full table scan."
+    },
+    {
+      "number": 12,
+      "title": "Delta Lake and Apache Iceberg",
+      "topic": "data_science",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Delta Lake and Apache Iceberg** *(Level: Intermediate)*\n\nOpen table formats add ACID, time travel, and schema evolution on object storage. Delta is Databricks-native; Iceberg is engine-neutral (Spark, Flink, Trino). Pick based on stack.\n\nCode Reference:\n```python\nspark.sql(\"\"\"\nMERGE INTO silver.orders t\nUSING bronze.orders_updates s ON t.id = s.id\nWHEN MATCHED THEN UPDATE SET *\nWHEN NOT MATCHED THEN INSERT *\n\"\"\")\n```\nWhat it shows: MERGE on Delta applies CDC batches atomically.\n\n### What it actually is\nLakehouse table formats bring warehouse reliability to data lakes.\n\n### When to use it\nMedallion architectures on S3/ADLS.\n\n### Where to use it\nUnified batch + streaming storage layers.\n\n### Real use example\nTime travel recovers yesterday's table version after bad deploy — no full restore.",
+      "key_takeaways": [
+        "Lakehouse table formats bring warehouse reliability to data lakes.",
+        "Medallion architectures on S3/ADLS.",
+        "Time travel recovers yesterday's table version after bad deploy — no full restore."
+      ],
+      "what_it_is": "Lakehouse table formats bring warehouse reliability to data lakes.",
+      "when_to_use": "Medallion architectures on S3/ADLS.",
+      "where_to_use": "Unified batch + streaming storage layers.",
+      "real_use_example": "Time travel recovers yesterday's table version after bad deploy — no full restore."
+    },
+    {
+      "number": 13,
+      "title": "Infrastructure as Code for Data",
+      "topic": "projects",
+      "level": "Intermediate",
+      "track": "intermediate",
+      "content": "**Chapter focus: Infrastructure as Code for Data** *(Level: Intermediate)*\n\nTerraform modules provision buckets, IAM roles, warehouses, and Airflow environments. Peer review infra changes; separate state per env; never hardcode secrets.\n\nCode Reference:\n```hcl\nresource \"snowflake_warehouse\" \"etl\" {\n  name           = \"ETL_WH\"\n  warehouse_size = \"MEDIUM\"\n  auto_suspend   = 60\n}\n```\nWhat it shows: Terraform codifies warehouse sizing — reproducible across dev/prod.\n\n### What it actually is\nIaC makes data platform changes auditable and repeatable.\n\n### When to use it\nBootstrapping new environments or disaster recovery.\n\n### Where to use it\nMulti-env analytics platforms on AWS/Azure/GCP.\n\n### Real use example\nNew region stack applied from module in 30 minutes vs manual console clicks.",
+      "key_takeaways": [
+        "IaC makes data platform changes auditable and repeatable.",
+        "Bootstrapping new environments or disaster recovery.",
+        "New region stack applied from module in 30 minutes vs manual console clicks."
+      ],
+      "what_it_is": "IaC makes data platform changes auditable and repeatable.",
+      "when_to_use": "Bootstrapping new environments or disaster recovery.",
+      "where_to_use": "Multi-env analytics platforms on AWS/Azure/GCP.",
+      "real_use_example": "New region stack applied from module in 30 minutes vs manual console clicks."
+    },
+    {
+      "number": 14,
+      "title": "Kafka and Spark Structured Streaming",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Kafka and Spark Structured Streaming** *(Level: Advanced)*\n\nStructured Streaming reads Kafka topics with subscribe option; watermarks bound late data; checkpoint locations enable exactly-once-ish sinks. Monitor consumer lag.\n\nCode Reference:\n```python\ndf = (spark.readStream.format('kafka')\n      .option('subscribe', 'clickstream')\n      .load())\nquery = df.writeStream.format('delta').option('checkpointLocation', 's3://chk/').start()\n```\nWhat it shows: checkpointLocation stores offsets — restart without duplicating sinks.\n\n### What it actually is\nStream processing handles continuous event pipelines.\n\n### When to use it\nWhen sub-minute latency is required for ops or fraud use cases.\n\n### Where to use it\nAd-tech, gaming telemetry, and IoT.\n\n### Real use example\nConsumer lag alert fires at 10k messages — autoscaler adds Spark executors.",
+      "key_takeaways": [
+        "Stream processing handles continuous event pipelines.",
+        "When sub-minute latency is required for ops or fraud use cases.",
+        "Consumer lag alert fires at 10k messages — autoscaler adds Spark executors."
+      ],
+      "what_it_is": "Stream processing handles continuous event pipelines.",
+      "when_to_use": "When sub-minute latency is required for ops or fraud use cases.",
+      "where_to_use": "Ad-tech, gaming telemetry, and IoT.",
+      "real_use_example": "Consumer lag alert fires at 10k messages — autoscaler adds Spark executors."
+    },
+    {
+      "number": 15,
+      "title": "Data Mesh and Data Contracts",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Data Mesh and Data Contracts** *(Level: Advanced)*\n\nData mesh decentralizes ownership to domains with federated governance. Data contracts define schema, SLAs, and quality between producers/consumers — enforced in CI.\n\nCode Reference:\n```yaml\ncontract:\n  name: orders_v2\n  schema: { order_id: uuid, amount: decimal }\n  sla: { freshness_minutes: 60 }\n```\nWhat it shows: YAML contracts versioned in Git gate breaking schema changes.\n\n### What it actually is\nData mesh + contracts scale ownership beyond central platform team.\n\n### When to use it\nWhen central data teams become bottlenecks for domain teams.\n\n### Where to use it\nLarge enterprises adopting product-thinking for data.\n\n### Real use example\nCheckout domain publishes orders_v2 contract — downstream ML features pin version.",
+      "key_takeaways": [
+        "Data mesh + contracts scale ownership beyond central platform team.",
+        "When central data teams become bottlenecks for domain teams.",
+        "Checkout domain publishes orders_v2 contract — downstream ML features pin version."
+      ],
+      "what_it_is": "Data mesh + contracts scale ownership beyond central platform team.",
+      "when_to_use": "When central data teams become bottlenecks for domain teams.",
+      "where_to_use": "Large enterprises adopting product-thinking for data.",
+      "real_use_example": "Checkout domain publishes orders_v2 contract — downstream ML features pin version."
+    },
+    {
+      "number": 16,
+      "title": "Pipeline Observability with OpenLineage",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Pipeline Observability with OpenLineage** *(Level: Advanced)*\n\nEmit lineage events from Airflow, Spark, and dbt to Marquez/DataHub. Correlate failures to downstream dashboards. SLI: freshness, completeness, error rate.\n\nCode Reference:\n```python\nfrom openlineage.client import OpenLineageClient\n# emit START/COMPLETE events per task with run_id\n```\nWhat it shows: Lineage links Airflow task failures to impacted BI dashboards.\n\n### What it actually is\nObservability makes data platforms debuggable like microservices.\n\n### When to use it\nWhen pipeline failures impact multiple downstream dashboards and teams.\n\n### Where to use it\nData platform SRE and incident response.\n\n### Real use example\nPagerDuty shows which gold table stale — root cause traced to upstream API timeout.",
+      "key_takeaways": [
+        "Observability makes data platforms debuggable like microservices.",
+        "When pipeline failures impact multiple downstream dashboards and teams.",
+        "PagerDuty shows which gold table stale — root cause traced to upstream API timeout."
+      ],
+      "what_it_is": "Observability makes data platforms debuggable like microservices.",
+      "when_to_use": "When pipeline failures impact multiple downstream dashboards and teams.",
+      "where_to_use": "Data platform SRE and incident response.",
+      "real_use_example": "PagerDuty shows which gold table stale — root cause traced to upstream API timeout."
+    },
+    {
+      "number": 17,
+      "title": "FinOps for Warehouse Spend",
+      "topic": "data_science",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: FinOps for Warehouse Spend** *(Level: Advanced)*\n\nTag workloads by team; use auto-suspend; right-size warehouses; partition pruning; avoid SELECT * in scheduled jobs. Review query history weekly — top 10 queries often reveal bugs.\n\nCode Reference:\n```sql\nSELECT warehouse_name, SUM(credits_used)\nFROM snowflake.account_usage.warehouse_metering_history\nGROUP BY 1 ORDER BY 2 DESC;\n```\nWhat it shows: Metering history identifies runaway warehouses.\n\n### What it actually is\nFinOps controls cloud analytics cost without blocking teams.\n\n### When to use it\nRising warehouse bills or capacity planning.\n\n### Where to use it\nSnowflake, BigQuery, and Databricks billing reviews.\n\n### Real use example\nMoving full-table scan to incremental dbt model saves $8k/month.",
+      "key_takeaways": [
+        "FinOps controls cloud analytics cost without blocking teams.",
+        "Rising warehouse bills or capacity planning.",
+        "Moving full-table scan to incremental dbt model saves $8k/month."
+      ],
+      "what_it_is": "FinOps controls cloud analytics cost without blocking teams.",
+      "when_to_use": "Rising warehouse bills or capacity planning.",
+      "where_to_use": "Snowflake, BigQuery, and Databricks billing reviews.",
+      "real_use_example": "Moving full-table scan to incremental dbt model saves $8k/month."
+    },
+    {
+      "number": 18,
+      "title": "Disaster Recovery for Data Platforms",
+      "topic": "errors",
+      "level": "Advanced",
+      "track": "advanced",
+      "content": "**Chapter focus: Disaster Recovery for Data Platforms** *(Level: Advanced)*\n\nDocument RPO/RTO per dataset. Replicate buckets cross-region; export warehouse backups; test restore quarterly. Runbooks for total region outage include read-only degraded mode.\n\nCode Reference:\n```markdown\n# DR drill checklist\n# 1. Restore bucket prefix from replica\n# 2. Replay Airflow from last checkpoint\n# 3. Validate row counts vs source\n```\nWhat it shows: Quarterly drills prove backups are not vanity.\n\n### What it actually is\nDR planning keeps analytics alive through outages.\n\n### When to use it\nBusiness-critical revenue and compliance datasets.\n\n### Where to use it\nBanks, healthcare, and global SaaS.\n\n### Real use example\nRegion outage: failover warehouse in EU reads replicated Iceberg — dashboards up in 2 hours.",
+      "key_takeaways": [
+        "DR planning keeps analytics alive through outages.",
+        "Business-critical revenue and compliance datasets.",
+        "Region outage: failover warehouse in EU reads replicated Iceberg — dashboards up in 2 hours."
+      ],
+      "what_it_is": "DR planning keeps analytics alive through outages.",
+      "when_to_use": "Business-critical revenue and compliance datasets.",
+      "where_to_use": "Banks, healthcare, and global SaaS.",
+      "real_use_example": "Region outage: failover warehouse in EU reads replicated Iceberg — dashboards up in 2 hours."
+    }
+  ],
+  "chapter_count": 18
+}

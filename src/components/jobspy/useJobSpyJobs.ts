@@ -8,6 +8,7 @@ import {
 import {
   jobspyApi,
   jobSpyApplyUrl,
+  type JobBoardOverview,
   type JobSpyJob,
   type JobSpyJobFilters,
   type JobSpyJobId,
@@ -35,6 +36,8 @@ export function useJobSpyJobs() {
   const [savedJobs, setSavedJobs] = useState<JobSpyJob[]>([])
   const [savedIds, setSavedIds] = useState<string[]>(() => getSavedJobIds())
   const [total, setTotal] = useState(0)
+  const [overview, setOverview] = useState<JobBoardOverview | null>(null)
+  const [overviewLoading, setOverviewLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [savedLoading, setSavedLoading] = useState(false)
   const [applying, setApplying] = useState(false)
@@ -55,6 +58,17 @@ export function useJobSpyJobs() {
     })()
     return () => {
       cancelled = true
+    }
+  }, [])
+
+  const fetchOverview = useCallback(async () => {
+    setOverviewLoading(true)
+    try {
+      setOverview(await jobspyApi.getJobBoardOverview())
+    } catch {
+      setOverview(null)
+    } finally {
+      setOverviewLoading(false)
     }
   }, [])
 
@@ -99,6 +113,11 @@ export function useJobSpyJobs() {
 
   useEffect(() => {
     if (apiStatus !== 'ok') return
+    void fetchOverview()
+  }, [apiStatus, fetchOverview])
+
+  useEffect(() => {
+    if (apiStatus !== 'ok') return
     if (tab === 'saved') {
       void loadSavedJobs()
       return
@@ -110,7 +129,7 @@ export function useJobSpyJobs() {
       return
     }
     void fetchJobs(filters)
-  }, [apiStatus, tab, filters.page, filters.page_size, fetchJobs, loadSavedJobs])
+  }, [apiStatus, tab, filters.page, filters.page_size, filters.profile, filters.site, fetchJobs, loadSavedJobs])
 
   const handleFilterChange = (key: keyof JobSpyJobFilters | 'reset', value: string) => {
     if (key === 'reset') {
@@ -118,7 +137,17 @@ export function useJobSpyJobs() {
       void fetchJobs(DEFAULT_JOBSPY_FILTERS)
       return
     }
-    setFilters((prev) => ({ ...prev, [key]: value, page: 1 }))
+    const next = { ...filters, [key]: value, page: 1 }
+    setFilters(next)
+    if (key === 'site' || key === 'experience') {
+      void fetchJobs(next)
+    }
+  }
+
+  const handleSourceSelect = (source: string) => {
+    const next = { ...filters, site: source || undefined, page: 1 }
+    setFilters(next)
+    void fetchJobs(next)
   }
 
   const handleSearch = () => {
@@ -200,6 +229,8 @@ export function useJobSpyJobs() {
     savedIds,
     displayJobs,
     total,
+    overview,
+    overviewLoading,
     loading: listLoading,
     applying,
     applyNotice,
@@ -209,6 +240,7 @@ export function useJobSpyJobs() {
     selectedJob,
     setSelectedJob,
     handleFilterChange,
+    handleSourceSelect,
     handleSearch,
     openJob,
     handleSave,

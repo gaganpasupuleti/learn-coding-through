@@ -1,0 +1,27 @@
+{
+  "id": "09-kids-and-makers",
+  "name": "Kids and Makers",
+  "description": "Friendly Python for younger learners and hardware starters.",
+  "source_count": 2,
+  "report_count": 2,
+  "reports": [
+    {
+      "id": "study-report-hello-raspberry-pi-python-programming-for-kids-and-other",
+      "title": "Study Report: Hello Raspberry Pi! - Python programming for kids and other beginners",
+      "family_id": "09-kids-and-makers",
+      "chapter_count": 5,
+      "level": "Beginner",
+      "path": "Book_Reports/09-kids-and-makers/study-report-hello-raspberry-pi-python-programming-for-kids-and-other/report.json",
+      "markdown": "Book_Reports/09-kids-and-makers/study-report-hello-raspberry-pi-python-programming-for-kids-and-other/report.md"
+    },
+    {
+      "id": "study-report-python-for-kids-an-easy-and-practice-guide-for-beginners",
+      "title": "Study Report: Python for kids - An easy and practice guide for beginners to introduce programming wit...",
+      "family_id": "09-kids-and-makers",
+      "chapter_count": 12,
+      "level": "Beginner",
+      "path": "Book_Reports/09-kids-and-makers/study-report-python-for-kids-an-easy-and-practice-guide-for-beginners/report.json",
+      "markdown": "Book_Reports/09-kids-and-makers/study-report-python-for-kids-an-easy-and-practice-guide-for-beginners/report.md"
+    }
+  ]
+}

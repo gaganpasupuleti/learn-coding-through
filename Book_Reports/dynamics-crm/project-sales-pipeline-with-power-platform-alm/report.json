@@ -1,0 +1,136 @@
+{
+  "id": "project-sales-pipeline-with-power-platform-alm",
+  "title": "Project Report: Sales Pipeline with Power Platform ALM — Dynamics 365 CRM Consultant",
+  "author": "Gagan Pasupuleti",
+  "family_id": "dynamics-crm",
+  "family_name": "Dynamics 365 CRM Consultant",
+  "level": "Advanced",
+  "report_type": "role_project",
+  "project_title": "Sales Pipeline with Power Platform ALM",
+  "project_index": 3,
+  "duration": "4–5 weeks",
+  "summary": "Full sales solution in managed solution: dev → test → prod with plugins, flows, and security roles.",
+  "objectives": [
+    "Managed solution with all customizations",
+    "Plugin for opportunity validation",
+    "ALM pipeline across 3 environments",
+    "Security roles for sales rep and manager"
+  ],
+  "tools": [
+    "Dataverse",
+    "Plugin Registration Tool",
+    "Azure DevOps"
+  ],
+  "deliverables": [
+    "Managed solution",
+    "Plugin code",
+    "ALM doc",
+    "Security matrix"
+  ],
+  "source_file": "CodeQuest project specification (official docs + industry patterns)",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Project Overview",
+      "topic": "intro",
+      "level": "Advanced",
+      "track": "project-intro",
+      "content": "**Chapter focus: Project Overview** *(Level: Advanced)*\n\n**Sales Pipeline with Power Platform ALM** is a advanced-level end-to-end project for Dynamics 365 CRM Consultant. Duration: 4–5 weeks. Full sales solution in managed solution: dev → test → prod with plugins, flows, and security roles. Tools: Dataverse, Plugin Registration Tool, Azure DevOps.\n\nCode Reference:\n```text\nObjective: Managed solution with all customizations\nObjective: Plugin for opportunity validation\nObjective: ALM pipeline across 3 environments\nObjective: Security roles for sales rep and manager\n```\nWhat it shows: Lists measurable outcomes before you start building.\n\n### What it actually is\nA project overview defines scope, tools, and success criteria.\n\n### When to use it\nAt project kickoff.\n\n### Where to use it\nDynamics 365 CRM Consultant portfolios and CodeQuest project submissions.\n\n### Real use example\nA candidate lists this project on a Dynamics 365 CRM Consultant resume with a demo link.",
+      "key_takeaways": [
+        "A project overview defines scope, tools, and success criteria.",
+        "At project kickoff.",
+        "A candidate lists this project on a Dynamics 365 CRM Consultant resume with a demo link."
+      ],
+      "what_it_is": "A project overview defines scope, tools, and success criteria.",
+      "when_to_use": "At project kickoff.",
+      "where_to_use": "Dynamics 365 CRM Consultant portfolios and CodeQuest project submissions.",
+      "real_use_example": "A candidate lists this project on a Dynamics 365 CRM Consultant resume with a demo link."
+    },
+    {
+      "number": 2,
+      "title": "Phase: Solution",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Solution** *(Level: Advanced)*\n\nUnmanaged dev solution. Complete these tasks: Entities; Forms; Views. Deliverable for this phase: Solution export.\n\nCode Reference:\n```text\n- [ ] Entities\n- [ ] Forms\n- [ ] Views\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Solution is one step in the full project lifecycle.\n\n### When to use it\nDuring week 1 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Solution export to the teacher.",
+      "key_takeaways": [
+        "Phase Solution is one step in the full project lifecycle.",
+        "During week 1 of the project timeline.",
+        "Team demo shows the Solution export to the teacher."
+      ],
+      "what_it_is": "Phase Solution is one step in the full project lifecycle.",
+      "when_to_use": "During week 1 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Solution export to the teacher."
+    },
+    {
+      "number": 3,
+      "title": "Phase: Plugin",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Plugin** *(Level: Advanced)*\n\nOpportunity validation. Complete these tasks: Pre-create plugin; Unit tests. Deliverable for this phase: Plugin + tests.\n\nCode Reference:\n```text\n- [ ] Pre-create plugin\n- [ ] Unit tests\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Plugin is one step in the full project lifecycle.\n\n### When to use it\nDuring week 2 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Plugin + tests to the teacher.",
+      "key_takeaways": [
+        "Phase Plugin is one step in the full project lifecycle.",
+        "During week 2 of the project timeline.",
+        "Team demo shows the Plugin + tests to the teacher."
+      ],
+      "what_it_is": "Phase Plugin is one step in the full project lifecycle.",
+      "when_to_use": "During week 2 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Plugin + tests to the teacher."
+    },
+    {
+      "number": 4,
+      "title": "Phase: ALM",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: ALM** *(Level: Advanced)*\n\nDev → Test → Prod. Complete these tasks: Export/import; Connection refs. Deliverable for this phase: ALM pipeline doc.\n\nCode Reference:\n```text\n- [ ] Export/import\n- [ ] Connection refs\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase ALM is one step in the full project lifecycle.\n\n### When to use it\nDuring week 3 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the ALM pipeline doc to the teacher.",
+      "key_takeaways": [
+        "Phase ALM is one step in the full project lifecycle.",
+        "During week 3 of the project timeline.",
+        "Team demo shows the ALM pipeline doc to the teacher."
+      ],
+      "what_it_is": "Phase ALM is one step in the full project lifecycle.",
+      "when_to_use": "During week 3 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the ALM pipeline doc to the teacher."
+    },
+    {
+      "number": 5,
+      "title": "Phase: Security",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-phase",
+      "content": "**Chapter focus: Phase: Security** *(Level: Advanced)*\n\nRole-based access. Complete these tasks: Sales Rep; Manager roles. Deliverable for this phase: Security test matrix.\n\nCode Reference:\n```text\n- [ ] Sales Rep\n- [ ] Manager roles\n```\nWhat it shows: Checklist format helps track phase completion.\n\n### What it actually is\nPhase Security is one step in the full project lifecycle.\n\n### When to use it\nDuring week 4 of the project timeline.\n\n### Where to use it\nDynamics 365 CRM Consultant agile sprints and coursework milestones.\n\n### Real use example\nTeam demo shows the Security test matrix to the teacher.",
+      "key_takeaways": [
+        "Phase Security is one step in the full project lifecycle.",
+        "During week 4 of the project timeline.",
+        "Team demo shows the Security test matrix to the teacher."
+      ],
+      "what_it_is": "Phase Security is one step in the full project lifecycle.",
+      "when_to_use": "During week 4 of the project timeline.",
+      "where_to_use": "Dynamics 365 CRM Consultant agile sprints and coursework milestones.",
+      "real_use_example": "Team demo shows the Security test matrix to the teacher."
+    },
+    {
+      "number": 6,
+      "title": "Final Deliverables and Review",
+      "topic": "projects",
+      "level": "Advanced",
+      "track": "project-deliverables",
+      "content": "**Chapter focus: Final Deliverables and Review** *(Level: Advanced)*\n\nSubmit all final deliverables: Managed solution; Plugin code; ALM doc; Security matrix. Skills demonstrated: ALM, Plugins, Security. Prepare a 5-minute walkthrough video and README for CodeQuest teacher marking.\n\nCode Reference:\n```text\nDeliverable: Managed solution\nDeliverable: Plugin code\nDeliverable: ALM doc\nDeliverable: Security matrix\n```\nWhat it shows: Final checklist ensures nothing is missing at submission.\n\n### What it actually is\nDeliverable review confirms end-to-end project completion.\n\n### When to use it\nBefore deadline and teacher review.\n\n### Where to use it\nCodeQuest project gallery and interviews.\n\n### Real use example\nA student submits Managed solution and passes the rubric.",
+      "key_takeaways": [
+        "Deliverable review confirms end-to-end project completion.",
+        "Before deadline and teacher review.",
+        "A student submits Managed solution and passes the rubric."
+      ],
+      "what_it_is": "Deliverable review confirms end-to-end project completion.",
+      "when_to_use": "Before deadline and teacher review.",
+      "where_to_use": "CodeQuest project gallery and interviews.",
+      "real_use_example": "A student submits Managed solution and passes the rubric."
+    }
+  ],
+  "chapter_count": 6
+}
