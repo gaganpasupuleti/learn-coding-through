@@ -58,6 +58,9 @@ export default defineConfig({
     host: '127.0.0.1',
     port: 5001,
     strictPort: false,
+    headers: {
+      'Cache-Control': 'no-store',
+    },
     proxy: {
       '/api': {
         target: apiProxyTarget,

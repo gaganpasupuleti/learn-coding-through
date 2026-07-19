@@ -7,7 +7,6 @@ import {
   getTypingPracticeSummary,
   type PracticeAreaSummary,
 } from '@/lib/practice-progress-summary'
-import { computeResumeReadinessScore } from '@/lib/resume-score'
 
 export type SkillNavTarget =
   | 'practice-sql'
@@ -64,7 +63,6 @@ export function buildSkillProgressItems(
   const projectTotal = extras.submittedProjects.length
   const projectPct = projectTotal > 0 ? Math.round((approved / projectTotal) * 100) : 0
 
-  const resumeScore = computeResumeReadinessScore()
   const jobReadiness = computeReadinessBreakdown({
     submittedProjects: extras.submittedProjects,
     careerPct: extras.careerJourney?.pct ?? null,
@@ -90,11 +88,11 @@ export function buildSkillProgressItems(
     },
     {
       id: 'resume',
-      label: 'Resume readiness',
-      completed: resumeScore.checklist.filter((c) => c.done).length,
-      total: resumeScore.checklist.length,
-      pct: resumeScore.overall,
-      detail: 'Local draft in this browser',
+      label: 'Resume Lab',
+      completed: 0,
+      total: 1,
+      pct: 0,
+      detail: 'Full resume builder',
       href: 'resume',
       actionLabel: 'Open',
     },

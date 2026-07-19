@@ -7,6 +7,8 @@ interface ImportMetaEnv {
 	readonly VITE_API_BASE_URL?: string
 	readonly VITE_GOOGLE_CLIENT_ID?: string
 	readonly VITE_ENABLE_ASSESSMENT_GUARD?: string
+	readonly VITE_RESUME_APP_URL?: string
+	readonly VITE_CODEQUEST_CONNECTOR_URL?: string
 }
 
 interface ImportMeta {

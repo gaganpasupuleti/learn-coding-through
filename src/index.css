@@ -60,6 +60,28 @@
   * {
     @apply border-border
   }
+
+  html {
+    overflow-x: clip;
+  }
+
+  body {
+    overflow-x: clip;
+    min-height: 100dvh;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Prefer readable fluid body type without shrinking the whole UI */
+  body {
+    font-size: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem);
+  }
 }
 
 :root {
@@ -244,8 +266,17 @@ code, pre {
 }
 
 .code-highlight-wrapper {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
+.cq-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .code-highlight-wrapper::-webkit-scrollbar {

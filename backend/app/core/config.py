@@ -46,6 +46,8 @@ class Settings(BaseSettings):
         default_factory=lambda: [
             "http://localhost:5000",
             "http://127.0.0.1:5000",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
             "http://localhost:5173",
             "http://127.0.0.1:5173",
         ]
@@ -73,6 +75,19 @@ class Settings(BaseSettings):
     brevo_api_key: str | None = None
     email_from_address: str | None = None
     email_from_name: str = "Code Quest"
+
+    enable_huggingface_ai: bool = False
+    hf_token: str | None = None
+    hf_model: str | None = None
+
+    # Resume Matcher integration (backend-only — never VITE_*)
+    resume_matcher_enabled: bool = False
+    resume_matcher_base_url: str = "http://127.0.0.1:8001"
+    resume_matcher_timeout_seconds: float = 30.0
+    resume_matcher_connect_timeout_seconds: float = 5.0
+    resume_matcher_max_upload_bytes: int = 8 * 1024 * 1024
+    resume_matcher_service_token: str | None = None
+    resume_matcher_max_response_bytes: int = 2_000_000
 
     @field_validator("database_url", mode="before")
     @classmethod
@@ -161,7 +176,11 @@ class Settings(BaseSettings):
 
         return self
 
-    model_config = SettingsConfigDict(env_file=ENV_FILE_PATH, env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        env_file=ENV_FILE_PATH,
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
 
 settings = Settings()

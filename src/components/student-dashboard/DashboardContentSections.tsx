@@ -52,11 +52,11 @@ export function TodayPanel({
   )
 
   return (
-    <div className="grid gap-3 md:grid-cols-2">
-      <CQCard className="flex flex-col">
+    <div className="grid min-w-0 gap-3 grid-cols-1 md:grid-cols-2">
+      <CQCard className="flex min-w-0 flex-col">
         <div className="mb-3 flex items-center justify-between gap-2">
-          <h3 className="flex items-center gap-2 text-sm font-semibold text-[#111827]">
-            <CalendarClock className="h-4 w-4 text-[#0A1020]/70" strokeWidth={1.75} />
+          <h3 className="flex min-w-0 items-center gap-2 text-sm font-semibold text-[#111827]">
+            <CalendarClock className="h-4 w-4 shrink-0 text-[#0A1020]/70" strokeWidth={1.75} />
             {isToday ? "Today's class" : 'Next class'}
           </h3>
           <CQInlineLink onClick={onOpenCalendar}>Calendar</CQInlineLink>
@@ -167,7 +167,7 @@ export function PracticeProgressGrid({
   onPracticeTyping: () => void
 }) {
   return (
-    <div className="grid h-full gap-3 sm:grid-cols-3">
+    <div className="grid h-full min-w-0 gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
       <PracticeCard summary={sql} dot="blue" onOpen={onPracticeSql} />
       <PracticeCard summary={code} dot="violet" onOpen={onPracticeCode} />
       <PracticeCard summary={typing} dot="teal" onOpen={onPracticeTyping} />

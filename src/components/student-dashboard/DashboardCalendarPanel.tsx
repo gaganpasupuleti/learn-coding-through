@@ -62,7 +62,7 @@ export function PlannerCard({
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
-          <span className="min-w-[92px] text-center text-[12px] font-semibold text-[#374151]">
+          <span className="min-w-0 max-w-[9rem] truncate px-1 text-center text-[12px] font-semibold text-[#374151] sm:max-w-none">
             {monthLabel}
           </span>
           <button

@@ -91,7 +91,8 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
   const pathTitle = snapshot.careerJourney?.title ?? 'Choose your career path'
 
   return (
-    <div className={cn(CQ_PAGE_BG, 'min-h-full p-3 md:p-4')}>
+    <div className={cn(CQ_PAGE_BG, 'min-h-full')}>
+      <div className="mx-auto w-full min-w-0 max-w-7xl space-y-2 p-3 md:p-4 lg:max-w-[1440px] xl:max-w-[1600px]">
       {/* Hero */}
       <DashboardTopHeader
         firstName={firstName}
@@ -110,13 +111,13 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
       />
 
       {/* Main grid: left content + right planner */}
-      <div className="mt-2 grid gap-2 lg:grid-cols-[1fr_280px] lg:items-start">
+      <div className="mt-2 grid min-w-0 gap-2 xl:grid-cols-[minmax(0,1fr)_minmax(240px,280px)] xl:items-start">
 
         {/* Left column: stacked rows, tight gaps */}
-        <div className="flex flex-col gap-2">
+        <div className="flex min-w-0 flex-col gap-2">
 
-          {/* Row 1: Today + Practice side-by-side */}
-          <div className="grid gap-2 lg:grid-cols-[1fr_1.4fr] lg:items-stretch">
+          {/* Row 1: Today + Practice — stack until xl so practice cards stay readable */}
+          <div className="grid min-w-0 gap-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] xl:items-stretch">
             <TodayPanel
               sessions={snapshot.upcomingSessions}
               deadlines={snapshot.deadlines}
@@ -143,7 +144,7 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           />
 
           {/* Row 3: Upcoming + Syllabus side-by-side */}
-          <div className="grid gap-2 lg:grid-cols-2 lg:items-stretch">
+          <div className="grid min-w-0 gap-2 md:grid-cols-2 md:items-stretch">
             <UpcomingClassesPanel sessions={snapshot.upcomingSessions} loading={snapshot.loading} />
             <SyllabusPanel
               careerJourney={snapshot.careerJourney}
@@ -154,7 +155,7 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           </div>
 
           {/* Row 4: Deadlines + Career readiness side-by-side */}
-          <div className="grid gap-2 lg:grid-cols-[1.4fr_1fr] lg:items-stretch">
+          <div className="grid min-w-0 gap-2 md:grid-cols-2 xl:grid-cols-[1.4fr_1fr] xl:items-stretch">
             <DeadlinesPanel deadlines={snapshot.deadlines} loading={snapshot.loading} />
             <JobReadinessPanel
               readiness={readiness}
@@ -164,25 +165,26 @@ export function StudentDashboardPage({ user, onNavigate }: StudentDashboardPageP
           </div>
         </div>
 
-        {/* Right: Planner — sticky so it stays visible as left column scrolls */}
-        <div className="lg:sticky lg:top-3">
-        <PlannerCard
-          viewMonth={plannerPreview.viewMonth}
-          onViewMonthChange={plannerPreview.setViewMonth}
-          selectedDate={plannerPreview.selectedDate}
-          onSelectDate={(date) => {
-            storeSelectedDateForPlanner(date)
-            plannerPreview.setSelectedDate(date)
-          }}
-          markedDates={plannerPreview.markedDates}
-          dayPlan={plannerPreview.dayPlan}
-          plannerLoading={plannerPreview.loading}
+        {/* Right: Planner — sticky on large screens when it sits beside the left column */}
+        <div className="min-w-0 xl:sticky xl:top-3">
+          <PlannerCard
+            viewMonth={plannerPreview.viewMonth}
+            onViewMonthChange={plannerPreview.setViewMonth}
+            selectedDate={plannerPreview.selectedDate}
+            onSelectDate={(date) => {
+              storeSelectedDateForPlanner(date)
+              plannerPreview.setSelectedDate(date)
+            }}
+            markedDates={plannerPreview.markedDates}
+            dayPlan={plannerPreview.dayPlan}
+            plannerLoading={plannerPreview.loading}
             onOpenPlanner={() => {
               storeSelectedDateForPlanner(plannerPreview.selectedDate)
               onNavigate('calendar')
             }}
           />
         </div>
+      </div>
       </div>
     </div>
   )

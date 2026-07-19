@@ -8,9 +8,25 @@ GOOGLE_CLIENT_ID="${VITE_GOOGLE_CLIENT_ID:-}"
 RAW_JOBS_API="${VITE_JOBS_API_URL:-}"
 RAW_JOBS_API=$(printf '%s' "$RAW_JOBS_API" | sed 's|[[:space:]]||g')
 CLIENT_VISIBLE_JOBS_API_URL=""
+RAW_RESUME_APP_URL="${VITE_RESUME_APP_URL:-}"
+RAW_RESUME_APP_URL=$(printf '%s' "$RAW_RESUME_APP_URL" | sed 's|[[:space:]]||g')
+CLIENT_VISIBLE_RESUME_APP_URL=""
+RAW_CONNECTOR_URL="${VITE_CODEQUEST_CONNECTOR_URL:-}"
+RAW_CONNECTOR_URL=$(printf '%s' "$RAW_CONNECTOR_URL" | sed 's|[[:space:]]||g')
+CLIENT_VISIBLE_CONNECTOR_URL=""
+# Development-only lab token must never be injected as a silent production default.
+CONNECTOR_TOKEN="${VITE_CONNECTOR_TOKEN:-}"
 
 if [ -n "$RAW_JOBS_API" ] && printf '%s' "$RAW_JOBS_API" | grep -qE '^https?://' && ! printf '%s' "$RAW_JOBS_API" | grep -q '<'; then
   CLIENT_VISIBLE_JOBS_API_URL=$(printf '%s' "$RAW_JOBS_API" | sed 's|/*$||')
+fi
+
+if [ -n "$RAW_RESUME_APP_URL" ] && printf '%s' "$RAW_RESUME_APP_URL" | grep -qE '^https?://' && ! printf '%s' "$RAW_RESUME_APP_URL" | grep -q '<'; then
+  CLIENT_VISIBLE_RESUME_APP_URL=$(printf '%s' "$RAW_RESUME_APP_URL" | sed 's|/*$||')
+fi
+
+if [ -n "$RAW_CONNECTOR_URL" ] && printf '%s' "$RAW_CONNECTOR_URL" | grep -qE '^https?://' && ! printf '%s' "$RAW_CONNECTOR_URL" | grep -q '<'; then
+  CLIENT_VISIBLE_CONNECTOR_URL=$(printf '%s' "$RAW_CONNECTOR_URL" | sed 's|/*$||')
 fi
 
 ENABLE_PROXY=false
@@ -31,7 +47,10 @@ window.__RUNTIME_CONFIG__ = {
   VITE_API_URL: "${CLIENT_VISIBLE_API_URL}",
   VITE_GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}",
   VITE_JOBS_API_URL: "${CLIENT_VISIBLE_JOBS_API_URL}",
-  VITE_JOBS_ADMIN_API_KEY: ""
+  VITE_JOBS_ADMIN_API_KEY: "",
+  VITE_RESUME_APP_URL: "${CLIENT_VISIBLE_RESUME_APP_URL}",
+  VITE_CODEQUEST_CONNECTOR_URL: "${CLIENT_VISIBLE_CONNECTOR_URL}",
+  VITE_CONNECTOR_TOKEN: "${CONNECTOR_TOKEN}"
 };
 EOF
 

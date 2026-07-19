@@ -1,4 +1,4 @@
-﻿from datetime import date, datetime, time
+from datetime import date, datetime, time
 from enum import Enum
 
 from sqlalchemy import (
@@ -155,6 +155,7 @@ class User(Base):
     )
     typing_attempts = relationship("TypingAttempt", back_populates="user", cascade="all,delete-orphan")
     activity_logs = relationship("UserActivityLog", back_populates="user", cascade="all,delete-orphan")
+    student_resumes = relationship("StudentResume", back_populates="user", cascade="all,delete-orphan")
     feedback_submissions = relationship(
         "StudentFeedback",
         foreign_keys="StudentFeedback.user_id",
@@ -885,4 +886,22 @@ class StudentFeedback(Base):
 
     user = relationship("User", foreign_keys=[user_id], back_populates="feedback_submissions")
     reviewed_by = relationship("User", foreign_keys=[reviewed_by_user_id], back_populates="feedback_reviews")
+
+
+class StudentResume(Base):
+    """CodeQuest-owned resume documents (Resume Lab). JSON shape adapted from Reactive Resume."""
+
+    __tablename__ = "student_resumes"
+    __table_args__ = (Index("ix_student_resumes_user_updated", "user_id", "updated_at"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(255), nullable=False, default="My Resume")
+    data: Mapped[dict] = mapped_column(JSON, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    user = relationship("User", back_populates="student_resumes")
 

@@ -30,7 +30,7 @@ export function JobReadinessCard({ breakdown, loading }: JobReadinessCardProps) 
           <CircularProgress value={display} size={128} strokeWidth={9} label="Overall" />
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="mt-5 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
           {SUB_SCORES.map(({ key, label, color }) => (
             <div
               key={key}
