@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -11,6 +11,7 @@ import {
 import { toast } from 'sonner'
 
 import { LoginBootPortal } from '@/components/auth/login-motion/LoginBootPortal'
+import { useLoginAuthPanelMotion } from '@/components/auth/login-motion/useLoginAuthPanelMotion'
 import {
   LOGIN_FORGOT,
   LOGIN_GLASS_CARD,
@@ -24,7 +25,6 @@ import {
   LOGIN_SECONDARY_BTN,
 } from '@/components/auth/login-motion/loginTheme'
 import {
-  API_BASE_URL,
   fetchAuthPublicConfig,
   type AuthPublicConfig,
   fetchCurrentUser,
@@ -38,8 +38,10 @@ import {
   setDemoFlag,
   type AuthUser,
 } from '@/lib/auth'
+
 interface LoginPageProps {
   onAuthenticated: (user: AuthUser) => void
+  onBackToLanding?: () => void
 }
 
 type AuthMode = 'login' | 'signup' | 'forgotPassword'
@@ -103,7 +105,7 @@ function persistRememberMe(remember: boolean, email: string) {
   }
 }
 
-export function LoginPage({ onAuthenticated }: LoginPageProps) {
+export function LoginPage({ onAuthenticated, onBackToLanding }: LoginPageProps) {
   const remembered = useMemo(() => readRememberedEmail(), [])
   const [mode, setMode] = useState<AuthMode>('login')
   const [email, setEmail] = useState(remembered.email)
@@ -117,7 +119,11 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
   const [helpOpen, setHelpOpen] = useState(false)
   const googleButtonRef = useRef<HTMLDivElement | null>(null)
   const googleButtonHostRef = useRef<HTMLDivElement | null>(null)
+  const authPanelRef = useRef<HTMLDivElement | null>(null)
   const [googleButtonMount, setGoogleButtonMount] = useState<HTMLDivElement | null>(null)
+
+  const authPanelKey = pendingApproval ? 'pending' : mode
+  useLoginAuthPanelMotion(authPanelRef, authPanelKey)
 
   const attachGoogleButtonRef = useCallback((node: HTMLDivElement | null) => {
     googleButtonRef.current = node
@@ -143,16 +149,11 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     [authPublic],
   )
 
-  // Always prefer the backend client id when available — that is what token verification uses.
+  // Prefer backend client id when available — that is what token verification uses.
   const googleClientId = useMemo(
     () => serverGoogleClientId || bootstrapGoogleClientId,
     [serverGoogleClientId, bootstrapGoogleClientId],
   )
-
-  const googleClientIdMismatch =
-    !!serverGoogleClientId &&
-    !!bootstrapGoogleClientId &&
-    serverGoogleClientId !== bootstrapGoogleClientId
 
   const googleBackendEnabled =
     !authPublicReady ? null : authPublicFetchFailed ? false : (authPublic?.google_auth_enabled ?? false)
@@ -391,50 +392,21 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     if (mode !== 'login' && mode !== 'signup') return null
 
     if (googleBackendEnabled === null) {
-      return <p className="text-center text-sm text-[#FAF3E0]/55">Checking sign-in options…</p>
+      return <p className="text-center text-sm text-[#b8c0d4]">Checking sign-in options…</p>
     }
 
+    // Lab / no-API: keep form clean — email auth still works via lab fallback.
     if (authPublicFetchFailed && !googleClientId) {
       return (
-        <p className="text-center text-sm leading-relaxed text-amber-700">
-          Could not load sign-in options (request to{' '}
-          <span className="font-mono text-xs break-all">{API_BASE_URL}/auth/config</span> failed). Start the API on
-          port <span className="font-mono text-xs">8000</span>, or leave{' '}
-          <span className="font-mono text-xs">VITE_API_URL</span> empty so the app uses the Vite dev proxy. To show
-          Google Sign-In when this check fails, set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span>{' '}
-          and restart Vite.
+        <p className="text-center text-[11px] leading-snug text-[#b8c0d4]/80">
+          Google sign-in is offline for this session. Use email instead.
         </p>
       )
     }
 
     if (googleButtonAllowed) {
       return (
-        <div className={`${LOGIN_GOOGLE_FRAME} space-y-3`}>
-          {authPublicFetchFailed && bootstrapGoogleClientId ? (
-            <p className="text-center text-xs leading-snug text-amber-400/90">
-              Server config request failed — using your local Web client ID. Google sign-in still needs the API at{' '}
-              <span className="font-mono">{API_BASE_URL}</span>; start the backend or fix the URL.
-            </p>
-          ) : null}
-          {!authPublicFetchFailed && !googleBackendEnabled && bootstrapGoogleClientId ? (
-            <p className="text-center text-xs leading-snug text-amber-400/90">
-              The API reports Google login disabled — add{' '}
-              <span className="font-mono">GOOGLE_OAUTH_CLIENT_ID</span> to{' '}
-              <span className="font-mono">backend/.env</span> (same Web client ID as the frontend) and restart the
-              backend, or sign-in will fail.
-            </p>
-          ) : null}
-          {googleClientIdMismatch ? (
-            <p className="text-center text-xs leading-snug text-amber-400/90">
-              Frontend and backend Google client IDs differ. Restart Vite after updating{' '}
-              <span className="font-mono">VITE_GOOGLE_CLIENT_ID</span>, or set it to match{' '}
-              <span className="font-mono">GOOGLE_OAUTH_CLIENT_ID</span> in{' '}
-              <span className="font-mono">backend/.env</span> — mismatched IDs cause &quot;Invalid Google token&quot;.
-            </p>
-          ) : null}
-          <p className="text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-[#22FF88]/70">
-            Continue with Google
-          </p>
+        <div className={LOGIN_GOOGLE_FRAME}>
           <div className={LOGIN_GOOGLE_BUTTON_WELL} ref={googleButtonHostRef}>
             <div ref={attachGoogleButtonRef} className="w-full [&>div]:!w-full" />
           </div>
@@ -444,32 +416,34 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
 
     if (googleBackendEnabled && !googleClientId) {
       return (
-        <p className="text-center text-sm leading-relaxed text-slate-500">
-          Google login is enabled on the server, but no client id was returned. Check{' '}
-          <span className="font-mono text-xs">GOOGLE_OAUTH_CLIENT_ID</span> in{' '}
-          <span className="font-mono text-xs">backend/.env</span> and restart the backend, or set{' '}
-          <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and restart Vite.
+        <p className="text-center text-xs text-[#b8c0d4]/80">
+          Google sign-in is not configured. Use email above.
         </p>
       )
     }
 
-    return (
-      <p className="text-center text-sm leading-relaxed text-slate-500">
-        Google login is disabled. Set <span className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</span> and{' '}
-        <span className="font-mono text-xs">GOOGLE_OAUTH_CLIENT_ID</span> to enable it.
-      </p>
-    )
+    return null
   }
 
   return (
     <>
-      <LoginBootPortal>
-        <div className={authCardClass}>
+      <LoginBootPortal onHome={onBackToLanding}>
+        <div className={`${authCardClass} flex flex-col`}>
+            {onBackToLanding ? (
+              <button
+                type="button"
+                onClick={onBackToLanding}
+                className="login-card-stagger mb-2 self-start text-sm font-medium text-[#dce5ff] underline-offset-4 hover:text-[#f7f8f4] hover:underline"
+              >
+                ← Back to home
+              </button>
+            ) : null}
+            <div ref={authPanelRef} className="login-auth-panel">
             {mode === 'forgotPassword' ? (
               <div className="space-y-6" onKeyDown={handleKeyDown}>
                 <div className="login-card-stagger">
-                  <h2 className="text-2xl font-bold text-[#FAF3E0]">Reset password</h2>
-                  <p className="mt-2 text-sm text-[#FAF3E0]/60">
+                  <h2 className="login-card-title text-2xl font-extrabold tracking-[-0.02em] text-[#f7f8f4]">Reset password</h2>
+                  <p className="mt-2 text-sm text-[#b8c0d4]">
                     Enter your email to request a reset, then set a new password with your token.
                   </p>
                 </div>
@@ -527,7 +501,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   </button>
                 </div>
 
-                <p className="login-card-stagger text-center text-sm text-[#FAF3E0]/55">
+                <p className="login-card-stagger text-center text-sm text-[#b8c0d4]">
                   Remembered your password?{' '}
                   <button type="button" className={mutedLinkClass} onClick={() => setMode('login')}>
                     Sign in
@@ -536,14 +510,14 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
               </div>
             ) : pendingApproval ? (
               <div className="space-y-6 text-center">
-                <div className="login-card-stagger mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#22FF88]/15 text-[#22FF88]">
+                <div className="login-card-stagger mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#1944f1]/20 text-[#FFEF4D]">
                   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 256 256">
                     <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
                   </svg>
                 </div>
                 <div className="login-card-stagger">
-                  <h2 className="text-2xl font-bold text-[#FAF3E0]">Registration submitted</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-[#FAF3E0]/60">
+                  <h2 className="login-card-title text-2xl font-extrabold tracking-[-0.02em] text-[#f7f8f4]">Registration submitted</h2>
+                  <p className="mt-2 text-sm leading-relaxed text-[#b8c0d4]">
                     Your account is{' '}
                     <span className="font-semibold text-amber-400">pending admin approval</span>. You
                     can sign in once an admin approves your registration.
@@ -561,27 +535,19 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 </button>
               </div>
             ) : (
-              <div className="space-y-6" onKeyDown={handleKeyDown}>
+              <div className="space-y-4" onKeyDown={handleKeyDown}>
                 <div className="login-card-stagger">
-                  <h2 className="text-2xl font-bold text-[#FAF3E0]">
+                  <h2 className="login-card-title text-2xl font-extrabold tracking-[-0.02em] text-[#f7f8f4]">
                     {mode === 'login' ? 'Sign in' : 'Create account'}
                   </h2>
-                  <p className="mt-2 text-sm text-[#FAF3E0]/60">
+                  <p className="mt-1.5 text-sm leading-relaxed text-[#b8c0d4]">
                     {mode === 'login'
-                      ? 'Welcome back. Continue with Google or use your email credentials.'
+                      ? 'Welcome back. Sign in with email, or continue with Google below.'
                       : 'New accounts require admin approval before you can sign in.'}
                   </p>
                 </div>
 
-                <div className="login-card-stagger">{renderGoogleSection()}</div>
-
-                {(mode === 'login' || mode === 'signup') && googleButtonAllowed ? (
-                  <div className="login-card-stagger flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-[#FAF3E0]/35 before:h-px before:flex-1 before:bg-[#22FF88]/12 before:content-[''] after:h-px after:flex-1 after:bg-[#22FF88]/12 after:content-['']">
-                    Or use email
-                  </div>
-                ) : null}
-
-                <div className="login-card-stagger space-y-4 rounded-xl border border-[#22FF88]/8 bg-[#050807]/35 p-4">
+                <div className="login-card-stagger space-y-3.5 rounded-xl border border-white/10 bg-[#0b1020]/45 p-4">
                   {mode === 'signup' && (
                     <div className="space-y-2">
                       <label htmlFor="full-name" className={labelClass}>
@@ -641,7 +607,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 </div>
 
                 {mode === 'login' && (
-                  <label className="login-card-stagger flex cursor-pointer items-center gap-2.5 text-sm text-[#FAF3E0]/65">
+                  <label className="login-card-stagger flex cursor-pointer items-center gap-2.5 text-sm text-[#b8c0d4]">
                     <Checkbox
                       checked={rememberMe}
                       onCheckedChange={(v) => handleRememberChange(v === true)}
@@ -660,15 +626,23 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                   {isLoading ? 'Please wait…' : mode === 'login' ? 'Sign In with Email' : 'Create Account'}
                 </button>
 
+                {(mode === 'login' || mode === 'signup') && googleButtonAllowed ? (
+                  <div className="login-card-stagger flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-[#b8c0d4] before:h-px before:flex-1 before:bg-white/12 before:content-[''] after:h-px after:flex-1 after:bg-white/12 after:content-['']">
+                    Or continue with Google
+                  </div>
+                ) : null}
+
+                <div className="login-card-stagger">{renderGoogleSection()}</div>
+
                 {mode === 'login' ? (
-                  <p className="login-card-stagger text-center text-sm text-[#FAF3E0]/55">
+                  <p className="login-card-stagger text-center text-sm text-[#b8c0d4]">
                     Don&apos;t have an account yet?{' '}
                     <button type="button" className={mutedLinkClass} onClick={() => setMode('signup')}>
                       Register
                     </button>
                   </p>
                 ) : (
-                  <p className="login-card-stagger text-center text-sm text-[#FAF3E0]/55">
+                  <p className="login-card-stagger text-center text-sm text-[#b8c0d4]">
                     Already have an account?{' '}
                     <button type="button" className={mutedLinkClass} onClick={() => setMode('login')}>
                       Sign in
@@ -677,12 +651,13 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 )}
               </div>
             )}
+            </div>
         </div>
 
-        <p className="login-card-stagger w-full text-center text-sm text-[#FAF3E0]/55">
+        <p className="login-card-stagger mt-4 w-full text-center text-sm leading-snug text-[#b8c0d4]">
             <button
               type="button"
-              className="text-[#FAF3E0]/55 underline-offset-2 hover:text-[#FAF3E0]/80 hover:underline"
+              className="text-[#b8c0d4] underline-offset-2 transition-colors hover:text-[#f7f8f4] hover:underline"
               onClick={() => setHelpOpen(true)}
             >
               Need help signing in?
@@ -752,3 +727,4 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
     </>
   )
 }
+

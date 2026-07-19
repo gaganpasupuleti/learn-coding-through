@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
 
-import { LandingPage, type LandingNavTarget } from '@/components/pages/LandingPage'
+import { PublicLandingPage } from '@/components/pages/PublicLandingPage'
 
 import { ProjectsPage } from '@/components/pages/ProjectsPage'
 
@@ -124,8 +124,6 @@ const PRACTICE_PATH_TO_PAGE: Record<string, StudentPage> = {
 
 export type StudentPage =
 
-  | 'landing'
-
   | 'dashboard'
 
   | 'projects'
@@ -212,6 +210,13 @@ function App() {
 
   const [authChecked, setAuthChecked] = useState(() => getStoredUser() === null)
 
+  const [unauthView, setUnauthView] = useState<'landing' | 'login'>(() => {
+    if (typeof window === 'undefined') return 'landing'
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('page') === 'login' || window.location.hash === '#login') return 'login'
+    return 'landing'
+  })
+
   const [studentPage, setStudentPage] = useState<StudentPage>('dashboard')
 
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
@@ -239,6 +244,8 @@ function App() {
     clearAuth()
 
     setAuthState(null)
+
+    setUnauthView('landing')
 
     setStudentPage('dashboard')
 
@@ -346,7 +353,15 @@ function App() {
 
     const params = new URLSearchParams(window.location.search)
 
-    const pageParam = params.get('page') as StudentPage | null
+    const rawPage = params.get('page')
+    if (rawPage === 'login') {
+      setUnauthView('login')
+    }
+    if (rawPage === 'landing') {
+      setStudentPage('dashboard')
+      return
+    }
+    const pageParam = rawPage as StudentPage | null
 
   const DEEP_LINK_PAGES: StudentPage[] = [
     'dashboard', 'calendar', 'progress', 'learning-planner', 'projects', 'hub',
@@ -374,10 +389,13 @@ function App() {
 
 
 
-  const handleStudentNavigate = (
-    page: StudentPage | 'practice' | 'practice-ground' | 'typing' | LandingNavTarget,
-  ) => {
-
+  const handleStudentNavigate = (page: StudentPage | 'practice' | 'practice-ground' | 'typing' | 'landing') => {
+    if (page === 'landing') {
+      setStudentPage('dashboard')
+      setSelectedProjectId(null)
+      syncPracticePath('dashboard')
+      return
+    }
     if (page === 'practice' || page === 'practice-ground') {
 
       setStudentPage('practice-code')
@@ -551,19 +569,19 @@ function App() {
 
 
   if (!authState) {
-
     return (
-
       <div className={wrapperClass}>
-
-        <LoginPage onAuthenticated={handleAuthenticated} />
-
+        {unauthView === 'landing' ? (
+          <PublicLandingPage onStartQuest={() => setUnauthView('login')} />
+        ) : (
+          <LoginPage
+            onAuthenticated={handleAuthenticated}
+            onBackToLanding={() => setUnauthView('landing')}
+          />
+        )}
         <Toaster position="top-center" />
-
       </div>
-
     )
-
   }
 
 
@@ -633,14 +651,6 @@ function App() {
         onLogout={handleLogout}
 
       >
-
-        {studentPage === 'landing' && (
-
-          <LandingPage onNavigate={handleStudentNavigate} />
-
-        )}
-
-
 
         {studentPage === 'dashboard' && (
 

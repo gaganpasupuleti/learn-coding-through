@@ -88,8 +88,6 @@ import { cn } from '@/lib/utils'
 
 type StudentPage =
 
-  | 'landing'
-
   | 'dashboard'
 
   | 'hub'
