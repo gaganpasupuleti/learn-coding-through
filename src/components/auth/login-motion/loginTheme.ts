@@ -1,41 +1,36 @@
-/** CodeQuest login auth-portal tokens — mission-control theme (phase 28a). */
+/** Cinematic login tokens — dark hero palette (do not use .landing-cinematic page bg). */
 
-export const LOGIN_PAGE_BG = 'relative min-h-screen overflow-x-hidden bg-[#050807] text-[#FAF3E0]'
+export const LOGIN_PAGE_BG =
+  'login-cinematic relative isolate min-h-dvh w-full overflow-x-clip overflow-y-auto lg:h-dvh lg:max-h-dvh lg:overflow-hidden'
 
 export const LOGIN_GLASS_CARD =
-  'w-full rounded-2xl border border-[#22FF88]/18 bg-[#0A1020]/82 p-7 shadow-[0_0_50px_-28px_rgba(34,255,136,0.35)] backdrop-blur-xl sm:p-8'
+  'w-full rounded-[1.4rem] border border-white/[0.1] bg-[#111936]/90 p-6 shadow-[0_28px_80px_-28px_rgba(0,0,0,0.7)] backdrop-blur-xl sm:p-7'
 
 export const LOGIN_INPUT =
-  'w-full rounded-lg border border-[#22FF88]/14 bg-[#050807]/55 px-4 py-2.5 text-sm text-[#FAF3E0] placeholder:text-[#FAF3E0]/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-colors focus-visible:border-[#3B82F6]/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/25 focus-visible:ring-offset-0'
+  'w-full rounded-xl border border-white/12 bg-[#0b1020]/75 px-4 py-2.5 text-base text-[#f7f8f4] placeholder:text-[#b8c0d4]/55 transition-colors focus-visible:border-[#1944f1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1944f1]/40 focus-visible:ring-offset-0'
 
-export const LOGIN_INPUT_SECONDARY =
-  'border-[#22FF88]/10 bg-[#050807]/40 text-[#FAF3E0]/90'
+export const LOGIN_INPUT_SECONDARY = ''
 
 export const LOGIN_PRIMARY_BTN =
-  'w-full rounded-lg bg-[#3B82F6] py-3 text-sm font-semibold text-white shadow-[0_0_24px_-10px_rgba(59,130,246,0.85)] transition-colors hover:bg-[#2563EB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050807] disabled:cursor-not-allowed disabled:opacity-60'
+  'w-full rounded-full bg-[#1944f1] py-3 text-base font-semibold text-white shadow-[0_12px_32px_rgba(25,68,241,0.28)] transition-colors hover:bg-[#1438c9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1944f1]/50 disabled:cursor-not-allowed disabled:opacity-60'
 
 export const LOGIN_SECONDARY_BTN =
-  'w-full rounded-lg border border-[#22FF88]/25 bg-[#22FF88]/8 py-3 text-sm font-semibold text-[#22FF88] transition-colors hover:border-[#22FF88]/40 hover:bg-[#22FF88]/14 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22FF88]/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050807] disabled:cursor-not-allowed disabled:opacity-60'
+  'w-full rounded-full border border-white/25 bg-white/[0.04] py-3 text-base font-semibold text-[#f7f8f4] transition-colors hover:bg-white/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 disabled:cursor-not-allowed disabled:opacity-60'
 
-export const LOGIN_LABEL_SECONDARY = 'text-xs font-medium text-[#FAF3E0]/50'
+export const LOGIN_LABEL_SECONDARY = 'text-xs font-semibold uppercase tracking-[0.08em] text-[#b8c0d4]'
 
-export const LOGIN_MUTED = 'text-sm text-[#FAF3E0]/55 underline-offset-2 hover:text-[#FAF3E0]/80 hover:underline'
+export const LOGIN_MUTED =
+  'text-sm text-[#b8c0d4] underline-offset-2 hover:text-[#f7f8f4] hover:underline'
 
-export const LOGIN_FORGOT = 'text-xs font-normal text-[#FAF3E0]/40 underline-offset-2 transition-colors hover:text-[#FAF3E0]/65 hover:underline'
+export const LOGIN_FORGOT =
+  'text-xs font-medium text-[#b8c0d4] underline-offset-2 transition-colors hover:text-[#f7f8f4] hover:underline'
 
-export const LOGIN_GOOGLE_FRAME =
-  'rounded-xl border border-[#22FF88]/18 bg-[#0A1020]/70 p-3 shadow-[inset_0_0_28px_-14px_rgba(34,255,136,0.25)]'
+export const LOGIN_GOOGLE_FRAME = 'rounded-2xl border border-white/10 bg-[#0b1020]/50 p-3'
 
 export const LOGIN_GOOGLE_BUTTON_WELL =
-  'flex w-full justify-center rounded-lg border border-[#22FF88]/10 bg-[#FAF3E0]/95 px-3 py-2.5 shadow-sm'
+  'flex w-full justify-center rounded-xl border border-white/10 bg-[#f7f8f4] px-3 py-2.5 shadow-sm'
 
-export const LOGIN_TAGLINE_WORDS = ['Learn.', 'Build.', 'Quest.'] as const
-
-export const LOGIN_BOOT_LINES = [
-  '> Initializing CodeQuest…',
-  '> Loading student workspace…',
-  '> Auth portal ready.',
-] as const
+export const LOGIN_HEADLINE_LINES = ['Build Skills.', 'Prove Progress.', 'Get Hired.'] as const
 
 export const LOGIN_FEATURE_CHIPS = [
   { id: 'sql', label: 'SQL Arena', icon: 'database' },
@@ -43,15 +38,3 @@ export const LOGIN_FEATURE_CHIPS = [
   { id: 'resume', label: 'Resume Quest', icon: 'file-text' },
   { id: 'jobs', label: 'Jobs Radar', icon: 'radar' },
 ] as const
-
-/** ponytail: static marketing highlights — not live API metrics. */
-export const LOGIN_PLATFORM_STATS = [
-  { id: 'jobs', label: 'Live Jobs', value: 1248, suffix: '+' },
-  { id: 'modules', label: 'Learning Modules', value: 320, suffix: '+' },
-  { id: 'questions', label: 'Practice Questions', value: 5000, suffix: '+' },
-  { id: 'projects', label: 'Student Projects', value: 180, suffix: '+' },
-] as const
-
-export function formatLoginStat(value: number, suffix: string) {
-  return `${value.toLocaleString()}${suffix}`
-}
